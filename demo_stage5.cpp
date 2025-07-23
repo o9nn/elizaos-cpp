@@ -1,4 +1,7 @@
 #include "elizaos/evolutionary.hpp"
+#include "elizaos/website.hpp"
+#include "elizaos/elizaos_github_io.hpp"
+#include "elizaos/vercel_api.hpp"
 #include "elizaos/core.hpp"
 #include "elizaos/agentlogger.hpp"
 #include <iostream>
@@ -9,12 +12,16 @@ using namespace elizaos;
 
 /**
  * Stage 5 Demo: Learning and Adaptation with MOSES-style Evolutionary Search
+ *               + Web and Documentation Modules
  * 
  * This demo showcases:
  * 1. MOSES-style evolutionary search algorithms
  * 2. Optimization pipelines for agent behavior
  * 3. Pattern extraction and adaptation hooks
  * 4. Learning metrics and evaluation
+ * 5. Website generation and content management
+ * 6. GitHub Pages documentation deployment
+ * 7. Vercel API integration for serverless deployments
  */
 
 class LearningDemo {
@@ -60,8 +67,11 @@ public:
         // Demo 5: Learning metrics
         demonstrateLearningMetrics();
         
+        // Demo 6: Web and Documentation modules
+        demonstrateWebModules();
+        
         std::cout << "\n=== Demo Complete ===" << std::endl;
-        std::cout << "Learning and adaptation systems successfully demonstrated!" << std::endl;
+        std::cout << "Learning, adaptation, and web systems successfully demonstrated!" << std::endl;
     }
 
 private:
@@ -464,6 +474,128 @@ private:
             std::cout << "   💾 Metrics saved to /tmp/learning_metrics.csv" << std::endl;
         }
         
+        std::cout << std::endl;
+    }
+    
+    void demonstrateWebModules() {
+        std::cout << "6. Web and Documentation Modules" << std::endl;
+        std::cout << "   Testing website generation, GitHub Pages, and Vercel API integration" << std::endl;
+        
+        // Demo Website Module
+        std::cout << "\n   🌐 Website Module Demo:" << std::endl;
+        {
+            WebsiteConfig config;
+            config.site_title = "ElizaOS Demo Site";
+            config.site_description = "A demonstration of the ElizaOS C++ web framework";
+            config.source_dir = "/tmp/elizaos-demo-site/src";
+            config.output_dir = "/tmp/elizaos-demo-site/dist";
+            config.templates_dir = "/tmp/elizaos-demo-site/templates";
+            
+            Website website(config);
+            
+            if (website.initialize()) {
+                std::cout << "      ✅ Website module initialized" << std::endl;
+                
+                // Add sample content
+                auto content_manager = website.getContentManager();
+                WebPage demo_page("home", "Welcome to ElizaOS", 
+                    "<h1>Welcome to ElizaOS</h1><p>This is a demo of the C++ web framework.</p>");
+                demo_page.metadata["author"] = "ElizaOS Demo";
+                demo_page.metadata["layout"] = "default";
+                content_manager->addPage(demo_page);
+                
+                if (website.generateSite()) {
+                    std::cout << "      ✅ Static site generated successfully" << std::endl;
+                    auto stats = website.getGenerationStats();
+                    std::cout << "      📊 Generated " << stats.pages_generated << " pages in " 
+                             << stats.generation_time.count() << "ms" << std::endl;
+                } else {
+                    std::cout << "      ❌ Site generation failed" << std::endl;
+                }
+            } else {
+                std::cout << "      ❌ Website initialization failed" << std::endl;
+            }
+        }
+        
+        // Demo GitHub.io Module
+        std::cout << "\n   📖 GitHub.io Documentation Module Demo:" << std::endl;
+        {
+            GitHubPagesConfig config;
+            config.repository_owner = "elizaos";
+            config.repository_name = "demo-docs";
+            config.docs_dir = "/tmp/elizaos-docs";
+            config.output_dir = "/tmp/elizaos-github-pages";
+            
+            ElizaOSGitHubIO github_io(config);
+            
+            if (github_io.initialize()) {
+                std::cout << "      ✅ GitHub.io module initialized" << std::endl;
+                
+                // Generate sample documentation
+                auto doc_generator = github_io.getDocumentationGenerator();
+                
+                DocumentationPage api_page("API Reference", 
+                    "# API Reference\\n\\nThis is the API documentation for ElizaOS.\\n\\n## Classes\\n\\n- `Website`: Main website functionality\\n- `ElizaOSGitHubIO`: GitHub Pages integration");
+                api_page.tags.push_back("api");
+                api_page.frontmatter["category"] = "API";
+                doc_generator->addPage(api_page);
+                
+                DocumentationPage guide_page("Getting Started", 
+                    "# Getting Started\\n\\nWelcome to ElizaOS! This guide will help you get started.\\n\\n## Installation\\n\\n1. Clone the repository\\n2. Build with CMake\\n3. Run the demo");
+                guide_page.tags.push_back("guide");
+                guide_page.frontmatter["category"] = "Guides";
+                doc_generator->addPage(guide_page);
+                
+                if (doc_generator->generateDocumentation()) {
+                    std::cout << "      ✅ Documentation generated successfully" << std::endl;
+                    std::cout << "      📖 Generated documentation for " << doc_generator->getAllPages().size() << " pages" << std::endl;
+                } else {
+                    std::cout << "      ❌ Documentation generation failed" << std::endl;
+                }
+                
+                // Note: Actual deployment would require GitHub credentials
+                std::cout << "      ℹ️  Deployment would require GitHub access token" << std::endl;
+            } else {
+                std::cout << "      ❌ GitHub.io initialization failed" << std::endl;
+            }
+        }
+        
+        // Demo Vercel API Module
+        std::cout << "\n   🚀 Vercel API Module Demo:" << std::endl;
+        {
+            VercelConfig config;
+            config.api_token = "demo_token";  // Would be real token in production
+            config.team_id = "demo_team";
+            
+            VercelIntegration vercel(config);
+            
+            // Note: This would fail without real credentials, but demonstrates the API
+            std::cout << "      ℹ️  Vercel integration configured (demo mode)" << std::endl;
+            std::cout << "      🔧 API base URL: " << config.api_base_url << std::endl;
+            std::cout << "      ⏱️  Timeout: " << config.timeout_seconds << " seconds" << std::endl;
+            
+            // Demonstrate API structure
+            auto api = vercel.getAPI();
+            std::cout << "      ✅ Vercel API client created" << std::endl;
+            std::cout << "      ℹ️  Production deployment would use: vercel.deployDirectory()" << std::endl;
+            
+            // Show what a deployment would look like
+            std::cout << "      📋 Example deployment process:" << std::endl;
+            std::cout << "         1. Scan project directory for files" << std::endl;
+            std::cout << "         2. Create deployment request with metadata" << std::endl;
+            std::cout << "         3. Upload files to Vercel" << std::endl;
+            std::cout << "         4. Monitor deployment status" << std::endl;
+            std::cout << "         5. Return deployment URL" << std::endl;
+        }
+        
+        // Integration Example
+        std::cout << "\n   🔗 Web Modules Integration Example:" << std::endl;
+        std::cout << "      1. Generate static site with Website module" << std::endl;
+        std::cout << "      2. Create documentation with GitHub.io module" << std::endl;
+        std::cout << "      3. Deploy to production with Vercel API module" << std::endl;
+        std::cout << "      4. Monitor deployment status and updates" << std::endl;
+        
+        std::cout << "\n   ✅ Web and Documentation modules demonstration complete!" << std::endl;
         std::cout << std::endl;
     }
 };

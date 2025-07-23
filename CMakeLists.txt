@@ -29,6 +29,16 @@ endif()
 # Find packages
 find_package(Threads REQUIRED)
 
+# Find libcurl for HTTP operations
+find_package(PkgConfig QUIET)
+if(PKG_CONFIG_FOUND)
+    pkg_check_modules(CURL QUIET libcurl)
+endif()
+
+if(NOT CURL_FOUND)
+    find_package(CURL QUIET)
+endif()
+
 # Enable testing
 enable_testing()
 
@@ -42,6 +52,14 @@ FetchContent_Declare(
 # For Windows: Prevent overriding the parent project's compiler/linker settings
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
+
+# Add nlohmann/json for JSON parsing
+FetchContent_Declare(
+    nlohmann_json
+    GIT_REPOSITORY https://github.com/nlohmann/json.git
+    GIT_TAG v3.11.2
+)
+FetchContent_MakeAvailable(nlohmann_json)
 
 # Include directories
 include_directories(${CMAKE_SOURCE_DIR}/include)
@@ -136,6 +154,9 @@ target_link_libraries(stage5_demo
     elizaos-core
     elizaos-agentlogger
     elizaos-evolutionary
+    elizaos-website
+    elizaos-elizaos_github_io
+    elizaos-vercel_api
     Threads::Threads
 )
 
@@ -193,3 +214,8 @@ message(STATUS "  Version: ${PROJECT_VERSION}")
 message(STATUS "  Build type: ${CMAKE_BUILD_TYPE}")
 message(STATUS "  C++ standard: ${CMAKE_CXX_STANDARD}")
 message(STATUS "  Install prefix: ${CMAKE_INSTALL_PREFIX}")
+if(CURL_FOUND)
+    message(STATUS "  libcurl: Found")
+else()
+    message(STATUS "  libcurl: Not found (HTTP functionality will be limited)")
+endif()
