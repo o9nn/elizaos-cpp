@@ -1,4 +1,4 @@
-# Stage 5 - Web and Documentation placeholder - implementation planned
+# Stage 5 - Web and Documentation - ElizaOS GitHub.io module
 add_library(elizaos-elizaos_github_io STATIC
     src/placeholder.cpp
 )
@@ -9,4 +9,5 @@ target_include_directories(elizaos-elizaos_github_io PUBLIC
 
 target_link_libraries(elizaos-elizaos_github_io 
     elizaos-core
+    elizaos-agentlogger
 )
