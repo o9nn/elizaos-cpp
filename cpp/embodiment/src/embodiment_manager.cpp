@@ -6,6 +6,34 @@
 
 namespace elizaos {
 
+// Helper functions for logging
+[[maybe_unused]] static void elogInfo(const std::string& message) {
+    AgentLogger logger;
+    logger.log(message, "", "embodiment", LogLevel::INFO);
+}
+
+[[maybe_unused]] static void elogSuccess(const std::string& message) {
+    AgentLogger logger;
+    logger.log(message, "", "embodiment", LogLevel::SUCCESS);
+}
+
+[[maybe_unused]] static void elogError(const std::string& message) {
+    AgentLogger logger;
+    logger.log(message, "", "embodiment", LogLevel::ERROR);
+}
+
+[[maybe_unused]] static void elogSystem(const std::string& message) {
+    AgentLogger logger;
+    logger.log(message, "", "embodiment", LogLevel::SYSTEM);
+}
+
+[[maybe_unused]] static void elogWarning(const std::string& message) {
+    AgentLogger logger;
+    logger.log(message, "", "embodiment", LogLevel::WARNING);
+}
+
+namespace elizaos {
+
 /**
  * Embodiment Manager Implementation
  */
@@ -18,16 +46,16 @@ EmbodimentManager::~EmbodimentManager() {
 }
 
 bool EmbodimentManager::initialize() {
-    AgentLogger logger;
-    logger.logSystem("Initializing Embodiment Manager");
+    
+    elogSystem("Initializing Embodiment Manager");
     
     if (!state_) {
-        logger.logError("State not set - cannot initialize");
+        elogError("State not set - cannot initialize");
         return false;
     }
     
     if (!memory_) {
-        logger.logError("Memory manager not set - cannot initialize");
+        elogError("Memory manager not set - cannot initialize");
         return false;
     }
     
@@ -35,17 +63,17 @@ bool EmbodimentManager::initialize() {
     perceptionActionLoop_ = std::make_shared<PerceptionActionLoop>(state_, memory_, cognition_);
     
     if (!perceptionActionLoop_->initialize()) {
-        logger.logError("Failed to initialize perception-action loop");
+        elogError("Failed to initialize perception-action loop");
         return false;
     }
     
-    logger.logSuccess("Embodiment Manager initialized successfully");
+    elogSuccess("Embodiment Manager initialized successfully");
     return true;
 }
 
 void EmbodimentManager::shutdown() {
-    AgentLogger logger;
-    logger.logSystem("Shutting down Embodiment Manager");
+    
+    elogSystem("Shutting down Embodiment Manager");
     
     if (running_) {
         stop();
@@ -55,7 +83,7 @@ void EmbodimentManager::shutdown() {
         perceptionActionLoop_->shutdown();
     }
     
-    logger.logInfo("Embodiment Manager shutdown complete");
+    elogInfo("Embodiment Manager shutdown complete");
 }
 
 bool EmbodimentManager::start() {
@@ -63,8 +91,8 @@ bool EmbodimentManager::start() {
         return true; // Already running
     }
     
-    AgentLogger logger;
-    logger.logSystem("Starting Embodiment Manager");
+    
+    elogSystem("Starting Embodiment Manager");
     
     if (!initialize()) {
         return false;
@@ -72,7 +100,7 @@ bool EmbodimentManager::start() {
     
     // Start perception-action loop
     if (perceptionActionLoop_ && !perceptionActionLoop_->start()) {
-        logger.logError("Failed to start perception-action loop");
+        elogError("Failed to start perception-action loop");
         return false;
     }
     
@@ -88,7 +116,7 @@ bool EmbodimentManager::start() {
         validationThread_ = std::make_unique<std::thread>(&EmbodimentManager::coherenceValidationLoop, this);
     }
     
-    logger.logSuccess("Embodiment Manager started");
+    elogSuccess("Embodiment Manager started");
     return true;
 }
 
@@ -97,8 +125,8 @@ void EmbodimentManager::stop() {
         return;
     }
     
-    AgentLogger logger;
-    logger.logSystem("Stopping Embodiment Manager");
+    
+    elogSystem("Stopping Embodiment Manager");
     
     running_ = false;
     
@@ -117,7 +145,7 @@ void EmbodimentManager::stop() {
         agentLoop_->stop();
     }
     
-    logger.logInfo("Embodiment Manager stopped");
+    elogInfo("Embodiment Manager stopped");
 }
 
 void EmbodimentManager::configurePerceptionActionLoop(std::chrono::milliseconds interval) {
@@ -127,8 +155,8 @@ void EmbodimentManager::configurePerceptionActionLoop(std::chrono::milliseconds 
     
     perceptionActionLoop_->setLoopInterval(interval);
     
-    AgentLogger logger;
-    logger.logInfo("Configured perception-action loop with " + std::to_string(interval.count()) + "ms interval");
+    
+    elogInfo("Configured perception-action loop with " + std::to_string(interval.count()) + "ms interval");
 }
 
 void EmbodimentManager::registerSensoryInterface(std::shared_ptr<SensoryInterface> interface) {
@@ -138,8 +166,8 @@ void EmbodimentManager::registerSensoryInterface(std::shared_ptr<SensoryInterfac
         perceptionActionLoop_->addSensoryInterface(interface);
     }
     
-    AgentLogger logger;
-    logger.logInfo("Registered sensory interface: " + interface->getName());
+    
+    elogInfo("Registered sensory interface: " + interface->getName());
 }
 
 void EmbodimentManager::registerMotorInterface(std::shared_ptr<MotorInterface> interface) {
@@ -149,18 +177,19 @@ void EmbodimentManager::registerMotorInterface(std::shared_ptr<MotorInterface> i
         perceptionActionLoop_->addMotorInterface(interface);
     }
     
-    AgentLogger logger;
-    logger.logInfo("Registered motor interface: " + interface->getName());
+    
+    elogInfo("Registered motor interface: " + interface->getName());
 }
 
 void EmbodimentManager::createDefaultInterfaces() {
-    AgentLogger logger;
-    logger.logInfo("Creating default interfaces");
     
-    // Create console text interface (both sensory and motor)
-    auto consoleInterface = std::make_shared<ConsoleTextInterface>();
-    registerSensoryInterface(consoleInterface);
-    registerMotorInterface(consoleInterface);
+    elogInfo("Creating default interfaces");
+    
+    // Create console text interfaces (both sensory and motor)
+    auto consoleInput = std::make_shared<ConsoleTextInput>();
+    auto consoleOutput = std::make_shared<ConsoleTextOutput>();
+    registerSensoryInterface(consoleInput);
+    registerMotorInterface(consoleOutput);
     
     // Create mock motor interfaces for different action types
     auto speechInterface = std::make_shared<MockMotorInterface>(MotorActionType::SPEECH);
@@ -175,15 +204,15 @@ void EmbodimentManager::createDefaultInterfaces() {
     registerMotorInterface(gestureInterface);
     registerMotorInterface(manipulationInterface);
     
-    logger.logSuccess("Default interfaces created");
+    elogSuccess("Default interfaces created");
 }
 
 EmbodimentManager::CoherenceReport EmbodimentManager::validateSystemCoherence() {
     CoherenceReport report;
     report.timestamp = std::chrono::system_clock::now();
     
-    AgentLogger logger;
-    logger.logInfo("Validating system coherence");
+    
+    elogInfo("Validating system coherence");
     
     std::vector<std::string> issues;
     std::vector<std::string> warnings;
@@ -266,16 +295,16 @@ EmbodimentManager::CoherenceReport EmbodimentManager::validateSystemCoherence() 
     
     // Log report
     if (coherent) {
-        logger.logSuccess("System coherence validation passed");
+        elogSuccess("System coherence validation passed");
     } else {
-        logger.logWarning("System coherence validation found issues");
+        elogWarning("System coherence validation found issues");
         for (const auto& issue : issues) {
-            logger.logError("  Issue: " + issue);
+            elogError("  Issue: " + issue);
         }
     }
     
     for (const auto& warning : warnings) {
-        logger.logWarning("  Warning: " + warning);
+        elogWarning("  Warning: " + warning);
     }
     
     lastCoherenceReport_ = report;
@@ -286,24 +315,24 @@ void EmbodimentManager::enableContinuousValidation(bool enable, std::chrono::sec
     continuousValidation_ = enable;
     validationInterval_ = interval;
     
-    AgentLogger logger;
+    
     if (enable) {
-        logger.logInfo("Enabled continuous validation with " + std::to_string(interval.count()) + "s interval");
+        elogInfo("Enabled continuous validation with " + std::to_string(interval.count()) + "s interval");
         
         if (running_ && !validationThread_) {
             validationThread_ = std::make_unique<std::thread>(&EmbodimentManager::coherenceValidationLoop, this);
         }
     } else {
-        logger.logInfo("Disabled continuous validation");
+        elogInfo("Disabled continuous validation");
     }
 }
 
 bool EmbodimentManager::testSensoryIntegration() {
-    AgentLogger logger;
-    logger.logInfo("Testing sensory integration");
+    
+    elogInfo("Testing sensory integration");
     
     if (!perceptionActionLoop_) {
-        logger.logError("Perception-action loop not available");
+        elogError("Perception-action loop not available");
         return false;
     }
     
@@ -314,20 +343,20 @@ bool EmbodimentManager::testSensoryIntegration() {
     try {
         // Test processing
         perceptionActionLoop_->processPerception(testVector);
-        logger.logSuccess("Sensory integration test passed");
+        elogSuccess("Sensory integration test passed");
         return true;
     } catch (const std::exception& e) {
-        logger.logError("Sensory integration test failed: " + std::string(e.what()));
+        elogError("Sensory integration test failed: " + std::string(e.what()));
         return false;
     }
 }
 
 bool EmbodimentManager::testMotorIntegration() {
-    AgentLogger logger;
-    logger.logInfo("Testing motor integration");
+    
+    elogInfo("Testing motor integration");
     
     if (!perceptionActionLoop_) {
-        logger.logError("Perception-action loop not available");
+        elogError("Perception-action loop not available");
         return false;
     }
     
@@ -338,37 +367,37 @@ bool EmbodimentManager::testMotorIntegration() {
     try {
         // Test execution
         perceptionActionLoop_->executeActions(testVector);
-        logger.logSuccess("Motor integration test passed");
+        elogSuccess("Motor integration test passed");
         return true;
     } catch (const std::exception& e) {
-        logger.logError("Motor integration test failed: " + std::string(e.what()));
+        elogError("Motor integration test failed: " + std::string(e.what()));
         return false;
     }
 }
 
 bool EmbodimentManager::testPerceptionActionLoop() {
-    AgentLogger logger;
-    logger.logInfo("Testing perception-action loop");
+    
+    elogInfo("Testing perception-action loop");
     
     if (!perceptionActionLoop_) {
-        logger.logError("Perception-action loop not available");
+        elogError("Perception-action loop not available");
         return false;
     }
     
     try {
         // Test single cycle
         perceptionActionLoop_->processSingleCycle();
-        logger.logSuccess("Perception-action loop test passed");
+        elogSuccess("Perception-action loop test passed");
         return true;
     } catch (const std::exception& e) {
-        logger.logError("Perception-action loop test failed: " + std::string(e.what()));
+        elogError("Perception-action loop test failed: " + std::string(e.what()));
         return false;
     }
 }
 
 bool EmbodimentManager::testSystemIntegration() {
-    AgentLogger logger;
-    logger.logInfo("Testing complete system integration");
+    
+    elogInfo("Testing complete system integration");
     
     bool sensoryOk = testSensoryIntegration();
     bool motorOk = testMotorIntegration();
@@ -378,9 +407,9 @@ bool EmbodimentManager::testSystemIntegration() {
     bool success = sensoryOk && motorOk && loopOk && coherenceReport.overallCoherent;
     
     if (success) {
-        logger.logSuccess("System integration test passed");
+        elogSuccess("System integration test passed");
     } else {
-        logger.logError("System integration test failed");
+        elogError("System integration test failed");
     }
     
     return success;
@@ -439,51 +468,55 @@ std::unordered_map<std::string, double> EmbodimentManager::getPerformanceMetrics
 }
 
 void EmbodimentManager::coherenceValidationLoop() {
-    AgentLogger logger;
-    logger.logSystem("Continuous coherence validation started");
+    
+    elogSystem("Continuous coherence validation started");
     
     while (running_ && continuousValidation_) {
         try {
             validateSystemCoherence();
             updateSystemMetrics();
         } catch (const std::exception& e) {
-            logger.logError("Error in coherence validation: " + std::string(e.what()));
+            elogError("Error in coherence validation: " + std::string(e.what()));
         }
         
         std::this_thread::sleep_for(validationInterval_);
     }
     
-    logger.logSystem("Continuous coherence validation ended");
+    elogSystem("Continuous coherence validation ended");
 }
 
 void EmbodimentManager::updateSystemMetrics() const {
     std::lock_guard<std::mutex> lock(systemMutex_);
     
+    // Update performance metrics - need to make performanceMetrics_ mutable
+    // For now, let's create a local copy and return it
+    auto& metrics = const_cast<std::unordered_map<std::string, double>&>(performanceMetrics_);
+    
     // Update performance metrics
     if (perceptionActionLoop_) {
-        performanceMetrics_["pal_avg_loop_time"] = static_cast<double>(
+        metrics["pal_avg_loop_time"] = static_cast<double>(
             perceptionActionLoop_->getAverageLoopTime().count());
-        performanceMetrics_["pal_perception_latency"] = perceptionActionLoop_->getPerceptionLatency();
-        performanceMetrics_["pal_action_latency"] = perceptionActionLoop_->getActionLatency();
-        performanceMetrics_["pal_cycle_count"] = static_cast<double>(perceptionActionLoop_->getCycleCount());
-        performanceMetrics_["pal_running"] = perceptionActionLoop_->isRunning() ? 1.0 : 0.0;
+        metrics["pal_perception_latency"] = perceptionActionLoop_->getPerceptionLatency();
+        metrics["pal_action_latency"] = perceptionActionLoop_->getActionLatency();
+        metrics["pal_cycle_count"] = static_cast<double>(perceptionActionLoop_->getCycleCount());
+        metrics["pal_running"] = perceptionActionLoop_->isRunning() ? 1.0 : 0.0;
     }
     
     if (state_) {
-        performanceMetrics_["state_actors"] = static_cast<double>(state_->getActors().size());
-        performanceMetrics_["state_goals"] = static_cast<double>(state_->getGoals().size());
-        performanceMetrics_["state_messages"] = static_cast<double>(state_->getRecentMessages().size());
+        metrics["state_actors"] = static_cast<double>(state_->getActors().size());
+        metrics["state_goals"] = static_cast<double>(state_->getGoals().size());
+        metrics["state_messages"] = static_cast<double>(state_->getRecentMessages().size());
     }
     
     if (cognition_) {
-        performanceMetrics_["atomspace_nodes"] = static_cast<double>(cognition_->getAtomSpaceNodes().size());
-        performanceMetrics_["atomspace_edges"] = static_cast<double>(cognition_->getAtomSpaceEdges().size());
+        metrics["atomspace_nodes"] = static_cast<double>(cognition_->getAtomSpaceNodes().size());
+        metrics["atomspace_edges"] = static_cast<double>(cognition_->getAtomSpaceEdges().size());
     }
     
     // System health metrics
-    performanceMetrics_["system_running"] = running_ ? 1.0 : 0.0;
-    performanceMetrics_["continuous_validation"] = continuousValidation_ ? 1.0 : 0.0;
-    performanceMetrics_["last_coherence_check"] = lastCoherenceReport_.overallCoherent ? 1.0 : 0.0;
+    metrics["system_running"] = running_ ? 1.0 : 0.0;
+    metrics["continuous_validation"] = continuousValidation_ ? 1.0 : 0.0;
+    metrics["last_coherence_check"] = lastCoherenceReport_.overallCoherent ? 1.0 : 0.0;
 }
 
 } // namespace elizaos

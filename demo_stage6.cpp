@@ -96,9 +96,11 @@ private:
     void testSensoryInterfaces() {
         logger_.logInfo("=== Test 2: Sensory Interface Testing ===");
         
-        // Create console text interface for user input
-        auto consoleInterface = std::make_shared<ConsoleTextInterface>();
-        embodiment_->registerSensoryInterface(consoleInterface);
+        // Create console text interfaces for user input and output
+        auto consoleInput = std::make_shared<ConsoleTextInput>();
+        auto consoleOutput = std::make_shared<ConsoleTextOutput>();
+        embodiment_->registerSensoryInterface(consoleInput);
+        embodiment_->registerMotorInterface(consoleOutput);
         
         // Create file-based sensory interface for environmental data
         auto envFile = "/tmp/test_env_data.csv";

@@ -385,7 +385,7 @@ public:
     
 private:
     void coherenceValidationLoop();
-    void updateSystemMetrics();
+    void updateSystemMetrics() const;
     
     std::shared_ptr<AgentLoop> agentLoop_;
     std::shared_ptr<State> state_;
@@ -408,14 +408,13 @@ private:
 // Default interface implementations for common use cases
 
 /**
- * Console Text Interface - Basic text input/output via console
+ * Console Text Input Interface - Text input via console
  */
-class ConsoleTextInterface : public SensoryInterface, public MotorInterface {
+class ConsoleTextInput : public SensoryInterface {
 public:
-    ConsoleTextInterface();
-    virtual ~ConsoleTextInterface() = default;
+    ConsoleTextInput();
+    virtual ~ConsoleTextInput() = default;
     
-    // SensoryInterface implementation
     std::string getName() const override { return "ConsoleTextInput"; }
     SensoryDataType getType() const override { return SensoryDataType::TEXTUAL; }
     bool initialize() override;
@@ -431,17 +430,6 @@ public:
     void setDataCallback(std::function<void(std::shared_ptr<SensoryData>)> callback) override;
     void enableRealTimeProcessing(bool enable) override;
     
-    // MotorInterface implementation  
-    MotorActionType getType() const { return MotorActionType::COMMUNICATION; }
-    bool executeAction(std::shared_ptr<MotorAction> action) override;
-    bool canExecute(std::shared_ptr<MotorAction> action) const override;
-    void stopAction(const std::string& actionId = "") override;
-    void stopAllActions() override;
-    
-    bool isActionComplete(const std::string& actionId) const override;
-    std::vector<std::string> getActiveActions() const override;
-    double getActionProgress(const std::string& actionId) const override;
-    
 private:
     void inputThread();
     
@@ -453,6 +441,38 @@ private:
     bool realTimeProcessing_ = false;
     
     mutable std::mutex bufferMutex_;
+    mutable std::mutex configMutex_;
+};
+
+/**
+ * Console Text Output Interface - Text output via console
+ */
+class ConsoleTextOutput : public MotorInterface {
+public:
+    ConsoleTextOutput();
+    virtual ~ConsoleTextOutput() = default;
+    
+    std::string getName() const override { return "ConsoleTextOutput"; }
+    MotorActionType getType() const override { return MotorActionType::COMMUNICATION; }
+    bool initialize() override;
+    void shutdown() override;
+    bool isActive() const override { return active_; }
+    
+    bool executeAction(std::shared_ptr<MotorAction> action) override;
+    bool canExecute(std::shared_ptr<MotorAction> action) const override;
+    void stopAction(const std::string& actionId = "") override;
+    void stopAllActions() override;
+    
+    bool isActionComplete(const std::string& actionId) const override;
+    std::vector<std::string> getActiveActions() const override;
+    double getActionProgress(const std::string& actionId) const override;
+    
+    void setConfiguration(const std::unordered_map<std::string, std::string>& config) override;
+    std::unordered_map<std::string, std::string> getConfiguration() const override;
+    
+private:
+    std::atomic<bool> active_{false};
+    std::unordered_map<std::string, std::string> config_;
     mutable std::mutex configMutex_;
 };
 

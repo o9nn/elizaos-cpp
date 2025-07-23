@@ -5,6 +5,29 @@
 
 namespace elizaos {
 
+// Helper functions for logging
+[[maybe_unused]] static void elogInfo(const std::string& message) {
+    AgentLogger logger;
+    logger.log(message, "", "embodiment", LogLevel::INFO);
+}
+
+[[maybe_unused]] static void elogSuccess(const std::string& message) {
+    AgentLogger logger;
+    logger.log(message, "", "embodiment", LogLevel::SUCCESS);
+}
+
+[[maybe_unused]] static void elogError(const std::string& message) {
+    AgentLogger logger;
+    logger.log(message, "", "embodiment", LogLevel::ERROR);
+}
+
+[[maybe_unused]] static void elogWarning(const std::string& message) {
+    AgentLogger logger;
+    logger.log(message, "", "embodiment", LogLevel::WARNING);
+}
+
+namespace elizaos {
+
 /**
  * File Sensory Interface Implementation
  */
@@ -12,8 +35,8 @@ FileSensoryInterface::FileSensoryInterface(SensoryDataType type, const std::stri
     : type_(type), filePath_(filePath) {}
 
 bool FileSensoryInterface::initialize() {
-    AgentLogger logger;
-    logger.logInfo("Initializing File Sensory Interface: " + filePath_);
+    
+    elogInfo("Initializing File Sensory Interface: " + filePath_);
     
     if (active_) {
         return true; // Already initialized
@@ -21,12 +44,12 @@ bool FileSensoryInterface::initialize() {
     
     fileStream_.open(filePath_, std::ios::binary);
     if (!fileStream_.is_open()) {
-        logger.logError("Failed to open file: " + filePath_);
+        elogError("Failed to open file: " + filePath_);
         return false;
     }
     
     active_ = true;
-    logger.logSuccess("File Sensory Interface initialized: " + filePath_);
+    elogSuccess("File Sensory Interface initialized: " + filePath_);
     return true;
 }
 
@@ -35,8 +58,8 @@ void FileSensoryInterface::shutdown() {
         return;
     }
     
-    AgentLogger logger;
-    logger.logInfo("Shutting down File Sensory Interface: " + filePath_);
+    
+    elogInfo("Shutting down File Sensory Interface: " + filePath_);
     
     active_ = false;
     
@@ -44,7 +67,7 @@ void FileSensoryInterface::shutdown() {
         fileStream_.close();
     }
     
-    logger.logInfo("File Sensory Interface shutdown complete");
+    elogInfo("File Sensory Interface shutdown complete");
 }
 
 std::shared_ptr<SensoryData> FileSensoryInterface::readData() {
@@ -164,8 +187,8 @@ std::shared_ptr<SensoryData> FileSensoryInterface::readData() {
                         envData->acceleration = {std::stod(tokens[4]), std::stod(tokens[5]), std::stod(tokens[6])};
                         envData->gyroscope = {std::stod(tokens[7]), std::stod(tokens[8]), std::stod(tokens[9])};
                     } catch (const std::exception& e) {
-                        AgentLogger logger;
-                        logger.logWarning("Error parsing environmental data: " + std::string(e.what()));
+                        
+                        elogWarning("Error parsing environmental data: " + std::string(e.what()));
                         envData->confidence = 0.5; // Reduce confidence due to parsing error
                     }
                 }
@@ -195,8 +218,8 @@ std::shared_ptr<SensoryData> FileSensoryInterface::readData() {
         try {
             dataCallback_(data);
         } catch (const std::exception& e) {
-            AgentLogger logger;
-            logger.logError("Error in data callback: " + std::string(e.what()));
+            
+            elogError("Error in data callback: " + std::string(e.what()));
         }
     }
     
@@ -230,8 +253,8 @@ void FileSensoryInterface::setConfiguration(const std::unordered_map<std::string
     std::lock_guard<std::mutex> lock(configMutex_);
     config_ = config;
     
-    AgentLogger logger;
-    logger.logInfo("Updated configuration for File Sensory Interface: " + filePath_);
+    
+    elogInfo("Updated configuration for File Sensory Interface: " + filePath_);
 }
 
 std::unordered_map<std::string, std::string> FileSensoryInterface::getConfiguration() const {
@@ -246,11 +269,11 @@ void FileSensoryInterface::setDataCallback(std::function<void(std::shared_ptr<Se
 void FileSensoryInterface::enableRealTimeProcessing(bool enable) {
     realTimeProcessing_ = enable;
     
-    AgentLogger logger;
+    
     if (enable) {
-        logger.logInfo("Enabled real-time processing for File Sensory Interface: " + filePath_);
+        elogInfo("Enabled real-time processing for File Sensory Interface: " + filePath_);
     } else {
-        logger.logInfo("Disabled real-time processing for File Sensory Interface: " + filePath_);
+        elogInfo("Disabled real-time processing for File Sensory Interface: " + filePath_);
     }
 }
 

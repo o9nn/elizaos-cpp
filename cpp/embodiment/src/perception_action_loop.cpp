@@ -6,6 +6,34 @@
 
 namespace elizaos {
 
+// Helper functions for logging
+[[maybe_unused]] static void elogInfo(const std::string& message) {
+    AgentLogger logger;
+    logger.log(message, "", "embodiment", LogLevel::INFO);
+}
+
+[[maybe_unused]] static void elogSuccess(const std::string& message) {
+    AgentLogger logger;
+    logger.log(message, "", "embodiment", LogLevel::SUCCESS);
+}
+
+[[maybe_unused]] static void elogError(const std::string& message) {
+    AgentLogger logger;
+    logger.log(message, "", "embodiment", LogLevel::ERROR);
+}
+
+[[maybe_unused]] static void elogSystem(const std::string& message) {
+    AgentLogger logger;
+    logger.log(message, "", "embodiment", LogLevel::SYSTEM);
+}
+
+[[maybe_unused]] static void elogWarning(const std::string& message) {
+    AgentLogger logger;
+    logger.log(message, "", "embodiment", LogLevel::WARNING);
+}
+
+namespace elizaos {
+
 /**
  * Perception-Action Loop Implementation
  */
@@ -29,15 +57,15 @@ PerceptionActionLoop::~PerceptionActionLoop() {
 }
 
 bool PerceptionActionLoop::initialize() {
-    AgentLogger logger;
-    logger.logSystem("Initializing Perception-Action Loop");
+    
+    elogSystem("Initializing Perception-Action Loop");
     
     // Initialize all sensory interfaces
     std::lock_guard<std::mutex> lock(interfacesMutex_);
     
     for (auto& pair : sensoryInterfaces_) {
         if (!pair.second->initialize()) {
-            logger.logError("Failed to initialize sensory interface: " + pair.first);
+            elogError("Failed to initialize sensory interface: " + pair.first);
             return false;
         }
     }
@@ -45,18 +73,18 @@ bool PerceptionActionLoop::initialize() {
     // Initialize all motor interfaces
     for (auto& pair : motorInterfaces_) {
         if (!pair.second->initialize()) {
-            logger.logError("Failed to initialize motor interface: " + pair.first);
+            elogError("Failed to initialize motor interface: " + pair.first);
             return false;
         }
     }
     
-    logger.logSuccess("Perception-Action Loop initialized successfully");
+    elogSuccess("Perception-Action Loop initialized successfully");
     return true;
 }
 
 void PerceptionActionLoop::shutdown() {
-    AgentLogger logger;
-    logger.logSystem("Shutting down Perception-Action Loop");
+    
+    elogSystem("Shutting down Perception-Action Loop");
     
     if (running_) {
         stop();
@@ -73,7 +101,7 @@ void PerceptionActionLoop::shutdown() {
         pair.second->shutdown();
     }
     
-    logger.logInfo("Perception-Action Loop shutdown complete");
+    elogInfo("Perception-Action Loop shutdown complete");
 }
 
 bool PerceptionActionLoop::start() {
@@ -81,8 +109,8 @@ bool PerceptionActionLoop::start() {
         return true; // Already running
     }
     
-    AgentLogger logger;
-    logger.logSystem("Starting Perception-Action Loop");
+    
+    elogSystem("Starting Perception-Action Loop");
     
     if (!initialize()) {
         return false;
@@ -94,7 +122,7 @@ bool PerceptionActionLoop::start() {
     
     loopThread_ = std::make_unique<std::thread>(&PerceptionActionLoop::mainLoop, this);
     
-    logger.logSuccess("Perception-Action Loop started");
+    elogSuccess("Perception-Action Loop started");
     return true;
 }
 
@@ -103,8 +131,8 @@ void PerceptionActionLoop::stop() {
         return;
     }
     
-    AgentLogger logger;
-    logger.logSystem("Stopping Perception-Action Loop");
+    
+    elogSystem("Stopping Perception-Action Loop");
     
     running_ = false;
     
@@ -112,21 +140,21 @@ void PerceptionActionLoop::stop() {
         loopThread_->join();
     }
     
-    logger.logInfo("Perception-Action Loop stopped");
+    elogInfo("Perception-Action Loop stopped");
 }
 
 void PerceptionActionLoop::pause() {
     paused_ = true;
     
-    AgentLogger logger;
-    logger.logInfo("Perception-Action Loop paused");
+    
+    elogInfo("Perception-Action Loop paused");
 }
 
 void PerceptionActionLoop::resume() {
     paused_ = false;
     
-    AgentLogger logger;
-    logger.logInfo("Perception-Action Loop resumed");
+    
+    elogInfo("Perception-Action Loop resumed");
 }
 
 void PerceptionActionLoop::addSensoryInterface(std::shared_ptr<SensoryInterface> interface) {
@@ -135,8 +163,8 @@ void PerceptionActionLoop::addSensoryInterface(std::shared_ptr<SensoryInterface>
     std::lock_guard<std::mutex> lock(interfacesMutex_);
     sensoryInterfaces_[interface->getName()] = interface;
     
-    AgentLogger logger;
-    logger.logInfo("Added sensory interface: " + interface->getName());
+    
+    elogInfo("Added sensory interface: " + interface->getName());
 }
 
 void PerceptionActionLoop::addMotorInterface(std::shared_ptr<MotorInterface> interface) {
@@ -145,8 +173,8 @@ void PerceptionActionLoop::addMotorInterface(std::shared_ptr<MotorInterface> int
     std::lock_guard<std::mutex> lock(interfacesMutex_);
     motorInterfaces_[interface->getName()] = interface;
     
-    AgentLogger logger;
-    logger.logInfo("Added motor interface: " + interface->getName());
+    
+    elogInfo("Added motor interface: " + interface->getName());
 }
 
 void PerceptionActionLoop::removeSensoryInterface(const std::string& name) {
@@ -157,8 +185,8 @@ void PerceptionActionLoop::removeSensoryInterface(const std::string& name) {
         it->second->shutdown();
         sensoryInterfaces_.erase(it);
         
-        AgentLogger logger;
-        logger.logInfo("Removed sensory interface: " + name);
+        
+        elogInfo("Removed sensory interface: " + name);
     }
 }
 
@@ -170,8 +198,8 @@ void PerceptionActionLoop::removeMotorInterface(const std::string& name) {
         it->second->shutdown();
         motorInterfaces_.erase(it);
         
-        AgentLogger logger;
-        logger.logInfo("Removed motor interface: " + name);
+        
+        elogInfo("Removed motor interface: " + name);
     }
 }
 
@@ -252,8 +280,8 @@ std::vector<std::shared_ptr<SensoryData>> PerceptionActionLoop::gatherSensoryDat
             auto buffer = pair.second->readDataBuffer(10); // Read up to 10 items
             allData.insert(allData.end(), buffer.begin(), buffer.end());
         } catch (const std::exception& e) {
-            AgentLogger logger;
-            logger.logError("Error reading from sensory interface " + pair.first + ": " + e.what());
+            
+            elogError("Error reading from sensory interface " + pair.first + ": " + e.what());
         }
     }
     
@@ -328,8 +356,8 @@ void PerceptionActionLoop::executeActions(const std::vector<std::shared_ptr<Moto
                 try {
                     pair.second->executeAction(action);
                 } catch (const std::exception& e) {
-                    AgentLogger logger;
-                    logger.logError("Error executing action via " + pair.first + ": " + e.what());
+                    
+                    elogError("Error executing action via " + pair.first + ": " + e.what());
                 }
                 break; // Action executed, move to next
             }
@@ -342,8 +370,8 @@ void PerceptionActionLoop::executeActions(const std::vector<std::shared_ptr<Moto
 }
 
 void PerceptionActionLoop::mainLoop() {
-    AgentLogger logger;
-    logger.logSystem("Perception-Action Loop main loop started");
+    
+    elogSystem("Perception-Action Loop main loop started");
     
     while (running_) {
         if (!paused_) {
@@ -351,7 +379,7 @@ void PerceptionActionLoop::mainLoop() {
                 processSingleCycle();
                 logCycleMetrics();
             } catch (const std::exception& e) {
-                logger.logError("Error in perception-action cycle: " + std::string(e.what()));
+                elogError("Error in perception-action cycle: " + std::string(e.what()));
             }
         }
         
@@ -359,7 +387,7 @@ void PerceptionActionLoop::mainLoop() {
         std::this_thread::sleep_for(loopInterval_);
     }
     
-    logger.logSystem("Perception-Action Loop main loop ended");
+    elogSystem("Perception-Action Loop main loop ended");
 }
 
 void PerceptionActionLoop::updateState(const std::vector<std::shared_ptr<SensoryData>>& sensoryData) {
@@ -383,8 +411,8 @@ void PerceptionActionLoop::updateState(const std::vector<std::shared_ptr<Sensory
                 try {
                     memory_->addMemory(memory);
                 } catch (const std::exception& e) {
-                    AgentLogger logger;
-                    logger.logWarning("Failed to store sensory memory: " + std::string(e.what()));
+                    
+                    elogWarning("Failed to store sensory memory: " + std::string(e.what()));
                 }
             }
         }
@@ -396,7 +424,7 @@ void PerceptionActionLoop::logCycleMetrics() {
     static const size_t LOG_INTERVAL = 100; // Log every 100 cycles
     
     if (cycleCount_ % LOG_INTERVAL == 0 && cycleCount_ != lastLoggedCycle) {
-        AgentLogger logger;
+        
         
         std::stringstream ss;
         ss << "Perception-Action Loop Metrics (Cycle " << cycleCount_ << "):\n";
@@ -406,7 +434,7 @@ void PerceptionActionLoop::logCycleMetrics() {
         ss << "  Active sensory interfaces: " << sensoryInterfaces_.size() << "\n";
         ss << "  Active motor interfaces: " << motorInterfaces_.size();
         
-        logger.logInfo(ss.str());
+        elogInfo(ss.str());
         lastLoggedCycle = cycleCount_;
     }
 }

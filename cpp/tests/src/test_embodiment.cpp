@@ -95,37 +95,55 @@ TEST_F(EmbodimentTest, MotorActionCreation) {
     EXPECT_EQ(commAction->recipient, "user");
 }
 
-// Test ConsoleTextInterface
-TEST_F(EmbodimentTest, ConsoleTextInterface) {
-    auto consoleInterface = std::make_shared<ConsoleTextInterface>();
+// Test ConsoleTextInput
+TEST_F(EmbodimentTest, ConsoleTextInput) {
+    auto consoleInput = std::make_shared<ConsoleTextInput>();
     
     // Test initialization
-    EXPECT_TRUE(consoleInterface->initialize());
-    EXPECT_TRUE(consoleInterface->isActive());
-    EXPECT_EQ(consoleInterface->getName(), "ConsoleTextInput");
-    EXPECT_EQ(consoleInterface->getType(), SensoryDataType::TEXTUAL);
-    
-    // Test motor capabilities
-    EXPECT_EQ(consoleInterface->getType(), MotorActionType::COMMUNICATION);
-    
-    // Test action execution
-    auto commAction = std::make_shared<CommunicationAction>("Test output", "console");
-    EXPECT_TRUE(consoleInterface->canExecute(commAction));
-    EXPECT_TRUE(consoleInterface->executeAction(commAction));
-    
-    // Test action completion
-    EXPECT_TRUE(consoleInterface->isActionComplete("any-id"));
-    EXPECT_EQ(consoleInterface->getActionProgress("any-id"), 1.0);
+    EXPECT_TRUE(consoleInput->initialize());
+    EXPECT_TRUE(consoleInput->isActive());
+    EXPECT_EQ(consoleInput->getName(), "ConsoleTextInput");
+    EXPECT_EQ(consoleInput->getType(), SensoryDataType::TEXTUAL);
     
     // Test configuration
     std::unordered_map<std::string, std::string> config = {{"test_key", "test_value"}};
-    consoleInterface->setConfiguration(config);
-    auto retrievedConfig = consoleInterface->getConfiguration();
+    consoleInput->setConfiguration(config);
+    auto retrievedConfig = consoleInput->getConfiguration();
     EXPECT_EQ(retrievedConfig["test_key"], "test_value");
     
     // Test shutdown
-    consoleInterface->shutdown();
-    EXPECT_FALSE(consoleInterface->isActive());
+    consoleInput->shutdown();
+    EXPECT_FALSE(consoleInput->isActive());
+}
+
+// Test ConsoleTextOutput
+TEST_F(EmbodimentTest, ConsoleTextOutput) {
+    auto consoleOutput = std::make_shared<ConsoleTextOutput>();
+    
+    // Test initialization
+    EXPECT_TRUE(consoleOutput->initialize());
+    EXPECT_TRUE(consoleOutput->isActive());
+    EXPECT_EQ(consoleOutput->getName(), "ConsoleTextOutput");
+    EXPECT_EQ(consoleOutput->getType(), MotorActionType::COMMUNICATION);
+    
+    // Test action execution
+    auto commAction = std::make_shared<CommunicationAction>("Test output", "console");
+    EXPECT_TRUE(consoleOutput->canExecute(commAction));
+    EXPECT_TRUE(consoleOutput->executeAction(commAction));
+    
+    // Test action completion
+    EXPECT_TRUE(consoleOutput->isActionComplete("any-id"));
+    EXPECT_EQ(consoleOutput->getActionProgress("any-id"), 1.0);
+    
+    // Test configuration
+    std::unordered_map<std::string, std::string> config = {{"test_key", "test_value"}};
+    consoleOutput->setConfiguration(config);
+    auto retrievedConfig = consoleOutput->getConfiguration();
+    EXPECT_EQ(retrievedConfig["test_key"], "test_value");
+    
+    // Test shutdown
+    consoleOutput->shutdown();
+    EXPECT_FALSE(consoleOutput->isActive());
 }
 
 // Test MockMotorInterface
@@ -170,10 +188,12 @@ TEST_F(EmbodimentTest, PerceptionActionLoop) {
     EXPECT_TRUE(loop->initialize());
     
     // Add interfaces
-    auto consoleInterface = std::make_shared<ConsoleTextInterface>();
+    auto consoleInput = std::make_shared<ConsoleTextInput>();
+    auto consoleOutput = std::make_shared<ConsoleTextOutput>();
     auto mockMotor = std::make_shared<MockMotorInterface>(MotorActionType::COMMUNICATION);
     
-    loop->addSensoryInterface(consoleInterface);
+    loop->addSensoryInterface(consoleInput);
+    loop->addMotorInterface(consoleOutput);
     loop->addMotorInterface(mockMotor);
     
     // Test configuration

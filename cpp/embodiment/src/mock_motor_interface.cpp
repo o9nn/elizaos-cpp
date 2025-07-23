@@ -4,21 +4,39 @@
 
 namespace elizaos {
 
+// Helper functions for logging
+[[maybe_unused]] static void elogInfo(const std::string& message) {
+    AgentLogger logger;
+    logger.log(message, "", "embodiment", LogLevel::INFO);
+}
+
+[[maybe_unused]] static void elogSuccess(const std::string& message) {
+    AgentLogger logger;
+    logger.log(message, "", "embodiment", LogLevel::SUCCESS);
+}
+
+[[maybe_unused]] static void elogError(const std::string& message) {
+    AgentLogger logger;
+    logger.log(message, "", "embodiment", LogLevel::ERROR);
+}
+
+namespace elizaos {
+
 /**
  * Mock Motor Interface Implementation
  */
 MockMotorInterface::MockMotorInterface(MotorActionType type) : type_(type) {}
 
 bool MockMotorInterface::initialize() {
-    AgentLogger logger;
-    logger.logInfo("Initializing Mock Motor Interface: " + getName());
+    
+    elogInfo("Initializing Mock Motor Interface: " + getName());
     
     if (active_) {
         return true; // Already initialized
     }
     
     active_ = true;
-    logger.logSuccess("Mock Motor Interface initialized: " + getName());
+    elogSuccess("Mock Motor Interface initialized: " + getName());
     return true;
 }
 
@@ -27,8 +45,8 @@ void MockMotorInterface::shutdown() {
         return;
     }
     
-    AgentLogger logger;
-    logger.logInfo("Shutting down Mock Motor Interface: " + getName());
+    
+    elogInfo("Shutting down Mock Motor Interface: " + getName());
     
     active_ = false;
     
@@ -38,7 +56,7 @@ void MockMotorInterface::shutdown() {
         activeActions_.clear();
     }
     
-    logger.logInfo("Mock Motor Interface shutdown complete");
+    elogInfo("Mock Motor Interface shutdown complete");
 }
 
 bool MockMotorInterface::executeAction(std::shared_ptr<MotorAction> action) {
@@ -51,7 +69,7 @@ bool MockMotorInterface::executeAction(std::shared_ptr<MotorAction> action) {
         return false;
     }
     
-    AgentLogger logger;
+    
     
     // Generate action ID
     std::string actionId = generateUUID();
@@ -117,7 +135,7 @@ bool MockMotorInterface::executeAction(std::shared_ptr<MotorAction> action) {
             break;
     }
     
-    logger.logInfo("Executing " + getName() + " action: " + actionDescription);
+    elogInfo("Executing " + getName() + " action: " + actionDescription);
     
     // Store the action
     {
@@ -144,7 +162,7 @@ bool MockMotorInterface::executeAction(std::shared_ptr<MotorAction> action) {
         }
     }
     
-    logger.logSuccess("Completed " + getName() + " action");
+    elogSuccess("Completed " + getName() + " action");
     return true;
 }
 
@@ -166,8 +184,8 @@ void MockMotorInterface::stopAction(const std::string& actionId) {
         activeActions_.end()
     );
     
-    AgentLogger logger;
-    logger.logInfo("Stopped action " + actionId + " on " + getName());
+    
+    elogInfo("Stopped action " + actionId + " on " + getName());
 }
 
 void MockMotorInterface::stopAllActions() {
@@ -176,8 +194,8 @@ void MockMotorInterface::stopAllActions() {
     size_t stoppedCount = activeActions_.size();
     activeActions_.clear();
     
-    AgentLogger logger;
-    logger.logInfo("Stopped " + std::to_string(stoppedCount) + " actions on " + getName());
+    
+    elogInfo("Stopped " + std::to_string(stoppedCount) + " actions on " + getName());
 }
 
 bool MockMotorInterface::isActionComplete(const std::string& actionId) const {
@@ -208,8 +226,8 @@ void MockMotorInterface::setConfiguration(const std::unordered_map<std::string, 
     std::lock_guard<std::mutex> lock(configMutex_);
     config_ = config;
     
-    AgentLogger logger;
-    logger.logInfo("Updated configuration for " + getName());
+    
+    elogInfo("Updated configuration for " + getName());
 }
 
 std::unordered_map<std::string, std::string> MockMotorInterface::getConfiguration() const {
@@ -226,8 +244,8 @@ void MockMotorInterface::clearExecutedActions() {
     std::lock_guard<std::mutex> lock(actionsMutex_);
     executedActions_.clear();
     
-    AgentLogger logger;
-    logger.logInfo("Cleared executed actions history for " + getName());
+    
+    elogInfo("Cleared executed actions history for " + getName());
 }
 
 } // namespace elizaos
