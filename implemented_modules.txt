@@ -1,0 +1,11 @@
+agentcomms
+agentlogger
+agentloop
+agentmemory
+agentshell
+core
+discord_summarizer
+discrub_ext
+embodiment
+evolutionary
+plugins_automation
