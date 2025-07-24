@@ -1,4 +1,4 @@
-# Stage 1 placeholder - will be implemented in Stage 2
+# AgentBrowser - Web automation interface for ElizaOS agents
 add_library(elizaos-agentbrowser STATIC
     src/placeholder.cpp
 )
@@ -9,4 +9,7 @@ target_include_directories(elizaos-agentbrowser PUBLIC
 
 target_link_libraries(elizaos-agentbrowser 
     elizaos-core
+    elizaos-agentlogger
+    elizaos-agentmemory
+    Threads::Threads
 )
