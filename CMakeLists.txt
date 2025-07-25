@@ -184,13 +184,36 @@ target_link_libraries(stage6_demo
     Threads::Threads
 )
 
+# Main Eliza CLI executable
+add_executable(eliza
+    eliza_main.cpp
+)
+
+target_include_directories(eliza PRIVATE
+    ${CMAKE_SOURCE_DIR}/include
+)
+
+target_link_libraries(eliza
+    elizaos-core
+    elizaos-agentlogger
+    elizaos-agentloop
+    elizaos-agentmemory
+    elizaos-eliza
+    elizaos-knowledge
+    elizaos-characters
+    Threads::Threads
+)
+
 # Add example executable (optional)
 if(BUILD_EXAMPLES)
     add_subdirectory(examples)
 endif()
 
-# Installation - install all libraries
+# Installation - install all libraries and executables
 install(TARGETS 
+    # Main executables
+    eliza
+    
     # Stage 1-2 - Core and Infrastructure
     elizaos-core elizaos-agentloop elizaos-agentmemory
     elizaos-agentcomms elizaos-agentlogger elizaos-agentshell
