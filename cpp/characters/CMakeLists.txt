@@ -1,6 +1,7 @@
 # Stage 3 - Application-specific - Character Management System
 add_library(elizaos-characters STATIC
     src/placeholder.cpp
+    src/character_json_loader.cpp
 )
 
 target_include_directories(elizaos-characters PUBLIC
@@ -12,5 +13,6 @@ target_link_libraries(elizaos-characters
     elizaos-agentmemory
     elizaos-agentlogger
     elizaos-agentaction
+    nlohmann_json::nlohmann_json
     Threads::Threads
 )

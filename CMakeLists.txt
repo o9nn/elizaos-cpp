@@ -204,6 +204,24 @@ target_link_libraries(eliza
     Threads::Threads
 )
 
+# Characters Demo
+add_executable(characters_demo
+    characters_demo.cpp
+)
+
+target_include_directories(characters_demo PRIVATE
+    ${CMAKE_SOURCE_DIR}/include
+)
+
+target_link_libraries(characters_demo
+    elizaos-core
+    elizaos-agentlogger
+    elizaos-agentmemory
+    elizaos-characters
+    nlohmann_json::nlohmann_json
+    Threads::Threads
+)
+
 # Add example executable (optional)
 if(BUILD_EXAMPLES)
     add_subdirectory(examples)
