@@ -222,6 +222,42 @@ target_link_libraries(characters_demo
     Threads::Threads
 )
 
+# Knowledge Demo
+add_executable(knowledge_demo
+    knowledge_demo.cpp
+)
+
+target_include_directories(knowledge_demo PRIVATE
+    ${CMAKE_SOURCE_DIR}/include
+)
+
+target_link_libraries(knowledge_demo
+    elizaos-core
+    elizaos-agentlogger
+    elizaos-agentmemory
+    elizaos-agentaction
+    elizaos-knowledge
+    Threads::Threads
+)
+
+# Knowledge Quick Demo
+add_executable(knowledge_quick_demo
+    knowledge_quick_demo.cpp
+)
+
+target_include_directories(knowledge_quick_demo PRIVATE
+    ${CMAKE_SOURCE_DIR}/include
+)
+
+target_link_libraries(knowledge_quick_demo
+    elizaos-core
+    elizaos-agentlogger
+    elizaos-agentmemory
+    elizaos-agentaction
+    elizaos-knowledge
+    Threads::Threads
+)
+
 # Add example executable (optional)
 if(BUILD_EXAMPLES)
     add_subdirectory(examples)
