@@ -15,6 +15,7 @@ add_executable(elizaos_tests
     src/test_stage6_automation.cpp
     src/test_knowledge.cpp
     # src/test_embodiment.cpp  # Disabled due to compilation errors
+    ../autofun_idl/tests/test_autofun_idl.cpp
 )
 
 target_include_directories(elizaos_tests PRIVATE
@@ -38,6 +39,7 @@ target_link_libraries(elizaos_tests
     elizaos-plugins_automation
     elizaos-discord_summarizer
     elizaos-discrub_ext
+    elizaos-autofun_idl
     gtest_main
     gmock_main
     Threads::Threads
