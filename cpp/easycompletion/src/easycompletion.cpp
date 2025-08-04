@@ -4,6 +4,7 @@
 #include <regex>
 #include <algorithm>
 #include <cstdlib>
+#include <nlohmann/json.hpp>
 
 #ifdef _WIN32
     #include <windows.h>
@@ -12,6 +13,8 @@
 #else
     #include <curl/curl.h>
 #endif
+
+using json = nlohmann::json;
 
 namespace elizaos {
 
@@ -124,14 +127,13 @@ CompletionResponse EasyCompletionClient::text_completion(const std::string& text
     }
     
     // Create JSON payload for text completion
-    std::ostringstream payload;
-    payload << R"({
-        "model": ")" << config_.model << R"(",
-        "messages": [
-            {"role": "user", "content": ")" << text << R"("}
-        ],
-        "temperature": )" << config_.temperature << R"(
-    })";
+    json payload = {
+        {"model", config_.model},
+        {"messages", json::array({
+            {{"role", "user"}, {"content", text}}
+        })},
+        {"temperature", config_.temperature}
+    };
     
     std::vector<std::string> headers = {
         "Content-Type: application/json",
@@ -139,27 +141,45 @@ CompletionResponse EasyCompletionClient::text_completion(const std::string& text
     };
     
     std::string url = config_.api_endpoint + "/chat/completions";
-    std::string response_json = make_http_request(url, payload.str(), headers);
+    std::string response_json = make_http_request(url, payload.dump(), headers);
     
-    // Parse response (simplified - would use proper JSON parser in production)
-    if (response_json.find("\"error\"") != std::string::npos) {
-        result.error = "API request failed";
+    // Parse response with proper JSON parsing
+    try {
+        json response = json::parse(response_json);
+        
+        if (response.contains("error")) {
+            result.error = response["error"].get<std::string>();
+            return result;
+        }
+        
+        if (response.contains("choices") && !response["choices"].empty()) {
+            auto& choice = response["choices"][0];
+            if (choice.contains("message") && choice["message"].contains("content")) {
+                result.text = choice["message"]["content"].get<std::string>();
+            }
+            if (choice.contains("finish_reason")) {
+                result.finish_reason = choice["finish_reason"].get<std::string>();
+            }
+        }
+        
+        if (response.contains("usage")) {
+            auto& usage = response["usage"];
+            if (usage.contains("prompt_tokens")) {
+                result.usage.prompt_tokens = usage["prompt_tokens"].get<int>();
+            }
+            if (usage.contains("completion_tokens")) {
+                result.usage.completion_tokens = usage["completion_tokens"].get<int>();
+            }
+            if (usage.contains("total_tokens")) {
+                result.usage.total_tokens = usage["total_tokens"].get<int>();
+            }
+        }
+        
+    } catch (const json::exception& e) {
+        result.error = "JSON parsing error: " + std::string(e.what());
         return result;
     }
     
-    // Extract content from response (simplified parsing)
-    size_t content_start = response_json.find("\"content\":");
-    if (content_start != std::string::npos) {
-        content_start = response_json.find("\"", content_start + 10);
-        if (content_start != std::string::npos) {
-            size_t content_end = response_json.find("\"", content_start + 1);
-            if (content_end != std::string::npos) {
-                result.text = response_json.substr(content_start + 1, content_end - content_start - 1);
-            }
-        }
-    }
-    
-    result.finish_reason = "stop";
     return result;
 }
 
@@ -172,19 +192,19 @@ CompletionResponse EasyCompletionClient::chat_completion(const std::vector<ChatM
     }
     
     // Create JSON payload for chat completion
-    std::ostringstream payload;
-    payload << R"({
-        "model": ")" << config_.model << R"(",
-        "messages": [)";
-    
-    for (size_t i = 0; i < messages.size(); ++i) {
-        if (i > 0) payload << ",";
-        payload << R"({"role": ")" << messages[i].role << R"(", "content": ")" << messages[i].content << R"("})";
+    json messages_array = json::array();
+    for (const auto& msg : messages) {
+        messages_array.push_back({
+            {"role", msg.role},
+            {"content", msg.content}
+        });
     }
     
-    payload << R"(],
-        "temperature": )" << config_.temperature << R"(
-    })";
+    json payload = {
+        {"model", config_.model},
+        {"messages", messages_array},
+        {"temperature", config_.temperature}
+    };
     
     std::vector<std::string> headers = {
         "Content-Type: application/json",
@@ -192,27 +212,45 @@ CompletionResponse EasyCompletionClient::chat_completion(const std::vector<ChatM
     };
     
     std::string url = config_.api_endpoint + "/chat/completions";
-    std::string response_json = make_http_request(url, payload.str(), headers);
+    std::string response_json = make_http_request(url, payload.dump(), headers);
     
-    // Parse response (simplified)
-    if (response_json.find("\"error\"") != std::string::npos) {
-        result.error = "API request failed";
+    // Parse response with proper JSON parsing
+    try {
+        json response = json::parse(response_json);
+        
+        if (response.contains("error")) {
+            result.error = response["error"].get<std::string>();
+            return result;
+        }
+        
+        if (response.contains("choices") && !response["choices"].empty()) {
+            auto& choice = response["choices"][0];
+            if (choice.contains("message") && choice["message"].contains("content")) {
+                result.text = choice["message"]["content"].get<std::string>();
+            }
+            if (choice.contains("finish_reason")) {
+                result.finish_reason = choice["finish_reason"].get<std::string>();
+            }
+        }
+        
+        if (response.contains("usage")) {
+            auto& usage = response["usage"];
+            if (usage.contains("prompt_tokens")) {
+                result.usage.prompt_tokens = usage["prompt_tokens"].get<int>();
+            }
+            if (usage.contains("completion_tokens")) {
+                result.usage.completion_tokens = usage["completion_tokens"].get<int>();
+            }
+            if (usage.contains("total_tokens")) {
+                result.usage.total_tokens = usage["total_tokens"].get<int>();
+            }
+        }
+        
+    } catch (const json::exception& e) {
+        result.error = "JSON parsing error: " + std::string(e.what());
         return result;
     }
     
-    // Extract content from response (simplified parsing)
-    size_t content_start = response_json.find("\"content\":");
-    if (content_start != std::string::npos) {
-        content_start = response_json.find("\"", content_start + 10);
-        if (content_start != std::string::npos) {
-            size_t content_end = response_json.find("\"", content_start + 1);
-            if (content_end != std::string::npos) {
-                result.text = response_json.substr(content_start + 1, content_end - content_start - 1);
-            }
-        }
-    }
-    
-    result.finish_reason = "stop";
     return result;
 }
 
