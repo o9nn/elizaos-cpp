@@ -184,6 +184,21 @@ target_link_libraries(stage6_demo
     Threads::Threads
 )
 
+# Awesome Eliza Demo
+add_executable(awesome_eliza_demo
+    awesome_eliza_demo.cpp
+)
+
+target_include_directories(awesome_eliza_demo PRIVATE
+    ${CMAKE_SOURCE_DIR}/include
+)
+
+target_link_libraries(awesome_eliza_demo
+    elizaos-core
+    elizaos-awesome_eliza
+    Threads::Threads
+)
+
 # Main Eliza CLI executable
 add_executable(eliza
     eliza_main.cpp

@@ -15,6 +15,7 @@ add_executable(elizaos_tests
     src/test_stage6_automation.cpp
     src/test_knowledge.cpp
     src/test_easycompletion.cpp
+    test_awesome_eliza.cpp
     # src/test_embodiment.cpp  # Disabled due to compilation errors
     ../autofun_idl/tests/test_autofun_idl.cpp
 )
@@ -37,6 +38,7 @@ target_link_libraries(elizaos_tests
     elizaos-evolutionary
     elizaos-knowledge
     elizaos-easycompletion
+    elizaos-awesome_eliza
     # elizaos-embodiment  # Disabled due to compilation errors
     elizaos-plugins_automation
     elizaos-discord_summarizer
