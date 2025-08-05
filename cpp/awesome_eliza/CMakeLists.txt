@@ -1,6 +1,6 @@
-# Stage 3 - Application-specific placeholder - implementation planned
+# Stage 3 - Application-specific - awesome eliza resources management
 add_library(elizaos-awesome_eliza STATIC
-    src/placeholder.cpp
+    src/awesome_eliza.cpp
 )
 
 target_include_directories(elizaos-awesome_eliza PUBLIC
