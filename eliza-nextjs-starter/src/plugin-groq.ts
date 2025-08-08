@@ -368,9 +368,9 @@ export const groqPlugin: Plugin = {
         // Convert Buffer to ArrayBuffer for Blob compatibility
         const arrayBuffer = audioBuffer.buffer.slice(
           audioBuffer.byteOffset,
-          audioBuffer.byteOffset + audioBuffer.byteLength
+          audioBuffer.byteOffset + audioBuffer.byteLength,
         ) as ArrayBuffer;
-        
+
         enhancedFormData.append(
           "file",
           new Blob([arrayBuffer], { type: "audio/mp3" }),
@@ -576,7 +576,10 @@ export const groqPlugin: Plugin = {
               }
               console.log("Tokenized output:", tokens);
             } catch (error) {
-              console.error("Error in test_text_tokenizer_encode:", String(error));
+              console.error(
+                "Error in test_text_tokenizer_encode:",
+                String(error),
+              );
             }
           },
         },
@@ -605,7 +608,10 @@ export const groqPlugin: Plugin = {
               }
               console.log("Decoded text:", decodedText);
             } catch (error) {
-              console.error("Error in test_text_tokenizer_decode:", String(error));
+              console.error(
+                "Error in test_text_tokenizer_decode:",
+                String(error),
+              );
             }
           },
         },

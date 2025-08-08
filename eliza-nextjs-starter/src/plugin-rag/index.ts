@@ -884,7 +884,7 @@ export const ragPlugin: Plugin = {
                 //   knowledgeItem,
                 //   defaultKnowledgeOptions,
                 // );
-                console.log('Knowledge item would be added:', knowledgeItem);
+                console.log("Knowledge item would be added:", knowledgeItem);
                 addedCount++;
               } catch (addError) {
                 console.error(`Failed to add knowledge item: ${addError}`);
