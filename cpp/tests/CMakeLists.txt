@@ -18,6 +18,7 @@ add_executable(elizaos_tests
     test_awesome_eliza.cpp
     # src/test_embodiment.cpp  # Disabled due to compilation errors
     ../autofun_idl/tests/test_autofun_idl.cpp
+    ../eliza_3d_hyperfy_starter/test_eliza_3d_hyperfy_starter.cpp
 )
 
 target_include_directories(elizaos_tests PRIVATE
@@ -39,6 +40,7 @@ target_link_libraries(elizaos_tests
     elizaos-knowledge
     elizaos-easycompletion
     elizaos-awesome_eliza
+    elizaos-eliza_3d_hyperfy_starter
     # elizaos-embodiment  # Disabled due to compilation errors
     elizaos-plugins_automation
     elizaos-discord_summarizer

@@ -289,6 +289,22 @@ target_link_libraries(knowledge_quick_demo
     Threads::Threads
 )
 
+# Eliza 3D Hyperfy Starter Demo
+add_executable(eliza_3d_hyperfy_starter_demo
+    eliza_3d_hyperfy_starter_demo.cpp
+)
+
+target_include_directories(eliza_3d_hyperfy_starter_demo PRIVATE
+    ${CMAKE_SOURCE_DIR}/include
+)
+
+target_link_libraries(eliza_3d_hyperfy_starter_demo
+    elizaos-core
+    elizaos-agentlogger
+    elizaos-eliza_3d_hyperfy_starter
+    Threads::Threads
+)
+
 # Add example executable (optional)
 if(BUILD_EXAMPLES)
     add_subdirectory(examples)
