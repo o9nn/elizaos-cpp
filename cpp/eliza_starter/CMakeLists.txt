@@ -49,3 +49,17 @@ target_link_libraries(eliza_starter_example
     elizaos-eliza_starter
     Threads::Threads
 )
+
+# Integration example showing how to use in larger applications
+add_executable(eliza_starter_integration
+    integration_example.cpp
+)
+
+target_include_directories(eliza_starter_integration PRIVATE
+    ${CMAKE_SOURCE_DIR}/include
+)
+
+target_link_libraries(eliza_starter_integration
+    elizaos-eliza_starter
+    Threads::Threads
+)
