@@ -304,6 +304,40 @@ target_link_libraries(knowledge_quick_demo
     Threads::Threads
 )
 
+# Eliza's List Real Data Test
+add_executable(elizas_list_real_test
+    elizas_list_real_test.cpp
+)
+
+target_include_directories(elizas_list_real_test PRIVATE
+    ${CMAKE_SOURCE_DIR}/include
+)
+
+target_link_libraries(elizas_list_real_test
+    elizaos-core
+    elizaos-agentlogger
+    elizaos-elizas_list
+    nlohmann_json::nlohmann_json
+    Threads::Threads
+)
+
+# Eliza's List Unit Test
+add_executable(elizas_list_unit_test
+    elizas_list_unit_test.cpp
+)
+
+target_include_directories(elizas_list_unit_test PRIVATE
+    ${CMAKE_SOURCE_DIR}/include
+)
+
+target_link_libraries(elizas_list_unit_test
+    elizaos-core
+    elizaos-agentlogger
+    elizaos-elizas_list
+    nlohmann_json::nlohmann_json
+    Threads::Threads
+)
+
 # Eliza 3D Hyperfy Starter Demo
 add_executable(eliza_3d_hyperfy_starter_demo
     eliza_3d_hyperfy_starter_demo.cpp
