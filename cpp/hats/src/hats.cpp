@@ -3,7 +3,6 @@
 #include <sstream>
 #include <algorithm>
 #include <iostream>
-#include <regex>
 
 namespace elizaos {
 
@@ -48,14 +47,52 @@ HatsStatus JsonDataSource::loadData(DataSet& data) {
         if (line.find('{') != std::string::npos && line.find('}') != std::string::npos) {
             DataRecord record;
             
-            // Extract key-value pairs using regex (simplified approach)
-            std::regex keyValueRegex(R"("([^"]+)"\s*:\s*"?([^",}]+)"?)");
-            std::sregex_iterator iter(line.begin(), line.end(), keyValueRegex);
-            std::sregex_iterator end;
-            
-            for (; iter != end; ++iter) {
-                std::string key = (*iter)[1];
-                std::string value = (*iter)[2];
+            // Extract key-value pairs using a simpler approach (avoid regex issues)
+            std::size_t pos = 0;
+            while (pos < line.size()) {
+                // Find key start
+                std::size_t keyStart = line.find('"', pos);
+                if (keyStart == std::string::npos) break;
+                keyStart++; // Skip opening quote
+                
+                // Find key end
+                std::size_t keyEnd = line.find('"', keyStart);
+                if (keyEnd == std::string::npos) break;
+                
+                std::string key = line.substr(keyStart, keyEnd - keyStart);
+                
+                // Find colon
+                std::size_t colonPos = line.find(':', keyEnd);
+                if (colonPos == std::string::npos) break;
+                
+                // Find value start
+                std::size_t valueStart = colonPos + 1;
+                while (valueStart < line.size() && (line[valueStart] == ' ' || line[valueStart] == '\t')) {
+                    valueStart++;
+                }
+                
+                // Find value end
+                std::size_t valueEnd;
+                std::string value;
+                if (valueStart < line.size() && line[valueStart] == '"') {
+                    // Quoted string
+                    valueStart++; // Skip opening quote
+                    valueEnd = line.find('"', valueStart);
+                    if (valueEnd == std::string::npos) break;
+                    value = line.substr(valueStart, valueEnd - valueStart);
+                    pos = valueEnd + 1;
+                } else {
+                    // Unquoted value
+                    valueEnd = line.find_first_of(",}", valueStart);
+                    if (valueEnd == std::string::npos) valueEnd = line.size();
+                    value = line.substr(valueStart, valueEnd - valueStart);
+                    // Trim trailing spaces
+                    while (!value.empty() && (value.back() == ' ' || value.back() == '\t')) {
+                        value.pop_back();
+                    }
+                    pos = valueEnd;
+                }
+                
                 record[key] = hats_utils::parseDataValue(value);
             }
             
@@ -245,6 +282,7 @@ HatsStatus DataProcessor::applyFilter(const DataSet& input, DataSet& output,
 
 HatsStatus DataProcessor::applyTransform(const DataSet& input, DataSet& output,
                                         const std::unordered_map<std::string, std::any>& params) {
+    (void)params; // Mark as unused to suppress warning
     // Basic transform implementation - just copy for now
     output = input;
     return HatsStatus::SUCCESS;
