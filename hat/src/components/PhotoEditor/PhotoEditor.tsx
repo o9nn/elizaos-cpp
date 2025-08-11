@@ -22,6 +22,18 @@ export const PhotoEditor: React.FC = () => {
     const statusTimeoutRef = useRef<NodeJS.Timeout>();
 
 
+    const showStatus = useCallback((message: string, type: 'error' | 'success') => {
+        if (statusTimeoutRef.current) {
+            clearTimeout(statusTimeoutRef.current);
+        }
+
+        setStatus({ message, type });
+
+        statusTimeoutRef.current = setTimeout(() => {
+            setStatus(null);
+        }, 1000);
+    }, []);
+
     const handleBaseImageUpload = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
@@ -43,19 +55,7 @@ export const PhotoEditor: React.FC = () => {
             };
             reader.readAsDataURL(file);
         }
-    }, []);
-
-    const showStatus = useCallback((message: string, type: 'error' | 'success') => {
-        if (statusTimeoutRef.current) {
-            clearTimeout(statusTimeoutRef.current);
-        }
-
-        setStatus({ message, type });
-
-        statusTimeoutRef.current = setTimeout(() => {
-            setStatus(null);
-        }, 1000);
-    }, []);
+    }, [showStatus]);
 
     useEffect(() => {
         return () => {
@@ -219,7 +219,7 @@ export const PhotoEditor: React.FC = () => {
             console.error('Save error:', error);
             showStatus('Error saving image', 'error');
         }
-    }, [baseImage, transform, originalImageSize]);
+    }, [baseImage, transform, originalImageSize, currentHatImage, showStatus]);
 
     const getOverlayStyle = () => {
         return {
