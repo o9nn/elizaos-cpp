@@ -271,7 +271,22 @@ target_link_libraries(knowledge_demo
     Threads::Threads
 )
 
-# Knowledge Quick Demo
+# Eliza's List Demo
+add_executable(elizas_list_demo
+    elizas_list_demo.cpp
+)
+
+target_include_directories(elizas_list_demo PRIVATE
+    ${CMAKE_SOURCE_DIR}/include
+)
+
+target_link_libraries(elizas_list_demo
+    elizaos-core
+    elizaos-agentlogger
+    elizaos-elizas_list
+    nlohmann_json::nlohmann_json
+    Threads::Threads
+)
 add_executable(knowledge_quick_demo
     knowledge_quick_demo.cpp
 )
@@ -286,6 +301,40 @@ target_link_libraries(knowledge_quick_demo
     elizaos-agentmemory
     elizaos-agentaction
     elizaos-knowledge
+    Threads::Threads
+)
+
+# Eliza's List Real Data Test
+add_executable(elizas_list_real_test
+    elizas_list_real_test.cpp
+)
+
+target_include_directories(elizas_list_real_test PRIVATE
+    ${CMAKE_SOURCE_DIR}/include
+)
+
+target_link_libraries(elizas_list_real_test
+    elizaos-core
+    elizaos-agentlogger
+    elizaos-elizas_list
+    nlohmann_json::nlohmann_json
+    Threads::Threads
+)
+
+# Eliza's List Unit Test
+add_executable(elizas_list_unit_test
+    elizas_list_unit_test.cpp
+)
+
+target_include_directories(elizas_list_unit_test PRIVATE
+    ${CMAKE_SOURCE_DIR}/include
+)
+
+target_link_libraries(elizas_list_unit_test
+    elizaos-core
+    elizaos-agentlogger
+    elizaos-elizas_list
+    nlohmann_json::nlohmann_json
     Threads::Threads
 )
 
