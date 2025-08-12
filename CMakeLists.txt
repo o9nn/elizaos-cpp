@@ -354,6 +354,40 @@ target_link_libraries(eliza_3d_hyperfy_starter_demo
     Threads::Threads
 )
 
+# Eliza's World Demo
+add_executable(elizas_world_demo
+    elizas_world_demo.cpp
+)
+
+target_include_directories(elizas_world_demo PRIVATE
+    ${CMAKE_SOURCE_DIR}/include
+)
+
+target_link_libraries(elizas_world_demo
+    elizaos-core
+    elizaos-agentlogger
+    elizaos-elizas_world
+    Threads::Threads
+)
+
+# Eliza's World Standalone Test
+add_executable(elizas_world_test
+    elizas_world_test.cpp
+    cpp/tests/src/test_elizas_world.cpp
+)
+
+target_include_directories(elizas_world_test PRIVATE
+    ${CMAKE_SOURCE_DIR}/include
+)
+
+target_link_libraries(elizas_world_test
+    elizaos-core
+    elizaos-agentlogger
+    elizaos-elizas_world
+    gtest
+    Threads::Threads
+)
+
 # Add example executable (optional)
 if(BUILD_EXAMPLES)
     add_subdirectory(examples)
