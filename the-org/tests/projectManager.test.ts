@@ -28,7 +28,12 @@ describe('ProjectManagerTestSuite', () => {
       const testSuite = new ProjectManagerTestSuite();
       const test = testSuite.tests.find((t) => t.name === 'Test Project Creation');
 
-      await expect(test?.fn(mockRuntime)).resolves.not.toThrow();
+      expect(test).toBeDefined();
+      if (!test) {
+        throw new Error('Test "Test Project Creation" not found');
+      }
+
+      await test.fn(mockRuntime);
       expect(mockScenarioService.createWorld).toHaveBeenCalledWith(
         'Project Setup Test',
         'Test Client'

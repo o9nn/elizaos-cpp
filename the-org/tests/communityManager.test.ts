@@ -27,7 +27,12 @@ describe('CommunityManagerTestSuite', () => {
       const testSuite = new CommunityManagerTestSuite();
       const test = testSuite.tests.find((t) => t.name === 'Test Conflict Resolution');
 
-      await expect(test?.fn(mockRuntime)).resolves.not.toThrow();
+      expect(test).toBeDefined();
+      if (!test) {
+        throw new Error('Test "Test Conflict Resolution" not found');
+      }
+
+      await test.fn(mockRuntime);
       expect(mockScenarioService.createWorld).toHaveBeenCalledWith('Conflict Test', 'Test Owner');
       expect(mockScenarioService.createRoom).toHaveBeenCalledWith('world-id', 'general');
       expect(mockScenarioService.sendMessage).toHaveBeenCalledWith(
@@ -42,7 +47,12 @@ describe('CommunityManagerTestSuite', () => {
       const testSuite = new CommunityManagerTestSuite();
       const test = testSuite.tests.find((t) => t.name === 'Test New User Onboarding');
 
-      await expect(test?.fn(mockRuntime)).resolves.not.toThrow();
+      expect(test).toBeDefined();
+      if (!test) {
+        throw new Error('Test "Test New User Onboarding" not found');
+      }
+
+      await test.fn(mockRuntime);
       expect(mockScenarioService.createRoom).toHaveBeenCalledWith('world-id', 'welcome');
       expect(mockScenarioService.sendMessage).toHaveBeenCalledWith(
         mockRuntime,
@@ -56,7 +66,12 @@ describe('CommunityManagerTestSuite', () => {
       const testSuite = new CommunityManagerTestSuite();
       const test = testSuite.tests.find((t) => t.name === 'Test Moderation Actions');
 
-      await expect(test?.fn(mockRuntime)).resolves.not.toThrow();
+      expect(test).toBeDefined();
+      if (!test) {
+        throw new Error('Test "Test Moderation Actions" not found');
+      }
+
+      await test.fn(mockRuntime);
       expect(mockScenarioService.createWorld).toHaveBeenCalledWith('Moderation Test', 'Test Owner');
       expect(mockScenarioService.waitForCompletion).toHaveBeenCalledWith(10000);
     });
@@ -65,7 +80,12 @@ describe('CommunityManagerTestSuite', () => {
       const testSuite = new CommunityManagerTestSuite();
       const test = testSuite.tests.find((t) => t.name === 'Test Community Engagement');
 
-      await expect(test?.fn(mockRuntime)).resolves.not.toThrow();
+      expect(test).toBeDefined();
+      if (!test) {
+        throw new Error('Test "Test Community Engagement" not found');
+      }
+
+      await test.fn(mockRuntime);
       expect(mockScenarioService.sendMessage).toHaveBeenCalledWith(
         mockRuntime,
         'world-id',

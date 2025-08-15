@@ -1,7 +1,7 @@
 // biome-ignore lint/style/useImportType: <explanation>
 import type { IAgentRuntime, Plugin } from '@elizaos/core';
 // import { checkInFormatAction } from './actions/checkInFormatAction';
-import { CheckInService } from './services/checkInService';
+import { CheckInService } from './services/CheckInService';
 import { logger } from '@elizaos/core';
 import { listCheckInSchedules } from './actions/checkInList';
 import { TeamUpdateTrackerService } from './services/updateTracker';
