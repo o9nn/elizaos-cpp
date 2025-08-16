@@ -24,3 +24,10 @@ if(CURL_FOUND)
         target_compile_definitions(elizaos-vercel_api PRIVATE CURL_FOUND)
     endif()
 endif()
+
+# Add test executable
+add_executable(test_vercel_api test_vercel_api.cpp)
+target_link_libraries(test_vercel_api elizaos-vercel_api)
+
+# Add test to CTest
+add_test(NAME VercelAPITest COMMAND test_vercel_api)
