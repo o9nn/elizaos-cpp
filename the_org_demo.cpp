@@ -459,8 +459,8 @@ void demonstrateTheOrgManager() {
 int main() {
     try {
         // Initialize logging
-        auto logger = elizaos::Logger::getInstance();
-        logger->setLevel("INFO");
+        AgentLogger logger;
+        logger.log("Starting TheOrg demo", "Demo", "Info", LogLevel::INFO);
         
         std::cout << R"(
 ╔══════════════════════════════════════════════════════════════╗

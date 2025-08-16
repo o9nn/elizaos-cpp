@@ -134,7 +134,7 @@ bool TheOrgAgent::sendMessage(PlatformType platform, const std::string& channelI
     return true;
 }
 
-std::vector<std::string> TheOrgAgent::getRecentMessages(PlatformType platform, const std::string& channelId, size_t count) {
+std::vector<std::string> TheOrgAgent::getRecentMessages([[maybe_unused]] PlatformType platform, const std::string& channelId, size_t count) {
     // In production, this would fetch from platform APIs
     std::vector<std::string> messages;
     
@@ -165,7 +165,7 @@ void TheOrgAgent::processMessage(const std::string& message, const std::string& 
     LOG_INFO("TheOrgAgent", "Received message from " + senderId + ": " + message);
 }
 
-UUID TheOrgAgent::createTask(const std::string& name, const std::string& description, int priority) {
+UUID TheOrgAgent::createTask(const std::string& name, [[maybe_unused]] const std::string& description, [[maybe_unused]] int priority) {
     UUID taskId = generateUUID();
     
     
@@ -317,7 +317,7 @@ void CommunityManagerAgent::removeModerationRule(const std::string& rule) {
     LOG_INFO("CommunityManager", "Removed moderation rule: " + rule);
 }
 
-bool CommunityManagerAgent::evaluateMessage(const std::string& message, const std::string& userId, const std::string& channelId) {
+bool CommunityManagerAgent::evaluateMessage(const std::string& message, const std::string& userId, [[maybe_unused]] const std::string& channelId) {
     std::lock_guard<std::mutex> lock(rulesMutex_);
     
     // Convert to lowercase for comparison
@@ -368,7 +368,7 @@ CommunityMetrics CommunityManagerAgent::generateCommunityMetrics() const {
     return currentMetrics_;
 }
 
-void CommunityManagerAgent::trackUserActivity(const std::string& userId, const std::string& activity) {
+void CommunityManagerAgent::trackUserActivity(const std::string& userId, [[maybe_unused]] const std::string& activity) {
     std::lock_guard<std::mutex> lock(activityMutex_);
     userActivity_[userId].push_back(std::chrono::system_clock::now());
     
@@ -398,18 +398,18 @@ std::vector<std::string> CommunityManagerAgent::identifyActiveUsers(std::chrono:
     return activeUsers;
 }
 
-std::vector<std::string> CommunityManagerAgent::getTopTopics(std::chrono::hours timeWindow) const {
+std::vector<std::string> CommunityManagerAgent::getTopTopics([[maybe_unused]] std::chrono::hours timeWindow) const {
     // In production, this would analyze message content
     return {"elizaos development", "agent framework", "community building", "AI agents", "typescript integration"};
 }
 
-void CommunityManagerAgent::scheduleEvent(const std::string& eventName, const std::string& description, Timestamp scheduledTime) {
+void CommunityManagerAgent::scheduleEvent(const std::string& eventName, [[maybe_unused]] const std::string& description, Timestamp scheduledTime) {
     
     LOG_INFO("CommunityManager", "Scheduled community event: " + eventName + " at " + 
                  the_org_utils::formatTimestamp(scheduledTime));
 }
 
-void CommunityManagerAgent::announceEvent(const std::string& eventId, const std::vector<std::string>& channelIds) {
+void CommunityManagerAgent::announceEvent([[maybe_unused]] const std::string& eventId, const std::vector<std::string>& channelIds) {
     for (const auto& channelId : channelIds) {
         sendMessage(PlatformType::DISCORD, channelId, "📅 Upcoming community event! Check the details in the events channel.");
     }
