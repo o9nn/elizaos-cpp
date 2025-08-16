@@ -10,7 +10,6 @@ describe('devRel Agent Test Suite', () => {
 
   beforeEach(() => {
     vi.restoreAllMocks();
-    vi.unstubAllEnvs();
 
     mockScenarioService = {
       createWorld: vi.fn().mockResolvedValue('world-id'),
@@ -31,7 +30,12 @@ describe('devRel Agent Test Suite', () => {
       const testSuite = new DevRelTestSuite();
       const test = testSuite.tests.find((t) => t.name === 'Test Documentation Query');
 
-      await expect(test?.fn(mockRuntime)).resolves.not.toThrow();
+      expect(test).toBeDefined();
+      if (!test) {
+        throw new Error('Test "Test Documentation Query" not found');
+      }
+
+      await test.fn(mockRuntime);
 
       expect(mockScenarioService.createWorld).toHaveBeenCalledWith('Doc Test', 'Test Developer');
       expect(mockScenarioService.sendMessage).toHaveBeenCalledWith(
@@ -46,7 +50,12 @@ describe('devRel Agent Test Suite', () => {
       const testSuite = new DevRelTestSuite();
       const test = testSuite.tests.find((t) => t.name === 'Test Plugin Integration');
 
-      await expect(test?.fn(mockRuntime)).resolves.not.toThrow();
+      expect(test).toBeDefined();
+      if (!test) {
+        throw new Error('Test "Test Plugin Integration" not found');
+      }
+
+      await test.fn(mockRuntime);
       expect(mockScenarioService.createWorld).toHaveBeenCalledWith('Plugin Test', 'Test Developer');
     });
   });
@@ -72,29 +81,46 @@ describe('devRel Agent Test Suite', () => {
     });
 
     it('should access source code knowledge when enabled', async () => {
-      vi.stubEnv('DEVREL_IMPORT_KNOWLEDGE', 'true');
-      const testSuite = new DevRelTestSuite();
-      const test = testSuite.tests.find((t) => t.name === 'Test Source Code Knowledge');
+      // Mock environment variable instead of using stubEnv which doesn't exist
+      const originalEnv = process.env.DEVREL_IMPORT_KNOWLEDGE;
+      process.env.DEVREL_IMPORT_KNOWLEDGE = 'true';
+      
+      try {
+        const testSuite = new DevRelTestSuite();
+        const test = testSuite.tests.find((t) => t.name === 'Test Source Code Knowledge');
 
-      // Setup mock response with source code reference
-      mockScenarioService.sendMessage.mockImplementationOnce(
-        (_: any, __: any, ___: any, msg: string) => {
-          return Promise.resolve({
-            content: {
-              text: `${msg}\nSource code location: src/elizaos/core/agent-runtime.ts`,
-            },
-          });
+        expect(test).toBeDefined();
+        if (!test) {
+          throw new Error('Test "Test Source Code Knowledge" not found');
         }
-      );
 
-      await test?.fn(mockRuntime);
+        // Setup mock response with source code reference
+        mockScenarioService.sendMessage.mockImplementationOnce(
+          (_: any, __: any, ___: any, msg: string) => {
+            return Promise.resolve({
+              content: {
+                text: `${msg}\nSource code location: src/elizaos/core/agent-runtime.ts`,
+              },
+            });
+          }
+        );
 
-      expect(mockScenarioService.sendMessage).toHaveBeenCalledWith(
-        mockRuntime,
-        'world-id',
-        'room-id',
-        expect.stringContaining('AgentRuntime')
-      );
+        await test.fn(mockRuntime);
+
+        expect(mockScenarioService.sendMessage).toHaveBeenCalledWith(
+          mockRuntime,
+          'world-id',
+          'room-id',
+          expect.stringContaining('AgentRuntime')
+        );
+      } finally {
+        // Restore original environment variable
+        if (originalEnv !== undefined) {
+          process.env.DEVREL_IMPORT_KNOWLEDGE = originalEnv;
+        } else {
+          delete process.env.DEVREL_IMPORT_KNOWLEDGE;
+        }
+      }
     });
   });
 

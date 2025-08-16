@@ -28,7 +28,12 @@ describe('LiaisonTestSuite', () => {
       const testSuite = new LiaisonTestSuite();
       const test = testSuite.tests.find((t) => t.name === 'Test Platform Information Request');
 
-      await expect(test?.fn(mockRuntime)).resolves.not.toThrow();
+      expect(test).toBeDefined();
+      if (!test) {
+        throw new Error('Test "Test Platform Information Request" not found');
+      }
+
+      await test.fn(mockRuntime);
       expect(mockScenarioService.sendMessage).toHaveBeenCalledWith(
         expect.anything(),
         'world-id',

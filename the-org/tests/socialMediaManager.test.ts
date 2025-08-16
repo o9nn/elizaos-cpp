@@ -30,7 +30,12 @@ describe('SocialMediaManagerTestSuite', () => {
       const testSuite = new SocialMediaManagerTestSuite();
       const test = testSuite.tests.find((t) => t.name === 'Test Onboarding Process');
 
-      await expect(test?.fn(mockRuntime)).resolves.not.toThrow();
+      expect(test).toBeDefined();
+      if (!test) {
+        throw new Error('Test "Test Onboarding Process" not found');
+      }
+
+      await test.fn(mockRuntime);
 
       // Verify service calls
       expect(mockScenarioService.createWorld).toHaveBeenCalledWith(
