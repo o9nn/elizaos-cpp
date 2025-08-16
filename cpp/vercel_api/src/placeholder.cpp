@@ -82,6 +82,7 @@ HttpResponse HttpClient::patch(const std::string& url, const std::string& data,
 HttpResponse HttpClient::performRequest(const std::string& method, const std::string& url, 
                                        const std::string& data, 
                                        const std::unordered_map<std::string, std::string>& headers) {
+    (void)method; (void)url; (void)data; (void)headers; // Suppress unused parameter warnings
     HttpResponse response;
     auto start_time = std::chrono::steady_clock::now();
     
