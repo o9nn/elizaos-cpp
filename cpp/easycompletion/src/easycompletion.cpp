@@ -11,7 +11,9 @@
     #include <wininet.h>
     #pragma comment(lib, "wininet.lib")
 #else
-    #include <curl/curl.h>
+    #ifdef CURL_FOUND
+        #include <curl/curl.h>
+    #endif
 #endif
 
 using json = nlohmann::json;
@@ -25,15 +27,15 @@ std::string get_env_var(const std::string& var_name, const std::string& default_
 }
 
 // HTTP response callback for libcurl
-#ifndef _WIN32
+#ifdef CURL_FOUND
 struct HttpResponse {
-    std::string data;
+    std::string body;  // Changed from data to body to match usage
     long response_code = 0;
 };
 
 static size_t WriteCallback(void* contents, size_t size, size_t nmemb, HttpResponse* userp) {
     size_t realsize = size * nmemb;
-    userp->data.append(static_cast<char*>(contents), realsize);
+    userp->body.append(static_cast<char*>(contents), realsize);
     return realsize;
 }
 #endif
@@ -58,7 +60,7 @@ EasyCompletionClient::EasyCompletionClient(const CompletionConfig& config) : con
         config_.debug = true;
     }
     
-#ifndef _WIN32
+#if !defined(_WIN32) && defined(CURL_FOUND)
     // Initialize libcurl if available
     curl_global_init(CURL_GLOBAL_DEFAULT);
 #endif
@@ -74,7 +76,7 @@ std::string EasyCompletionClient::make_http_request(const std::string& url, cons
     // Windows implementation using WinINet (simplified)
     // For production, consider using a proper HTTP library
     return "{\"error\": \"HTTP requests not implemented for Windows yet\"}";
-#else
+#elif defined(CURL_FOUND)
     // Use libcurl if available
     CURL* curl = curl_easy_init();
     if (!curl) {
@@ -111,10 +113,14 @@ std::string EasyCompletionClient::make_http_request(const std::string& url, cons
     }
     
     if (config_.debug) {
-        std::cout << "Response: " << response.data << std::endl;
+        std::cout << "HTTP Response (" << response.response_code << "): " << response.body << std::endl;
     }
     
-    return response.data;
+    return response.body;
+#else
+    // Fallback implementation when curl is not available
+    (void)url; (void)json_payload; (void)headers; // Suppress unused parameter warnings
+    return "{\"error\": \"HTTP functionality requires libcurl, which was not found\"}";
 #endif
 }
 
