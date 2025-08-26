@@ -201,3 +201,23 @@ TEST_F(AgentLoopTest, StepInterval) {
     // Should take at least 150ms for 3 steps with 50ms interval
     EXPECT_GE(duration.count(), 150);
 }
+
+TEST_F(AgentLoopTest, InputHandlingEnabled) {
+    std::vector<LoopStep> steps = {
+        LoopStep([this](std::shared_ptr<void> ctx) -> std::shared_ptr<void> {
+            stepCounter_++;
+            return ctx;
+        })
+    };
+    
+    AgentLoop loop(steps, true, 0.0); // Start paused
+    loop.start();
+    
+    // Test enabling input handling
+    EXPECT_FALSE(loop.isInputHandlingEnabled());
+    
+    // Note: We don't actually test keyboard input in unit tests
+    // as it would require user interaction. We just test the API.
+    
+    loop.stop();
+}

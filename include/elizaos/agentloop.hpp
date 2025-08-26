@@ -88,12 +88,31 @@ public:
      */
     bool isPaused() const;
     
+    /**
+     * Enable keyboard input handling for stepping the loop
+     * Starts a background thread that listens for:
+     * - Space key: execute single step when paused
+     * - 'q' key: stop the loop
+     * @param enable Whether to enable or disable input handling
+     */
+    void enableInputHandling(bool enable = true);
+    
+    /**
+     * Check if input handling is enabled
+     */
+    bool isInputHandlingEnabled() const;
+    
 private:
     /**
      * Main loop execution function - runs in separate thread
      * Equivalent to loop() function in Python implementation
      */
     void runLoop();
+    
+    /**
+     * Input handling thread function
+     */
+    void inputHandlingLoop();
     
     std::vector<LoopStep> steps_;
     double stepInterval_;
@@ -112,6 +131,10 @@ private:
     
     bool stepSignaled_;
     bool started_;
+    
+    // Input handling
+    std::atomic<bool> inputHandlingEnabled_;
+    std::unique_ptr<std::thread> inputThread_;
 };
 
 } // namespace elizaos
