@@ -6,10 +6,12 @@ namespace elizaos {
 
 AgentLoop::AgentLoop(const std::vector<LoopStep>& steps, bool paused, double stepInterval)
     : steps_(steps), stepInterval_(stepInterval), stopRequested_(false), 
-      pauseRequested_(paused), running_(false), stepSignaled_(false), started_(false) {
+      pauseRequested_(paused), running_(false), stepSignaled_(false), started_(false),
+      inputHandlingEnabled_(false) {
 }
 
 AgentLoop::~AgentLoop() {
+    enableInputHandling(false); // Stop input handling first
     stop();
 }
 
@@ -72,6 +74,25 @@ bool AgentLoop::isPaused() const {
     return pauseRequested_;
 }
 
+void AgentLoop::enableInputHandling(bool enable) {
+    if (enable && !inputHandlingEnabled_) {
+        inputHandlingEnabled_ = true;
+        inputThread_ = std::make_unique<std::thread>(&AgentLoop::inputHandlingLoop, this);
+        std::cout << "Input handling enabled. Press SPACE to step when paused, 'q' to quit." << std::endl;
+    } else if (!enable && inputHandlingEnabled_) {
+        inputHandlingEnabled_ = false;
+        if (inputThread_ && inputThread_->joinable()) {
+            inputThread_->join();
+        }
+        inputThread_.reset();
+        std::cout << "Input handling disabled." << std::endl;
+    }
+}
+
+bool AgentLoop::isInputHandlingEnabled() const {
+    return inputHandlingEnabled_;
+}
+
 void AgentLoop::runLoop() {
     std::shared_ptr<void> nextOutput = nullptr;
     
@@ -132,6 +153,29 @@ void AgentLoop::runLoop() {
     }
     
     running_ = false;
+}
+
+void AgentLoop::inputHandlingLoop() {
+    std::cout << "\nKeyboard input handler started:" << std::endl;
+    std::cout << "  SPACE = step when paused" << std::endl;
+    std::cout << "  q + ENTER = quit loop" << std::endl;
+    
+    char input;
+    while (inputHandlingEnabled_ && !stopRequested_) {
+        input = std::cin.get();
+        
+        if (input == ' ' && isPaused()) {
+            std::cout << "Manual step triggered..." << std::endl;
+            step();
+        } else if (input == 'q') {
+            std::cout << "Quit command received, stopping loop..." << std::endl;
+            stop();
+            break;
+        }
+        
+        // Small delay to prevent excessive CPU usage
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
 }
 
 } // namespace elizaos
