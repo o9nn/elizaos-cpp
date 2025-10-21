@@ -12,6 +12,13 @@ AgentMemoryManager::AgentMemoryManager() {
     memoryTables_["memories"] = {};
 }
 
+bool AgentMemoryManager::initialize() {
+    // Simple initialization - ensure default table exists and return true
+    // This method can be extended later for more complex initialization
+    memoryTables_["memories"] = {};
+    return true;
+}
+
 UUID AgentMemoryManager::createMemory(std::shared_ptr<Memory> memory, const std::string& tableName, bool unique) {
     return withLock([&]() -> UUID {
         auto& table = memoryTables_[tableName];
@@ -30,6 +37,11 @@ UUID AgentMemoryManager::createMemory(std::shared_ptr<Memory> memory, const std:
         table[memory->getId()] = memory;
         return memory->getId();
     });
+}
+
+UUID AgentMemoryManager::addMemory(std::shared_ptr<Memory> memory, const std::string& tableName) {
+    // Convenience method that calls createMemory with unique=false by default
+    return createMemory(memory, tableName, false);
 }
 
 std::shared_ptr<Memory> AgentMemoryManager::getMemoryById(const UUID& id) {

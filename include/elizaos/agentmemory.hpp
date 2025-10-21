@@ -45,9 +45,13 @@ class AgentMemoryManager {
 public:
     AgentMemoryManager();
     ~AgentMemoryManager() = default;
+    
+    // Initialization
+    bool initialize();
 
     // Core memory operations
     UUID createMemory(std::shared_ptr<Memory> memory, const std::string& tableName = "memories", bool unique = false);
+    UUID addMemory(std::shared_ptr<Memory> memory, const std::string& tableName = "memories"); // Convenience method
     std::shared_ptr<Memory> getMemoryById(const UUID& id);
     std::vector<std::shared_ptr<Memory>> getMemoriesByIds(const std::vector<UUID>& ids, const std::string& tableName = "memories");
     bool updateMemory(std::shared_ptr<Memory> memory);

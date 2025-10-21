@@ -124,6 +124,23 @@ public:
      */
     void setFileEnabled(bool enabled);
     
+    /**
+     * Convenience logging methods (member functions)
+     */
+    void logInfo(const std::string& content, const std::string& source = "");
+    void logWarning(const std::string& content, const std::string& source = "");
+    void logError(const std::string& content, const std::string& source = "");
+    void logSuccess(const std::string& content, const std::string& source = "");
+    void logSystem(const std::string& content, const std::string& source = "");
+    
+    /**
+     * Panel display method for formatted output
+     * @param title Panel title
+     * @param content Panel content (can be multi-line)
+     * @param color Panel color (optional)
+     */
+    void panel(const std::string& title, const std::string& content, LogColor color = LogColor::BLUE);
+    
 private:
     /**
      * Get color code string for console output

@@ -275,4 +275,29 @@ void logSystem(const std::string& content, const std::string& source) {
     globalLogger->log(content, source, "agentlogger", LogLevel::SYSTEM);
 }
 
+// Member convenience methods for AgentLogger
+void AgentLogger::logInfo(const std::string& content, const std::string& source) {
+    log(content, source, "agentlogger", LogLevel::INFO);
+}
+
+void AgentLogger::logWarning(const std::string& content, const std::string& source) {
+    log(content, source, "agentlogger", LogLevel::WARNING);
+}
+
+void AgentLogger::logError(const std::string& content, const std::string& source) {
+    log(content, source, "agentlogger", LogLevel::ERROR);
+}
+
+void AgentLogger::logSuccess(const std::string& content, const std::string& source) {
+    log(content, source, "agentlogger", LogLevel::SUCCESS);
+}
+
+void AgentLogger::logSystem(const std::string& content, const std::string& source) {
+    log(content, source, "agentlogger", LogLevel::SYSTEM);
+}
+
+void AgentLogger::panel(const std::string& title, const std::string& content, LogColor color) {
+    log(content, "", title, LogLevel::INFO, color, true, true);
+}
+
 } // namespace elizaos
