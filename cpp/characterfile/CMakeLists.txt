@@ -9,4 +9,6 @@ target_include_directories(elizaos-characterfile PUBLIC
 
 target_link_libraries(elizaos-characterfile 
     elizaos-core
+    elizaos-characters
+    elizaos-agentlogger
 )
