@@ -421,6 +421,8 @@ ctest -R "Logger"      # Logging tests
 
 ## Usage Examples
 
+> **Note**: The following examples use the include style and namespace conventions found in the existing codebase (see comprehensive_demo.cpp, demo_status.cpp). For production code, consider using angle brackets for system/framework includes (`#include <elizaos/core.hpp>`) and explicit namespace qualification (`elizaos::AgentConfig`) to avoid namespace pollution.
+
 ### Basic Agent Setup
 
 ```cpp
