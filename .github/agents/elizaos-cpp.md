@@ -152,6 +152,8 @@ The ElizaOS C++ framework implements a layered cognitive architecture with five 
 
 The ElizaOS C++ implementation is **significantly more complete** than initially documented. A comprehensive analysis revealed that 35 out of 44 modules (80%) are fully implemented with production-quality code.
 
+> **Note**: Implementation status is based on analysis of the IMPLEMENTATION_ROADMAP.md (lines 9-150) which documents line counts, test coverage, and functional completeness for each module. A module is considered "fully implemented" if it has 200+ lines of non-placeholder code, includes tests, and provides complete functionality rather than stubs.
+
 ### ✅ Fully Implemented Modules (35/44)
 
 #### Core Infrastructure (100% Complete)
@@ -584,10 +586,13 @@ comms.sendMessage(channel2, Message{
 - **Agent Loop**: ~1KB + step function overhead
 
 ### Throughput
-- **Memory Operations**: >10,000 ops/sec
-- **Message Passing**: >50,000 msgs/sec
+
+> **Note**: The following performance metrics are design targets based on the framework's architecture and typical C++ performance characteristics. Actual performance may vary based on hardware, compiler optimizations, and specific usage patterns. Benchmarking has not been formally conducted.
+
+- **Memory Operations**: >10,000 ops/sec (target)
+- **Message Passing**: >50,000 msgs/sec (target)
 - **Agent Loop Iterations**: 1-1000 Hz (configurable)
-- **Embedding Search**: >1,000 queries/sec
+- **Embedding Search**: >1,000 queries/sec (target)
 
 ### Concurrency
 - **Thread-Safe Operations**: All core systems use mutexes for protection
