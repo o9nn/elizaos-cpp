@@ -1,0 +1,56 @@
+services:
+  # PostgreSQL for OTC agent with pgvector extension
+  postgres:
+    image: pgvector/pgvector:pg15
+    container_name: otc-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: eliza
+      POSTGRES_USER: eliza
+      POSTGRES_PASSWORD: password
+      POSTGRES_INITDB_ARGS: "-E UTF8"
+    ports:
+      - "${VENDOR_OTC_DESK_DB_PORT:-5439}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U eliza -d eliza"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+    command: postgres -c shared_preload_libraries=vector -c max_connections=200
+
+  # Worker service for quote approval
+  worker:
+    build:
+      context: ../../packages/worker
+      dockerfile: Dockerfile
+    container_name: otc-worker
+    restart: unless-stopped
+    environment:
+      - POSTGRES_URL=postgres://eliza:password@postgres:5432/eliza
+      - WORKER_AUTH_TOKEN=${WORKER_AUTH_TOKEN:-dev-worker-secret}
+      - EVM_PRIVATE_KEY=${EVM_PRIVATE_KEY}
+      - NEXT_PUBLIC_RPC_URL=http://host.docker.internal:8545
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - NODE_ENV=development
+    ports:
+      - "3137:3137"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ../../packages/worker:/app
+      - /app/node_modules
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  default:
+    name: otc-localnet

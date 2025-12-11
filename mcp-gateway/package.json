@@ -1,0 +1,44 @@
+{
+  "name": "mcp-gateway",
+  "version": "1.0.0",
+  "description": "An MCP gateway that aggregates multiple MCP servers into a unified interface",
+  "type": "module",
+  "main": "build/index.js",
+  "scripts": {
+    "build": "bun build src/index.ts --outdir build --target node --format esm --sourcemap=external",
+    "start": "bun run src/index.ts --config=examples/coingecko-config.yaml --mode=sse --port=8000",
+    "start:stdio": "bun run src/index.ts --config=examples/coingecko-config.yaml --mode=stdio",
+    "dev": "bun run src/index.ts --mode=sse",
+    "dev:stdio": "bun run src/index.ts --mode=stdio",
+    "test": "bun run tests/e2e-test.ts",
+    "test:quick": "bun run tests/e2e-simple.ts",
+    "test:payment": "bun run tests/e2e-payment.ts",
+    "test:passthrough": "bun run tests/e2e-passthrough.ts",
+    "test:all": "bun run test:quick && bun run test && bun run test:payment && bun run test:passthrough"
+  },
+  "keywords": ["mcp", "gateway", "aggregator", "server", "proxy", "model-context-protocol"],
+  "author": "MCP Gateway",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/elizaOS/mcp-gateway.git"
+  },
+  "homepage": "https://github.com/elizaOS/mcp-gateway#readme",
+  "bugs": {
+    "url": "https://github.com/elizaOS/mcp-gateway/issues"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "axios": "^1.7.9",
+    "viem": "^2.21.45",
+    "x402": "^0.6.6",
+    "x402-axios": "^0.6.0",
+    "yaml": "^2.6.1",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.6.0",
+    "typescript": "^5.7.0"
+  },
+  "bin": {}
+}

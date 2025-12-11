@@ -1,0 +1,8 @@
+{
+  "network": "solana-local",
+  "rpc": "http://127.0.0.1:8899",
+  "programId": "6qn8ELVXd957oRjLaomCpKpcVZshUjNvSzw1nc7QVyXc",
+  "desk": "BZWsbEZb8NV3YWN3ht3cytwx6yDixdFVFcU8raBdj4pu",
+  "deskOwner": "4CSjHK6NXNBnU7egsfosaWSWktj7QAdWX2zj2mEE1TLU",
+  "usdcMint": "6YNnvAVPvGMGMYAN56oRw49npJFrhADuoP46vWiJxbi7"
+}

@@ -1,0 +1,22 @@
+{
+  "network": "solana-mainnet",
+  "rpc": "https://api.mainnet-beta.solana.com",
+  "deployer": "ATwDftA6zTxod9A7ys2QSa1cEWg9usuLtCQj5MXPNc89",
+  "programId": "6qn8ELVXd957oRjLaomCpKpcVZshUjNvSzw1nc7QVyXc",
+  "desk": "G89QsVcKN1MZe6d8eKyzv93u7TEeXSsXbsDsBPbuTMUU",
+  "deskOwner": "ATwDftA6zTxod9A7ys2QSa1cEWg9usuLtCQj5MXPNc89",
+  "usdcMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+  "registeredTokens": {
+    "ELIZAOS": {
+      "mint": "DuMbhu7mvQvqQHGcnikDgb4XegXJRyhUBfdU22uELiZA",
+      "registry": "CdAVNLwJuu22mEPNtx2SuzNbJEi4Mxqu1FUFRMvoc5dk",
+      "treasury": "62Jy7LBLsH2bq1QGKVA7RcAH4wu3GC8jad6ShYwY7cN8",
+      "priceUsd": 0.05
+    }
+  },
+  "verifiedAccounts": {
+    "consignment1": "G5VeKNhAx8oecZotwi51zXZxqzY2HYDyeM34Yje8xvEo",
+    "consignment2": "HM7GBPeLSctuXoUmmUdQ3vyHtv1GvoNZRg5UQKxQQYJk",
+    "offer": "3PhXzMtpo2D57Ktv4Y1tKYrQ2A7GwnvdadJ1jakHLuZi"
+  }
+}
