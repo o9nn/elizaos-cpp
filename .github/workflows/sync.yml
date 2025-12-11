@@ -100,4 +100,4 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        git push "https://${{ secrets.GITHUB_TOKEN }}@github.com/o9nn/elizaos-central.git" $BRANCH_NAME
+        git push "https://${{ secrets.GITHUB_TOKEN }}@github.com/o9nn/elizaos-cpp.git" $BRANCH_NAME
