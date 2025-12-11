@@ -1,0 +1,39 @@
+{
+  "frame": {
+    "version": "1",
+    "name": "Eliza OTC Desk",
+    "iconUrl": "https://otc-agent.vercel.app/icon.png",
+    "homeUrl": "https://otc-agent.vercel.app/",
+    "castShareUrl": "https://otc-agent.vercel.app/",
+    "imageUrl": "https://otc-agent.vercel.app/opengraph-image.png?v=1",
+    "buttonTitle": "AI OTC Trading",
+    "splashImageUrl": "https://otc-agent.vercel.app/splash.png",
+    "splashBackgroundColor": "#000000",
+    "webhookUrl": "https://api.neynar.com/f/app/c384db1a-a823-4279-9f77-2b1ea955b4e3/event",
+    "subtitle": "AI-Powered OTC Trading",
+    "description": "Trade tokens OTC with Eliza AI agent. Negotiate deals on Base, BSC, and Solana networks with automated pricing and smart contracts.",
+    "primaryCategory": "utility",
+    "tags": [
+      "trading",
+      "ai",
+      "otc",
+      "base",
+      "solana"
+    ],
+    "heroImageUrl": "https://otc-agent.vercel.app/opengraph-image.png?v=1",
+    "tagline": "AI-powered token trading desk",
+    "ogTitle": "Eliza OTC Desk",
+    "ogDescription": "AI-powered OTC trading on Base and Solana. Automated pricing and smart contracts.",
+    "ogImageUrl": "https://otc-agent.vercel.app/opengraph-image.png?v=1",
+    "requiredChains": [
+      "eip155:8453",
+      "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp"
+    ]
+  },
+  "accountAssociation": {
+    "header": "farcaster-domain-verification",
+    "payload": "eliza-otc-desk"
+  }
+}
+
+

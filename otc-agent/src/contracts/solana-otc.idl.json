@@ -1,0 +1,2075 @@
+{
+  "address": "6qn8ELVXd957oRjLaomCpKpcVZshUjNvSzw1nc7QVyXc",
+  "metadata": {
+    "name": "otc",
+    "version": "0.1.0",
+    "spec": "0.1.0"
+  },
+  "instructions": [
+    {
+      "name": "approve_offer",
+      "discriminator": [10, 201, 79, 52, 36, 85, 172, 94],
+      "accounts": [
+        {
+          "name": "desk"
+        },
+        {
+          "name": "offer",
+          "writable": true
+        },
+        {
+          "name": "approver",
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "_offer_id",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "auto_claim",
+      "discriminator": [184, 222, 148, 135, 212, 37, 111, 148],
+      "accounts": [
+        {
+          "name": "desk",
+          "writable": true
+        },
+        {
+          "name": "approver",
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "offer_ids",
+          "type": {
+            "vec": "u64"
+          }
+        }
+      ]
+    },
+    {
+      "name": "cancel_offer",
+      "discriminator": [92, 203, 223, 40, 92, 89, 53, 119],
+      "accounts": [
+        {
+          "name": "desk"
+        },
+        {
+          "name": "offer",
+          "writable": true
+        },
+        {
+          "name": "caller",
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "cancel_offer_with_consignment",
+      "docs": [
+        "Cancel an offer that was created from a consignment, restoring tokens"
+      ],
+      "discriminator": [4, 162, 105, 232, 112, 52, 232, 211],
+      "accounts": [
+        {
+          "name": "desk"
+        },
+        {
+          "name": "offer",
+          "writable": true
+        },
+        {
+          "name": "consignment",
+          "writable": true
+        },
+        {
+          "name": "caller",
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "claim",
+      "discriminator": [62, 198, 214, 193, 213, 159, 108, 210],
+      "accounts": [
+        {
+          "name": "desk",
+          "writable": true
+        },
+        {
+          "name": "desk_signer",
+          "signer": true
+        },
+        {
+          "name": "offer",
+          "writable": true
+        },
+        {
+          "name": "desk_token_treasury",
+          "docs": [
+            "Treasury must match the token in the offer and be owned by desk"
+          ],
+          "writable": true
+        },
+        {
+          "name": "beneficiary_token_ata",
+          "writable": true
+        },
+        {
+          "name": "beneficiary"
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "_offer_id",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "create_consignment",
+      "discriminator": [64, 222, 27, 197, 210, 171, 113, 85],
+      "accounts": [
+        {
+          "name": "desk",
+          "writable": true
+        },
+        {
+          "name": "consigner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "token_mint"
+        },
+        {
+          "name": "consigner_token_ata",
+          "writable": true
+        },
+        {
+          "name": "desk_token_treasury",
+          "writable": true
+        },
+        {
+          "name": "consignment",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "is_negotiable",
+          "type": "bool"
+        },
+        {
+          "name": "fixed_discount_bps",
+          "type": "u16"
+        },
+        {
+          "name": "fixed_lockup_days",
+          "type": "u32"
+        },
+        {
+          "name": "min_discount_bps",
+          "type": "u16"
+        },
+        {
+          "name": "max_discount_bps",
+          "type": "u16"
+        },
+        {
+          "name": "min_lockup_days",
+          "type": "u32"
+        },
+        {
+          "name": "max_lockup_days",
+          "type": "u32"
+        },
+        {
+          "name": "min_deal_amount",
+          "type": "u64"
+        },
+        {
+          "name": "max_deal_amount",
+          "type": "u64"
+        },
+        {
+          "name": "is_fractionalized",
+          "type": "bool"
+        },
+        {
+          "name": "is_private",
+          "type": "bool"
+        },
+        {
+          "name": "max_price_volatility_bps",
+          "type": "u16"
+        },
+        {
+          "name": "max_time_to_execute_secs",
+          "type": "i64"
+        }
+      ]
+    },
+    {
+      "name": "create_offer",
+      "docs": [
+        "Create an offer for a registered token (using TokenRegistry for pricing)",
+        "This replaces the old create_offer that used desk.token_mint"
+      ],
+      "discriminator": [237, 233, 192, 168, 248, 7, 249, 241],
+      "accounts": [
+        {
+          "name": "desk",
+          "writable": true
+        },
+        {
+          "name": "token_registry",
+          "docs": ["Token registry for pricing - must belong to this desk"]
+        },
+        {
+          "name": "desk_token_treasury",
+          "writable": true
+        },
+        {
+          "name": "beneficiary",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "offer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "token_amount",
+          "type": "u64"
+        },
+        {
+          "name": "discount_bps",
+          "type": "u16"
+        },
+        {
+          "name": "currency",
+          "type": "u8"
+        },
+        {
+          "name": "lockup_secs",
+          "type": "i64"
+        }
+      ]
+    },
+    {
+      "name": "create_offer_from_consignment",
+      "discriminator": [129, 162, 108, 121, 60, 158, 85, 12],
+      "accounts": [
+        {
+          "name": "desk",
+          "writable": true
+        },
+        {
+          "name": "consignment",
+          "writable": true
+        },
+        {
+          "name": "token_registry"
+        },
+        {
+          "name": "beneficiary",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "offer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "consignment_id",
+          "type": "u64"
+        },
+        {
+          "name": "token_amount",
+          "type": "u64"
+        },
+        {
+          "name": "discount_bps",
+          "type": "u16"
+        },
+        {
+          "name": "currency",
+          "type": "u8"
+        },
+        {
+          "name": "lockup_secs",
+          "type": "i64"
+        }
+      ]
+    },
+    {
+      "name": "deposit_tokens",
+      "docs": [
+        "Deposit tokens into desk treasury for a specific registered token"
+      ],
+      "discriminator": [176, 83, 229, 18, 191, 143, 176, 150],
+      "accounts": [
+        {
+          "name": "desk",
+          "writable": true
+        },
+        {
+          "name": "token_registry",
+          "docs": ["Token registry - must belong to this desk"]
+        },
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "owner_token_ata",
+          "writable": true
+        },
+        {
+          "name": "desk_token_treasury",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "emergency_refund_sol",
+      "discriminator": [6, 39, 12, 169, 134, 224, 217, 236],
+      "accounts": [
+        {
+          "name": "desk",
+          "writable": true
+        },
+        {
+          "name": "desk_signer",
+          "signer": true
+        },
+        {
+          "name": "offer",
+          "writable": true
+        },
+        {
+          "name": "caller",
+          "signer": true
+        },
+        {
+          "name": "payer_refund",
+          "writable": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "_offer_id",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "emergency_refund_usdc",
+      "discriminator": [230, 142, 139, 67, 34, 70, 132, 114],
+      "accounts": [
+        {
+          "name": "desk",
+          "writable": true
+        },
+        {
+          "name": "desk_signer",
+          "signer": true
+        },
+        {
+          "name": "offer",
+          "writable": true
+        },
+        {
+          "name": "caller",
+          "signer": true
+        },
+        {
+          "name": "desk_usdc_treasury",
+          "writable": true
+        },
+        {
+          "name": "payer_usdc_refund",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "_offer_id",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "fulfill_offer_sol",
+      "discriminator": [91, 58, 99, 49, 225, 190, 226, 208],
+      "accounts": [
+        {
+          "name": "desk",
+          "writable": true
+        },
+        {
+          "name": "offer",
+          "writable": true
+        },
+        {
+          "name": "desk_token_treasury",
+          "docs": ["Token treasury - must match the token_mint in the offer"],
+          "writable": true
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "_offer_id",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "fulfill_offer_usdc",
+      "discriminator": [88, 24, 117, 132, 109, 16, 200, 42],
+      "accounts": [
+        {
+          "name": "desk",
+          "writable": true
+        },
+        {
+          "name": "offer",
+          "writable": true
+        },
+        {
+          "name": "desk_token_treasury",
+          "docs": ["Token treasury - must match the token_mint in the offer"],
+          "writable": true
+        },
+        {
+          "name": "desk_usdc_treasury",
+          "writable": true
+        },
+        {
+          "name": "payer_usdc_ata",
+          "writable": true
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "_offer_id",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "init_desk",
+      "discriminator": [215, 181, 95, 245, 31, 190, 64, 208],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "owner",
+          "signer": true
+        },
+        {
+          "name": "agent"
+        },
+        {
+          "name": "usdc_mint"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "desk",
+          "writable": true,
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "min_usd_amount_8d",
+          "type": "u64"
+        },
+        {
+          "name": "quote_expiry_secs",
+          "type": "i64"
+        }
+      ]
+    },
+    {
+      "name": "pause",
+      "discriminator": [211, 22, 221, 251, 74, 121, 193, 47],
+      "accounts": [
+        {
+          "name": "owner",
+          "signer": true,
+          "relations": ["desk"]
+        },
+        {
+          "name": "desk",
+          "writable": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "register_token",
+      "discriminator": [32, 146, 36, 240, 80, 183, 36, 84],
+      "accounts": [
+        {
+          "name": "desk"
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "token_mint"
+        },
+        {
+          "name": "token_registry",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [114, 101, 103, 105, 115, 116, 114, 121]
+              },
+              {
+                "kind": "account",
+                "path": "desk"
+              },
+              {
+                "kind": "account",
+                "path": "token_mint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "price_feed_id",
+          "type": {
+            "array": ["u8", 32]
+          }
+        },
+        {
+          "name": "pool_address",
+          "type": "pubkey"
+        },
+        {
+          "name": "pool_type",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "set_agent",
+      "discriminator": [154, 74, 121, 91, 137, 19, 101, 166],
+      "accounts": [
+        {
+          "name": "owner",
+          "signer": true,
+          "relations": ["desk"]
+        },
+        {
+          "name": "desk",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "new_agent",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "set_approver",
+      "discriminator": [139, 202, 200, 122, 109, 173, 219, 116],
+      "accounts": [
+        {
+          "name": "owner",
+          "signer": true,
+          "relations": ["desk"]
+        },
+        {
+          "name": "desk",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "who",
+          "type": "pubkey"
+        },
+        {
+          "name": "allowed",
+          "type": "bool"
+        }
+      ]
+    },
+    {
+      "name": "set_emergency_refund",
+      "discriminator": [50, 122, 104, 94, 38, 3, 94, 114],
+      "accounts": [
+        {
+          "name": "owner",
+          "signer": true,
+          "relations": ["desk"]
+        },
+        {
+          "name": "desk",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "enabled",
+          "type": "bool"
+        },
+        {
+          "name": "deadline_secs",
+          "type": "i64"
+        }
+      ]
+    },
+    {
+      "name": "set_limits",
+      "discriminator": [207, 50, 250, 67, 211, 33, 70, 91],
+      "accounts": [
+        {
+          "name": "owner",
+          "signer": true,
+          "relations": ["desk"]
+        },
+        {
+          "name": "desk",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "min_usd_amount_8d",
+          "type": "u64"
+        },
+        {
+          "name": "max_token_per_order",
+          "type": "u64"
+        },
+        {
+          "name": "quote_expiry_secs",
+          "type": "i64"
+        },
+        {
+          "name": "default_unlock_delay_secs",
+          "type": "i64"
+        },
+        {
+          "name": "max_lockup_secs",
+          "type": "i64"
+        }
+      ]
+    },
+    {
+      "name": "set_manual_token_price",
+      "docs": [
+        "Manual price setting for testing/emergency use",
+        "Production should primarily use Pyth oracle or on-chain pool pricing",
+        "NOTE: This function should be restricted via access control in production"
+      ],
+      "discriminator": [8, 45, 176, 142, 238, 40, 144, 66],
+      "accounts": [
+        {
+          "name": "token_registry",
+          "writable": true
+        },
+        {
+          "name": "desk"
+        },
+        {
+          "name": "owner",
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "price_8d",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "set_prices",
+      "discriminator": [155, 1, 215, 185, 100, 8, 177, 186],
+      "accounts": [
+        {
+          "name": "owner",
+          "signer": true,
+          "relations": ["desk"]
+        },
+        {
+          "name": "desk",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "token_usd_8d",
+          "type": "u64"
+        },
+        {
+          "name": "sol_usd_8d",
+          "type": "u64"
+        },
+        {
+          "name": "_updated_at",
+          "type": "i64"
+        },
+        {
+          "name": "max_age",
+          "type": "i64"
+        }
+      ]
+    },
+    {
+      "name": "set_pyth_feeds",
+      "discriminator": [224, 165, 68, 184, 36, 43, 110, 239],
+      "accounts": [
+        {
+          "name": "owner",
+          "signer": true,
+          "relations": ["desk"]
+        },
+        {
+          "name": "desk",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "token_feed_id",
+          "type": {
+            "array": ["u8", 32]
+          }
+        },
+        {
+          "name": "sol_feed_id",
+          "type": {
+            "array": ["u8", 32]
+          }
+        }
+      ]
+    },
+    {
+      "name": "set_restrict_fulfill",
+      "discriminator": [118, 193, 197, 120, 177, 116, 219, 110],
+      "accounts": [
+        {
+          "name": "owner",
+          "signer": true,
+          "relations": ["desk"]
+        },
+        {
+          "name": "desk",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "enabled",
+          "type": "bool"
+        }
+      ]
+    },
+    {
+      "name": "set_token_oracle_feed",
+      "discriminator": [129, 244, 129, 183, 255, 22, 55, 232],
+      "accounts": [
+        {
+          "name": "token_registry",
+          "writable": true
+        },
+        {
+          "name": "desk"
+        },
+        {
+          "name": "owner",
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "feed_id",
+          "type": {
+            "array": ["u8", 32]
+          }
+        }
+      ]
+    },
+    {
+      "name": "unpause",
+      "discriminator": [169, 144, 4, 38, 10, 141, 188, 255],
+      "accounts": [
+        {
+          "name": "owner",
+          "signer": true,
+          "relations": ["desk"]
+        },
+        {
+          "name": "desk",
+          "writable": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "update_prices_from_pyth",
+      "discriminator": [124, 93, 27, 114, 82, 224, 4, 8],
+      "accounts": [
+        {
+          "name": "desk",
+          "writable": true
+        },
+        {
+          "name": "token_price_feed",
+          "docs": ["Pyth price feed account for token/USD"]
+        },
+        {
+          "name": "sol_price_feed",
+          "docs": ["Pyth price feed account for SOL/USD"]
+        },
+        {
+          "name": "payer",
+          "docs": ["Anyone can update prices from oracle"],
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "token_feed_id",
+          "type": {
+            "array": ["u8", 32]
+          }
+        },
+        {
+          "name": "sol_feed_id",
+          "type": {
+            "array": ["u8", 32]
+          }
+        },
+        {
+          "name": "max_price_deviation_bps",
+          "type": "u16"
+        }
+      ]
+    },
+    {
+      "name": "update_token_price_from_pool",
+      "discriminator": [59, 55, 110, 144, 135, 80, 147, 141],
+      "accounts": [
+        {
+          "name": "token_registry",
+          "writable": true
+        },
+        {
+          "name": "pool"
+        },
+        {
+          "name": "vault_a"
+        },
+        {
+          "name": "vault_b"
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "update_token_price_from_pumpswap",
+      "docs": [
+        "Update token price from PumpSwap / Pump.fun bonding curve",
+        "PumpSwap uses a bonding curve model with virtual reserves"
+      ],
+      "discriminator": [16, 228, 28, 92, 2, 190, 100, 85],
+      "accounts": [
+        {
+          "name": "token_registry",
+          "writable": true
+        },
+        {
+          "name": "bonding_curve"
+        },
+        {
+          "name": "sol_vault",
+          "docs": ["In PumpSwap, the bonding curve account itself holds SOL"]
+        },
+        {
+          "name": "token_vault",
+          "docs": [
+            "Token vault holding the bonding curve's tokens - must match token mint and be owned by pool"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "sol_usd_price_8d",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "update_token_price_from_pyth",
+      "discriminator": [242, 100, 102, 106, 171, 26, 235, 31],
+      "accounts": [
+        {
+          "name": "token_registry",
+          "writable": true
+        },
+        {
+          "name": "desk"
+        },
+        {
+          "name": "price_feed"
+        },
+        {
+          "name": "payer",
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "max_price_deviation_bps",
+          "type": "u16"
+        }
+      ]
+    },
+    {
+      "name": "withdraw_consignment",
+      "discriminator": [126, 79, 236, 43, 149, 153, 112, 71],
+      "accounts": [
+        {
+          "name": "consignment",
+          "writable": true
+        },
+        {
+          "name": "desk"
+        },
+        {
+          "name": "desk_signer",
+          "signer": true
+        },
+        {
+          "name": "consigner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "desk_token_treasury",
+          "writable": true
+        },
+        {
+          "name": "consigner_token_ata",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "_consignment_id",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "withdraw_sol",
+      "discriminator": [145, 131, 74, 136, 65, 137, 42, 38],
+      "accounts": [
+        {
+          "name": "desk",
+          "writable": true
+        },
+        {
+          "name": "desk_signer",
+          "signer": true
+        },
+        {
+          "name": "owner",
+          "signer": true
+        },
+        {
+          "name": "to",
+          "writable": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "lamports",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "withdraw_tokens",
+      "docs": ["Withdraw tokens from desk treasury for any registered token"],
+      "discriminator": [2, 4, 225, 61, 19, 182, 106, 170],
+      "accounts": [
+        {
+          "name": "owner",
+          "signer": true,
+          "relations": ["desk"]
+        },
+        {
+          "name": "desk",
+          "writable": true
+        },
+        {
+          "name": "token_registry",
+          "docs": ["Token registry - must belong to this desk"]
+        },
+        {
+          "name": "desk_signer",
+          "signer": true
+        },
+        {
+          "name": "desk_token_treasury",
+          "writable": true
+        },
+        {
+          "name": "owner_token_ata",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "withdraw_usdc",
+      "discriminator": [114, 49, 72, 184, 27, 156, 243, 155],
+      "accounts": [
+        {
+          "name": "owner",
+          "signer": true,
+          "relations": ["desk"]
+        },
+        {
+          "name": "desk",
+          "writable": true
+        },
+        {
+          "name": "desk_signer",
+          "signer": true
+        },
+        {
+          "name": "desk_usdc_treasury",
+          "writable": true
+        },
+        {
+          "name": "to_usdc_ata",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Consignment",
+      "discriminator": [158, 104, 234, 9, 1, 189, 75, 228]
+    },
+    {
+      "name": "Desk",
+      "discriminator": [33, 28, 147, 6, 226, 158, 166, 73]
+    },
+    {
+      "name": "Offer",
+      "discriminator": [215, 88, 60, 71, 170, 162, 73, 229]
+    },
+    {
+      "name": "PriceUpdateV2",
+      "discriminator": [34, 241, 35, 99, 157, 126, 244, 205]
+    },
+    {
+      "name": "TokenRegistry",
+      "discriminator": [227, 255, 152, 118, 84, 200, 145, 120]
+    }
+  ],
+  "events": [
+    {
+      "name": "LimitsUpdated",
+      "discriminator": [160, 131, 108, 76, 91, 80, 118, 137]
+    },
+    {
+      "name": "OfferApproved",
+      "discriminator": [3, 213, 10, 239, 132, 77, 249, 127]
+    },
+    {
+      "name": "OfferCancelled",
+      "discriminator": [45, 42, 175, 214, 51, 192, 154, 9]
+    },
+    {
+      "name": "OfferCreated",
+      "discriminator": [31, 236, 215, 144, 75, 45, 157, 87]
+    },
+    {
+      "name": "OfferPaid",
+      "discriminator": [37, 6, 79, 206, 50, 150, 29, 31]
+    },
+    {
+      "name": "Paused",
+      "discriminator": [172, 248, 5, 253, 49, 255, 255, 232]
+    },
+    {
+      "name": "PricesUpdated",
+      "discriminator": [208, 47, 38, 134, 151, 224, 207, 37]
+    },
+    {
+      "name": "RestrictFulfillUpdated",
+      "discriminator": [90, 219, 161, 137, 20, 103, 227, 171]
+    },
+    {
+      "name": "TokensClaimed",
+      "discriminator": [25, 128, 244, 55, 241, 136, 200, 91]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "UsdcDecimals",
+      "msg": "USDC must have 6 decimals"
+    },
+    {
+      "code": 6001,
+      "name": "AmountRange",
+      "msg": "Amount out of range"
+    },
+    {
+      "code": 6002,
+      "name": "Discount",
+      "msg": "Discount too high"
+    },
+    {
+      "code": 6003,
+      "name": "StalePrice",
+      "msg": "Price data is stale"
+    },
+    {
+      "code": 6004,
+      "name": "NoPrice",
+      "msg": "No price set"
+    },
+    {
+      "code": 6005,
+      "name": "MinUsd",
+      "msg": "Minimum USD not met"
+    },
+    {
+      "code": 6006,
+      "name": "InsuffInv",
+      "msg": "Insufficient token inventory"
+    },
+    {
+      "code": 6007,
+      "name": "Overflow",
+      "msg": "Overflow"
+    },
+    {
+      "code": 6008,
+      "name": "LockupTooLong",
+      "msg": "Lockup too long"
+    },
+    {
+      "code": 6009,
+      "name": "BadState",
+      "msg": "Bad state"
+    },
+    {
+      "code": 6010,
+      "name": "AlreadyApproved",
+      "msg": "Already approved"
+    },
+    {
+      "code": 6011,
+      "name": "NotApproved",
+      "msg": "Not approved"
+    },
+    {
+      "code": 6012,
+      "name": "Expired",
+      "msg": "Quote expired"
+    },
+    {
+      "code": 6013,
+      "name": "FulfillRestricted",
+      "msg": "Fulfill restricted"
+    },
+    {
+      "code": 6014,
+      "name": "Locked",
+      "msg": "Locked"
+    },
+    {
+      "code": 6015,
+      "name": "NotOwner",
+      "msg": "Not owner"
+    },
+    {
+      "code": 6016,
+      "name": "NotApprover",
+      "msg": "Not approver"
+    },
+    {
+      "code": 6017,
+      "name": "TooManyApprovers",
+      "msg": "Too many approvers"
+    },
+    {
+      "code": 6018,
+      "name": "UnsupportedCurrency",
+      "msg": "Unsupported currency"
+    },
+    {
+      "code": 6019,
+      "name": "Paused",
+      "msg": "Paused"
+    },
+    {
+      "code": 6020,
+      "name": "NotExpired",
+      "msg": "Not expired"
+    },
+    {
+      "code": 6021,
+      "name": "BadPrice",
+      "msg": "Bad price from oracle"
+    },
+    {
+      "code": 6022,
+      "name": "PriceDeviationTooLarge",
+      "msg": "Price deviation too large"
+    },
+    {
+      "code": 6023,
+      "name": "FeedNotConfigured",
+      "msg": "Oracle feed IDs not configured"
+    },
+    {
+      "code": 6024,
+      "name": "TooEarlyForRefund",
+      "msg": "Too early for emergency refund"
+    },
+    {
+      "code": 6025,
+      "name": "TooManyOffers",
+      "msg": "Too many offers for batch"
+    }
+  ],
+  "types": [
+    {
+      "name": "Consignment",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "desk",
+            "type": "pubkey"
+          },
+          {
+            "name": "id",
+            "type": "u64"
+          },
+          {
+            "name": "token_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "consigner",
+            "type": "pubkey"
+          },
+          {
+            "name": "total_amount",
+            "type": "u64"
+          },
+          {
+            "name": "remaining_amount",
+            "type": "u64"
+          },
+          {
+            "name": "is_negotiable",
+            "type": "bool"
+          },
+          {
+            "name": "fixed_discount_bps",
+            "type": "u16"
+          },
+          {
+            "name": "fixed_lockup_days",
+            "type": "u32"
+          },
+          {
+            "name": "min_discount_bps",
+            "type": "u16"
+          },
+          {
+            "name": "max_discount_bps",
+            "type": "u16"
+          },
+          {
+            "name": "min_lockup_days",
+            "type": "u32"
+          },
+          {
+            "name": "max_lockup_days",
+            "type": "u32"
+          },
+          {
+            "name": "min_deal_amount",
+            "type": "u64"
+          },
+          {
+            "name": "max_deal_amount",
+            "type": "u64"
+          },
+          {
+            "name": "is_fractionalized",
+            "type": "bool"
+          },
+          {
+            "name": "is_private",
+            "type": "bool"
+          },
+          {
+            "name": "max_price_volatility_bps",
+            "type": "u16"
+          },
+          {
+            "name": "max_time_to_execute_secs",
+            "type": "i64"
+          },
+          {
+            "name": "is_active",
+            "type": "bool"
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Desk",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "agent",
+            "type": "pubkey"
+          },
+          {
+            "name": "usdc_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "usdc_decimals",
+            "type": "u8"
+          },
+          {
+            "name": "min_usd_amount_8d",
+            "type": "u64"
+          },
+          {
+            "name": "quote_expiry_secs",
+            "type": "i64"
+          },
+          {
+            "name": "max_price_age_secs",
+            "type": "i64"
+          },
+          {
+            "name": "restrict_fulfill",
+            "type": "bool"
+          },
+          {
+            "name": "approvers",
+            "type": {
+              "vec": "pubkey"
+            }
+          },
+          {
+            "name": "next_consignment_id",
+            "type": "u64"
+          },
+          {
+            "name": "next_offer_id",
+            "type": "u64"
+          },
+          {
+            "name": "paused",
+            "type": "bool"
+          },
+          {
+            "name": "sol_price_feed_id",
+            "type": {
+              "array": ["u8", 32]
+            }
+          },
+          {
+            "name": "sol_usd_price_8d",
+            "type": "u64"
+          },
+          {
+            "name": "prices_updated_at",
+            "type": "i64"
+          },
+          {
+            "name": "token_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "token_decimals",
+            "type": "u8"
+          },
+          {
+            "name": "token_deposited",
+            "type": "u64"
+          },
+          {
+            "name": "token_reserved",
+            "type": "u64"
+          },
+          {
+            "name": "token_price_feed_id",
+            "type": {
+              "array": ["u8", 32]
+            }
+          },
+          {
+            "name": "token_usd_price_8d",
+            "type": "u64"
+          },
+          {
+            "name": "default_unlock_delay_secs",
+            "type": "i64"
+          },
+          {
+            "name": "max_lockup_secs",
+            "type": "i64"
+          },
+          {
+            "name": "max_token_per_order",
+            "type": "u64"
+          },
+          {
+            "name": "emergency_refund_enabled",
+            "type": "bool"
+          },
+          {
+            "name": "emergency_refund_deadline_secs",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "LimitsUpdated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "min_usd_amount_8d",
+            "type": "u64"
+          },
+          {
+            "name": "max_token_per_order",
+            "type": "u64"
+          },
+          {
+            "name": "quote_expiry_secs",
+            "type": "i64"
+          },
+          {
+            "name": "default_unlock_delay_secs",
+            "type": "i64"
+          },
+          {
+            "name": "max_lockup_secs",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Offer",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "desk",
+            "type": "pubkey"
+          },
+          {
+            "name": "consignment_id",
+            "type": "u64"
+          },
+          {
+            "name": "token_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "token_decimals",
+            "type": "u8"
+          },
+          {
+            "name": "id",
+            "type": "u64"
+          },
+          {
+            "name": "beneficiary",
+            "type": "pubkey"
+          },
+          {
+            "name": "token_amount",
+            "type": "u64"
+          },
+          {
+            "name": "discount_bps",
+            "type": "u16"
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          },
+          {
+            "name": "unlock_time",
+            "type": "i64"
+          },
+          {
+            "name": "price_usd_per_token_8d",
+            "type": "u64"
+          },
+          {
+            "name": "max_price_deviation_bps",
+            "type": "u16"
+          },
+          {
+            "name": "sol_usd_price_8d",
+            "type": "u64"
+          },
+          {
+            "name": "currency",
+            "type": "u8"
+          },
+          {
+            "name": "approved",
+            "type": "bool"
+          },
+          {
+            "name": "paid",
+            "type": "bool"
+          },
+          {
+            "name": "fulfilled",
+            "type": "bool"
+          },
+          {
+            "name": "cancelled",
+            "type": "bool"
+          },
+          {
+            "name": "payer",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount_paid",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "OfferApproved",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "offer",
+            "type": "pubkey"
+          },
+          {
+            "name": "approver",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "OfferCancelled",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "offer",
+            "type": "pubkey"
+          },
+          {
+            "name": "by",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "OfferCreated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "desk",
+            "type": "pubkey"
+          },
+          {
+            "name": "offer",
+            "type": "pubkey"
+          },
+          {
+            "name": "beneficiary",
+            "type": "pubkey"
+          },
+          {
+            "name": "token_amount",
+            "type": "u64"
+          },
+          {
+            "name": "discount_bps",
+            "type": "u16"
+          },
+          {
+            "name": "currency",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "OfferPaid",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "offer",
+            "type": "pubkey"
+          },
+          {
+            "name": "payer",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "currency",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Paused",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "paused",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PoolType",
+      "docs": ["Pool type for on-chain price discovery"],
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "None"
+          },
+          {
+            "name": "Raydium"
+          },
+          {
+            "name": "Orca"
+          },
+          {
+            "name": "PumpSwap"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PriceFeedMessage",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "feed_id",
+            "docs": [
+              "`FeedId` but avoid the type alias because of compatibility issues with Anchor's `idl-build` feature."
+            ],
+            "type": {
+              "array": ["u8", 32]
+            }
+          },
+          {
+            "name": "price",
+            "type": "i64"
+          },
+          {
+            "name": "conf",
+            "type": "u64"
+          },
+          {
+            "name": "exponent",
+            "type": "i32"
+          },
+          {
+            "name": "publish_time",
+            "docs": ["The timestamp of this price update in seconds"],
+            "type": "i64"
+          },
+          {
+            "name": "prev_publish_time",
+            "docs": [
+              "The timestamp of the previous price update. This field is intended to allow users to",
+              "identify the single unique price update for any moment in time:",
+              "for any time t, the unique update is the one such that prev_publish_time < t <= publish_time.",
+              "",
+              "Note that there may not be such an update while we are migrating to the new message-sending logic,",
+              "as some price updates on pythnet may not be sent to other chains (because the message-sending",
+              "logic may not have triggered). We can solve this problem by making the message-sending mandatory",
+              "(which we can do once publishers have migrated over).",
+              "",
+              "Additionally, this field may be equal to publish_time if the message is sent on a slot where",
+              "where the aggregation was unsuccesful. This problem will go away once all publishers have",
+              "migrated over to a recent version of pyth-agent."
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "ema_price",
+            "type": "i64"
+          },
+          {
+            "name": "ema_conf",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PriceUpdateV2",
+      "docs": [
+        "A price update account. This account is used by the Pyth Receiver program to store a verified price update from a Pyth price feed.",
+        "It contains:",
+        "- `write_authority`: The write authority for this account. This authority can close this account to reclaim rent or update the account to contain a different price update.",
+        "- `verification_level`: The [`VerificationLevel`] of this price update. This represents how many Wormhole guardian signatures have been verified for this price update.",
+        "- `price_message`: The actual price update.",
+        "- `posted_slot`: The slot at which this price update was posted."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "write_authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "verification_level",
+            "type": {
+              "defined": {
+                "name": "VerificationLevel"
+              }
+            }
+          },
+          {
+            "name": "price_message",
+            "type": {
+              "defined": {
+                "name": "PriceFeedMessage"
+              }
+            }
+          },
+          {
+            "name": "posted_slot",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PricesUpdated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "token_usd_8d",
+            "type": "u64"
+          },
+          {
+            "name": "sol_usd_8d",
+            "type": "u64"
+          },
+          {
+            "name": "updated_at",
+            "type": "i64"
+          },
+          {
+            "name": "max_age",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RestrictFulfillUpdated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "enabled",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TokenRegistry",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "desk",
+            "type": "pubkey"
+          },
+          {
+            "name": "token_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "decimals",
+            "type": "u8"
+          },
+          {
+            "name": "price_feed_id",
+            "type": {
+              "array": ["u8", 32]
+            }
+          },
+          {
+            "name": "pool_address",
+            "type": "pubkey"
+          },
+          {
+            "name": "pool_type",
+            "type": {
+              "defined": {
+                "name": "PoolType"
+              }
+            }
+          },
+          {
+            "name": "is_active",
+            "type": "bool"
+          },
+          {
+            "name": "token_usd_price_8d",
+            "type": "u64"
+          },
+          {
+            "name": "prices_updated_at",
+            "type": "i64"
+          },
+          {
+            "name": "registered_by",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TokensClaimed",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "offer",
+            "type": "pubkey"
+          },
+          {
+            "name": "beneficiary",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VerificationLevel",
+      "docs": [
+        "Pyth price updates are bridged to all blockchains via Wormhole.",
+        "Using the price updates on another chain requires verifying the signatures of the Wormhole guardians.",
+        "The usual process is to check the signatures for two thirds of the total number of guardians, but this can be cumbersome on Solana because of the transaction size limits,",
+        "so we also allow for partial verification.",
+        "",
+        "This enum represents how much a price update has been verified:",
+        "- If `Full`, we have verified the signatures for two thirds of the current guardians.",
+        "- If `Partial`, only `num_signatures` guardian signatures have been checked.",
+        "",
+        "# Warning",
+        "Using partially verified price updates is dangerous, as it lowers the threshold of guardians that need to collude to produce a malicious price update."
+      ],
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Partial",
+            "fields": [
+              {
+                "name": "num_signatures",
+                "type": "u8"
+              }
+            ]
+          },
+          {
+            "name": "Full"
+          }
+        ]
+      }
+    }
+  ]
+}

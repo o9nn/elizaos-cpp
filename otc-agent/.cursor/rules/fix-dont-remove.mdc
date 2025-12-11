@@ -1,0 +1,23 @@
+---
+alwaysApply: true
+description: Fix problems properly; never remove functionality as a workaround
+---
+
+## Fix Problems - Never Remove Functionality
+
+**NEVER** remove or reduce functionality to work around a problem. **ALWAYS** fix the root cause.
+
+### Do Not
+
+- Comment out problematic code
+- Remove features that are "causing issues"
+- Simplify logic to avoid edge cases
+- Bypass validation or security checks
+
+### Instead
+
+- Debug and fix the actual problem
+- Preserve all existing features
+- Enhance error handling rather than removing the feature
+
+If it's broken, fix it. If it's complex, that complexity serves a purpose.

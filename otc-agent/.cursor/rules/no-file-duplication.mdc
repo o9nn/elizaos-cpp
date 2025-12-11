@@ -1,0 +1,17 @@
+---
+alwaysApply: true
+description: Edit existing files; never create duplicates or simplified versions
+---
+
+## No File Duplication
+
+- **NEVER** create `file-simple.ts`, `file-v2.ts`, `file-enhanced.ts` variants
+- **ALWAYS** edit existing files directly using search_replace
+- **NEVER** create parallel implementations
+
+## Standards
+
+- Read full file context before changes
+- Preserve existing functionality when adding features
+- Maintain production-grade quality - not prototypes
+- Keep complex logic when it serves a purpose

@@ -1,0 +1,27 @@
+---
+alwaysApply: true
+description: Runtime E2E testing only; no mocks or unit tests
+---
+
+## Runtime E2E Testing
+
+All tests are runtime end-to-end. No unit tests, no mocks.
+
+### Requirements
+
+- Boot real dependencies using project scripts (`scripts/start-all.sh`, etc.)
+- Use Bun CLI to run scripts and tests
+- Use real data - no mock DB layers
+- Put tests under `tests/`; consolidate into few high-signal scenarios
+
+### Anti-Patterns (Never Do)
+
+- No mocking frameworks, spies, or fake timers
+- No isolated unit tests
+- No trivial assertions testing language/framework behavior
+
+USE SYNPRESS
+
+Synpress is a version of Playwright with Metamask
+
+ALWAYS MAKE SURE TO SOLVE LOGIN FIRST. Otherwise you won't test anything.
