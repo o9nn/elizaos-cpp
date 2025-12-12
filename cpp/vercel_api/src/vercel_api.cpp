@@ -499,7 +499,7 @@ std::string VercelAPI::buildApiUrl(const std::string& endpoint) const {
     
     if (!config_.team_id.empty()) {
         char separator = (endpoint.find('?') != std::string::npos) ? '&' : '?';
-        url += separator + "teamId=" + config_.team_id;
+        url += std::string(1, separator) + "teamId=" + config_.team_id;
     }
     
     return url;

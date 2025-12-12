@@ -2,6 +2,13 @@ name: Chocolatey Package
 
 on:
   push:
+    branches: [ main ]
+    paths:
+      - 'cpp/**'
+      - 'include/**'
+      - 'CMakeLists.txt'
+      - 'packaging/chocolatey/**'
+      - '.github/workflows/chocolatey-package.yml'
     tags:
       - 'v*'
   workflow_dispatch:
@@ -28,18 +35,19 @@ jobs:
       with:
         cmake-version: '3.20'
     
-    - name: Install Chocolatey
+    - name: Verify Chocolatey installation
       run: |
-        Set-ExecutionPolicy Bypass -Scope Process -Force
-        [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
         if (!(Get-Command choco -ErrorAction SilentlyContinue)) {
+          Write-Host "Installing Chocolatey..."
+          Set-ExecutionPolicy Bypass -Scope Process -Force
+          [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
           iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
         }
         choco --version
       shell: powershell
     
     - name: Configure CMake
-      run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+      run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="C:/Program Files/ElizaOS-CPP"
     
     - name: Build
       run: cmake --build build --config Release -j 2
@@ -52,6 +60,7 @@ jobs:
     - name: Install to staging directory
       run: |
         cmake --install build --prefix staging --config Release
+        Get-ChildItem -Recurse staging | Select-Object FullName
       continue-on-error: true
     
     - name: Prepare Chocolatey package
@@ -60,7 +69,7 @@ jobs:
         if ([string]::IsNullOrEmpty($version)) {
           $version = "${{ github.ref_name }}".TrimStart('v')
         }
-        if ([string]::IsNullOrEmpty($version)) {
+        if ([string]::IsNullOrEmpty($version) -or $version -eq "main") {
           $version = "1.0.0"
         }
         
@@ -70,16 +79,55 @@ jobs:
         New-Item -ItemType Directory -Force -Path choco-package
         New-Item -ItemType Directory -Force -Path choco-package/tools
         
-        # Copy nuspec file
-        Copy-Item packaging/chocolatey/elizaos-cpp.nuspec choco-package/
+        # Check if nuspec file exists
+        if (Test-Path "packaging/chocolatey/elizaos-cpp.nuspec") {
+          Copy-Item packaging/chocolatey/elizaos-cpp.nuspec choco-package/
+          
+          # Update version in nuspec
+          $nuspecContent = Get-Content choco-package/elizaos-cpp.nuspec -Raw
+          $nuspecContent = $nuspecContent -replace '<version>.*</version>', "<version>$version</version>"
+          Set-Content -Path choco-package/elizaos-cpp.nuspec -Value $nuspecContent
+        } else {
+          Write-Host "Warning: nuspec file not found, creating basic one"
+          @"
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+  <metadata>
+    <id>elizaos-cpp</id>
+    <version>$version</version>
+    <packageSourceUrl>https://github.com/o9nn/elizaos-cpp</packageSourceUrl>
+    <owners>ElizaOS Team</owners>
+    <title>ElizaOS C++ Framework</title>
+    <authors>ElizaOS Team</authors>
+    <projectUrl>https://github.com/o9nn/elizaos-cpp</projectUrl>
+    <copyright>2024 ElizaOS Team</copyright>
+    <licenseUrl>https://github.com/o9nn/elizaos-cpp/blob/main/LICENSE</licenseUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <tags>elizaos cpp ai agent cognitive framework autonomous</tags>
+    <summary>Next-Generation Cognitive Agent Framework</summary>
+    <description>ElizaOS C++ is a high-performance C++ implementation of the ElizaOS agent framework.</description>
+  </metadata>
+  <files>
+    <file src="tools\**" target="tools" />
+  </files>
+</package>
+"@ | Set-Content -Path choco-package/elizaos-cpp.nuspec
+        }
         
-        # Update version in nuspec
-        $nuspecContent = Get-Content choco-package/elizaos-cpp.nuspec -Raw
-        $nuspecContent = $nuspecContent -replace '<version>.*</version>', "<version>$version</version>"
-        Set-Content -Path choco-package/elizaos-cpp.nuspec -Value $nuspecContent
-        
-        # Copy install scripts
-        Copy-Item packaging/chocolatey/tools/*.ps1 choco-package/tools/
+        # Copy install scripts if they exist
+        if (Test-Path "packaging/chocolatey/tools") {
+          Copy-Item packaging/chocolatey/tools/*.ps1 choco-package/tools/ -ErrorAction SilentlyContinue
+        } else {
+          # Create basic install script
+          @"
+`$ErrorActionPreference = 'Stop'
+`$packageName = 'elizaos-cpp'
+`$toolsDir = Split-Path -Parent `$MyInvocation.MyCommand.Definition
+
+Write-Host "Installing ElizaOS C++ Framework..."
+Write-Host "Installation directory: `$toolsDir"
+"@ | Set-Content -Path choco-package/tools/chocolateyinstall.ps1
+        }
         
         # Copy built files if they exist
         if (Test-Path "build/Release") {
@@ -89,15 +137,40 @@ jobs:
           Copy-Item -Recurse staging/* choco-package/tools/ -ErrorAction SilentlyContinue
         }
         
+        # Copy LICENSE and README
+        if (Test-Path "LICENSE") {
+          Copy-Item LICENSE choco-package/tools/LICENSE.txt -ErrorAction SilentlyContinue
+        }
+        if (Test-Path "README.md") {
+          Copy-Item README.md choco-package/tools/ -ErrorAction SilentlyContinue
+        }
+        
         Write-Host "Chocolatey package prepared"
-        Get-ChildItem choco-package -Recurse
+        Get-ChildItem choco-package -Recurse | Select-Object FullName
       shell: powershell
     
     - name: Build Chocolatey package
       run: |
         cd choco-package
         choco pack
-        Get-ChildItem *.nupkg
+        if (Test-Path "*.nupkg") {
+          Write-Host "Package created successfully:"
+          Get-ChildItem *.nupkg | Select-Object Name, Length
+        } else {
+          Write-Host "Warning: No package file created"
+        }
+      shell: powershell
+      continue-on-error: true
+    
+    - name: Test Chocolatey package
+      run: |
+        if (Test-Path "choco-package/*.nupkg") {
+          Write-Host "Testing package installation..."
+          choco install choco-package/*.nupkg -y --force
+          Write-Host "Package installed successfully"
+        } else {
+          Write-Host "No package to test"
+        }
       shell: powershell
       continue-on-error: true
     

@@ -15,8 +15,8 @@ namespace elizaos {
  */
 
 class HttpClient;
-class VercelDeployment;
-class VercelProject;
+struct VercelDeployment;
+struct VercelProject;
 
 /**
  * Vercel API configuration
