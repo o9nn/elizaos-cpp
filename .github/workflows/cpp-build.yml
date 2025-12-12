@@ -32,6 +32,41 @@ jobs:
       with:
         cmake-version: '3.16'
 
+    - name: Set up MSVC environment (Windows)
+      if: runner.os == 'Windows'
+      uses: ilammy/msvc-dev-cmd@v1
+
+    - name: Check C++ compiler availability
+      shell: bash
+      run: |
+        echo "=== Checking C++ Compiler Availability ==="
+        if [[ "$RUNNER_OS" == "Windows" ]]; then
+          echo "Windows platform detected"
+          if command -v cl &> /dev/null; then
+            echo "✓ MSVC compiler (cl.exe) found in PATH"
+            cl.exe /? 2>&1 | head -n 3 || true
+          else
+            echo "✗ MSVC compiler (cl.exe) NOT found in PATH"
+          fi
+        elif [[ "$RUNNER_OS" == "macOS" ]]; then
+          echo "macOS platform detected"
+          if command -v clang++ &> /dev/null; then
+            echo "✓ Clang++ compiler found in PATH"
+            clang++ --version | head -n 1
+          else
+            echo "✗ Clang++ compiler NOT found in PATH"
+          fi
+        else
+          echo "Linux platform detected"
+          if command -v g++ &> /dev/null; then
+            echo "✓ G++ compiler found in PATH"
+            g++ --version | head -n 1
+          else
+            echo "✗ G++ compiler NOT found in PATH"
+          fi
+        fi
+        echo "==================================="
+
     - name: Configure CMake
       run: cmake -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
 
@@ -97,6 +132,17 @@ jobs:
       uses: jwlawson/actions-setup-cmake@v2
       with:
         cmake-version: '3.16'
+
+    - name: Check C++ compiler availability
+      run: |
+        echo "=== Checking C++ Compiler Availability ==="
+        if command -v g++ &> /dev/null; then
+          echo "✓ G++ compiler found in PATH"
+          g++ --version | head -n 1
+        else
+          echo "✗ G++ compiler NOT found in PATH"
+        fi
+        echo "==================================="
 
     - name: Configure CMake with strict warnings
       run: cmake -B build -DCMAKE_BUILD_TYPE=Debug
