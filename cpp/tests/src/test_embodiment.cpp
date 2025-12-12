@@ -20,9 +20,6 @@ protected:
         state_ = std::make_shared<State>(config);
         memory_ = std::make_shared<AgentMemoryManager>();
         cognition_ = std::make_shared<CognitiveFusionEngine>();
-        
-        // Initialize memory
-        memory_->initialize();
     }
     
     void TearDown() override {

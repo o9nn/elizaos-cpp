@@ -247,29 +247,29 @@ target_link_libraries(the_org_demo
     Threads::Threads
 )
 
-# Comprehensive Demo
-add_executable(comprehensive_demo
-    comprehensive_demo.cpp
-)
+# Comprehensive Demo - temporarily disabled for build issues
+# add_executable(comprehensive_demo
+#     comprehensive_demo.cpp
+# )
 
-target_include_directories(comprehensive_demo PRIVATE
-    ${CMAKE_SOURCE_DIR}/include
-)
+# target_include_directories(comprehensive_demo PRIVATE
+#     ${CMAKE_SOURCE_DIR}/include
+# )
 
-target_link_libraries(comprehensive_demo
-    elizaos-core
-    elizaos-agentlogger
-    elizaos-agentloop
-    elizaos-agentmemory
-    elizaos-agentcomms
-    elizaos-eliza
-    elizaos-characters
-    elizaos-knowledge
-    elizaos-spartan
-    elizaos-elizas_list
-    elizaos-elizas_world
-    Threads::Threads
-)
+# target_link_libraries(comprehensive_demo
+#     elizaos-core
+#     elizaos-agentlogger
+#     elizaos-agentloop
+#     elizaos-agentmemory
+#     elizaos-agentcomms
+#     elizaos-eliza
+#     elizaos-characters
+#     elizaos-knowledge
+#     elizaos-spartan
+#     elizaos-elizas_list
+#     elizaos-elizas_world
+#     Threads::Threads
+# )
 
 # Main Eliza CLI executable
 add_executable(eliza
