@@ -1,0 +1,143 @@
+# AgentBrowser - Web automation interface for ElizaOS agents
+# Updated to use REAL implementation with libcurl and gumbo-parser
+
+# ==============================================================================
+# DEPENDENCY CONFIGURATION
+# ==============================================================================
+
+# Find libcurl (required for HTTP requests)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(CURL REQUIRED libcurl)
+
+# Find gumbo-parser (required for HTML parsing)
+pkg_check_modules(GUMBO REQUIRED gumbo)
+
+# ==============================================================================
+# LIBRARY DEFINITION
+# ==============================================================================
+
+# Create the AgentBrowser library with REAL implementation
+add_library(elizaos-agentbrowser STATIC
+    src/agentbrowser_real.cpp
+    # Note: http_client.cpp and html_parser.cpp are included inline in agentbrowser_real.cpp
+)
+
+# ==============================================================================
+# INCLUDE DIRECTORIES
+# ==============================================================================
+
+target_include_directories(elizaos-agentbrowser 
+    PUBLIC
+        ${CMAKE_SOURCE_DIR}/include
+    PRIVATE
+        ${CURL_INCLUDE_DIRS}
+        ${GUMBO_INCLUDE_DIRS}
+)
+
+# ==============================================================================
+# LINK LIBRARIES
+# ==============================================================================
+
+target_link_libraries(elizaos-agentbrowser 
+    PUBLIC
+        # ElizaOS core dependencies
+        elizaos-core
+        elizaos-agentlogger
+        elizaos-agentmemory
+    PRIVATE
+        # System dependencies
+        Threads::Threads
+        # HTTP and HTML parsing libraries
+        ${CURL_LIBRARIES}
+        ${GUMBO_LIBRARIES}
+)
+
+# ==============================================================================
+# COMPILER DEFINITIONS
+# ==============================================================================
+
+# Add preprocessor definitions
+target_compile_definitions(elizaos-agentbrowser 
+    PRIVATE
+        AGENTBROWSER_REAL_IMPLEMENTATION=1
+        CURL_STATICLIB=$<BOOL:${CURL_STATIC}>
+)
+
+# ==============================================================================
+# COMPILER OPTIONS
+# ==============================================================================
+
+# Set compiler-specific options
+if(MSVC)
+    target_compile_options(elizaos-agentbrowser PRIVATE 
+        /W4                 # Warning level 4
+        /permissive-        # Standards conformance
+    )
+else()
+    target_compile_options(elizaos-agentbrowser PRIVATE 
+        -Wall               # Enable all warnings
+        -Wextra             # Enable extra warnings
+        -Wpedantic          # Pedantic warnings
+        -Wno-unused-parameter  # Suppress unused parameter warnings (common in callbacks)
+    )
+endif()
+
+# ==============================================================================
+# LINKER OPTIONS
+# ==============================================================================
+
+# Add linker flags for gumbo-parser
+target_link_directories(elizaos-agentbrowser 
+    PRIVATE
+        ${GUMBO_LIBRARY_DIRS}
+)
+
+# ==============================================================================
+# INSTALLATION
+# ==============================================================================
+
+# Install the library
+install(TARGETS elizaos-agentbrowser
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+    RUNTIME DESTINATION bin
+)
+
+# ==============================================================================
+# TESTING (Optional)
+# ==============================================================================
+
+# Uncomment to enable AgentBrowser tests
+# if(BUILD_TESTING)
+#     add_subdirectory(tests)
+# endif()
+
+# ==============================================================================
+# FEATURE SUMMARY
+# ==============================================================================
+
+# Print configuration summary
+message(STATUS "AgentBrowser Configuration:")
+message(STATUS "  - Real Implementation: ENABLED")
+message(STATUS "  - libcurl version: ${CURL_VERSION}")
+message(STATUS "  - libcurl libraries: ${CURL_LIBRARIES}")
+message(STATUS "  - gumbo-parser version: ${GUMBO_VERSION}")
+message(STATUS "  - gumbo-parser libraries: ${GUMBO_LIBRARIES}")
+
+# ==============================================================================
+# NOTES
+# ==============================================================================
+
+# Installation instructions for dependencies:
+#
+# Ubuntu/Debian:
+#   sudo apt-get install libcurl4-openssl-dev libgumbo-dev
+#
+# Fedora/RHEL:
+#   sudo dnf install libcurl-devel gumbo-parser-devel
+#
+# macOS (Homebrew):
+#   brew install curl gumbo-parser
+#
+# Windows (vcpkg):
+#   vcpkg install curl gumbo-parser
