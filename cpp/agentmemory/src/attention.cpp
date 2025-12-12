@@ -598,10 +598,6 @@ double AttentionAllocator::calculateImportance(const std::string& content, const
     std::string lowerContent = content;
     std::transform(lowerContent.begin(), lowerContent.end(), lowerContent.begin(),
         [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
-                   [](std::string& s) { std::transform(s.begin(), s.end(), s.begin(), [](unsigned char c){ return static_cast<char>(std::tolower(c)); }); return s; });
-    
-    std::string lowerContent = content;
-    std::transform(lowerContent.begin(), lowerContent.end(), lowerContent.begin(), [](unsigned char c){ return static_cast<char>(std::tolower(c)); });
     
     for (const auto& keyword : importantKeywords) {
         if (lowerContent.find(keyword) != std::string::npos) {
