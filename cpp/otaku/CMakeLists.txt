@@ -1,5 +1,5 @@
 add_library(elizaos-otaku STATIC
-    src/placeholder.cpp
+    src/otaku.cpp
 )
 
 target_include_directories(elizaos-otaku PUBLIC

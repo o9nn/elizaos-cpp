@@ -1,5 +1,5 @@
 add_library(elizaos-otc_agent STATIC
-    src/placeholder.cpp
+    src/otc_agent.cpp
 )
 
 target_include_directories(elizaos-otc_agent PUBLIC
