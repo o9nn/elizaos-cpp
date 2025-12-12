@@ -1,0 +1,30 @@
+#!/bin/bash
+# postinst script for elizaos-cpp
+
+set -e
+
+case "$1" in
+    configure)
+        # Update library cache
+        if [ -x /sbin/ldconfig ]; then
+            /sbin/ldconfig
+        fi
+        
+        echo "ElizaOS C++ has been successfully installed!"
+        echo "Documentation: /usr/share/doc/elizaos-cpp/"
+        echo "Headers: /usr/include/elizaos/"
+        echo "Libraries: /usr/lib/"
+        echo ""
+        echo "To get started, see: https://github.com/o9nn/elizaos-cpp"
+    ;;
+
+    abort-upgrade|abort-remove|abort-deconfigure)
+    ;;
+
+    *)
+        echo "postinst called with unknown argument \`$1'" >&2
+        exit 1
+    ;;
+esac
+
+exit 0

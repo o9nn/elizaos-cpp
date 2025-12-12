@@ -8,6 +8,7 @@ on:
       - 'include/**'
       - 'CMakeLists.txt'
       - '.github/workflows/cpp-build.yml'
+      - 'packaging/**'
   pull_request:
     branches: [ main, develop ]
     paths:
@@ -15,6 +16,8 @@ on:
       - 'include/**'
       - 'CMakeLists.txt'
       - '.github/workflows/cpp-build.yml'
+      - 'packaging/**'
+  workflow_dispatch:
 
 jobs:
   build:
