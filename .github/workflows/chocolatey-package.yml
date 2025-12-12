@@ -89,29 +89,28 @@ jobs:
           Set-Content -Path choco-package/elizaos-cpp.nuspec -Value $nuspecContent
         } else {
           Write-Host "Warning: nuspec file not found, creating basic one"
-          @"
-<?xml version="1.0" encoding="utf-8"?>
-<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
-  <metadata>
-    <id>elizaos-cpp</id>
-    <version>$version</version>
-    <packageSourceUrl>https://github.com/o9nn/elizaos-cpp</packageSourceUrl>
-    <owners>ElizaOS Team</owners>
-    <title>ElizaOS C++ Framework</title>
-    <authors>ElizaOS Team</authors>
-    <projectUrl>https://github.com/o9nn/elizaos-cpp</projectUrl>
-    <copyright>2024 ElizaOS Team</copyright>
-    <licenseUrl>https://github.com/o9nn/elizaos-cpp/blob/main/LICENSE</licenseUrl>
-    <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <tags>elizaos cpp ai agent cognitive framework autonomous</tags>
-    <summary>Next-Generation Cognitive Agent Framework</summary>
-    <description>ElizaOS C++ is a high-performance C++ implementation of the ElizaOS agent framework.</description>
-  </metadata>
-  <files>
-    <file src="tools\**" target="tools" />
-  </files>
-</package>
-"@ | Set-Content -Path choco-package/elizaos-cpp.nuspec
+          $nuspecXml = "<?xml version=`"1.0`" encoding=`"utf-8`"?>`n"
+          $nuspecXml += "<package xmlns=`"http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd`">`n"
+          $nuspecXml += "  <metadata>`n"
+          $nuspecXml += "    <id>elizaos-cpp</id>`n"
+          $nuspecXml += "    <version>$version</version>`n"
+          $nuspecXml += "    <packageSourceUrl>https://github.com/o9nn/elizaos-cpp</packageSourceUrl>`n"
+          $nuspecXml += "    <owners>ElizaOS Team</owners>`n"
+          $nuspecXml += "    <title>ElizaOS C++ Framework</title>`n"
+          $nuspecXml += "    <authors>ElizaOS Team</authors>`n"
+          $nuspecXml += "    <projectUrl>https://github.com/o9nn/elizaos-cpp</projectUrl>`n"
+          $nuspecXml += "    <copyright>2024 ElizaOS Team</copyright>`n"
+          $nuspecXml += "    <licenseUrl>https://github.com/o9nn/elizaos-cpp/blob/main/LICENSE</licenseUrl>`n"
+          $nuspecXml += "    <requireLicenseAcceptance>false</requireLicenseAcceptance>`n"
+          $nuspecXml += "    <tags>elizaos cpp ai agent cognitive framework autonomous</tags>`n"
+          $nuspecXml += "    <summary>Next-Generation Cognitive Agent Framework</summary>`n"
+          $nuspecXml += "    <description>ElizaOS C++ is a high-performance C++ implementation of the ElizaOS agent framework.</description>`n"
+          $nuspecXml += "  </metadata>`n"
+          $nuspecXml += "  <files>`n"
+          $nuspecXml += "    <file src=`"tools\**`" target=`"tools`" />`n"
+          $nuspecXml += "  </files>`n"
+          $nuspecXml += "</package>`n"
+          Set-Content -Path choco-package/elizaos-cpp.nuspec -Value $nuspecXml
         }
         
         # Copy install scripts if they exist
@@ -119,14 +118,13 @@ jobs:
           Copy-Item packaging/chocolatey/tools/*.ps1 choco-package/tools/ -ErrorAction SilentlyContinue
         } else {
           # Create basic install script
-          @"
-`$ErrorActionPreference = 'Stop'
-`$packageName = 'elizaos-cpp'
-`$toolsDir = Split-Path -Parent `$MyInvocation.MyCommand.Definition
-
-Write-Host "Installing ElizaOS C++ Framework..."
-Write-Host "Installation directory: `$toolsDir"
-"@ | Set-Content -Path choco-package/tools/chocolateyinstall.ps1
+          $installScript = "`$ErrorActionPreference = 'Stop'`n"
+          $installScript += "`$packageName = 'elizaos-cpp'`n"
+          $installScript += "`$toolsDir = Split-Path -Parent `$MyInvocation.MyCommand.Definition`n"
+          $installScript += "`n"
+          $installScript += "Write-Host `"Installing ElizaOS C++ Framework...`"`n"
+          $installScript += "Write-Host `"Installation directory: `$toolsDir`"`n"
+          Set-Content -Path choco-package/tools/chocolateyinstall.ps1 -Value $installScript
         }
         
         # Copy built files if they exist
