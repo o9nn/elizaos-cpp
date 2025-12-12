@@ -421,15 +421,15 @@ std::string StaticSiteGenerator::markdownToHtml(const std::string& markdown) con
     // This is a basic implementation - in a real-world scenario, you'd use a proper markdown library
     std::string html = markdown;
     
-    // Convert headers
-    std::regex h1_regex(R"(^# (.+)$)", std::regex_constants::multiline);
-    html = std::regex_replace(html, h1_regex, "<h1>$1</h1>");
+    // Convert headers (using line-by-line processing for MSVC compatibility)
+    std::regex h1_regex(R"((^|\n)# (.+)($|\n))");
+    html = std::regex_replace(html, h1_regex, "$1<h1>$2</h1>$3");
     
-    std::regex h2_regex(R"(^## (.+)$)", std::regex_constants::multiline);
-    html = std::regex_replace(html, h2_regex, "<h2>$1</h2>");
+    std::regex h2_regex(R"((^|\n)## (.+)($|\n))");
+    html = std::regex_replace(html, h2_regex, "$1<h2>$2</h2>$3");
     
-    std::regex h3_regex(R"(^### (.+)$)", std::regex_constants::multiline);
-    html = std::regex_replace(html, h3_regex, "<h3>$1</h3>");
+    std::regex h3_regex(R"((^|\n)### (.+)($|\n))");
+    html = std::regex_replace(html, h3_regex, "$1<h3>$2</h3>$3");
     
     // Convert paragraphs (simple approach)
     std::regex para_regex(R"(\n\n)");

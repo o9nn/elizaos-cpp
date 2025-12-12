@@ -497,7 +497,7 @@ bool DiscordSummarizer::initializeWithToken(const std::string& token) {
 std::future<ChannelSummary> DiscordSummarizer::generateChannelSummary(const std::string& channelId,
                                                                      const std::chrono::system_clock::time_point& startTime,
                                                                      const std::chrono::system_clock::time_point& endTime) {
-    return std::async(std::launch::async, [this, channelId, startTime, endTime]() {
+    return std::async(std::launch::async, [channelId, startTime, endTime]() {
         logInfo("Generating summary for channel: " + channelId, "discord_summarizer");
         
         // Generate mock summary
@@ -521,7 +521,7 @@ std::future<ChannelSummary> DiscordSummarizer::generateChannelSummary(const std:
 std::future<std::vector<ChannelSummary>> DiscordSummarizer::generateGuildSummary(const std::string& guildId,
                                                                                 const std::chrono::system_clock::time_point& startTime,
                                                                                 const std::chrono::system_clock::time_point& endTime) {
-    return std::async(std::launch::async, [this, guildId, startTime, endTime]() {
+    return std::async(std::launch::async, [guildId, startTime, endTime]() {
         logInfo("Generating guild summary for: " + guildId, "discord_summarizer");
         
         std::vector<ChannelSummary> summaries;
