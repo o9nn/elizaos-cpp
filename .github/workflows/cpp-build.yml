@@ -40,7 +40,7 @@ jobs:
     - name: Set up CMake
       uses: jwlawson/actions-setup-cmake@v2
       with:
-        cmake-version: '3.16'
+        cmake-version: '3.20'
 
     - name: Set up MSVC environment (Windows)
       if: runner.os == 'Windows'
@@ -173,7 +173,7 @@ jobs:
     - name: Set up CMake
       uses: jwlawson/actions-setup-cmake@v2
       with:
-        cmake-version: '3.16'
+        cmake-version: '3.20'
 
     - name: Check C++ compiler availability
       run: |

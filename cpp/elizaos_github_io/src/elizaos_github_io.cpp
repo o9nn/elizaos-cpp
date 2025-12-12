@@ -21,23 +21,23 @@ std::string MarkdownProcessor::markdownToHtml(const std::string& markdown) const
     // Process code blocks first (to protect them from other transformations)
     html = processCodeBlocks(html);
     
-    // Process headers
-    std::regex h6_regex(R"(^###### (.+)$)", std::regex_constants::multiline);
+    // Process headers (using ECMAScript regex which handles ^ and $ correctly)
+    std::regex h6_regex(R"((?:^|\n)###### (.+)(?=\n|$))");
     html = std::regex_replace(html, h6_regex, "<h6>$1</h6>");
     
-    std::regex h5_regex(R"(^##### (.+)$)", std::regex_constants::multiline);
+    std::regex h5_regex(R"((?:^|\n)##### (.+)(?=\n|$))");
     html = std::regex_replace(html, h5_regex, "<h5>$1</h5>");
     
-    std::regex h4_regex(R"(^#### (.+)$)", std::regex_constants::multiline);
+    std::regex h4_regex(R"((?:^|\n)#### (.+)(?=\n|$))");
     html = std::regex_replace(html, h4_regex, "<h4>$1</h4>");
     
-    std::regex h3_regex(R"(^### (.+)$)", std::regex_constants::multiline);
+    std::regex h3_regex(R"((?:^|\n)### (.+)(?=\n|$))");
     html = std::regex_replace(html, h3_regex, "<h3>$1</h3>");
     
-    std::regex h2_regex(R"(^## (.+)$)", std::regex_constants::multiline);
+    std::regex h2_regex(R"((?:^|\n)## (.+)(?=\n|$))");
     html = std::regex_replace(html, h2_regex, "<h2>$1</h2>");
     
-    std::regex h1_regex(R"(^# (.+)$)", std::regex_constants::multiline);
+    std::regex h1_regex(R"((?:^|\n)# (.+)(?=\n|$))");
     html = std::regex_replace(html, h1_regex, "<h1>$1</h1>");
     
     // Process links and images
@@ -122,7 +122,7 @@ std::string MarkdownProcessor::generateTableOfContents(const std::string& markdo
 
 std::vector<std::string> MarkdownProcessor::extractHeadings(const std::string& markdown) const {
     std::vector<std::string> headings;
-    std::regex heading_regex(R"(^#{1,6}\s+(.+)$)", std::regex_constants::multiline);
+    std::regex heading_regex(R"((?:^|\n)#{1,6}\s+(.+)(?=\n|$))");
     std::sregex_iterator iter(markdown.begin(), markdown.end(), heading_regex);
     std::sregex_iterator end;
     
