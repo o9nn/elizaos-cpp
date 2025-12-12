@@ -207,7 +207,8 @@ std::vector<std::string> CharacterFileLoader::getSupportedExtensions() const {
 bool CharacterFileLoader::isCharacterFile(const std::string& filename) {
     auto extensions = getSupportedExtensions();
     std::string ext = std::filesystem::path(filename).extension().string();
-    std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+    std::transform(ext.begin(), ext.end(), ext.begin(),
+        [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
     
     return std::find(extensions.begin(), extensions.end(), ext) != extensions.end();
 }

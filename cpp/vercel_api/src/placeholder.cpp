@@ -756,7 +756,8 @@ bool VercelIntegration::isValidProjectName(const std::string& name) const {
 
 std::string VercelIntegration::generateProjectName(const std::string& base_name) const {
     std::string name = base_name;
-    std::transform(name.begin(), name.end(), name.begin(), ::tolower);
+    std::transform(name.begin(), name.end(), name.begin(),
+        [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
     std::replace(name.begin(), name.end(), '_', '-');
     std::replace(name.begin(), name.end(), ' ', '-');
     

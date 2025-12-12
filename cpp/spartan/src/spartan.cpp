@@ -272,7 +272,8 @@ double SpartanAgent::calculateRiskPercentage(double amount, double portfolioValu
 std::string SpartanAgent::generateResponse(const std::string& query) {
     // Simple response generation based on query content
     std::string lowerQuery = query;
-    std::transform(lowerQuery.begin(), lowerQuery.end(), lowerQuery.begin(), ::tolower);
+    std::transform(lowerQuery.begin(), lowerQuery.end(), lowerQuery.begin(),
+        [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
     
     if (lowerQuery.find("price") != std::string::npos || lowerQuery.find("bonk") != std::string::npos) {
         TokenInfo bonk = getTokenInfo("BONK");
@@ -307,7 +308,8 @@ bool SpartanAgent::requiresConfirmation(const std::string& action) {
     // Actions that always require confirmation
     std::vector<std::string> confirmActions = {"swap", "trade", "liquidity", "pool"};
     std::string lowerAction = action;
-    std::transform(lowerAction.begin(), lowerAction.end(), lowerAction.begin(), ::tolower);
+    std::transform(lowerAction.begin(), lowerAction.end(), lowerAction.begin(),
+        [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
     
     for (const auto& confirmAction : confirmActions) {
         if (lowerAction.find(confirmAction) != std::string::npos) {

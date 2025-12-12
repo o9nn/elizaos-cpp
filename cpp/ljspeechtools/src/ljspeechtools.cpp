@@ -526,7 +526,8 @@ std::vector<DatasetPreparator::MetadataEntry> DatasetPreparator::createDataset(
         if (!entry.is_regular_file()) continue;
         
         std::string ext = entry.path().extension().string();
-        std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+        std::transform(ext.begin(), ext.end(), ext.begin(),
+            [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
         
         // Check if it's an audio file
         if (ext == ".wav" || ext == ".mp3" || ext == ".flac" || ext == ".ogg") {
@@ -669,7 +670,8 @@ std::string DatasetPreparator::normalizeTranscription(const std::string& text) {
     std::string normalized = text;
     
     // Convert to lowercase
-    std::transform(normalized.begin(), normalized.end(), normalized.begin(), ::tolower);
+    std::transform(normalized.begin(), normalized.end(), normalized.begin(),
+        [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
     
     // Replace common abbreviations and numbers
     std::vector<std::pair<std::regex, std::string>> replacements = {

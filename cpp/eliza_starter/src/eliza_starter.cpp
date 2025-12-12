@@ -297,7 +297,8 @@ std::string ElizaStarterAgent::getGoodbyeResponse() {
 // Pattern matching helpers
 bool ElizaStarterAgent::containsGreeting(const std::string& input) {
     std::string lower = input;
-    std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
+    std::transform(lower.begin(), lower.end(), lower.begin(),
+        [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
     
     return lower.find("hello") != std::string::npos ||
            lower.find("hi") != std::string::npos ||
@@ -310,7 +311,8 @@ bool ElizaStarterAgent::containsGreeting(const std::string& input) {
 
 bool ElizaStarterAgent::containsHelp(const std::string& input) {
     std::string lower = input;
-    std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
+    std::transform(lower.begin(), lower.end(), lower.begin(),
+        [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
     
     return lower.find("help") != std::string::npos ||
            lower.find("assist") != std::string::npos ||
@@ -320,7 +322,8 @@ bool ElizaStarterAgent::containsHelp(const std::string& input) {
 
 bool ElizaStarterAgent::containsGoodbye(const std::string& input) {
     std::string lower = input;
-    std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
+    std::transform(lower.begin(), lower.end(), lower.begin(),
+        [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
     
     return lower.find("goodbye") != std::string::npos ||
            lower.find("bye") != std::string::npos ||

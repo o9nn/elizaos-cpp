@@ -216,7 +216,8 @@ std::string MarkdownProcessor::escapeHtml(const std::string& text) const {
 
 std::string MarkdownProcessor::generateAnchorId(const std::string& heading) const {
     std::string anchor = heading;
-    std::transform(anchor.begin(), anchor.end(), anchor.begin(), ::tolower);
+    std::transform(anchor.begin(), anchor.end(), anchor.begin(),
+        [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
     std::replace(anchor.begin(), anchor.end(), ' ', '-');
     
     // Remove non-alphanumeric characters except hyphens
