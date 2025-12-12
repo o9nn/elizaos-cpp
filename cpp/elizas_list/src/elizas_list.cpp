@@ -231,12 +231,18 @@ bool ElizasList::updateCollection(const Collection& collection) {
 std::vector<Project> ElizasList::searchProjects(const std::string& query) const {
     std::vector<Project> result;
     std::string lowerQuery = query;
+    std::transform(lowerQuery.begin(), lowerQuery.end(), lowerQuery.begin(),
+        [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
     std::transform(lowerQuery.begin(), lowerQuery.end(), lowerQuery.begin(), [](unsigned char c){ return static_cast<char>(std::tolower(c)); });
     
     std::copy_if(projects_.begin(), projects_.end(), std::back_inserter(result),
                  [&lowerQuery](const Project& project) {
                      std::string lowerName = project.name;
                      std::string lowerDesc = project.description;
+                     std::transform(lowerName.begin(), lowerName.end(), lowerName.begin(),
+                         [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+                     std::transform(lowerDesc.begin(), lowerDesc.end(), lowerDesc.begin(),
+                         [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
                      std::transform(lowerName.begin(), lowerName.end(), lowerName.begin(), [](unsigned char c){ return static_cast<char>(std::tolower(c)); });
                      std::transform(lowerDesc.begin(), lowerDesc.end(), lowerDesc.begin(), [](unsigned char c){ return static_cast<char>(std::tolower(c)); });
                      

@@ -316,11 +316,17 @@ std::vector<AwesomeResource> AwesomeElizaManager::getResourcesBySubcategory(cons
 std::vector<AwesomeResource> AwesomeElizaManager::searchResources(const std::string& query) const {
     std::vector<AwesomeResource> result;
     std::string lowerQuery = query;
+    std::transform(lowerQuery.begin(), lowerQuery.end(), lowerQuery.begin(),
+        [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
     std::transform(lowerQuery.begin(), lowerQuery.end(), lowerQuery.begin(), [](unsigned char c){ return static_cast<char>(std::tolower(c)); });
     
     for (const auto& resource : resources_) {
         std::string lowerName = resource.name;
         std::string lowerDesc = resource.description;
+        std::transform(lowerName.begin(), lowerName.end(), lowerName.begin(),
+            [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+        std::transform(lowerDesc.begin(), lowerDesc.end(), lowerDesc.begin(),
+            [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
         std::transform(lowerName.begin(), lowerName.end(), lowerName.begin(), [](unsigned char c){ return static_cast<char>(std::tolower(c)); });
         std::transform(lowerDesc.begin(), lowerDesc.end(), lowerDesc.begin(), [](unsigned char c){ return static_cast<char>(std::tolower(c)); });
         
