@@ -470,7 +470,7 @@ std::string CharacterProfile::getEmotionalState() const {
     float positivity = (personality.agreeableness + personality.extraversion + (1.0f - personality.neuroticism)) / 3.0f;
     float energy = (personality.extraversion + personality.openness) / 2.0f;
     
-    if (positivity > 0.7f && energy > 0.7f) {
+    if (positivity > 0.7f && energy >= 0.7f) {
         return "excited";
     } else if (positivity > 0.6f) {
         return "positive";

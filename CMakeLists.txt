@@ -123,6 +123,13 @@ add_subdirectory(cpp/discord_summarizer)        # Discord summarizer
 add_subdirectory(cpp/discrub_ext)    # Discrub extension
 add_subdirectory(cpp/plugins_automation)        # Plugin automation
 
+# Stage 7 - New Advanced Modules (Recently Synced)
+add_subdirectory(cpp/sweagent)       # Autonomous Software Engineer agent
+add_subdirectory(cpp/mcp_gateway)    # Model Context Protocol gateway
+add_subdirectory(cpp/otaku)          # DeFi-focused AI agent
+add_subdirectory(cpp/otc_agent)      # Multi-chain OTC trading desk
+add_subdirectory(cpp/classified)     # Game/Challenge system
+
 # Testing
 add_subdirectory(cpp/tests)
 
@@ -550,6 +557,9 @@ install(TARGETS
     
     # Stage 6 - Tools and Automation
     elizaos-discord_summarizer elizaos-discrub_ext elizaos-plugins_automation
+    
+    # Stage 7 - New Advanced Modules
+    elizaos-sweagent elizaos-mcp_gateway elizaos-otaku elizaos-otc_agent elizaos-classified
     
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib
