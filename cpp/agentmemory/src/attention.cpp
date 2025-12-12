@@ -592,10 +592,10 @@ double AttentionAllocator::calculateImportance(const std::string& content, const
     // Keyword matching (simple approach)
     std::vector<std::string> importantKeywords = {"urgent", "important", "critical", "priority", "deadline"};
     std::transform(importantKeywords.begin(), importantKeywords.end(), importantKeywords.begin(),
-                   [](std::string& s) { std::transform(s.begin(), s.end(), s.begin(), ::tolower); return s; });
+                   [](std::string& s) { std::transform(s.begin(), s.end(), s.begin(), [](unsigned char c){ return static_cast<char>(std::tolower(c)); }); return s; });
     
     std::string lowerContent = content;
-    std::transform(lowerContent.begin(), lowerContent.end(), lowerContent.begin(), ::tolower);
+    std::transform(lowerContent.begin(), lowerContent.end(), lowerContent.begin(), [](unsigned char c){ return static_cast<char>(std::tolower(c)); });
     
     for (const auto& keyword : importantKeywords) {
         if (lowerContent.find(keyword) != std::string::npos) {
@@ -617,7 +617,7 @@ double AttentionAllocator::calculateUrgency(const Timestamp& timestamp, const st
     // Tag-based urgency boost
     for (const auto& tag : tags) {
         std::string lowerTag = tag;
-        std::transform(lowerTag.begin(), lowerTag.end(), lowerTag.begin(), ::tolower);
+        std::transform(lowerTag.begin(), lowerTag.end(), lowerTag.begin(), [](unsigned char c){ return static_cast<char>(std::tolower(c)); });
         
         if (lowerTag.find("urgent") != std::string::npos || 
             lowerTag.find("immediate") != std::string::npos ||

@@ -322,7 +322,7 @@ bool CommunityManagerAgent::evaluateMessage(const std::string& message, const st
     
     // Convert to lowercase for comparison
     std::string lowerMessage = message;
-    std::transform(lowerMessage.begin(), lowerMessage.end(), lowerMessage.begin(), ::tolower);
+    std::transform(lowerMessage.begin(), lowerMessage.end(), lowerMessage.begin(), [](unsigned char c){ return static_cast<char>(std::tolower(c)); });
     
     for (const auto& [rule, actionAndReason] : moderationRules_) {
         if (lowerMessage.find(rule) != std::string::npos) {
@@ -683,7 +683,7 @@ bool DeveloperRelationsAgent::isCodeRelated(const std::string& message) const {
     std::vector<std::string> codeKeywords = {"code", "programming", "function", "class", "error", "bug", "implementation", "api", "documentation", "tutorial", "example"};
     
     std::string lowerMessage = message;
-    std::transform(lowerMessage.begin(), lowerMessage.end(), lowerMessage.begin(), ::tolower);
+    std::transform(lowerMessage.begin(), lowerMessage.end(), lowerMessage.begin(), [](unsigned char c){ return static_cast<char>(std::tolower(c)); });
     
     for (const auto& keyword : codeKeywords) {
         if (lowerMessage.find(keyword) != std::string::npos) {

@@ -206,7 +206,7 @@ void ContentScanner::addBlockedDomains(const std::vector<std::string>& domains) 
 
 bool ContentScanner::detectProfanity(const std::string& content) {
     std::string lowerContent = content;
-    std::transform(lowerContent.begin(), lowerContent.end(), lowerContent.begin(), ::tolower);
+    std::transform(lowerContent.begin(), lowerContent.end(), lowerContent.begin(), [](unsigned char c){ return static_cast<char>(std::tolower(c)); });
     
     for (const auto& word : profanityWords_) {
         if (lowerContent.find(word) != std::string::npos) {
@@ -259,7 +259,7 @@ bool ContentScanner::detectPhishing(const std::string& content) {
     };
     
     std::string lowerContent = content;
-    std::transform(lowerContent.begin(), lowerContent.end(), lowerContent.begin(), ::tolower);
+    std::transform(lowerContent.begin(), lowerContent.end(), lowerContent.begin(), [](unsigned char c){ return static_cast<char>(std::tolower(c)); });
     
     for (const auto& pattern : suspiciousPatterns) {
         if (lowerContent.find(pattern) != std::string::npos) {

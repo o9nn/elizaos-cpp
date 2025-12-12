@@ -241,19 +241,19 @@ std::string ContentManager::stripMetadata(const std::string& content) const {
 std::string ContentManager::generatePageId(const std::filesystem::path& file_path) const {
     std::string id = file_path.stem().string();
     std::replace(id.begin(), id.end(), ' ', '_');
-    std::transform(id.begin(), id.end(), id.begin(), ::tolower);
+    std::transform(id.begin(), id.end(), id.begin(), [](unsigned char c){ return static_cast<char>(std::tolower(c)); });
     return id;
 }
 
 bool ContentManager::isMarkdownFile(const std::filesystem::path& file_path) const {
     std::string ext = file_path.extension().string();
-    std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+    std::transform(ext.begin(), ext.end(), ext.begin(), [](unsigned char c){ return static_cast<char>(std::tolower(c)); });
     return ext == ".md" || ext == ".markdown";
 }
 
 bool ContentManager::isHtmlFile(const std::filesystem::path& file_path) const {
     std::string ext = file_path.extension().string();
-    std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+    std::transform(ext.begin(), ext.end(), ext.begin(), [](unsigned char c){ return static_cast<char>(std::tolower(c)); });
     return ext == ".html" || ext == ".htm";
 }
 
