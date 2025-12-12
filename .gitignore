@@ -2,6 +2,7 @@
 build/
 build_*/
 cmake-build-*/
+_codeql_build_dir/
 *.o
 *.a
 *.so
