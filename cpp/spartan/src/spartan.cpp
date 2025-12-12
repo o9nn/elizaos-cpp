@@ -381,20 +381,22 @@ SpartanConfig getSpartanConfigFromEnvironment() {
 #ifdef _MSC_VER
     // Use _dupenv_s for MSVC to avoid deprecation warnings
     char* rpcUrl = nullptr;
-    size_t len = 0;
-    if (_dupenv_s(&rpcUrl, &len, "SOLANA_RPC_URL") == 0 && rpcUrl) {
+    size_t rpcUrlLen = 0;
+    if (_dupenv_s(&rpcUrl, &rpcUrlLen, "SOLANA_RPC_URL") == 0 && rpcUrl) {
         config.solanaRpcUrl = rpcUrl;
         free(rpcUrl);
     }
     
     char* publicKey = nullptr;
-    if (_dupenv_s(&publicKey, &len, "SOLANA_PUBLIC_KEY") == 0 && publicKey) {
+    size_t publicKeyLen = 0;
+    if (_dupenv_s(&publicKey, &publicKeyLen, "SOLANA_PUBLIC_KEY") == 0 && publicKey) {
         config.solanaPublicKey = publicKey;
         free(publicKey);
     }
     
     char* privateKey = nullptr;
-    if (_dupenv_s(&privateKey, &len, "SOLANA_PRIVATE_KEY") == 0 && privateKey) {
+    size_t privateKeyLen = 0;
+    if (_dupenv_s(&privateKey, &privateKeyLen, "SOLANA_PRIVATE_KEY") == 0 && privateKey) {
         config.solanaPrivateKey = privateKey;
         free(privateKey);
     }
