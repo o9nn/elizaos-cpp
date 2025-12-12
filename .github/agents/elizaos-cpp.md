@@ -9,6 +9,23 @@ description: ElizaOS C++ - High-Performance Cognitive Agent Framework
 
 ElizaOS C++ is a high-performance C++ implementation of the ElizaOS agent framework for building sophisticated autonomous agents with advanced cognitive capabilities, distributed cognition, and adaptive attention allocation. This agent document serves as a comprehensive guide for understanding, developing, and extending the ElizaOS C++ framework.
 
+## Table of Contents
+
+1. [Project Status](#project-status) - Current completion status and metrics
+2. [Project Philosophy](#project-philosophy) - Core principles and design philosophy
+3. [Architecture Overview](#architecture-overview) - System architecture and layers
+4. [Core Subsystems](#core-subsystems) - Detailed subsystem documentation
+5. [Implementation Status](#implementation-status) - Module-by-module status
+6. [Development Guidelines](#development-guidelines) - C++ best practices
+7. [Quick Start Guide](#quick-start-guide) - Get started in minutes
+8. [Building and Testing](#building-and-testing) - Build instructions and testing
+9. [Usage Examples](#usage-examples) - Code examples and patterns
+10. [Performance Characteristics](#performance-characteristics) - Performance metrics
+11. [Why ElizaOS C++?](#why-elizaos-c) - Unique advantages and use cases
+12. [Vision and Future Direction](#vision-and-future-direction) - Future roadmap
+13. [Documentation Resources](#documentation-resources) - Additional documentation
+14. [Contributing](#contributing) - How to contribute
+
 ## Project Status
 
 ### 🎉 90% Complete - Production Ready
@@ -455,6 +472,23 @@ elizaos-cpp/
 └── CMakeLists.txt            # Build configuration
 ```
 
+## Quick Start Guide
+
+For developers who want to get started immediately:
+
+```bash
+# 1. Clone and build
+git clone https://github.com/o9nn/elizaos-cpp.git
+cd elizaos-cpp
+mkdir build && cd build
+cmake .. && make -j$(nproc)
+
+# 2. Run tests to verify installation
+ctest
+
+# 3. Start developing - see Usage Examples section below
+```
+
 ## Building and Testing
 
 ### Prerequisites
@@ -563,7 +597,7 @@ using namespace elizaos;
 int main() {
     // Create agent configuration
     AgentConfig config;
-    config.agentId = "agent-001";
+    config.agentId = UUID::generate(); // Generate unique agent ID
     config.agentName = "CognitiveAgent";
     config.bio = "An adaptive cognitive agent";
     config.lore = "Born from the convergence of symbolic and neural AI";
