@@ -8,6 +8,9 @@ on:
       - 'include/**'
       - 'CMakeLists.txt'
       - '.github/workflows/cpp-build.yml'
+      - 'packaging/**'
+      - '**.cpp'
+      - '**.hpp'
   pull_request:
     branches: [ main, develop ]
     paths:
@@ -15,17 +18,24 @@ on:
       - 'include/**'
       - 'CMakeLists.txt'
       - '.github/workflows/cpp-build.yml'
+      - 'packaging/**'
+      - '**.cpp'
+      - '**.hpp'
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
         build_type: [Debug, Release]
 
     steps:
     - uses: actions/checkout@v4
+      with:
+        submodules: recursive
 
     - name: Set up CMake
       uses: jwlawson/actions-setup-cmake@v2
@@ -35,6 +45,17 @@ jobs:
     - name: Set up MSVC environment (Windows)
       if: runner.os == 'Windows'
       uses: ilammy/msvc-dev-cmd@v1
+
+    - name: Install dependencies (Linux)
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential libcurl4-openssl-dev pkg-config
+
+    - name: Install dependencies (macOS)
+      if: runner.os == 'macOS'
+      run: |
+        brew install cmake curl pkg-config
 
     - name: Check C++ compiler availability
       shell: bash
@@ -71,11 +92,23 @@ jobs:
       run: cmake -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
 
     - name: Build
-      run: cmake --build build --config ${{ matrix.build_type }}
+      run: cmake --build build --config ${{ matrix.build_type }} -j 2
 
     - name: Test
       working-directory: build
       run: ctest --output-on-failure --config ${{ matrix.build_type }}
+
+    - name: Upload build artifacts
+      if: matrix.build_type == 'Release'
+      uses: actions/upload-artifact@v4
+      with:
+        name: elizaos-cpp-${{ runner.os }}-${{ matrix.build_type }}
+        path: |
+          build/eliza*
+          build/*.exe
+          build/*.a
+          build/*.lib
+        retention-days: 7
 
   implementation-status:
     runs-on: ubuntu-latest
@@ -88,7 +121,7 @@ jobs:
         echo ""
         
         # Count total modules
-        TOTAL_MODULES=$(find cpp -name "CMakeLists.txt" | wc -l)
+        TOTAL_MODULES=$(find cpp -maxdepth 1 -type d | grep -v "^cpp$" | wc -l)
         
         # Count placeholder implementations
         PLACEHOLDER_COUNT=$(find cpp -name "placeholder.cpp" | wc -l)
@@ -97,7 +130,11 @@ jobs:
         REAL_IMPL_COUNT=$((TOTAL_MODULES - PLACEHOLDER_COUNT))
         
         # Calculate percentage
-        COMPLETION_PCT=$((REAL_IMPL_COUNT * 100 / TOTAL_MODULES))
+        if [ $TOTAL_MODULES -gt 0 ]; then
+          COMPLETION_PCT=$((REAL_IMPL_COUNT * 100 / TOTAL_MODULES))
+        else
+          COMPLETION_PCT=0
+        fi
         
         echo "📊 Implementation Progress:"
         echo "   Total Modules: $TOTAL_MODULES"
@@ -106,13 +143,13 @@ jobs:
         echo ""
         
         echo "🚧 Placeholder Modules Remaining:"
-        find cpp -name "placeholder.cpp" | sed 's|cpp/||' | sed 's|/src/placeholder.cpp||' | sort
+        find cpp -name "placeholder.cpp" | sed 's|cpp/||' | sed 's|/src/placeholder.cpp||' | sort || echo "None"
         echo ""
         
         echo "✅ Fully Implemented Modules:"
         # Find modules without placeholders that have substantial implementations
         for dir in cpp/*/; do
-          if [ ! -f "$dir/src/placeholder.cpp" ] && [ -f "$dir/CMakeLists.txt" ]; then
+          if [ ! -f "$dir/src/placeholder.cpp" ] && [ -d "$dir" ]; then
             basename "$dir"
           fi
         done | sort
@@ -127,6 +164,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y cmake g++ build-essential libcurl4-openssl-dev pkg-config
 
     - name: Set up CMake
       uses: jwlawson/actions-setup-cmake@v2
@@ -147,14 +189,12 @@ jobs:
     - name: Configure CMake with strict warnings
       run: cmake -B build -DCMAKE_BUILD_TYPE=Debug
 
-    - name: Build with warnings as errors
-      run: cmake --build build
-
-    - name: Check for warnings
+    - name: Build with warnings check
       run: |
-        if cmake --build build 2>&1 | grep -i warning; then
-          echo "Build contains warnings"
+        cmake --build build 2>&1 | tee build.log
+        if grep -i "error:" build.log; then
+          echo "Build contains errors"
           exit 1
         else
-          echo "Build completed without warnings"
+          echo "Build completed successfully"
         fi

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+  <metadata>
+    <id>elizaos-cpp</id>
+    <version>1.0.0</version>
+    <packageSourceUrl>https://github.com/o9nn/elizaos-cpp</packageSourceUrl>
+    <owners>ElizaOS Team</owners>
+    <title>ElizaOS C++ Framework</title>
+    <authors>ElizaOS Team</authors>
+    <projectUrl>https://github.com/o9nn/elizaos-cpp</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/o9nn/elizaos-cpp/main/docs/logo.png</iconUrl>
+    <copyright>2024 ElizaOS Team</copyright>
+    <licenseUrl>https://github.com/o9nn/elizaos-cpp/blob/main/LICENSE</licenseUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <projectSourceUrl>https://github.com/o9nn/elizaos-cpp</projectSourceUrl>
+    <docsUrl>https://github.com/o9nn/elizaos-cpp/blob/main/README.md</docsUrl>
+    <bugTrackerUrl>https://github.com/o9nn/elizaos-cpp/issues</bugTrackerUrl>
+    <tags>elizaos cpp ai agent cognitive framework autonomous</tags>
+    <summary>Next-Generation Cognitive Agent Framework</summary>
+    <description>
+ElizaOS C++ is a high-performance C++ implementation of the ElizaOS agent framework, designed for building sophisticated autonomous agents with advanced cognitive capabilities, distributed cognition, and adaptive attention allocation.
+
+## Features
+- Event-Driven Agent Loop with threaded execution
+- Memory System with context-aware storage and semantic retrieval
+- Task Orchestration and distributed agent coordination
+- AI Core with decision-making engine
+- Communication System for inter-agent messaging
+- Browser Automation for web interaction
+- Comprehensive Logging and monitoring
+
+## Requirements
+- C++17 compatible compiler (MSVC 2019+ recommended)
+- CMake 3.16 or higher
+- libcurl for HTTP operations
+    </description>
+    <releaseNotes>https://github.com/o9nn/elizaos-cpp/releases</releaseNotes>
+    <dependencies>
+      <dependency id="cmake" version="3.16.0" />
+      <dependency id="visualstudio2019buildtools" version="16.0.0" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="tools\**" target="tools" />
+    <file src="..\..\LICENSE" target="LICENSE.txt" />
+    <file src="..\..\README.md" target="README.md" />
+  </files>
+</package>

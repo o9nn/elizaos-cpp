@@ -758,6 +758,7 @@ std::string VercelIntegration::generateProjectName(const std::string& base_name)
     std::string name = base_name;
     std::transform(name.begin(), name.end(), name.begin(),
         [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+    std::transform(name.begin(), name.end(), name.begin(), [](unsigned char c){ return static_cast<char>(std::tolower(c)); });
     std::replace(name.begin(), name.end(), '_', '-');
     std::replace(name.begin(), name.end(), ' ', '-');
     

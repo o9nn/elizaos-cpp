@@ -274,6 +274,7 @@ std::string SpartanAgent::generateResponse(const std::string& query) {
     std::string lowerQuery = query;
     std::transform(lowerQuery.begin(), lowerQuery.end(), lowerQuery.begin(),
         [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+    std::transform(lowerQuery.begin(), lowerQuery.end(), lowerQuery.begin(), [](unsigned char c){ return static_cast<char>(std::tolower(c)); });
     
     if (lowerQuery.find("price") != std::string::npos || lowerQuery.find("bonk") != std::string::npos) {
         TokenInfo bonk = getTokenInfo("BONK");
@@ -310,6 +311,7 @@ bool SpartanAgent::requiresConfirmation(const std::string& action) {
     std::string lowerAction = action;
     std::transform(lowerAction.begin(), lowerAction.end(), lowerAction.begin(),
         [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+    std::transform(lowerAction.begin(), lowerAction.end(), lowerAction.begin(), [](unsigned char c){ return static_cast<char>(std::tolower(c)); });
     
     for (const auto& confirmAction : confirmActions) {
         if (lowerAction.find(confirmAction) != std::string::npos) {

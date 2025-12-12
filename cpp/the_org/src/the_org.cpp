@@ -324,6 +324,7 @@ bool CommunityManagerAgent::evaluateMessage(const std::string& message, const st
     std::string lowerMessage = message;
     std::transform(lowerMessage.begin(), lowerMessage.end(), lowerMessage.begin(),
         [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+    std::transform(lowerMessage.begin(), lowerMessage.end(), lowerMessage.begin(), [](unsigned char c){ return static_cast<char>(std::tolower(c)); });
     
     for (const auto& [rule, actionAndReason] : moderationRules_) {
         if (lowerMessage.find(rule) != std::string::npos) {
@@ -686,6 +687,7 @@ bool DeveloperRelationsAgent::isCodeRelated(const std::string& message) const {
     std::string lowerMessage = message;
     std::transform(lowerMessage.begin(), lowerMessage.end(), lowerMessage.begin(),
         [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+    std::transform(lowerMessage.begin(), lowerMessage.end(), lowerMessage.begin(), [](unsigned char c){ return static_cast<char>(std::tolower(c)); });
     
     for (const auto& keyword : codeKeywords) {
         if (lowerMessage.find(keyword) != std::string::npos) {

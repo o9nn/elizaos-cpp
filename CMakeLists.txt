@@ -585,3 +585,106 @@ if(CURL_FOUND)
 else()
     message(STATUS "  libcurl: Not found (HTTP functionality will be limited)")
 endif()
+
+# ============================================================================
+# CPack Configuration for Multi-Platform Packaging
+# ============================================================================
+
+# Install header files
+install(DIRECTORY include/
+    DESTINATION include
+    FILES_MATCHING PATTERN "*.hpp" PATTERN "*.h"
+)
+
+# Install documentation
+install(FILES 
+    README.md
+    LICENSE
+    DESTINATION share/doc/elizaos-cpp
+    OPTIONAL
+)
+
+# CPack general settings
+set(CPACK_PACKAGE_NAME "elizaos-cpp")
+set(CPACK_PACKAGE_VENDOR "ElizaOS")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Next-Generation Cognitive Agent Framework")
+set(CPACK_PACKAGE_DESCRIPTION "A high-performance C++ implementation of the ElizaOS agent framework for building sophisticated autonomous agents with advanced cognitive capabilities.")
+set(CPACK_PACKAGE_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
+set(CPACK_PACKAGE_VERSION_MINOR ${PROJECT_VERSION_MINOR})
+set(CPACK_PACKAGE_VERSION_PATCH ${PROJECT_VERSION_PATCH})
+set(CPACK_PACKAGE_VERSION ${PROJECT_VERSION})
+set(CPACK_PACKAGE_HOMEPAGE_URL "https://github.com/o9nn/elizaos-cpp")
+set(CPACK_PACKAGE_CONTACT "ElizaOS Team <team@elizaos.ai>")
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
+set(CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_SOURCE_DIR}/README.md")
+
+# DEB package configuration
+set(CPACK_DEBIAN_PACKAGE_MAINTAINER "ElizaOS Team <team@elizaos.ai>")
+set(CPACK_DEBIAN_PACKAGE_SECTION "devel")
+set(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "libcurl4, libstdc++6 (>= 9.0), libc6 (>= 2.31)")
+set(CPACK_DEBIAN_PACKAGE_HOMEPAGE "https://github.com/o9nn/elizaos-cpp")
+set(CPACK_DEBIAN_FILE_NAME "DEB-DEFAULT")
+set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA "${CMAKE_CURRENT_SOURCE_DIR}/packaging/debian/postinst;${CMAKE_CURRENT_SOURCE_DIR}/packaging/debian/prerm")
+
+# RPM package configuration
+set(CPACK_RPM_PACKAGE_LICENSE "MIT")
+set(CPACK_RPM_PACKAGE_GROUP "Development/Libraries")
+set(CPACK_RPM_PACKAGE_URL "https://github.com/o9nn/elizaos-cpp")
+set(CPACK_RPM_PACKAGE_REQUIRES "libcurl >= 7.0, glibc >= 2.31")
+set(CPACK_RPM_FILE_NAME "RPM-DEFAULT")
+set(CPACK_RPM_PACKAGE_RELEASE "1")
+set(CPACK_RPM_PACKAGE_ARCHITECTURE "x86_64")
+
+# NSIS (Windows installer) configuration
+set(CPACK_NSIS_PACKAGE_NAME "ElizaOS C++")
+set(CPACK_NSIS_DISPLAY_NAME "ElizaOS C++ Framework")
+set(CPACK_NSIS_HELP_LINK "https://github.com/o9nn/elizaos-cpp")
+set(CPACK_NSIS_URL_INFO_ABOUT "https://github.com/o9nn/elizaos-cpp")
+set(CPACK_NSIS_CONTACT "team@elizaos.ai")
+set(CPACK_NSIS_MODIFY_PATH ON)
+set(CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL ON)
+
+# Archive configuration (TGZ, ZIP)
+set(CPACK_ARCHIVE_COMPONENT_INSTALL ON)
+
+# Component configuration
+set(CPACK_COMPONENTS_ALL libraries headers executables documentation)
+set(CPACK_COMPONENT_LIBRARIES_DISPLAY_NAME "Libraries")
+set(CPACK_COMPONENT_HEADERS_DISPLAY_NAME "C++ Headers")
+set(CPACK_COMPONENT_EXECUTABLES_DISPLAY_NAME "Executables")
+set(CPACK_COMPONENT_DOCUMENTATION_DISPLAY_NAME "Documentation")
+
+# Generator selection based on platform
+if(WIN32)
+    set(CPACK_GENERATOR "NSIS;ZIP")
+elseif(APPLE)
+    set(CPACK_GENERATOR "TGZ;productbuild")
+else()
+    set(CPACK_GENERATOR "DEB;RPM;TGZ")
+endif()
+
+# Source package configuration
+set(CPACK_SOURCE_GENERATOR "TGZ;ZIP")
+list(APPEND CPACK_SOURCE_IGNORE_FILES
+    "/.git/"
+    "/.github/"
+    "/build/"
+    "/.vscode/"
+    "/.idea/"
+    "\\\\.swp$"
+    "\\\\.swo$"
+    "~$"
+)
+
+include(CPack)
+
+message(STATUS "")
+message(STATUS "Packaging configuration:")
+message(STATUS "  Package name: ${CPACK_PACKAGE_NAME}")
+message(STATUS "  Package version: ${CPACK_PACKAGE_VERSION}")
+message(STATUS "  Generators: ${CPACK_GENERATOR}")
+message(STATUS "")
+message(STATUS "To create packages, run:")
+message(STATUS "  cd build && cpack")
+message(STATUS "")

@@ -1,0 +1,258 @@
+[  1%] Building CXX object cpp/core/CMakeFiles/elizaos-core.dir/src/core.cpp.o
+[  1%] Linking CXX static library libelizaos-core.a
+[  1%] Built target elizaos-core
+[  1%] Building CXX object cpp/spartan/CMakeFiles/elizaos-spartan.dir/src/spartan.cpp.o
+[  2%] Linking CXX static library libelizaos-spartan.a
+[  2%] Built target elizaos-spartan
+[  3%] Building CXX object CMakeFiles/spartan_test.dir/spartan_test.cpp.o
+[  3%] Linking CXX executable spartan_test
+[  3%] Built target spartan_test
+[  3%] Building CXX object cpp/agentlogger/CMakeFiles/elizaos-agentlogger.dir/src/agentlogger.cpp.o
+[  4%] Linking CXX static library libelizaos-agentlogger.a
+[  4%] Built target elizaos-agentlogger
+[  5%] Building CXX object CMakeFiles/spartan_demo.dir/spartan_demo.cpp.o
+[  5%] Linking CXX executable spartan_demo
+[  5%] Built target spartan_demo
+[  5%] Building CXX object cpp/livevideochat/CMakeFiles/elizaos-livevideochat.dir/src/placeholder.cpp.o
+[  6%] Building CXX object cpp/livevideochat/CMakeFiles/elizaos-livevideochat.dir/src/livevideochat_server.cpp.o
+[  6%] Linking CXX static library libelizaos-livevideochat.a
+[  6%] Built target elizaos-livevideochat
+[  7%] Building CXX object cpp/evolutionary/CMakeFiles/elizaos-evolutionary.dir/src/evolutionary.cpp.o
+[  7%] Building CXX object cpp/evolutionary/CMakeFiles/elizaos-evolutionary.dir/src/pattern_extraction.cpp.o
+[  8%] Building CXX object cpp/evolutionary/CMakeFiles/elizaos-evolutionary.dir/src/adaptation_hooks_simple.cpp.o
+[  8%] Linking CXX static library libelizaos-evolutionary.a
+[  8%] Built target elizaos-evolutionary
+[  9%] Building CXX object cpp/ljspeechtools/CMakeFiles/elizaos-ljspeechtools.dir/src/ljspeechtools.cpp.o
+[  9%] Linking CXX static library libelizaos-ljspeechtools.a
+[  9%] Built target elizaos-ljspeechtools
+[ 10%] Building CXX object CMakeFiles/stage4_demo.dir/demo_stage4.cpp.o
+[ 10%] Linking CXX executable stage4_demo
+[ 10%] Built target stage4_demo
+[ 11%] Building CXX object cpp/website/CMakeFiles/elizaos-website.dir/src/placeholder.cpp.o
+[ 11%] Linking CXX static library libelizaos-website.a
+[ 11%] Built target elizaos-website
+[ 12%] Building CXX object cpp/elizaos_github_io/CMakeFiles/elizaos-elizaos_github_io.dir/src/placeholder.cpp.o
+[ 12%] Linking CXX static library libelizaos-elizaos_github_io.a
+[ 12%] Built target elizaos-elizaos_github_io
+[ 13%] Building CXX object cpp/vercel_api/CMakeFiles/elizaos-vercel_api.dir/src/placeholder.cpp.o
+[ 13%] Linking CXX static library libelizaos-vercel_api.a
+[ 13%] Built target elizaos-vercel_api
+[ 14%] Building CXX object CMakeFiles/stage5_demo.dir/demo_stage5.cpp.o
+[ 14%] Linking CXX executable stage5_demo
+[ 14%] Built target stage5_demo
+[ 14%] Building CXX object cpp/awesome_eliza/CMakeFiles/elizaos-awesome_eliza.dir/src/awesome_eliza.cpp.o
+[ 15%] Linking CXX static library libelizaos-awesome_eliza.a
+[ 15%] Built target elizaos-awesome_eliza
+[ 15%] Building CXX object CMakeFiles/awesome_eliza_demo.dir/awesome_eliza_demo.cpp.o
+[ 16%] Linking CXX executable awesome_eliza_demo
+[ 16%] Built target awesome_eliza_demo
+[ 16%] Building CXX object cpp/agentloop/CMakeFiles/elizaos-agentloop.dir/src/agentloop.cpp.o
+[ 17%] Linking CXX static library libelizaos-agentloop.a
+[ 17%] Built target elizaos-agentloop
+[ 17%] Building CXX object cpp/agentmemory/CMakeFiles/elizaos-agentmemory.dir/src/agentmemory.cpp.o
+[ 18%] Building CXX object cpp/agentmemory/CMakeFiles/elizaos-agentmemory.dir/src/attention.cpp.o
+[ 18%] Linking CXX static library libelizaos-agentmemory.a
+[ 18%] Built target elizaos-agentmemory
+[ 18%] Building CXX object cpp/the_org/CMakeFiles/elizaos-the_org.dir/src/the_org.cpp.o
+[ 19%] Building CXX object cpp/the_org/CMakeFiles/elizaos-the_org.dir/src/placeholder.cpp.o
+[ 19%] Linking CXX static library libelizaos-the_org.a
+[ 19%] Built target elizaos-the_org
+[ 20%] Building CXX object CMakeFiles/the_org_demo.dir/the_org_demo.cpp.o
+[ 21%] Linking CXX executable the_org_demo
+[ 21%] Built target the_org_demo
+[ 22%] Building CXX object cpp/agentaction/CMakeFiles/elizaos-agentaction.dir/src/agentaction.cpp.o
+[ 22%] Linking CXX static library libelizaos-agentaction.a
+[ 22%] Built target elizaos-agentaction
+[ 23%] Building CXX object cpp/knowledge/CMakeFiles/elizaos-knowledge.dir/src/placeholder.cpp.o
+[ 24%] Linking CXX static library libelizaos-knowledge.a
+[ 24%] Built target elizaos-knowledge
+[ 24%] Building CXX object cpp/characters/CMakeFiles/elizaos-characters.dir/src/placeholder.cpp.o
+[ 25%] Building CXX object cpp/characters/CMakeFiles/elizaos-characters.dir/src/character_json_loader.cpp.o
+[ 25%] Linking CXX static library libelizaos-characters.a
+[ 25%] Built target elizaos-characters
+[ 25%] Building CXX object cpp/eliza/CMakeFiles/elizaos-eliza.dir/src/placeholder.cpp.o
+[ 26%] Linking CXX static library libelizaos-eliza.a
+[ 26%] Built target elizaos-eliza
+[ 27%] Building CXX object CMakeFiles/eliza.dir/eliza_main.cpp.o
+[ 27%] Linking CXX executable eliza
+[ 27%] Built target eliza
+[ 27%] Building CXX object cpp/easycompletion/CMakeFiles/elizaos-easycompletion.dir/src/easycompletion.cpp.o
+[ 28%] Linking CXX static library libelizaos-easycompletion.a
+[ 28%] Built target elizaos-easycompletion
+[ 28%] Building CXX object CMakeFiles/easycompletion_demo.dir/easycompletion_demo.cpp.o
+[ 29%] Linking CXX executable easycompletion_demo
+[ 29%] Built target easycompletion_demo
+[ 29%] Building CXX object CMakeFiles/characters_demo.dir/characters_demo.cpp.o
+[ 30%] Linking CXX executable characters_demo
+[ 30%] Built target characters_demo
+[ 30%] Building CXX object CMakeFiles/knowledge_demo.dir/knowledge_demo.cpp.o
+[ 31%] Linking CXX executable knowledge_demo
+[ 31%] Built target knowledge_demo
+[ 32%] Building CXX object cpp/elizas_list/CMakeFiles/elizaos-elizas_list.dir/src/elizas_list.cpp.o
+[ 32%] Linking CXX static library libelizaos-elizas_list.a
+[ 32%] Built target elizaos-elizas_list
+[ 32%] Building CXX object CMakeFiles/elizas_list_demo.dir/elizas_list_demo.cpp.o
+[ 33%] Linking CXX executable elizas_list_demo
+[ 33%] Built target elizas_list_demo
+[ 33%] Building CXX object CMakeFiles/knowledge_quick_demo.dir/knowledge_quick_demo.cpp.o
+[ 34%] Linking CXX executable knowledge_quick_demo
+[ 34%] Built target knowledge_quick_demo
+[ 34%] Building CXX object CMakeFiles/elizas_list_real_test.dir/elizas_list_real_test.cpp.o
+[ 35%] Linking CXX executable elizas_list_real_test
+[ 35%] Built target elizas_list_real_test
+[ 35%] Building CXX object CMakeFiles/elizas_list_unit_test.dir/elizas_list_unit_test.cpp.o
+[ 36%] Linking CXX executable elizas_list_unit_test
+[ 36%] Built target elizas_list_unit_test
+[ 36%] Building CXX object cpp/eliza_3d_hyperfy_starter/CMakeFiles/elizaos-eliza_3d_hyperfy_starter.dir/src/placeholder.cpp.o
+[ 37%] Linking CXX static library libelizaos-eliza_3d_hyperfy_starter.a
+[ 37%] Built target elizaos-eliza_3d_hyperfy_starter
+[ 38%] Building CXX object CMakeFiles/eliza_3d_hyperfy_starter_demo.dir/eliza_3d_hyperfy_starter_demo.cpp.o
+[ 38%] Linking CXX executable eliza_3d_hyperfy_starter_demo
+[ 38%] Built target eliza_3d_hyperfy_starter_demo
+[ 39%] Building CXX object cpp/elizas_world/CMakeFiles/elizaos-elizas_world.dir/src/elizas_world.cpp.o
+[ 39%] Linking CXX static library libelizaos-elizas_world.a
+[ 39%] Built target elizaos-elizas_world
+[ 39%] Building CXX object CMakeFiles/elizas_world_demo.dir/elizas_world_demo.cpp.o
+[ 40%] Linking CXX executable elizas_world_demo
+[ 40%] Built target elizas_world_demo
+[ 40%] Building CXX object _deps/googletest-build/googletest/CMakeFiles/gtest.dir/src/gtest-all.cc.o
+[ 41%] Linking CXX static library ../../../lib/libgtest.a
+[ 41%] Built target gtest
+[ 42%] Building CXX object CMakeFiles/elizas_world_test.dir/elizas_world_test.cpp.o
+[ 42%] Building CXX object CMakeFiles/elizas_world_test.dir/cpp/tests/src/test_elizas_world.cpp.o
+[ 43%] Linking CXX executable elizas_world_test
+[ 43%] Built target elizas_world_test
+[ 44%] Building CXX object cpp/plugins_automation/CMakeFiles/elizaos-plugins_automation.dir/src/plugins_automation.cpp.o
+[ 44%] Linking CXX static library libelizaos-plugins_automation.a
+[ 44%] Built target elizaos-plugins_automation
+[ 45%] Building CXX object cpp/registry/CMakeFiles/elizaos-registry.dir/src/registry.cpp.o
+[ 46%] Linking CXX static library libelizaos-registry.a
+[ 46%] Built target elizaos-registry
+[ 47%] Building CXX object CMakeFiles/registry_demo.dir/registry_demo.cpp.o
+[ 47%] Linking CXX executable registry_demo
+[ 47%] Built target registry_demo
+[ 48%] Building CXX object cpp/agentshell/CMakeFiles/elizaos-agentshell.dir/src/agentshell.cpp.o
+[ 48%] Linking CXX static library libelizaos-agentshell.a
+[ 48%] Built target elizaos-agentshell
+[ 48%] Building CXX object cpp/agentcomms/CMakeFiles/elizaos-agentcomms.dir/src/agentcomms.cpp.o
+[ 49%] Linking CXX static library libelizaos-agentcomms.a
+[ 49%] Built target elizaos-agentcomms
+[ 50%] Building CXX object CMakeFiles/shell_demo.dir/shell_demo.cpp.o
+[ 50%] Linking CXX executable shell_demo
+[ 50%] Built target shell_demo
+[ 50%] Building CXX object CMakeFiles/agentshell_test.dir/agentshell_test.cpp.o
+[ 51%] Linking CXX executable agentshell_test
+[ 51%] Built target agentshell_test
+[ 51%] Building CXX object _deps/googletest-build/googlemock/CMakeFiles/gmock.dir/src/gmock-all.cc.o
+[ 52%] Linking CXX static library ../../../lib/libgmock.a
+[ 52%] Built target gmock
+[ 52%] Building CXX object _deps/googletest-build/googlemock/CMakeFiles/gmock_main.dir/src/gmock_main.cc.o
+[ 53%] Linking CXX static library ../../../lib/libgmock_main.a
+[ 53%] Built target gmock_main
+[ 53%] Building CXX object _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/src/gtest_main.cc.o
+[ 54%] Linking CXX static library ../../../lib/libgtest_main.a
+[ 54%] Built target gtest_main
+[ 55%] Building CXX object cpp/agentagenda/CMakeFiles/elizaos-agentagenda.dir/src/agentagenda.cpp.o
+[ 55%] Linking CXX static library libelizaos-agentagenda.a
+[ 55%] Built target elizaos-agentagenda
+[ 56%] Building CXX object cpp/agentbrowser/CMakeFiles/elizaos-agentbrowser.dir/src/placeholder.cpp.o
+[ 57%] Linking CXX static library libelizaos-agentbrowser.a
+[ 57%] Built target elizaos-agentbrowser
+[ 58%] Building CXX object cpp/auto_fun/CMakeFiles/elizaos-auto_fun.dir/src/auto_fun.cpp.o
+[ 58%] Linking CXX static library libelizaos-auto_fun.a
+[ 58%] Built target elizaos-auto_fun
+[ 59%] Building CXX object cpp/autofun_idl/CMakeFiles/elizaos-autofun_idl.dir/src/autofun_idl.cpp.o
+[ 60%] Linking CXX static library libelizaos-autofun_idl.a
+[ 60%] Built target elizaos-autofun_idl
+[ 60%] Building CXX object cpp/autofun_idl/examples/CMakeFiles/autofun_idl_demo.dir/autofun_idl_demo.cpp.o
+[ 61%] Linking CXX executable autofun_idl_demo
+[ 61%] Built target autofun_idl_demo
+[ 61%] Building CXX object cpp/autonomous_starter/CMakeFiles/elizaos-autonomous_starter.dir/src/autonomous_starter.cpp.o
+[ 62%] Linking CXX static library libelizaos-autonomous_starter.a
+[ 62%] Built target elizaos-autonomous_starter
+[ 62%] Building CXX object cpp/autonomous_starter/CMakeFiles/autonomous_starter_demo.dir/src/demo.cpp.o
+[ 63%] Linking CXX executable autonomous_starter_demo
+[ 63%] Built target autonomous_starter_demo
+[ 63%] Building CXX object cpp/autonomous_starter/CMakeFiles/autonomous_starter_tests.dir/src/test_autonomous_starter.cpp.o
+[ 64%] Linking CXX executable autonomous_starter_tests
+[ 64%] Built target autonomous_starter_tests
+[ 64%] Building CXX object cpp/brandkit/CMakeFiles/elizaos-brandkit.dir/src/placeholder.cpp.o
+[ 65%] Linking CXX static library libelizaos-brandkit.a
+[ 65%] Built target elizaos-brandkit
+[ 65%] Building CXX object cpp/characterfile/CMakeFiles/elizaos-characterfile.dir/src/placeholder.cpp.o
+[ 66%] Linking CXX static library libelizaos-characterfile.a
+[ 66%] Built target elizaos-characterfile
+[ 66%] Building CXX object cpp/eliza_nextjs_starter/CMakeFiles/elizaos-eliza_nextjs_starter.dir/src/placeholder.cpp.o
+[ 67%] Linking CXX static library libelizaos-eliza_nextjs_starter.a
+[ 67%] Built target elizaos-eliza_nextjs_starter
+[ 67%] Building CXX object cpp/eliza_plugin_starter/CMakeFiles/elizaos-eliza_plugin_starter.dir/src/placeholder.cpp.o
+[ 68%] Linking CXX static library libelizaos-eliza_plugin_starter.a
+[ 68%] Built target elizaos-eliza_plugin_starter
+[ 68%] Building CXX object cpp/eliza_starter/CMakeFiles/elizaos-eliza_starter.dir/src/eliza_starter.cpp.o
+[ 69%] Linking CXX static library libelizaos-eliza_starter.a
+[ 69%] Built target elizaos-eliza_starter
+[ 70%] Building CXX object cpp/eliza_starter/CMakeFiles/eliza_starter_demo.dir/src/eliza_starter.cpp.o
+[ 70%] Linking CXX executable eliza_starter_demo
+[ 70%] Built target eliza_starter_demo
+[ 71%] Building CXX object cpp/eliza_starter/CMakeFiles/eliza_starter_example.dir/example.cpp.o
+[ 71%] Linking CXX executable eliza_starter_example
+[ 71%] Built target eliza_starter_example
+[ 72%] Building CXX object cpp/eliza_starter/CMakeFiles/eliza_starter_integration.dir/integration_example.cpp.o
+[ 72%] Linking CXX executable eliza_starter_integration
+[ 72%] Built target eliza_starter_integration
+[ 73%] Building CXX object cpp/hat/CMakeFiles/elizaos-hat.dir/src/placeholder.cpp.o
+[ 73%] Linking CXX static library libelizaos-hat.a
+[ 73%] Built target elizaos-hat
+[ 74%] Building CXX object cpp/hats/CMakeFiles/elizaos-hats.dir/src/hats.cpp.o
+[ 74%] Linking CXX static library libelizaos-hats.a
+[ 74%] Built target elizaos-hats
+[ 75%] Building CXX object cpp/plugin_specification/CMakeFiles/elizaos-plugin_specification.dir/src/placeholder.cpp.o
+[ 75%] Linking CXX static library libelizaos-plugin_specification.a
+[ 75%] Built target elizaos-plugin_specification
+[ 76%] Building CXX object cpp/trust_scoreboard/CMakeFiles/elizaos-trust_scoreboard.dir/src/placeholder.cpp.o
+[ 76%] Linking CXX static library libelizaos-trust_scoreboard.a
+[ 76%] Built target elizaos-trust_scoreboard
+[ 77%] Building CXX object cpp/workgroups/CMakeFiles/elizaos-workgroups.dir/src/placeholder.cpp.o
+[ 78%] Linking CXX static library libelizaos-workgroups.a
+[ 78%] Built target elizaos-workgroups
+[ 79%] Building CXX object cpp/vercel_api/CMakeFiles/test_vercel_api.dir/test_vercel_api.cpp.o
+[ 79%] Linking CXX executable test_vercel_api
+[ 79%] Built target test_vercel_api
+[ 79%] Building CXX object cpp/vercel_api/CMakeFiles/demo_vercel_api.dir/demo_vercel_api.cpp.o
+[ 80%] Linking CXX executable demo_vercel_api
+[ 80%] Built target demo_vercel_api
+[ 81%] Building CXX object cpp/discord_summarizer/CMakeFiles/elizaos-discord_summarizer.dir/src/discord_summarizer.cpp.o
+[ 82%] Linking CXX static library libelizaos-discord_summarizer.a
+[ 82%] Built target elizaos-discord_summarizer
+[ 82%] Building CXX object cpp/discrub_ext/CMakeFiles/elizaos-discrub_ext.dir/src/discrub_ext.cpp.o
+[ 83%] Linking CXX static library libelizaos-discrub_ext.a
+[ 83%] Built target elizaos-discrub_ext
+[ 83%] Building CXX object cpp/sweagent/CMakeFiles/elizaos-sweagent.dir/src/placeholder.cpp.o
+[ 84%] Linking CXX static library libelizaos-sweagent.a
+[ 84%] Built target elizaos-sweagent
+[ 85%] Building CXX object cpp/mcp_gateway/CMakeFiles/elizaos-mcp_gateway.dir/src/placeholder.cpp.o
+[ 85%] Linking CXX static library libelizaos-mcp_gateway.a
+[ 85%] Built target elizaos-mcp_gateway
+[ 86%] Building CXX object cpp/otaku/CMakeFiles/elizaos-otaku.dir/src/placeholder.cpp.o
+[ 86%] Linking CXX static library libelizaos-otaku.a
+[ 86%] Built target elizaos-otaku
+[ 87%] Building CXX object cpp/otc_agent/CMakeFiles/elizaos-otc_agent.dir/src/placeholder.cpp.o
+[ 87%] Linking CXX static library libelizaos-otc_agent.a
+[ 87%] Built target elizaos-otc_agent
+[ 88%] Building CXX object cpp/classified/CMakeFiles/elizaos-classified.dir/src/placeholder.cpp.o
+[ 88%] Linking CXX static library libelizaos-classified.a
+[ 88%] Built target elizaos-classified
+[ 88%] Building CXX object cpp/tests/CMakeFiles/elizaos_tests.dir/src/test_core.cpp.o
+[ 89%] Building CXX object cpp/tests/CMakeFiles/elizaos_tests.dir/src/test_agentloop.cpp.o
+[ 89%] Building CXX object cpp/tests/CMakeFiles/elizaos_tests.dir/src/test_cognitive_primitives.cpp.o
+[ 90%] Building CXX object cpp/tests/CMakeFiles/elizaos_tests.dir/src/test_agentlogger.cpp.o
+[ 90%] Building CXX object cpp/tests/CMakeFiles/elizaos_tests.dir/src/test_agentcomms.cpp.o
+[ 91%] Building CXX object cpp/tests/CMakeFiles/elizaos_tests.dir/src/test_agentmemory.cpp.o
+[ 91%] Building CXX object cpp/tests/CMakeFiles/elizaos_tests.dir/src/test_attention_allocation.cpp.o
+[ 92%] Building CXX object cpp/tests/CMakeFiles/elizaos_tests.dir/src/test_agentaction.cpp.o
+[ 92%] Building CXX object cpp/tests/CMakeFiles/elizaos_tests.dir/src/test_agentagenda.cpp.o
+[ 93%] Building CXX object cpp/tests/CMakeFiles/elizaos_tests.dir/src/test_characters.cpp.o
+[ 93%] Building CXX object cpp/tests/CMakeFiles/elizaos_tests.dir/src/test_ljspeechtools.cpp.o
+[ 94%] Building CXX object cpp/tests/CMakeFiles/elizaos_tests.dir/src/test_livevideochat.cpp.o
+[ 94%] Building CXX object cpp/tests/CMakeFiles/elizaos_tests.dir/src/test_evolutionary.cpp.o
+[ 95%] Building CXX object cpp/tests/CMakeFiles/elizaos_tests.dir/src/test_stage6_automation.cpp.o

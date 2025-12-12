@@ -231,6 +231,7 @@ double MessageAnalyzer::calculateSentiment(const std::string& content) {
     std::string lowerContent = content;
     std::transform(lowerContent.begin(), lowerContent.end(), lowerContent.begin(),
         [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+    std::transform(lowerContent.begin(), lowerContent.end(), lowerContent.begin(), [](unsigned char c){ return static_cast<char>(std::tolower(c)); });
     
     int positiveCount = 0;
     int negativeCount = 0;
@@ -285,6 +286,7 @@ std::vector<std::string> MessageAnalyzer::extractKeywords(const std::string& con
         if (word.length() > 4) {
             std::transform(word.begin(), word.end(), word.begin(),
                 [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+            std::transform(word.begin(), word.end(), word.begin(), [](unsigned char c){ return static_cast<char>(std::tolower(c)); });
             keywords.push_back(word);
         }
     }
@@ -395,6 +397,7 @@ std::vector<std::string> MessageAnalyzer::tokenizeText(const std::string& text) 
         if (!token.empty()) {
             std::transform(token.begin(), token.end(), token.begin(),
                 [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+            std::transform(token.begin(), token.end(), token.begin(), [](unsigned char c){ return static_cast<char>(std::tolower(c)); });
             tokens.push_back(token);
         }
     }
@@ -414,6 +417,7 @@ double MessageAnalyzer::scoreKeywordMatch(const std::string& text, const std::ve
         std::string lowerKeyword = keyword;
         std::transform(lowerKeyword.begin(), lowerKeyword.end(), lowerKeyword.begin(),
             [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+        std::transform(lowerKeyword.begin(), lowerKeyword.end(), lowerKeyword.begin(), [](unsigned char c){ return static_cast<char>(std::tolower(c)); });
         
         if (std::find(tokens.begin(), tokens.end(), lowerKeyword) != tokens.end()) {
             matches++;
@@ -430,6 +434,7 @@ bool MessageAnalyzer::containsProfanity(const std::string& content) {
     std::string lowerContent = content;
     std::transform(lowerContent.begin(), lowerContent.end(), lowerContent.begin(),
         [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+    std::transform(lowerContent.begin(), lowerContent.end(), lowerContent.begin(), [](unsigned char c){ return static_cast<char>(std::tolower(c)); });
     
     for (const auto& word : profanityList) {
         if (lowerContent.find(word) != std::string::npos) {

@@ -243,6 +243,7 @@ std::string ContentManager::generatePageId(const std::filesystem::path& file_pat
     std::replace(id.begin(), id.end(), ' ', '_');
     std::transform(id.begin(), id.end(), id.begin(),
         [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+    std::transform(id.begin(), id.end(), id.begin(), [](unsigned char c){ return static_cast<char>(std::tolower(c)); });
     return id;
 }
 
@@ -250,6 +251,7 @@ bool ContentManager::isMarkdownFile(const std::filesystem::path& file_path) cons
     std::string ext = file_path.extension().string();
     std::transform(ext.begin(), ext.end(), ext.begin(),
         [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+    std::transform(ext.begin(), ext.end(), ext.begin(), [](unsigned char c){ return static_cast<char>(std::tolower(c)); });
     return ext == ".md" || ext == ".markdown";
 }
 
@@ -257,6 +259,7 @@ bool ContentManager::isHtmlFile(const std::filesystem::path& file_path) const {
     std::string ext = file_path.extension().string();
     std::transform(ext.begin(), ext.end(), ext.begin(),
         [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+    std::transform(ext.begin(), ext.end(), ext.begin(), [](unsigned char c){ return static_cast<char>(std::tolower(c)); });
     return ext == ".html" || ext == ".htm";
 }
 
