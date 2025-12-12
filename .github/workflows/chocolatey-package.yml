@@ -1,0 +1,133 @@
+name: Chocolatey Package
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to package (e.g., 1.0.0)'
+        required: true
+        default: '1.0.0'
+
+jobs:
+  build-chocolatey-package:
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+    
+    - name: Set up MSVC
+      uses: ilammy/msvc-dev-cmd@v1
+    
+    - name: Install CMake
+      uses: jwlawson/actions-setup-cmake@v2
+      with:
+        cmake-version: '3.16'
+    
+    - name: Install Chocolatey
+      run: |
+        Set-ExecutionPolicy Bypass -Scope Process -Force
+        [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
+        if (!(Get-Command choco -ErrorAction SilentlyContinue)) {
+          iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+        }
+        choco --version
+      shell: powershell
+    
+    - name: Configure CMake
+      run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+    
+    - name: Build
+      run: cmake --build build --config Release -j 2
+    
+    - name: Run tests
+      working-directory: build
+      run: ctest --output-on-failure --config Release
+      continue-on-error: true
+    
+    - name: Install to staging directory
+      run: |
+        cmake --install build --prefix staging --config Release
+      continue-on-error: true
+    
+    - name: Prepare Chocolatey package
+      run: |
+        $version = "${{ github.event.inputs.version }}"
+        if ([string]::IsNullOrEmpty($version)) {
+          $version = "${{ github.ref_name }}".TrimStart('v')
+        }
+        if ([string]::IsNullOrEmpty($version)) {
+          $version = "1.0.0"
+        }
+        
+        Write-Host "Packaging version: $version"
+        
+        # Create chocolatey package directory
+        New-Item -ItemType Directory -Force -Path choco-package
+        New-Item -ItemType Directory -Force -Path choco-package/tools
+        
+        # Copy nuspec file
+        Copy-Item packaging/chocolatey/elizaos-cpp.nuspec choco-package/
+        
+        # Update version in nuspec
+        $nuspecContent = Get-Content choco-package/elizaos-cpp.nuspec -Raw
+        $nuspecContent = $nuspecContent -replace '<version>.*</version>', "<version>$version</version>"
+        Set-Content -Path choco-package/elizaos-cpp.nuspec -Value $nuspecContent
+        
+        # Copy install scripts
+        Copy-Item packaging/chocolatey/tools/*.ps1 choco-package/tools/
+        
+        # Copy built files if they exist
+        if (Test-Path "build/Release") {
+          Copy-Item -Recurse build/Release/* choco-package/tools/ -ErrorAction SilentlyContinue
+        }
+        if (Test-Path "staging") {
+          Copy-Item -Recurse staging/* choco-package/tools/ -ErrorAction SilentlyContinue
+        }
+        
+        Write-Host "Chocolatey package prepared"
+        Get-ChildItem choco-package -Recurse
+      shell: powershell
+    
+    - name: Build Chocolatey package
+      run: |
+        cd choco-package
+        choco pack
+        Get-ChildItem *.nupkg
+      shell: powershell
+      continue-on-error: true
+    
+    - name: Upload Chocolatey package
+      uses: actions/upload-artifact@v4
+      with:
+        name: chocolatey-package
+        path: choco-package/*.nupkg
+        retention-days: 30
+        if-no-files-found: warn
+    
+    - name: Publish to Chocolatey (if API key is set)
+      if: success() && startsWith(github.ref, 'refs/tags/v')
+      run: |
+        if ($env:CHOCO_API_KEY) {
+          cd choco-package
+          choco push *.nupkg --source https://push.chocolatey.org/ --api-key $env:CHOCO_API_KEY
+        } else {
+          Write-Host "CHOCO_API_KEY not set, skipping publish to Chocolatey"
+        }
+      shell: powershell
+      env:
+        CHOCO_API_KEY: ${{ secrets.CHOCO_API_KEY }}
+      continue-on-error: true
+    
+    - name: Publish to GitHub Release
+      if: startsWith(github.ref, 'refs/tags/v')
+      uses: softprops/action-gh-release@v1
+      with:
+        files: choco-package/*.nupkg
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      continue-on-error: true

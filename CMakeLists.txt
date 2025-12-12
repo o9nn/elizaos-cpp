@@ -666,14 +666,14 @@ endif()
 
 # Source package configuration
 set(CPACK_SOURCE_GENERATOR "TGZ;ZIP")
-set(CPACK_SOURCE_IGNORE_FILES
-    "/\\.git/"
-    "/\\.github/"
+list(APPEND CPACK_SOURCE_IGNORE_FILES
+    "/.git/"
+    "/.github/"
     "/build/"
-    "/\\.vscode/"
-    "/\\.idea/"
-    "\\.swp$"
-    "\\.swo$"
+    "/.vscode/"
+    "/.idea/"
+    "\\\\.swp$"
+    "\\\\.swo$"
     "~$"
 )
 
