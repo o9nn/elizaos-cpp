@@ -378,6 +378,30 @@ SpartanConfig getSpartanConfigFromEnvironment() {
     SpartanConfig config = getDefaultSpartanConfig();
     
     // Read from environment variables
+#ifdef _MSC_VER
+    // Use _dupenv_s for MSVC to avoid deprecation warnings
+    char* rpcUrl = nullptr;
+    size_t rpcUrlLen = 0;
+    if (_dupenv_s(&rpcUrl, &rpcUrlLen, "SOLANA_RPC_URL") == 0 && rpcUrl) {
+        config.solanaRpcUrl = rpcUrl;
+        free(rpcUrl);
+    }
+    
+    char* publicKey = nullptr;
+    size_t publicKeyLen = 0;
+    if (_dupenv_s(&publicKey, &publicKeyLen, "SOLANA_PUBLIC_KEY") == 0 && publicKey) {
+        config.solanaPublicKey = publicKey;
+        free(publicKey);
+    }
+    
+    char* privateKey = nullptr;
+    size_t privateKeyLen = 0;
+    if (_dupenv_s(&privateKey, &privateKeyLen, "SOLANA_PRIVATE_KEY") == 0 && privateKey) {
+        config.solanaPrivateKey = privateKey;
+        free(privateKey);
+    }
+#else
+    // Use standard getenv for other platforms
     const char* rpcUrl = std::getenv("SOLANA_RPC_URL");
     if (rpcUrl) {
         config.solanaRpcUrl = rpcUrl;
@@ -392,6 +416,7 @@ SpartanConfig getSpartanConfigFromEnvironment() {
     if (privateKey) {
         config.solanaPrivateKey = privateKey;
     }
+#endif
     
     return config;
 }
