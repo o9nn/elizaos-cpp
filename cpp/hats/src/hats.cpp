@@ -164,7 +164,6 @@ HatsStatus CsvDataSource::loadData(DataSet& data) {
     }
     
     // Read data rows
-    int rowIndex = 0;
     while (std::getline(file, line)) {
         if (line.empty()) continue;
         
@@ -192,7 +191,6 @@ HatsStatus CsvDataSource::loadData(DataSet& data) {
         if (!record.empty()) {
             data.push_back(record);
         }
-        rowIndex++;
     }
     
     return HatsStatus::SUCCESS;
