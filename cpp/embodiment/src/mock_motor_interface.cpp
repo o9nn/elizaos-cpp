@@ -20,8 +20,6 @@ namespace elizaos {
     logger.log(message, "", "embodiment", LogLevel::ERROR);
 }
 
-namespace elizaos {
-
 /**
  * Mock Motor Interface Implementation
  */

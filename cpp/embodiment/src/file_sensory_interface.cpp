@@ -26,8 +26,6 @@ namespace elizaos {
     logger.log(message, "", "embodiment", LogLevel::WARNING);
 }
 
-namespace elizaos {
-
 /**
  * File Sensory Interface Implementation
  */

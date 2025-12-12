@@ -72,8 +72,8 @@ add_subdirectory(cpp/agentmemory)    # Memory management
 # Stage 5 - Learning and Adaptation (NEW)
 add_subdirectory(cpp/evolutionary)   # MOSES-style evolutionary search
 
-# Stage 6 - Embodiment & Integration (NEW) - TEMPORARILY DISABLED DUE TO BUILD ISSUES
-# add_subdirectory(cpp/embodiment)     # Sensory/motor interfaces and perception-action loop
+# Stage 6 - Embodiment & Integration (NEW)
+add_subdirectory(cpp/embodiment)     # Sensory/motor interfaces and perception-action loop
 
 # Stage 2 - Infrastructure (COMPLETE + new additions)
 add_subdirectory(cpp/agentcomms)     # Communications
@@ -179,7 +179,7 @@ target_link_libraries(stage4_demo
     elizaos-ljspeechtools
     elizaos-livevideochat
     elizaos-evolutionary
-    # elizaos-embodiment  # TEMPORARILY DISABLED
+    elizaos-embodiment
     Threads::Threads
 )
 
@@ -199,28 +199,28 @@ target_link_libraries(stage5_demo
     elizaos-website
     elizaos-elizaos_github_io
     elizaos-vercel_api
-    # elizaos-embodiment  # TEMPORARILY DISABLED
+    elizaos-embodiment
     Threads::Threads
 )
 
-# Stage 6 Demo - TEMPORARILY DISABLED DUE TO BUILD ISSUES
-# add_executable(stage6_demo
-#     demo_stage6.cpp
-# )
-# 
-# target_include_directories(stage6_demo PRIVATE
-#     ${CMAKE_SOURCE_DIR}/include
-# )
-# 
-# target_link_libraries(stage6_demo
-#     elizaos-core
-#     elizaos-agentlogger
-#     elizaos-agentloop
-#     elizaos-agentmemory
-#     elizaos-agentaction
-#     # elizaos-embodiment  # TEMPORARILY DISABLED
-#     Threads::Threads
-# )
+# Stage 6 Demo
+add_executable(stage6_demo
+    demo_stage6.cpp
+)
+
+target_include_directories(stage6_demo PRIVATE
+    ${CMAKE_SOURCE_DIR}/include
+)
+
+target_link_libraries(stage6_demo
+    elizaos-core
+    elizaos-agentlogger
+    elizaos-agentloop
+    elizaos-agentmemory
+    elizaos-agentaction
+    elizaos-embodiment
+    Threads::Threads
+)
 
 # Awesome Eliza Demo
 add_executable(awesome_eliza_demo
@@ -526,6 +526,12 @@ endif()
 install(TARGETS 
     # Main executables
     eliza shell_demo agentshell_test
+    spartan_test spartan_demo stage4_demo stage5_demo stage6_demo
+    awesome_eliza_demo the_org_demo easycompletion_demo
+    characters_demo knowledge_demo knowledge_quick_demo
+    elizas_list_demo elizas_list_real_test elizas_list_unit_test
+    eliza_3d_hyperfy_starter_demo elizas_world_demo elizas_world_test
+    registry_demo
     
     # Stage 1-2 - Core and Infrastructure
     elizaos-core elizaos-agentloop elizaos-agentmemory
@@ -535,7 +541,7 @@ install(TARGETS
     elizaos-evolutionary
     
     # Stage 6 - Embodiment & Integration
-    # elizaos-embodiment  # TEMPORARILY DISABLED
+    elizaos-embodiment
     
     # Stage 3 - Application-specific
     elizaos-agentaction elizaos-agentagenda elizaos-agentbrowser
@@ -646,7 +652,7 @@ set(CPACK_NSIS_MODIFY_PATH ON)
 set(CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL ON)
 
 # Archive configuration (TGZ, ZIP)
-set(CPACK_ARCHIVE_COMPONENT_INSTALL ON)
+set(CPACK_ARCHIVE_COMPONENT_INSTALL OFF)
 
 # Component configuration
 set(CPACK_COMPONENTS_ALL libraries headers executables documentation)
