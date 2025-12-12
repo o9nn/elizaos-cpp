@@ -199,7 +199,7 @@ public:
     
     // Statistics
     struct Statistics {
-        int generation;
+        size_t generation;
         FitnessResult bestFitness;
         FitnessResult averageFitness;
         double diversity;
@@ -239,7 +239,7 @@ private:
     // Utility methods
     std::shared_ptr<ProgramNode> generateRandomProgram(int maxDepth = 5) const;
     bool checkStagnation() const;
-    void updateStatistics(int generation);
+    void updateStatistics(size_t generation);
 };
 
 // Pattern extraction from successful individuals

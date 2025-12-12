@@ -791,7 +791,7 @@ bool EvolutionaryOptimizer::checkStagnation() const {
     return (recentBest - oldBest) < config_.stagnationThreshold;
 }
 
-void EvolutionaryOptimizer::updateStatistics(int generation) {
+void EvolutionaryOptimizer::updateStatistics(size_t generation) {
     Statistics stats;
     stats.generation = generation;
     stats.bestFitness = population_.getBestFitness();
