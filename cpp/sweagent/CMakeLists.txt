@@ -1,7 +1,7 @@
 # SWEAgent Module - Autonomous Software Engineer
 
 add_library(elizaos-sweagent STATIC
-    src/placeholder.cpp
+    src/sweagent.cpp
 )
 
 target_include_directories(elizaos-sweagent PUBLIC

@@ -1,6 +1,6 @@
 # Stage 3 - Application-specific - Core Eliza Conversational AI
 add_library(elizaos-eliza STATIC
-    src/placeholder.cpp
+    src/eliza.cpp
 )
 
 target_include_directories(elizaos-eliza PUBLIC

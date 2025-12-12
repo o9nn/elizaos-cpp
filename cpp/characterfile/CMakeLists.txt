@@ -1,6 +1,6 @@
 # Stage 3 - Application-specific placeholder - implementation planned
 add_library(elizaos-characterfile STATIC
-    src/placeholder.cpp
+    src/characterfile.cpp
 )
 
 target_include_directories(elizaos-characterfile PUBLIC

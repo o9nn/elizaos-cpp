@@ -1,6 +1,6 @@
 # AgentBrowser - Web automation interface for ElizaOS agents
 add_library(elizaos-agentbrowser STATIC
-    src/placeholder.cpp
+    src/agentbrowser.cpp
 )
 
 target_include_directories(elizaos-agentbrowser PUBLIC

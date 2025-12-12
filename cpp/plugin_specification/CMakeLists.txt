@@ -1,6 +1,6 @@
 # Stage 3 - Application-specific placeholder - implementation planned
 add_library(elizaos-plugin_specification STATIC
-    src/placeholder.cpp
+    src/plugin_specification.cpp
 )
 
 target_include_directories(elizaos-plugin_specification PUBLIC

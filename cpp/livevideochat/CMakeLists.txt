@@ -1,6 +1,6 @@
 # Stage 4 - Multimedia - LiveVideoChat implementation with server support
 add_library(elizaos-livevideochat STATIC
-    src/placeholder.cpp
+    src/livevideochat.cpp
     src/livevideochat_server.cpp
 )
 

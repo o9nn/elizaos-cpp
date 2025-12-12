@@ -1,6 +1,6 @@
 # Stage 5 - Web and Documentation - Website module
 add_library(elizaos-website STATIC
-    src/placeholder.cpp
+    src/website.cpp
 )
 
 target_include_directories(elizaos-website PUBLIC

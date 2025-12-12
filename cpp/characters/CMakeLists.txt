@@ -1,6 +1,6 @@
 # Stage 3 - Application-specific - Character Management System
 add_library(elizaos-characters STATIC
-    src/placeholder.cpp
+    src/characters.cpp
     src/character_json_loader.cpp
 )
 

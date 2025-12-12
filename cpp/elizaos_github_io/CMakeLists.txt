@@ -1,6 +1,6 @@
 # Stage 5 - Web and Documentation - ElizaOS GitHub.io module
 add_library(elizaos-elizaos_github_io STATIC
-    src/placeholder.cpp
+    src/elizaos_github_io.cpp
 )
 
 target_include_directories(elizaos-elizaos_github_io PUBLIC

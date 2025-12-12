@@ -1,6 +1,6 @@
 # Stage 5 - Web and Documentation - Vercel API module
 add_library(elizaos-vercel_api STATIC
-    src/placeholder.cpp
+    src/vercel_api.cpp
 )
 
 target_include_directories(elizaos-vercel_api PUBLIC

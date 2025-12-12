@@ -1,7 +1,7 @@
 # MCP Gateway Module - Model Context Protocol Gateway
 
 add_library(elizaos-mcp_gateway STATIC
-    src/placeholder.cpp
+    src/mcp_gateway.cpp
 )
 
 target_include_directories(elizaos-mcp_gateway PUBLIC

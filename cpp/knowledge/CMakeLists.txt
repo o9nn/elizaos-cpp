@@ -1,6 +1,6 @@
 # Stage 3 - Application-specific - Knowledge Management System
 add_library(elizaos-knowledge STATIC
-    src/placeholder.cpp
+    src/knowledge.cpp
 )
 
 target_include_directories(elizaos-knowledge PUBLIC
