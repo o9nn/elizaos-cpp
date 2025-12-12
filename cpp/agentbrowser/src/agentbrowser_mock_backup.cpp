@@ -15,7 +15,7 @@
 namespace elizaos {
 
 AgentBrowser::AgentBrowser(const BrowserConfig& config)
-    : config_(config), browserDriver_(nullptr), htmlParser_(nullptr) {
+    : config_(config), browserDriver_(nullptr) {
     stats_.sessionStart = std::chrono::system_clock::now();
     
     // Generate unique session ID
