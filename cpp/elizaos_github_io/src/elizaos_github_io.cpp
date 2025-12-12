@@ -360,14 +360,14 @@ bool DocumentationGenerator::generateNavigation() {
         
         if (category != current_category) {
             current_category = category;
-            NavigationItem category_item(category, "#", navigation_root_.children.size());
+            NavigationItem category_item(category, "#", static_cast<int>(navigation_root_.children.size()));
             navigation_root_.children.push_back(category_item);
             current_category_item = &navigation_root_.children.back();
         }
         
         if (current_category_item) {
             std::string url = page.output_path.filename().replace_extension("").string() + ".html";
-            NavigationItem page_item(page.title, "/" + url, current_category_item->children.size());
+            NavigationItem page_item(page.title, "/" + url, static_cast<int>(current_category_item->children.size()));
             current_category_item->children.push_back(page_item);
         }
     }
