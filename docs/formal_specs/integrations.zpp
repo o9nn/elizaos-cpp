@@ -1,0 +1,675 @@
+--------------------------------------------------------------------------------
+-- ElizaOS C++ Integration Contracts Formal Specification
+-- Z++ Specification Language
+-- Version: 1.0.0
+-- Date: December 12, 2024
+--------------------------------------------------------------------------------
+
+-- This specification formalizes external system integrations for ElizaOS C++,
+-- including API contracts, event handlers, and error handling.
+
+-- Import previous specifications
+-- include data_model.zpp
+-- include system_state.zpp
+-- include operations.zpp
+
+--------------------------------------------------------------------------------
+-- EXTERNAL API TYPES
+--------------------------------------------------------------------------------
+
+-- HTTP request types
+HTTPMethod ::= GET | POST | PUT | DELETE | PATCH
+
+-- HTTP status codes
+HTTPStatus ::= OK | CREATED | BAD_REQUEST | UNAUTHORIZED | 
+               FORBIDDEN | NOT_FOUND | SERVER_ERROR
+
+-- API request structure
+schema APIRequest
+  method: HTTPMethod
+  endpoint: Content
+  headers: Content ↔ Content
+  body: ℙ Content
+  queryParams: Content ↔ Content
+  timeout: ℕ
+where
+  -- Endpoint must not be empty
+  #endpoint > 0
+  
+  -- Timeout must be positive
+  timeout > 0
+  
+  -- Optional body
+  #body ≤ 1
+  
+  -- POST and PUT require body
+  (method = POST ∨ method = PUT) ⇒ body ≠ ∅
+end
+
+-- API response structure
+schema APIResponse
+  status: HTTPStatus
+  headers: Content ↔ Content
+  body: ℙ Content
+  responseTime: ℕ
+  error: ℙ Content
+where
+  -- Response time must be non-negative
+  responseTime ≥ 0
+  
+  -- Optional body and error
+  #body ≤ 1
+  #error ≤ 1
+  
+  -- Error responses should have error message
+  status ∈ {BAD_REQUEST, UNAUTHORIZED, FORBIDDEN, NOT_FOUND, SERVER_ERROR} ⇒
+    error ≠ ∅
+  
+  -- Successful responses should have body
+  status ∈ {OK, CREATED} ⇒ body ≠ ∅
+end
+
+--------------------------------------------------------------------------------
+-- LLM SERVICE INTEGRATION
+--------------------------------------------------------------------------------
+
+-- LLM provider types
+LLMProvider ::= OPENAI | ANTHROPIC | OLLAMA | CUSTOM
+
+-- LLM request parameters
+schema LLMRequest
+  provider: LLMProvider
+  model: Content
+  prompt: Content
+  systemPrompt: ℙ Content
+  temperature: ℝ
+  maxTokens: ℕ
+  stopSequences: seq Content
+  topP: ℙ ℝ
+  frequencyPenalty: ℙ ℝ
+  presencePenalty: ℙ ℝ
+where
+  -- Model and prompt must not be empty
+  #model > 0
+  #prompt > 0
+  
+  -- Optional system prompt
+  #systemPrompt ≤ 1
+  
+  -- Temperature must be in [0, 2] range
+  0 ≤ temperature ≤ 2
+  
+  -- Max tokens must be positive
+  maxTokens > 0
+  
+  -- Optional parameters must be in valid ranges
+  topP ≠ ∅ ⇒ (∃ p: ℝ | topP = {p} • 0 ≤ p ≤ 1)
+  frequencyPenalty ≠ ∅ ⇒ (∃ f: ℝ | frequencyPenalty = {f} • -2 ≤ f ≤ 2)
+  presencePenalty ≠ ∅ ⇒ (∃ p: ℝ | presencePenalty = {p} • -2 ≤ p ≤ 2)
+end
+
+-- LLM response
+schema LLMResponse
+  content: Content
+  finishReason: Content
+  tokensUsed: ℕ
+  latency: ℕ
+  model: Content
+  provider: LLMProvider
+where
+  -- Content must not be empty for successful responses
+  finishReason = "stop" ⇒ #content > 0
+  
+  -- Tokens used must be non-negative
+  tokensUsed ≥ 0
+  
+  -- Latency must be non-negative
+  latency ≥ 0
+end
+
+-- Call LLM service operation
+schema CallLLMService
+  ΔElizaOSSystemState
+  request?: LLMRequest
+  response!: LLMResponse ⊎ APIResponse
+where
+  -- Preconditions: none (external service)
+  
+  -- Successful response
+  ∃ llmResp: LLMResponse |
+    llmResp.provider = request?.provider ∧
+    llmResp.model = request?.model •
+    response! = inl llmResp
+  
+  ∨
+  
+  -- Error response
+  ∃ apiErr: APIResponse |
+    apiErr.status = SERVER_ERROR •
+    response! = inr apiErr
+  
+  -- System state unchanged (read-only operation)
+  agents' = agents
+  agentLoops' = agentLoops
+  memorySystem' = memorySystem
+  communicationSystem' = communicationSystem
+  knowledgeSystem' = knowledgeSystem
+  hypergraph' = hypergraph
+  taskManager' = taskManager
+end
+
+--------------------------------------------------------------------------------
+-- EMBEDDING SERVICE INTEGRATION
+--------------------------------------------------------------------------------
+
+-- Embedding model types
+EmbeddingModel ::= TEXT_EMBEDDING_ADA_002 | BERT | SENTENCE_TRANSFORMERS | CUSTOM
+
+-- Embedding request
+schema EmbeddingRequest
+  model: EmbeddingModel
+  texts: seq Content
+  dimension: ℙ ℕ
+where
+  -- Must have at least one text
+  #texts ≥ 1
+  
+  -- All texts must be non-empty
+  ∀ t: ran texts • #t > 0
+  
+  -- Optional dimension specification
+  #dimension ≤ 1
+  dimension ≠ ∅ ⇒ (∃ d: ℕ | dimension = {d} • d > 0)
+end
+
+-- Embedding response
+schema EmbeddingResponse
+  embeddings: seq EmbeddingVector
+  model: EmbeddingModel
+  dimension: ℕ
+  tokensUsed: ℕ
+where
+  -- Must have at least one embedding
+  #embeddings ≥ 1
+  
+  -- All embeddings must have same dimension
+  ∀ e: ran embeddings • #e = dimension
+  
+  -- Dimension must be positive
+  dimension > 0
+  
+  -- Tokens used must be non-negative
+  tokensUsed ≥ 0
+end
+
+-- Generate embeddings operation
+schema GenerateEmbeddings
+  ΔElizaOSSystemState
+  request?: EmbeddingRequest
+  response!: EmbeddingResponse ⊎ APIResponse
+where
+  -- Successful response
+  ∃ embResp: EmbeddingResponse |
+    embResp.model = request?.model ∧
+    #embResp.embeddings = #request?.texts •
+    response! = inl embResp
+  
+  ∨
+  
+  -- Error response
+  ∃ apiErr: APIResponse |
+    apiErr.status = SERVER_ERROR •
+    response! = inr apiErr
+  
+  -- System state unchanged
+  agents' = agents
+  agentLoops' = agentLoops
+  memorySystem' = memorySystem
+  communicationSystem' = communicationSystem
+  knowledgeSystem' = knowledgeSystem
+  hypergraph' = hypergraph
+  taskManager' = taskManager
+end
+
+--------------------------------------------------------------------------------
+-- VECTOR DATABASE INTEGRATION
+--------------------------------------------------------------------------------
+
+-- Vector DB operations
+VectorDBOperation ::= INSERT | SEARCH | UPDATE | DELETE | CREATE_INDEX
+
+-- Vector DB query
+schema VectorDBQuery
+  operation: VectorDBOperation
+  collection: Content
+  vectors: ℙ (UUID × EmbeddingVector)
+  queryVector: ℙ EmbeddingVector
+  topK: ℙ ℕ
+  filter: ℙ (Content ↔ Content)
+where
+  -- Collection must not be empty
+  #collection > 0
+  
+  -- INSERT requires vectors
+  operation = INSERT ⇒ vectors ≠ ∅
+  
+  -- SEARCH requires query vector and topK
+  operation = SEARCH ⇒ (queryVector ≠ ∅ ∧ topK ≠ ∅)
+  
+  -- TopK must be positive if present
+  topK ≠ ∅ ⇒ (∃ k: ℕ | topK = {k} • k > 0)
+end
+
+-- Vector DB result
+schema VectorDBResult
+  operation: VectorDBOperation
+  matches: seq (UUID × ℝ)  -- ID and similarity score
+  inserted: ℙ ℕ
+  updated: ℙ ℕ
+  deleted: ℙ ℕ
+where
+  -- SEARCH returns matches
+  operation = SEARCH ⇒ #matches ≥ 0
+  
+  -- INSERT returns count
+  operation = INSERT ⇒ inserted ≠ ∅
+  
+  -- UPDATE returns count
+  operation = UPDATE ⇒ updated ≠ ∅
+  
+  -- DELETE returns count
+  operation = DELETE ⇒ deleted ≠ ∅
+  
+  -- All similarity scores must be in [0, 1]
+  ∀ (_, score): ran matches • 0 ≤ score ≤ 1
+end
+
+-- Execute vector DB query operation
+schema ExecuteVectorDBQuery
+  ΞElizaOSSystemState
+  query?: VectorDBQuery
+  result!: VectorDBResult ⊎ APIResponse
+where
+  -- Successful execution
+  ∃ dbResult: VectorDBResult |
+    dbResult.operation = query?.operation •
+    result! = inl dbResult
+  
+  ∨
+  
+  -- Error response
+  ∃ apiErr: APIResponse •
+    result! = inr apiErr
+end
+
+--------------------------------------------------------------------------------
+-- WEB AUTOMATION INTEGRATION
+--------------------------------------------------------------------------------
+
+-- Browser action types
+BrowserAction ::= NAVIGATE | CLICK | TYPE | SCROLL | EXTRACT | SCREENSHOT
+
+-- Browser automation request
+schema BrowserRequest
+  action: BrowserAction
+  url: ℙ Content
+  selector: ℙ Content
+  inputText: ℙ Content
+  timeout: ℕ
+where
+  -- NAVIGATE requires URL
+  action = NAVIGATE ⇒ url ≠ ∅
+  
+  -- CLICK and TYPE require selector
+  (action = CLICK ∨ action = TYPE) ⇒ selector ≠ ∅
+  
+  -- TYPE requires input text
+  action = TYPE ⇒ inputText ≠ ∅
+  
+  -- Timeout must be positive
+  timeout > 0
+end
+
+-- Browser automation response
+schema BrowserResponse
+  action: BrowserAction
+  success: 𝔹
+  extractedContent: ℙ Content
+  screenshotData: ℙ (seq Byte)
+  currentURL: ℙ Content
+  error: ℙ Content
+where
+  -- Optional fields based on action
+  action = EXTRACT ∧ success ⇒ extractedContent ≠ ∅
+  action = SCREENSHOT ∧ success ⇒ screenshotData ≠ ∅
+  
+  -- Error must be present if not successful
+  ¬success ⇒ error ≠ ∅
+end
+
+-- Execute browser automation
+schema ExecuteBrowserAction
+  ΔElizaOSSystemState
+  request?: BrowserRequest
+  response!: BrowserResponse
+where
+  -- Execute action and get response
+  ∃ resp: BrowserResponse |
+    resp.action = request?.action •
+    response! = resp
+  
+  -- Optionally store extracted content in memory
+  resp.extractedContent ≠ ∅ ⇒
+    ∃ memory: Memory |
+      memory.content = ⋃ resp.extractedContent •
+      -- Create memory operation would be invoked here
+      true
+  
+  -- Other state may be updated if storing results
+  agents' = agents ∨ agents' ≠ agents
+  memorySystem' = memorySystem ∨ memorySystem' ≠ memorySystem
+  agentLoops' = agentLoops
+  communicationSystem' = communicationSystem
+  knowledgeSystem' = knowledgeSystem
+  hypergraph' = hypergraph
+  taskManager' = taskManager
+end
+
+--------------------------------------------------------------------------------
+-- WEBHOOK AND EVENT HANDLER INTEGRATION
+--------------------------------------------------------------------------------
+
+-- Event types
+EventType ::= WEBHOOK | MESSAGE_RECEIVED | TASK_COMPLETED | 
+              AGENT_STATUS_CHANGE | MEMORY_CREATED
+
+-- Event payload
+schema EventPayload
+  eventType: EventType
+  timestamp: Timestamp
+  source: Content
+  data: Content ↔ Content
+  signature: ℙ Content
+where
+  -- Timestamp must be non-negative
+  timestamp ≥ 0
+  
+  -- Source must not be empty
+  #source > 0
+  
+  -- Optional signature for authentication
+  #signature ≤ 1
+end
+
+-- Event validation result
+schema EventValidation
+  valid: 𝔹
+  reason: ℙ Content
+  authenticatedSource: ℙ Content
+where
+  -- If invalid, must have reason
+  ¬valid ⇒ reason ≠ ∅
+  
+  -- If valid and has signature, should have authenticated source
+  valid ∧ authenticatedSource = ∅ ⇒ true
+end
+
+-- Validate event
+schema ValidateEvent
+  ΞElizaOSSystemState
+  payload?: EventPayload
+  validation!: EventValidation
+where
+  -- Check signature if present
+  payload?.signature ≠ ∅ ⇒
+    ∃ auth: Content |
+      auth = VerifySignature(payload?.signature, payload?.data) •
+      validation!.authenticatedSource = {auth}
+  
+  -- Validate event structure
+  validation!.valid ⇔ 
+    (payload?.timestamp ≥ 0 ∧ #(payload?.source) > 0)
+end
+
+-- Handle incoming event
+schema HandleEvent
+  ΔElizaOSSystemState
+  payload?: EventPayload
+  result!: 𝔹
+where
+  -- Precondition: event must be valid
+  ∃ validation: EventValidation |
+    validation = ValidateEvent(payload?) •
+    validation.valid = true
+  
+  -- Process event based on type
+  payload?.eventType = WEBHOOK ⇒
+    -- Process webhook data
+    result! = true
+  
+  payload?.eventType = MESSAGE_RECEIVED ⇒
+    -- Create message in communication system
+    ∃ message: Message |
+      message.content = (payload?.data)("content") •
+      SendMessage⟨message? := message⟩
+  
+  payload?.eventType = TASK_COMPLETED ⇒
+    -- Update task status
+    ∃ taskId: UUID |
+      taskId = UUID((payload?.data)("taskId")) •
+      CompleteTask⟨taskId? := taskId⟩
+  
+  payload?.eventType = AGENT_STATUS_CHANGE ⇒
+    -- Update agent status
+    result! = true
+  
+  payload?.eventType = MEMORY_CREATED ⇒
+    -- Process new memory notification
+    result! = true
+end
+
+--------------------------------------------------------------------------------
+-- ERROR HANDLING AND RETRY LOGIC
+--------------------------------------------------------------------------------
+
+-- Retry policy
+schema RetryPolicy
+  maxRetries: ℕ
+  initialDelay: ℕ
+  maxDelay: ℕ
+  backoffMultiplier: ℝ
+  retryableErrors: ℙ HTTPStatus
+where
+  -- Max retries must be non-negative
+  maxRetries ≥ 0
+  
+  -- Delays must be positive
+  initialDelay > 0
+  maxDelay > initialDelay
+  
+  -- Backoff multiplier must be >= 1
+  backoffMultiplier ≥ 1.0
+end
+
+-- Retry state
+schema RetryState
+  attemptCount: ℕ
+  lastAttemptTime: Timestamp
+  nextRetryTime: Timestamp
+  cumulativeDelay: ℕ
+  lastError: ℙ Content
+where
+  -- Attempt count must be non-negative
+  attemptCount ≥ 0
+  
+  -- Times must be ordered
+  lastAttemptTime ≤ nextRetryTime
+  
+  -- Cumulative delay must be non-negative
+  cumulativeDelay ≥ 0
+end
+
+-- Execute with retry
+schema ExecuteWithRetry[Request, Response]
+  ΞElizaOSSystemState
+  request?: Request
+  policy?: RetryPolicy
+  response!: Response ⊎ APIResponse
+  retryState!: RetryState
+where
+  -- Attempt execution
+  attemptCount: ℕ
+  attemptCount ≤ policy?.maxRetries
+  
+  -- Calculate delay for current attempt
+  ∃ delay: ℕ |
+    delay = min(
+      policy?.initialDelay * (policy?.backoffMultiplier ^ attemptCount),
+      policy?.maxDelay
+    ) •
+    retryState!.cumulativeDelay = 
+      retryState!.cumulativeDelay + delay
+  
+  -- Try operation
+  (response! = inl _ ⇒ retryState!.attemptCount = attemptCount) ∨
+  (response! = inr _ ∧ attemptCount < policy?.maxRetries ⇒
+    retryState!.attemptCount = attemptCount + 1)
+end
+
+--------------------------------------------------------------------------------
+-- RATE LIMITING
+--------------------------------------------------------------------------------
+
+-- Rate limit configuration
+schema RateLimitConfig
+  requestsPerSecond: ℝ
+  burstSize: ℕ
+  timeWindow: ℕ
+where
+  -- Requests per second must be positive
+  requestsPerSecond > 0
+  
+  -- Burst size must be positive
+  burstSize > 0
+  
+  -- Time window must be positive (in seconds)
+  timeWindow > 0
+end
+
+-- Rate limit state
+schema RateLimitState
+  requestCount: ℕ
+  windowStart: Timestamp
+  tokensAvailable: ℝ
+  lastRefillTime: Timestamp
+where
+  -- Request count must be non-negative
+  requestCount ≥ 0
+  
+  -- Tokens available must be non-negative
+  tokensAvailable ≥ 0
+  
+  -- Times must be ordered
+  windowStart ≤ lastRefillTime
+end
+
+-- Check rate limit
+schema CheckRateLimit
+  ΞElizaOSSystemState
+  config?: RateLimitConfig
+  state?: RateLimitState
+  currentTime?: Timestamp
+  allowed!: 𝔹
+  newState!: RateLimitState
+where
+  -- Refill tokens based on time elapsed
+  ∃ timeElapsed: ℝ; tokensToAdd: ℝ |
+    timeElapsed = (currentTime? - state?.lastRefillTime) / 1000.0 ∧
+    tokensToAdd = timeElapsed * config?.requestsPerSecond ∧
+    newState!.tokensAvailable = 
+      min(state?.tokensAvailable + tokensToAdd, config?.burstSize) •
+    
+    -- Check if request is allowed
+    newState!.tokensAvailable ≥ 1.0 ⇒
+      (allowed! = true ∧
+       newState!.tokensAvailable = state?.tokensAvailable - 1.0) ∧
+    newState!.tokensAvailable < 1.0 ⇒
+      (allowed! = false ∧
+       newState!.tokensAvailable = state?.tokensAvailable)
+  
+  -- Update timestamps
+  newState!.lastRefillTime = currentTime?
+  allowed! ⇒ newState!.requestCount = state?.requestCount + 1
+end
+
+--------------------------------------------------------------------------------
+-- HELPER FUNCTIONS
+--------------------------------------------------------------------------------
+
+-- Verify cryptographic signature
+VerifySignature: ℙ Content × (Content ↔ Content) → Content
+
+-- Convert string to UUID
+UUID: Content → UUID
+
+-- Calculate exponential backoff delay
+CalculateBackoff: ℕ × ℕ × ℝ × ℕ → ℕ
+
+--------------------------------------------------------------------------------
+-- INTEGRATION INVARIANTS
+--------------------------------------------------------------------------------
+
+-- External service health tracking
+schema ExternalServiceHealth
+  serviceName: Content
+  isHealthy: 𝔹
+  lastSuccessTime: ℙ Timestamp
+  lastFailureTime: ℙ Timestamp
+  consecutiveFailures: ℕ
+  totalRequests: ℕ
+  successfulRequests: ℕ
+  failedRequests: ℕ
+where
+  -- Service name must not be empty
+  #serviceName > 0
+  
+  -- Consecutive failures must be non-negative
+  consecutiveFailures ≥ 0
+  
+  -- Request counts must be consistent
+  totalRequests = successfulRequests + failedRequests
+  
+  -- Healthy if no recent failures
+  consecutiveFailures = 0 ⇒ isHealthy = true
+  consecutiveFailures > 5 ⇒ isHealthy = false
+end
+
+-- Circuit breaker state
+schema CircuitBreakerState
+  serviceName: Content
+  state: Content  -- "CLOSED", "OPEN", "HALF_OPEN"
+  failureCount: ℕ
+  lastFailureTime: ℙ Timestamp
+  nextRetryTime: ℙ Timestamp
+where
+  -- State must be valid
+  state ∈ {"CLOSED", "OPEN", "HALF_OPEN"}
+  
+  -- Failure count must be non-negative
+  failureCount ≥ 0
+  
+  -- OPEN state requires next retry time
+  state = "OPEN" ⇒ nextRetryTime ≠ ∅
+  
+  -- CLOSED state means no failures
+  state = "CLOSED" ⇒ failureCount = 0
+end
+
+--------------------------------------------------------------------------------
+-- END OF INTEGRATION CONTRACTS SPECIFICATION
+--------------------------------------------------------------------------------
+
+-- This specification defines all external system integration contracts
+-- for ElizaOS C++, including API interactions, event handling, error
+-- management, and rate limiting. These contracts ensure reliable and
+-- predictable interactions with external services.
