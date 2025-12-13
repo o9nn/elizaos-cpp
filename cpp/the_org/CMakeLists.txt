@@ -1,7 +1,6 @@
 # Stage 3 - Application-specific - Full the_org multi-agent system implementation
 add_library(elizaos-the_org STATIC
-    src/the_org.cpp
-    src/the_org.cpp
+    src/the_org_impl.cpp
 )
 
 target_include_directories(elizaos-the_org PUBLIC
