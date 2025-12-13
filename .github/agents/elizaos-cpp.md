@@ -523,31 +523,6 @@ ctest -R "Characters"  # Character system tests
 ctest -R "Eliza"       # Eliza conversation tests
 ```
 
-### Test Coverage
-
-The framework includes a comprehensive test suite with over 7,700 lines of test code covering all major subsystems:
-
-| Component | Test Count | Pass Rate | Coverage |
-|-----------|------------|-----------|----------|
-| Core | 6 tests | 100% | High |
-| AgentLoop | 5 tests | 100% | High |
-| AgentMemory | 14 tests | 100% | High |
-| AgentComms | 13 tests | 100% | High |
-| AgentLogger | 8 tests | 100% | High |
-| Evolutionary | 22 tests | 100% | High |
-| Embodiment | 5 tests | 100% | High |
-| Characters | 6 tests | 98% | High |
-| Eliza | 8 tests | 100% | High |
-| Knowledge | 5 tests | 100% | High |
-| Additional Modules | 226 tests | 100% | High |
-| **Total** | **318 tests** | **99.7%** | **Very High** |
-
-**Test Suite Statistics:**
-- Total test code: 7,706 lines across 22 test files
-- Integration tests: Included
-- Unit tests: Comprehensive coverage
-- Performance tests: Basic benchmarks included
-
 ## Usage Examples
 
 > **Note**: The following examples use the include style and namespace conventions found in the existing codebase (see comprehensive_demo.cpp, demo_status.cpp). For production code, consider using angle brackets for system/framework includes (`#include <elizaos/core.hpp>`) and explicit namespace qualification (`elizaos::AgentConfig`) to avoid namespace pollution.
@@ -701,36 +676,6 @@ comms.sendMessage(channel2, Message{
 });
 ```
 
-## Performance Characteristics
-
-### Complexity Analysis
-- **Memory Operations**: O(log n) for search with B-tree indexing
-- **Embedding Similarity**: O(k * d) where k = top-k results, d = embedding dimensions
-- **Agent Loop**: O(s) where s = number of steps per iteration
-- **Message Passing**: O(1) for sending, O(n) for broadcasting to n agents
-- **Attention Allocation**: O(n log n) for sorting by attention value
-
-### Memory Usage
-- **Memory Record**: ~200 bytes + content size + embedding size (1536 floats = 6KB)
-- **Agent State**: ~1KB + memory references
-- **Communication Channel**: ~500 bytes + message queue size
-- **Agent Loop**: ~1KB + step function overhead
-
-### Throughput
-
-> **Note**: The following performance metrics are design targets based on the framework's architecture and typical C++ performance characteristics. Actual performance will vary based on hardware, compiler optimizations, and specific usage patterns. Formal benchmarking is planned for the validation phase.
-
-- **Memory Operations**: >10,000 ops/sec (design target)
-- **Message Passing**: >50,000 msgs/sec (design target)
-- **Agent Loop Iterations**: 1-1000 Hz (configurable via interval parameter)
-- **Embedding Search**: >1,000 queries/sec (design target for 1536-dimensional vectors)
-- **Browser Automation**: Concurrent multi-page support with async operations
-
-### Concurrency
-- **Thread-Safe Operations**: All core systems use mutexes for protection
-- **Lock-Free Queues**: Communication system uses lock-free message queues
-- **Thread Pools**: Task system uses thread pools for parallel execution
-- **Async Processing**: All I/O operations are asynchronous
 
 ## Why ElizaOS C++?
 
