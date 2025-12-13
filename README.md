@@ -218,10 +218,11 @@ make -j$(nproc)
 - ✅ Web deployment infrastructure
 
 **Documentation:**
-- 📄 [Completeness Report](./COMPLETENESS_REPORT.md) - Detailed 80% analysis
-- 📄 [Status Report](./STATUS_REPORT.md) - Build and test status
-- 📄 [Next Actions](./NEXT_ACTIONS.md) - Immediate priorities
-- 📄 [Implementation Roadmap](./IMPLEMENTATION_ROADMAP.md) - Module details
+- 📄 [Completeness Report](./CPP_FUNCTIONAL_COMPLETENESS_REPORT.md) - Comprehensive 90% analysis (Updated Dec 2025)
+- 📄 [Implementation Plan](./NEXT_STEPS_IMPLEMENTATION.md) - Detailed roadmap to 100%
+- 📄 [Executive Summary](./EVALUATION_SUMMARY.md) - Key findings and status
+- 📄 [Legacy Status Report](./STATUS_REPORT.md) - Historical build and test status
+- 📄 [Legacy Completeness](./COMPLETENESS_REPORT.md) - Previous 80% analysis (superseded)
 
 ### Roadmap to 100%
 
