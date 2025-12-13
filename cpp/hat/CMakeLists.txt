@@ -1,6 +1,6 @@
 # Stage 3 - Application-specific placeholder - implementation planned
 add_library(elizaos-hat STATIC
-    src/placeholder.cpp
+    src/hat.cpp
 )
 
 target_include_directories(elizaos-hat PUBLIC

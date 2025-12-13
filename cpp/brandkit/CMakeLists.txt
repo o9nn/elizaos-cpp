@@ -1,6 +1,6 @@
 # Stage 3 - Application-specific placeholder - implementation planned
 add_library(elizaos-brandkit STATIC
-    src/placeholder.cpp
+    src/brandkit.cpp
 )
 
 target_include_directories(elizaos-brandkit PUBLIC

@@ -1,8 +1,8 @@
-// Placeholder implementation for the_org module
+// Placeholder implementation for eliza_plugin_starter module
 // This will be implemented in Stage 3 - Application-specific
 
 namespace elizaos {
-    void the_org_placeholder() {
+    void eliza_plugin_starter_placeholder() {
         // Placeholder function to make library linkable
     }
 }

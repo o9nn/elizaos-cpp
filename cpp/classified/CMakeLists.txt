@@ -1,5 +1,5 @@
 add_library(elizaos-classified STATIC
-    src/placeholder.cpp
+    src/classified.cpp
 )
 
 target_include_directories(elizaos-classified PUBLIC
