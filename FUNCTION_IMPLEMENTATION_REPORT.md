@@ -153,9 +153,9 @@ This report provides a comprehensive analysis of the ElizaOS C++ implementation,
 - **Implementation Lines**: 221
 
 **Sample Functions**:
-- `void log(         const std::string& content,         const std::string& source = "",         const `
-- `void printHeader(         const std::string& text = "agentlogger",         LogColor color = LogColor`
-- `void writeToFile(         const std::string& content,         const std::string& source = "",       `
+- `void log( const std::string& content, const std::string& source = "", const`
+- `void printHeader( const std::string& text = "agentlogger", LogColor color = LogColor`
+- `void writeToFile( const std::string& content, const std::string& source = "",`
 - `void setTypeColor(LogLevel level, LogColor color);`
 - `void setConsoleEnabled(bool enabled);`
 - `void setFileEnabled(bool enabled);`
@@ -199,7 +199,6 @@ This report provides a comprehensive analysis of the ElizaOS C++ implementation,
 - `void clear();`
 - `bool matchesSearchCriteria(const Memory& memory, const MemorySearchParams& params);`
 - `double calculateEmbeddingSimilarity(const EmbeddingVector& embedding1, const EmbeddingVector& embedd`
-- `return func();`
 - *...and 4 more*
 
 ### agentshell
@@ -251,7 +250,7 @@ This report provides a comprehensive analysis of the ElizaOS C++ implementation,
 
 **Sample Functions**:
 - `explicit AutoFunClient(const std::string& program_address = "autoUmixaMaYKFjexMpQuBpNYntgbkzCo2b1ZqU`
-- `string generateTokenMetadata(const std::string& name, const std::string& symbol, const std::string& `
+- `string generateTokenMetadata(const std::string& name, const std::string& symbol, const std::string&`
 - `bool validateTokenName(const std::string& name);`
 - `bool validateTokenSymbol(const std::string& symbol);`
 - `bool validateURI(const std::string& uri);`
@@ -275,7 +274,7 @@ This report provides a comprehensive analysis of the ElizaOS C++ implementation,
 - `Config deserializeConfig(const std::vector<u8>& data);`
 - `BondingCurve deserializeBondingCurve(const std::vector<u8>& data);`
 - `CompleteEvent deserializeCompleteEvent(const std::vector<u8>& data);`
-- `Instruction buildAcceptAuthorityInstruction(         const Pubkey& new_admin,          const Pubkey&`
+- `Instruction buildAcceptAuthorityInstruction( const Pubkey& new_admin, const Pubkey&`
 - *...and 10 more*
 
 ### autonomous_starter
@@ -393,7 +392,7 @@ This report provides a comprehensive analysis of the ElizaOS C++ implementation,
 
 **Sample Functions**:
 - `void setAttribute(const std::string& key, const std::string& value);`
-- `UUID createTask(const std::string& name, const std::string& description,                     const U`
+- `UUID createTask(const std::string& name, const std::string& description, const U`
 - `bool scheduleTask(const UUID& taskId, const Timestamp& scheduledTime);`
 - `bool cancelTask(const UUID& taskId);`
 - `void registerWorker(std::shared_ptr<TaskWorker> worker);`
@@ -455,12 +454,12 @@ This report provides a comprehensive analysis of the ElizaOS C++ implementation,
 - `explicit EasyCompletionClient(const CompletionConfig& config = {});`
 - `CompletionResponse text_completion(const std::string& text);`
 - `CompletionResponse chat_completion(const std::vector<ChatMessage>& messages);`
-- `CompletionResponse function_completion(         const std::string& text,         const std::vector<F`
+- `CompletionResponse function_completion( const std::string& text, const std::vector<F`
 - `void set_config(const CompletionConfig& config);`
 - `string make_http_request(const std::string& url, const std::string& json_payload, const std::vector<`
 - `bool validate_functions(const CompletionResponse& response, const std::vector<FunctionDefinition>& f`
 - `string compose_prompt(const std::string& template_str, const std::unordered_map<std::string, std::st`
-- `FunctionDefinition compose_function(     const std::string& name,     const std::string& description`
+- `FunctionDefinition compose_function( const std::string& name, const std::string& description`
 - `int count_tokens(const std::string& text);`
 - *...and 4 more*
 
@@ -619,7 +618,7 @@ This report provides a comprehensive analysis of the ElizaOS C++ implementation,
 - `void sort();`
 - `void ageIndividuals();`
 - `Individual optimize(const FitnessFunction& fitnessFunc, const State& state);`
-- `Individual optimize(const FitnessFunction& fitnessFunc, const State& state,                         `
+- `Individual optimize(const FitnessFunction& fitnessFunc, const State& state,`
 - `void setPopulation(const Population& population);`
 - `void evolveGeneration(const FitnessFunction& fitnessFunc, const State& state);`
 - *...and 10 more*
@@ -635,12 +634,12 @@ This report provides a comprehensive analysis of the ElizaOS C++ implementation,
 - `void addStep(const ProcessingStep& step);`
 - `HatsStatus process(const DataSet& input, DataSet& output);`
 - `void clearSteps();`
-- `HatsStatus applyTransform(const DataSet& input, DataSet& output,                              const `
+- `HatsStatus applyTransform(const DataSet& input, DataSet& output, const`
 - `HatsStatus registerDataSource(std::unique_ptr<DataSource> source);`
 - `HatsStatus unregisterDataSource(const std::string& sourceId);`
 - `HatsStatus loadFromSource(const std::string& sourceId, DataSet& data);`
 - `HatsStatus loadFromMultipleSources(const std::vector<std::string>& sourceIds, DataSet& data);`
-- `HatsStatus processData(const std::string& sourceId,                            const std::vector<Pro`
+- `HatsStatus processData(const std::string& sourceId, const std::vector<Pro`
 - `HatsStatus mergeDataSets(const std::vector<DataSet>& inputs, DataSet& merged);`
 - *...and 3 more*
 
@@ -715,12 +714,12 @@ This report provides a comprehensive analysis of the ElizaOS C++ implementation,
 - `AudioData loadAudioFile(const std::string& file_path);`
 - `bool saveAudioFile(const AudioData& audio, const std::string& file_path);`
 - `AudioData normalize(const AudioData& audio);`
-- `AudioData convertFormat(         const AudioData& audio,         int target_sample_rate,         int`
+- `AudioData convertFormat( const AudioData& audio, int target_sample_rate, int`
 - `TranscriptionResult transcribe(const AudioData& audio);`
 - `TranscriptionResult transcribeFile(const std::string& file_path);`
 - `void setTranscriptionModel(const std::string& model_name);`
 - `AudioData synthesize(const std::string& text, const SynthesisConfig& config = {});`
-- `bool synthesizeToFile(         const std::string& text,         const std::string& output_path,     `
+- `bool synthesizeToFile( const std::string& text, const std::string& output_path,`
 - `void setSynthesisModel(const std::string& model_name);`
 - *...and 5 more*
 
@@ -737,8 +736,8 @@ This report provides a comprehensive analysis of the ElizaOS C++ implementation,
 - `void reconnectServer(const std::string& serverName);`
 - `void registerTool(const MCPTool& tool);`
 - `void unregisterTool(const std::string& toolName);`
-- `JsonValue executeTool(const std::string& toolName, const JsonValue& input,                          `
-- `JsonValue executeToolWithPayment(const std::string& toolName, const JsonValue& input,               `
+- `JsonValue executeTool(const std::string& toolName, const JsonValue& input,`
+- `JsonValue executeToolWithPayment(const std::string& toolName, const JsonValue& input,`
 - `void registerResource(const MCPResource& resource);`
 - `void unregisterResource(const std::string& uri);`
 - `void enablePayments(const PaymentConfig& config);`
@@ -841,12 +840,12 @@ This report provides a comprehensive analysis of the ElizaOS C++ implementation,
 - `bool initialize();`
 - `void shutdown();`
 - `void updateConfig(const SpartanConfig& config);`
-- `string createTradingPool(const std::string& name,                                   const std::vecto`
+- `string createTradingPool(const std::string& name, const std::vecto`
 - `bool addPoolOwner(const std::string& poolId, const std::string& owner);`
 - `bool removePoolOwner(const std::string& poolId, const std::string& owner);`
 - `TokenInfo getTokenInfo(const std::string& symbol);`
 - `TokenInfo getTokenInfoByAddress(const std::string& address);`
-- `TradeResult executeSwap(const std::string& fromToken,                             const std::string&`
+- `TradeResult executeSwap(const std::string& fromToken, const std::string&`
 - *...and 10 more*
 
 ### sweagent
@@ -897,8 +896,8 @@ This report provides a comprehensive analysis of the ElizaOS C++ implementation,
 - **Implementation Lines**: 556
 
 **Sample Functions**:
-- `void recordEvent(const AgentId& agentId,                      TrustEventType type,                  `
-- `void recordTaskCompletion(const AgentId& agentId, bool success,                               std::c`
+- `void recordEvent(const AgentId& agentId, TrustEventType type,`
+- `void recordTaskCompletion(const AgentId& agentId, bool success, std::c`
 - `void recordCollaboration(const AgentId& agentId, bool positive);`
 - `void recordCommunication(const AgentId& agentId, bool clear);`
 - `void recordRuleViolation(const AgentId& agentId, const std::string& violation);`
@@ -918,10 +917,10 @@ This report provides a comprehensive analysis of the ElizaOS C++ implementation,
 
 **Sample Functions**:
 - `HttpResponse get(const std::string& url, const std::unordered_map<std::string, std::string>& headers`
-- `HttpResponse post(const std::string& url, const std::string& data,                       const std::`
-- `HttpResponse put(const std::string& url, const std::string& data,                     const std::uno`
+- `HttpResponse post(const std::string& url, const std::string& data, const std::`
+- `HttpResponse put(const std::string& url, const std::string& data, const std::uno`
 - `HttpResponse del(const std::string& url, const std::unordered_map<std::string, std::string>& headers`
-- `HttpResponse patch(const std::string& url, const std::string& data,                       const std:`
+- `HttpResponse patch(const std::string& url, const std::string& data, const std:`
 - `void setTimeout(int seconds);`
 - `void setUserAgent(const std::string& user_agent);`
 - `void setFollowRedirects(bool follow);`
@@ -960,7 +959,7 @@ This report provides a comprehensive analysis of the ElizaOS C++ implementation,
 - `bool addMember(const AgentId& agentId, WorkgroupRole role);`
 - `bool removeMember(const AgentId& agentId);`
 - `bool updateMemberRole(const AgentId& agentId, WorkgroupRole newRole);`
-- `string createTask(const std::string& description,                            const AgentId& creator,`
+- `string createTask(const std::string& description, const AgentId& creator,`
 - `bool assignTask(const std::string& taskId, const AgentId& agentId);`
 - `bool completeTask(const std::string& taskId, const std::string& result);`
 - `bool cancelTask(const std::string& taskId);`
