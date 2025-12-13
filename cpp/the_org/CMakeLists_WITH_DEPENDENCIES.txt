@@ -1,0 +1,94 @@
+# CMakeLists.txt for The Org Module
+# Includes SQLite3 dependency for production-ready implementation
+
+cmake_minimum_required(VERSION 3.14)
+
+# Find required dependencies
+find_package(PkgConfig REQUIRED)
+
+# Find SQLite3
+find_package(SQLite3)
+if(NOT SQLite3_FOUND)
+    # Try pkg-config as fallback
+    pkg_check_modules(SQLITE3 REQUIRED sqlite3)
+endif()
+
+# Source files
+set(THE_ORG_SOURCES
+    src/the_org.cpp
+)
+
+# Create the static library
+add_library(elizaos-the_org STATIC ${THE_ORG_SOURCES})
+
+# Set C++ standard
+target_compile_features(elizaos-the_org PUBLIC cxx_std_17)
+
+# Include directories
+target_include_directories(elizaos-the_org PUBLIC
+    $<INSTALL_INTERFACE:include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../include>
+)
+
+# Link dependencies
+if(SQLite3_FOUND)
+    target_link_libraries(elizaos-the_org PRIVATE
+        SQLite::SQLite3
+    )
+else()
+    target_include_directories(elizaos-the_org PRIVATE ${SQLITE3_INCLUDE_DIRS})
+    target_link_libraries(elizaos-the_org PRIVATE
+        ${SQLITE3_LIBRARIES}
+    )
+endif()
+
+# Add pthread for Linux
+if(UNIX AND NOT APPLE)
+    target_link_libraries(elizaos-the_org PRIVATE pthread)
+endif()
+
+# Compiler options
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    target_compile_options(elizaos-the_org PRIVATE
+        -Wall
+        -Wextra
+        -Wpedantic
+        -Werror
+    )
+elseif(MSVC)
+    target_compile_options(elizaos-the_org PRIVATE
+        /W4
+        /WX
+    )
+endif()
+
+# Define preprocessor flag for real implementation
+target_compile_definitions(elizaos-the_org PRIVATE
+    THE_ORG_REAL_IMPLEMENTATION
+)
+
+# Installation rules
+install(TARGETS elizaos-the_org
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+    RUNTIME DESTINATION bin
+)
+
+# Install header files (if any specific to The Org)
+# install(FILES include/elizaos/the_org.hpp DESTINATION include/elizaos)
+
+# Configuration summary
+message(STATUS "The Org Configuration:")
+if(SQLite3_FOUND)
+    message(STATUS "  SQLite3 Version: ${SQLite3_VERSION}")
+    message(STATUS "  SQLite3 Include: ${SQLite3_INCLUDE_DIRS}")
+else()
+    message(STATUS "  SQLite3 Version: ${SQLITE3_VERSION}")
+    message(STATUS "  SQLite3 Include: ${SQLITE3_INCLUDE_DIRS}")
+endif()
+message(STATUS "  The Org Real Implementation: ENABLED")
+
+# Optional: Add tests
+if(BUILD_TESTING)
+    add_subdirectory(tests)
+endif()
