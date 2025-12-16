@@ -1,8 +1,14 @@
+---
+name: TRANSPILER_TS_CPP
+description: "Implements experimental transpiler to evaluate rapid TS→C++ conversion effectiveness vs multi-stage TS→Z++→C++ approach. Generates approximate C++ code maintaining exact directory structure for troubleshooting comparison."
+---
+
 # Experimental TypeScript to C++ Transpiler - Implementation Summary
 
 ## Overview
 
-Successfully implemented an experimental script (`ts_to_cpp_transpiler.py`) that rapidly converts TypeScript implementations to approximate C++ equivalents while maintaining relative file and folder structures. This tool enables evaluation of rapid transpiling effectiveness compared to complete code rewrites or multi-stage conversion approaches.
+Successfully implemented an experimental script (`ts_to_cpp_transpiler.py`) that rapidly converts TypeScript implementations to approximate C++ equivalents while maintaining relative file and folder structures.
+This tool enables evaluation of rapid transpiling effectiveness compared to complete code rewrites or multi-stage conversion approaches.
 
 ## Implementation Details
 
@@ -353,7 +359,8 @@ Successfully created an experimental TypeScript-to-C++ transpiler that:
 3. **Learning tool** for understanding TS→C++ mapping patterns
 4. **Time-saver** for initial structural work
 
-**Recommendation**: Use this transpiler as a **starting point** for rapid prototyping, but expect significant manual refinement for production-quality code. The tool excels at structural conversion but intentionally leaves implementation work to developers who can ensure correctness and performance.
+**Recommendation**: Use this transpiler as a **starting point** for rapid prototyping, but expect significant manual refinement for production-quality code.
+The tool excels at structural conversion but intentionally leaves implementation work to developers who can ensure correctness and performance.
 
 ---
 
