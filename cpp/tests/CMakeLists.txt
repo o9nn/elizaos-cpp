@@ -12,6 +12,7 @@ add_executable(elizaos_tests
     src/test_ljspeechtools.cpp
     src/test_livevideochat.cpp
     src/test_evolutionary.cpp
+    src/test_ontogenesis.cpp
     src/test_stage6_automation.cpp
     src/test_knowledge.cpp
     src/test_easycompletion.cpp
@@ -40,6 +41,7 @@ target_link_libraries(elizaos_tests
     elizaos-ljspeechtools
     elizaos-livevideochat
     elizaos-evolutionary
+    elizaos-ontogenesis
     elizaos-knowledge
     elizaos-easycompletion
     elizaos-elizas_world

@@ -71,6 +71,7 @@ add_subdirectory(cpp/agentmemory)    # Memory management
 
 # Stage 5 - Learning and Adaptation (NEW)
 add_subdirectory(cpp/evolutionary)   # MOSES-style evolutionary search
+add_subdirectory(cpp/ontogenesis)    # Self-generating kernels
 
 # Stage 6 - Embodiment & Integration (NEW)
 add_subdirectory(cpp/embodiment)     # Sensory/motor interfaces and perception-action loop
@@ -517,6 +518,46 @@ target_link_libraries(agentshell_test
     Threads::Threads
 )
 
+# Ontogenesis Examples
+add_executable(ontogenesis_simple_demo
+    examples/ontogenesis_simple_demo.cpp
+)
+
+target_include_directories(ontogenesis_simple_demo PRIVATE
+    ${CMAKE_SOURCE_DIR}/include
+)
+
+target_link_libraries(ontogenesis_simple_demo
+    elizaos-ontogenesis
+    Threads::Threads
+)
+
+add_executable(ontogenesis_evolution_demo
+    examples/ontogenesis_evolution_demo.cpp
+)
+
+target_include_directories(ontogenesis_evolution_demo PRIVATE
+    ${CMAKE_SOURCE_DIR}/include
+)
+
+target_link_libraries(ontogenesis_evolution_demo
+    elizaos-ontogenesis
+    Threads::Threads
+)
+
+add_executable(ontogenesis_lineage_demo
+    examples/ontogenesis_lineage_demo.cpp
+)
+
+target_include_directories(ontogenesis_lineage_demo PRIVATE
+    ${CMAKE_SOURCE_DIR}/include
+)
+
+target_link_libraries(ontogenesis_lineage_demo
+    elizaos-ontogenesis
+    Threads::Threads
+)
+
 # Add example executable (optional)
 if(BUILD_EXAMPLES)
     add_subdirectory(examples)
@@ -560,6 +601,7 @@ install(TARGETS
     
     # Stage 5 - Web and Documentation
     elizaos-elizaos_github_io elizaos-vercel_api elizaos-website
+    elizaos-evolutionary elizaos-ontogenesis
     
     # Stage 6 - Tools and Automation
     elizaos-discord_summarizer elizaos-discrub_ext elizaos-plugins_automation
