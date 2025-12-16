@@ -11,8 +11,10 @@ This is an EXPERIMENTAL method for evaluating rapid transpiling effectiveness.
 The generated code will likely need manual fixes and is intended for comparison
 against a 2-step TS -> Z++ -> C++ approach.
 
+Version 2.1 - Performance improvements and bug fixes
+
 Usage:
-    python3 ts_to_cpp_transpiler.py [--input-dir DIR] [--output-dir DIR] [--verbose]
+    python3 ts_to_cpp_transpiler.py [--input-dir DIR] [--output-dir DIR] [--verbose] [--parallel]
 """
 
 import os
@@ -22,18 +24,27 @@ import argparse
 from pathlib import Path
 from typing import List, Dict, Tuple, Optional
 import json
+from concurrent.futures import ThreadPoolExecutor, as_completed
+import time
 
 class TypeScriptToCppTranspiler:
     """Main transpiler class for converting TypeScript to C++"""
     
-    def __init__(self, input_dir: str, output_dir: str, verbose: bool = False):
+    def __init__(self, input_dir: str, output_dir: str, verbose: bool = False, parallel: bool = False, max_workers: int = 4):
         self.input_dir = Path(input_dir)
         self.output_dir = Path(output_dir)
         self.verbose = verbose
+        self.parallel = parallel
+        self.max_workers = max_workers
         self.stats = {
             'files_processed': 0,
             'files_skipped': 0,
-            'errors': 0
+            'errors': 0,
+            'warnings': 0,
+            'headers_generated': 0,
+            'implementations_generated': 0,
+            'start_time': None,
+            'end_time': None
         }
         
         # TypeScript to C++ type mappings
@@ -59,6 +70,37 @@ class TypeScriptToCppTranspiler:
         self.import_to_include = {
             '@elizaos/core': '#include "elizaos/core.hpp"',
             'elizaos': '#include "elizaos/core.hpp"',
+        }
+        
+        # Compiled regex patterns for performance
+        self._compiled_patterns = {}
+        self._compile_patterns()
+    
+    def _compile_patterns(self):
+        """Pre-compile frequently used regex patterns for better performance"""
+        self._compiled_patterns = {
+            'interface': re.compile(r'interface\s+(\w+)\s*\{'),
+            'class': re.compile(r'(?:export\s+)?class\s+(\w+)(?:\s+extends\s+\w+)?(?:\s+implements\s+[\w,\s]+)?\s*\{'),
+            'function': re.compile(r'(export\s+)?(async\s+)?function\s+(\w+)\s*\(([^)]*)\)\s*(?::\s*([^{]+))?\s*\{'),
+            'type_alias': re.compile(r'type\s+(\w+)\s*=\s*([^;]+);'),
+            'import': re.compile(r'import\s+(?:{([^}]+)}|(\w+)|\*\s+as\s+(\w+))\s+from\s+["\']([^"\']+)["\']'),
+            'generic': re.compile(r'(\w+)<(.+)>'),
+            'property': re.compile(r'^(\w+)(\?)?:\s*([^;,{}\(\)]+?)$'),
+            'ts_code_patterns': [
+                re.compile(r'\breturn\s+\{'),
+                re.compile(r'\bawait\s+'),
+                re.compile(r'\bconsole\.'),
+                re.compile(r'\bprocess\.'),
+                re.compile(r'=>\s*\{'),
+                re.compile(r'\bJSON\.'),
+                re.compile(r'\brequire\('),
+                re.compile(r'\bimport\s+'),
+                re.compile(r'===|!=='),
+                re.compile(r'\bconst\s+\w+\s*=\s*\{'),
+                re.compile(r'\blet\s+\w+\s*=\s*\{'),
+                re.compile(r'\.then\('),
+                re.compile(r'\.catch\('),
+            ]
         }
     
     def log(self, message: str, level: str = "INFO"):
@@ -588,6 +630,28 @@ class TypeScriptToCppTranspiler:
         for line in lines:
             stripped = line.strip()
             
+            # Skip lines that contain obvious TypeScript/JavaScript code
+            typescript_patterns = [
+                r'\breturn\s+\{',  # return { ... }
+                r'\bawait\s+',     # await ...
+                r'\bconsole\.',    # console.log, etc.
+                r'\bprocess\.',    # process.env, etc.
+                r'=>\s*\{',        # arrow functions with bodies
+                r'\bJSON\.',       # JSON.stringify, etc.
+                r'\brequire\(',    # require(...)
+                r'\bimport\s+',    # import statements (should be removed earlier but check again)
+                r'===|!==',        # strict equality (common in TS/JS)
+                r'\bconst\s+\w+\s*=\s*\{',  # const x = { ... }
+                r'\blet\s+\w+\s*=\s*\{',    # let x = { ... }
+                r'\.then\(',       # Promise.then
+                r'\.catch\(',      # Promise.catch
+            ]
+            
+            # Check if line contains TypeScript code
+            is_typescript_code = any(re.search(pattern, stripped) for pattern in typescript_patterns)
+            if is_typescript_code:
+                continue
+            
             # Keep comments
             if stripped.startswith('//') or stripped.startswith('/*') or stripped.startswith('*'):
                 filtered_lines.append(line)
@@ -603,7 +667,19 @@ class TypeScriptToCppTranspiler:
             if in_struct:
                 # Count braces
                 struct_brace_count += line.count('{') - line.count('}')
-                filtered_lines.append(line)
+                
+                # Inside struct, only keep valid member declarations
+                # Skip lines that look like code
+                if not is_typescript_code and (
+                    stripped.startswith('std::') or  # C++ types
+                    stripped.startswith('const ') or  # const members
+                    stripped.endswith(';') or  # declarations
+                    stripped.endswith('{') or stripped.endswith('}') or  # braces
+                    re.match(r'^\w+:', stripped) or  # labels (rare but valid)
+                    not stripped  # empty lines
+                ):
+                    filtered_lines.append(line)
+                
                 if struct_brace_count <= 0 and '}' in line:
                     in_struct = False
                 continue
@@ -613,8 +689,8 @@ class TypeScriptToCppTranspiler:
                 filtered_lines.append(line)
                 continue
             
-            # Keep function declarations (end with ;)
-            if re.match(r'^\s*(?:std::)?\w+(?:<[^>]+>)?\s+\w+\s*\([^)]*\)\s*;', line):
+            # Keep function declarations (end with ; and look like C++ signatures)
+            if re.match(r'^\s*(?:std::)?\w+(?:<[^>]+>)?\s+\w+\s*\([^)]*\)\s*(?:const\s*)?;', line):
                 filtered_lines.append(line)
                 continue
             
@@ -709,30 +785,52 @@ class TypeScriptToCppTranspiler:
         """Convert interface body to C++ struct"""
         cpp_struct = f'struct {name} {{\n'
         
-        # Parse members more carefully
+        # Parse members more carefully - handle multiple properties per line
         lines = body.split('\n')
         for line in lines:
             line = line.strip()
-            if not line or line.startswith('//'):
+            if not line or line.startswith('//') or line.startswith('/*') or line.startswith('*'):
                 continue
             
-            # Match property: type pattern
-            match = re.match(r'(\w+)(\?)?:\s*(.+?)[;,]?$', line)
-            if match:
-                prop_name = match.group(1)
-                is_optional = match.group(2) == '?'
-                prop_type = match.group(3).strip()
-                
-                # Skip invalid types
-                if prop_type in ['true', 'false']:
+            # Skip lines that are just braces or empty
+            if line in ['{', '}', ';']:
+                continue
+            
+            # Try to match individual property declarations
+            # Handle format: propertyName?: Type;
+            # Also handle: propertyName: Type, propertyName2: Type2
+            
+            # Split by semicolon first to handle multiple statements
+            statements = line.split(';')
+            for statement in statements:
+                statement = statement.strip()
+                if not statement:
                     continue
                 
-                cpp_type = self.convert_type(prop_type)
-                
-                if is_optional:
-                    cpp_struct += f'    std::optional<{cpp_type}> {prop_name};\n'
-                else:
-                    cpp_struct += f'    {cpp_type} {prop_name};\n'
+                # Match property: type pattern
+                # More strict pattern to avoid matching code
+                match = re.match(r'^(\w+)(\?)?:\s*([^;,{}\(\)]+?)$', statement)
+                if match:
+                    prop_name = match.group(1)
+                    is_optional = match.group(2) == '?'
+                    prop_type = match.group(3).strip()
+                    
+                    # Skip invalid types and keywords
+                    if prop_type in ['true', 'false', 'function', 'class', 'interface']:
+                        continue
+                    
+                    # Skip if type looks like it contains code (parentheses, braces, etc)
+                    if any(char in prop_type for char in ['{', '}', '(']):
+                        continue
+                    
+                    cpp_type = self.convert_type(prop_type)
+                    
+                    # Make sure the converted type is valid
+                    if cpp_type and not any(invalid in cpp_type for invalid in ['undefined', 'export', 'import']):
+                        if is_optional:
+                            cpp_struct += f'    std::optional<{cpp_type}> {prop_name};\n'
+                        else:
+                            cpp_struct += f'    {cpp_type} {prop_name};\n'
         
         cpp_struct += '};\n'
         return cpp_struct
@@ -807,6 +905,43 @@ class TypeScriptToCppTranspiler:
         
         return True
     
+    def validate_generated_header(self, header_content: str, file_path: str) -> list:
+        """Validate generated header file and return list of issues found"""
+        issues = []
+        
+        # Check for TypeScript code patterns that shouldn't be in C++
+        ts_patterns = {
+            r'=> void': 'Arrow function syntax detected',
+            r'=> string': 'Arrow function syntax detected',
+            r'=> number': 'Arrow function syntax detected',
+            r'\bawait\s+': 'await keyword detected (TypeScript)',
+            r'\basync function': 'async function keyword detected (should be converted)',
+            r'\bconsole\.': 'console object detected (JavaScript)',
+            r'\bprocess\.': 'process object detected (Node.js)',
+            r'===|!==': 'Strict equality operators detected (JavaScript)',
+            r'\.then\(': 'Promise.then detected',
+            r'\.catch\(': 'Promise.catch detected',
+        }
+        
+        for pattern, message in ts_patterns.items():
+            if re.search(pattern, header_content):
+                issues.append(f"{message}: found pattern '{pattern}'")
+        
+        # Check for basic C++ requirements
+        if '#pragma once' not in header_content:
+            issues.append("Missing '#pragma once' directive")
+        
+        if 'namespace elizaos' not in header_content:
+            issues.append("Missing 'namespace elizaos' declaration")
+        
+        # Check for mismatched braces
+        open_braces = header_content.count('{')
+        close_braces = header_content.count('}')
+        if open_braces != close_braces:
+            issues.append(f"Brace mismatch: {open_braces} opening, {close_braces} closing")
+        
+        return issues
+    
     def process_file(self, ts_file: Path) -> bool:
         """Process a single TypeScript file"""
         try:
@@ -829,8 +964,20 @@ class TypeScriptToCppTranspiler:
             self.log(f"Processing {rel_path} -> {header_path.relative_to(self.output_dir)}")
             header_content = self.generate_header(ts_content)
             
+            # Validate generated header
+            issues = self.validate_generated_header(header_content, str(header_path))
+            if issues:
+                self.stats['warnings'] += len(issues)
+                self.log(f"Validation warnings for {header_path.name}:", "WARN")
+                for issue in issues[:3]:  # Show first 3 issues
+                    self.log(f"  - {issue}", "WARN")
+                if len(issues) > 3:
+                    self.log(f"  ... and {len(issues) - 3} more issues", "WARN")
+            
             with open(header_path, 'w', encoding='utf-8') as f:
                 f.write(header_content)
+            
+            self.stats['headers_generated'] += 1
             
             # Generate implementation file
             impl_content = self.generate_implementation(ts_content)
@@ -839,6 +986,7 @@ class TypeScriptToCppTranspiler:
             with open(impl_path, 'w', encoding='utf-8') as f:
                 f.write(impl_content)
             
+            self.stats['implementations_generated'] += 1
             self.stats['files_processed'] += 1
             return True
             
@@ -849,41 +997,89 @@ class TypeScriptToCppTranspiler:
     
     def transpile(self):
         """Main transpilation process"""
+        self.stats['start_time'] = time.time()
         self.log(f"Starting transpilation from {self.input_dir} to {self.output_dir}")
         
         # Find all TypeScript files
         ts_files = list(self.input_dir.rglob('*.ts')) + list(self.input_dir.rglob('*.tsx'))
         self.log(f"Found {len(ts_files)} TypeScript files")
         
-        # Process each file
-        for ts_file in ts_files:
-            if self.should_process_file(ts_file):
-                self.process_file(ts_file)
-            else:
-                self.log(f"Skipping {ts_file.name}")
-                self.stats['files_skipped'] += 1
+        # Filter files to process
+        files_to_process = [f for f in ts_files if self.should_process_file(f)]
+        files_to_skip = [f for f in ts_files if not self.should_process_file(f)]
+        
+        self.log(f"Will process {len(files_to_process)} files")
+        self.log(f"Will skip {len(files_to_skip)} files")
+        self.stats['files_skipped'] = len(files_to_skip)
+        
+        # Process files (parallel or sequential)
+        if self.parallel and len(files_to_process) > 1:
+            self.log(f"Using parallel processing with {self.max_workers} workers")
+            self._process_parallel(files_to_process)
+        else:
+            self._process_sequential(files_to_process)
+        
+        self.stats['end_time'] = time.time()
         
         # Print summary
         self.print_summary()
+    
+    def _process_sequential(self, files: List[Path]):
+        """Process files sequentially"""
+        for ts_file in files:
+            self.process_file(ts_file)
+    
+    def _process_parallel(self, files: List[Path]):
+        """Process files in parallel using thread pool"""
+        with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
+            # Submit all tasks
+            future_to_file = {executor.submit(self.process_file, f): f for f in files}
+            
+            # Collect results
+            for future in as_completed(future_to_file):
+                file = future_to_file[future]
+                try:
+                    future.result()
+                except Exception as e:
+                    self.log(f"Error processing {file}: {e}", "ERROR")
     
     def print_summary(self):
         """Print transpilation summary"""
         print("\n" + "="*60)
         print("TRANSPILATION SUMMARY")
         print("="*60)
-        print(f"Files processed: {self.stats['files_processed']}")
-        print(f"Files skipped: {self.stats['files_skipped']}")
+        print(f"TypeScript files processed: {self.stats['files_processed']}")
+        print(f"TypeScript files skipped: {self.stats['files_skipped']}")
+        print(f"Header files generated (.hpp): {self.stats['headers_generated']}")
+        print(f"Implementation files generated (.cpp): {self.stats['implementations_generated']}")
+        print(f"Validation warnings: {self.stats['warnings']}")
         print(f"Errors: {self.stats['errors']}")
-        print(f"Output directory: {self.output_dir}")
+        
+        # Performance metrics
+        if self.stats['start_time'] and self.stats['end_time']:
+            duration = self.stats['end_time'] - self.stats['start_time']
+            files_per_sec = self.stats['files_processed'] / duration if duration > 0 else 0
+            print(f"\nPerformance:")
+            print(f"  Duration: {duration:.2f} seconds")
+            print(f"  Processing rate: {files_per_sec:.1f} files/second")
+            if self.parallel:
+                print(f"  Mode: Parallel ({self.max_workers} workers)")
+            else:
+                print(f"  Mode: Sequential")
+        
+        print(f"\nOutput directory: {self.output_dir}")
         print("="*60)
         print("\nNOTE: Generated code is approximate and will require manual fixes.")
         print("This is an experimental rapid transpilation for evaluation purposes.")
+        if self.stats['warnings'] > 0:
+            print(f"\n⚠️  {self.stats['warnings']} validation warnings detected.")
+            print("Review the generated files for TypeScript code leakage or conversion issues.")
         print("="*60)
 
 def main():
     """Main entry point"""
     parser = argparse.ArgumentParser(
-        description='Experimental TypeScript to C++ Transpiler',
+        description='Experimental TypeScript to C++ Transpiler (v2.1)',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
@@ -895,6 +1091,9 @@ Examples:
   
   # Verbose output
   python3 ts_to_cpp_transpiler.py --verbose
+  
+  # Use parallel processing for faster conversion
+  python3 ts_to_cpp_transpiler.py --parallel --max-workers 8
         """
     )
     
@@ -918,13 +1117,28 @@ Examples:
         help='Enable verbose output'
     )
     
+    parser.add_argument(
+        '--parallel',
+        action='store_true',
+        help='Enable parallel processing for faster conversion'
+    )
+    
+    parser.add_argument(
+        '--max-workers',
+        type=int,
+        default=4,
+        help='Maximum number of parallel workers (default: 4, only used with --parallel)'
+    )
+    
     args = parser.parse_args()
     
     # Create transpiler and run
     transpiler = TypeScriptToCppTranspiler(
         input_dir=args.input_dir,
         output_dir=args.output_dir,
-        verbose=args.verbose
+        verbose=args.verbose,
+        parallel=args.parallel,
+        max_workers=args.max_workers
     )
     
     transpiler.transpile()

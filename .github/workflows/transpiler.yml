@@ -1,0 +1,254 @@
+name: TypeScript to C++ Transpiler
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - '**.ts'
+      - '**.tsx'
+      - 'ts_to_cpp_transpiler.py'
+      - '.github/workflows/transpiler.yml'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - '**.ts'
+      - '**.tsx'
+      - 'ts_to_cpp_transpiler.py'
+      - '.github/workflows/transpiler.yml'
+  workflow_dispatch:
+    inputs:
+      input_directory:
+        description: 'Input directory containing TypeScript files (default: .)'
+        required: false
+        default: '.'
+      output_directory:
+        description: 'Output directory for C++ files (default: excpp)'
+        required: false
+        default: 'excpp'
+      verbose:
+        description: 'Enable verbose output'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  transpile:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+        fetch-depth: 0
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    
+    - name: Run TypeScript to C++ Transpiler
+      run: |
+        echo "=== TypeScript to C++ Transpiler ==="
+        echo "Input directory: ${{ github.event.inputs.input_directory || '.' }}"
+        echo "Output directory: ${{ github.event.inputs.output_directory || 'excpp' }}"
+        echo "Verbose: ${{ github.event.inputs.verbose || 'false' }}"
+        echo ""
+        
+        # Build transpiler arguments
+        ARGS="--input-dir ${{ github.event.inputs.input_directory || '.' }}"
+        ARGS="$ARGS --output-dir ${{ github.event.inputs.output_directory || 'excpp' }}"
+        
+        if [ "${{ github.event.inputs.verbose }}" = "true" ]; then
+          ARGS="$ARGS --verbose"
+        fi
+        
+        # Run transpiler
+        python3 ts_to_cpp_transpiler.py $ARGS
+        
+        echo ""
+        echo "=== Transpiler Execution Completed ==="
+    
+    - name: Count Generated Files
+      run: |
+        OUTPUT_DIR="${{ github.event.inputs.output_directory || 'excpp' }}"
+        
+        if [ -d "$OUTPUT_DIR" ]; then
+          HPP_COUNT=$(find "$OUTPUT_DIR" -name "*.hpp" -type f | wc -l)
+          CPP_COUNT=$(find "$OUTPUT_DIR" -name "*.cpp" -type f | wc -l)
+          TOTAL_COUNT=$((HPP_COUNT + CPP_COUNT))
+          
+          echo "📊 Generated Files Summary:"
+          echo "   Header files (.hpp): $HPP_COUNT"
+          echo "   Implementation files (.cpp): $CPP_COUNT"
+          echo "   Total files: $TOTAL_COUNT"
+          echo ""
+          
+          # Set outputs for use in other steps
+          echo "HPP_COUNT=$HPP_COUNT" >> $GITHUB_ENV
+          echo "CPP_COUNT=$CPP_COUNT" >> $GITHUB_ENV
+          echo "TOTAL_COUNT=$TOTAL_COUNT" >> $GITHUB_ENV
+        else
+          echo "⚠️ Output directory not found: $OUTPUT_DIR"
+          exit 1
+        fi
+    
+    - name: Sample Generated Files (First 5)
+      run: |
+        OUTPUT_DIR="${{ github.event.inputs.output_directory || 'excpp' }}"
+        
+        if [ -d "$OUTPUT_DIR" ]; then
+          echo "📁 Sample of generated .hpp files:"
+          find "$OUTPUT_DIR" -name "*.hpp" -type f | head -5 | while read file; do
+            echo "   - $file"
+          done
+          echo ""
+          
+          echo "📁 Sample of generated .cpp files:"
+          find "$OUTPUT_DIR" -name "*.cpp" -type f | head -5 | while read file; do
+            echo "   - $file"
+          done
+        fi
+    
+    - name: Basic Syntax Validation (Sample)
+      run: |
+        OUTPUT_DIR="${{ github.event.inputs.output_directory || 'excpp' }}"
+        
+        echo "🔍 Performing basic syntax validation on sample files..."
+        
+        # Check a few .hpp files for common issues
+        SAMPLE_FILES=$(find "$OUTPUT_DIR" -name "*.hpp" -type f | head -10)
+        
+        ISSUES_FOUND=0
+        
+        for file in $SAMPLE_FILES; do
+          # Check for raw TypeScript code patterns
+          if grep -q "=> void\|=> string\|=> number\|await \|async function" "$file" 2>/dev/null; then
+            echo "⚠️ Possible TypeScript code leakage in: $file"
+            ISSUES_FOUND=$((ISSUES_FOUND + 1))
+          fi
+          
+          # Check for basic C++ structure
+          if ! grep -q "#pragma once" "$file" 2>/dev/null; then
+            echo "⚠️ Missing #pragma once in: $file"
+            ISSUES_FOUND=$((ISSUES_FOUND + 1))
+          fi
+          
+          # Check for namespace
+          if ! grep -q "namespace elizaos" "$file" 2>/dev/null; then
+            echo "⚠️ Missing namespace in: $file"
+            ISSUES_FOUND=$((ISSUES_FOUND + 1))
+          fi
+        done
+        
+        if [ $ISSUES_FOUND -eq 0 ]; then
+          echo "✅ Sample validation passed - no obvious issues detected"
+        else
+          echo "⚠️ Found $ISSUES_FOUND potential issues in sample files"
+          echo "Note: This is an approximate transpiler - manual review recommended"
+        fi
+    
+    - name: Generate Transpiler Report
+      run: |
+        OUTPUT_DIR="${{ github.event.inputs.output_directory || 'excpp' }}"
+        REPORT_FILE="transpiler_report.md"
+        
+        cat > "$REPORT_FILE" << EOF
+        # TypeScript to C++ Transpiler Report
+        
+        **Generated:** $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+        **Workflow Run:** ${{ github.run_number }}
+        **Commit:** ${{ github.sha }}
+        
+        ## Configuration
+        - **Input Directory:** ${{ github.event.inputs.input_directory || '.' }}
+        - **Output Directory:** ${{ github.event.inputs.output_directory || 'excpp' }}
+        - **Verbose Mode:** ${{ github.event.inputs.verbose || 'false' }}
+        
+        ## Results
+        - **Header Files Generated:** ${HPP_COUNT}
+        - **Implementation Files Generated:** ${CPP_COUNT}
+        - **Total Files:** ${TOTAL_COUNT}
+        
+        ## Notes
+        - This is an experimental transpiler generating approximate C++ code
+        - Manual refinement is required for production use
+        - Review the transpiler evaluation reports for quality assessment
+        - See \`TRANSPILER_README.md\` for usage guidelines
+        
+        ## Next Steps
+        1. Review generated files in \`${OUTPUT_DIR}/\`
+        2. Validate type conversions and declarations
+        3. Implement function bodies manually
+        4. Test and refine as needed
+        EOF
+        
+        echo ""
+        cat "$REPORT_FILE"
+    
+    - name: Upload Generated C++ Files
+      uses: actions/upload-artifact@v4
+      with:
+        name: transpiled-cpp-files-${{ github.run_number }}
+        path: |
+          ${{ github.event.inputs.output_directory || 'excpp' }}/**/*.hpp
+          ${{ github.event.inputs.output_directory || 'excpp' }}/**/*.cpp
+        retention-days: 30
+        if-no-files-found: warn
+    
+    - name: Upload Transpiler Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: transpiler-report-${{ github.run_number }}
+        path: transpiler_report.md
+        retention-days: 30
+
+  validate-transpiler:
+    runs-on: ubuntu-latest
+    needs: transpile
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: Download Generated Files
+      uses: actions/download-artifact@v4
+      with:
+        name: transpiled-cpp-files-${{ github.run_number }}
+        path: excpp
+    
+    - name: Set up C++ Compiler
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y g++ clang-format
+    
+    - name: Attempt Compilation of Sample Files (Best Effort)
+      continue-on-error: true
+      run: |
+        echo "🔨 Attempting to compile sample generated files..."
+        echo "Note: Failures are expected as implementations are not complete"
+        echo ""
+        
+        # Try to compile a few header files (just syntax check)
+        SAMPLE_HEADERS=$(find excpp -name "*.hpp" -type f | head -5)
+        
+        SUCCESS_COUNT=0
+        FAIL_COUNT=0
+        
+        for header in $SAMPLE_HEADERS; do
+          echo "Checking: $header"
+          if g++ -std=c++17 -fsyntax-only -I. -Iinclude "$header" 2>&1 | head -10; then
+            SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
+            echo "✅ Syntax check passed"
+          else
+            FAIL_COUNT=$((FAIL_COUNT + 1))
+            echo "⚠️ Syntax check failed (expected for experimental transpiler)"
+          fi
+          echo ""
+        done
+        
+        echo "📊 Compilation Test Summary:"
+        echo "   Passed: $SUCCESS_COUNT"
+        echo "   Failed: $FAIL_COUNT"
+        echo ""
+        echo "Note: This transpiler generates approximate code requiring manual refinement"
