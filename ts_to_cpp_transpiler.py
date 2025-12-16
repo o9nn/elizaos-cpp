@@ -68,6 +68,27 @@ class TypeScriptToCppTranspiler:
     
     def convert_type(self, ts_type: str) -> str:
         """Convert TypeScript type to C++ type"""
+        # Clean up the type string
+        ts_type = ts_type.strip()
+        
+        # Handle object literal types like { path: string; hiddenTools?: string[] }
+        if ts_type.startswith('{') and ts_type.endswith('}'):
+            return 'std::any'  # Simplified - could be a struct
+        
+        # Handle union types like string | null
+        if '|' in ts_type and not '=>' in ts_type:
+            types = [self.convert_type(t.strip()) for t in ts_type.split('|')]
+            # Simplify null unions to optional
+            if 'null' in ts_type or 'nullptr' in types:
+                non_null_types = [t for t in types if t not in ['null', 'nullptr']]
+                if len(non_null_types) == 1:
+                    return f'std::optional<{non_null_types[0]}>'
+            return f'std::variant<{", ".join(types)}>'
+        
+        # Handle function types like (value: string) => void
+        if '=>' in ts_type:
+            return self.convert_function_type(ts_type)
+        
         # Handle array types like string[] or Array<string>
         if ts_type.endswith('[]'):
             inner_type = ts_type[:-2].strip()
@@ -86,9 +107,64 @@ class TypeScriptToCppTranspiler:
                 cpp_params = ', '.join([self.convert_type(p.strip()) for p in param_parts])
                 return f'{cpp_base}<{cpp_params}>'
         
+        # Handle React-specific types
+        if ts_type.startswith('React.'):
+            return self.convert_react_type(ts_type)
+        
         # Direct type mapping
         if ts_type in self.type_mappings:
             return self.type_mappings[ts_type]
+        
+        return ts_type
+    
+    def convert_function_type(self, ts_type: str) -> str:
+        """Convert TypeScript function type to std::function"""
+        # Pattern: (param1: type1, param2: type2) => returnType
+        match = re.match(r'\(([^)]*)\)\s*=>\s*(.+)', ts_type)
+        if match:
+            params_str = match.group(1)
+            return_type = match.group(2).strip()
+            
+            # Parse parameters
+            cpp_param_types = []
+            if params_str.strip():
+                params = params_str.split(',')
+                for param in params:
+                    if ':' in param:
+                        param_type = param.split(':', 1)[1].strip()
+                        cpp_param_types.append(self.convert_type(param_type))
+                    else:
+                        cpp_param_types.append('auto')
+            
+            # Convert return type
+            cpp_return = self.convert_type(return_type)
+            
+            # Build std::function type
+            if cpp_param_types:
+                return f'std::function<{cpp_return}({", ".join(cpp_param_types)})>'
+            else:
+                return f'std::function<{cpp_return}()>'
+        
+        return 'std::function<void()>'
+    
+    def convert_react_type(self, ts_type: str) -> str:
+        """Convert React-specific types to C++ equivalents"""
+        # React.RefObject<T> -> std::shared_ptr<T>
+        if ts_type.startswith('React.RefObject<'):
+            inner = ts_type[16:-1]  # Extract T from React.RefObject<T>
+            return f'std::shared_ptr<{self.convert_type(inner)}>'
+        
+        # React.FC or React.FunctionComponent -> void (function pointer)
+        if 'React.FC' in ts_type or 'React.FunctionComponent' in ts_type:
+            return 'void'
+        
+        # React.ChangeEvent, FormEvent, etc. -> EventType
+        if 'React.' in ts_type and 'Event' in ts_type:
+            return 'EventType'
+        
+        # React.KeyboardEvent, MouseEvent, etc.
+        if 'React.' in ts_type:
+            return ts_type.replace('React.', '')
         
         return ts_type
     
@@ -117,13 +193,18 @@ class TypeScriptToCppTranspiler:
     def convert_imports(self, ts_content: str) -> Tuple[List[str], str]:
         """Convert TypeScript imports to C++ includes"""
         includes = set()
-        includes.add('#pragma once')  # For header files
+        includes.add('#pragma once')  # For header files (will be moved to first line)
         includes.add('#include <string>')
         includes.add('#include <vector>')
         includes.add('#include <memory>')
         includes.add('#include <optional>')
         includes.add('#include <functional>')
         includes.add('#include <unordered_map>')
+        
+        # Track if we need additional includes based on usage
+        self._needs_any = False
+        self._needs_variant = False
+        self._needs_future = False
         
         # Extract import statements
         import_pattern = r'import\s+(?:{([^}]+)}|(\w+)|\*\s+as\s+(\w+))\s+from\s+["\']([^"\']+)["\']'
@@ -149,6 +230,38 @@ class TypeScriptToCppTranspiler:
         content_no_imports = re.sub(r'^\s*;\s*$', '', content_no_imports, flags=re.MULTILINE)
         
         return sorted(list(includes)), content_no_imports
+    
+    def add_conditional_includes(self, includes: List[str], content: str) -> List[str]:
+        """Add includes based on content analysis"""
+        includes_set = set(includes)
+        
+        # Check for std::any usage
+        if 'std::any' in content:
+            includes_set.add('#include <any>')
+        
+        # Check for std::variant usage
+        if 'std::variant' in content:
+            includes_set.add('#include <variant>')
+        
+        # Check for std::future usage
+        if 'std::future' in content:
+            includes_set.add('#include <future>')
+        
+        # Sort includes properly: pragma once first, then system, then project
+        result = []
+        if '#pragma once' in includes_set:
+            result.append('#pragma once')
+            includes_set.remove('#pragma once')
+        
+        # Add system includes (starts with <)
+        system_includes = sorted([i for i in includes_set if i.startswith('#include <')])
+        result.extend(system_includes)
+        
+        # Add project includes (starts with #include ")
+        project_includes = sorted([i for i in includes_set if i.startswith('#include "')])
+        result.extend(project_includes)
+        
+        return result
     
     def convert_interface(self, interface_match: re.Match) -> str:
         """Convert TypeScript interface to C++ struct"""
@@ -214,38 +327,109 @@ class TypeScriptToCppTranspiler:
         params_str = ', '.join(cpp_params)
         return f'{cpp_return} {func_name}({params_str})'
     
-    def convert_class(self, class_match: re.Match) -> str:
-        """Convert TypeScript class to C++ class"""
-        class_name = class_match.group(1)
-        class_body = class_match.group(2)
+    def convert_class_body(self, name: str, body: str) -> str:
+        """Convert TypeScript class body to C++ class with proper brace matching"""
+        cpp_class = f'class {name} {{\npublic:\n'
         
-        cpp_class = f'class {class_name} {{\npublic:\n'
-        
-        # Extract constructor
-        constructor_pattern = r'constructor\s*\(([^)]*)\)\s*{([^}]*)}'
-        constructor_match = re.search(constructor_pattern, class_body)
+        # Extract constructor using brace matching
+        constructor_pattern = r'constructor\s*\(([^)]*)\)\s*\{'
+        constructor_match = re.search(constructor_pattern, body)
         
         if constructor_match:
-            params = constructor_match.group(1)
-            cpp_class += f'    {class_name}({params});\n'
+            params_str = constructor_match.group(1)
+            # Convert constructor parameters
+            cpp_params = self.convert_params(params_str)
+            cpp_class += f'    {name}({cpp_params});\n'
         
-        # Extract methods
-        method_pattern = r'(?:async\s+)?(\w+)\s*\(([^)]*)\)\s*(?::\s*([^{]+))?\s*{'
-        for method_match in re.finditer(method_pattern, class_body):
-            method_name = method_match.group(1)
-            if method_name != 'constructor':
-                is_async = 'async' in class_body[:method_match.start()]
-                func_sig = self.convert_function(method_match, is_async)
-                cpp_class += f'    {func_sig};\n'
+        # Extract method signatures using brace matching
+        method_pattern = r'(?:public|private|protected)?\s*(?:async\s+)?(?:get\s+)?(\w+)\s*\(([^)]*)\)\s*(?::\s*([^{]+))?\s*\{'
+        pos = 0
+        methods = []
         
-        # Extract properties
-        property_pattern = r'(?:private|public|protected)?\s+(\w+):\s*([^;=]+)[;=]'
-        cpp_class += '\nprivate:\n'
-        for prop_match in re.finditer(property_pattern, class_body):
-            prop_name = prop_match.group(1)
-            prop_type = prop_match.group(2).strip()
-            cpp_type = self.convert_type(prop_type)
-            cpp_class += f'    {cpp_type} {prop_name}_;\n'
+        while pos < len(body):
+            match = re.search(method_pattern, body[pos:])
+            if not match:
+                break
+            
+            method_name = match.group(1)
+            if method_name == 'constructor':
+                # Skip past constructor body
+                brace_start = pos + match.end() - 1
+                brace_count = 1
+                i = brace_start + 1
+                while i < len(body) and brace_count > 0:
+                    if body[i] == '{':
+                        brace_count += 1
+                    elif body[i] == '}':
+                        brace_count -= 1
+                    i += 1
+                pos = i
+                continue
+            
+            params_str = match.group(2)
+            return_type = match.group(3).strip() if match.group(3) else 'void'
+            
+            # Check if method is async or a getter
+            prefix = body[max(0, pos + match.start() - 30):pos + match.start()]
+            is_async = 'async' in prefix
+            is_getter = 'get ' in body[pos + match.start():pos + match.start() + 10]
+            
+            # Convert parameters
+            cpp_params = self.convert_params(params_str)
+            
+            # Convert return type
+            cpp_return = self.convert_type(return_type)
+            if is_async and cpp_return != 'void':
+                cpp_return = f'std::future<{cpp_return}>'
+            
+            # Getters should be const methods
+            const_suffix = ' const' if is_getter and not cpp_params else ''
+            methods.append(f'    {cpp_return} {method_name}({cpp_params}){const_suffix};')
+            
+            # Skip past method body
+            brace_start = pos + match.end() - 1
+            brace_count = 1
+            i = brace_start + 1
+            while i < len(body) and brace_count > 0:
+                if body[i] == '{':
+                    brace_count += 1
+                elif body[i] == '}':
+                    brace_count -= 1
+                i += 1
+            pos = i
+        
+        # Add methods to class
+        if methods:
+            for method in methods:
+                cpp_class += method + '\n'
+        
+        # Extract member variables - only from class body, not from inside methods
+        # We'll be more conservative and only extract clear property declarations at the class level
+        properties = []
+        
+        # Look for simple property declarations like "path: string;"
+        # Split by methods/constructor to get only class-level declarations
+        parts = re.split(r'(?:constructor|get|(?:async\s+)?[\w]+)\s*\([^)]*\)\s*\{', body)
+        if parts:
+            class_level_code = parts[0]  # Only the part before any methods/constructor
+            property_pattern = r'^\s*(?:private|public|protected)?\s+(\w+):\s*([^;={]+);'
+            for line in class_level_code.split('\n'):
+                prop_match = re.match(property_pattern, line)
+                if prop_match:
+                    prop_name = prop_match.group(1)
+                    prop_type = prop_match.group(2).strip()
+                    
+                    # Skip if this looks like a method
+                    if '(' in prop_type:
+                        continue
+                    
+                    cpp_type = self.convert_type(prop_type)
+                    properties.append(f'    {cpp_type} {prop_name}_;')
+        
+        if properties:
+            cpp_class += '\nprivate:\n'
+            for prop in properties:
+                cpp_class += prop + '\n'
         
         cpp_class += '};\n'
         return cpp_class
@@ -312,9 +496,39 @@ class TypeScriptToCppTranspiler:
         for start, end, replacement in reversed(interface_converted):
             content = content[:start] + replacement + content[end:]
         
-        # Convert classes (similar approach)
-        class_pattern = r'class\s+(\w+)(?:\s+extends\s+\w+)?(?:\s+implements\s+[\w,\s]+)?\s*\{'
-        # Similar nested brace handling for classes...
+        # Convert classes (similar approach with proper brace matching)
+        class_converted = []
+        class_pattern = r'(?:export\s+)?class\s+(\w+)(?:\s+extends\s+\w+)?(?:\s+implements\s+[\w,\s]+)?\s*\{'
+        pos = 0
+        while True:
+            match = re.search(class_pattern, content[pos:])
+            if not match:
+                break
+            
+            start = pos + match.start()
+            name = match.group(1)
+            brace_start = pos + match.end() - 1
+            
+            # Find matching closing brace
+            brace_count = 1
+            i = brace_start + 1
+            while i < len(content) and brace_count > 0:
+                if content[i] == '{':
+                    brace_count += 1
+                elif content[i] == '}':
+                    brace_count -= 1
+                i += 1
+            
+            if brace_count == 0:
+                class_body = content[brace_start+1:i-1]
+                class_str = self.convert_class_body(name, class_body)
+                class_converted.append((start, i, class_str))
+            
+            pos = i
+        
+        # Apply class replacements in reverse order
+        for start, end, replacement in reversed(class_converted):
+            content = content[:start] + replacement + content[end:]
         
         # Convert type aliases - handle union types
         type_pattern = r'type\s+(\w+)\s*=\s*([^;]+);'
@@ -382,7 +596,10 @@ class TypeScriptToCppTranspiler:
         # Clean up extra blank lines
         content = re.sub(r'\n\s*\n\s*\n+', '\n\n', content)
         
-        # Build header
+        # Add conditional includes based on content
+        includes = self.add_conditional_includes(includes, content)
+        
+        # Build header with proper include ordering
         header = '\n'.join(includes) + '\n\n'
         header += f'namespace {namespace} {{\n\n'
         header += '// NOTE: This is auto-generated approximate C++ code\n'
