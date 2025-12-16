@@ -33,7 +33,10 @@ class TypeScriptToCppTranspiler:
         self.stats = {
             'files_processed': 0,
             'files_skipped': 0,
-            'errors': 0
+            'errors': 0,
+            'warnings': 0,
+            'headers_generated': 0,
+            'implementations_generated': 0
         }
         
         # TypeScript to C++ type mappings
@@ -588,6 +591,28 @@ class TypeScriptToCppTranspiler:
         for line in lines:
             stripped = line.strip()
             
+            # Skip lines that contain obvious TypeScript/JavaScript code
+            typescript_patterns = [
+                r'\breturn\s+\{',  # return { ... }
+                r'\bawait\s+',     # await ...
+                r'\bconsole\.',    # console.log, etc.
+                r'\bprocess\.',    # process.env, etc.
+                r'=>\s*\{',        # arrow functions with bodies
+                r'\bJSON\.',       # JSON.stringify, etc.
+                r'\brequire\(',    # require(...)
+                r'\bimport\s+',    # import statements (should be removed earlier but check again)
+                r'===|!==',        # strict equality (common in TS/JS)
+                r'\bconst\s+\w+\s*=\s*\{',  # const x = { ... }
+                r'\blet\s+\w+\s*=\s*\{',    # let x = { ... }
+                r'\.then\(',       # Promise.then
+                r'\.catch\(',      # Promise.catch
+            ]
+            
+            # Check if line contains TypeScript code
+            is_typescript_code = any(re.search(pattern, stripped) for pattern in typescript_patterns)
+            if is_typescript_code:
+                continue
+            
             # Keep comments
             if stripped.startswith('//') or stripped.startswith('/*') or stripped.startswith('*'):
                 filtered_lines.append(line)
@@ -603,7 +628,19 @@ class TypeScriptToCppTranspiler:
             if in_struct:
                 # Count braces
                 struct_brace_count += line.count('{') - line.count('}')
-                filtered_lines.append(line)
+                
+                # Inside struct, only keep valid member declarations
+                # Skip lines that look like code
+                if not is_typescript_code and (
+                    stripped.startswith('std::') or  # C++ types
+                    stripped.startswith('const ') or  # const members
+                    stripped.endswith(';') or  # declarations
+                    stripped.endswith('{') or stripped.endswith('}') or  # braces
+                    re.match(r'^\w+:', stripped) or  # labels (rare but valid)
+                    not stripped  # empty lines
+                ):
+                    filtered_lines.append(line)
+                
                 if struct_brace_count <= 0 and '}' in line:
                     in_struct = False
                 continue
@@ -613,8 +650,8 @@ class TypeScriptToCppTranspiler:
                 filtered_lines.append(line)
                 continue
             
-            # Keep function declarations (end with ;)
-            if re.match(r'^\s*(?:std::)?\w+(?:<[^>]+>)?\s+\w+\s*\([^)]*\)\s*;', line):
+            # Keep function declarations (end with ; and look like C++ signatures)
+            if re.match(r'^\s*(?:std::)?\w+(?:<[^>]+>)?\s+\w+\s*\([^)]*\)\s*(?:const\s*)?;', line):
                 filtered_lines.append(line)
                 continue
             
@@ -709,30 +746,52 @@ class TypeScriptToCppTranspiler:
         """Convert interface body to C++ struct"""
         cpp_struct = f'struct {name} {{\n'
         
-        # Parse members more carefully
+        # Parse members more carefully - handle multiple properties per line
         lines = body.split('\n')
         for line in lines:
             line = line.strip()
-            if not line or line.startswith('//'):
+            if not line or line.startswith('//') or line.startswith('/*') or line.startswith('*'):
                 continue
             
-            # Match property: type pattern
-            match = re.match(r'(\w+)(\?)?:\s*(.+?)[;,]?$', line)
-            if match:
-                prop_name = match.group(1)
-                is_optional = match.group(2) == '?'
-                prop_type = match.group(3).strip()
-                
-                # Skip invalid types
-                if prop_type in ['true', 'false']:
+            # Skip lines that are just braces or empty
+            if line in ['{', '}', ';']:
+                continue
+            
+            # Try to match individual property declarations
+            # Handle format: propertyName?: Type;
+            # Also handle: propertyName: Type, propertyName2: Type2
+            
+            # Split by semicolon first to handle multiple statements
+            statements = line.split(';')
+            for statement in statements:
+                statement = statement.strip()
+                if not statement:
                     continue
                 
-                cpp_type = self.convert_type(prop_type)
-                
-                if is_optional:
-                    cpp_struct += f'    std::optional<{cpp_type}> {prop_name};\n'
-                else:
-                    cpp_struct += f'    {cpp_type} {prop_name};\n'
+                # Match property: type pattern
+                # More strict pattern to avoid matching code
+                match = re.match(r'^(\w+)(\?)?:\s*([^;,{}\(\)]+?)$', statement)
+                if match:
+                    prop_name = match.group(1)
+                    is_optional = match.group(2) == '?'
+                    prop_type = match.group(3).strip()
+                    
+                    # Skip invalid types and keywords
+                    if prop_type in ['true', 'false', 'function', 'class', 'interface']:
+                        continue
+                    
+                    # Skip if type looks like it contains code (parentheses, braces, etc)
+                    if any(char in prop_type for char in ['{', '}', '(']):
+                        continue
+                    
+                    cpp_type = self.convert_type(prop_type)
+                    
+                    # Make sure the converted type is valid
+                    if cpp_type and not any(invalid in cpp_type for invalid in ['undefined', 'export', 'import']):
+                        if is_optional:
+                            cpp_struct += f'    std::optional<{cpp_type}> {prop_name};\n'
+                        else:
+                            cpp_struct += f'    {cpp_type} {prop_name};\n'
         
         cpp_struct += '};\n'
         return cpp_struct
@@ -807,6 +866,43 @@ class TypeScriptToCppTranspiler:
         
         return True
     
+    def validate_generated_header(self, header_content: str, file_path: str) -> list:
+        """Validate generated header file and return list of issues found"""
+        issues = []
+        
+        # Check for TypeScript code patterns that shouldn't be in C++
+        ts_patterns = {
+            r'=> void': 'Arrow function syntax detected',
+            r'=> string': 'Arrow function syntax detected',
+            r'=> number': 'Arrow function syntax detected',
+            r'\bawait\s+': 'await keyword detected (TypeScript)',
+            r'\basync function': 'async function keyword detected (should be converted)',
+            r'\bconsole\.': 'console object detected (JavaScript)',
+            r'\bprocess\.': 'process object detected (Node.js)',
+            r'===|!==': 'Strict equality operators detected (JavaScript)',
+            r'\.then\(': 'Promise.then detected',
+            r'\.catch\(': 'Promise.catch detected',
+        }
+        
+        for pattern, message in ts_patterns.items():
+            if re.search(pattern, header_content):
+                issues.append(f"{message}: found pattern '{pattern}'")
+        
+        # Check for basic C++ requirements
+        if '#pragma once' not in header_content:
+            issues.append("Missing '#pragma once' directive")
+        
+        if 'namespace elizaos' not in header_content:
+            issues.append("Missing 'namespace elizaos' declaration")
+        
+        # Check for mismatched braces
+        open_braces = header_content.count('{')
+        close_braces = header_content.count('}')
+        if open_braces != close_braces:
+            issues.append(f"Brace mismatch: {open_braces} opening, {close_braces} closing")
+        
+        return issues
+    
     def process_file(self, ts_file: Path) -> bool:
         """Process a single TypeScript file"""
         try:
@@ -829,8 +925,20 @@ class TypeScriptToCppTranspiler:
             self.log(f"Processing {rel_path} -> {header_path.relative_to(self.output_dir)}")
             header_content = self.generate_header(ts_content)
             
+            # Validate generated header
+            issues = self.validate_generated_header(header_content, str(header_path))
+            if issues:
+                self.stats['warnings'] += len(issues)
+                self.log(f"Validation warnings for {header_path.name}:", "WARN")
+                for issue in issues[:3]:  # Show first 3 issues
+                    self.log(f"  - {issue}", "WARN")
+                if len(issues) > 3:
+                    self.log(f"  ... and {len(issues) - 3} more issues", "WARN")
+            
             with open(header_path, 'w', encoding='utf-8') as f:
                 f.write(header_content)
+            
+            self.stats['headers_generated'] += 1
             
             # Generate implementation file
             impl_content = self.generate_implementation(ts_content)
@@ -839,6 +947,7 @@ class TypeScriptToCppTranspiler:
             with open(impl_path, 'w', encoding='utf-8') as f:
                 f.write(impl_content)
             
+            self.stats['implementations_generated'] += 1
             self.stats['files_processed'] += 1
             return True
             
@@ -871,13 +980,19 @@ class TypeScriptToCppTranspiler:
         print("\n" + "="*60)
         print("TRANSPILATION SUMMARY")
         print("="*60)
-        print(f"Files processed: {self.stats['files_processed']}")
-        print(f"Files skipped: {self.stats['files_skipped']}")
+        print(f"TypeScript files processed: {self.stats['files_processed']}")
+        print(f"TypeScript files skipped: {self.stats['files_skipped']}")
+        print(f"Header files generated (.hpp): {self.stats['headers_generated']}")
+        print(f"Implementation files generated (.cpp): {self.stats['implementations_generated']}")
+        print(f"Validation warnings: {self.stats['warnings']}")
         print(f"Errors: {self.stats['errors']}")
         print(f"Output directory: {self.output_dir}")
         print("="*60)
         print("\nNOTE: Generated code is approximate and will require manual fixes.")
         print("This is an experimental rapid transpilation for evaluation purposes.")
+        if self.stats['warnings'] > 0:
+            print(f"\n⚠️  {self.stats['warnings']} validation warnings detected.")
+            print("Review the generated files for TypeScript code leakage or conversion issues.")
         print("="*60)
 
 def main():
