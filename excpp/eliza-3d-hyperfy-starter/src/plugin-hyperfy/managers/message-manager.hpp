@@ -1,15 +1,17 @@
-#include ".events.hpp"
-#include ".hyperfy/src/core/utils.hpp"
-#include ".service.hpp"
-#include "elizaos/core.hpp"
-#include "guards.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".events.hpp"
+#include ".hyperfy/src/core/utils.hpp"
+#include ".service.hpp"
+#include "elizaos/core.hpp"
+#include "guards.hpp"
 
 namespace elizaos {
 
@@ -19,32 +21,14 @@ namespace elizaos {
 
 
 class MessageManager {
-  private runtime: IAgentRuntime;
-  
-  constructor(runtime: IAgentRuntime) {
-    this.runtime = runtime;
-    if (!this.runtime.character.templates) {
-      this.runtime.character.templates = {};
-    }
-  }
-
-    // maybe a thinking emote here?
-
-      // Respond only to messages not from the agent itself
-
-        // First, ensure we register the entity (world, room, sender) in Eliza properly
-
-        // Ensure connection for the sender entity
-
-        // Create the message memory
-
-        // Create a callback function to handle responses
-          
-          // Send response back to Hyperfy
-
-        // Ensure the entity actually exists in DB before event emission
-
-        // Emit the MESSAGE_RECEIVED event to trigger the message handler
+public:
+    MessageManager(IAgentRuntime runtime);
+    std::future<void> handleMessage(auto msg);
+    std::future<void> sendMessage(const std::string& text);
+    void formatMessages(auto {
+    messages, auto entities, const std::any& });
+    void getRecentMessages(UUID roomId, auto count = 20);
+    void getService();
 
 
 } // namespace elizaos

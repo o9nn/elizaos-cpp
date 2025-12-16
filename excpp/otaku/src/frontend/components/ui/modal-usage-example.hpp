@@ -1,13 +1,13 @@
-#include "..contexts/ModalContext.hpp"
-#include "button.hpp"
-#include "input.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "..contexts/ModalContext.hpp"
+#include "button.hpp"
+#include "input.hpp"
 
 namespace elizaos {
 
@@ -28,29 +28,19 @@ namespace elizaos {
  * - Similar pattern to LoadingPanel
  */
 
-// ============================================
 // EXAMPLE 1: Simple Content Modal
-// ============================================
 void ExampleSimpleModal();
 
-// ============================================
 // EXAMPLE 2: Form Modal (like SendModal)
-// ============================================
 void ExampleFormModal();
 
-// ============================================
 // EXAMPLE 3: Confirmation Modal
-// ============================================
 void ExampleConfirmationModal();
 
-// ============================================
 // EXAMPLE 4: Custom Styling Modal
-// ============================================
 void ExampleCustomStyledModal();
 
-// ============================================
 // EXAMPLE 5: Converting existing SendModal
-// ============================================
 
 /**
  * HOW TO CONVERT YOUR EXISTING MODALS:
@@ -71,7 +61,6 @@ void ExampleCustomStyledModal();
  *   const { hideModal } = useModal();
  *   const modalId = 'send-modal';
  *   
- *   const handleClose = () => {
  *     hideModal(modalId);
  *   };
  *   
@@ -89,7 +78,6 @@ void ExampleCustomStyledModal();
  * 
  * BENEFITS:
  * - No need to manage isOpen state
- * - No need to import createPortal
  * - Automatic z-index management
  * - Cleaner component structure
  * - Consistent with LoadingPanel pattern

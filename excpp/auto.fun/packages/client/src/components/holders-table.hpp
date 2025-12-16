@@ -1,11 +1,12 @@
-#include "loader.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "loader.hpp"
 
 namespace elizaos {
 
@@ -13,6 +14,8 @@ namespace elizaos {
 // Manual refinement required for production use
 
 
+
+std::variant<std::string, double> getPercentageOfTotal(double value, double total);
 
 
 } // namespace elizaos

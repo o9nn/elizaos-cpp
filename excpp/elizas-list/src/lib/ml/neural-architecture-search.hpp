@@ -1,12 +1,14 @@
-#include ".monitoring/logger.hpp"
-#include "evolutionary-optimizer.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".monitoring/logger.hpp"
+#include "evolutionary-optimizer.hpp"
 
 namespace elizaos {
 
@@ -16,19 +18,15 @@ namespace elizaos {
 
 
 class NeuralArchitectureSearch {
-  private optimizer: EvolutionaryOptimizer;
-  private readonly searchSpace: SearchSpace;
-  private readonly maxTrials: number;
+public:
+    NeuralArchitectureSearch(NASConfig config);
+    std::future<NASResult> search(const std::any& data, const std::any& validationData);
+    SearchSpace defineSearchSpace(NASConfig config);
+    std::future<ArchitectureEvaluation> evaluateArchitecture(NeuralArchitecture architecture, const std::any& data, const std::any& validationData);
+    std::vector<tf::Callback> createTrainingCallbacks();
 
-  constructor(config: NASConfig) {
-    this.searchSpace = this.defineSearchSpace(config);
-    this.maxTrials = config.maxTrials || 100;
-    this.optimizer = new EvolutionaryOptimizer(this.searchSpace);
-  }
-
-        // Update population and best architecture
-
-    // Train with early stopping and learning rate scheduling
-
-
+private:
+    EvolutionaryOptimizer optimizer_;
+};
+ 
 } // namespace elizaos

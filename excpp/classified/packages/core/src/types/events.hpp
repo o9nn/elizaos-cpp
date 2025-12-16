@@ -1,10 +1,12 @@
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -17,71 +19,34 @@ namespace elizaos {
  */
 enum EventType {
   // World events
-  WORLD_JOINED = 'WORLD_JOINED',
-  WORLD_CONNECTED = 'WORLD_CONNECTED',
-  WORLD_LEFT = 'WORLD_LEFT',
 
   // Entity events
-  ENTITY_JOINED = 'ENTITY_JOINED',
-  ENTITY_LEFT = 'ENTITY_LEFT',
-  ENTITY_UPDATED = 'ENTITY_UPDATED',
 
   // Room events
-  ROOM_JOINED = 'ROOM_JOINED',
-  ROOM_LEFT = 'ROOM_LEFT',
 
   // Message events
-  MESSAGE_RECEIVED = 'MESSAGE_RECEIVED',
-  MESSAGE_SENT = 'MESSAGE_SENT',
-  MESSAGE_DELETED = 'MESSAGE_DELETED',
 
   // Channel events
-  CHANNEL_CLEARED = 'CHANNEL_CLEARED',
 
   // Voice events
-  VOICE_MESSAGE_RECEIVED = 'VOICE_MESSAGE_RECEIVED',
-  VOICE_MESSAGE_SENT = 'VOICE_MESSAGE_SENT',
 
   // Interaction events
-  REACTION_RECEIVED = 'REACTION_RECEIVED',
-  POST_GENERATED = 'POST_GENERATED',
-  INTERACTION_RECEIVED = 'INTERACTION_RECEIVED',
 
   // Run events
-  RUN_STARTED = 'RUN_STARTED',
-  RUN_ENDED = 'RUN_ENDED',
-  RUN_TIMEOUT = 'RUN_TIMEOUT',
 
   // Action events
-  ACTION_STARTED = 'ACTION_STARTED',
-  ACTION_COMPLETED = 'ACTION_COMPLETED',
 
   // Evaluator events
-  EVALUATOR_STARTED = 'EVALUATOR_STARTED',
-  EVALUATOR_COMPLETED = 'EVALUATOR_COMPLETED',
 
   // Model events
-  MODEL_USED = 'MODEL_USED',
 
   // Progression events
-  CAPABILITY_USED = 'CAPABILITY_USED',
-  AGENT_NAMED = 'AGENT_NAMED',
-  SHELL_COMMAND_EXECUTED = 'SHELL_COMMAND_EXECUTED',
-  GOAL_CREATED = 'GOAL_CREATED',
-  TODO_CREATED = 'TODO_CREATED',
-  FORM_SUBMITTED = 'FORM_SUBMITTED',
-  BROWSER_ACTION_PERFORMED = 'BROWSER_ACTION_PERFORMED',
-  VISION_ACTION_PERFORMED = 'VISION_ACTION_PERFORMED',
-  MICROPHONE_USED = 'MICROPHONE_USED',
 }
 
 /**
  * Platform-specific event type prefix
  */
 enum PlatformPrefix {
-  DISCORD = 'DISCORD',
-  TELEGRAM = 'TELEGRAM',
-  TWITTER = 'TWITTER',
 }
 
 /**
@@ -90,7 +55,6 @@ enum PlatformPrefix {
 struct EventPayload {
     IAgentRuntime runtime;
     std::string source;
-    std::optional<() => void> onComplete;
 };
 
 /**
@@ -147,6 +111,6 @@ struct EventPayloadMap {
  * for functions that respond to events emitted within the agent runtime (see `emitEvent` in `AgentRuntime`).
  * Handlers can be synchronous or asynchronous.
  */
-using TypedEventHandler = std::variant<(data: Metadata) => Promise<void>, void>;
+using TypedEventHandler = std::variant<std::function<std::future<void>(Metadata)>, void>;
 
 } // namespace elizaos

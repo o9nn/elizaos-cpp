@@ -1,16 +1,18 @@
+#pragma once
+#include <any>
+#include <functional>
+#include <future>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include ".db.hpp"
 #include ".logger.hpp"
 #include ".redis.hpp"
 #include ".uploader.hpp"
 #include ".util.hpp"
 #include ".websocket-manager.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -23,7 +25,7 @@ namespace elizaos {
 // Env type is now imported from ../env.ts
 
 // Adjust User type to match Hono context expectation (based on linter errors)
-using User = { publicKey: string }; // Assuming publicKey is in JWT payload's 'sub'
+using User = std::any; // Assuming publicKey is in JWT payload's 'sub'
 
 using Variables = {
 

@@ -1,11 +1,13 @@
-#include "service.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "service.hpp"
 
 namespace elizaos {
 
@@ -19,13 +21,12 @@ struct SearchOptions {
     std::optional<double> offset;
     std::optional<std::string> language;
     std::optional<std::string> region;
-    std::optional<{> dateRange;
     std::optional<Date> start;
     std::optional<Date> end;
     std::optional<std::string> fileType;
     std::optional<std::string> site;
-    std::optional<'relevance' | 'date' | 'popularity'> sortBy;
-    std::optional<'strict' | 'moderate' | 'off'> safeSearch;
+    std::optional<std::variant<'relevance', 'date', 'popularity'>> sortBy;
+    std::optional<std::variant<'strict', 'moderate', 'off'>> safeSearch;
 };
 
 struct SearchResult {
@@ -53,51 +54,7 @@ struct SearchResponse {
 /**
  * Interface for web search services
  */
+    std::future<SearchResponse> search(const std::string& query, std::optional<SearchOptions> options);
 
-  /**
-   * Perform a general web search
-   * @param query - Search query
-   * @param options - Search options
-   * @returns Promise resolving to search results
-   */
-
-  /**
-   * Search for news articles
-   * @param query - Search query
-   * @param options - News search options
-   * @returns Promise resolving to news search results
-   */
-
-  /**
-   * Search for images
-   * @param query - Search query
-   * @param options - Image search options
-   * @returns Promise resolving to image search results
-   */
-
-  /**
-   * Search for videos
-   * @param query - Search query
-   * @param options - Video search options
-   * @returns Promise resolving to video search results
-   */
-
-  /**
-   * Get search suggestions for a query
-   * @param query - Partial search query
-   * @returns Promise resolving to array of suggestions
-   */
-
-  /**
-   * Get trending searches
-   * @param region - Optional region code
-   * @returns Promise resolving to trending search queries
-   */
-
-  /**
-   * Get detailed information about a specific URL
-   * @param url - URL to analyze
-   * @returns Promise resolving to page information
-   */
 
 } // namespace elizaos

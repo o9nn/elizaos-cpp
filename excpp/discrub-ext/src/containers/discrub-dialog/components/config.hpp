@@ -1,3 +1,10 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include "...common-components/multi-value-select/multi-value-select.hpp"
 #include "...common-components/tooltip/tooltip.hpp"
 #include "...enum/discrub-setting.hpp"
@@ -7,13 +14,6 @@
 #include "...features/app/app-types.hpp"
 #include "...services/chrome-service.hpp"
 #include "...utils.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 

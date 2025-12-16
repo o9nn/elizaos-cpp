@@ -1,11 +1,12 @@
-#include ".monitoring/logger.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".monitoring/logger.hpp"
 
 namespace elizaos {
 
@@ -15,16 +16,16 @@ namespace elizaos {
 
 
 class RealtimeService {
-  private wss: WebSocketServer;
-  private clients: Map<string, Set<WebSocket>>;
+public:
+    RealtimeService(HTTPServer server);
+    void setupWebSocket();
+    void setupRedisSubscriber();
+    void broadcastToProject(const std::string& projectId, const std::any& data);
+    void publishEvent(const std::string& projectId, const std::string& eventType, const std::any& data);
 
-  constructor(server: HTTPServer) {
-    this.wss = new WebSocketServer({ server });
-    this.clients = new Map();
-
-    this.setupWebSocket();
-    this.setupRedisSubscriber();
-  }
-
-
+private:
+    WebSocketServer wss_;
+    std::unordered_map<std::string, std::unordered_set<WebSocket>> clients_;
+};
+ 
 } // namespace elizaos

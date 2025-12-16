@@ -1,11 +1,12 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -17,7 +18,7 @@ namespace elizaos {
 /**
  * Safely constructs and validates upload directory paths to prevent path traversal attacks
  */
-std::string createSecureUploadDir(const std::string& id, 'agents' | 'channels' type);
+std::string createSecureUploadDir(const std::string& id, const std::variant<'agents', 'channels'>& type);
 
 /**
  * Sanitizes a filename by removing dangerous characters and normalizing it

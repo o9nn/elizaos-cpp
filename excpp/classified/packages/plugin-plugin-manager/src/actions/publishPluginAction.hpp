@@ -1,11 +1,11 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -16,6 +16,7 @@ namespace elizaos {
 
     // Temporarily disabled while migrating to new registry system
 
-std::future<string | null> resolvePluginPath(const std::string& pluginInfo);
+std::optional<std::string> extractPluginInfo(const std::string& text);
+
 
 } // namespace elizaos

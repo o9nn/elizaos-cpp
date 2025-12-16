@@ -1,15 +1,15 @@
-#include "combobox.hpp"
-#include "elizaos/core.hpp"
-#include "ui/button.hpp"
-#include "ui/card.hpp"
-#include "ui/input.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "combobox.hpp"
+#include "elizaos/core.hpp"
+#include "ui/button.hpp"
+#include "ui/card.hpp"
+#include "ui/input.hpp"
 
 namespace elizaos {
 
@@ -23,18 +23,17 @@ namespace elizaos {
 struct ComboboxOption {
     std::string icon;
     std::string label;
-    std::optional<string; // We will always provide agent.id here, which is UUID (string)> id;
+    std::optional<std::string> id;
 };
 
 struct GroupPanelProps {
-    () => void onClose;
     std::optional<UUID> channelId;
 };
 
 struct ChannelParticipantsResponse {
     bool success;
     std::optional<std::vector<UUID>> data;
-    std::optional<{ message?: string; code?: number | string }> error;
+};
 
 using SelectableAgent = Agent & { id: UUID; name: string };
 

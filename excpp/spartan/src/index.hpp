@@ -1,16 +1,16 @@
-#include "init.hpp"
-#include "plugins/communityInvestor.hpp"
-#include "plugins/degenIntel.hpp"
-#include "plugins/degenTrader.hpp"
-#include "plugins/helius.hpp"
-#include "plugins/plugin-app.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "init.hpp"
+#include "plugins/communityInvestor.hpp"
+#include "plugins/degenIntel.hpp"
+#include "plugins/degenTrader.hpp"
+#include "plugins/helius.hpp"
+#include "plugins/plugin-app.hpp"
 
 namespace elizaos {
 
@@ -50,7 +50,6 @@ namespace elizaos {
     // this wasn't here in the initial Spartan
 
 /**
- * Configuration object for onboarding process.
  * @typedef {Object} OnboardingConfig
  * @property {Object} settings - Contains various settings for onboarding.
  * @property {Object} settings.POOL_SETTINGS - Default settings for new trading pools.

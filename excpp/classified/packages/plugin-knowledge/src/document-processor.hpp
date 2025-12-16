@@ -1,15 +1,17 @@
-#include "config.ts.hpp"
-#include "ctx-embeddings.ts.hpp"
-#include "elizaos/core.hpp"
-#include "llm.ts.hpp"
-#include "utils.ts.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "config.ts.hpp"
+#include "ctx-embeddings.ts.hpp"
+#include "elizaos/core.hpp"
+#include "llm.ts.hpp"
+#include "utils.ts.hpp"
 
 namespace elizaos {
 
@@ -39,9 +41,7 @@ bool getCtxKnowledgeEnabled(std::optional<IAgentRuntime> runtime);
  */
 bool shouldUseCustomLLM();
 
-// =============================================================================
 // MAIN DOCUMENT PROCESSING FUNCTIONS
-// =============================================================================
 
 /**
  * Process document fragments synchronously
@@ -55,9 +55,7 @@ bool shouldUseCustomLLM();
  * @returns Number of fragments processed
  */
 
-// =============================================================================
 // DOCUMENT EXTRACTION & MEMORY FUNCTIONS
-// =============================================================================
 
 /**
  * Extract text from document buffer based on content type
@@ -74,9 +72,7 @@ std::future<std::string> extractTextFromDocument(Buffer fileBuffer, const std::s
  * @returns Memory object for the main document
  */
 
-// =============================================================================
 // CHUNKING AND FRAGMENT PROCESSING
-// =============================================================================
 
 /**
  * Split document text into chunks using standard parameters
@@ -114,16 +110,13 @@ std::future<std::string> extractTextFromDocument(Buffer fileBuffer, const std::s
   // Always use individual processing with ElizaOS runtime (keeping embeddings simple)
 
       // Apply rate limiting before embedding generation
-      await rateLimiter(embeddingTokens);
 
-// =============================================================================
 // CONTEXTUAL ENRICHMENT FUNCTIONS
-// =============================================================================
 
 /**
  * Generate contextual chunks if contextual Knowledge is enabled
  */
-std::future<std::vector> getContextualizedChunks(IAgentRuntime runtime, string | undefined fullDocumentText, const std::vector<std::string>& chunks, string | undefined contentType, const std::vector<double>& batchOriginalIndices, std::optional<std::string> documentTitle);>> {
+std::future<std::vector> getContextualizedChunks(IAgentRuntime runtime, const std::string& fullDocumentText, const std::vector<std::string>& chunks, const std::string& contentType, const std::vector<double>& batchOriginalIndices, std::optional<std::string> documentTitle);>> {
 
   // Log configuration state once per document (not per batch)
 
@@ -143,7 +136,6 @@ std::future<std::vector> generateContextsInBatch(IAgentRuntime runtime, const st
   // Process valid prompts with rate limiting
 
       // Apply rate limiting before making API call
-      await rateLimiter(llmTokens);
 
             // Use custom LLM with caching support
               // Use the newer caching approach with separate document
@@ -160,9 +152,7 @@ std::future<std::vector> generateContextsInBatch(IAgentRuntime runtime, const st
  */
 std::vector<std::any> prepareContextPrompts(const std::vector<std::string>& chunks, const std::string& fullDocumentText, std::optional<std::string> contentType, std::optional<std::vector<double>> batchIndices, auto isUsingCacheCapableModel = false);
 
-// =============================================================================
 // UTILITY FUNCTIONS
-// =============================================================================
 
 /**
  * Helper to generate embedding with proper error handling and validation

@@ -1,13 +1,13 @@
-#include "callAIService.hpp"
-#include "config.hpp"
-#include "queries.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "callAIService.hpp"
+#include "config.hpp"
+#include "queries.hpp"
 
 namespace elizaos {
 
@@ -21,7 +21,6 @@ using ContributorMetricsForSummary = Awaited<
 /**
  * Generate an AI summary of a contributor's activity
  */
-std::future<string | null> generateAISummaryForContributor(ContributorMetricsForSummary metrics, AISummaryConfig config, IntervalType intervalType);
 
 /**
  * Format contributor metrics into a structured prompt

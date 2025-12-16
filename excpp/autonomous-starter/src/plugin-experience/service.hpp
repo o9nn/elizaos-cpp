@@ -1,15 +1,16 @@
-#include "elizaos/core.hpp"
-#include "types.hpp"
-#include "utils/confidenceDecay.hpp"
-#include "utils/experienceAnalyzer.hpp"
-#include "utils/experienceRelationships.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
+#include "types.hpp"
+#include "utils/confidenceDecay.hpp"
+#include "utils/experienceAnalyzer.hpp"
+#include "utils/experienceRelationships.hpp"
 
 namespace elizaos {
 
@@ -18,92 +19,27 @@ namespace elizaos {
 
 
 
-class ExperienceService extends Service {
-  static override serviceType: ServiceTypeName =
-    ExperienceServiceType.EXPERIENCE;
-  override capabilityDescription =
-    "Manages agent experiences, learning from successes and failures to improve future decisions";
+class ExperienceService {
+public:
+    ExperienceService(IAgentRuntime runtime);
+    std::future<ExperienceService> start(IAgentRuntime runtime);
+    std::future<void> loadExperiences();
+    std::future<Experience> recordExperience(const std::optional<Experience>& experienceData);
+    std::future<std::vector<Experience>> queryExperiences(ExperienceQuery query);
+    std::future<std::vector<Experience>> findSimilarExperiences(const std::string& text, number = 5 limit);
+    std::future<ExperienceAnalysis> analyzeExperiences(std::optional<std::string> domain, std::optional<ExperienceType> type);
+    double cosineSimilarity(const std::vector<double>& a, const std::vector<double>& b);
+    std::vector<std::string> findCommonPatterns(const std::vector<std::string>& texts);
+    double calculateOutcomeConsistency(const std::vector<Experience>& experiences);
+    std::vector<std::string> extractAlternatives(const std::vector<Experience>& experiences);
+    std::vector<std::string> generateRecommendations(const std::vector<Experience>& experiences, double reliability);
+    std::future<void> pruneOldExperiences();
+    std::future<void> stop();
 
-  private experiences: Map<UUID, Experience> = new Map();
-  private experiencesByDomain: Map<string, Set<UUID>> = new Map();
-  private experiencesByType: Map<ExperienceType, Set<UUID>> = new Map();
-  private maxExperiences = 10000; // Configurable limit - reverted to default
-  private decayManager: ConfidenceDecayManager;
-  private relationshipManager: ExperienceRelationshipManager;
+private:
+    ConfidenceDecayManager decayManager_;
+    ExperienceRelationshipManager relationshipManager_;
+};
 
-  constructor(runtime: IAgentRuntime) {
-    super(runtime);
-    this.decayManager = new ConfidenceDecayManager();
-    this.relationshipManager = new ExperienceRelationshipManager();
-    this.loadExperiences();
-  }
-
-    // loadExperiences is called by constructor
-
-      // TODO: Load from knowledge service if available
-
-      // Generate embedding for the experience
-        // Leave embedding undefined on error
-
-      // Store the experience
-
-      // Update indexes
-
-      // Check for contradictions and add relationships
-
-      // Prune if necessary
-
-      // Emit event
-
-    // Start with all experiences
-
-    // Apply filters
-
-    // Sort by relevance (considering decayed confidence)
-
-    // Apply limit
-
-    // Include related experiences if requested
-
-    // Update access counts
-
-      // Generate embedding for the query text
-
-      // Calculate similarities
-
-      // Sort by similarity and return top results
-
-      // Update access counts
-
-    // Analyze patterns
-
-    // Calculate reliability based on consistency and confidence
-
-    // Find alternatives
-
-    // Generate recommendations
-
-          // Skip short words
-
-    // Return words that appear in at least 30% of texts
-
-        // Extract alternative from learning
-
-    // Add specific recommendations based on patterns
-
-    // Add domain-specific recommendations
-
-    // Sort experiences by importance (ascending) and access count (ascending)
-      // First sort by importance
-      // Then by access count
-      // Finally by age (older first)
-
-    // Remove the least important experiences
-
-      // Remove from domain index
-
-      // Remove from type index
-
-    // TODO: Save experiences to database
 
 } // namespace elizaos

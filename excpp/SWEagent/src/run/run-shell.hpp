@@ -1,15 +1,18 @@
+#pragma once
+#include <any>
+#include <functional>
+#include <future>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <variant>
+#include <vector>
 #include ".agent/agents.hpp"
 #include ".agent/hooks.hpp"
 #include ".agent/problem-statement.hpp"
 #include ".environment/swe-env.hpp"
 #include ".utils/log.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -25,52 +28,24 @@ namespace elizaos {
  * Run shell - interactive shell mode
  */
 class RunShell {
-  private env: SWEEnv;
-  private agent: AbstractAgent;
-  private problemStatement: ProblemStatement | ProblemStatementConfig;
-  private outputDir: string;
-  private hooks: AbstractAgentHook[];
-  private logger: AgentLogger;
-  private rl: readline.Interface;
+public:
+    RunShell(std::optional<std::any> config);
+    void addHook(AbstractAgentHook hook);
+    std::future<void> run();
+    std::future<void> interactiveLoop();
+    void printHelp();
+    std::future<void> printStatus();
+    void saveState();
 
-  constructor(config: {
-    env: SWEEnv;
-    agent: AbstractAgent;
-    problemStatement: ProblemStatement | ProblemStatementConfig;
-    outputDir?: string;
-    hooks?: AbstractAgentHook[];
-  }) {
-    this.env = config.env;
-    this.agent = config.agent;
-    this.problemStatement = config.problemStatement;
-    this.outputDir = config.outputDir || '.';
-    this.hooks = config.hooks || [];
-    this.logger = getLogger('run-shell', '🐚');
-
-    // Setup readline interface
-    this.rl = readline.createInterface({
-      input: process.stdin,
-      output: process.stdout,
-      prompt: '> ',
-    });
-
-    // Add hooks to agent
-    for (const hook of this.hooks) {
-      this.agent.addHook(hook);
-    }
-  }
-
-    // Start environment
-
-      // Setup agent (DefaultAgent has setup method)
-
-      // Interactive loop
-      // Clean up
-
-            // Execute command through environment
-
-    // Get current working directory
-      // Ignore errors
+private:
+    SWEEnv env_;
+    AbstractAgent agent_;
+    std::variant<ProblemStatement, ProblemStatementConfig> problemStatement_;
+    std::string outputDir_;
+    std::vector<AbstractAgentHook> hooks_;
+    AgentLogger logger_;
+    readline::Interface rl_;
+};
 
 /**
  * Run a shell session from configuration options
@@ -79,5 +54,6 @@ class RunShell {
  * @param _options.config - Configuration file path
  * @param _options.problemStatement - Problem statement to solve
  */
+std::future<void> runShellFromConfig(std::optional<std::any> _options);
 
 } // namespace elizaos

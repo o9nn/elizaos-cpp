@@ -1,13 +1,13 @@
-#include "config.hpp"
-#include "general.hpp"
-#include "validators.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "config.hpp"
+#include "general.hpp"
+#include "validators.hpp"
 
 namespace elizaos {
 

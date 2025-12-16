@@ -1,3 +1,10 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include "apis.hpp"
 #include "elizaos/core.hpp"
 #include "providers/birdeyeTrending.hpp"
@@ -8,13 +15,6 @@
 #include "services/srv_dataprovider.hpp"
 #include "services/srv_strategy.hpp"
 #include "tasks.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -28,8 +28,6 @@ namespace elizaos {
 // Services
 
 // create a new plugin
-
-    await registerTasks(runtime);
 
     // check for cmc key, if have then register provider
 

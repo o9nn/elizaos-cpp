@@ -1,10 +1,11 @@
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -12,11 +13,12 @@ namespace elizaos {
 // Manual refinement required for production use
 
 class Logger {
-  private prefix = '[StagehandServer]';
-
-  info(message: string, ...args: any[]) {
-    console.log(`${this.prefix} INFO:`, message, ...args);
-  }
+public:
+    void info(const std::string& message, const std::vector<std::any>& ...args);
+    void debug(const std::string& message, const std::vector<std::any>& ...args);
+    void error(const std::string& message, std::optional<std::any> error);
+    void warn(const std::string& message, const std::vector<std::any>& ...args);
+};
 
 
 } // namespace elizaos

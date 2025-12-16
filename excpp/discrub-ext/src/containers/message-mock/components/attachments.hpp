@@ -1,13 +1,14 @@
-#include "...classes/message.hpp"
-#include "...components/attachment-mock.hpp"
-#include "...components/embed-mock.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "...classes/message.hpp"
+#include "...components/attachment-mock.hpp"
+#include "...components/embed-mock.hpp"
 
 namespace elizaos {
 
@@ -16,7 +17,7 @@ namespace elizaos {
 
 
 
-using AttachmentsProps = { message: Message };
+using AttachmentsProps = std::any;
 
 
 } // namespace elizaos

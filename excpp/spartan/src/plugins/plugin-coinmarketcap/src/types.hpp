@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -21,8 +21,6 @@ struct PriceData {
 };
 
 struct ApiResponse {
-    { data;
-    { quote;
     double price;
     double market_cap;
     double volume_24h;

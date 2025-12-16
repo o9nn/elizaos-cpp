@@ -1,3 +1,10 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include "..classes/attachment.hpp"
 #include "..classes/channel.hpp"
 #include "..classes/embed.hpp"
@@ -8,13 +15,6 @@
 #include "..classes/role.hpp"
 #include "..classes/user.hpp"
 #include "..enum/discrub-setting.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 

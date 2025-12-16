@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -17,7 +17,6 @@ namespace elizaos {
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
  */
-// require('dotenv').config();
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -28,7 +27,6 @@ namespace elizaos {
   /* Opt out of parallel tests on CI */
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
-    /* Base URL to use in actions like `await page.goto('/')`. */
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     /* Capture screenshot on failure. See https://playwright.dev/docs/screenshots */
     /* Record video on failure. See https://playwright.dev/docs/videos */

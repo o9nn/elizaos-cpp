@@ -1,11 +1,13 @@
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -25,6 +27,6 @@ struct DiscordComponent {
  * @param channels - Optional array of Discord text channels to display in the form
  * @param serverInfo - Server information containing serverId and serverName
  */
-std::future<void> sendCheckInReportForm(HandlerCallback callback, std::optional<std::vector<{ id: string; name: string; type: string }>> channels, std::optional<{ serverId: string; serverName: string }> serverInfo);
+std::future<void> sendCheckInReportForm(HandlerCallback callback, std::optional<std::vector<std::any>> channels, std::optional<std::any> serverInfo);
 
 } // namespace elizaos

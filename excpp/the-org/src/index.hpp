@@ -1,16 +1,16 @@
-#include "communityManager.hpp"
-#include "devRel.hpp"
-#include "elizaos/core.hpp"
-#include "liaison.hpp"
-#include "projectManager.hpp"
-#include "socialMediaManager.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "communityManager.hpp"
+#include "devRel.hpp"
+#include "elizaos/core.hpp"
+#include "liaison.hpp"
+#include "projectManager.hpp"
+#include "socialMediaManager.hpp"
 
 namespace elizaos {
 

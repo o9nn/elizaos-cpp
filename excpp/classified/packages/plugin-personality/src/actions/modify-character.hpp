@@ -1,13 +1,15 @@
-#include ".services/character-file-manager.hpp"
-#include ".utils/json-parser.hpp"
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".services/character-file-manager.hpp"
+#include ".utils/json-parser.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 

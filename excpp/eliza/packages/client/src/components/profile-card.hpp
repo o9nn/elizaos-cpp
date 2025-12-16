@@ -1,12 +1,13 @@
-#include "ui/button.hpp"
-#include "ui/card.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "ui/button.hpp"
+#include "ui/card.hpp"
 
 namespace elizaos {
 
@@ -17,16 +18,15 @@ namespace elizaos {
 
 struct ButtonConfig {
     std::optional<std::string> label;
-    std::optional<React.ReactNode> icon;
-    std::optional<() => void> action;
+    std::optional<ReactNode> icon;
     std::optional<std::string> className;
-    std::optional<'default' | 'sm' | 'lg' | 'icon' | null | undefined> size;
+    std::optional<std::variant<'default', 'sm', 'lg', 'icon'>> size;
     std::optional<bool> disabled;
 };
 
 struct ProfileCardProps {
-    React.ReactNode title;
-    React.ReactNode content;
+    ReactNode title;
+    ReactNode content;
     std::vector<ButtonConfig> buttons;
     std::optional<std::string> className;
 };

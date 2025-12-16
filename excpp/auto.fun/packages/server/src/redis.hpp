@@ -1,11 +1,13 @@
-#include "util.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "util.hpp"
 
 namespace elizaos {
 
@@ -27,53 +29,29 @@ using RedisCache = RedisCacheService;
 // Default local Redis configuration
 
 class RedisCacheService {
-  constructor(public redisPool: RedisPool) {}
-
-  // --- START NEW LIST METHODS ---
-      // Handle case where no values are provided, perhaps return 0 or throw error
-    // logger.info(`LPUSH ${values.length} values to ${this.getKey(key)}`);
-
-    // logger.info(`LRANGE from ${this.getKey(key)} ${start} ${stop}`);
-
-    // logger.info(`LLEN for ${this.getKey(key)}`);
-
-    // logger.info(`LTRIM on ${this.getKey(key)} ${start} ${stop}`);
-
-    // logger.info(
-    //   `LPUSH+LTRIM pipeline on ${this.getKey(key)} limit ${maxLength}`
-    // );
-  // --- END NEW LIST METHODS ---
-
-  // --- START NEW SET METHODS ---
-    // logger.info(`SADD to ${this.getKey(key)}`);
-    // Note: ioredis sadd returns number of elements added
-
-    // logger.info(`SREM from ${this.getKey(key)}`);
-    // Note: ioredis srem returns number of elements removed
-
-    // logger.info(`SMEMBERS for ${this.getKey(key)}`);
-
-  // Expose useClient for transactions if absolutely necessary, but prefer specific methods
-  // Only uncomment if the MULTI logic cannot be encapsulated here.
-  // async useClient<T>(fn: (client: Redis) => Promise<T>): Promise<T> {
-  //   return this.redisPool.useClient(fn);
-  // }
-  // --- END NEW SET METHODS ---
-
-  // --- START DISTRIBUTED LOCK METHODS ---
-
-  // Lua script for safe lock release
-
-  // Define the script in ioredis if not already done (e.g., during initialization or first use)
-    // Check if script already defined to avoid redefining on every call
-      // Check if command name exists
-        // Define the script command
-        // Handle cases where command might already be defined (e.g., across pool clients)
-
-        // Ensure script is defined for this client connection
-        // Execute the Lua script using the defined command name
-
-  // --- END DISTRIBUTED LOCK METHODS ---
+public:
+    RedisCacheService(RedisPool public redisPool);
+    std::future<bool> isPoolReady();
+    std::future<double> publish(const std::string& channel, const std::string& message);
+    void getKey(const std::string& key);
+    std::variant<Promise<string, null>> get(const std::string& key);
+    std::variant<Promise<"OK", null>> set(const std::string& key, const std::string& value, std::optional<double> ttlInSeconds);
+    std::future<double> del(const std::string& key);
+    std::future<bool> exists(const std::string& key);
+    std::future<double> ttl(const std::string& key);
+    std::future<double> lpush(const std::string& key, const std::vector<std::string>& ...values);
+    std::future<std::vector<std::string>> lrange(const std::string& key, double start, double stop);
+    std::future<double> llen(const std::string& key);
+    std::variant<Promise<"OK", null>> ltrim(const std::string& key, double start, double stop);
+    std::variant<std::future<Array<unknown>, null>> lpushTrim(const std::string& key, const std::string& value, double maxLength);
+    std::future<double> sadd(const std::string& key, const std::variant<std::string, std::vector<std::string>>& member);
+    std::future<double> srem(const std::string& key, const std::variant<std::string, std::vector<std::string>>& member);
+    std::future<std::vector<std::string>> smembers(const std::string& key);
+    void if(auto ttlInSeconds);
+    std::future<bool> acquireLock(const std::string& lockKey, const std::string& lockValue, double ttlMilliseconds);
+    std::future<void> defineReleaseLockScript(Redis client);
+    std::future<bool> releaseLock(const std::string& lockKey, const std::string& lockValue);
+};
 
 RedisCacheService createRedisCache();
 
@@ -87,70 +65,13 @@ struct RedisPoolOptions {
 };
 
 class RedisPool {
-  private pool: Pool<Redis>;
-  private publisherClient: Redis | null = null;
-  private subscriberClient: Redis | null = null;
-  private options: Required<RedisPoolOptions>; // Make options required internally
-
-  constructor(options: RedisPoolOptions = {}) {
-    // Use environment variables or fall back to defaults
-    this.options = {
-      host: options.host || process.env.REDIS_HOST || DEFAULT_REDIS_HOST,
-      port:
-        options.port || Number(process.env.REDIS_PORT) || DEFAULT_REDIS_PORT,
-      password:
-        options.password ||
-        process.env.REDIS_PASSWORD ||
-        DEFAULT_REDIS_PASSWORD,
-      max: options.max || 500,
-      min: options.min || 200,
-      idleTimeoutMillis: options.idleTimeoutMillis || 60_000,
-    };
-
-    logger.info(
-      `[RedisPool] Initializing with host: ${this.options.host === DEFAULT_REDIS_HOST ? "DEFAULT LOCAL HOST" : this.options.host}:${this.options.port}`
-    );
-
-    this.pool = createPool<Redis>(
-      {
-        create: async () => {
-          const client = new Redis({
-            host: this.options.host,
-            port: this.options.port,
-            password: this.options.password || undefined, // Pass undefined if no password
-            retryStrategy: (attempts) => Math.min(attempts * 50, 2000),
-            maxRetriesPerRequest: 3,
-            connectTimeout: 3000,
-            enableReadyCheck: true,
-          });
-
-          client.on("error", (err) => console.error("Redis Client Error", err));
-          client.on("connect", () => console.log("Redis Client Connected"));
-          client.on("ready", () => console.log("Redis Client Ready"));
-
-          return client;
-        },
-        destroy: async (client: Redis) => {
-          await client.quit();
-        },
-        validate: async (client: Redis) => {
-          try {
-            await client.ping();
-            return true;
-          } catch {
-            return false;
-          }
-        },
-      },
-      {
-        max: this.options.max,
-        min: this.options.min,
-        idleTimeoutMillis: this.options.idleTimeoutMillis,
-        acquireTimeoutMillis: 10_000,
-        testOnBorrow: false,
-      }
-    );
-  }
+public:
+    RedisPool(RedisPoolOptions = {} options);
+    std::future<Redis> acquire();
+    std::future<void> release(Redis client);
+    std::future<void> destroy();
+    std::future<Redis> getPublisherClient();
+    std::future<Redis> getSubscriberClient();
 
 
 } // namespace elizaos

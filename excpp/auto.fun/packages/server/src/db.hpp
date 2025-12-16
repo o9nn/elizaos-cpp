@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -53,11 +53,11 @@ using UserInsert = typeof schema.users.$inferInsert;
 using PreGeneratedToken = typeof schema.preGeneratedTokens.$inferSelect;
 using PreGeneratedTokenInsert = typeof schema.preGeneratedTokens.$inferInsert;
 
-using TokenAgent = typeof tokenAgents.$inferSelect;
-using TokenAgentInsert = typeof tokenAgents.$inferInsert;
+using TokenAgent = typeof tokenAgents::$inferSelect;
+using TokenAgentInsert = typeof tokenAgents::$inferInsert;
 
-using Metadata = typeof metadata.$inferSelect;
-using MetadataInsert = typeof metadata.$inferInsert;
+using Metadata = typeof metadata::$inferSelect;
+using MetadataInsert = typeof metadata::$inferInsert;
 
 // Schema for all tables
 

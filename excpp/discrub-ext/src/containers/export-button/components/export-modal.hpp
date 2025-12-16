@@ -1,12 +1,12 @@
-#include "...enum/export-type.hpp"
-#include "export-modal-actions.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "...enum/export-type.hpp"
+#include "export-modal-actions.hpp"
 
 namespace elizaos {
 
@@ -15,7 +15,7 @@ namespace elizaos {
 
 
 
-using ExportModalProps = {
+using ExportModalProps = std::function<void()>;
 
 
 } // namespace elizaos

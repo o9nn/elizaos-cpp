@@ -1,16 +1,16 @@
-#include "actions/cryptoNews.hpp"
-#include "actions/webFetch.hpp"
-#include "actions/webSearch.hpp"
-#include "services/coindeskService.hpp"
-#include "services/firecrawlService.hpp"
-#include "services/tavilyService.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "actions/cryptoNews.hpp"
+#include "actions/webFetch.hpp"
+#include "actions/webSearch.hpp"
+#include "services/coindeskService.hpp"
+#include "services/firecrawlService.hpp"
+#include "services/tavilyService.hpp"
 
 namespace elizaos {
 

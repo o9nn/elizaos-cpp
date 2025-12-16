@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -34,7 +34,6 @@ struct ServiceClass {
 };
 
 struct MockFunction {
-    { mock;
     std::vector<std::vector<unknown>> calls;
 };
 

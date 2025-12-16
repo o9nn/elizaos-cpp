@@ -1,15 +1,17 @@
-#include ".db.hpp"
-#include ".externalToken.hpp"
-#include ".redis.hpp"
-#include ".util.hpp"
-#include ".websocket-client.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".db.hpp"
+#include ".externalToken.hpp"
+#include ".redis.hpp"
+#include ".util.hpp"
+#include ".websocket-client.hpp"
 
 namespace elizaos {
 

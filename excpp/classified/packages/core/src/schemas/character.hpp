@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -37,9 +37,8 @@ namespace elizaos {
 struct CharacterValidationResult {
     bool success;
     std::optional<Character> data;
-    std::optional<{> error;
     std::string message;
-    std::optional<std::vector<z.ZodIssue>> issues;
+    std::optional<std::vector<z::ZodIssue>> issues;
 };
 
 /**

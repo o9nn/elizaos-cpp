@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -26,7 +26,7 @@ struct LoadTestMetrics {
     double successRate;
     double throughput;
     double timeoutCount;
-    { [key: string]: number } errorTypes;
+};
 
 struct ScaleConfig {
     double agents;

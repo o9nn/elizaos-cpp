@@ -1,11 +1,11 @@
-#include "ContentContainer.module.css.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "ContentContainer.module.css.hpp"
 
 namespace elizaos {
 
@@ -15,7 +15,7 @@ namespace elizaos {
 
 
 struct Props {
-    React.ReactNode children;
+    ReactNode children;
 };
 
 

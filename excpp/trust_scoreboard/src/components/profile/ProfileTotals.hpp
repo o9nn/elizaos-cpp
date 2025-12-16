@@ -1,11 +1,12 @@
-#include "ProfileTotals.module.css.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "ProfileTotals.module.css.hpp"
 
 namespace elizaos {
 
@@ -17,18 +18,17 @@ namespace elizaos {
 using View = std::variant<'profile', 'holdings'>;
 
 struct ProfileTotalsProps {
-    std::optional<(view: View) => void> onViewChange;
 };
 
 struct MetricsData {
-    number | null trustScore;
-    number | null successRate;
-    number | null transparency;
-    number | null shillingScore;
-    number | null recommendations;
-    number | null rank;
-    number | null totalPartners;
-    number | null userHoldings;
+    std::optional<double> trustScore;
+    std::optional<double> successRate;
+    std::optional<double> transparency;
+    std::optional<double> shillingScore;
+    std::optional<double> recommendations;
+    std::optional<double> rank;
+    std::optional<double> totalPartners;
+    std::optional<double> userHoldings;
 };
 
 

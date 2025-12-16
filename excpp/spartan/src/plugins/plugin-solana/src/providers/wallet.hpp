@@ -1,11 +1,12 @@
-#include ".constants.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".constants.hpp"
 
 namespace elizaos {
 
@@ -24,7 +25,6 @@ namespace elizaos {
  */
 struct ProviderResult {
     std::optional<std::any> data;
-    std::optional<std::unordered_map<std::string, std::string>> values;
     std::optional<std::string> text;
 };
 
@@ -37,7 +37,6 @@ struct ProviderResult {
  */
   // it's not slow we always have this data
   // but we don't always need this data, let's free up the context
-      //console.log('portfolioCache', portfolioCache)
 
       // hard coding service name, ugh
       // why wouldn't this exist? it's in the same plugin...

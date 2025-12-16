@@ -1,13 +1,13 @@
-#include ".common-components/date-time-picker/date-time-picker.hpp"
-#include ".common-components/tooltip/tooltip.hpp"
-#include ".features/message/use-message-slice.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".common-components/date-time-picker/date-time-picker.hpp"
+#include ".common-components/tooltip/tooltip.hpp"
+#include ".features/message/use-message-slice.hpp"
 
 namespace elizaos {
 

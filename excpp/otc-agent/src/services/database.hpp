@@ -1,10 +1,13 @@
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -14,32 +17,49 @@ namespace elizaos {
 // Database service layer using Eliza runtime services
 
 class QuoteDB {
-  static async createQuote(data: {
-    entityId: string;
-    beneficiary: string;
-    tokenAmount: string;
-    discountBps: number;
-    apr: number;
-    lockupMonths: number;
-    paymentCurrency: PaymentCurrency;
-    totalUsd: number;
-    discountUsd: number;
-    discountedUsd: number;
-    paymentAmount: string;
-  }): Promise<Quote> {
-    const runtime = await agentRuntime.getRuntime();
-    const service = runtime.getService<QuoteService>("QuoteService");
-    if (!service) throw new Error("QuoteService not registered");
-    return await service.createQuote(data);
-  }
+public:
+    std::future<Quote> createQuote(const std::any& data);
+    std::future<std::vector<Quote>> getActiveQuotes();
+    std::future<Quote> getQuoteByBeneficiary(const std::string& beneficiary);
+    std::future<Quote> getQuoteByQuoteId(const std::string& quoteId);
+    std::future<Quote> updateQuoteStatus(const std::string& quoteId, QuoteStatus status, const std::any& data);
+    std::future<Quote> updateQuoteExecution(const std::string& quoteId, std::optional<std::any> data);
+    std::future<Quote> setQuoteBeneficiary(const std::string& quoteId, const std::string& beneficiary);
+    std::future<std::vector<Quote>> getUserQuoteHistory(const std::string& entityId, double limit);
+    std::future<bool> verifyQuoteSignature(Quote quote);
+
+private:
+    std::string entityId_;
+    std::string beneficiary_;
+    std::string tokenAmount_;
+    double discountBps_;
+    double apr_;
+    double lockupMonths_;
+    PaymentCurrency paymentCurrency_;
+    double totalUsd_;
+    double discountUsd_;
+    double discountedUsd_;
+    std::string paymentAmount_;
+    std::string offerId_;
+    std::string transactionHash_;
+    double blockNumber_;
+    std::string rejectionReason_;
+    std::string approvalNote_;
+    std::string tokenAmount_;
+    double totalUsd_;
+    double discountUsd_;
+    double discountedUsd_;
+    PaymentCurrency paymentCurrency_;
+    std::string paymentAmount_;
+    std::string offerId_;
+    std::string transactionHash_;
+    double blockNumber_;
+};
 
 class DealCompletionService {
-  static async generateShareData(quoteId: string) {
-    const quote = await QuoteDB.getQuoteByQuoteId(quoteId);
-    return {
-      quote,
-    };
-  }
+public:
+    void generateShareData(const std::string& quoteId);
+};
 
 /**
  * Normalizes a tokenId to ensure consistent lookups.
@@ -50,123 +70,36 @@ class DealCompletionService {
 std::string normalizeTokenId(const std::string& tokenId);
 
 class TokenDB {
-  static async createToken(
-    data: Omit<Token, "id" | "createdAt" | "updatedAt">,
-  ): Promise<Token> {
-    const runtime = await agentRuntime.getRuntime();
-    // EVM addresses are case-insensitive, so lowercase for consistent ID
-    // Solana addresses are Base58 encoded and case-sensitive, preserve case
-    const normalizedAddress =
-      data.chain === "solana"
-        ? data.contractAddress
-        : data.contractAddress.toLowerCase();
-    const tokenId = `token-${data.chain}-${normalizedAddress}`;
-
-    const existing = await runtime.getCache<Token>(`token:${tokenId}`);
-    if (existing) {
-      return existing;
-    }
-
-    const token: Token = {
-      ...data,
-      id: tokenId,
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
-    };
-    await runtime.setCache(`token:${tokenId}`, token);
-    const allTokens = (await runtime.getCache<string[]>("all_tokens")) ?? [];
-    if (!allTokens.includes(tokenId)) {
-      allTokens.push(tokenId);
-      await runtime.setCache("all_tokens", allTokens);
-    }
-    return token;
-  }
-
-  /**
-   * Find a token by its on-chain tokenId (keccak256 hash of symbol).
-   * This is used to map from the smart contract's bytes32 tokenId to the database token.
-   */
-
-  /**
-   * Find a token by its symbol (case-insensitive).
-   */
+public:
+    std::future<Token> createToken(Omit<Token data, auto "id" | "createdAt" | "updatedAt">);
+    std::future<Token> getToken(const std::string& tokenId);
+    std::future<std::vector<Token>> getAllTokens(std::optional<std::any> filters);
+    std::future<Token> updateToken(const std::string& tokenId, const std::optional<Token>& updates);
+    std::variant<Promise<Token, null>> getTokenByOnChainId(const std::string& onChainTokenId);
+    std::variant<Promise<Token, null>> getTokenBySymbol(const std::string& symbol);
+};
 
 class MarketDataDB {
-  static async setMarketData(data: TokenMarketData): Promise<void> {
-    const runtime = await agentRuntime.getRuntime();
-    const normalizedId = normalizeTokenId(data.tokenId);
-    await runtime.setCache(`market_data:${normalizedId}`, {
-      ...data,
-      tokenId: normalizedId,
-    });
-  }
+public:
+    std::future<void> setMarketData(TokenMarketData data);
+    std::variant<Promise<TokenMarketData, null>> getMarketData(const std::string& tokenId);
+};
 
 class ConsignmentDB {
-  static async createConsignment(
-    data: Omit<OTCConsignment, "id" | "createdAt" | "updatedAt">,
-  ): Promise<OTCConsignment> {
-    const runtime = await agentRuntime.getRuntime();
-    const { v4: uuidv4 } = await import("uuid");
-    const consignmentId = uuidv4();
-    const normalizedTokenId = normalizeTokenId(data.tokenId);
-    const consignment: OTCConsignment = {
-      ...data,
-      tokenId: normalizedTokenId,
-      id: consignmentId,
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
-    };
-    await runtime.setCache(`consignment:${consignmentId}`, consignment);
-    const allConsignments =
-      (await runtime.getCache<string[]>("all_consignments")) ?? [];
-    allConsignments.push(consignmentId);
-    await runtime.setCache("all_consignments", allConsignments);
-    const tokenConsignments =
-      (await runtime.getCache<string[]>(
-        `token_consignments:${normalizedTokenId}`,
-      )) ?? [];
-    tokenConsignments.push(consignmentId);
-    await runtime.setCache(
-      `token_consignments:${normalizedTokenId}`,
-      tokenConsignments,
-    );
-    const consignerConsignments =
-      (await runtime.getCache<string[]>(
-        `consigner_consignments:${data.consignerAddress}`,
-      )) ?? [];
-    consignerConsignments.push(consignmentId);
-    await runtime.setCache(
-      `consigner_consignments:${data.consignerAddress}`,
-      consignerConsignments,
-    );
-    return consignment;
-  }
-
-    // Filter out null entries and optionally withdrawn consignments
+public:
+    std::future<OTCConsignment> createConsignment(Omit<OTCConsignment data, auto "id" | "createdAt" | "updatedAt">);
+    std::future<OTCConsignment> getConsignment(const std::string& consignmentId);
+    std::future<OTCConsignment> updateConsignment(const std::string& consignmentId, const std::optional<OTCConsignment>& updates);
+    std::future<std::vector<OTCConsignment>> getConsignmentsByToken(const std::string& tokenId);
+    std::future<std::vector<OTCConsignment>> getConsignmentsByConsigner(const std::string& consignerAddress, auto includeWithdrawn = false);
+    std::future<std::vector<OTCConsignment>> getAllConsignments(std::optional<std::any> filters);
+};
 
 class ConsignmentDealDB {
-  static async createDeal(
-    data: Omit<ConsignmentDeal, "id">,
-  ): Promise<ConsignmentDeal> {
-    const runtime = await agentRuntime.getRuntime();
-    const { v4: uuidv4 } = await import("uuid");
-    const dealId = uuidv4();
-    const deal: ConsignmentDeal = {
-      ...data,
-      id: dealId,
-    };
-    await runtime.setCache(`consignment_deal:${dealId}`, deal);
-    const consignmentDeals =
-      (await runtime.getCache<string[]>(
-        `consignment_deals:${data.consignmentId}`,
-      )) ?? [];
-    consignmentDeals.push(dealId);
-    await runtime.setCache(
-      `consignment_deals:${data.consignmentId}`,
-      consignmentDeals,
-    );
-    return deal;
-  }
+public:
+    std::future<ConsignmentDeal> createDeal(Omit<ConsignmentDeal data, auto "id">);
+    std::future<std::vector<ConsignmentDeal>> getDealsByConsignment(const std::string& consignmentId);
+};
 
 
 } // namespace elizaos

@@ -1,11 +1,11 @@
-#include "stat-badge.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "stat-badge.hpp"
 
 namespace elizaos {
 
@@ -17,9 +17,9 @@ namespace elizaos {
 struct ContributorItemProps {
     std::string username;
     std::string href;
-    React.ReactNode stats;
+    ReactNode stats;
     std::optional<std::string> className;
-    std::optional<React.ReactNode> children;
+    std::optional<ReactNode> children;
     double score;
 };
 

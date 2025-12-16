@@ -1,12 +1,13 @@
-#include "base.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "base.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -19,22 +20,19 @@ struct Agent {
     UUID id;
     std::string name;
     std::optional<std::string> description;
-    'active' | 'inactive' | 'stopped' status;
+    std::variant<'active', 'inactive', 'stopped'> status;
     Date createdAt;
     Date updatedAt;
-    std::optional<std::unordered_map<std::string, std::any>> metadata;
 };
 
 struct AgentCreateParams {
     std::string name;
     std::optional<std::string> description;
-    std::optional<std::unordered_map<std::string, std::any>> metadata;
 };
 
 struct AgentUpdateParams {
     std::optional<std::string> name;
     std::optional<std::string> description;
-    std::optional<std::unordered_map<std::string, std::any>> metadata;
 };
 
 struct AgentWorld {
@@ -46,7 +44,6 @@ struct AgentWorld {
 
 struct AgentWorldSettings {
     UUID worldId;
-    std::unordered_map<std::string, std::any> settings;
 };
 
 struct AgentPanel {
@@ -54,16 +51,14 @@ struct AgentPanel {
     std::string name;
     std::string url;
     std::string type;
-    std::optional<std::unordered_map<std::string, std::any>> metadata;
 };
 
 struct AgentLog {
     UUID id;
     UUID agentId;
-    'debug' | 'info' | 'warn' | 'error' level;
+    std::variant<'debug', 'info', 'warn', 'error'> level;
     std::string message;
     Date timestamp;
-    std::optional<std::unordered_map<std::string, std::any>> metadata;
 };
 
 

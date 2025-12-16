@@ -1,3 +1,10 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include "..classes/channel.hpp"
 #include "..classes/guild.hpp"
 #include "..components/before-and-after-fields.hpp"
@@ -16,13 +23,6 @@
 #include "..features/user/use-user-slice.hpp"
 #include "..utils.hpp"
 #include "components/skip-replies.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 

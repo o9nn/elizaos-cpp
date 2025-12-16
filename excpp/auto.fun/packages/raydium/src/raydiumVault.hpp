@@ -1,12 +1,13 @@
-#include "pdas.hpp"
-#include "utils.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "pdas.hpp"
+#include "utils.hpp"
 
 namespace elizaos {
 
@@ -15,7 +16,7 @@ namespace elizaos {
 
 
 
-std::future<void> depositToRaydiumVault(anchor.AnchorProvider provider, anchor.web3.Keypair signerWallet, Program<RaydiumVault> program, anchor.web3.PublicKey position_nft, anchor.web3.PublicKey claimer_address);
+std::future<void> depositToRaydiumVault(anchor::AnchorProvider provider, anchor.web3.Keypair signerWallet, Program<RaydiumVault> program, anchor.web3.PublicKey position_nft, anchor.web3.PublicKey claimer_address);
 
 std::future<void> changeClaimer(Program<RaydiumVault> program, anchor.web3.Keypair signerWallet, anchor.web3.PublicKey position_nft, anchor.web3.PublicKey new_claimer_address);
 

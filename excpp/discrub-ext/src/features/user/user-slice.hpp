@@ -1,15 +1,15 @@
-#include "..app/store.hpp"
-#include "..classes/user.hpp"
-#include "..services/chrome-service.hpp"
-#include "..services/discord-service.hpp"
-#include "user-types.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "..app/store.hpp"
+#include "..classes/user.hpp"
+#include "..services/chrome-service.hpp"
+#include "..services/discord-service.hpp"
+#include "user-types.hpp"
 
 namespace elizaos {
 

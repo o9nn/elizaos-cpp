@@ -1,12 +1,13 @@
-#include "elizaos/core.hpp"
-#include "types.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
+#include "types.hpp"
 
 namespace elizaos {
 
@@ -15,9 +16,11 @@ namespace elizaos {
 
 
 
-    // Check if we should stop
-
-        // Check again before scheduling next loop
+    std::future<void> stop();
+    std::future<Service> start(IAgentRuntime runtime);
+    std::future<void> stop(IAgentRuntime runtime);
+    void setupWorld();
+    void loop();
 
 
 } // namespace elizaos

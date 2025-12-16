@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -14,10 +15,10 @@ namespace elizaos {
 
 // Search Types
 struct TokenMarketSearchParams {
-    std::optional<BirdeyeSupportedChain | "all"> chain;
+    std::optional<std::variant<BirdeyeSupportedChain, "all">> chain;
     std::optional<std::string> keyword;
-    std::optional<"token" | "market" | "all"> target;
-    std::optional<"asc" | "desc"> sort_type;
+    std::optional<std::variant<"token", "market", "all">> target;
+    std::optional<std::variant<"asc", "desc">> sort_type;
     std::optional<bool> verify_token;
     std::optional<std::string> markets;
     std::optional<double> offset;
@@ -26,10 +27,8 @@ struct TokenMarketSearchParams {
 
 struct TokenMarketSearchResponse {
     bool success;
-    { data;
-    Array<{ items;
-    std::optional<"token" | "market"> type;
-    std::optional<std::vector<TokenResult | MarketResult>> result;
+    std::optional<std::variant<"token", "market">> type;
+    std::optional<std::variant<Array<TokenResult, MarketResult>>> result;
 };
 
 struct TokenResult {
@@ -72,7 +71,7 @@ struct MarketResult {
     std::string base_mint;
     std::string quote_mint;
     double amount_base;
-    number; // Note: typo in API response amout_quote;
+    double amout_quote;
     std::string creation_time;
     double volume_24h_usd;
 };

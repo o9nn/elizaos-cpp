@@ -1,11 +1,14 @@
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -22,7 +25,7 @@ bool isValidSolanaAddress(const std::string& address);
 /**
  * Fetches data with retry logic and proper error handling
  */
-std::future<std::any> fetchWithRetry(const std::string& url, RequestInit = {} options, 'solana' | 'base' = 'solana' chain, auto maxRetries = 3);
+std::future<std::any> fetchWithRetry(const std::string& url, RequestInit = {} options, const std::variant<'solana', 'base' = 'solana'>& chain, auto maxRetries = 3);
 
 /**
  * Decodes a base58 string to Uint8Array

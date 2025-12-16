@@ -1,12 +1,12 @@
-#include ".config/voice-models.hpp"
-#include "missing-secrets-dialog.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".config/voice-models.hpp"
+#include "missing-secrets-dialog.hpp"
 
 namespace elizaos {
 
@@ -20,8 +20,6 @@ using InputField = {
 using ArrayField = {
 
 enum SECTION_TYPE {
-  INPUT = 'input',
-  ARRAY = 'array',
 }
 
 using customComponent = {

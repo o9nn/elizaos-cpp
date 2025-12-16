@@ -1,12 +1,15 @@
-#include ".schema.hpp"
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include ".schema.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -25,13 +28,13 @@ struct TodoData {
     UUID roomId;
     UUID entityId;
     std::string name;
-    std::optional<string | null> description;
-    'daily' | 'one-off' | 'aspirational' type;
-    std::optional<number | null> priority;
+    std::optional<std::optional<std::string>> description;
+    std::variant<'daily', 'one-off', 'aspirational'> type;
+    std::optional<std::optional<double>> priority;
     bool isUrgent;
     bool isCompleted;
-    std::optional<Date | null> dueDate;
-    std::optional<Date | null> completedAt;
+    std::optional<std::optional<Date>> dueDate;
+    std::optional<std::optional<Date>> completedAt;
     Date createdAt;
     Date updatedAt;
     TodoMetadata metadata;
@@ -42,73 +45,21 @@ struct TodoData {
  * Manages todo data and database operations
  */
 class TodoDataManager {
-  protected runtime: IAgentRuntime;
+public:
+    TodoDataManager(IAgentRuntime runtime);
+    std::future<UUID> createTodo(std::optional<std::any> data);
+    std::variant<Promise<TodoData, null>> getTodo(UUID todoId);
+    std::future<std::vector<TodoData>> getTodos(std::optional<std::any> filters);
+    std::future<bool> updateTodo(UUID todoId, std::optional<std::any> updates);
+    std::future<bool> deleteTodo(UUID todoId);
+    std::future<bool> addTags(UUID todoId, const std::vector<std::string>& tags);
+    std::future<bool> removeTags(UUID todoId, const std::vector<std::string>& tags);
+    std::future<std::vector<TodoData>> getOverdueTodos(std::optional<std::any> filters);
+    std::future<double> resetDailyTodos(std::optional<std::any> filters);
 
-  constructor(runtime: IAgentRuntime) {
-    this.runtime = runtime;
-  }
-
-  /**
-   * Create a new todo
-   */
-
-    // Create the todo
-
-    // Add tags if provided
-
-  /**
-   * Get a single todo by ID
-   */
-
-    // Fetch tags
-
-  /**
-   * Get todos with optional filters
-   */
-
-    // Apply filters
-
-    // Order by created date
-
-    // Apply limit
-
-    // Fetch tags for each todo
-
-    // Filter by tags if specified
-
-  /**
-   * Update a todo
-   */
-
-  /**
-   * Delete a todo
-   */
-
-  /**
-   * Add tags to a todo
-   */
-
-    // Filter out existing tags
-
-  /**
-   * Remove tags from a todo
-   */
-
-  /**
-   * Get overdue tasks
-   */
-
-    // Filter overdue tasks in memory since SQL date comparison is complex
-
-    // Fetch tags
-
-  /**
-   * Reset daily todos for a new day
-   */
-
-    // Reset daily todos
-
-    // Return the actual count of reset todos
+private:
+    IAgentRuntime runtime_;
+};
 
 /**
  * Create a new TodoService instance
@@ -118,56 +69,21 @@ TodoDataManager createTodoDataService(IAgentRuntime runtime);
 /**
  * Service wrapper for database operations
  */
-class TodoService extends Service {
-  static readonly serviceType: ServiceTypeName = 'TODO' as ServiceTypeName;
-  static readonly serviceName = 'Todo';
+class TodoService {
+public:
+    std::future<void> stop();
+    std::future<TodoService> start(IAgentRuntime runtime);
+    std::optional<TodoDataManager> getDataService();
+    std::variant<Promise<UUID, null>> createTodo(std::optional<std::any> params);
+    std::future<std::vector<TodoData>> getTodos(std::optional<std::any> filters);
+    std::future<bool> updateTodo(UUID todoId, std::optional<std::any> updates);
+    std::future<bool> deleteTodo(UUID todoId);
+    std::variant<Promise<TodoData, null>> getTodo(UUID todoId);
+    std::future<bool> addTags(UUID todoId, const std::vector<std::string>& tags);
+    std::future<bool> removeTags(UUID todoId, const std::vector<std::string>& tags);
+    std::future<std::vector<TodoData>> getOverdueTodos(std::optional<std::any> filters);
+    std::future<double> resetDailyTodos(std::optional<std::any> filters);
+};
 
-  private dataManager: TodoDataManager | null = null;
-
-  capabilityDescription = 'Manages todo data storage and retrieval';
-
-  async stop(): Promise<void> {
-    this.dataManager = null;
-  }
-
-  /**
-   * Get the underlying TodoService instance
-   */
-
-  /**
-   * Create a new todo (delegated to service)
-   */
-
-  /**
-   * Get todos with optional filters (delegated to service)
-   */
-
-  /**
-   * Update a todo (delegated to service)
-   */
-
-  /**
-   * Delete a todo (delegated to service)
-   */
-
-  /**
-   * Get a single todo by ID (delegated to service)
-   */
-
-  /**
-   * Add tags to a todo (delegated to service)
-   */
-
-  /**
-   * Remove tags from a todo (delegated to service)
-   */
-
-  /**
-   * Get overdue todos (delegated to service)
-   */
-
-  /**
-   * Reset daily todos (delegated to service)
-   */
 
 } // namespace elizaos

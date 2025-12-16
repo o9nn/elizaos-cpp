@@ -1,11 +1,12 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -24,6 +25,8 @@ using EnvVars = std::unordered_map<std::string, std::string>;
 std::future<EnvVars> parseEnvFile(const std::string& filePath);
 
 std::string serializeEnvObject(Record<string envObj, auto string>);
+
+std::optional<std::string> getLocalEnvPath();
 
 /**
  * Resolves the path to the nearest `.env` file.

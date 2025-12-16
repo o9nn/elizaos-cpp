@@ -1,11 +1,11 @@
-#include "SimliClient.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "SimliClient.hpp"
 
 namespace elizaos {
 

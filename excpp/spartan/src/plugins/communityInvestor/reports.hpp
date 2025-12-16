@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -41,7 +42,7 @@ std::string formatNumber(double value);
  * @param {string | Date} dateString - The date string to be formatted or a Date object.
  * @returns {string} The formatted date string.
  */
-std::string formatDate(string | Date dateString);
+std::string formatDate(const std::variant<std::string, Date>& dateString);
 
 /**
  * Function to normalize the balance based on the decimals provided.
@@ -49,7 +50,7 @@ std::string formatDate(string | Date dateString);
  * @param {number} decimals - The number of decimal places to normalize to.
  * @returns {number} The normalized balance as a number.
  */
-double normalizeBalance(string | bigint balanceStr, double decimals);
+double normalizeBalance(const std::variant<std::string, bigint>& balanceStr, double decimals);
 
 /**
  * Calculate various trade metrics based on transactions and token performance.

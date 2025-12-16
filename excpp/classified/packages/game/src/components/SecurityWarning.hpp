@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -21,11 +22,9 @@ namespace elizaos {
 
 struct SecurityWarningProps {
     std::string capability;
-    'low' | 'medium' | 'high' | 'critical' riskLevel;
+    std::variant<'low', 'medium', 'high', 'critical'> riskLevel;
     std::string description;
     std::vector<std::string> risks;
-    () => void onConfirm;
-    () => void onCancel;
     bool isVisible;
 };
 

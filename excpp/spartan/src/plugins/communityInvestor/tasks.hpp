@@ -1,13 +1,13 @@
-#include "elizaos/core.hpp"
-#include "service.hpp"
-#include "types.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
+#include "service.hpp"
+#include "types.hpp"
 
 namespace elizaos {
 
@@ -30,7 +30,6 @@ namespace elizaos {
       // Decision Logic
         // POSITIVE_TRADE_THRESHOLD
         // In a real system, this is where you'd trigger the actual trade execution logic
-        // For example: await tradingPlatformService.executeTrade(recommendation);
         // Log the simulated trade in a specific table/memory if needed
         // NEUTRAL_MARGIN
 

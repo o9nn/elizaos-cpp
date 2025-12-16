@@ -1,11 +1,11 @@
-#include "test-utils.ts.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "test-utils.ts.hpp"
 
 namespace elizaos {
 
@@ -30,7 +30,6 @@ namespace elizaos {
         // Should either load successfully or report missing env vars
 
         // First load a plugin
-        await sendMessageAndWaitForResponse(runtime, room, user, 'Load the test-plugin');
 
         // Then request rollback
 

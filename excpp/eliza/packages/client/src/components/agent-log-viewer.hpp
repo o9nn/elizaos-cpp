@@ -1,12 +1,13 @@
-#include ".hooks/use-query-hooks.hpp"
-#include ".lib/api-client-config.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".hooks/use-query-hooks.hpp"
+#include ".lib/api-client-config.hpp"
 
 namespace elizaos {
 
@@ -49,7 +50,7 @@ std::string formatTimestamp(double timestamp);
 
 void generateLogChart(const std::vector<LogEntry>& logs);
 
-void LogChart({ data: ReturnType<typeof generateLogChart> } { data });
+void LogChart(const std::any& { data });
 
 void LoadingIndicator();
 

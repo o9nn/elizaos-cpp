@@ -1,13 +1,13 @@
-#include ".constants.hpp"
-#include ".utils.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".constants.hpp"
+#include ".utils.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -16,22 +16,13 @@ namespace elizaos {
 
 
 
-    //console.log('SERVICES_MENU validate')
-
     // is this in a DM or room?
-    //console.log('message', message)
 /*
 
 */
 
     // get room and it's components?
-    //const roomDetails = await runtime.getRoom(message.roomId);
     // doesn't have components
-    //console.log('roomDetails', roomDetails)
 
-    //const isGroup = roomDetails.type === 'group'
-    //const isDM = roomDetails.type === 'dm'
-
-    //console.log('SERVICES_MENU entity', entity)
 
 } // namespace elizaos

@@ -1,14 +1,14 @@
-#include "constants.hpp"
-#include "elizaos/core.hpp"
-#include "service.hpp"
-#include "types.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "constants.hpp"
+#include "elizaos/core.hpp"
+#include "service.hpp"
+#include "types.hpp"
 
 namespace elizaos {
 

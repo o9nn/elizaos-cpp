@@ -1,12 +1,12 @@
-#include "....utils/discordHelper.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "....utils/discordHelper.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -16,11 +16,6 @@ namespace elizaos {
 
 
 using PlatformHandlerParams = {
-
-    await logModerationMemory(runtime, message, 'discord', `${member.displayName} was timed out.`);
-    await callback({ text: `Failed to timeout ${member.displayName}`, source: 'discord' });
-
-    await callback({ text: `Failed to restrict user`, source: 'telegram' });
 
 
 } // namespace elizaos

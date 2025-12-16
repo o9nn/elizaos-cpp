@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -35,8 +36,8 @@ using ProjectStatus = std::variant<'planning', 'generating', 'testing', 'complet
  * Autocoder WebSocket message types
  */
 struct AutocoderWebSocketMessage {
-    'PROJECT_UPDATE' | 'PROJECT_COMPLETE' | 'PROJECT_ERROR' | 'STATUS_UPDATE' type;
-    ProjectUpdateData | ProjectCompleteData | ProjectErrorData | StatusUpdateData data;
+    std::variant<'PROJECT_UPDATE', 'PROJECT_COMPLETE', 'PROJECT_ERROR', 'STATUS_UPDATE'> type;
+    std::variant<ProjectUpdateData, ProjectCompleteData, ProjectErrorData, StatusUpdateData> data;
     std::optional<double> timestamp;
 };
 
@@ -50,7 +51,8 @@ struct ProjectUpdateData {
 
 struct ProjectCompleteData {
     std::string projectId;
-    std::vector<{ path: string; content: string }> files;
+    std::string summary;
+};
 
 struct ProjectErrorData {
     std::string projectId;
@@ -73,12 +75,11 @@ struct ProjectMetadata {
     std::string description;
     ProjectType type;
     ProjectStatus status;
-    std::optional<UUID; // Associated form ID during planning phase> formId;
+    std::optional<UUID> formId;
     double createdAt;
     double updatedAt;
     std::optional<double> completedAt;
     std::optional<std::string> error;
-    std::optional<{> details;
     std::optional<std::string> projectName;
     std::optional<std::string> projectDescription;
     std::optional<ProjectType> projectType;
@@ -87,16 +88,12 @@ struct ProjectMetadata {
     std::optional<std::vector<std::string>> keyFeatures;
     std::optional<std::vector<std::string>> requiredPlugins;
     std::optional<std::vector<std::string>> externalServices;
-    std::optional<'simple' | 'moderate' | 'complex'> complexity;
+    std::optional<std::variant<'simple', 'moderate', 'complex'>> complexity;
     std::optional<std::string> estimatedTime;
-    std::optional<{> artifacts;
-    std::optional<Array<{> files;
     std::string path;
     std::string content;
-    std::optional<{> testResults;
     bool passed;
     std::string summary;
-    std::unordered_map<std::string, unknown> details;
 };
 
 /**
@@ -110,7 +107,6 @@ struct IProjectPlanningService {
  */
 struct StepCompletionData {
     std::string stepId;
-    std::unordered_map<std::string, unknown> formData;
     UUID projectId;
 };
 
@@ -131,7 +127,10 @@ struct GenerationResult {
     bool success;
     std::optional<std::string> projectPath;
     std::optional<std::string> githubUrl;
-    std::optional<std::vector<{ path: string; content: string }>> files;
+    std::optional<std::vector<std::string>> errors;
+    std::optional<std::vector<std::string>> warnings;
+    std::optional<ExecutionResults> executionResults;
+};
 
 struct ExecutionResults {
     std::optional<bool> testsPass;
@@ -148,15 +147,16 @@ struct ProjectStatusUpdate {
     ProjectType type;
     ProjectStatus status;
     std::optional<std::string> currentStep;
-    std::optional<number; // 0-100> progress;
+    std::optional<double> progress;
     std::optional<std::string> message;
     std::optional<std::string> error;
     std::optional<double> startedAt;
     std::optional<double> completedAt;
-    std::optional<std::vector<{ path: string; status: 'pending' | 'generating' | 'complete' | 'error' }>> files;
+    std::optional<ValidationResults> validationResults;
+};
 
 struct ValidationResults {
-    { passed: boolean; errors?: string[] } lint;
+};
 
 struct ProjectHistory {
     std::string id;
@@ -183,11 +183,8 @@ struct ProjectPlan {
     ProjectType type;
     std::optional<ProjectStatus> status;
     std::optional<std::string> formId;
-    std::optional<{> details;
     std::optional<std::string> projectName;
     std::optional<std::string> error;
-    std::optional<{> artifacts;
-    std::optional<Array<{> files;
     std::string path;
     std::string content;
 };

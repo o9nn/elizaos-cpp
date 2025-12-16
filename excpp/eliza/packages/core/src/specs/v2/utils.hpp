@@ -1,12 +1,15 @@
-#include "..utils.hpp"
-#include "types.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "..utils.hpp"
+#include "types.hpp"
 
 namespace elizaos {
 
@@ -98,6 +101,7 @@ void upgradeDoubleToTriple(auto tpl);
  * @param {unknown} value - The value to validate.
  * @returns {UUID | null} Returns the validated UUID value or null if validation fails.
  */
+std::optional<UUID> validateUuid(unknown value);
 
 /**
  * Converts a string or number to a UUID.
@@ -106,14 +110,14 @@ void upgradeDoubleToTriple(auto tpl);
  * @returns {UUID} The UUID generated from the input target.
  * @throws {TypeError} Throws an error if the input target is not a string.
  */
-UUID stringToUuid(string | number target);
+UUID stringToUuid(const std::variant<std::string, double>& target);
 
 // Add the new exports, wrapping the core functions
 std::string truncateToCompleteSentence(const std::string& text, double maxLength);
 
-std::unordered_map<std::string, std::any> parseKeyValueXml(const std::string& text);
+std::optional<bool> parseBooleanFromText(const std::string& text);
 
-std::unordered_map<std::string, std::any> parseJSONObjectFromText(const std::string& text);
+std::function<std::any(std::string, std::any)> safeReplacer();
 
 std::future<std::string> trimTokens(const std::string& text, double maxTokens, CoreIAgentRuntime runtime);
 

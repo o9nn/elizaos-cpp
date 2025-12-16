@@ -1,11 +1,13 @@
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -14,16 +16,16 @@ namespace elizaos {
 
 
 
-std::future<any | null> safeReadJson(Response res);
-
 std::future<std::vector> fetchCoinsList(std::optional<AbortSignal> signal);>> {
 
-void choosePlatform(const std::any& data, std::optional<string | null> preferredPlatform); {
+std::optional<double> usd(const std::any& obj, const std::vector<std::string>& path);
+
+void choosePlatform(const std::any& data, std::optional<std::optional<std::string>> preferredPlatform); {
   // If caller hints a specific platform (e.g., resolved via contract endpoint), honor it first
 
-std::string platformToNet(std::optional<string | null> p);
+std::string platformToNet(std::optional<std::optional<std::string>> p);
 
-std::any formatCoinMetadata(const std::string& requestId, const std::any& data, std::optional<string | null> preferredPlatform);
+std::any formatCoinMetadata(const std::string& requestId, const std::any& data, std::optional<std::optional<std::string>> preferredPlatform);
 
 
 } // namespace elizaos

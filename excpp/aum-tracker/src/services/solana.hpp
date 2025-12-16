@@ -1,12 +1,14 @@
-#include "background/token-metadata.hpp"
-#include "database.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "background/token-metadata.hpp"
+#include "database.hpp"
 
 namespace elizaos {
 
@@ -41,123 +43,36 @@ struct PriceData {
 };
 
 class SolanaService {
-  private connection: Connection;
-  private fallbackConnection: Connection;
-  private rpcUrl: string;
-  private jupiterApiUrl: string;
-  private jupiterTokensApiUrl: string;
-  private requestQueue: Array<() => Promise<any>> = [];
-  private isProcessingQueue: boolean = false;
-  private rateLimitDelay: number = 100; // 100ms between requests for premium Helius
-  private maxRetries: number = 3;
+public:
+    SolanaService();
+    void catch(auto error);
+    void if(auto !this.isProcessingQueue);
+    std::future<void> processQueue();
+    void for(auto let attempt = 0; attempt < maxRetries; attempt++);
+    std::future<double> getSOLBalance(const std::string& address);
+    std::future<std::vector<TokenAccount>> getTokenAccounts(const std::string& address);
+    Promise< getTokenMetadata(const std::vector<std::string>& mints);
+    void for(auto const mint of mints);
+    void if(auto missingTokens.length > 0);
+    std::future<double> getSOLPrice();
+    std::future<PriceData> getTokenPrices(const std::vector<std::string>& mints);
+    std::future<WalletData> getWalletData(const std::string& address, const std::string& walletId);
+    Promise< processWalletBatch(const std::vector<std::any>& wallets, number = 5 batchSize);
+    void for(auto let i = 0; i < wallets.length; i += batchSize);
+    std::future<void> refreshStaleTokenPrices();
+    std::vector<TokenPrice> getCachedTokenPrices();
+    Promise< healthCheck();
+    void if(auto !response.ok);
+    void catch(auto error);
+    bool isValidSolanaAddress(const std::string& address);
 
-  constructor() {
-    // Helius RPC endpoint from environment variable
-    this.rpcUrl = process.env.HELIUS_RPC_URL || "";
-
-    if (!this.rpcUrl) {
-      throw new Error("HELIUS_RPC_URL environment variable is required");
-    }
-
-    // Initialize connection using Helius RPC endpoint
-    this.connection = new Connection(this.rpcUrl, {
-      commitment: "confirmed",
-      httpHeaders: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    // Fallback to public RPC if Helius fails
-    this.fallbackConnection = new Connection(clusterApiUrl("mainnet-beta"), {
-      commitment: "confirmed",
-    });
-
-    this.jupiterApiUrl =
-      process.env.JUPITER_API_URL || "https://lite-api.jup.ag/price/v2";
-    this.jupiterTokensApiUrl =
-      process.env.JUPITER_TOKENS_API_URL || "https://lite-api.jup.ag/tokens/v1";
-  }
-
-  // Rate limiting queue management
-
-          await operation();
-
-        // Rate limiting delay (Premium Helius can handle 1000+ req/min)
-
-  // Retry wrapper with exponential backoff
-
-  // Get SOL balance for a wallet using Helius
-
-            // Use Helius connection for better rate limits
-
-      // Log successful fetch
-
-      // Log error
-
-  // Get ALL SPL token accounts for a wallet using Helius enhanced RPC
-
-            // Use Helius connection for better rate limits and enhanced data
-
-      // Process ALL token accounts found with CORRECT decimals
-
-      // Log successful fetch
-
-      // Log error
-
-  // Get token metadata from cache or queue for background fetching
-
-    // Check cache first
-        // Set default metadata for immediate use
-
-    // Queue missing tokens for background fetching with high priority
-
-  // Get SOL price from Jupiter API
-
-        return parseFloat(data.data?.[SOL_MINT]?.price || "0");
-
-      // Store SOL price in database
-
-      // Return cached price if available
-
-  // Get token prices from Jupiter API (keep existing implementation)
-
-      // Always include SOL in price fetches
-
-      // Fetch prices with retry, get metadata from cache/queue
-
-        // Store in database with proper metadata
-
-      // Log successful fetch
-
-      // Log error
-
-  // Get complete wallet data (SOL + ALL tokens + prices) with enhanced Helius integration
-      // Get SOL balance and ALL token accounts in parallel
-
-      // Get metadata and prices for ALL tokens found
-
-      // Enhance token data with metadata and prices
-
-      // Store in database
-
-      // Store error in database
-
-  // Batch process multiple wallets with improved error handling
-
-      // Shorter delay between batches with Helius
-
-  // Refresh stale prices
-
-  // Get cached token prices
-
-  // Health check with Helius RPC endpoint testing
-
-      // Test Helius RPC connection
-
-      // Test Jupiter API
-
-  // Validate Solana address
-      new PublicKey(address);
+private:
+    Connection connection_;
+    Connection fallbackConnection_;
+    std::string rpcUrl_;
+    std::string jupiterApiUrl_;
+    std::string jupiterTokensApiUrl_;
+};
 
 // Export singleton instance
 

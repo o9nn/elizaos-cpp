@@ -1,13 +1,14 @@
-#include "elizaos/core.hpp"
-#include "ui/avatar.hpp"
-#include "ui/tooltip.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
+#include "ui/avatar.hpp"
+#include "ui/tooltip.hpp"
 
 namespace elizaos {
 
@@ -19,8 +20,7 @@ namespace elizaos {
 struct AgentAvatarStackProps {
     std::vector<UUID> agentIds;
     std::vector<std::string> agentNames;
-    std::unordered_map<std::string, string | null> agentAvatars;
-    std::optional<'sm' | 'md' | 'lg'> size;
+    std::optional<std::variant<'sm', 'md', 'lg'>> size;
     std::optional<double> maxStack;
     std::optional<bool> showExtraTooltip;
 };

@@ -1,12 +1,13 @@
-#include ".transports/factory.hpp"
-#include ".types/index.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".transports/factory.hpp"
+#include ".types/index.hpp"
 
 namespace elizaos {
 
@@ -16,60 +17,20 @@ namespace elizaos {
 
 
 class ServerManager {
-  private connections = new Map<string, ServerConnection>();
-  private logger: Console;
+public:
+    ServerManager(Console = console logger);
+    std::future<void> initializeServers(const std::vector<McpServerConfig>& serverConfigs);
+    std::future<void> initializeServer(McpServerConfig config);
+    Promise< getServerCapabilities(Client client);
+    std::unordered_map<std::string, ServerConnection> getConnectedServers();
+    ServerConnection getConnection(const std::string& serverId);
+    std::future<void> closeAll();
+    std::future<void> performHealthChecks();
+     getConnectionStatus();
 
-  constructor(logger: Console = console) {
-    this.logger = logger;
-  }
-
-  /**
-   * Initialize connections to all configured servers
-   */
-
-    // Initialize connections in parallel with limited concurrency
-
-    // Log results
-
-  /**
-   * Initialize a single server connection
-   */
-
-      // Validate transport configuration
-
-      // Create transport using factory
-
-      // Create client
-
-      // Connect
-
-      // Get server capabilities
-
-  /**
-   * Get capabilities of a connected server
-   */
-
-  /**
-   * Get all connected servers
-   */
-
-  /**
-   * Get a specific server connection
-   */
-
-  /**
-   * Close all server connections
-   */
-
-  /**
-   * Perform health checks on all connected servers
-   */
-    
-        // Simple health check by listing tools
-
-  /**
-   * Get connection status summary
-   */
+private:
+    Console logger_;
+};
 
 
 } // namespace elizaos

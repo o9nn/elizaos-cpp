@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -49,7 +49,7 @@ struct Item {
  * @property {string} ethereum.usd - Price of Ethereum in USD.
  */
 struct Prices {
-    { usd: string } solana;
+};
 
 /**
  * Interface representing a wallet portfolio.
@@ -92,14 +92,9 @@ struct WalletPortfolio {
  */
 struct TokenAccountInfo {
     PublicKey pubkey;
-    { account;
     double lamports;
-    { data;
-    { parsed;
-    { info;
     std::string mint;
     std::string owner;
-    { tokenAmount;
     std::string amount;
     double decimals;
     double uiAmount;

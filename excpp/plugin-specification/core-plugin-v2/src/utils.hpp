@@ -1,12 +1,13 @@
-#include "elizaos/core.hpp"
-#include "types.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
+#include "types.hpp"
 
 namespace elizaos {
 
@@ -94,6 +95,7 @@ void upgradeDoubleToTriple(auto tpl);
  * @param {unknown} value - The value to validate.
  * @returns {UUID | null} Returns the validated UUID value or null if validation fails.
  */
+std::optional<UUID> validateUuid(unknown value);
 
 /**
  * Converts a string or number to a UUID.
@@ -102,5 +104,5 @@ void upgradeDoubleToTriple(auto tpl);
  * @returns {UUID} The UUID generated from the input target.
  * @throws {TypeError} Throws an error if the input target is not a string.
  */
-UUID stringToUuid(string | number target);
+UUID stringToUuid(const std::variant<std::string, double>& target);
 } // namespace elizaos

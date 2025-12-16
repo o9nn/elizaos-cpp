@@ -1,12 +1,15 @@
-#include ".types.hpp"
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include ".types.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -19,7 +22,7 @@ namespace elizaos {
 struct GoalInput {
     std::string name;
     std::optional<std::string> description;
-    'agent' | 'entity' ownerType;
+    std::variant<'agent', 'entity'> ownerType;
 };
 
 // Interface for similarity check result
@@ -40,7 +43,6 @@ struct SimilarityCheckResult {
 /**
  * Extracts goal information from the user's message.
  */
-std::future<GoalInput | null> extractGoalInfo(IAgentRuntime runtime, Memory message, State state);
 
 /**
  * Checks if a similar goal already exists

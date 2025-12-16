@@ -1,14 +1,14 @@
-#include ".types.ts.hpp"
-#include "LeaderboardTable.tsx.hpp"
-#include "loader.tsx.hpp"
-#include "ui/card.tsx.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".types.ts.hpp"
+#include "LeaderboardTable.tsx.hpp"
+#include "loader.tsx.hpp"
+#include "ui/card.tsx.hpp"
 
 namespace elizaos {
 

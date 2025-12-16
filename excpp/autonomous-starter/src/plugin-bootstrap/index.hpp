@@ -1,3 +1,10 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include "actions/choice.hpp"
 #include "actions/ignore.hpp"
 #include "actions/none.hpp"
@@ -12,13 +19,6 @@
 #include "providers/settings.hpp"
 #include "providers/time.hpp"
 #include "services/task.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -87,8 +87,6 @@ std::string sanitizeJson(const std::string& rawJson);
 
       // Clean up the response ID
 
-        await callback(responseContent);
-
       // Emit run ended event on successful completion
       // Emit run ended event with error
 
@@ -151,10 +149,6 @@ std::string sanitizeJson(const std::string& rawJson);
         // Send the control message through the WebSocket service
 
       // Message sent tracking
-
-      await handleServerSync(payload);
-
-      await handleServerSync(payload);
 
         // Update entity to inactive
 

@@ -1,14 +1,14 @@
-#include ".service.js.hpp"
-#include ".types.hpp"
-#include ".utils/experienceFormatter.js.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".service.js.hpp"
+#include ".types.hpp"
+#include ".utils/experienceFormatter.js.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 

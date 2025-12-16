@@ -1,16 +1,17 @@
-#include "..agent/problem-statement.hpp"
-#include "..environment/repo.hpp"
-#include "..environment/swe-env.hpp"
-#include "..types.hpp"
-#include "..utils/log.hpp"
-#include "types.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "..agent/problem-statement.hpp"
+#include "..environment/repo.hpp"
+#include "..environment/swe-env.hpp"
+#include "..types.hpp"
+#include "..utils/log.hpp"
+#include "types.hpp"
 
 namespace elizaos {
 
@@ -34,35 +35,19 @@ void printPatchMessage(const std::string& patchOutputFile);
 /**
  * This hook saves patches to a separate directory and optionally applies them to a local repository
  */
-class SaveApplyPatchHook extends AbstractRunHook {
-  private applyPatchLocally: boolean;
-  private showSuccessMessage: boolean;
-  private outputDir?: string;
-  private env?: SWEEnv;
-  private problemStatement?: ProblemStatementConfig;
+class SaveApplyPatchHook {
+public:
+    SaveApplyPatchHook(boolean = false applyPatchLocally, boolean = true showSuccessMessage);
+    void onInit(std::optional<std::any> run);
+    void onInstanceStart(const std::any& params);
+    void onInstanceCompleted(const std::any& params);
+    std::optional<std::string> savePatch(const std::string& instanceId, AgentInfo info);
+    void applyPatch(const std::string& patchFile, const std::string& localDir);
 
-  constructor(applyPatchLocally: boolean = false, showSuccessMessage: boolean = true) {
-    super();
-    this.applyPatchLocally = applyPatchLocally;
-    this.showSuccessMessage = showSuccessMessage;
-  }
-
-  /**
-   * Create patch files that can be applied with `git am`.
-   * Returns the path to the patch file if it was saved, otherwise null.
-   */
-
-    // Create directory if it doesn't exist
-
-      // Only print big congratulations if we actually believe
-      // the patch will solve the issue
-
-  /**
-   * Apply a patch to a local directory
-   */
-
-    // The resolve() is important, because we're gonna run the cmd
-    // somewhere else
+private:
+    bool applyPatchLocally_;
+    bool showSuccessMessage_;
+};
 
 
 } // namespace elizaos

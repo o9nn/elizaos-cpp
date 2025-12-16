@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -48,7 +48,6 @@ struct TestResult {
  * Test context configuration
  */
 struct TestContext {
-    import('@/src/utils/directory-detection').DirectoryInfo projectInfo;
     std::optional<std::string> testPath;
     TestCommandOptions options;
 };
@@ -58,7 +57,6 @@ struct TestContext {
  */
 struct ServerConfig {
     double port;
-    std::optional<import('@elizaos/core').IAgentRuntime> runtime;
 };
 
 /**
@@ -67,7 +65,6 @@ struct ServerConfig {
 struct PluginDependency {
     std::string name;
     std::string path;
-    std::optional<import('@elizaos/core').Plugin> module;
 };
 
 

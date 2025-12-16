@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -23,7 +23,6 @@ namespace elizaos {
 // ***********************************************
 
 // Example custom command
-// Cypress.Commands.add('login', (email, password) => { ... })
 
 // Custom command to check if element is in dark mode
 

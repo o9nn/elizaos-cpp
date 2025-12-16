@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -18,7 +18,7 @@ struct TagMetadata {
     std::optional<std::string> color;
     std::optional<bool> trending;
     std::optional<std::string> description;
-    std::optional<number; // 0-100> popularity;
+    std::optional<double> popularity;
     std::string category;
     std::optional<std::vector<std::string>> relatedTags;
 };
@@ -27,7 +27,7 @@ struct TagAnalytics {
     double usageCount;
     double trendingScore;
     double projectCount;
-    number; // percentage recentGrowth;
+    double recentGrowth;
     double averageStars;
 };
 

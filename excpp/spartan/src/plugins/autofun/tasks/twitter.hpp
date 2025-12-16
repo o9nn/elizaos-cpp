@@ -1,11 +1,12 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -17,24 +18,7 @@ namespace elizaos {
 // This action should be able to run on a schedule
 // store tweets as memories in db, no reason really to get twitter here
 
-    // Create a consistent room ID for the twitter feed
-
-    // Ensure feed room exists
-
-    // Get the Twitter service from runtime
-      //console.log('Waiting for Twitter service...');
-
-    // it's not client.client
-    //console.log('client keys', Object.keys(client)) //[ "client", "post", "interaction", "service" ]
-    //console.log('client.client keys', Object.keys(client.client)) // "lastCheckedTweetId", "temperature", "requestQueue", "callback", "runtime", "state", "twitterClient", "profile"
-
-    // Get the Twitter client directly from the manager
-
-          // Check if we already have this tweet
-
-          // Create memory for the tweet
-
-      /** Sleep 10 seconds */
+    std::future<bool> syncRawTweets();
 
 
 } // namespace elizaos

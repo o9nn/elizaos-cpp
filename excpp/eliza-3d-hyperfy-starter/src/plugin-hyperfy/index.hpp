@@ -1,3 +1,10 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include "actions/ambient.hpp"
 #include "actions/build.hpp"
 #include "actions/chat.hpp"
@@ -16,13 +23,6 @@
 #include "providers/emote.hpp"
 #include "providers/world.hpp"
 #include "service.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 

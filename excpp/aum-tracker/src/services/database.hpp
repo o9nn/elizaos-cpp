@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -17,9 +18,9 @@ struct WalletBalance {
     std::string wallet_address;
     std::string wallet_id;
     double sol_balance;
-    string; // JSON string tokens;
+    std::string tokens;
     std::string last_updated;
-    "success" | "error" | "pending" fetch_status;
+    std::variant<"success", "error", "pending"> fetch_status;
     std::optional<std::string> error_message;
     double retry_count;
 };
@@ -33,15 +34,15 @@ struct TokenPrice {
     std::optional<double> market_cap;
     std::optional<std::string> image_url;
     std::string last_updated;
-    "jupiter" | "coingecko" | "fallback" | "jupiter-metadata" source;
+    std::variant<"jupiter", "coingecko", "fallback", "jupiter-metadata"> source;
 };
 
 struct FetchLog {
     std::optional<double> id;
     std::string wallet_address;
     std::string timestamp;
-    "balance" | "tokens" | "prices" | "token-metadata" operation;
-    "success" | "error" | "timeout" status;
+    std::variant<"balance", "tokens", "prices", "token-metadata"> operation;
+    std::variant<"success", "error", "timeout"> status;
     std::optional<std::string> error_details;
     double response_time_ms;
     std::optional<std::string> details;
@@ -58,9 +59,9 @@ struct PortfolioSnapshot {
     std::string wallet_address;
     std::string snapshot_timestamp;
     double sol_balance;
-    string; // JSON string tokens;
+    std::string tokens;
     double total_usd_value;
-    "hourly" | "daily" | "manual" snapshot_type;
+    std::variant<"hourly", "daily", "manual"> snapshot_type;
 };
 
 struct WalletPNL {
@@ -90,81 +91,51 @@ struct TokenPNL {
 };
 
 class DatabaseService {
-  private db: Database;
-  private static instance: DatabaseService;
+public:
+    DatabaseService();
+    DatabaseService getInstance();
+    void initializeDatabase();
+    void initializeSystemMetrics();
+    void upsertWalletBalance(WalletBalance balance);
+    std::optional<WalletBalance> getWalletBalance(const std::string& address);
+    std::vector<WalletBalance> getAllWalletBalances();
+    std::vector<WalletBalance> getWalletBalancesByStatus(const std::string& status);
+    void upsertTokenPrice(TokenPrice price);
+    std::optional<TokenPrice> getTokenPrice(const std::string& mint);
+    std::vector<TokenPrice> getAllTokenPrices();
+    std::vector<TokenPrice> getStaleTokenPrices(number = 30 olderThanMinutes);
+    void insertFetchLog(Omit<FetchLog log, auto "id">);
+    std::vector<FetchLog> getRecentFetchLogs(number = 100 limit);
+    std::vector<FetchLog> getFetchLogsByWallet(const std::string& walletAddress, number = 50 limit);
+    std::vector<FetchLog> getErrorLogs(number = 50 limit);
+    void setSystemMetric(const std::string& name, const std::string& value);
+    std::optional<SystemMetric> getSystemMetric(const std::string& name);
+    std::vector<SystemMetric> getAllSystemMetrics();
+     getPortfolioOverview();
+    void for(auto const row of tokenResults);
+    Array< getTopTokensByValue(number = 20 limit);
+    void for(auto const row of results);
+    void cleanup();
+    void insertPortfolioSnapshot(Omit<PortfolioSnapshot snapshot, auto "id">);
+    std::vector<PortfolioSnapshot> getPortfolioSnapshots(const std::string& walletAddress, number = 100 limit);
+    std::optional<PortfolioSnapshot> getLatestPortfolioSnapshot(const std::string& walletAddress);
+    void upsertWalletPNL(WalletPNL pnl);
+    std::optional<WalletPNL> getWalletPNL(const std::string& walletAddress);
+    std::vector<WalletPNL> getAllWalletPNL();
+    void upsertTokenPNL(Omit<TokenPNL pnl, auto "id">);
+    std::optional<TokenPNL> getTokenPNL(const std::string& walletAddress, const std::string& tokenMint);
+    std::vector<TokenPNL> getWalletTokenPNL(const std::string& walletAddress);
+    std::vector<TokenPNL> getTokenPNLByMint(const std::string& tokenMint);
+     getCombinedPNL();
+    std::optional<WalletPNL> calculateWalletPNL(const std::string& walletAddress);
+    double calculateCurrentWalletValue(const std::string& walletAddress);
+    void close();
+     healthCheck();
+    void catch(auto error);
 
-  private constructor() {
-    const dbPath = path.join(process.cwd(), "data", "portfolio.db");
-    this.db = new Database(dbPath);
-    this.initializeDatabase();
-  }
-
-    // Enable WAL mode for better performance
-
-    // Create wallet_balances table
-
-    // Create token_prices table
-
-    // Add image_url column if it doesn't exist (migration)
-      // Column already exists, ignore error
-
-    // Add details column to fetch_logs if it doesn't exist (migration)
-      // Column already exists, ignore error
-
-    // Create fetch_logs table
-
-    // Create system_metrics table
-
-    // Create portfolio_snapshots table
-
-    // Create wallet_pnl table
-
-    // Create token_pnl table
-
-    // Create indexes for better performance
-
-    // Create indexes for PNL tables
-
-    // Initialize system metrics
-
-  // Wallet Balance Operations
-
-  // Token Price Operations
-
-  // Fetch Log Operations
-
-  // System Metrics Operations
-
-  // Portfolio Analytics
-
-    // Calculate unique tokens and USD value
-
-    // Get SOL price to calculate total USD value
-
-    // Calculate total USD value including SOL
-
-  // Utility Methods
-    // Clean up old fetch logs (keep last 1000 entries)
-
-    // Clean up old portfolio snapshots (keep last 365 days)
-
-    // Keep daily snapshots for longer (2 years)
-
-    // Optimize database
-
-  // Portfolio Snapshot Operations
-
-  // Wallet PNL Operations
-
-  // Token PNL Operations
-
-  // Combined PNL Analytics
-
-    // Get top gainers and losers by token
-
-  // PNL Calculation Methods
-
-  // Health check
+private:
+    Database db_;
+};
 
 // Export singleton instance
 

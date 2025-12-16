@@ -1,12 +1,12 @@
-#include "elizaos/core-plugin-v2.hpp"
-#include "types.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core-plugin-v2.hpp"
+#include "types.hpp"
 
 namespace elizaos {
 

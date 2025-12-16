@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -34,7 +35,6 @@ struct CachedTokenMetadata {
 
 // Bulk metadata cache - stores all known metadata per chain in one key
 struct BulkMetadataCache {
-    std::unordered_map<std::string, CachedTokenMetadata> metadata;
 };
 
 std::future<void> setBulkMetadataCache(const std::string& chain, Record<string metadata, auto CachedTokenMetadata>);
@@ -48,15 +48,14 @@ struct CachedWalletBalances {
     double cachedAt;
 };
 
-std::future<TokenBalance[] | null> getCachedWalletBalances(const std::string& chain, const std::string& address);
-
 std::future<void> setCachedWalletBalances(const std::string& chain, const std::string& address, const std::vector<TokenBalance>& tokens);
 
 /**
  * Cache an image URL to Vercel Blob storage
  * Returns the cached blob URL, or null if caching fails
  */
-std::future<string | null> cacheImageToBlob(string | null imageUrl);
+
+std::optional<std::string> getExtensionFromUrl(const std::string& url);
 
 // Minimum thresholds to filter obvious dust
 // Very permissive - we want to show new tokens without prices
@@ -65,7 +64,6 @@ std::future<string | null> cacheImageToBlob(string | null imageUrl);
 
 // Bulk price cache - stores all prices per chain in one key
 struct BulkPriceCache {
-    std::unordered_map<std::string, double> prices;
     double cachedAt;
 };
 

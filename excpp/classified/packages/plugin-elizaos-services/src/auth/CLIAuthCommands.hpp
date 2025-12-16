@@ -1,11 +1,14 @@
-#include "AuthenticationService.js.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "AuthenticationService.js.hpp"
 
 namespace elizaos {
 
@@ -21,59 +24,33 @@ struct CLICommand {
     std::string name;
     std::string description;
     std::optional<std::vector<CLIOption>> options;
-    (args: any, runtime?: IAgentRuntime) => Promise<void> handler;
 };
 
 struct CLIOption {
     std::string name;
     std::string description;
     std::optional<bool> required;
-    'string' | 'boolean' type;
+    std::variant<'string', 'boolean'> type;
 };
 
 /**
  * CLI Authentication Commands
  */
 class CLIAuthCommands {
-  private authService: AuthenticationService;
+public:
+    CLIAuthCommands(IAgentRuntime runtime);
+    std::vector<CLICommand> getCommands();
+    std::future<void> handleAuthStatus();
+    std::future<void> handleAuthTest();
+    std::future<void> handleAuthValidate(const std::any& args);
+    std::future<void> handleTestKeys();
+    std::future<void> handleClearCache();
+    std::future<void> handleSetup();
+    std::string getStatusIcon(const std::string& status);
 
-  constructor(runtime: IAgentRuntime) {
-    this.authService = new AuthenticationService(runtime);
-  }
-
-  /**
-   * Get all auth-related CLI commands
-   */
-
-  /**
-   * Handle auth:status command
-   */
-
-  /**
-   * Handle auth:test command
-   */
-
-    // Summary
-
-  /**
-   * Handle auth:validate command
-   */
-
-  /**
-   * Handle auth:test-keys command
-   */
-
-  /**
-   * Handle auth:clear-cache command
-   */
-
-  /**
-   * Handle auth:setup command (Interactive wizard)
-   */
-
-  /**
-   * Get status icon for overall status
-   */
+private:
+    AuthenticationService authService_;
+};
 
 /**
  * Export CLI command registration function

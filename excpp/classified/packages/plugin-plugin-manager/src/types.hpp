@@ -1,11 +1,13 @@
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -22,12 +24,6 @@ namespace elizaos {
 };
 
 enum PluginStatus {
-  BUILDING = 'building',
-  READY = 'ready',
-  LOADED = 'loaded',
-  ERROR = 'error',
-  UNLOADED = 'unloaded',
-  NEEDS_CONFIGURATION = 'needs_configuration',
 }
 
 struct PluginEnvironmentVariable {
@@ -36,7 +32,6 @@ struct PluginEnvironmentVariable {
     bool sensitive;
     bool required;
     std::optional<std::string> defaultValue;
-    std::optional<{> validation;
     std::optional<std::string> pattern;
     std::optional<double> minLength;
     std::optional<double> maxLength;
@@ -48,12 +43,11 @@ struct PluginComponents {
     std::unordered_set<std::string> providers;
     std::unordered_set<std::string> evaluators;
     std::unordered_set<std::string> services;
-    std::unordered_map<std::string, std::unordered_set<(params: any) => Promise<void>>> eventHandlers;
 };
 
 struct ComponentRegistration {
     std::string pluginId;
-    'action' | 'provider' | 'evaluator' | 'service' | 'eventHandler' componentType;
+    std::variant<'action', 'provider', 'evaluator', 'service', 'eventHandler'> componentType;
     std::string componentName;
     double timestamp;
 };
@@ -72,15 +66,13 @@ struct PluginState {
     std::optional<double> loadedAt;
     std::optional<double> unloadedAt;
     std::optional<std::string> version;
-    std::optional<std::unordered_map<std::string, std::string>> dependencies;
-    std::optional<'unconfigured' | 'partial' | 'complete'> configurationStatus;
+    std::optional<std::variant<'unconfigured', 'partial', 'complete'>> configurationStatus;
     std::optional<std::vector<PluginEnvironmentVariable>> requiredConfiguration;
     std::optional<std::vector<std::string>> configurationErrors;
     std::optional<PluginComponents> components;
 };
 
 struct PluginRegistry {
-    std::unordered_map<std::string, PluginState> plugins;
 };
 
 struct LoadPluginParams {
@@ -100,8 +92,8 @@ struct PluginManagerConfig {
 };
 
 struct InstallProgress {
-    'downloading' | 'extracting' | 'installing' | 'validating' | 'complete' phase;
-    number; // 0-100 progress;
+    std::variant<'downloading', 'extracting', 'installing', 'validating', 'complete'> phase;
+    double progress;
     std::string message;
 };
 

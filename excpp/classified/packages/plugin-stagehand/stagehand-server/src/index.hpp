@@ -1,14 +1,15 @@
-#include "logger.js.hpp"
-#include "message-handler.js.hpp"
-#include "playwright-installer.js.hpp"
-#include "session-manager.js.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "logger.js.hpp"
+#include "message-handler.js.hpp"
+#include "playwright-installer.js.hpp"
+#include "session-manager.js.hpp"
 
 namespace elizaos {
 

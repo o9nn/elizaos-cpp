@@ -1,10 +1,12 @@
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -22,7 +24,7 @@ namespace elizaos {
  * @param timeZone Time zone of the team member
  * @returns Boolean indicating if the member is available
  */
-bool isAvailableNow(const std::vector<std::string>& workDays, { start: string; end: string } workHours, const std::string& timeZone);
+bool isAvailableNow(const std::vector<std::string>& workDays, const std::any& workHours, const std::string& timeZone);
 
 /**
  * Calculates the next check-in time for a team member
@@ -32,7 +34,7 @@ bool isAvailableNow(const std::vector<std::string>& workDays, { start: string; e
  * @param frequencyHours How often to check in (in hours)
  * @returns Date object for the next check-in
  */
-Date calculateNextCheckIn(const std::vector<std::string>& workDays, { start: string; end: string } workHours, const std::string& timeZone, number = 24 frequencyHours);
+Date calculateNextCheckIn(const std::vector<std::string>& workDays, const std::any& workHours, const std::string& timeZone, number = 24 frequencyHours);
 
 /**
  * Formats a date to a human-readable string
@@ -48,5 +50,6 @@ std::string formatDate(Date date, std::optional<std::string> timeZone);
  * @param elapsedTimePercentage Percentage of elapsed time
  * @returns Status string
  */
+std::variant<'ON_TRACK', 'AT_RISK', 'DELAYED'> getProjectStatus(double completionPercentage, double elapsedTimePercentage);
 
 } // namespace elizaos

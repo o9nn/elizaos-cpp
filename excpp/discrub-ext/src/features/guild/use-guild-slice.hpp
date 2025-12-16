@@ -1,15 +1,15 @@
-#include "..app/hooks.hpp"
-#include "..app/store.hpp"
-#include "..classes/guild.hpp"
-#include ".dm/dm-types.hpp"
-#include "guild-slice.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "..app/hooks.hpp"
+#include "..app/store.hpp"
+#include "..classes/guild.hpp"
+#include ".dm/dm-types.hpp"
+#include "guild-slice.hpp"
 
 namespace elizaos {
 

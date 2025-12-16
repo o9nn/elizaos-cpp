@@ -1,13 +1,16 @@
-#include "elizaos/core.hpp"
-#include "resolve-utils.hpp"
-#include "user-environment.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
+#include "resolve-utils.hpp"
+#include "user-environment.hpp"
 
 namespace elizaos {
 
@@ -44,7 +47,6 @@ std::future<void> ensureDir(const std::string& dirPath);
 
 /**
  * Sets up the .env file by creating it if it doesn't exist or populating it with a hybrid
- * merge of process.env variables and example variables if it's empty
  * @param envFilePath Path to the .env file
  */
 std::future<void> setupEnvFile(const std::string& envFilePath);
@@ -61,12 +63,11 @@ std::future<void> ensureElizaDir(std::optional<std::string> targetProjectDir);
  * @param elizaDbDir The directory for PGLite database
  * @param envFilePath Path to the .env file
  */
-std::future<void> setupPgLite(string | undefined dbDir, string | undefined envPath, std::optional<std::string> targetProjectDir);
+std::future<void> setupPgLite(const std::string& dbDir, const std::string& envPath, std::optional<std::string> targetProjectDir);
 
 /**
  * Stores the provided Postgres connection URL in the specified `.env` file, replacing any existing entry.
  *
- * Updates the `POSTGRES_URL` environment variable in both the file and the current process.
  *
  * @param url - The Postgres connection URL to store.
  * @param envFilePath - Path to the `.env` file where the URL should be saved.
@@ -78,7 +79,6 @@ std::future<void> storePostgresUrl(const std::string& url, const std::string& en
 /**
  * Stores the provided PGLite data directory in the specified `.env` file, replacing any existing entry.
  *
- * Updates the `PGLITE_DATA_DIR` environment variable in both the file and the current process.
  *
  * @param dataDir - The PGLite data directory path to store.
  * @param envFilePath - Path to the `.env` file where the directory should be saved.
@@ -91,7 +91,6 @@ std::future<void> storePgliteDataDir(const std::string& dataDir, const std::stri
  * Prompts the user for a Postgres URL, validates it, and stores it
  * @returns The configured Postgres URL or null if user cancels
  */
-std::future<string | null> promptAndStorePostgresUrl(const std::string& envFilePath);
 
 /**
  * Validates an OpenAI API key format
@@ -142,14 +141,11 @@ struct ProviderPromptConfig {
     std::string name;
     std::string icon;
     std::string noteText;
-    Array<{ inputs;
     std::string key;
     std::string message;
     std::optional<std::string> placeholder;
     std::optional<std::string> initialValue;
-    'text' | 'password' type;
-    (value: string) => string | undefined validate;
-    (config: any, envFilePath: string) => Promise<void> storeFunction;
+    std::variant<'text', 'password'> type;
     std::string successMessage;
 };
 
@@ -169,14 +165,12 @@ struct ProviderPromptConfig {
  * @param envFilePath Path to the .env file
  * @returns The configured OpenAI API key or null if user cancels
  */
-std::future<string | null> promptAndStoreOpenAIKey(const std::string& envFilePath);
 
 /**
  * Prompts the user for an Anthropic API key, validates it, and stores it
  * @param envFilePath Path to the .env file
  * @returns The configured Anthropic API key or null if user cancels
  */
-std::future<string | null> promptAndStoreAnthropicKey(const std::string& envFilePath);
 
 /**
  * Validates an Ollama API endpoint format
@@ -190,7 +184,7 @@ bool isValidOllamaEndpoint(const std::string& endpoint);
  * @param config The Ollama configuration to store
  * @param envFilePath Path to the .env file
  */
-std::future<void> storeOllamaConfig({ endpoint: string; model: string } config, const std::string& envFilePath);
+std::future<void> storeOllamaConfig(const std::any& config, const std::string& envFilePath);
 
 /**
  * Prompts the user for Ollama embedding model selection
@@ -210,21 +204,17 @@ std::future<void> storeOllamaConfig({ endpoint: string; model: string } config, 
 
         // Add embedding-specific configuration
 
-        // Update process.env
-
 /**
  * Prompts the user for Ollama configuration, validates it, and stores it
  * @param envFilePath Path to the .env file
  * @returns The configured Ollama settings or null if user cancels
  */
-      await storeOllamaConfig({ endpoint: results.endpoint, model: results.model }, envPath);
 
 /**
  * Prompts the user for a Google Generative AI API key, validates it, and stores it
  * @param envFilePath Path to the .env file
  * @returns The configured Google API key or null if user cancels
  */
-std::future<string | null> promptAndStoreGoogleKey(const std::string& envFilePath);
 
 /**
  * Validates an OpenRouter API key format
@@ -245,14 +235,12 @@ std::future<void> storeOpenRouterKey(const std::string& key, const std::string& 
  * @param envFilePath Path to the .env file
  * @returns The configured OpenRouter API key or null if user cancels
  */
-std::future<string | null> promptAndStoreOpenRouterKey(const std::string& envFilePath);
 
 /**
  * Configures the database to use, either PGLite or PostgreSQL
  * @param reconfigure If true, force reconfiguration even if already configured
  * @returns The postgres URL if using Postgres, otherwise null
  */
-std::future<string | null> configureDatabaseSettings(auto reconfigure = false);
 
 // Main config schema
 /**
@@ -264,12 +252,12 @@ std::future<string | null> configureDatabaseSettings(auto reconfigure = false);
 /**
  * Type definition for the inferred type of the raw config schema.
  */
-using RawConfig = z.infer<typeof rawConfigSchema>;
+using RawConfig = z::infer<typeof rawConfigSchema>;
 
 /**
  * Define the type `Config` as the inferred type from the `configSchema`.
  */
-using Config = z.infer<typeof configSchema>;
+using Config = z::infer<typeof configSchema>;
 
 /**
  * Resolves the paths in the given configuration based on the provided current working directory (cwd).
@@ -286,8 +274,6 @@ std::future<void> resolveConfigPaths(const std::string& cwd, RawConfig config);
  */
 
 /**
- * Merges environment variables from process.env with example variables from template.
- * Prioritizes process.env variables that have actual values, and uses example variables as fallback.
  * @param templateContent The template content containing example variables
  * @returns Merged environment variables object
  */

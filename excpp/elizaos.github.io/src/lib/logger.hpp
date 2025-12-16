@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -24,12 +25,6 @@ using LogLevel = std::variant<"error", "warn", "info", "debug", "trace">;
  * Logger interface
  */
 struct Logger {
-    (message: string, data?: Record<string, unknown>) => void error;
-    (message: string, data?: Record<string, unknown>) => void warn;
-    (message: string, data?: Record<string, unknown>) => void info;
-    (message: string, data?: Record<string, unknown>) => void debug;
-    (message: string, data?: Record<string, unknown>) => void trace;
-    (name: string) => Logger child;
 };
 
 /**
@@ -37,8 +32,7 @@ struct Logger {
  */
 struct LoggerConfig {
     LogLevel minLevel;
-    std::optional<std::unordered_map<std::string, std::string>> context;
-    std::optional<string[]; // Changed from name to nameSegments> nameSegments;
+    std::optional<std::vector<std::string>> nameSegments;
 };
 
 /**

@@ -1,12 +1,12 @@
-#include "elizaos/core.hpp"
-#include "plugin-context.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
+#include "plugin-context.hpp"
 
 namespace elizaos {
 
@@ -22,7 +22,6 @@ struct PackageJson {
 
 struct ImportStrategy {
     std::string name;
-    (repository: string) => Promise<any | null> tryImport;
 };
 
 /**
@@ -38,15 +37,11 @@ std::string resolveNodeModulesPath(const std::string& repository, const std::vec
 /**
  * Helper function to read and parse package.json
  */
-std::future<PackageJson | null> readPackageJson(const std::string& repository);
 
 /**
- * Attempts to import a module from a given path and logs the outcome.
  */
-std::future<any | null> tryImporting(const std::string& importPath, const std::string& strategy, const std::string& repository);
 
 /**
- * Collection of import strategies
  */
   // Try local development first - this is the most important for plugin testing
 
@@ -68,7 +63,6 @@ std::future<any | null> tryImporting(const std::string& importPath, const std::s
 bool isElizaOSPackageName(const std::string& repository);
 
 /**
- * Get relevant import strategies based on plugin type
  */
 std::vector<ImportStrategy> getStrategiesForPlugin(const std::string& repository);
 
@@ -80,6 +74,5 @@ std::vector<ImportStrategy> getStrategiesForPlugin(const std::string& repository
  * @param repository - The plugin repository/package name to load.
  * @returns The loaded plugin module or null if loading fails after all attempts.
  */
-std::future<any | null> loadPluginModule(const std::string& repository);
 
 } // namespace elizaos

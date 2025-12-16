@@ -1,12 +1,13 @@
-#include ".shared/response-utils.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include ".shared/response-utils.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -19,7 +20,7 @@ struct Todo {
     std::string id;
     std::string task;
     bool completed;
-    'low' | 'medium' | 'high' priority;
+    std::variant<'low', 'medium', 'high'> priority;
     std::optional<std::string> dueDate;
     std::string createdAt;
     std::optional<std::string> completedAt;

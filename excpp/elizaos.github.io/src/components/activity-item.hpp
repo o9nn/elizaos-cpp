@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -19,8 +19,8 @@ struct ActivityItemProps {
     std::string author;
     double number;
     std::string href;
-    React.ReactNode icon;
-    std::optional<React.ReactNode> metadata;
+    ReactNode icon;
+    std::optional<ReactNode> metadata;
     std::optional<std::string> className;
 };
 

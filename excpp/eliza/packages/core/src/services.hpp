@@ -1,11 +1,11 @@
-#include "types.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "types.hpp"
 
 namespace elizaos {
 
@@ -48,8 +48,6 @@ class ServiceBuilder<TService extends Service = Service> {
     // Create a dynamic class with the configured properties
 
         return startFn(runtime);
-
-          await stopFn();
 
 /**
  * Create a type-safe service builder

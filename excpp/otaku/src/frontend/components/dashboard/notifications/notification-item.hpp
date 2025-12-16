@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -15,8 +15,6 @@ namespace elizaos {
 
 struct NotificationItemProps {
     Notification notification;
-    (id: string) => void onMarkAsRead;
-    (id: string) => void onDelete;
 };
 
 

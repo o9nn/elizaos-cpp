@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -27,10 +27,8 @@ struct PluginPackageJson {
     std::string name;
     std::string version;
     std::optional<std::string> description;
-    std::optional<{> elizaos;
     std::optional<std::vector<PluginSecret>> secrets;
-    std::optional<string[]; // Legacy format - just array of secret names> requiredSecrets;
-    std::optional<{> agentConfig;
+    std::optional<std::vector<std::string>> requiredSecrets;
     std::optional<std::string> pluginType;
     std::optional<Record<> pluginParameters;
     std::string type;
@@ -49,8 +47,8 @@ struct PluginDetails {
 
 // Registry types (same as in use-plugins.ts)
 struct GitVersionInfo {
-    string | null version;
-    string | null branch;
+    std::optional<std::string> version;
+    std::optional<std::string> branch;
 };
 
 struct PluginGitInfo {
@@ -61,8 +59,8 @@ struct PluginGitInfo {
 
 struct PluginNpmInfo {
     std::string repo;
-    string | null v0;
-    string | null v1;
+    std::optional<std::string> v0;
+    std::optional<std::string> v1;
 };
 
 struct PluginSupport {
@@ -78,13 +76,11 @@ struct PluginInfo {
 
 struct RegistryResponse {
     std::string lastUpdatedAt;
-    std::unordered_map<std::string, PluginInfo> registry;
 };
 
 /**
  * Fetch the plugin registry to get GitHub repo information
  */
-std::future<RegistryResponse | null> fetchPluginRegistry();
 
 /**
  * Convert plugin name for registry lookup - handles both @elizaos and @elizaos-plugins formats
@@ -99,16 +95,16 @@ bool isCorePlugin(const std::string& pluginName);
 /**
  * Get GitHub repo path from registry data
  */
+std::optional<std::string> getGitHubRepoPath(const std::string& pluginName, const std::optional<RegistryResponse>& registryData);
 
 /**
  * Fetches package.json for a single plugin from GitHub
  */
-std::future<PluginPackageJson | null> fetchPluginPackageJson(const std::string& pluginName, string | null repoPath);
 
 /**
  * Extract required secrets from package.json
  */
-std::vector<PluginSecret> extractRequiredSecrets(const std::string& pluginName, PluginPackageJson | null packageJson);
+std::vector<PluginSecret> extractRequiredSecrets(const std::string& pluginName, const std::optional<PluginPackageJson>& packageJson);
 
 /**
  * Hook to fetch plugin details including required secrets

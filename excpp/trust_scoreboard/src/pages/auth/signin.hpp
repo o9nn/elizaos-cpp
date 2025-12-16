@@ -1,13 +1,13 @@
-#include "...public/discordLogo.svg.hpp"
-#include "...public/telegramLogo.svg.hpp"
-#include "signin.module.css.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "...public/discordLogo.svg.hpp"
+#include "...public/telegramLogo.svg.hpp"
+#include "signin.module.css.hpp"
 
 namespace elizaos {
 
@@ -17,7 +17,6 @@ namespace elizaos {
 
 
   struct Window {
-    (user: any) => void onTelegramAuth;
 };
 
 

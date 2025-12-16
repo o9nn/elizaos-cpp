@@ -1,11 +1,11 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -16,7 +16,6 @@ namespace elizaos {
 
 // Define a mock runtime interface for tests
 struct MockRuntime {
-    (key: string) => string | undefined getSetting;
 };
 
 // Mock the OpenAI plugin

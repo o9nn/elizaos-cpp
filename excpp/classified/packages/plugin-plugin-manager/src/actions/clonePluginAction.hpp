@@ -1,13 +1,13 @@
-#include ".services/pluginManagerService.hpp"
-#include ".services/pluginRegistryService.js.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".services/pluginManagerService.hpp"
+#include ".services/pluginRegistryService.js.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -24,5 +24,6 @@ namespace elizaos {
 
     // Optionally register the cloned plugin for development
 
+std::optional<std::string> extractPluginName(const std::string& text);
 
 } // namespace elizaos

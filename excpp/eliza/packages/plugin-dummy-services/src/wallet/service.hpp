@@ -1,11 +1,13 @@
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -22,37 +24,28 @@ struct DummyPositionLot {
 
 struct DummyAssetDetail {
     double quantity;
-    number; // Average price of current holdings averagePrice;
-    DummyPositionLot[]; // For FIFO P&L on sell lots;
+    double averagePrice;
+    std::vector<DummyPositionLot> lots;
 };
 
-class DummyWalletService extends Service implements IWalletService {
-  public static override readonly serviceType = ServiceType.WALLET;
-  public readonly capabilityDescription =
-    'Provides standardized access to wallet balances and portfolios.';
+class DummyWalletService {
+public:
+    DummyWalletService(AgentRuntime runtime);
+    std::future<std::string> transferSol(const std::any& from, const std::any& to, double lamports);
+    std::future<DummyWalletService> start(AgentRuntime runtime);
+    std::future<void> start();
+    std::future<void> stop();
+    std::future<void> addFunds(const std::string& assetSymbolOrAddress, double amount, std::optional<std::string> _walletAddress);
+    std::future<void> setPortfolioHolding(const std::string& assetSymbolOrAddress, double quantity, double averagePrice, std::optional<std::string> _walletAddress);
+    std::future<void> resetWallet(double initialCashAmount, string = DEFAULT_QUOTE_ASSET cashAssetSymbol, std::optional<std::string> _walletAddress);
+    std::future<double> getBalance(const std::string& assetSymbolOrAddress, std::optional<std::string> _walletAddress);
+    std::future<WalletPortfolio> getPortfolio(std::optional<std::string> _walletAddress);
 
-  private balances: Map<string, number>; // assetSymbolOrAddress -> quantity
-  private positions: Map<string, DummyAssetDetail>; // assetSymbolOrAddress -> details for owned non-quote assets
-  private quoteAssetSymbol: string;
-
-  constructor(runtime: AgentRuntime) {
-    super(runtime);
-    this.balances = new Map<string, number>();
-    this.positions = new Map<string, DummyAssetDetail>();
-    this.quoteAssetSymbol = DEFAULT_QUOTE_ASSET;
-    this.resetWallet(10000, DEFAULT_QUOTE_ASSET); // Initialize with some default cash
-  }
-    // This is a dummy implementation - no real transfer happens
-
-    // For dummy wallet, we just simulate the transfer
-
-    // Deduct from balance
-
-    // Return a dummy transaction signature
-
-    // No further async init in instance.start() currently needed for this simple map-based wallet
-
-      // WalletAsset structure
+private:
+    std::unordered_map<std::string, double> balances_;
+    std::unordered_map<std::string, DummyAssetDetail> positions_;
+    std::string quoteAssetSymbol_;
+};
 
 
 } // namespace elizaos

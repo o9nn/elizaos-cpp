@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -14,14 +15,13 @@ namespace elizaos {
 
 
 struct ButtonProps {
-    React.ReactNode children;
-    std::optional<'default' | 'outline' | 'ghost' | 'destructive'> variant;
-    std::optional<'default' | 'sm' | 'lg' | 'icon'> size;
+    ReactNode children;
+    std::optional<std::variant<'default', 'outline', 'ghost', 'destructive'>> variant;
+    std::optional<std::variant<'default', 'sm', 'lg', 'icon'>> size;
     std::optional<std::string> className;
-    std::optional<(e?: React.MouseEvent<HTMLButtonElement>) => void> onClick;
     std::optional<bool> disabled;
     std::optional<std::string> title;
-    std::optional<'button' | 'submit' | 'reset'> type;
+    std::optional<std::variant<'button', 'submit', 'reset'>> type;
 };
 
 

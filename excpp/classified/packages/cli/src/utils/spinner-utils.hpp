@@ -1,12 +1,13 @@
-#include "bun-exec.js.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "bun-exec.js.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -63,7 +64,6 @@ std::future<void> installPluginWithSpinner(const std::string& pluginName, const 
 /**
  * Create a task for use with clack.tasks()
  */
-      await fn();
 
 /**
  * Run multiple tasks with clack.tasks()

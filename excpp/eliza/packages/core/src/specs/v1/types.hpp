@@ -1,10 +1,13 @@
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -51,7 +54,6 @@ struct ConversationExample {
 struct Actor {
     std::string name;
     std::string username;
-    { details;
     std::string tagline;
     std::string summary;
     std::string quote;
@@ -71,9 +73,6 @@ struct Objective {
  * Status enum for goals
  */
 enum GoalStatus {
-  DONE = 'DONE',
-  FAILED = 'FAILED',
-  IN_PROGRESS = 'IN_PROGRESS',
 }
 
 /**
@@ -92,11 +91,6 @@ struct Goal {
  * Model size/type classification
  */
 enum ModelClass {
-  SMALL = 'small',
-  MEDIUM = 'medium',
-  LARGE = 'large',
-  EMBEDDING = 'embedding',
-  IMAGE = 'image',
 }
 
 /**
@@ -144,41 +138,6 @@ using Models = {
  * Available model providers
  */
 enum ModelProviderName {
-  OPENAI = 'openai',
-  ETERNALAI = 'eternalai',
-  ANTHROPIC = 'anthropic',
-  GROK = 'grok',
-  GROQ = 'groq',
-  LLAMACLOUD = 'llama_cloud',
-  TOGETHER = 'together',
-  LLAMALOCAL = 'llama_local',
-  LMSTUDIO = 'lmstudio',
-  GOOGLE = 'google',
-  MISTRAL = 'mistral',
-  CLAUDE_VERTEX = 'claude_vertex',
-  REDPILL = 'redpill',
-  OPENROUTER = 'openrouter',
-  OLLAMA = 'ollama',
-  HEURIST = 'heurist',
-  GALADRIEL = 'galadriel',
-  FAL = 'falai',
-  GAIANET = 'gaianet',
-  ALI_BAILIAN = 'ali_bailian',
-  VOLENGINE = 'volengine',
-  NANOGPT = 'nanogpt',
-  HYPERBOLIC = 'hyperbolic',
-  VENICE = 'venice',
-  NVIDIA = 'nvidia',
-  NINETEEN_AI = 'nineteen_ai',
-  AKASH_CHAT_API = 'akash_chat_api',
-  LIVEPEER = 'livepeer',
-  LETZAI = 'letzai',
-  DEEPSEEK = 'deepseek',
-  INFERA = 'infera',
-  BEDROCK = 'bedrock',
-  ATOMA = 'atoma',
-  SECRETAI = 'secret_ai',
-  NEARAI = 'nearai',
 }
 
 /**
@@ -241,17 +200,17 @@ struct MessageExample {
 /**
  * Handler function type for processing messages
  */
-using Handler = (
+using Handler = std::function<std::future<unknown>(IAgentRuntime, Memory, State, std::any, HandlerCallback)>;
 
 /**
  * Callback function type for handlers
  */
-using HandlerCallback = (response: Content, files?: any) => Promise<Memory[]>;
+using HandlerCallback = std::function<std::future<std::vector<Memory>>(Content, std::any)>;
 
 /**
  * Validator function type for actions/evaluators
  */
-using Validator = (
+using Validator = std::function<std::future<bool>(IAgentRuntime, Memory, State)>;
 
 /**
  * Represents an action the agent can perform
@@ -297,7 +256,6 @@ struct Provider {
     std::optional<bool> dynamic;
     std::optional<double> position;
     std::optional<bool> private;
-    (runtime: IAgentRuntime, message: Memory, state?: State) => Promise<any> get;
 };
 
 /**
@@ -320,7 +278,9 @@ struct Account {
     UUID id;
     std::string name;
     std::string username;
-    std::optional<{ [key: string]: any }> details;
+    std::optional<std::string> email;
+    std::optional<std::string> avatarUrl;
+};
 
 /**
  * Room participant with account details
@@ -378,8 +338,7 @@ using Client = {
 /**
  * Database adapter initialization
  */
-using Adapter = {
-  /** Initialize the adapter */
+using Adapter = std::function<void()>;
 
 /**
  * Plugin for extending agent functionality
@@ -439,7 +398,7 @@ struct ModelConfiguration {
     std::optional<TelemetrySettings> experimental_telemetry;
 };
 
-using TemplateType = std::variant<std::string, ((options: { state: State }) => string)>;
+using TemplateType = std::variant<std::string, std::function<string)(std::any)>>;
 
 /**
  * Configuration for an agent character
@@ -538,9 +497,42 @@ struct IDatabaseAdapter {
     std::string query_field_name;
     std::string query_field_sub_name;
     double query_match_count;
-    { [key: string]: unknown } body;
+    UUID userId;
+    UUID roomId;
+    std::string type;
+    std::string tableName;
+    UUID agentId;
+    UUID roomId;
+    std::vector<double> embedding;
+    double match_threshold;
+    double match_count;
+    bool unique;
+    std::optional<double> match_threshold;
+    std::optional<double> count;
+    std::optional<UUID> roomId;
+    std::optional<UUID> agentId;
+    std::optional<bool> unique;
+    std::string tableName;
+    UUID agentId;
+    UUID roomId;
+    std::optional<std::optional<UUID>> userId;
+    std::optional<bool> onlyInProgress;
+    std::optional<double> count;
+    std::variant<'FOLLOWED', 'MUTED'> state;
+    std::optional<UUID> id;
+    UUID agentId;
+    std::optional<double> limit;
+    std::optional<std::string> query;
+    std::optional<std::string> conversationContext;
+    UUID agentId;
+    Float32Array embedding;
+    double match_threshold;
+    double match_count;
+    std::optional<std::string> searchText;
+};
 
 struct IDatabaseCacheAdapter {
+    std::string key;
 };
 
 struct IMemoryManager {
@@ -553,8 +545,6 @@ struct IMemoryManager {
     std::optional<double> start;
     std::optional<double> end;
     std::string content;
-    std::vector<double> embedding;
-    { opts;
     std::optional<double> match_threshold;
     std::optional<double> count;
     UUID roomId;
@@ -570,34 +560,33 @@ struct IRAGKnowledgeManager {
     std::optional<std::string> conversationContext;
     std::optional<UUID> agentId;
     UUID agentId;
-    std::vector<Float32Array | number> embedding;
+    std::variant<Float32Array, std::vector<double>> embedding;
     std::optional<double> match_threshold;
     std::optional<double> match_count;
     std::optional<std::string> searchText;
     std::string path;
     std::string content;
-    'pdf' | 'md' | 'txt' type;
+    std::variant<'pdf', 'md', 'txt'> type;
     bool isShared;
 };
 
 using CacheOptions = {
 
 enum CacheStore {
-  REDIS = 'redis',
-  DATABASE = 'database',
-  FILESYSTEM = 'filesystem',
 }
 
 struct ICacheManager {
 };
 
-  // Add abstract initialize method that must be implemented by derived classes
+    ServiceType serviceType() const;
+    void if(auto !Service.instance);
+    ServiceType serviceType() const;
 
 struct IAgentRuntime {
     UUID agentId;
     std::string serverUrl;
     IDatabaseAdapter databaseAdapter;
-    string | null token;
+    std::optional<std::string> token;
     ModelProviderName modelProvider;
     ModelProviderName imageModelProvider;
     ModelProviderName imageVisionModelProvider;
@@ -606,7 +595,7 @@ struct IAgentRuntime {
     std::vector<Action> actions;
     std::vector<Evaluator> evaluators;
     std::vector<Plugin> plugins;
-    std::optional<typeof fetch | null> fetch;
+    std::optional<std::optional<typeof fetch>> fetch;
     IMemoryManager messageManager;
     IMemoryManager descriptionManager;
     IMemoryManager documentsManager;
@@ -614,24 +603,10 @@ struct IAgentRuntime {
     IRAGKnowledgeManager ragKnowledgeManager;
     IMemoryManager loreManager;
     ICacheManager cacheManager;
-    std::unordered_map<ServiceType, Service> services;
     std::vector<ClientInstance> clients;
-    Memory message;
-    std::vector<Memory> responses;
-    std::optional<State> state;
     std::optional<HandlerCallback> callback;
-    Memory message;
-    std::optional<State> state;
-    std::optional<bool> didRespond;
     std::optional<HandlerCallback> callback;
-    UUID userId;
-    string | null userName;
-    string | null name;
-    string | null source;
-    UUID userId;
-    UUID roomId;
-    std::optional<std::string> userName;
-    std::optional<std::string> userScreenName;
+    std::optional<std::string> source;
     std::optional<std::string> source;
 };
 
@@ -654,15 +629,9 @@ struct GraphQLTag {
 };
 
 enum IrysMessageType {
-  REQUEST = 'REQUEST',
-  DATA_STORAGE = 'DATA_STORAGE',
-  REQUEST_RESPONSE = 'REQUEST_RESPONSE',
 }
 
 enum IrysDataType {
-  FILE = 'FILE',
-  IMAGE = 'IMAGE',
-  OTHER = 'OTHER',
 }
 
 struct IrysTimestamp {
@@ -671,31 +640,9 @@ struct IrysTimestamp {
 };
 
 enum ServiceType {
-  IMAGE_DESCRIPTION = 'image_description',
-  TRANSCRIPTION = 'transcription',
-  VIDEO = 'video',
-  TEXT_GENERATION = 'text_generation',
-  BROWSER = 'browser',
-  SPEECH_GENERATION = 'speech_generation',
-  PDF = 'pdf',
-  INTIFACE = 'intiface',
-  AWS_S3 = 'aws_s3',
-  BUTTPLUG = 'buttplug',
-  SLACK = 'slack',
-  VERIFIABLE_LOGGING = 'verifiable_logging',
-  IRYS = 'irys',
-  TEE_LOG = 'tee_log',
-  GOPLUS_SECURITY = 'goplus_security',
-  WEB_SEARCH = 'web_search',
-  EMAIL_AUTOMATION = 'email_automation',
-  NKN_CLIENT_SERVICE = 'nkn_client_service',
-  DATABASE_MIGRATION = 'database_migration',
 }
 
 enum LoggingLevel {
-  DEBUG = 'debug',
-  VERBOSE = 'verbose',
-  NONE = 'none',
 }
 
 using KnowledgeItem = {
@@ -703,9 +650,7 @@ using KnowledgeItem = {
 struct RAGKnowledgeItem {
     UUID id;
     UUID agentId;
-    { content;
     std::string text;
-    std::optional<{> metadata;
     std::optional<bool> isMain;
     std::optional<bool> isChunk;
     std::optional<UUID> originalId;
@@ -727,27 +672,17 @@ struct ActionResponse {
 };
 
 enum TokenizerType {
-  Auto = 'auto',
-  TikToken = 'tiktoken',
 }
 
 enum TranscriptionProvider {
-  OpenAI = 'openai',
-  Deepgram = 'deepgram',
-  Local = 'local',
 }
 
 enum ActionTimelineType {
-  ForYou = 'foryou',
-  Following = 'following',
 }
 enum KnowledgeScope {
-  SHARED = 'shared',
-  PRIVATE = 'private',
 }
 
 enum CacheKeyPrefix {
-  KNOWLEDGE = 'knowledge',
 }
 
 struct DirectoryItem {

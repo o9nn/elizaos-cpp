@@ -1,12 +1,12 @@
-#include ".base/BaseTradeService.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".base/BaseTradeService.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -15,51 +15,19 @@ namespace elizaos {
 
 
 
-class TokenSecurityService extends BaseTradeService {
-  async validateTokenForTrading(tokenAddress: string): Promise<{
-    isValid: boolean;
-    reason?: string;
-  }> {
-    try {
-      const marketData = await this.dataService.getTokenMarketData(tokenAddress);
+class TokenSecurityService {
+public:
+    Promise< validateTokenForTrading(const std::string& tokenAddress);
+    void if(auto marketData.liquidity < this.tradingConfig.thresholds.minLiquidity);
+    void if(auto marketData.volume24h < this.tradingConfig.thresholds.minVolume);
+    void if(auto !tokenMetadata.verified);
+    void if(auto tokenMetadata.suspiciousAttributes.length > 0);
+    void catch(auto error);
+    Promise< fetchTokenMetadata(const std::string& tokenAddress);
 
-      if (marketData.liquidity < this.tradingConfig.thresholds.minLiquidity) {
-        return {
-          isValid: false,
-          reason: `Insufficient liquidity: ${marketData.liquidity} < ${this.tradingConfig.thresholds.minLiquidity}`,
-        };
-      }
+private:
+    bool isValid_;
+};
 
-      if (marketData.volume24h < this.tradingConfig.thresholds.minVolume) {
-        return {
-          isValid: false,
-          reason: `Insufficient 24h volume: ${marketData.volume24h} < ${this.tradingConfig.thresholds.minVolume}`,
-        };
-      }
-
-      const tokenMetadata = await this.fetchTokenMetadata(tokenAddress);
-
-      if (!tokenMetadata.verified) {
-        return { isValid: false, reason: 'Token is not verified' };
-      }
-
-      if (tokenMetadata.suspiciousAttributes.length > 0) {
-        return {
-          isValid: false,
-          reason: `Suspicious attributes: ${tokenMetadata.suspiciousAttributes.join(', ')}`,
-        };
-      }
-
-      return { isValid: true };
-    } catch (error) {
-      logger.error('Error validating token:', error);
-      return {
-        isValid: false,
-        reason: `Validation error: ${error instanceof Error ? error.message : String(error)}`,
-      };
-    }
-  }
-
-    // FIXME: Implement token metadata fetching
 
 } // namespace elizaos

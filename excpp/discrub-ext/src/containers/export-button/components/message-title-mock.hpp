@@ -1,14 +1,15 @@
-#include "...app/guards.hpp"
-#include "...classes/channel.hpp"
-#include "...classes/guild.hpp"
-#include "...utils.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "...app/guards.hpp"
+#include "...classes/channel.hpp"
+#include "...classes/guild.hpp"
+#include "...utils.hpp"
 
 namespace elizaos {
 

@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -17,7 +18,7 @@ namespace elizaos {
 
 // Next.js route context type
 struct RouteContext {
-    std::future<{ roomId: string }> params;
+};
 
 // POST /api/rooms/[roomId]/messages - Send a message
 std::future<void> POST(Request request, RouteContext ctx);

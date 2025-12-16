@@ -1,12 +1,12 @@
-#include "elizaos/core.hpp"
-#include "elizaos/server.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
+#include "elizaos/server.hpp"
 
 namespace elizaos {
 
@@ -33,8 +33,6 @@ struct StartOptions {
 struct AgentStartConfig {
     Character character;
     AgentServer server;
-    std::optional<(runtime: IAgentRuntime) => Promise<void>> init;
-    std::optional<std::vector<(Plugin | string)>> plugins;
     std::optional<AgentStartOptions> options;
 };
 

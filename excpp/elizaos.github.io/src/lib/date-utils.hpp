@@ -1,10 +1,12 @@
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -17,6 +19,7 @@ namespace elizaos {
  * Extracts date from a title string in format "elizaos Eliza (2025-01-12)"
  * First tries to extract from parentheses, then falls back to direct date pattern matching
  */
+std::optional<std::string> extractDateFromTitle(const std::string& title);
 
 /**
  * Validates if a string is in YYYY-MM-DD format
@@ -38,20 +41,21 @@ std::string denormalizeDate(const std::string& date);
 /**
  * Extracts date from any filename containing a date pattern YYYY-MM-DD or YYYY_MM_DD
  */
+std::optional<std::string> extractDateFromFilename(const std::string& filename);
 
 /**
  * Converts a date to YYYY-MM-DD format string
  * @param date - Date object, timestamp, or date string that can be parsed by new Date()
  * @returns string in YYYY-MM-DD format
  */
-std::string toDateString(string | number | Date date);
+std::string toDateString(const std::variant<std::string, double, Date>& date);
 
 /**
  * Converts a date to UTC midnight (00:00:00.000Z)
  * @param date - Date object, timestamp, or date string that can be parsed by new Date()
  * @returns Date object set to UTC midnight
  */
-UTCDate toUTCMidnight(string | number | Date date);
+UTCDate toUTCMidnight(const std::variant<std::string, double, Date>& date);
 using IntervalType = std::variant<"day", "week", "month">;
 
 struct TimeInterval {
@@ -74,7 +78,7 @@ void getTimePeriodText(IntervalType intervalType); {
 struct DateRangeOptions {
     std::optional<std::string> after;
     std::optional<std::string> before;
-    std::optional<string | number> days;
+    std::optional<std::variant<std::string, double>> days;
     std::optional<std::string> defaultStartDate;
 };
 
@@ -105,7 +109,7 @@ DateRange calculateDateRange(DateRangeOptions options);
 
   // Sort dates if needed
 
-void formatReadableDate(string | Date date);
+void formatReadableDate(const std::variant<std::string, Date>& date);
 
 /**
  * Formats a date into a human-readable timeframe title based on interval type
@@ -113,6 +117,7 @@ void formatReadableDate(string | Date date);
  * @param intervalType - The type of interval (day, week, month)
  * @returns Formatted timeframe title
  */
+std::string formatTimeframeTitle(const std::variant<UTCDate, Date, std::string>& date, IntervalType intervalType, std::optional<std::any> formatOptions);
 
 /**
  * Converts interval type to a title form
@@ -181,5 +186,6 @@ void findAdjacentIntervals(TimeInterval currentInterval, const std::string& late
 
   // Format interval dates for the URL
 
+IntervalType getIntervalTypeFromDateRange(const std::any& dateRange);
 
 } // namespace elizaos

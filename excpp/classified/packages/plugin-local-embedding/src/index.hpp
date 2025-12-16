@@ -1,11 +1,14 @@
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -18,7 +21,7 @@ namespace elizaos {
 // Disable image processing to avoid sharp dependency
 
 struct EmbeddingState {
-    any | null; // Using any to avoid type issues with transformers.js pipeline;
+    std::optional<std::any> pipeline;
     std::string modelName;
     double dimensions;
 };
@@ -40,7 +43,7 @@ std::future<void> initializePipeline(ModelName modelName);
 /**
  * Process embedding parameters to extract text input
  */
-std::string extractTextFromParams(TextEmbeddingParams | string | null params);
+std::string extractTextFromParams(const std::variant<TextEmbeddingParams, std::string>& params);
 
 /**
  * Generate embeddings for a single text input
@@ -56,7 +59,6 @@ std::future<bool> validateEmbeddingPlugin(IAgentRuntime runtime);
  */
 
     // Pre-initialize the model
-    await initializePipeline(modelName);
 
     // Validate the plugin is working
 

@@ -1,11 +1,13 @@
-#include ".monitoring/logger.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".monitoring/logger.hpp"
 
 namespace elizaos {
 
@@ -15,31 +17,18 @@ namespace elizaos {
 
 
 class TimeSeriesAnalyzer {
-  private prophet: Prophet;
-  private lstmModel: tf.LayersModel;
+public:
+    TimeSeriesAnalyzer();
+    Promise< forecast(const std::vector<std::any>& historicalData, number = 30 horizon);
+    void catch(auto error);
+    std::future<std::vector<double>> getLSTMPredictions(const std::vector<std::any>& historicalData, double horizon);
+    void trainLSTM(const std::vector<std::any>& historicalData);
+    std::future<std::vector<double>> getARIMAPredictions(const std::vector<std::any>& historicalData, double horizon);
+    std::vector<double> ensemblePredictions(const std::vector<double>& prophetPreds, const std::vector<double>& lstmPreds, const std::vector<double>& arimaPreds);
 
-  constructor() {
-    this.prophet = new Prophet({
-      growth: 'linear',
-      changepoints: null,
-      n_changepoints: 25,
-      yearly_seasonality: 'auto',
-      weekly_seasonality: 'auto',
-      daily_seasonality: 'auto'
-    });
-  }
-
-      // Prepare data for Prophet
-
-      // Fit Prophet model
-
-      // LSTM predictions
-
-      // ARIMA predictions
-
-      // Ensemble the predictions
-
-      // Update sequence for next prediction
-
-    // Weighted average of all predictions
+private:
+    Prophet prophet_;
+    tf::LayersModel lstmModel_;
+};
+ 
 } // namespace elizaos

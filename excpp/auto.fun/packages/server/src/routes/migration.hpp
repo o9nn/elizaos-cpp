@@ -1,16 +1,16 @@
-#include ".claimFees.hpp"
-#include ".db.hpp"
-#include ".redis.hpp"
-#include ".tokenSupplyHelpers/customWallet.hpp"
-#include ".util.hpp"
-#include ".websocket-client.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".claimFees.hpp"
+#include ".db.hpp"
+#include ".redis.hpp"
+#include ".tokenSupplyHelpers/customWallet.hpp"
+#include ".util.hpp"
+#include ".websocket-client.hpp"
 
 namespace elizaos {
 
@@ -20,11 +20,8 @@ namespace elizaos {
 
 
 // middleware to check if the request is authorized
-  await next();
 
     // Create connection based on the environment setting.
-
-    // Create a wallet using the secret from process.env.
 
     // Build an Anchor provider.
 
@@ -45,7 +42,6 @@ namespace elizaos {
     // requireAuth middleware ensures user exists, but let's double-check
 
     //check if the user is the creator of the token
-    // async () => {
     // }
     // Return a success response.
 
@@ -55,8 +51,6 @@ namespace elizaos {
 
     // get the token
     // check if the user is the creator of the token
-
-    // Create a wallet using the secret from process.env.
 
     // Create connection based on the environment setting.
 

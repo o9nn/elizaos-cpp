@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -12,11 +13,10 @@ namespace elizaos {
 // Manual refinement required for production use
 
 struct ICard {
-    string | number number;
+    std::variant<std::string, double> number;
     std::string title;
     std::string description;
     std::string button;
-    std::optional<() => void> onClick;
     std::optional<bool> disabled;
 };
 

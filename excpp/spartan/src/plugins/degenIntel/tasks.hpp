@@ -1,16 +1,16 @@
-#include "elizaos/core.hpp"
-#include "tasks/birdeye.hpp"
-#include "tasks/buySignal.hpp"
-#include "tasks/sellSignal.hpp"
-#include "tasks/twitter.hpp"
-#include "tasks/twitterParser.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
+#include "tasks/birdeye.hpp"
+#include "tasks/buySignal.hpp"
+#include "tasks/sellSignal.hpp"
+#include "tasks/twitter.hpp"
+#include "tasks/twitterParser.hpp"
 
 namespace elizaos {
 
@@ -20,7 +20,6 @@ namespace elizaos {
 
 
 // let's not make it a dependency
-//import type { ITradeService } from '../../degenTrader/types';
 
 /**
  * Registers tasks for the agent to perform various Intel-related actions.
@@ -32,17 +31,14 @@ namespace elizaos {
   // first, get all tasks with tags "queue", "repeat", "degen_intel" and delete them
 
   /*
-          //await birdeye.syncTrendingTokens('base');
           // kill this task
 
           // kill this task
-          //await runtime.deleteTask(task.id);
 
   */
 
   // shouldn't plugin-solana and plugin-evm handle this?
         // kill this task
-        //await runtime.deleteTask(task.id);
 
   // Only create the Twitter sync task if the Twitter service exists
   //const twitterService = runtime.getService('twitter');
@@ -59,7 +55,6 @@ namespace elizaos {
   // enable trading stuff only if we need to
   //const tradeService = runtime.getService(ServiceTypes.DEGEN_TRADING) as unknown; //  as ITradeService
   // has to be included after degenTrader
-  //if (plugins.indexOf('degenTrader') !== -1) {
         // Check if we have some sentiment data before proceeding
           // Log the error but don't delete the task
 

@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -16,11 +16,6 @@ namespace elizaos {
  * Job status enumeration
  */
 enum JobStatus {
-  PENDING = 'pending',
-  PROCESSING = 'processing',
-  COMPLETED = 'completed',
-  FAILED = 'failed',
-  TIMEOUT = 'timeout',
 }
 
 /**
@@ -30,7 +25,6 @@ struct CreateJobRequest {
     std::optional<std::string> agentId;
     std::optional<std::string> userId;
     std::string prompt;
-    std::optional<std::unordered_map<std::string, unknown>> metadata;
     std::optional<double> timeoutMs;
 };
 
@@ -48,12 +42,10 @@ struct CreateJobResponse {
  * Job result structure
  */
 struct JobResult {
-    { message;
     std::string id;
     std::string content;
     std::string authorId;
     double createdAt;
-    std::optional<std::unordered_map<std::string, unknown>> metadata;
     double processingTimeMs;
 };
 
@@ -70,7 +62,6 @@ struct JobDetailsResponse {
     double expiresAt;
     std::optional<JobResult> result;
     std::optional<std::string> error;
-    std::optional<std::unordered_map<std::string, unknown>> metadata;
 };
 
 /**
@@ -99,7 +90,6 @@ struct Job {
     std::optional<UUID> agentResponseId;
     std::optional<JobResult> result;
     std::optional<std::string> error;
-    std::optional<std::unordered_map<std::string, unknown>> metadata;
 };
 
 

@@ -1,11 +1,12 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -121,9 +122,8 @@ namespace elizaos {
 
 // Type definitions for API requests and responses
 struct TodoApiRequest {
-    { body;
     std::optional<std::string> name;
-    std::optional<'daily' | 'one-off' | 'aspirational'> type;
+    std::optional<std::variant<'daily', 'one-off', 'aspirational'>> type;
     std::optional<double> priority;
     std::optional<std::string> dueDate;
     std::optional<bool> isUrgent;
@@ -133,15 +133,9 @@ struct TodoApiRequest {
     std::optional<bool> isCompleted;
     std::optional<std::string> completedAt;
     std::optional<std::vector<std::string>> tags;
-    std::optional<std::unordered_map<std::string, std::string>> params;
 };
 
 struct TodoApiResponse {
-    (code: number) => TodoApiResponse status;
-    (data: unknown) => void json;
-    (data: string) => void send;
-    (name: string, value: string) => void setHeader;
-    (path: string) => void sendFile;
 };
 
 

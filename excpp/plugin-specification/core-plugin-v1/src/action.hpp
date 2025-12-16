@@ -1,14 +1,14 @@
-#include "actionExample.hpp"
-#include "elizaos/core-plugin-v2.hpp"
-#include "state.hpp"
-#include "types.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "actionExample.hpp"
+#include "elizaos/core-plugin-v2.hpp"
+#include "state.hpp"
+#include "types.hpp"
 
 namespace elizaos {
 

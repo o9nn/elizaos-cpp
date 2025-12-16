@@ -1,11 +1,11 @@
-#include "readmeUtils.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "readmeUtils.hpp"
 
 namespace elizaos {
 
@@ -20,6 +20,5 @@ namespace elizaos {
  * @param username The GitHub username
  * @returns A promise resolving to wallet linking data or null
  */
-std::future<WalletLinkingData | null> getUserWalletData(const std::string& username);
 
 } // namespace elizaos

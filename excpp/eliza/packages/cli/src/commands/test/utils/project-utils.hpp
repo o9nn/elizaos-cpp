@@ -1,11 +1,12 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -32,6 +33,7 @@ DirectoryInfo getProjectType(std::optional<std::string> testPath);
  * For best results, use the specific test suite name you want to run.
  * The filter is applied case-insensitively for better user experience.
  */
+std::string processFilterName(std::optional<std::string> name);
 
 /**
  * Install plugin dependencies for testing

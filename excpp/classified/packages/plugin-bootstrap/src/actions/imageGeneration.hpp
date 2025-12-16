@@ -1,11 +1,11 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -25,8 +25,6 @@ namespace elizaos {
  *
  * This action can be used in a chain where the agent needs to visualize or illustrate a concept, emotion, or scene.
  */
-
-    await callback(responseContent);
 
 
 } // namespace elizaos

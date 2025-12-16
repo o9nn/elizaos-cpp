@@ -1,11 +1,12 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -15,10 +16,9 @@ namespace elizaos {
 
 
 struct MediaUploadParams {
-    File | Blob file;
+    std::variant<File, Blob> file;
     std::optional<std::string> filename;
     std::optional<std::string> contentType;
-    std::optional<std::unordered_map<std::string, std::any>> metadata;
 };
 
 struct MediaUploadResponse {

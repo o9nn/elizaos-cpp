@@ -1,13 +1,13 @@
-#include "env.hpp"
-#include "s3Client.hpp"
-#include "util.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "env.hpp"
+#include "s3Client.hpp"
+#include "util.hpp"
 
 namespace elizaos {
 
@@ -15,7 +15,6 @@ namespace elizaos {
 // Manual refinement required for production use
 
 
-// Removed Env import as we use process.env now
 // 
 
  // Import crypto if not already available globally in the environment
@@ -29,8 +28,6 @@ void logUploadedFile(const std::string& objectKey, const std::string& publicUrl)
 
 // Get all logged files
 void getUploadedFiles(); {
-
-// CloudFlare storage utility (using S3 interface via process.env)
 
 // Function to upload a generated image to a predictable path for a token
 

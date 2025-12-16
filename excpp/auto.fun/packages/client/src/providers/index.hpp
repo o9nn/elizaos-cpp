@@ -1,14 +1,14 @@
-#include "maintenance-provider.hpp"
-#include "sol-price-provider.hpp"
-#include "tos-provider.hpp"
-#include "wallet.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "maintenance-provider.hpp"
+#include "sol-price-provider.hpp"
+#include "tos-provider.hpp"
+#include "wallet.hpp"
 
 namespace elizaos {
 

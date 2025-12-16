@@ -1,12 +1,12 @@
-#include "containers/discrub-dialog/discrub-dialog.hpp"
-#include "theme.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "containers/discrub-dialog/discrub-dialog.hpp"
+#include "theme.hpp"
 
 namespace elizaos {
 

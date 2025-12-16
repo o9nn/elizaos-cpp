@@ -1,11 +1,12 @@
-#include ".monitoring/logger.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".monitoring/logger.hpp"
 
 namespace elizaos {
 
@@ -17,19 +18,12 @@ namespace elizaos {
 struct UserSegment {
     std::string id;
     std::string name;
-    std::unordered_map<std::string, std::any> characteristics;
     double size;
 };
 
 class UserSegmentation {
-  static async generateSegments(): Promise<UserSegment[]> {
-    return [
-      {
-        id: 'active',
-        name: 'Active Users',
-        characteristics: { activity: 'high' },
-        size: 100
-      }
-    ];
-  }
+public:
+    std::future<std::vector<UserSegment>> generateSegments();
+};
+ 
 } // namespace elizaos

@@ -1,14 +1,14 @@
-#include ".components/ContentContainer.hpp"
-#include ".components/Notification.hpp"
-#include ".components/nav-element/NavBar.hpp"
-#include ".contexts/ContextProvider.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".components/ContentContainer.hpp"
+#include ".components/Notification.hpp"
+#include ".components/nav-element/NavBar.hpp"
+#include ".contexts/ContextProvider.hpp"
 
 namespace elizaos {
 

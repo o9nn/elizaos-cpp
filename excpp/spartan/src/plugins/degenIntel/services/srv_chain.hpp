@@ -1,12 +1,14 @@
-#include ".utils.hpp"
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".utils.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -15,32 +17,18 @@ namespace elizaos {
 
 
 
-class TradeChainService extends Service {
-  private isRunning = false;
-  private registry: Record<number, any> = {};
-
-  // config (key/string)
-
-  /**
-   * Registers a trading provider with the service.
-   * @param {any} provider - The provider to register
-   * @returns {Promise<number>} The ID assigned to the registered provider
-   */
-
-    // maybe we should do this in registerChain
-    //console.log('ky', ky)
-
-  /**
-   * Start the scenario service with the given runtime.
-   * @param {IAgentRuntime} runtime - The agent runtime
-   * @returns {Promise<ScenarioService>} - The started scenario service
-   */
-  /**
-   * Stops the Scenario service associated with the given runtime.
-   *
-   * @param {IAgentRuntime} runtime The runtime to stop the service for.
-   * @throws {Error} When the Scenario service is not found.
-   */
+class TradeChainService {
+public:
+    TradeChainService(IAgentRuntime public runtime);
+    std::future<double> registerChain(const std::any& provider);
+    void listActiveChains();
+    void makeKeypair(auto regName);
+    void start(IAgentRuntime runtime);
+    void stop(IAgentRuntime runtime);
+    std::future<void> start();
+    std::future<void> stop();
+    bool isServiceRunning();
+};
 
 
 } // namespace elizaos

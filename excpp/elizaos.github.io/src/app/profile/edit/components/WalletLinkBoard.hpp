@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -16,7 +16,7 @@ namespace elizaos {
 struct WalletLinkBoardProps {
     std::string userLogin;
     std::string walletSection;
-    string | null readmeContent;
+    std::optional<std::string> readmeContent;
     std::string defaultBranch;
 };
 

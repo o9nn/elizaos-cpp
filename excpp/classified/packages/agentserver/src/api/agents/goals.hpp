@@ -1,12 +1,13 @@
-#include ".shared/response-utils.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include ".shared/response-utils.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -19,11 +20,10 @@ struct Goal {
     std::string id;
     std::string name;
     std::string description;
-    'active' | 'completed' | 'paused' status;
+    std::variant<'active', 'completed', 'paused'> status;
     double progress;
     std::string createdAt;
     std::string updatedAt;
-    std::optional<std::unordered_map<std::string, std::any>> metadata;
 };
 
 /**

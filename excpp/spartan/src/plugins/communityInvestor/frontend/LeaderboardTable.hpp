@@ -1,15 +1,15 @@
-#include "ui/badge.hpp"
-#include "ui/button.hpp"
-#include "ui/card.hpp"
-#include "ui/table.hpp"
-#include "utils.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "ui/badge.hpp"
+#include "ui/button.hpp"
+#include "ui/card.hpp"
+#include "ui/table.hpp"
+#include "utils.hpp"
 
 namespace elizaos {
 

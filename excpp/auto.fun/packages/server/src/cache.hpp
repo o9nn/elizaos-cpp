@@ -1,13 +1,16 @@
-#include "db.hpp"
-#include "redis.hpp"
-#include "util.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "db.hpp"
+#include "redis.hpp"
+#include "util.hpp"
 
 namespace elizaos {
 
@@ -21,57 +24,22 @@ namespace elizaos {
  * Simplifies the architecture by avoiding additional services like KV
  */
 class CacheService {
-  private db: ReturnType<typeof getDB>;
-  private redisCache!: RedisCacheService;
+public:
+    CacheService();
+    void onModuleStart();
+    void initialize();
+    std::variant<Promise<number, null>> getSolPrice();
+    std::future<void> setSolPrice(double price, number = 30 ttlSeconds);
+    std::variant<Promise<number, null>> getTokenPrice(const std::string& mint);
+    std::future<void> setTokenPrice(const std::string& mint, double price, number = 300 ttlSeconds);
+    std::future<void> setMetadata(const std::string& key, const std::any& data, number = 3600 ttlSeconds);
+    void if(auto cachedData.length > 0);
+    void catch(auto error);
+    std::future<void> cleanupOldCacheEntries(const std::string& type, const std::string& symbol);
 
-  constructor() {
-    this.db = getDB();
-
-  }
-
-  /**
-   * Get SOL price from cache
-   */
-
-  /**
-   * Store SOL price in cache
-   * @param price SOL price in USD
-   * @param ttlSeconds How long the cache should live (in seconds)
-   */
-
-  /**
-   * Get token price from cache
-   */
-
-        return parseFloat(cachedPrice[0].price);
-
-  /**
-   * Store token price in cache
-   */
-
-      // Clean up old cache entries
-
-  /**
-   * Store any metadata object in cache
-   */
-
-      // Serialize data with BigInt handling
-
-      // Clean up old cache entries
-
-  /**
-   * Get metadata from cache
-   */
-
-          // Parse the data without special handling for now
-          // BigInt values will be returned as strings
-
-  /**
-   * Delete expired cache entries to keep the DB size manageable
-   */
-      // Delete expired entries
-
-      // Keep only the N most recent entries
+private:
+    ReturnType<typeof getDB> db_;
+};
 
 
 } // namespace elizaos

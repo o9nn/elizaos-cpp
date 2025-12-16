@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -31,5 +31,6 @@ struct AgentTemplate {
 /**
  * Get a template by its ID
  */
+AgentTemplate getTemplateById(const std::string& id);
 
 } // namespace elizaos

@@ -1,12 +1,14 @@
-#include "elizaos/core.hpp"
-#include "services/componentService.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
+#include "services/componentService.hpp"
 
 namespace elizaos {
 
@@ -19,7 +21,8 @@ namespace elizaos {
 struct UserPointsData {
     double currentPoints;
     std::optional<std::string> lastPointUpdateReason;
-    std::optional<{ timestamp: number; points: number; reason: string }[]; // Optional history> history;
+    double points;
+};
 
 // Define the component structure
 
@@ -27,7 +30,7 @@ struct UserPointsData {
  * Calculates points based on task type and completion status.
  * Needs refinement based on specific point values.
  */
-double calculatePoints(Task task, "onTime" | "late" | "daily" | "streakBonus" completionStatus);
+double calculatePoints(Task task, const std::variant<"onTime", "late", "daily", "streakBonus">& completionStatus);
 
 /**
  * Retrieves the current points for a given entity.

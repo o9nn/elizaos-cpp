@@ -1,11 +1,11 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -15,16 +15,12 @@ namespace elizaos {
 
 
 class TestTimeoutManager {
-  private static instance: TestTimeoutManager;
-  private timeouts: Map<string, NodeJS.Timeout> = new Map();
-  private testStartTimes: Map<string, number> = new Map();
-
-  static getInstance(): TestTimeoutManager {
-    if (!TestTimeoutManager.instance) {
-      TestTimeoutManager.instance = new TestTimeoutManager();
-    }
-    return TestTimeoutManager.instance;
-  }
+public:
+    TestTimeoutManager getInstance();
+    void startTimeout(const std::string& testName, number = 30000 duration);
+    void clearTimeout(const std::string& testName);
+    void clearAll();
+};
 
 // Export singleton
 

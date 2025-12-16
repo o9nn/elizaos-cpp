@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -14,7 +15,7 @@ namespace elizaos {
 
 
 struct WalletDataResponse {
-    WalletLinkingData | null walletData;
+    std::optional<WalletLinkingData> walletData;
     bool profileRepoExists;
 };
 

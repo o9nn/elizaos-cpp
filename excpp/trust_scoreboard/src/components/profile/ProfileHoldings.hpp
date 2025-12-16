@@ -1,11 +1,11 @@
-#include "ProfileHoldings.module.css.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "ProfileHoldings.module.css.hpp"
 
 namespace elizaos {
 

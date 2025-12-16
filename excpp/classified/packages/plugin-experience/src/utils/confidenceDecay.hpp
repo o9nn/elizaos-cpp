@@ -1,11 +1,11 @@
-#include ".types.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".types.hpp"
 
 namespace elizaos {
 
@@ -15,49 +15,24 @@ namespace elizaos {
 
 
 struct DecayConfig {
-    number; // Time in milliseconds for confidence to decay by half halfLife;
-    number; // Minimum confidence level (never decays below this) minConfidence;
-    number; // Time before decay starts (grace period) decayStartDelay;
+    double halfLife;
+    double minConfidence;
+    double decayStartDelay;
 };
 
 class ConfidenceDecayManager {
-  private config: DecayConfig;
+public:
+    ConfidenceDecayManager(const std::optional<DecayConfig>& config);
+    double getDecayedConfidence(Experience experience);
+    std::vector<Experience> getExperiencesNeedingReinforcement(const std::vector<Experience>& experiences, number = 0::3 threshold);
+    double calculateReinforcementBoost(Experience experience, number = 1::0 validationStrength);
+    DecayConfig getDomainSpecificDecay(Experience experience);
+    Array< getConfidenceTrend(Experience experience, number = 10 points);
+    void for(auto let i = 0; i < points; i++);
 
-  constructor(config: Partial<DecayConfig> = {}) {
-    this.config = { ...DEFAULT_DECAY_CONFIG, ...config };
-  }
-
-  /**
-   * Calculate the decayed confidence for an experience
-   */
-
-    // No decay during grace period
-
-    // Calculate decay based on half-life
-
-    // Apply decay but respect minimum
-
-  /**
-   * Get experiences that need reinforcement (low confidence due to decay)
-   */
-
-  /**
-   * Calculate reinforcement boost when an experience is validated
-   */
-
-  /**
-   * Adjust decay rate based on experience type and domain
-   */
-
-    // Facts and discoveries decay slower
-
-    // Warnings and corrections decay slower (important to remember)
-
-    // Domain-specific adjustments
-
-  /**
-   * Get confidence trend for an experience over time
-   */
+private:
+    DecayConfig config_;
+};
 
 
 } // namespace elizaos

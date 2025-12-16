@@ -1,14 +1,14 @@
-#include ".generateTimeIntervals.hpp"
-#include ".getSelectedRepositories.hpp"
-#include ".types.hpp"
-#include "exportRepoStats.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".generateTimeIntervals.hpp"
+#include ".getSelectedRepositories.hpp"
+#include ".types.hpp"
+#include "exportRepoStats.hpp"
 
 namespace elizaos {
 

@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -48,25 +48,19 @@ struct GeneratePluginOptions {
  * Plugin registry interfaces
  */
 struct PluginRegistryInfo {
-    std::optional<{> git;
     std::string repo;
-    std::optional<{> v0;
     std::string version;
     std::string branch;
-    std::optional<{> v1;
     std::string version;
     std::string branch;
-    std::optional<{> npm;
     std::string repo;
     std::optional<std::string> v0;
     std::optional<std::string> v1;
-    { supports;
     bool v0;
     bool v1;
 };
 
 struct PluginRegistry {
-    std::unordered_map<std::string, PluginRegistryInfo> registry;
 };
 
 /**

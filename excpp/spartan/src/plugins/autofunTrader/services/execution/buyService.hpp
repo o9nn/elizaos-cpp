@@ -1,3 +1,13 @@
+#pragma once
+#include <any>
+#include <functional>
+#include <future>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <variant>
+#include <vector>
 #include "...degenTrader/utils/wallet.hpp"
 #include "..idl/autofun.json.hpp"
 #include "..types.hpp"
@@ -11,13 +21,6 @@
 #include ".validation/TokenValidationService.hpp"
 #include ".walletService.hpp"
 #include "elizaos/core.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -30,7 +33,7 @@ struct IBuySignalOutput {
     std::string recommended_buy;
     std::string recommend_buy_address;
     std::string reason;
-    string | number buy_amount;
+    std::variant<std::string, double> buy_amount;
 };
 
 struct ConfigAccount {
@@ -61,74 +64,22 @@ double calculateAmountOutSell(double reserveLamport, double amount, double _toke
 // Only choose a token that occurs in both the Trending Tokens list as well as the Sentiment analysis. This ensures we have the proper token address.
 // The sentiment score has a range of -100 to 100, with -100 indicating extreme negativity and 100 indicating extreme positiveness.
 
-class BuyService extends BaseTradeService {
-  private validationService: TokenValidationService;
-  private calculationService: TradeCalculationService;
-  private tradeMemoryService: TradeMemoryService;
+class BuyService {
+public:
+    BuyService(IAgentRuntime runtime, WalletService walletService, DataService dataService, AnalyticsService analyticsService, TradeMemoryService tradeMemoryService);
+    std::future<void> initialize();
+    std::future<void> stop();
+    void generateSignal();
+    void autofunBuy(auto wallet, auto signal, auto slippageBps);
+    std::future<void> handleBuySignal(const std::any& params);
+    std::future<void> updateExpectedOutAmount(BuySignalMessage signal);
+    void executeBuy(BuySignalMessage signal);
 
-  constructor(
-    runtime: IAgentRuntime,
-    walletService: WalletService,
-    dataService: DataService,
-    analyticsService: AnalyticsService,
-    tradeMemoryService: TradeMemoryService
-  ) {
-    super(runtime, walletService, dataService, analyticsService);
-    this.validationService = new TokenValidationService(
-      runtime,
-      walletService,
-      dataService,
-      analyticsService
-    );
-    this.calculationService = new TradeCalculationService(
-      runtime,
-      walletService,
-      dataService,
-      analyticsService
-    );
-    this.tradeMemoryService = tradeMemoryService;
-  }
-
-    // Cleanup if needed
-
-    // get data from plugin-auto
-    //const tradeService = runtime.getService(ServiceTypes.AUTOFUN_TRADING)
-    // or make call ourself
-
-    /*
-*/
-
-    // inject into prompt
-
-    // get balance from plugin-solana
-
-    // run llm call
-    // Retry if missing required fields
-    // recommended_buy, recommend_buy_address, reason, buy_amount
-      // could use OBJECT_LARGE but this expects a string return type rn
-      // not sure where OBJECT_LARGE does it's parsing...
-
-    //const walletBalance = await this.walletService.getBalance();
-
-    // what type of token is this, prebonded or post-bonded?
-
-    //console.log('buy params', params);
-
-    //console.log('token', token)
-
-    // for anchor
-
-    // Use the imported IDL for typing, cast to any to bypass potential strict type mismatch
-
-    // is this right?
-
-    //const walletKeypair = getWalletKeypair(runtime);
-
-    // Get fresh blockhash with processed commitment for speed
-
-    // Send transaction
-
-    //signature = await wallet.sendTransaction(versionedTx, connection);
+private:
+    TokenValidationService validationService_;
+    TradeCalculationService calculationService_;
+    TradeMemoryService tradeMemoryService_;
+};
 
 
 } // namespace elizaos

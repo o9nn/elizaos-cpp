@@ -1,11 +1,12 @@
-#include "markdown.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "markdown.hpp"
 
 namespace elizaos {
 
@@ -17,7 +18,7 @@ namespace elizaos {
 struct AnimatedMarkdownProps {
     std::string children;
     std::optional<std::string> className;
-    std::optional<'user' | 'agent'> variant;
+    std::optional<std::variant<'user', 'agent'>> variant;
     std::optional<bool> shouldAnimate;
     std::optional<std::string> messageId;
 };

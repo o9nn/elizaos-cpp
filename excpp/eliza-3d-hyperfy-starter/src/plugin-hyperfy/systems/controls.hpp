@@ -1,13 +1,16 @@
-#include ".hyperfy/src/core/extras/Vector3Enhanced.js.hpp"
-#include ".hyperfy/src/core/systems/System.js.hpp"
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include ".hyperfy/src/core/extras/Vector3Enhanced.js.hpp"
+#include ".hyperfy/src/core/systems/System.js.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -21,85 +24,55 @@ namespace elizaos {
 void createButtonState();
 
 class ControlsToken {
-  private _isAborted = false;
-  abort() { this._isAborted = true; }
+public:
+    void abort();
+    void aborted() const;
+};
 
-class AgentControls extends System {
-  // Define expected control properties directly on the instance
-  scrollDelta = { value: 0 };
+class AgentControls {
+public:
+    AgentControls(const std::any& world);
+    void setKey(const std::string& keyName, bool isDown);
+    void postLateUpdate();
+    void startRandomWalk(number = RANDOM_WALK_DEFAULT_INTERVAL interval, number = RANDOM_WALK_DEFAULT_MAX_DISTANCE maxDistance, number = 30000 duration);
+    std::future<void> followEntity(const std::string& entityId, number = FOLLOW_STOP_DISTANCE stopDistance);
+    std::future<void> goto(double x, double z);
+    std::future<void> rotateTo(const std::variant<'front', 'back', 'left', 'right'>& direction, number = 500 duration);
+    void stopRandomWalk();
+    void stopNavigation(string = "commanded" reason);
+    void stopRotation();
+    void stopAllActions(string = "stopAllActions called" reason);
+    bool getIsNavigating();
+    bool getIsWalkingRandomly();
+    bool _validatePlayerState(const std::string& caller);
+    void createCamera(auto self);
+    void bind(const std::any& options);
+    void release();
+    void setActions();
 
-  // --- Navigation State --- >
-  // <------------------------
-
-  // Method for the agent script to set a key state
-      // If the key doesn't exist or isn't a button state, log a warning or initialize
-
-    // Check if the state actually changed to avoid redundant updates
-
-    // Optional: Log the key press/release
-    // if (changed) {
-    //     logger.debug(`[Controls] setKey: ${keyName} = ${isDown}`);
-    // }
-
-  // Reset pressed/released flags at the end of the frame
-  // This is important for detecting single presses/releases
-    // We don't run navigationTick here, it runs on its own interval
-
-  // --- Random Walk Methods --- >
-
-  /**
-   * Starts the agent walking to random nearby points.
-   */
-
-        // Stop if duration expired and still same walk token
-
-  // --- Navigation Methods --- >
-
-  /**
-   * Navigates toward an entity (by ID) until within stop distance.
-   */
-
-  /**
-   * Starts navigating the agent towards the target X, Z coordinates.
-   */
-
-      // --- Stuck Detection ---
-
-        // Face toward target
-  
-      // Simulate movement
-  
-      await tickDelay(CONTROLS_TICK_INTERVAL);
-
-    // Determine target quaternion
-
-      await tickDelay(CONTROLS_TICK_INTERVAL);
-
-   /**
-   * Stops the random walk process.
-   */
-
-   /**
-   * Stops the current navigation process AND random walk if active.
-   */
-
-        // Release movement keys
-
-  /**
-   * Returns whether the agent is currently navigating towards a target.
-   */
-
-  /** Helper to check if player and base position/quaternion are valid */
-       // --- Enhanced Checks ---
-
-       // Check if quaternion is normalized (length approx 1)
-            // Attempt to normalize in place if possible, or log warning
-
-       // ---------------------
-
-    void bindRotations(auto quaternion, auto euler);
-
-  // Dummy methods
+private:
+    std::any keyW_;
+    std::any keyA_;
+    std::any keyS_;
+    std::any keyD_;
+    std::any space_;
+    std::any shiftLeft_;
+    std::any shiftRight_;
+    std::any controlLeft_;
+    std::any keyC_;
+    std::any keyF_;
+    std::any keyE_;
+    std::any arrowUp_;
+    std::any arrowDown_;
+    std::any arrowLeft_;
+    std::any arrowRight_;
+    std::any touchA_;
+    std::any touchB_;
+    std::any xrLeftBtn1_;
+    std::any xrLeftBtn2_;
+    std::any xrRightBtn1_;
+    std::any xrRightBtn2_;
+};
 
 
 } // namespace elizaos

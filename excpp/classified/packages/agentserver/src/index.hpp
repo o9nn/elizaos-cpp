@@ -1,3 +1,11 @@
+#pragma once
+#include <functional>
+#include <future>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include "character.hpp"
 #include "elizaos/core.hpp"
 #include "elizaos/plugin-autocoder.hpp"
@@ -20,13 +28,6 @@
 #include "services/capabilityProgressionService.hpp"
 #include "services/progressionTracker.hpp"
 #include "services/progressivePluginService.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 

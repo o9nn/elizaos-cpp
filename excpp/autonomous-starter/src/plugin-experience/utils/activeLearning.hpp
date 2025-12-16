@@ -1,13 +1,13 @@
-#include ".types.hpp"
-#include "confidenceDecay.hpp"
-#include "experienceRelationships.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".types.hpp"
+#include "confidenceDecay.hpp"
+#include "experienceRelationships.hpp"
 
 namespace elizaos {
 
@@ -35,49 +35,23 @@ struct LearningGap {
 };
 
 class ActiveLearningManager {
-  private relationshipManager: ExperienceRelationshipManager;
-  private decayManager: ConfidenceDecayManager;
+public:
+    ActiveLearningManager();
+    std::vector<LearningGap> identifyLearningGaps(const std::vector<Experience>& experiences);
+    std::optional<Experiment> suggestNextExperiment(const std::vector<Experience>& experiences);
+    std::unordered_map<std::string, std::vector<Experience>> groupByDomain(const std::vector<Experience>& experiences);
+    double averageConfidence(const std::vector<Experience>& experiences);
+    std::vector<[Experience, Experience]> findContradictions(const std::vector<Experience>& experiences);
+    std::vector<Experience> findUnvalidatedHypotheses(const std::vector<Experience>& experiences);
+    std::vector<Experiment> generateExperiments(const std::vector<Experience>& lowConfidenceExperiences, const std::string& domain);
+    std::vector<Experiment> generateContradictionExperiments(Array<[Experience contradictions, auto Experience]>, const std::string& domain);
+    std::vector<Experiment> generateValidationExperiments(const std::vector<Experience>& unvalidatedHypotheses, const std::string& domain);
+    std::vector<Experiment> generateLearningCurriculum(const std::vector<Experience>& experiences, std::optional<std::string> targetDomain);
 
-  constructor() {
-    this.relationshipManager = new ExperienceRelationshipManager();
-    this.decayManager = new ConfidenceDecayManager();
-  }
+private:
+    ExperienceRelationshipManager relationshipManager_;
+    ConfidenceDecayManager decayManager_;
+};
 
-  /**
-   * Identify areas where the agent needs more experience
-   */
-
-    // Group experiences by domain
-
-    // Analyze each domain
-      // Check for low confidence areas
-
-      // Check for contradictions
-
-      // Check for old hypotheses that haven't been validated
-
-  /**
-   * Suggest experiments to fill learning gaps
-   */
-
-    // Get the highest priority gap
-
-    // Return the highest priority experiment from that gap
-
-        // Same action, different outcome
-
-      // Check if there's a validation experience
-
-  /**
-   * Generate a learning curriculum based on current knowledge
-   */
-
-    // Start with basic exploration if few experiences
-
-      // Suggest exploratory experiments
-
-    // Add experiments to resolve uncertainties
-
-    // Sort by priority
 
 } // namespace elizaos

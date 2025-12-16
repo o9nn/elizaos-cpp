@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -23,18 +23,12 @@ struct Flake8Error {
     std::string message;
 };
 
-class Flake8ErrorClass implements Flake8Error {
-  constructor(
-    public file: string,
-    public line: number,
-    public column: number,
-    public message: string,
-  ) {}
-
-  /**
-   * Parse a flake8 error line and create a Flake8Error object
-   */
-    // Parse format: "file.py:12:41: E999 SyntaxError: invalid syntax"
+class Flake8ErrorClass {
+public:
+    Flake8ErrorClass(const std::string& public file, double public line, double public column, const std::string& public message);
+    Flake8ErrorClass fromLine(const std::string& line);
+    std::string toString();
+};
 
 /**
  * Format flake8 output, filtering out errors that existed before

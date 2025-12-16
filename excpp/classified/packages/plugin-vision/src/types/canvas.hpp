@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -12,26 +12,30 @@ namespace elizaos {
 // Manual refinement required for production use
 
   class Canvas {
-    constructor(width: number, height: number);
-    getContext(contextType: '2d'): CanvasRenderingContext2D;
-    width: number;
-    height: number;
-  }
+public:
+
+private:
+    double width_;
+    double height_;
+};
 
   class Image {
-    src: string;
-    width: number;
-    height: number;
-    onload: () => void;
-    onerror: (err: Error) => void;
-  }
+public:
+
+private:
+    std::string src_;
+    double width_;
+    double height_;
+};
 
   class ImageData {
-    constructor(data: Uint8ClampedArray, width: number, height: number);
-    data: Uint8ClampedArray;
-    width: number;
-    height: number;
-  }
+public:
+
+private:
+    Uint8ClampedArray data_;
+    double width_;
+    double height_;
+};
 
   struct CanvasRenderingContext2D {
 };

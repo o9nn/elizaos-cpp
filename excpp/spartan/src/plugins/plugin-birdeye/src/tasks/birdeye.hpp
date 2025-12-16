@@ -1,11 +1,14 @@
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -70,44 +73,10 @@ struct Portfolio {
  */
 std::string makeBulletpointList(const std::vector<std::string>& array);
 
-      // First get data from Birdeye
-
-      //console.log('birdeyeData', resp)
-
-      //console.log('birdeyeData', birdeyeData)
-
-      //console.log('intel/be/syncWalletHistory - birdeyeData', birdeyeData)
-
-      // Convert Birdeye data to our transaction format
-
-      //console.log('intel/be/syncWalletHistory - transactions', transactions)
-
-      // Then try to get cached transactions
-        // FIXME: scope to solana and wallet
-          // Add cached transactions that don't exist in Birdeye data
-        // If cache fails, continue with just Birdeye data
-
-      // ensure all dates are of type Date for sort
-
-      // Sort transactions by blockTime descending (newest first)
-
-      // Try to update cache, but don't fail if it doesn't work
-
-      // Return empty array if everything fails
-
-    /** Get entire portfolio */
-
-    //console.log('portfolio data', data)
-
-    // maybe let solana or birdeye plugin handle this
-
-      // Get existing tokens
-
-      /** Fetch top 100 in batches of 20 (which is the limit) */
-        //console.log('trending', resp)
-
-        // Add extra delay
-      //console.log('trending tokens', tokens)
+    void syncWalletHistory();
+    void syncWalletPortfolio();
+    void syncWallet();
+    std::future<bool> syncTrendingTokens(const std::variant<'solana', 'base'>& chain);
 
 
 } // namespace elizaos

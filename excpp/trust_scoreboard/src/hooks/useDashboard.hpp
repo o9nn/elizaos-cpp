@@ -1,11 +1,11 @@
-#include ".utils/axios.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".utils/axios.hpp"
 
 namespace elizaos {
 

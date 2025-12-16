@@ -1,13 +1,14 @@
-#include "db.hpp"
-#include "mcap.hpp"
-#include "util.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "db.hpp"
+#include "mcap.hpp"
+#include "util.hpp"
 
 namespace elizaos {
 
@@ -27,15 +28,14 @@ namespace elizaos {
 std::future<Response> fetchWithTimeout(const std::string& resource, std::optional<RequestInit & { timeout: number } = {}> options);
 
 // Format numbers nicely
-std::string formatCurrency(number | null | undefined value, number = 2 decimals);
+std::string formatCurrency(const std::optional<double>& value, number = 2 decimals);
 
-std::string formatMarketCap(number | null | undefined value);
+std::string formatMarketCap(const std::optional<double>& value);
 
 // --- Main Generation Function ---
 
 // Function to safely load the logo buffer - REMOVED as it's no longer used
 /*
-std::future<Buffer | null> loadLogoBuffer(const std::string& logoPath);
 */
 
 std::future<Buffer> generateOgImage(const std::string& mint); 

@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -12,8 +13,6 @@ namespace elizaos {
 // Manual refinement required for production use
 
 
-
-// ESM/CJS compatibility: import as default then destructure
 
 std::future<void> main();
 

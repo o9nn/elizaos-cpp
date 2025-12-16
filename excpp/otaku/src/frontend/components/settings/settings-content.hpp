@@ -1,14 +1,14 @@
-#include "notification-settings.hpp"
-#include "preferences-settings.hpp"
-#include "profile-settings.hpp"
-#include "security-settings.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "notification-settings.hpp"
+#include "preferences-settings.hpp"
+#include "profile-settings.hpp"
+#include "security-settings.hpp"
 
 namespace elizaos {
 

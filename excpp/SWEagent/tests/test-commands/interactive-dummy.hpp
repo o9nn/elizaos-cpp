@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -17,18 +17,16 @@ namespace elizaos {
  */
 
 class InteractiveDummyCommand {
-  private static readonly PROMPT = '(dummy) ';
-  private rl: readline.Interface;
+public:
+    InteractiveDummyCommand();
+    void start();
+    void send(const std::string& input);
+    void stop();
+    void run();
 
-  constructor() {
-    this.rl = readline.createInterface({
-      input: process.stdin,
-      output: process.stdout,
-      prompt: InteractiveDummyCommand.PROMPT,
-    });
-  }
-
-    // Simulate processing delay
+private:
+    readline::Interface rl_;
+};
 
 // Run if called directly
 

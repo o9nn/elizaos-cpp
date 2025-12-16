@@ -1,3 +1,12 @@
+#pragma once
+#include <functional>
+#include <future>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <variant>
+#include <vector>
 #include "chart.hpp"
 #include "db.hpp"
 #include "externalToken.hpp"
@@ -9,13 +18,6 @@
 #include "tokenSupplyHelpers.hpp"
 #include "util.hpp"
 #include "websocket-client.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -39,8 +41,6 @@ using HandlerResult = std::variant<ProcessResult, nullptr>;
 std::future<ProcessResult> processTransactionLogs(const std::vector<std::string>& logs, const std::string& signature, std::optional<WebSocketClient> wsClient);
 
 std::future<HandlerResult> handleNewToken(const std::vector<std::string>& logs, const std::string& signature, WebSocketClient wsClient);
-
-std::future<HandlerResult | null> handleSwap(const std::vector<std::string>& logs, const std::string& signature, WebSocketClient wsClient);
 
 std::future<HandlerResult> handleCurveComplete(const std::vector<std::string>& logs, const std::string& signature, WebSocketClient wsClient);
 

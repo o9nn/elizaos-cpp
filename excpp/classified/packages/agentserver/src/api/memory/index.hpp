@@ -1,13 +1,13 @@
-#include "agents.hpp"
-#include "groups.hpp"
-#include "rooms.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "agents.hpp"
+#include "groups.hpp"
+#include "rooms.hpp"
 
 namespace elizaos {
 

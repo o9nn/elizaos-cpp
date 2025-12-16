@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -22,7 +23,7 @@ std::future<void> POST(NextRequest request);
 /**
  * Sync EVM token registration immediately (Base or BSC)
  */
-std::future<void> syncEvmToken(const std::string& transactionHash, string | undefined blockNumber, const std::string& chain);
+std::future<void> syncEvmToken(const std::string& transactionHash, const std::string& blockNumber, const std::string& chain);
 
 /**
  * Sync Solana token registration immediately

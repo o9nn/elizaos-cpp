@@ -1,12 +1,12 @@
-#include "skeleton-image.hpp"
-#include "swap/TxToast.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "skeleton-image.hpp"
+#include "swap/TxToast.hpp"
 
 namespace elizaos {
 

@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -32,7 +32,6 @@ namespace elizaos {
 // Import commands.js using ES2015 syntax:
 
 // Alternatively you can use CommonJS syntax:
-// require('./commands')
 
 // Hide fetch/XHR requests from command log to reduce noise
 

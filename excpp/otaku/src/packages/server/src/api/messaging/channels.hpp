@@ -1,15 +1,15 @@
-#include "..bus.hpp"
-#include "..middleware.hpp"
-#include "..utils/media-transformer.hpp"
-#include ".shared/constants.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "..bus.hpp"
+#include "..middleware.hpp"
+#include "..utils/media-transformer.hpp"
+#include ".shared/constants.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 

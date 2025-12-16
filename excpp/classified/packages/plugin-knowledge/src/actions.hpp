@@ -1,13 +1,13 @@
-#include "elizaos/core.hpp"
-#include "service.ts.hpp"
-#include "types.ts.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
+#include "service.ts.hpp"
+#include "types.ts.hpp"
 
 namespace elizaos {
 
@@ -32,8 +32,6 @@ namespace elizaos {
 
         // Check if file exists
 
-            await callback(response);
-
         // Read file
 
         // Determine content type
@@ -44,15 +42,9 @@ namespace elizaos {
 
         // Process direct text content
 
-            await callback(response);
-
         // Prepare knowledge options for text
 
         // Process the text
-
-        await callback(response);
-
-        await callback(errorResponse);
 
 /**
  * Action to search the knowledge base
@@ -64,17 +56,11 @@ namespace elizaos {
 
       // Extract search query
 
-          await callback(response);
-
       // Create search message
 
       // Search knowledge
 
         // Format results
-
-        await callback(response);
-
-        await callback(errorResponse);
 
 // Export all actions
 

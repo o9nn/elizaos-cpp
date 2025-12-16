@@ -1,3 +1,11 @@
+#pragma once
+#include <functional>
+#include <future>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include ".types.hpp"
 #include ".utils/config-utils.hpp"
 #include ".utils/dependency-resolver.hpp"
@@ -5,13 +13,6 @@
 #include "elizaos/core.hpp"
 #include "elizaos/plugin-sql.hpp"
 #include "elizaos/server.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -27,17 +28,12 @@ namespace elizaos {
  */
 
   // Handle secrets for character configuration
-    await setDefaultSecretsFromEnv(character);
 
   // Type-cast to ensure compatibility with local types
 
   // Load all requested plugins
 
   // Resolve dependencies and get final plugin list
-
-      await init(runtime);
-
-  await initWrapper(runtime);
 
   // Discover and run plugin schema migrations
 

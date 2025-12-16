@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -36,8 +37,8 @@ struct TodoData {
     UUID entityId;
     std::string name;
     std::optional<std::string> description;
-    'one-off' | 'daily' type;
-    number; // 1-5, with 1 being highest priority priority;
+    std::variant<'one-off', 'daily'> type;
+    double priority;
     bool isUrgent;
     bool isCompleted;
     std::optional<Date> dueDate;
@@ -55,7 +56,7 @@ struct CreateTodoInput {
     UUID entityId;
     std::string name;
     std::optional<std::string> description;
-    'one-off' | 'daily' type;
+    std::variant<'one-off', 'daily'> type;
     std::optional<double> priority;
     std::optional<bool> isUrgent;
     std::optional<Date> dueDate;
@@ -66,7 +67,7 @@ struct CreateTodoInput {
 struct UpdateTodoInput {
     std::optional<std::string> name;
     std::optional<std::string> description;
-    std::optional<'one-off' | 'daily'> type;
+    std::optional<std::variant<'one-off', 'daily'>> type;
     std::optional<double> priority;
     std::optional<bool> isUrgent;
     std::optional<bool> isCompleted;

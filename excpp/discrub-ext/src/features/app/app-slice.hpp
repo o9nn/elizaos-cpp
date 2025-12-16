@@ -1,3 +1,10 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include "..app/store.hpp"
 #include "..classes/message.hpp"
 #include "..enum/discrub-setting.hpp"
@@ -5,13 +12,6 @@
 #include "..enum/sort-direction.hpp"
 #include "..utils.hpp"
 #include "app-types.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 

@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -86,17 +87,8 @@ struct ServiceClassMap {
 /**
  * Client instance
  */
-  /** Runtime instance */
-
-  /** Service type */
-
-  /** Service name */
-
-  /** Service configuration */
-
-  /** Start service connection */
-
-  /** Stop service connection */
+    std::future<void> stop();
+    std::future<unknown> stop(IAgentRuntime _runtime);
 
 /**
  * Generic service interface that provides better type checking for services

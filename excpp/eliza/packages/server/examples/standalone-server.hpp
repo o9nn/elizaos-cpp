@@ -1,12 +1,13 @@
-#include "elizaos/core.hpp"
-#include "elizaos/server.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
+#include "elizaos/server.hpp"
 
 namespace elizaos {
 
@@ -23,7 +24,6 @@ namespace elizaos {
 // Custom middleware example
 
 // Server configuration
-  // postgresUrl: process.env.DATABASE_URL, // Optional PostgreSQL
 
 std::future<void> createStandaloneServer();
 

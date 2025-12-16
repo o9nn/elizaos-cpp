@@ -1,14 +1,14 @@
-#include "actions/server-start.hpp"
-#include "elizaos/core.hpp"
-#include "types.hpp"
-#include "utils/config-utils.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "actions/server-start.hpp"
+#include "elizaos/core.hpp"
+#include "types.hpp"
+#include "utils/config-utils.hpp"
 
 namespace elizaos {
 
@@ -17,9 +17,7 @@ namespace elizaos {
 
 
 
-    await displayBanner();
       // Load env config first before any character loading
-      await loadEnvConfig();
 
       // Setup proper module resolution environment variables
       // This ensures consistent plugin loading between dev and start commands
@@ -29,7 +27,6 @@ namespace elizaos {
       // Build the project first (unless it's a monorepo)
 
           // Use buildProject function with proper UI feedback and error handling
-          await buildProject(cwd, false);
 
         // Load @elizaos/server module for character loading
 
@@ -41,8 +38,6 @@ namespace elizaos {
           // except those explicitly detected as non-ElizaOS (covers projects, plugins, monorepos, etc.)
 
               // Log loaded agent names
-
-      await startAgents({ ...options, characters, projectAgents });
 
 // Re-for backward compatibility
 * from './actions/agent-start';

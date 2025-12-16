@@ -1,11 +1,13 @@
-#include "AIService/generators/FullDocumentationGenerator.js.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "AIService/generators/FullDocumentationGenerator.js.hpp"
 
 namespace elizaos {
 
@@ -22,33 +24,14 @@ namespace elizaos {
  */
 
 class PluginDocumentationGenerator {
-  private fullDocumentationGenerator: FullDocumentationGenerator;
-  constructor(
-    private aiService: AIService,
-    private gitManager: GitManager,
-    private configuration: Configuration,
-  ) {
-    this.fullDocumentationGenerator = new FullDocumentationGenerator(
-      configuration,
-    );
-  }
+public:
+    PluginDocumentationGenerator(AIService private aiService, GitManager private gitManager, Configuration private configuration);
+    std::future<void> generate(const std::vector<ASTQueueItem>& existingDocs, std::optional<std::string> branchName, const std::vector<TodoItem[] =>& todoItems, const std::vector<EnvUsage[] =>& envUsages);
+    std::string generateMarkdownContent(PluginDocumentation docs, const std::any& packageJson);
 
-  /**
-   * Generates comprehensive plugin documentation
-   * @param {ASTQueueItem[]} existingDocs - Queue of documented items
-   * @param {string} branchName - Current git branch name
-   * @param {TodoItem[]} todoItems - List of TODO items found in the codebase
-   * @param {EnvUsage[]} envUsages - List of environment variable usages
-   */
-    // Read package.json
-    // Generate documentation
-
-    // Generate markdown content
-
-    // Only commit the file if we're in a branch
-      // Use the configuration's relative path to determine the correct README location
-
-      // Commit the file to the correct location
+private:
+    FullDocumentationGenerator fullDocumentationGenerator_;
+};
 
 
 } // namespace elizaos

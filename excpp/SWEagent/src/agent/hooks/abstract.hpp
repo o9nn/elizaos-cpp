@@ -1,11 +1,12 @@
-#include "..types.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "..types.hpp"
 
 namespace elizaos {
 
@@ -25,83 +26,42 @@ struct DefaultAgent {
 /**
  * Abstract base class for agent hooks
  */
-  /**
-   * Called when the agent is initialized
-   * Note: Depending on the internals of Agent should be done with care,
-   * it's best to use this as little as possible.
-   */
-    // Default implementation - do nothing
-
-  /**
-   * Called when a run starts
-   */
-    // Default implementation - do nothing
-
-  /**
-   * Called when a step starts
-   */
-    // Default implementation - do nothing
-
-  /**
-   * Called when actions have been generated
-   */
-    // Default implementation - do nothing
-
-  /**
-   * Called when an action is about to be executed
-   */
-    // Default implementation - do nothing
-
-  /**
-   * Called after an action has been executed
-   */
-    // Default implementation - do nothing
-
-  /**
-   * Called when a step is done
-   */
-    // Default implementation - do nothing
-
-  /**
-   * Called when a run is done
-   */
-    // Default implementation - do nothing
-
-  /**
-   * Called when a setup attempt is made
-   */
-    // Default implementation - do nothing
-
-  /**
-   * Called before querying the model
-   */
-    // Default implementation - do nothing
-
-  /**
-   * Called when a message is added to the query
-   */
-    // Default implementation - do nothing
-
-  /**
-   * Called when setup is done
-   */
-    // Default implementation - do nothing
-
-  /**
-   * Called when tools installation starts
-   */
-    // Default implementation - do nothing
+    void onInit(DefaultAgent _agent);
+    void onRunStart();
+    void onStepStart();
+    void onActionsGenerated(StepOutput _step);
+    void onActionStarted(StepOutput _step);
+    void onActionExecuted(StepOutput _step);
+    void onStepDone(StepOutput _step, AgentInfo _info);
+    void onRunDone(Trajectory _trajectory, AgentInfo _info);
+    void onSetupAttempt();
+    void onModelQuery(const std::vector<std::any>& _messages, const std::string& _agent);
+    void onQueryMessageAdded(std::optional<std::any> _params);
+    void onSetupDone();
+    void onToolsInstallationStarted();
 
 /**
  * Combined agent hook that manages multiple hooks
  */
-class CombinedAgentHook extends AbstractAgentHook {
-  private hooks: AbstractAgentHook[] = [];
-
-  constructor(hooks?: AbstractAgentHook[]) {
-    super();
-    this.hooks = hooks || [];
-  }
+class CombinedAgentHook {
+public:
+    CombinedAgentHook(std::optional<std::vector<AbstractAgentHook>> hooks);
+    void addHook(AbstractAgentHook hook);
+    std::vector<AbstractAgentHook> allHooks() const;
+    void onInit(DefaultAgent _agent);
+    void onRunStart();
+    void onStepStart();
+    void onActionsGenerated(StepOutput _step);
+    void onActionStarted(StepOutput _step);
+    void onActionExecuted(StepOutput _step);
+    void onStepDone(StepOutput _step, AgentInfo _info);
+    void onRunDone(Trajectory _trajectory, AgentInfo _info);
+    void onSetupAttempt();
+    void onModelQuery(const std::vector<std::any>& _messages, const std::string& _agent);
+    void onQueryMessageAdded(std::optional<std::any> _params);
+    void onSetupDone();
+    void onToolsInstallationStarted();
+};
 
 
 } // namespace elizaos

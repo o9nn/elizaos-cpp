@@ -1,3 +1,10 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include "character.hpp"
 #include "elizaos/core.hpp"
 #include "elizaos/plugin-analytics.hpp"
@@ -15,13 +22,6 @@
 #include "plugins/plugin-morpho/src/index.ts.hpp"
 #include "plugins/plugin-relay/src/index.ts.hpp"
 #include "plugins/plugin-web-search/src/index.ts.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 

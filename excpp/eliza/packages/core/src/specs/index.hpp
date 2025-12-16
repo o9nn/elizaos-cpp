@@ -1,12 +1,12 @@
-#include "v1.hpp"
-#include "v2.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "v1.hpp"
+#include "v2.hpp"
 
 namespace elizaos {
 

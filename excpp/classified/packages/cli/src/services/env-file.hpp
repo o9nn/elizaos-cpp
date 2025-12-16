@@ -1,11 +1,12 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -35,81 +36,19 @@ struct ValidationResult {
  * Unified service for managing environment files
  */
 class EnvFileService {
-  private filePath: string;
-
-  constructor(filePath?: string) {
-    this.filePath = filePath || '';
-  }
-
-  /**
-   * Initialize the service with the appropriate file path
-   */
-
-  /**
-   * Get the current environment file path
-   */
-
-  /**
-   * Read and parse the environment file
-   */
-
-  /**
-   * Read environment file with comments preserved
-   */
-
-          // Accumulate comments
-          // Reset comment on empty lines
-
-  /**
-   * Write environment variables to file
-   */
-
-      // Create backup if requested
-
-      // Create a shallow copy to avoid mutating the input
-
-        // Preserve existing comments
-
-        // Write existing entries with their comments
-
-        // Add any new entries
-
-      // Write remaining variables
-        // Only write string values (env vars must be strings)
-
-          // Update process.env if requested
-
-  /**
-   * Update a single environment variable
-   */
-
-    // Update process.env by default for single updates
-
-  /**
-   * Update multiple environment variables
-   */
-
-    // Update process.env by default
-
-  /**
-   * Delete an environment variable
-   */
-
-  /**
-   * Check if a key exists
-   */
-
-  /**
-   * Get a single environment variable value
-   */
-
-  /**
-   * Create a backup of the current environment file
-   */
-
-  /**
-   * Validate the environment file
-   */
+public:
+    EnvFileService(std::optional<std::string> filePath);
+    std::future<void> initialize();
+    std::string getFilePath();
+    std::future<std::unordered_map<std::string, std::string>> read();
+    std::future<std::vector<EnvVarEntry>> readWithComments();
+    std::future<void> write(Record<string vars, auto string>, WriteOptions = {} options);
+    std::future<void> update(const std::string& key, const std::string& value, WriteOptions = {} options);
+    std::future<void> updateMany(Record<string updates, auto string>, WriteOptions = {} options);
+    std::future<void> delete(const std::string& key);
+    std::future<bool> exists(const std::string& key);
+    std::future<std::string> backup();
+    std::future<ValidationResult> validate();
 
 // Singleton instance for global use
 

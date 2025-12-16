@@ -1,3 +1,12 @@
+#pragma once
+#include <any>
+#include <functional>
+#include <future>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include "cache/index.ts.hpp"
 #include "character.ts.hpp"
 #include "chat/index.ts.hpp"
@@ -9,13 +18,6 @@
 #include "elizaos/plugin-bootstrap.hpp"
 #include "elizaos/plugin-node.hpp"
 #include "elizaos/plugin-solana.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -27,8 +29,6 @@ namespace elizaos {
 void createAgent(Character character, const std::any& db, const std::any& cache, const std::string& token);
 
 std::future<void> startAgent(Character character, DirectClient directClient);
-
-      await startAgent(character, directClient as DirectClient);
 
   // upload some agent functionality into directClient
     // wrap it so we don't have to inject directClient later

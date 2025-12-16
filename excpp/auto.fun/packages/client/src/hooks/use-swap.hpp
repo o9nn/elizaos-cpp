@@ -1,14 +1,15 @@
-#include "use-config-account.hpp"
-#include "use-mev-protection.hpp"
-#include "use-slippage.hpp"
-#include "use-transaction-speed.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "use-config-account.hpp"
+#include "use-mev-protection.hpp"
+#include "use-slippage.hpp"
+#include "use-transaction-speed.hpp"
 
 namespace elizaos {
 
@@ -18,7 +19,7 @@ namespace elizaos {
 
 
 struct SwapParams {
-    "buy" | "sell" style;
+    std::variant<"buy", "sell"> style;
     double amount;
     std::string tokenAddress;
     std::optional<IToken> token;

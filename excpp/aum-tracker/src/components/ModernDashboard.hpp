@@ -1,10 +1,12 @@
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -58,7 +60,6 @@ struct DashboardProps {
       std::future<void> lightweightRefresh();
 
       // Initialize on load
-        await lightweightRefresh(); // Use lightweight refresh on page load
 
         // Auto-refresh every 5 minutes (lightweight)
 

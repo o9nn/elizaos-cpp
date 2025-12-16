@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -12,11 +12,6 @@ namespace elizaos {
 // Manual refinement required for production use
 
 enum FilterType {
-  TEXT = "text",
-  DATE = "date",
-  THREAD = "thread",
-  TOGGLE = "toggle",
-  ARRAY = "array",
 }
 
 } // namespace elizaos

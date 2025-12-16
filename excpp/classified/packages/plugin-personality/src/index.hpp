@@ -1,14 +1,14 @@
-#include "actions/modify-character.hpp"
-#include "elizaos/core.hpp"
-#include "evaluators/character-evolution.hpp"
-#include "services/character-file-manager.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "actions/modify-character.hpp"
+#include "elizaos/core.hpp"
+#include "evaluators/character-evolution.hpp"
+#include "services/character-file-manager.hpp"
 
 namespace elizaos {
 

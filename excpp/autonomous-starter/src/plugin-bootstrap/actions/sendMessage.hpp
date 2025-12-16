@@ -1,11 +1,11 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -85,7 +85,6 @@ namespace elizaos {
     // availableSources.add(...registeredSources);
 
       // Handle initial responses
-        await callback(response.content);
 
       // Extract target and source information
 

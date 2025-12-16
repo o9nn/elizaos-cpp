@@ -1,11 +1,11 @@
-#include "types.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "types.hpp"
 
 namespace elizaos {
 
@@ -49,8 +49,6 @@ class ServiceBuilder<TService extends Service = Service> {
     // Using type assertion here is necessary for dynamic class construction
 
         return startFn(runtime);
-
-          await stopFn();
 
 /**
  * Create a type-safe service builder

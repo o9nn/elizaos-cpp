@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -27,40 +27,23 @@ struct AgentLogger {
 /**
  * Custom Pino logger that implements AgentLogger interface
  */
-class SweAgentLogger implements AgentLogger {
-  public logger: pino.Logger;
-  private emoji: string;
-  private name: string;
+class SweAgentLogger {
+public:
+    SweAgentLogger(const std::string& name, string = '' emoji);
+    std::string formatMessage(const std::string& message);
+    void debug(const std::string& message, const std::vector<unknown>& ...args);
+    void info(const std::string& message, const std::vector<unknown>& ...args);
+    void warn(const std::string& message, const std::vector<unknown>& ...args);
+    void error(const std::string& message, const std::vector<unknown>& ...args);
+    void critical(const std::string& message, const std::vector<unknown>& ...args);
+    void warning(const std::string& message, const std::vector<unknown>& ...args);
+    void exception(const std::string& message, std::optional<Error> error, boolean = true includeStack);
 
-  constructor(name: string, emoji: string = '') {
-    this.emoji = emoji;
-    this.name = name;
-
-    // Create pino logger with custom formatting
-    const transportOptions =
-      process.env.NODE_ENV === 'test'
-        ? { target: 'pino/file', options: { destination: '/dev/null' } }
-        : {
-            target: 'pino-pretty',
-            options: {
-              colorize: true,
-              translateTime: 'HH:MM:ss',
-              ignore: 'pid,hostname',
-              messageFormat: false,
-            },
-          };
-
-    this.logger = pino({
-      name: name,
-      level: process.env.LOG_LEVEL || 'debug',
-      transport: transportOptions,
-      formatters: {
-        level: (label: string) => {
-          return { level: label.toUpperCase() };
-        },
-      },
-    });
-  }
+private:
+    pino::Logger logger_;
+    std::string emoji_;
+    std::string name_;
+};
 
 // Registry to store logger instances
 

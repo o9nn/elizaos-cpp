@@ -1,16 +1,17 @@
+#pragma once
+#include <functional>
+#include <future>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include ".db.hpp"
 #include ".env.hpp"
 #include ".redis.hpp"
 #include ".routes/user.hpp"
 #include ".util.hpp"
 #include "session.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -29,7 +30,7 @@ struct AuthTokenData {
 };
 
   struct ContextVariableMap {
-    std::optional<{ publicKey: string } | null> user;
+};
 
 using AppContext = Context<{
 
@@ -40,8 +41,6 @@ struct AuthTokenData {
     std::optional<std::vector<std::string>> privileges;
     std::optional<double> expiresAt;
 };
-
-        await ensureUserProfile(address);
 
           // jwt is not used now by the backend at all
 

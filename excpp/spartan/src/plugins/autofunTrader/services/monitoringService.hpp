@@ -1,3 +1,12 @@
+#pragma once
+#include <any>
+#include <functional>
+#include <future>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include ".config/config.hpp"
 #include ".utils/wallet.hpp"
 #include "analyticsService.hpp"
@@ -5,13 +14,6 @@
 #include "elizaos/core.hpp"
 #include "execution/tradeExecutionService.hpp"
 #include "walletService.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -20,39 +22,20 @@ namespace elizaos {
 
 
 
-class MonitoringService extends TradeExecutionService {
-  private isInitialized = false;
-  private monitoringIntervals: NodeJS.Timeout[] = [];
-  private tradingConfig = DEFAULT_CONFIG;
-
-  constructor(
-    runtime: IAgentRuntime,
-    dataService: DataService,
-    walletService: WalletService,
-    analyticsService: AnalyticsService
-  ) {
-    super(runtime, walletService, dataService, analyticsService);
-  }
-
-  // Implement TradeExecutionService interface methods
-    // Monitoring service doesn't execute trades directly
-
-    // Monitoring service doesn't execute trades directly
-
-    // Delegate to data service for calculations
-
-    // Start monitoring intervals
-
-    // Clear all monitoring intervals
-
-    // Add monitoring intervals here
-
-      // Check stop loss
-
-      // Check take profit
-
-        // Check for significant price movements
-          // Monitor for stop loss/take profit conditions
+class MonitoringService {
+public:
+    MonitoringService(IAgentRuntime runtime, DataService dataService, WalletService walletService, AnalyticsService analyticsService);
+    Promise< executeBuyTrade(auto {
+    tokenAddress, auto amount, auto slippage, const std::any& });
+    std::future<std::string> calculateExpectedAmount(const std::string& tokenAddress, double amount, bool isSell);
+    std::future<void> initialize();
+    std::future<void> stop();
+    void startMonitoringIntervals();
+    std::future<std::any> monitorToken(std::optional<std::any> options);
+    std::future<void> createSellSignal(const std::string& tokenAddress, const std::string& amount, const std::string& reason);
+    std::future<void> setTrailingStop(const std::string& tokenAddress, double activationPrice, const std::string& amount);
+    std::future<void> monitorPrices();
+    std::future<void> checkPriceThresholds(const std::string& tokenAddress, double currentPrice, const std::any& position);
 
 
 } // namespace elizaos

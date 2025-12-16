@@ -1,0 +1,20 @@
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
+#pragma once
+
+namespace elizaos {
+
+// NOTE: This is auto-generated approximate C++ code
+// Manual refinement required for production use
+
+
+
+using CoinMarketCapConfig = z.infer<typeof coinmarketcapEnvSchema>;
+
+std::future<CoinMarketCapConfig> validateCoinMarketCapConfig(IAgentRuntime runtime);
+
+} // namespace elizaos

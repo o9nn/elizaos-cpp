@@ -1,15 +1,16 @@
-#include "bun-exec.hpp"
-#include "bun-installation-helper.hpp"
-#include "elizaos/core.hpp"
-#include "run-bun.hpp"
-#include "user-environment.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "bun-exec.hpp"
+#include "bun-installation-helper.hpp"
+#include "elizaos/core.hpp"
+#include "run-bun.hpp"
+#include "user-environment.hpp"
 
 namespace elizaos {
 
@@ -70,7 +71,6 @@ std::future<void> removeFromBunLock(const std::string& packageName, const std::s
  */
 
     // Run silently to suppress bun's timestamped output
-    await runBunCommand(args, directory, true);
 
     // Check if it's a bun not found error
 
@@ -97,7 +97,6 @@ std::string buildGitHubSpecifier(const std::string& githubSpec, std::optional<st
   // If npm installation failed and we have a GitHub fallback, try GitHub installation
 
   // Remove package from lockfile to prevent circular dependencies
-  await removeFromBunLock(packageName, directory);
 
   // Try GitHub installation
 

@@ -1,11 +1,12 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -41,7 +42,6 @@ namespace elizaos {
         // Fetch rooms in batches if needed, but likely fine for typical numbers
 
         // 3. Fetch all TODO tasks for these specific rooms - Fetch individually
-        // const allAgentRoomTasks = await runtime.getTasks({
         //   roomIds: agentRoomIds, // Assuming getTasks can accept roomIds array - REMOVED
         //   tags: ['TODO'],
         // });
@@ -149,10 +149,10 @@ namespace elizaos {
 struct TaskUpdate {
     std::optional<std::string> name;
     std::optional<std::string> description;
-    std::optional<1 | 2 | 3 | 4> priority;
+    std::optional<std::variant<1, 2, 3, 4>> priority;
     std::optional<bool> urgent;
-    std::optional<string | null; // Expect ISO string or null> dueDate;
-    std::optional<"daily" | "weekly" | "monthly"> recurring;
+    std::optional<std::optional<std::string>> dueDate;
+    std::optional<std::variant<"daily", "weekly", "monthly">> recurring;
 };
 
 

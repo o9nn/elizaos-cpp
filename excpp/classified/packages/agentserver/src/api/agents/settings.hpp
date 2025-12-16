@@ -1,12 +1,12 @@
-#include ".shared/response-utils.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".shared/response-utils.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -17,14 +17,12 @@ namespace elizaos {
 
 struct AgentSettings {
     bool autonomy;
-    { capabilities;
     bool shellAccess;
     bool webAccess;
     bool visionAccess;
     bool speechToText;
     bool textToSpeech;
     std::string modelProvider;
-    std::unordered_map<std::string, std::string> apiKeys;
 };
 
 /**

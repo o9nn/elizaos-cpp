@@ -1,14 +1,14 @@
-#include "elizaos/core.hpp"
-#include "tasks/chat.hpp"
-#include "tasks/twitter.hpp"
-#include "tasks/twitterParser.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
+#include "tasks/chat.hpp"
+#include "tasks/twitter.hpp"
+#include "tasks/twitterParser.hpp"
 
 namespace elizaos {
 
@@ -18,7 +18,6 @@ namespace elizaos {
 
 
 // let's not make it a dependency
-//import type { ITradeService } from '../../degenTrader/types';
 
 /**
  * Registers tasks for the agent to perform various Intel-related actions.
@@ -32,11 +31,9 @@ namespace elizaos {
   // shouldn't plugin-solana and plugin-evm handle this?
       /*
         // kill this task
-        //await runtime.deleteTask(task.id);
       */
 
         // kill this task
-        //await runtime.deleteTask(task.id);
 
   // Only create the Twitter sync task if the Twitter service exists
         // Check if Twitter service exists and return false if it doesn't

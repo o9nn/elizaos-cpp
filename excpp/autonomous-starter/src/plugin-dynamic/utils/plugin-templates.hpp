@@ -1,11 +1,11 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -17,12 +17,10 @@ namespace elizaos {
     // Add similar phrases that might trigger this action
     // Add validation logic here
       // TODO: Implement ${name} logic here
-      // Expected parameters: ${JSON.stringify(parameters, null, 2)}
       
       // Placeholder implementation
 
       // TODO: Implement ${name} provider logic
-      // Expected data structure: ${JSON.stringify(dataStructure, null, 2)}
       
         // Collect relevant data here
 

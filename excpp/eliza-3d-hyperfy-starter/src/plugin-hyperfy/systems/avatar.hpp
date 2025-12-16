@@ -1,11 +1,13 @@
-#include ".hyperfy/src/core/nodes/Node.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include ".hyperfy/src/core/nodes/Node.hpp"
 
 namespace elizaos {
 
@@ -14,40 +16,19 @@ namespace elizaos {
 
 
 
-using AvatarFactory = std::variant<{
+using AvatarFactory = std::variant<std::function<void()>, std::function<void()>>;
+    void commit(bool didMove);
+    void unmount();
+    void applyStats(const std::any& stats);
+    std::optional<std::string> src() const;
+    void src(const std::optional<std::string>& value);
+    std::optional<std::string> emote() const;
+    void emote(const std::optional<std::string>& value);
+    std::optional<double> getHeight();
+    std::optional<double> getHeadToHeight();
+    void setEmote(const std::optional<std::string>& url);
+    std::optional<double> height() const;
+    this copy(AgentAvatar source, bool recursive);
+    std::any getProxy();
 
-  // getBoneTransform?: (boneName: string) => THREE.Matrix4
-
-class AgentAvatar extends Node {
-  private _src: string, null = defaults.src
-  private _emote: string, null = defaults.emote
-  private _onLoad: (() => void), null = defaults.onLoad
-
-  public factory: AvatarFactory, null = null
-  public hooks: any = null
-  public instance: AvatarInstance, null = null
-  private n = 0
-  private needsRebuild: boolean = false
-
-  constructor(data: Partial<{
-    id: string
-    src: string
-    emote: string
-    onLoad: () => void
-    factory: AvatarFactory
-    hooks: any
-  }> = {}) {
-    super(data)
-    this.name = 'avatar'
-  
-    this.src = data.src ?? defaults.src
-    this.emote = data.emote ?? defaults.emote
-    this.onLoad = data.onLoad ?? defaults.onLoad
-    this.factory = data.factory ?? null
-    this.hooks = data.hooks ?? null
-  }
-
-      // throw new Error('[avatar] emote not a string')
-
-  
 } // namespace elizaos

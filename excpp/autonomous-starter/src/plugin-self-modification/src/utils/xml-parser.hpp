@@ -1,11 +1,12 @@
-#include ".types.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include ".types.hpp"
 
 namespace elizaos {
 
@@ -24,6 +25,7 @@ std::string sanitizeXml(const std::string& xmlString);
 std::string escapeXml(const std::string& unsafe);
 
 // Validate operation type
+std::variant<type is "add", "modify", "delete"> isValidOperationType(const std::string& type);
 
 CharacterDiff parseCharacterDiff(const std::string& xmlString);
 

@@ -1,15 +1,15 @@
-#include "...utils/entity.hpp"
-#include ".services/cdp.service.hpp"
-#include ".types.hpp"
-#include ".utils/coingecko.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "...utils/entity.hpp"
+#include ".services/cdp.service.hpp"
+#include ".types.hpp"
+#include ".utils/coingecko.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -20,10 +20,10 @@ namespace elizaos {
 
 struct SwapParams {
     CdpNetwork network;
-    string; // Can be symbol or address, gets resolved later fromToken;
-    string; // Can be symbol or address, gets resolved later toToken;
-    std::optional<string; // Specific amount (mutually exclusive with percentage)> amount;
-    std::optional<number; // Percentage of balance (mutually exclusive with amount)> percentage;
+    std::string fromToken;
+    std::string toToken;
+    std::optional<std::string> amount;
+    std::optional<double> percentage;
     std::optional<double> slippageBps;
 };
 

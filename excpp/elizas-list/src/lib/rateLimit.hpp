@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -14,12 +15,9 @@ namespace elizaos {
 
 
 class RateLimiter {
-  static async checkLimit(key: string, limit: number = 100, window: number = 3600): Promise<boolean> {
-    const current = await rateLimitRedis.incr(key);
-    if (current === 1) {
-      await rateLimitRedis.expire(key, window);
-    }
-    return current <= limit;
-  }
-
+public:
+    std::future<bool> checkLimit(const std::string& key, number = 100 limit, number = 3600 window);
+    std::future<double> getRemainingLimit(const std::string& key);
+};
+ 
 } // namespace elizaos

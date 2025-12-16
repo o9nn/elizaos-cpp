@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -58,11 +58,6 @@ using Media = {
   /** Content type */
 
 enum ContentType {
-  IMAGE = 'image',
-  VIDEO = 'video',
-  AUDIO = 'audio',
-  DOCUMENT = 'document',
-  LINK = 'link',
 }
 
 /**

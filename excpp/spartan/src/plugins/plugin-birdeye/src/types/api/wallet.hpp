@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -18,10 +18,8 @@ struct WalletPortfolioParams {
 
 struct WalletPortfolioResponse {
     bool success;
-    { data;
     std::optional<std::string> wallet;
     std::optional<double> totalUsd;
-    Array<{ items;
     std::optional<std::string> address;
     std::optional<std::string> name;
     std::optional<std::string> symbol;
@@ -42,7 +40,6 @@ struct WalletTokenBalanceParams {
 
 struct WalletTokenBalanceResponse {
     bool success;
-    { data;
     std::optional<std::string> address;
     std::optional<std::string> name;
     std::optional<std::string> symbol;
@@ -63,7 +60,6 @@ struct WalletTransactionHistoryParams {
 
 struct WalletTransactionHistoryResponse {
     bool success;
-    { data;
     std::optional<std::string> txHash;
     std::optional<double> blockNumber;
     std::optional<std::string> blockTime;
@@ -75,12 +71,9 @@ struct WalletTransactionHistoryResponse {
     std::optional<std::string> fee;
     std::optional<double> feeUsd;
     std::optional<std::string> value;
-    std::optional<{> contractLabel;
     std::optional<std::string> address;
     std::optional<std::string> name;
-    std::optional<std::unordered_map<std::string, std::any>> metadata;
     std::optional<std::string> mainAction;
-    std::optional<Array<{> balanceChange;
     std::optional<std::string> name;
     std::optional<std::string> symbol;
     std::optional<std::string> logoURI;
@@ -92,7 +85,6 @@ struct WalletTransactionHistoryResponse {
 // Wallet Networks Types
 struct WalletNetworksResponse {
     bool success;
-    { data;
     std::optional<std::vector<std::string>> chains;
 };
 
@@ -103,8 +95,6 @@ struct WalletPortfolioMultichainParams {
 
 struct WalletPortfolioMultichainResponse {
     bool success;
-    { data;
-    Array<{ items;
     std::optional<std::string> chain;
     std::optional<std::string> address;
     std::optional<std::string> symbol;
@@ -125,7 +115,6 @@ struct WalletTransactionHistoryMultichainParams {
 
 struct WalletTransactionHistoryMultichainResponse {
     bool success;
-    { data;
     std::optional<std::string> txHash;
     std::optional<double> blockNumber;
     std::optional<std::string> blockTime;
@@ -137,12 +126,9 @@ struct WalletTransactionHistoryMultichainResponse {
     std::optional<std::string> fee;
     std::optional<double> feeUsd;
     std::optional<std::string> value;
-    std::optional<{> contractLabel;
     std::optional<std::string> address;
     std::optional<std::string> name;
-    std::optional<std::unordered_map<std::string, std::any>> metadata;
     std::optional<std::string> mainAction;
-    std::optional<Array<{> balanceChange;
     std::optional<std::string> name;
     std::optional<std::string> symbol;
     std::optional<std::string> logoURI;
@@ -161,8 +147,6 @@ struct WalletSimulationParams {
 
 struct WalletSimulationResponse {
     bool success;
-    { data;
-    Array<{ balanceChange;
     std::optional<double> index;
     std::optional<double> before;
     std::optional<double> after;

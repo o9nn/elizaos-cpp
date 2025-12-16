@@ -1,16 +1,19 @@
+#pragma once
+#include <any>
+#include <functional>
+#include <future>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <variant>
+#include <vector>
 #include ".types.hpp"
 #include ".utils/log.hpp"
 #include "agents.hpp"
 #include "models.hpp"
 #include "problem-statement.hpp"
 #include "utils/template.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -31,22 +34,22 @@ struct ReviewSubmission {
     InstanceStats modelStats;
 };
 
-class ReviewSubmissionImpl implements ReviewSubmission {
-  trajectory: Trajectory;
-  info: AgentInfo;
-  modelStats: InstanceStats;
+class ReviewSubmissionImpl {
+public:
+    ReviewSubmissionImpl(const std::any& data);
+    std::unordered_map<std::string, unknown> toFormatDict(string = '' suffix);
 
-  constructor(data: { trajectory: Trajectory; info: AgentInfo; modelStats: InstanceStats }) {
-    this.trajectory = data.trajectory;
-    this.info = data.info;
-    this.modelStats = data.modelStats;
-  }
+private:
+    Trajectory trajectory_;
+    AgentInfo info_;
+    InstanceStats modelStats_;
+};
 
 /**
  * Result from reviewer
  */
 struct ReviewerResult {
-    boolean | number accept;
+    std::variant<bool, double> accept;
     std::vector<std::string> outputs;
     History messages;
 };
@@ -66,7 +69,7 @@ struct PreselectorOutput {
 struct ChooserOutput {
     double chosenIdx;
     std::string response;
-    std::optional<PreselectorOutput | null> preselectorOutput;
+    std::optional<std::optional<PreselectorOutput>> preselectorOutput;
     History messages;
 };
 
@@ -77,12 +80,10 @@ struct ChooserOutput {
 /**
  * Abstract retry loop interface
  */
-
-    // Default implementation - do nothing
-
-    // Default implementation - do nothing
-
-    // Default implementation - do nothing
+    bool retry();
+    void onSubmit(ReviewSubmission _submission);
+    void onModelQuery(InstanceStats _attemptStats);
+    void onAttemptStarted(double _iAttempt, unknown _agent);
 
 /**
  * Configuration for trajectory formatter
@@ -104,7 +105,6 @@ struct ReviewerConfig {
     TrajFormatterConfig trajFormatter;
     double nSample;
     double reduceByStd;
-    [number | null, number | null] scoreRange;
     'reviewer' type;
 };
 
@@ -117,7 +117,7 @@ struct ChooserConfig {
     std::string instanceTemplate;
     std::string submissionTemplate;
     double maxLenSubmission;
-    std::optional<PreselectorConfig | null> preselector;
+    std::optional<std::optional<PreselectorConfig>> preselector;
 };
 
 /**
@@ -162,99 +162,98 @@ using RetryLoopConfig = std::variant<ScoreRetryLoopConfig, ChooserRetryLoopConfi
  * Trajectory formatter for use in prompts
  */
 class TrajectoryFormatter {
-  private config: TrajFormatterConfig;
+public:
+    TrajectoryFormatter(TrajFormatterConfig config);
+    bool includeStep(TrajectoryStep item);
+    bool includeStepOutput(TrajectoryStep item, double iStep, double nSteps);
+    std::string formatTrajectoryStep(TrajectoryStep step, double iStep, double nSteps, number = 1 iTraj);
+    std::string formatTrajectory(Trajectory trajectory, number = 1 iTraj);
 
-  constructor(config: TrajFormatterConfig) {
-    this.config = config;
-  }
+private:
+    TrajFormatterConfig config_;
+};
 
 /**
  * Reviewer implementation
  */
-class Reviewer extends AbstractReviewer {
-  private config: ReviewerConfig;
-  private model: AbstractModel;
-  private trajFormatter: TrajectoryFormatter;
-  private logger: AgentLogger;
+class Reviewer {
+public:
+    Reviewer(ReviewerConfig config, AbstractModel model);
+    History formatMessages(ProblemStatement instance, ReviewSubmission submission);
+    double interpret(const std::string& response);
+    std::future<ReviewerResult> review(ProblemStatement instance, ReviewSubmission submission);
 
-  constructor(config: ReviewerConfig, model: AbstractModel) {
-    super();
-    this.config = config;
-    this.model = model;
-    this.trajFormatter = new TrajectoryFormatter(config.trajFormatter);
-    this.logger = logger;
-  }
+private:
+    ReviewerConfig config_;
+    AbstractModel model_;
+    TrajectoryFormatter trajFormatter_;
+    AgentLogger logger_;
+};
 
 /**
  * Chooser implementation
  */
 class Chooser {
-  private config: ChooserConfig;
-  private model: AbstractModel;
-  private logger: AgentLogger;
+public:
+    Chooser(ChooserConfig config);
+    double interpret(const std::string& response);
+    std::string formatSubmission(const std::string& _problemStatement, ReviewSubmission submission);
+    History buildMessages(const std::string& problemStatement, const std::vector<ReviewSubmission>& input);
+    std::future<ChooserOutput> choose(const std::string& problemStatement, const std::vector<ReviewSubmission>& input);
 
-  constructor(config: ChooserConfig) {
-    this.config = config;
-    // The model doesn't need tool configuration for reviewer
-    // The model doesn't need tool configuration for reviewer
-    this.model = getModel(config.model, {} as ToolConfig);
-    this.logger = logger;
-  }
-
-    return parseInt(numbers[numbers.length - 1]);
-
-    // Handle preselector if configured
-      // Preselector logic would go here
+private:
+    ChooserConfig config_;
+    AbstractModel model_;
+    AgentLogger logger_;
+};
 
 /**
  * Chooser retry loop implementation
  */
-class ChooserRetryLoop extends AbstractRetryLoop {
-  private config: ChooserRetryLoopConfig;
-  private problemStatement: ProblemStatement;
-  private chooser: Chooser;
-  private submissions: ReviewSubmission[] = [];
-  // private __nConsecExitCost: number = 0; // Unused
-  private logger: AgentLogger;
-  private chooserOutput: ChooserOutput | null = null;
+class ChooserRetryLoop {
+public:
+    ChooserRetryLoop(ChooserRetryLoopConfig config, ProblemStatement problemStatement);
+    InstanceStats totalStats();
+    InstanceStats reviewModelStats() const;
+    double nAttempts();
+    void onSubmit(ReviewSubmission _submission);
+    bool retry();
+    std::variant<Promise<number, null>> getBest();
 
-  constructor(config: ChooserRetryLoopConfig, problemStatement: ProblemStatement) {
-    super();
-    this.config = config;
-    this.problemStatement = problemStatement;
-    this.chooser = new Chooser(config.chooser);
-    this.logger = logger;
-  }
+private:
+    ChooserRetryLoopConfig config_;
+    ProblemStatement problemStatement_;
+    Chooser chooser_;
+    AgentLogger logger_;
+};
 
 /**
  * Score retry loop implementation
  */
-class ScoreRetryLoop extends AbstractRetryLoop {
-  private model: AbstractModel;
-  private problemStatement: ProblemStatement;
-  private reviewer: AbstractReviewer;
-  private config: ScoreRetryLoopConfig;
-  private submissions: ReviewSubmission[] = [];
-  private reviews: ReviewerResult[] = [];
-  private nConsecExitCost: number = 0;
-  private logger: AgentLogger;
+class ScoreRetryLoop {
+public:
+    ScoreRetryLoop(ScoreRetryLoopConfig config, ProblemStatement problemStatement);
+    InstanceStats reviewModelStats() const;
+    std::vector<ReviewerResult> allReviews() const;
+    double nAttempts();
+    double nAccepted();
+    InstanceStats totalStats();
+    std::future<void> onSubmit(ReviewSubmission submission);
+    std::future<double> review();
+    bool retry();
+    std::optional<double> getBest();
 
-  constructor(config: ScoreRetryLoopConfig, problemStatement: ProblemStatement) {
-    super();
-    this.config = config;
-    this.problemStatement = problemStatement;
-    // The model doesn't need tool configuration for reviewer
-    this.model = getModel(config.model, {} as ToolConfig);
-    this.reviewer = new Reviewer(config.reviewerConfig, this.model);
-    this.logger = logger;
-  }
-
-    // Find all indices with max score
-
-    // If multiple submissions have the same score, choose the one with fewest API calls
+private:
+    AbstractModel model_;
+    ProblemStatement problemStatement_;
+    AbstractReviewer reviewer_;
+    ScoreRetryLoopConfig config_;
+    AgentLogger logger_;
+};
 
 /**
  * Factory function to create retry loop from configuration
  */
+std::variant<ScoreRetryLoop, ChooserRetryLoop> getRetryLoopFromConfig(RetryLoopConfig config, ProblemStatement problemStatement);
 
 } // namespace elizaos

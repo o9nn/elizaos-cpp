@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -43,22 +44,22 @@ struct TokenTradeData {
     double price_change_24h_percent;
     double unique_wallet_30m;
     double unique_wallet_history_30m;
-    number | null unique_wallet_30m_change_percent;
+    std::optional<double> unique_wallet_30m_change_percent;
     double unique_wallet_1h;
     double unique_wallet_history_1h;
-    number | null unique_wallet_1h_change_percent;
+    std::optional<double> unique_wallet_1h_change_percent;
     double unique_wallet_2h;
     double unique_wallet_history_2h;
-    number | null unique_wallet_2h_change_percent;
+    std::optional<double> unique_wallet_2h_change_percent;
     double unique_wallet_4h;
     double unique_wallet_history_4h;
-    number | null unique_wallet_4h_change_percent;
+    std::optional<double> unique_wallet_4h_change_percent;
     double unique_wallet_8h;
     double unique_wallet_history_8h;
-    number | null unique_wallet_8h_change_percent;
+    std::optional<double> unique_wallet_8h_change_percent;
     double unique_wallet_24h;
     double unique_wallet_history_24h;
-    number | null unique_wallet_24h_change_percent;
+    std::optional<double> unique_wallet_24h_change_percent;
     double trade_30m;
     double trade_history_30m;
     double trade_30m_change_percent;

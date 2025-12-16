@@ -1,11 +1,12 @@
-#include ".utils/log.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".utils/log.hpp"
 
 namespace elizaos {
 
@@ -22,7 +23,7 @@ struct TrajectoryStep {
     std::string action;
     std::string response;
     std::string observation;
-    std::optional<std::vector<{ role: string; content: string }>> messages;
+};
 
 struct ModelStats {
     std::optional<double> instanceCost;
@@ -33,7 +34,12 @@ struct ModelStats {
 };
 
 struct TrajectoryContent {
-    std::vector<{ role: string; content: string }> history;
+    std::vector<TrajectoryStep> trajectory;
+    std::optional<std::string> exitStatus;
+    std::optional<std::string> submission;
+    std::optional<ModelStats> modelStats;
+    std::optional<std::string> environment;
+};
 
 /**
  * Add problem statement to the trajectory
@@ -54,11 +60,12 @@ TrajectoryContent addModelStats(TrajectoryContent content);
 /**
  * Parse and augment trajectory file
  */
+std::optional<TrajectoryContent> getTrajectory(const std::string& filePath);
 
 /**
  * Create and start the inspector server
  */
-void startInspectorServer(std::optional<{ port: number; trajectoryDir: string; staticDir: string }> options);
+void startInspectorServer(std::optional<std::any> options);
 
 /**
  * CLI entry point

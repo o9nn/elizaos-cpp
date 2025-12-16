@@ -1,3 +1,10 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include ".features/app/app-slice.hpp"
 #include ".features/channel/channel-slice.hpp"
 #include ".features/dm/dm-slice.hpp"
@@ -8,13 +15,6 @@
 #include ".features/relationship/relationship-slice.hpp"
 #include ".features/thread/thread-slice.hpp"
 #include ".features/user/user-slice.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -24,8 +24,8 @@ namespace elizaos {
 
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
-using RootState = ReturnType<typeof store.getState>;
+using RootState = ReturnType<typeof store::getState>;
 // Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
-using AppDispatch = typeof store.dispatch;
+using AppDispatch = typeof store::dispatch;
 
 } // namespace elizaos

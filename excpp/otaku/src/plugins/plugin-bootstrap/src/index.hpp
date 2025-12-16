@@ -1,3 +1,12 @@
+#pragma once
+#include <functional>
+#include <future>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <variant>
+#include <vector>
 #include "actions/index.ts.hpp"
 #include "elizaos/core.hpp"
 #include "evaluators/index.js.hpp"
@@ -6,13 +15,6 @@
 #include "services/task.js.hpp"
 #include "templates/index.js.hpp"
 #include "utils/index.js.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -27,7 +29,10 @@ namespace elizaos {
  * Multi-step workflow execution result
  */
 struct MultiStepActionResult {
-    { actionName: string } data;
+    bool success;
+    std::optional<std::string> text;
+    std::optional<std::variant<std::string, Error>> error;
+};
 
 /**
  * Handles incoming messages and generates responses based on the provided runtime and message information.
@@ -81,7 +86,6 @@ struct MultiStepActionResult {
 
             // Log provider usage for simple responses
             // without actions there can't be more than one message
-              await callback(responseContent);
                 return callback(content);
 
         // Clean up the response ID since we handled it
@@ -170,16 +174,6 @@ std::future<StrategyResult> runMultiStepCore(auto { runtime, auto message, auto 
     // Get any registered WebSocket service
 
         // Send the control message through the WebSocket service
-
-      await messageReceivedHandler(payload);
-
-      await messageReceivedHandler(payload);
-
-      await messageDeletedHandler(payload);
-
-      await handleServerSync(payload);
-
-      await handleServerSync(payload);
 
         // Update entity to inactive
 

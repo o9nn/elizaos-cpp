@@ -1,11 +1,11 @@
-#include ".utils/notifications.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".utils/notifications.hpp"
 
 namespace elizaos {
 
@@ -21,10 +21,6 @@ namespace elizaos {
             // Create a new TransactionMessage with version and compile it to legacy
 
             // Create a new VersionedTransacction which supports legacy and v0
-
-            // Send transaction and await for signature
-
-            // Send transaction and await for signature
 
 
 } // namespace elizaos

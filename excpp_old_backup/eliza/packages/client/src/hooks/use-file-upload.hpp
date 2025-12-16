@@ -1,0 +1,29 @@
+#include "elizaos/core.hpp"
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
+#pragma once
+
+namespace elizaos {
+
+// NOTE: This is auto-generated approximate C++ code
+// Manual refinement required for production use
+
+
+
+// Direct error handling
+
+using UploadingFile = {
+
+struct UseFileUploadProps {
+    std::optional<UUID> agentId;
+    std::optional<UUID> channelId;
+    ChannelType.DM | ChannelType.GROUP chatType;
+};
+
+void useFileUpload(auto { agentId, auto channelId, UseFileUploadProps chatType });
+
+} // namespace elizaos

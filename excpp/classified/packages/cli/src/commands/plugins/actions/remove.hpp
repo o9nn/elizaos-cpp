@@ -1,14 +1,15 @@
-#include "...utils/bun-exec.js.hpp"
-#include ".utils/directory.hpp"
-#include ".utils/naming.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "...utils/bun-exec.js.hpp"
+#include ".utils/directory.hpp"
+#include ".utils/naming.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 

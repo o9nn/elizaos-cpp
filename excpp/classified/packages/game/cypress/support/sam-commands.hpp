@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -16,8 +16,7 @@ namespace elizaos {
  */
 
   struct Chainable {
-    std::string message;
-    std::optional<{ userId?: string; roomId?: string }> options;
+};
 
 // Send speech message to agent
 

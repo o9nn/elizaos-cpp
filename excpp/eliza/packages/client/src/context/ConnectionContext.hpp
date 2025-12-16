@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -19,10 +20,7 @@ using ConnectionStatusType = std::variant<, 'loading', 'connected', 'reconnectin
 
 struct ConnectionContextType {
     ConnectionStatusType status;
-    string | null error;
-    (message: string) => void setUnauthorizedFromApi;
-    (isOffline: boolean) => void setOfflineStatusFromProvider;
-    (newApiKey?: string | null) => void refreshApiClient;
+    std::optional<std::string> error;
 };
 
       // Update localStorage if a new API key is provided

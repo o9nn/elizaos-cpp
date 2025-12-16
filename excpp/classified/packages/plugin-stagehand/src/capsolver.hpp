@@ -1,11 +1,13 @@
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -32,44 +34,18 @@ struct CaptchaTask {
 };
 
 class CapSolverService {
-  private config: Required<CapSolverConfig>;
+public:
+    CapSolverService(CapSolverConfig config);
+    std::future<std::string> createTask(CaptchaTask task);
+    std::future<std::any> getTaskResult(const std::string& taskId);
+    std::future<std::string> solveTurnstile(const std::string& websiteURL, const std::string& websiteKey, std::optional<std::string> proxy, std::optional<std::string> userAgent);
+    std::future<std::string> solveRecaptchaV2(const std::string& websiteURL, const std::string& websiteKey, auto isInvisible = false, std::optional<std::string> proxy);
+    std::future<std::string> solveRecaptchaV3(const std::string& websiteURL, const std::string& websiteKey, const std::string& pageAction, auto minScore = 0.7, std::optional<std::string> proxy);
+    std::future<std::string> solveHCaptcha(const std::string& websiteURL, const std::string& websiteKey, std::optional<std::string> proxy);
 
-  constructor(config: CapSolverConfig) {
-    this.config = {
-      apiUrl: 'https://api.capsolver.com',
-      retryAttempts: 60,
-      pollingInterval: 2000,
-      ...config,
-    };
-  }
-
-  /**
-   * Create a CAPTCHA solving task
-   */
-
-  /**
-   * Get task result with polling
-   */
-
-        // Still processing
-
-  /**
-   * Solve Cloudflare Turnstile
-   */
-
-      // Use proxy version
-
-  /**
-   * Solve reCAPTCHA v2
-   */
-
-  /**
-   * Solve reCAPTCHA v3
-   */
-
-  /**
-   * Solve hCaptcha
-   */
+private:
+    Required<CapSolverConfig> config_;
+};
 
 /**
  * Helper to detect CAPTCHA type on a page

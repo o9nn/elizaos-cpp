@@ -1,15 +1,17 @@
-#include "..classes/channel.hpp"
-#include "..classes/guild.hpp"
-#include "..classes/message.hpp"
-#include "..enum/export-type.hpp"
-#include "export-utils.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "..classes/channel.hpp"
+#include "..classes/guild.hpp"
+#include "..classes/message.hpp"
+#include "..enum/export-type.hpp"
+#include "export-utils.hpp"
 
 namespace elizaos {
 
@@ -70,7 +72,7 @@ using ItalicRef = { text: string; raw: string };
 using BoldRef = { text: string; raw: string };
 using LinkRef = {
 using QuoteRef = { text: string; raw: string };
-using HyperlinkRef = { raw: string };
+using HyperlinkRef = std::any;
 using EmojiRef = { raw: string; name: string; id: Snowflake };
 
 using FilesFromMessagesProps = {

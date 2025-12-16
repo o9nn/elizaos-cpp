@@ -1,11 +1,12 @@
-#include ".monitoring/logger.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".monitoring/logger.hpp"
 
 namespace elizaos {
 
@@ -15,19 +16,13 @@ namespace elizaos {
 
 
 class ReportGenerator {
-  private chartGenerator: ChartJSNodeCanvas;
+public:
+    ReportGenerator();
+    std::future<Buffer> generateReport(ReportData data, ReportConfig config);
+    void addVisualization(jsPDF doc, const std::vector<VisualizationData>& visualizations);
 
-  constructor() {
-    this.chartGenerator = new ChartJSNodeCanvas({
-      width: 800,
-      height: 400,
-      backgroundColour: 'white'
-    });
-  }
-
-      // Generate report sections
-
-      // Add metadata and styling
-      
-
+private:
+    ChartJSNodeCanvas chartGenerator_;
+};
+ 
 } // namespace elizaos

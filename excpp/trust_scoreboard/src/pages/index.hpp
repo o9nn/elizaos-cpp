@@ -1,11 +1,11 @@
-#include ".views/home/index.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".views/home/index.hpp"
 
 namespace elizaos {
 

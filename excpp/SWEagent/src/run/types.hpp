@@ -1,14 +1,15 @@
-#include ".agent/agents.hpp"
-#include ".agent/problem-statement.hpp"
-#include ".environment/deployment.hpp"
-#include ".environment/swe-env.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include ".agent/agents.hpp"
+#include ".agent/problem-statement.hpp"
+#include ".environment/deployment.hpp"
+#include ".environment/swe-env.hpp"
 
 namespace elizaos {
 
@@ -24,7 +25,6 @@ namespace elizaos {
  */
 struct RunSingleActionConfig {
     bool openPr;
-    std::optional<{> prConfig;
     std::optional<bool> skipIfCommitsReferenceIssue;
     bool applyPatchLocally;
 };
@@ -45,14 +45,14 @@ struct RunSingleConfig {
  * Configuration for batch instances source
  */
 struct BatchInstanceSourceConfig {
-    std::optional<'file' | 'swe_bench' | 'huggingface'> type;
+    std::optional<std::variant<'file', 'swe_bench', 'huggingface'>> type;
     std::optional<std::string> path;
     std::optional<std::string> filter;
     std::optional<std::string> slice;
     std::optional<bool> shuffle;
     std::optional<DeploymentConfig> deployment;
-    std::optional<'lite' | 'verified' | 'full' | 'multimodal' | 'multilingual'> subset;
-    std::optional<'dev' | 'test'> split;
+    std::optional<std::variant<'lite', 'verified', 'full', 'multimodal', 'multilingual'>> subset;
+    std::optional<std::variant<'dev', 'test'>> split;
     std::optional<std::string> pathOverride;
     std::optional<bool> evaluate;
     std::optional<std::string> dataset_name;
@@ -94,7 +94,14 @@ struct CLIConfig {
  * Trajectory data structure
  */
 struct TrajectoryData {
-    std::optional<std::vector<{ role: string; content: string; tool_calls?: unknown }>> history;
+    std::string content;
+    std::optional<std::variant<std::string, RunSingleConfig>> replay_config;
+    std::optional<std::string> submission;
+    std::optional<ProblemStatementConfig> problemStatement;
+    std::optional<std::string> action;
+    std::optional<std::string> observation;
+    std::optional<std::string> response;
+};
 
 /**
  * SWE-Bench instance data

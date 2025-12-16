@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -22,20 +22,9 @@ struct InteractionData {
 };
 
 class AnalyticsVisualization {
-  static generateTimeSeriesChart(data: TimeSeriesDataPoint[]): ChartConfiguration {
-    return {
-      type: 'line',
-      data: {
-        labels: data.map(d => d.date),
-        datasets: [{
-          label: 'Views',
-          data: data.map(d => d.value)
-        }]
-      },
-      options: {
-        responsive: true
-      }
-    };
-  }
-
+public:
+    ChartConfiguration generateTimeSeriesChart(const std::vector<TimeSeriesDataPoint>& data);
+    ChartConfiguration generateHeatmap(InteractionData data);
+};
+ 
 } // namespace elizaos

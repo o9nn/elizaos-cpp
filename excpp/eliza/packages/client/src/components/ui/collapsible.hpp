@@ -1,12 +1,12 @@
-#include "button.hpp"
-#include "collapsible.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "button.hpp"
+#include "collapsible.hpp"
 
 namespace elizaos {
 

@@ -1,12 +1,13 @@
-#include "logger.js.hpp"
-#include "playwright-installer.js.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "logger.js.hpp"
+#include "playwright-installer.js.hpp"
 
 namespace elizaos {
 
@@ -23,27 +24,15 @@ struct BrowserSession {
 };
 
 class SessionManager {
-  private sessions: Map<string, BrowserSession> = new Map();
-  private maxSessionsPerClient = 3;
-
-  constructor(
-    private logger: Logger,
-    private playwrightInstaller: PlaywrightInstaller
-  ) {}
-
-    // Ensure Playwright is installed before creating session
-
-    // Check session limit for client
-      // Remove oldest session
-
-    // Determine environment based on available API keys
-
-    // Create Stagehand configuration
-
-    // Add API keys if available
-
-    // Configure LLM provider
-      // Use Ollama if available
+public:
+    SessionManager(Logger private logger, PlaywrightInstaller private playwrightInstaller);
+    std::future<BrowserSession> createSession(const std::string& sessionId, const std::string& clientId);
+    BrowserSession getSession(const std::string& sessionId);
+    std::future<void> destroySession(const std::string& sessionId);
+    std::vector<BrowserSession> getClientSessions(const std::string& clientId);
+    std::future<void> cleanupClientSessions(const std::string& clientId);
+    std::future<void> cleanup();
+};
 
 
 } // namespace elizaos

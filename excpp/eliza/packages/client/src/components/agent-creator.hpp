@@ -1,13 +1,13 @@
-#include "avatar-panel.hpp"
-#include "plugins-panel.hpp"
-#include "secret-panel.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "avatar-panel.hpp"
+#include "plugins-panel.hpp"
+#include "secret-panel.hpp"
 
 namespace elizaos {
 

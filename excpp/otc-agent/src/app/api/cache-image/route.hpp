@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -20,5 +21,6 @@ namespace elizaos {
  */
 std::future<void> GET(NextRequest request);
 
+std::optional<std::string> getExtensionFromUrl(const std::string& url);
 
 } // namespace elizaos

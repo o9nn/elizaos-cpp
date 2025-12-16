@@ -1,11 +1,11 @@
-#include "SkillsSelector.module.css.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "SkillsSelector.module.css.hpp"
 
 namespace elizaos {
 
@@ -16,7 +16,6 @@ namespace elizaos {
 
 struct SkillsSelectorProps {
     std::vector<std::string> selectedSkills;
-    (skills: string[]) => void onSelectSkill;
 };
 
 

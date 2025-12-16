@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -16,8 +16,8 @@ namespace elizaos {
 // Registry configuration - centralized for maintainability
 
 struct GitVersionInfo {
-    string | null version;
-    string | null branch;
+    std::optional<std::string> version;
+    std::optional<std::string> branch;
 };
 
 struct PluginGitInfo {
@@ -28,8 +28,8 @@ struct PluginGitInfo {
 
 struct PluginNpmInfo {
     std::string repo;
-    string | null v0;
-    string | null v1;
+    std::optional<std::string> v0;
+    std::optional<std::string> v1;
 };
 
 struct PluginSupport {
@@ -45,7 +45,6 @@ struct PluginInfo {
 
 struct RegistryResponse {
     std::string lastUpdatedAt;
-    std::unordered_map<std::string, PluginInfo> registry;
 };
 
 /**

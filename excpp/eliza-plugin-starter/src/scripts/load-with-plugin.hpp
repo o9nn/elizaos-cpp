@@ -1,11 +1,13 @@
-#include "loader.ts.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "loader.ts.hpp"
 
 namespace elizaos {
 
@@ -30,12 +32,10 @@ struct Plugin {
 
 // Cache Adapter Implementation
 class CompatibleCacheAdapter {
-  private data = new Map<string, string>();
-
-  async get<T = unknown>(key: string): Promise<T | undefined> {
-    const value = this.data.get(key);
-    return (value ? JSON.parse(value) : undefined) as T;
+public:
+    undefined) as T;
   }
+    std::future<void> delete(const std::string& key);
 
 // Function to dynamically load plugins from ./src/plugins
 

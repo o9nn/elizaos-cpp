@@ -1,15 +1,15 @@
-#include "....utils/entity.hpp"
-#include "...plugin-cdp/services/cdp.service.hpp"
-#include ".services.hpp"
-#include ".types.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "....utils/entity.hpp"
+#include "...plugin-cdp/services/cdp.service.hpp"
+#include ".services.hpp"
+#include ".types.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -30,9 +30,7 @@ using MarketPositionsActionResult = ActionResult & { input: MarketPositionsInput
 // Helper function to format market position data
 void formatMarketPositionData(const std::vector<UserPosition>& positions);
 
-/* =========================
  * Action: GET_MORPHO_MARKET_POSITIONS
- * ========================= */
 
       // Read parameters from state
 

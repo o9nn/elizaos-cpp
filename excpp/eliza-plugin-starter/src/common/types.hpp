@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -18,14 +19,12 @@ struct SearchResult {
     std::string url;
     std::string snippet;
     std::optional<double> score;
-    "tavily" | "exa" source;
-    std::optional<std::unordered_map<std::string, unknown>> metadata;
+    std::variant<"tavily", "exa"> source;
 };
 
 struct SearchOptions {
     std::optional<double> maxResults;
     std::optional<std::string> searchType;
-    std::optional<std::unordered_map<std::string, unknown>> filters;
 };
 
 struct SearchProvider {
@@ -35,7 +34,6 @@ struct SearchPluginConfig {
     std::string apiKey;
     std::optional<double> maxResults;
     std::optional<std::string> searchType;
-    std::optional<std::unordered_map<std::string, unknown>> filters;
 };
 
 

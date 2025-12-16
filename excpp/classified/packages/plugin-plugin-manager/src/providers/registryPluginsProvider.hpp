@@ -1,12 +1,12 @@
-#include ".services/pluginManagerService.hpp"
-#include ".services/pluginRegistryService.js.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".services/pluginManagerService.hpp"
+#include ".services/pluginRegistryService.js.hpp"
 
 namespace elizaos {
 

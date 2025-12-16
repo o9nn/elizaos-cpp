@@ -1,10 +1,12 @@
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -16,6 +18,6 @@ namespace elizaos {
 // Check if we're in local development mode (no external API calls needed)
 bool isLocalDevelopment(const std::string& chain, const std::string& contractAddress);
 
-std::future<void> GET(NextRequest request, { params: Promise<{ tokenId: string }> } { params });
+std::future<void> GET(NextRequest request, const std::any& { params });
 
 } // namespace elizaos

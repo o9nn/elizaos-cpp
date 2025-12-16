@@ -1,3 +1,10 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include "...app/guards.hpp"
 #include "...components/cancel-button.hpp"
 #include "...components/modal-debug-message.hpp"
@@ -11,13 +18,6 @@
 #include "...features/purge/use-purge-slice.hpp"
 #include "...features/user/use-user-slice.hpp"
 #include "..message-mock/message-mock.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 

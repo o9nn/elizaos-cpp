@@ -1,10 +1,13 @@
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -224,8 +227,7 @@ struct TokenizationResult {
  * Interface for stemming rules.
  */
 struct StemmingRule {
-    RegExp | string pattern;
-    string | ((substring: string, ...args: any[]) => string) replacement;
+    std::variant<RegExp, std::string> pattern;
     std::optional<double> minMeasure;
 };
 
@@ -244,107 +246,14 @@ struct TokenizerOptions {
  * Unicode normalization, and optional Porter2 stemming with custom rules.
  */
 class Tokenizer {
-  /** Set of stop words to ignore. */
-  readonly stopWords: Set<string>;
-  /** Minimum length of tokens to keep. */
-  readonly minLength: number;
-  /** Flag indicating if stemming is enabled. */
-  readonly stemming: boolean;
-  /** Custom stemming rules. */
-  readonly stemmingRules: {
-    pattern: RegExp;
-    replacement: string | ((substring: string, ...args: any[]) => string);
-    minMeasure?: number;
-  }[];
-
-  /** Default options for the Tokenizer. */
-
-  /**
-   * Creates a new tokenizer instance.
-   * @param options - Tokenization options including stop words, min length, stemming, and custom rules.
-   */
-    // Ensure all rule patterns are RegExp objects
-
-  /**
-   * Tokenizes input text into an array of processed terms.
-   * Steps:
-   * 1. Cleans the text (lowercase, normalize, remove punctuation/symbols).
-   * 2. Splits the text into potential tokens.
-   * 3. Filters tokens based on `minLength` and `stopWords`.
-   * 4. Applies stemming if `stemming` is true (custom rules first, then Porter2).
-   * 5. Optionally calculates statistics.
-   *
-   * @param text - The input text string to tokenize.
-   * @param includeStats - If true, returns tokenization statistics along with tokens. Defaults to false.
-   * @returns A `TokenizationResult` object containing the array of tokens and optional stats.
-   * @throws {Error} If the input text is null, undefined, or empty.
-   */
-
-  /**
-   * Cleans and normalizes text for tokenization.
-   * - Converts to lowercase.
-   * - Normalizes Unicode characters (NFKD).
-   * - Removes control characters and zero-width spaces.
-   * - Removes diacritical marks (accents).
-   * - Removes emojis and pictographs.
-   * - Removes common symbols (™, ®, ©, ℠, ‼).
-   * - Replaces Unicode punctuation with spaces.
-   * - Removes characters not matching basic Latin, CJK, Hangul, or whitespace.
-   * - Collapses multiple spaces into single spaces.
-   * - Trims leading/trailing whitespace.
-   *
-   * @param text - Input text to clean.
-   * @returns Cleaned and normalized text, ready for splitting into tokens.
-   *
-   * @example
-   * cleanText("Hello, World™!") // "hello world"
-   * cleanText("héllo 👋") // "hello"
-   * cleanText("Hello 世界!") // "hello 世界"
-   * cleanText("I'm don't") // "i'm don't" (apostrophes kept by replacing punctuation with space)
-   * cleanText("test©2023") // "test 2023"
-   */
-
-  /**
-   * Checks if a token is valid (meets `minLength` criteria and is not a stop word).
-   * Numeric tokens are always considered valid regardless of length.
-   * @param token - The token string to validate.
-   * @returns `true` if the token is valid, `false` otherwise.
-   */
-
-  /**
-   * Applies stemming to a single word.
-   * First, tries to apply custom stemming rules defined in `stemmingRules`.
-   * If no custom rule matches, applies the default Porter2 stemming algorithm.
-   * Words shorter than 3 characters are not stemmed.
-   * @param word - The word to stem.
-   * @returns The stemmed word.
-   */
-          // Apply replacement
-            // If replacement is a function, it might need more specific arguments based on its definition.
-            // Assuming it takes the matched substring and potentially other match groups.
-          // Depending on stemming strategy, might want to break or continue applying rules
-    // If a custom rule was applied and modified the word, return it.
-    // Otherwise, or if custom rules are meant to precede default stemming, apply Porter2.
-
-    // Fallback to Porter2 if no custom rule applied or if custom rules are pre-processing
-    return stem(stemmed); // Apply Porter2 to the (potentially already custom-stemmed) word
-
-  /**
-   * Checks if the character at a given index in a word is a consonant.
-   * Treats 'y' as a consonant if it's the first letter or follows a consonant.
-   * @param word - The word string.
-   * @param i - The index of the character to check.
-   * @returns `true` if the character is a consonant, `false` otherwise.
-   */
-
-  /**
-   * Calculates the "measure" of a word stem (approximates syllable count).
-   * The measure (m) is the number of times a sequence of vowels is followed by a
-   * sequence of consonants (VC). Used in some stemming rules.
-   * Example: measure("tree") = 0, measure("trouble") = 1, measure("private") = 2
-   * @param word - The word (or stem) to measure.
-   * @returns The measure (m) of the word.
-   */
+public:
+    Tokenizer(TokenizerOptions = {} options);
+    TokenizationResult tokenize(const std::string& text, auto includeStats = false);
+    std::string cleanText(const std::string& text);
+    bool isValidToken(const std::string& token);
+    std::string stemWord(const std::string& word);
+    bool isConsonant(const std::string& word, double i);
+    double measure(const std::string& word);
 
 /**
  * BM25 Options Interface.
@@ -372,7 +281,7 @@ class Tokenizer {
 struct SearchResult {
     double index;
     double score;
-    std::optional<any; // Consider using a generic <T> for BM25 class if docs are typed> doc;
+    std::optional<std::any> doc;
 };
 
 /**
@@ -393,216 +302,18 @@ struct SearchResult {
  * - Scoring: Combines TF, IDF, document length, and parameters k1/b to calculate relevance.
  */
 class BM25 {
-  /** Term frequency saturation parameter (k1). */
-  readonly termFrequencySaturation: number; // k1
-  /** Document length normalization factor (b). */
-  readonly lengthNormalizationFactor: number; // b
-  /** Tokenizer instance used for processing text. */
-  readonly tokenizer: Tokenizer;
-  /** Array storing the length (number of tokens, adjusted by field boosts) of each document. */
-  documentLengths: Uint32Array;
-  /** Average length of all documents in the index. */
-  averageDocLength: number;
-  /** Map from term (string) to its unique integer index. */
-  termToIndex: Map<string, number>;
-  /** Array storing the document frequency (number of docs containing the term) for each term index. */
-  documentFrequency: Uint32Array; // DF for each term index
-  /** Map from term index to another map storing `docIndex: termFrequencyInDoc`. */
-  termFrequencies: Map<number, Map<number, number>>; // TermIndex -> { DocIndex -> TF }
-  /** Boost factors for different fields within documents. */
-  /** Array storing the original documents added to the index. */
+public:
+    BM25(std::optional<std::vector<std::any>> docs, BM25Options = {} options);
+    void recalculateAverageLength();
+    std::vector<SearchResult> search(const std::string& query, auto topK = 10);
+    std::vector<SearchResult> searchPhrase(const std::string& phrase, auto topK = 10);
+    double calculatePhraseScore(const std::vector<std::string>& phraseTokens, double docIndex);
+    std::future<void> addDocument(const std::any& doc);
+    double calculateIdf(double termIndex);
+    double getTermFrequency(double termIndex, double docIndex);
+    std::any getDocument(double index);
+    void clearDocuments();
+    double getDocumentCount();
 
-  /**
-   * Creates a new BM25 search instance.
-   * @param docs - Optional array of initial documents (objects with string fields) to index.
-   * @param options - Configuration options for BM25 parameters (k1, b), tokenizer (stopWords, stemming, minLength), and field boosts.
-   */
-
-    // Initialize index structures
-
-    // Index initial documents if provided
-      // Assign processed data to instance properties
-
-  /**
-   * Processes an array of documents to build the initial index structures.
-   * Calculates document lengths, term frequencies, document frequencies, and average document length.
-   * @param docs - Array of documents to process.
-   * @returns An object containing the calculated index data.
-   * @internal
-   */
-
-      // Iterate through fields of the document
-
-        // Calculate term frequencies within this field/doc
-          // Assign index to new terms
-
-          // Track which documents contain the term
-
-          // Increment frequency for this term in this document
-
-      // Store the calculated length for this document
-
-      // Merge this document's term frequencies into the main structure
-
-    // Calculate document frequency (DF) for each term
-
-  /**
-   * Recalculates the average document length based on the current `documentLengths`.
-   * @internal
-   */
-    // Use Array.prototype.reduce for compatibility, though typed array reduce might be faster
-
-  /**
-   * Searches the indexed documents for a given query string using the BM25 ranking formula.
-   *
-   * @param query - The search query text.
-   * @param topK - The maximum number of top-scoring results to return. Defaults to 10.
-   * @returns An array of `SearchResult` objects, sorted by descending BM25 score.
-   */
-
-    // Accumulate scores for each document based on query terms
-      // Ignore terms not found in the index
-
-      // Skip terms with non-positive IDF (e.g., term in all docs)
-
-      // Iterate over documents containing this term
-
-        // --- BM25 Term Score Calculation ---
-        // Normalizes TF based on document length and saturation parameters.
-
-        // Add the weighted score (IDF * normalized TF) for this term to the document's total score
-
-    // --- Result Generation ---
-    // Create result objects, filter out zero scores, sort, and take top K
-      // Optionally add: doc: this.getDocument(i) // If you want the full doc in results
-
-  /**
-   * Searches for an exact phrase within the indexed documents.
-   * Ranks documents containing the exact sequence of tokens higher.
-   * Note: This is a basic implementation. More sophisticated phrase search might consider proximity.
-   *
-   * @param phrase - The exact phrase to search for.
-   * @param topK - The maximum number of results to return. Defaults to 10.
-   * @returns An array of `SearchResult` objects, sorted by score, for documents containing the phrase.
-   */
-
-    // --- Find Candidate Documents ---
-    // Start with documents containing the *first* term, then intersect with subsequent terms.
-
-        // First term initializes the candidates
-        // Intersect: Keep only documents present in both sets
-
-      // If intersection becomes empty, the phrase cannot exist
-
-    // --- Verify Phrase Occurrence and Score ---
-
-      // Check each field for the phrase
-
-        // Tokenize the field content using the same settings
-
-        // Simple sliding window check for the exact phrase sequence
-            // Phrase found! Calculate score for this document based on the phrase terms
-
-    // --- Format and Sort Results ---
-
-  /**
-   * Calculates a BM25-like score for a sequence of phrase tokens within a specific document.
-   * Sums the individual BM25 scores of the terms in the phrase for that document.
-   * @param phraseTokens - The tokenized phrase.
-   * @param docIndex - The index of the document to score against.
-   * @returns The calculated phrase score for the document.
-   * @internal
-   */
-      // Ignore terms not in index (shouldn't happen if candidate selection worked)
-
-      // Calculate the BM25 contribution of this single term
-
-      // Add IDF * normalized TF to the total phrase score
-
-  /**
-   * Adds a single new document to the index.
-   * Updates all internal index structures incrementally.
-   * Note: For adding many documents, `addDocumentsParallel` is generally more efficient.
-   *
-   * @param doc - The document object (with string fields) to add.
-   * @throws {Error} If the document is null or undefined.
-   */
-
-    // --- Update Document List and Lengths ---
-    // Resize documentLengths array (simple append)
-    // Calculate length later...
-
-    // --- Process Fields and Tokens ---
-
-      // Process each token in the field
-        // Add term to index if new
-
-          // Ensure documentFrequency array is large enough
-            // Grow exponentially, ensure it's at least termIndex + 1
-          // Initialize DF for new term (will be incremented below)
-
-        // Increment frequency for this term in this new document
-
-    // --- Update Global Structures ---
-    // Set the calculated length for the new document
-
-    // Add this document's term frequencies to the main map and update DF
-      // Add TF entry
-
-      // Increment document frequency for the term
-      // Ensure termIndexVal is within bounds of documentFrequency before incrementing
-        // This case should ideally not be reached if array was resized correctly
-
-    // Recalculate average document length
-
-  /**
-   * Calculates the Inverse Document Frequency (IDF) for a given term index.
-   * Uses the BM25 IDF formula: log(1 + (N - n + 0.5) / (n + 0.5))
-   * where N is the total number of documents and n is the number of documents
-   * containing the term. The +1 smooths the logarithm.
-   *
-   * @param termIndex - The integer index of the term.
-   * @returns The IDF score for the term. Returns 0 if the term is not found or has 0 DF.
-   */
-    // Ensure termIndex is valid
-
-    // If term appears in 0 documents or more docs than exist (error state), return 0 IDF.
-
-    // Adding 1 inside the log ensures IDF is always non-negative.
-
-  /**
-   * Retrieves the term frequency (TF) for a specific term in a specific document.
-   * @param termIndex - The integer index of the term.
-   * @param docIndex - The index of the document.
-   * @returns The term frequency, or 0 if the term is not in the document or indices are invalid.
-   */
-
-  /**
-   * Retrieves the original document object stored at a given index.
-   * @param index - The index of the document to retrieve.
-   * @returns The document object.
-   * @throws {Error} If the index is out of bounds.
-   */
-    // Consider using a generic <T>
-
-  /**
-   * Clears all indexed documents and resets the BM25 instance to its initial state.
-   */
-
-  /**
-   * Gets the total number of documents currently indexed.
-   * @returns The document count.
-   */
-
-  /**
-   * Adds multiple documents sequentially by calling `addDocument` for each.
-   * This method processes documents sequentially in the main thread.
-   * @param docs - An array of documents to add.
-   */
-    // Allow Promise<void> return type
-    // Using Promise.all to potentially run additions concurrently if addDocument becomes async
-    // Although the current addDocument is sync, this structure allows future flexibility.
-    // Note: If addDocument remains purely synchronous, a simple forEach would also work:
-    // docs.forEach(doc => this.addDocument(doc));
 
 } // namespace elizaos

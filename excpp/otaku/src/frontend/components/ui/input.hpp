@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -13,7 +13,7 @@ namespace elizaos {
 
 
 
-void Input(auto { className, auto type, React.ComponentProps<"input"> ...props });
+void Input(auto { className, auto type, ComponentProps<"input"> ...props });
 
 
 } // namespace elizaos

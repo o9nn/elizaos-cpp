@@ -1,3 +1,10 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include "actions/github-publish.hpp"
 #include "actions/npm-publish.hpp"
 #include "actions/registry-publish.hpp"
@@ -6,13 +13,6 @@
 #include "utils/metadata.hpp"
 #include "utils/validation.hpp"
 #include "utils/version-check.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -29,8 +29,6 @@ namespace elizaos {
 
 // Constants
 
-    await displayBanner();
-
       // Use standardized directory detection
 
       // Validate that we're in a valid directory with package.json
@@ -44,7 +42,6 @@ namespace elizaos {
       // Validate data directory and settings only if we need GitHub publishing
 
           // Initialize data directory first
-          await initializeDataDir();
 
           // Use the built-in credentials function
 
@@ -83,10 +80,8 @@ namespace elizaos {
       // Save updated package.json
 
       // Validate plugin requirements
-      await validatePluginRequirements(cwd, packageJson);
 
       // Update registry settings
-      await saveRegistrySettings(settings);
 
       // Generate package metadata
 
@@ -101,7 +96,6 @@ namespace elizaos {
       // Track what was actually published for accurate messaging
 
       // Step 1: Publish to npm (always, unless we add a --skip-npm flag later)
-      await publishToNpm(cwd, packageJson, npmUsername);
 
       // Add npm package info to metadata
 

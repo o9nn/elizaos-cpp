@@ -1,3 +1,10 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include "services/agents.hpp"
 #include "services/audio.hpp"
 #include "services/media.hpp"
@@ -6,13 +13,6 @@
 #include "services/server.hpp"
 #include "services/system.hpp"
 #include "types/base.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -22,27 +22,10 @@ namespace elizaos {
 
 
 class ElizaClient {
-  public readonly agents: AgentsService;
-  public readonly messaging: MessagingService;
-  public readonly memory: MemoryService;
-  public readonly audio: AudioService;
-  public readonly media: MediaService;
-  public readonly server: ServerService;
-  public readonly system: SystemService;
+public:
+    ElizaClient(ApiClientConfig config);
+    ElizaClient create(ApiClientConfig config);
+};
 
-  constructor(config: ApiClientConfig) {
-    // Initialize all services with the same config
-    this.agents = new AgentsService(config);
-    this.messaging = new MessagingService(config);
-    this.memory = new MemoryService(config);
-    this.audio = new AudioService(config);
-    this.media = new MediaService(config);
-    this.server = new ServerService(config);
-    this.system = new SystemService(config);
-  }
-
-  /**
-   * Create a new ElizaClient instance
-   */
 
 } // namespace elizaos

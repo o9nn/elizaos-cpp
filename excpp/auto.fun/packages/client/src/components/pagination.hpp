@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -22,7 +22,6 @@ struct IPagination {
 
 struct PaginationProps {
     IPagination pagination;
-    std::optional<(page: number) => void> onPageChange;
 };
 
                 // makes dots clickable, in or decreasing by 3

@@ -1,11 +1,12 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -28,15 +29,15 @@ using Skill = std::string;
 // Platform-specific contact info
 struct PlatformContact {
     PlatformType platform;
-    string; // username, email, etc. identifier;
+    std::string identifier;
 };
 
 // Team member availability
 struct Availability {
     std::optional<std::vector<WeekDay>> workDays;
-    string; // 24-hour format HH:MM workHoursStart;
-    string; // 24-hour format HH:MM workHoursEnd;
-    string; // e.g., 'America/New_York', 'UTC' timeZone;
+    std::string workHoursStart;
+    std::string workHoursEnd;
+    std::string timeZone;
 };
 
 // Team member interface
@@ -66,8 +67,8 @@ struct Task {
     std::string description;
     TaskStatus status;
     TaskPriority priority;
-    std::optional<UUID; // TeamMember ID> assignedTo;
-    std::optional<UUID[]; // Task IDs> dependsOn;
+    std::optional<UUID> assignedTo;
+    std::optional<std::vector<UUID>> dependsOn;
     std::optional<double> estimatedHours;
     std::optional<double> actualHours;
     std::string createdAt;
@@ -80,7 +81,7 @@ struct Milestone {
     UUID id;
     std::string name;
     std::string description;
-    UUID[]; // Task IDs tasks;
+    std::vector<UUID> tasks;
     std::string dueDate;
     std::optional<std::string> completedAt;
 };
@@ -101,7 +102,7 @@ struct Project {
     std::string name;
     std::string description;
     ProjectStatus status;
-    UUID[]; // TeamMember IDs teamMembers;
+    std::vector<UUID> teamMembers;
     std::vector<Task> tasks;
     std::vector<Milestone> milestones;
     std::vector<ProjectProgress> progress;
@@ -138,20 +139,20 @@ struct TeamMemberUpdate {
     std::string timestamp;
     std::optional<UUID> channelId;
     std::optional<std::string> serverId;
-    string; // JSON stringified object containing all dynamic Q&A pairs answers;
+    std::string answers;
 };
 
 struct CheckInSchedule {
     'team-member-checkin-schedule' type;
     std::string scheduleId;
-    std::optional<string | undefined | null> teamMemberName;
+    std::optional<std::optional<std::string>> teamMemberName;
     std::optional<std::string> teamMemberUserName;
     std::string checkInType;
     std::string channelId;
-    'WEEKDAYS' | 'DAILY' | 'WEEKLY' | 'BIWEEKLY' | 'MONTHLY' | 'CUSTOM' frequency;
-    string; // Time in "HH:mm" format checkInTime;
+    std::variant<'WEEKDAYS', 'DAILY', 'WEEKLY', 'BIWEEKLY', 'MONTHLY', 'CUSTOM'> frequency;
+    std::string checkInTime;
     std::string createdAt;
-    std::optional<string; // Add source field to track where the message came from> source;
+    std::optional<std::string> source;
     std::optional<std::string> serverId;
 };
 

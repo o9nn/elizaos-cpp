@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -18,7 +19,7 @@ struct ConfirmationOptions {
     std::string description;
     std::optional<std::string> confirmText;
     std::optional<std::string> cancelText;
-    std::optional<'default' | 'destructive'> variant;
+    std::optional<std::variant<'default', 'destructive'>> variant;
 };
 
 void useConfirmation();

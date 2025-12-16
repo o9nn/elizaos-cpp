@@ -1,15 +1,15 @@
-#include ".lp/service.hpp"
-#include ".tokenData/service.hpp"
-#include ".wallet/service.hpp"
-#include "elizaos/core.hpp"
-#include "test-utils.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".lp/service.hpp"
+#include ".tokenData/service.hpp"
+#include ".wallet/service.hpp"
+#include "elizaos/core.hpp"
+#include "test-utils.hpp"
 
 namespace elizaos {
 

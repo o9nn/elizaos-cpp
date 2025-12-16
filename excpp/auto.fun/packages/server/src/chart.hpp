@@ -1,15 +1,17 @@
-#include "codex.hpp"
-#include "db.hpp"
-#include "mcap.hpp"
-#include "redis.hpp"
-#include "util.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "codex.hpp"
+#include "db.hpp"
+#include "mcap.hpp"
+#include "redis.hpp"
+#include "util.hpp"
 
 namespace elizaos {
 
@@ -22,7 +24,6 @@ namespace elizaos {
 struct DexScreenerPair {
     std::string pairAddress;
     std::string priceUsd;
-    std::optional<{> liquidity;
     std::string usd;
 };
 

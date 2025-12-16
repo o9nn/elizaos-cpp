@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -13,12 +13,6 @@ namespace elizaos {
 
 // https://discord.com/developers/docs/resources/channel#embed-object-embed-types
 enum EmbedType {
-  RICH = "rich",
-  IMAGE = "image",
-  VIDEO = "video",
-  GIFV = "gifv",
-  ARTICLE = "article",
-  LINK = "link",
 }
 
 } // namespace elizaos

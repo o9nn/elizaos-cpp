@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -28,9 +29,8 @@ struct FormField {
     std::optional<std::string> criteria;
     std::optional<bool> optional;
     std::optional<bool> secret;
-    std::optional<string | number | boolean> value;
+    std::optional<std::variant<std::string, double, bool>> value;
     std::optional<std::string> error;
-    std::optional<std::unordered_map<std::string, unknown>> metadata;
 };
 
 /**
@@ -41,7 +41,6 @@ struct FormStep {
     std::string name;
     std::vector<FormField> fields;
     std::optional<bool> completed;
-    std::optional<(form: Form, stepId: string) => Promise<void>> onComplete;
 };
 
 /**
@@ -63,8 +62,6 @@ struct Form {
     double updatedAt;
     std::optional<double> completedAt;
     UUID agentId;
-    std::optional<(form: Form) => Promise<void>> onComplete;
-    std::optional<std::unordered_map<std::string, unknown>> metadata;
 };
 
 /**
@@ -74,7 +71,6 @@ struct FormTemplate {
     std::string name;
     std::optional<std::string> description;
     std::vector<FormStep> steps;
-    std::optional<std::unordered_map<std::string, unknown>> metadata;
 };
 
 /**
@@ -84,7 +80,11 @@ struct FormUpdateResult {
     bool success;
     std::optional<Form> form;
     std::optional<std::vector<std::string>> updatedFields;
-    std::optional<std::vector<{ fieldId: string; message: string }>> errors;
+    std::optional<bool> stepCompleted;
+    std::optional<bool> formCompleted;
+    std::optional<std::string> currentStep;
+    std::optional<std::string> message;
+};
 
 // Extend the core service types with forms service
   struct ServiceTypeRegistry {

@@ -1,13 +1,14 @@
-#include ".forms/checkInForm.hpp"
-#include ".forms/scheduleForm.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".forms/checkInForm.hpp"
+#include ".forms/scheduleForm.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -20,7 +21,6 @@ struct DiscordComponentInteraction {
     std::string customId;
     double componentType;
     std::optional<std::vector<std::string>> values;
-    std::optional<std::unordered_map<std::string, std::vector<std::string>>> selections;
 };
 
 struct TextChannel {
@@ -38,12 +38,9 @@ struct TextChannel {
  * @returns {Promise<{ isValid: boolean; error?: string }>}
  */
     // logger.info(`Validating Discord config for server ${serverId}`);
-    // const worldSettings = await getWorldSettings(runtime, serverId);
 
     // // Check required fields
     // for (const field of REQUIRED_DISCORD_FIELDS) {
-    //   if (!worldSettings[field] || worldSettings[field].value === null) {
-    //     return {
     //       isValid: false,
     //       error: `Missing required Discord configuration: ${field}`,
     //     };
@@ -64,7 +61,6 @@ std::future<DiscordService> ensureDiscordClient(IAgentRuntime runtime);
       // // Define valid admin roles (case-insensitive)
       // const adminRoles = ['admin', 'owner', 'moderator', 'administrator'];
       // const isAdminUser =
-      //   userRole && adminRoles.some((role) => userRole.toLowerCase() === role.toLowerCase());
 
       // if (!isAdminUser) {
       //   logger.info(
@@ -76,7 +72,6 @@ std::future<DiscordService> ensureDiscordClient(IAgentRuntime runtime);
       // }
 
       // // Validate Discord configuration
-      // const validation = await validateDiscordConfig(runtime, serverId);
       // if (!validation.isValid) {
       //   logger.error(`Discord validation failed: ${validation.error}`);
       //   return false;
@@ -105,14 +100,12 @@ std::future<DiscordService> ensureDiscordClient(IAgentRuntime runtime);
       // if (!existingConfig) {
       //   logger.info('No existing report channel config found - sending report form first');
       //   logger.info('Using server ID:', serverId);
-      //   await sendCheckInReportForm(callback, textChannels, {
       //     serverId,
       //     // serverName: String(message.content.serverName),
       //   });
       // } else {
       //   logger.info('Found existing report channel config:', existingConfig);
       //   logger.info(`Sending schedule form with ${textChannels.length} channels`);
-      //   await sendCheckInScheduleForm(callback, textChannels);
       // }
 
       // Send message to user asking for check-in details

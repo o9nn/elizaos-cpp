@@ -1,3 +1,11 @@
+#pragma once
+#include <functional>
+#include <future>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include ".agent/problem-statement.hpp"
 #include ".utils/files.hpp"
 #include ".utils/log.hpp"
@@ -5,13 +13,6 @@
 #include "run-replay.hpp"
 #include "run-single.hpp"
 #include "types.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 

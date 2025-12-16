@@ -1,11 +1,13 @@
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -14,21 +16,20 @@ namespace elizaos {
 
 
 
-class CoinmarketcapService extends Service {
-  static serviceType: string = "coinmarketcap";
-  capabilityDescription = 'Coinmarketcap data access';
-
-  constructor(protected runtime: IAgentRuntime) {
-    super();
-    this.runtime = runtime
-  }
-
-        //console.log('mpd', mpd)
-            //console.log('saving', ca, test)
-
-  // lookup token
-    // check cache
-    // but if not in cache get it
+class CoinmarketcapService {
+public:
+    CoinmarketcapService(IAgentRuntime protected runtime);
+    void getBirdeyeFetchOptions();
+    std::future<BirdeyeService> start(IAgentRuntime runtime);
+    void stop(IAgentRuntime runtime);
+    Promise< getTokenMarketData(const std::string& tokenAddress);
+    void if(auto !response.ok || !volResponse.ok || !priceHistoryResponse.ok);
+    void if(auto !data.data);
+    void catch(auto error);
+    std::future<std::any> getTokensMarketData(const std::vector<std::string>& tokenAddresses);
+    void lookupToken(auto chain, auto ca);
+    std::future<void> stop();
+};
 
 
 } // namespace elizaos

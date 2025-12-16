@@ -1,13 +1,14 @@
-#include ".lib/base-client.hpp"
-#include ".types/runs.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".lib/base-client.hpp"
+#include ".types/runs.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -16,16 +17,11 @@ namespace elizaos {
 
 
 
-class RunsService extends BaseApiClient {
-  async listRuns(
-    agentId: UUID,
-    params?: ListRunsParams
-  ): Promise<{ runs: RunSummary[]; total: number; hasMore: boolean }> {
-    return this.get<{ runs: RunSummary[]; total: number; hasMore: boolean }>(
-      `/api/agents/${agentId}/runs`,
-      { params }
-    );
-  }
+class RunsService {
+public:
+    Promise< listRuns(UUID agentId, std::optional<ListRunsParams> params);
+    std::future<RunDetail> getRun(UUID agentId, UUID runId, std::optional<UUID> roomId);
+};
 
 
 } // namespace elizaos

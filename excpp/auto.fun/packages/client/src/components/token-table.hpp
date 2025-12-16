@@ -1,11 +1,11 @@
-#include ".types/profileTypes.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".types/profileTypes.hpp"
 
 namespace elizaos {
 

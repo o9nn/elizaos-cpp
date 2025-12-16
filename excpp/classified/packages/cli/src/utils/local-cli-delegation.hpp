@@ -1,11 +1,12 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -31,6 +32,7 @@ bool isRunningFromLocalCli();
  * Gets the path to the local CLI installation if it exists
  * @returns the path to local CLI index.js or null if not found
  */
+std::optional<std::string> getLocalCliPath();
 
 /**
  * Sets up the environment for local CLI execution

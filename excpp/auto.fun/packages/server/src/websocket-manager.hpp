@@ -1,12 +1,15 @@
-#include "redis.hpp"
-#include "util.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "redis.hpp"
+#include "util.hpp"
 
 namespace elizaos {
 
@@ -22,67 +25,26 @@ struct ClientMetadata {
     std::string clientId;
     bool isAlive;
     std::unordered_set<std::string> rooms;
-    WSContext; // Reference to the Hono WebSocket context ws;
+    WSContext ws;
 };
 
 class WebSocketManager {
-  // Maps clientId to our metadata object
-  private clients: Map<string, ClientMetadata> = new Map();
-  // Local cache of room -> Set<clientId> (for efficient local broadcasting)
-  private localRoomClients: Map<string, Set<string>> = new Map();
-  private heartbeatInterval: NodeJS.Timeout | null = null;
-  redisCache: RedisCacheService | null = null;
-
-  // --- Redis Key Helper ---
-  private async redisKey(rawKey: string): Promise<string> {
-    if (!this.redisCache) {
-      this.redisCache = await getGlobalRedisCache();
-    }
-    return this.redisCache.getKey(rawKey);
-  }
-
-  // --- Initialization ---
-
-    // Listen for cross-cluster pub/sub
-
-      // logger.info(`📣 Received Redis message on ${ch}:`, message);
-
-  // --- Connection Handling (Called by Hono route/adapter) ---
-
-  // --- Message Handling (Called by Hono route/adapter or event listener) ---
-      // Convert message data to string for JSON parsing
-      // Extract clientId from the parsed message
-
-          // Heartbeat handled by isAlive flag set above
-
-  // Helper for room events to avoid repetition
-
-  // --- Close/Error Handling (Called by Hono route/adapter) ---
-    // Iterate to find the clientId associated with the closing ws context
-
-      // Pass only clientId for cleanup
-
-    // Iterate to find the clientId
-    // Trigger cleanup using the context (which eventually finds the clientId again)
-
-  // --- Heartbeat (Define before used) ---
-
-          // Call cleanup with only clientId
-          // Call cleanup with only clientId
-
-  // --- Room Management ---
-
-  // --- Client Cleanup (Internal, handles local and Redis state) ---
-
-    // 1. Remove client from local data structures
-
-    // 2. Remove client from Redis
-
-  // --- Broadcasting ---
-
-  // --- Send Direct Message to Client ---
-
-  // --- Graceful Shutdown ---
+public:
+    std::future<std::string> redisKey(const std::string& rawKey);
+    std::future<void> initialize(RedisCacheService redisCache);
+    void handleConnectionOpen(WSContext ws);
+    std::future<void> handleMessage(WSContext ws, const std::variant<std::string, ArrayBuffer, Blob>& messageData);
+    std::future<void> handleRoomEvent(ClientMetadata client, const std::string& event, const std::any& data);
+    void handleConnectionClose(WSContext ws);
+    void handleConnectionError(WSContext ws, Error error);
+    void startHeartbeat();
+    std::future<void> joinRoom(const std::string& event, ClientMetadata client, const std::string& roomName);
+    std::future<void> leaveRoom(const std::string& event, ClientMetadata client, const std::string& roomName);
+    std::future<void> performClientCleanup(const std::string& clientId);
+    std::future<void> broadcastToRoom(const std::string& roomName, const std::string& event, const std::any& data, std::optional<std::string> excludeClientId);
+    bool sendToClient(const std::string& clientId, const std::string& event, const std::any& data);
+    void close();
+};
 
 
 } // namespace elizaos

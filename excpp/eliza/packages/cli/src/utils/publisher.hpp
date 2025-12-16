@@ -1,13 +1,15 @@
-#include "elizaos/core.hpp"
-#include "github.hpp"
-#include "registry.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
+#include "github.hpp"
+#include "registry.hpp"
 
 namespace elizaos {
 
@@ -21,13 +23,12 @@ struct PackageJson {
     std::string version;
     std::optional<std::string> description;
     std::optional<std::string> author;
-    std::optional<{> repository;
     std::optional<std::string> url;
     std::optional<std::vector<std::string>> keywords;
     std::optional<std::vector<std::string>> categories;
-    std::optional<'node' | 'browser' | 'universal'> platform;
-    std::optional<'plugin' | 'project'> packageType;
-    std::optional<string; // 'module' or 'commonjs' for Node.js module format> type;
+    std::optional<std::variant<'node', 'browser', 'universal'>> platform;
+    std::optional<std::variant<'plugin', 'project'>> packageType;
+    std::optional<std::string> type;
 };
 
 /**
@@ -72,7 +73,7 @@ std::future<bool> publishToNpm(const std::string& cwd);
  * - For projects or when {@link skipRegistry} is true, registry updates are skipped and only the GitHub repository is updated.
  * - For plugins, registry updates include metadata and index updates, and a pull request to the registry repository.
  */
-std::future<boolean > publishToGitHub(const std::string& cwd, PackageJson packageJson, const std::string& username, auto skipRegistry = false, auto isTest = false);> {
+std::future<bool> publishToGitHub(const std::string& cwd, PackageJson packageJson, const std::string& username, auto skipRegistry = false, auto isTest = false);> {
   // Get GitHub credentials using getGitHubCredentials which will prompt if needed
 
   // Validate required package type

@@ -1,11 +1,11 @@
-#include "..hooks/use-mobile.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "..hooks/use-mobile.hpp"
 
 namespace elizaos {
 
@@ -16,7 +16,6 @@ namespace elizaos {
 
 struct ModalProps {
     ReactNode children;
-    () => void onClose;
     std::optional<bool> closeOnBackdropClick;
     std::optional<bool> closeOnEsc;
     std::optional<bool> showCloseButton;

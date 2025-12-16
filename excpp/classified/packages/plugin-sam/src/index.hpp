@@ -1,12 +1,12 @@
-#include "actions/sayAloud.hpp"
-#include "services/SamTTSService.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "actions/sayAloud.hpp"
+#include "services/SamTTSService.hpp"
 
 namespace elizaos {
 

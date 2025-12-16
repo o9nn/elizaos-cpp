@@ -1,11 +1,11 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -81,7 +81,6 @@ namespace elizaos {
     // For now, it's valid if there are any component types already present in the world context.
 
       // Handle initial responses
-        await callback(response.content);
 
       // First, find the entity being referenced
 

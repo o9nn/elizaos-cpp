@@ -1,11 +1,11 @@
-#include "elizaos/plugin-openai.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/plugin-openai.hpp"
 
 namespace elizaos {
 

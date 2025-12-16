@@ -1,12 +1,13 @@
-#include "base.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "base.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -31,12 +32,11 @@ struct ChannelMetadata {
     std::optional<std::string> description;
     std::optional<std::string> topic;
     std::optional<std::vector<std::string>> participants;
-    std::optional<UUID[]; // Used by messaging service> participantCentralUserIds;
+    std::optional<std::vector<UUID>> participantCentralUserIds;
     std::optional<bool> isPrivate;
     std::optional<std::string> sessionId;
     std::optional<std::string> agentId;
     std::optional<std::string> userId;
-    std::optional<{> timeoutConfig;
     std::optional<double> timeoutMinutes;
     std::optional<bool> autoRenew;
     std::optional<double> maxDurationMinutes;
@@ -50,7 +50,6 @@ struct MessageMetadata {
     std::optional<std::string> agentName;
     std::optional<std::string> thought;
     std::optional<std::vector<std::string>> actions;
-    std::optional<Array<{> attachments;
     std::string id;
     std::string url;
     std::optional<std::string> type;
@@ -65,14 +64,11 @@ struct MessageMetadata {
     std::optional<UUID> serverId;
     std::optional<std::string> prompt;
     std::optional<std::string> source;
-    std::optional<'low' | 'normal' | 'high'> priority;
+    std::optional<std::variant<'low', 'normal', 'high'>> priority;
     std::optional<std::vector<std::string>> tags;
-    std::optional<std::unordered_map<std::string, string | number | boolean>> context;
     std::optional<std::string> serverName;
     std::optional<std::string> channelName;
     std::optional<std::string> channelType;
-    std::optional<std::unordered_map<std::string, unknown>> serverMetadata;
-    std::optional<std::unordered_map<std::string, unknown>> channelMetadata;
     std::optional<bool> isDm;
     std::optional<UUID> agent_id;
 };
@@ -85,7 +81,6 @@ struct ExternalMessageMetadata {
     std::optional<std::string> externalId;
     std::optional<double> timestamp;
     std::optional<bool> edited;
-    std::optional<Array<{> reactions;
     std::string emoji;
     double count;
     std::vector<std::string> users;
@@ -138,14 +133,13 @@ struct MessageSubmitParams {
 
 struct MessageCompleteParams {
     UUID messageId;
-    'completed' | 'failed' status;
+    std::variant<'completed', 'failed'> status;
     std::optional<std::string> error;
 };
 
 struct ExternalMessageParams {
     std::string platform;
     std::string channelId;
-    Array<{ messages;
     std::string id;
     std::string authorId;
     std::string content;
@@ -167,7 +161,6 @@ struct GroupChannelCreateParams {
 };
 
 struct DmChannelParams {
-    [UUID, UUID] participantIds;
 };
 
 struct ChannelParticipant {
@@ -187,7 +180,6 @@ struct ServerCreateParams {
 };
 
 struct ServerSyncParams {
-    Array<{ channels;
     std::string name;
     ChannelType type;
     std::string sourceId;

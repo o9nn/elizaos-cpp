@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -23,24 +24,9 @@ struct PackageInfo {
 };
 
 class PackageManagerClient {
-  static async getNpmInfo(packageName: string): Promise<PackageInfo> {
-    const response = await axios.get(`https://registry.npmjs.org/${packageName}`);
-    const latest = response.data['dist-tags'].latest;
-    const info = response.data.versions[latest];
-    
-    const downloads = await axios.get(
-      `https://api.npmjs.org/downloads/point/last-month/${packageName}`
-    );
-
-    return {
-      name: packageName,
-      version: latest,
-      description: info.description,
-      downloads: downloads.data.downloads,
-      repository: info.repository?.url,
-      dependencies: Object.keys(info.dependencies || {}),
-    };
-  }
-
-    
+public:
+    std::future<PackageInfo> getNpmInfo(const std::string& packageName);
+    std::future<PackageInfo> getPyPiInfo(const std::string& packageName);
+};
+ 
 } // namespace elizaos

@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -37,7 +37,7 @@ std::string formatConversation(const std::vector<MessageExample>& conversation);
 /**
  * Displays a section with a title and list of items
  */
-void displaySection(const std::string& title, string[] | undefined items);
+void displaySection(const std::string& title, const std::vector<std::string>& items);
 
 /**
  * Logs a header inside a rectangular frame with extra padding.

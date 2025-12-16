@@ -1,14 +1,14 @@
-#include "agent-log-viewer.hpp"
-#include "ui/button.hpp"
-#include "ui/label.hpp"
-#include "ui/select.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "agent-log-viewer.hpp"
+#include "ui/button.hpp"
+#include "ui/label.hpp"
+#include "ui/select.hpp"
 
 namespace elizaos {
 

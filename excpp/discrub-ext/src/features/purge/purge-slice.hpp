@@ -1,3 +1,10 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include "..app/store.hpp"
 #include "..classes/channel.hpp"
 #include "..classes/message.hpp"
@@ -6,13 +13,6 @@
 #include ".message/message-slice.hpp"
 #include ".thread/thread-slice.hpp"
 #include "purge-types.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 

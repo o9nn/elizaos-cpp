@@ -1,13 +1,16 @@
-#include "elizaos/core-plugin-v2.hpp"
-#include "messages.ts.hpp"
-#include "types.ts.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core-plugin-v2.hpp"
+#include "messages.ts.hpp"
+#include "types.ts.hpp"
 
 namespace elizaos {
 
@@ -16,111 +19,71 @@ namespace elizaos {
 
 
 
-class AgentRuntime implements IAgentRuntime {
-  private _runtime;
+class AgentRuntime {
+public:
+    AgentRuntime(std::optional<{
+    conversationLength: number; // number of messages to hold in the recent message cache
+    agentId: UUID; // ID of the agent
+    character: Character; // The character to use for the agent
+    token: string; // JWT token> opts, auto can be a JWT token if outside worker, std::optional<std::variant<string; // The URL of the worker
+    actions: Action[]; // Optional custom actions
+    evaluators: Evaluator[]; // Optional custom evaluators
+    plugins: Plugin[];
+    providers: Provider[];
+    modelProvider: ModelProviderName;
 
-  get agentId(): UUID {
-    return this._runtime.agentId;
-  }
-
-    // WRITE ME
-    // WRITE ME
-
-  /**
-   * Creates an instance of AgentRuntime.
-   * @param opts - The options for configuring the AgentRuntime.
-   * @param opts.conversationLength - The number of messages to hold in the recent message cache.
-   * @param opts.token - The JWT token, can be a JWT token if outside worker, or an OpenAI token if inside worker.
-   * @param opts.serverUrl - The URL of the worker.
-   * @param opts.actions - Optional custom actions.
-   * @param opts.evaluators - Optional custom evaluators.
-   * @param opts.services - Optional custom services.
-   * @param opts.memoryManagers - Optional custom memory managers.
-   * @param opts.providers - Optional context providers.
-   * @param opts.model - The model to use for generateText.
-   * @param opts.embeddingModel - The model to use for embedding.
-   * @param opts.agentId - Optional ID of the agent.
-   * @param opts.databaseAdapter - The database adapter used for interacting with the database.
-   * @param opts.fetch - Custom fetch function to use for making requests.
-   */
-
-    // verifiableInferenceAdapter?: IVerifiableInferenceAdapter;
-
-  //private async initializeDatabase() {}
-
-  /**
-   * Get the number of messages that are kept in the conversation buffer.
-   * @returns The number of recent messages to be kept in memory.
-   */
-
-  /**
-   * Register an action for the agent to perform.
-   * @param action The action to register.
-   */
-
-  /**
-   * Register an evaluator to assess and guide the agent's responses.
-   * @param evaluator The evaluator to register.
-   */
-
-  /**
-   * Register a context provider to provide context for message generation.
-   * @param provider The context provider to register.
-   */
-
-  /**
-   * Register an adapter for the agent to use.
-   * @param adapter The adapter to register.
-   */
-    // WRITE ME, maybe...
-
-  /**
-   * Process the actions of a message.
-   * @param message The message to process.
-   * @param content The content of the message to process actions from.
-   */
-
-  /**
-   * Evaluate the message and state using the registered evaluators.
-   * @param message The message to evaluate.
-   * @param state The state of the agent.
-   * @param didRespond Whether the agent responded to the message.~
-   * @param callback The handler callback
-   * @returns The results of the evaluation.
-   */
-    // v2 now takes responses: Memory[]
-
-  /**
-   * Ensure the existence of a participant in the room. If the participant does not exist, they are added to the room.
-   * @param userId - The user ID to ensure the existence of.
-   * @throws An error if the participant cannot be added.
-   */
-    // WRITE ME
-
-  /**
-   * Ensure the existence of a user in the database. If the user does not exist, they are added to the database.
-   * @param userId - The user ID to ensure the existence of.
-   * @param userName - The user name to ensure the existence of.
-   * @returns
-   */
-
-  /**
-   * Ensure the existence of a room between the agent and a user. If no room exists, a new room is created and the user
-   * and agent are added as participants. The room ID is returned.
-   * @param roomId - The room ID to create a room with.
-   * @returns The room ID of the room between the agent and the user.
-   * @throws An error if the room cannot be created.
-   */
-
-  /**
-   * Compose the state of the agent into an object that can be passed or used for response generation.
-   * @param message The message to compose the state from.
-   * @returns The state of the agent.
-   */
-
-    // get memories
-
-    // use v1 formatMessage
+    services: Service[]; // Map of service name to service instance
+    managers: IMemoryManager[]; // Map of table name to memory manager
+    databaseAdapter: IDatabaseAdapter; // The database adapter used for interacting with the database
+    fetch: typeof fetch, unknown;
+    speechModelPath: string;
+    cacheManager: ICacheManager;
+    logging: boolean;
+    // verifiableInferenceAdapter: IVerifiableInferenceAdapter;
+    UUID agentId() const;
+    std::string serverUrl() const;
+    IDatabaseAdapter databaseAdapter() const;
+    std::string token() const;
+    Character character() const;
+    std::vector<Action> actions() const;
+    std::vector<Evaluator> evaluators() const;
+    std::vector<Provider> providers() const;
+    std::vector<Plugin> plugins() const;
+    void modelProvider() const;
+    void imageModelProvider() const;
+    void imageVisionModelProvider() const;
+    void messageManager() const;
+    void routes() const;
+    void services() const;
+    void events() const;
+    void descriptionManager() const;
+    void documentsManager() const;
+    void knowledgeManager() const;
+    void ragKnowledgeManager() const;
+    void loreManager() const;
+    void cacheManager() const;
+    void clients() const;
+    void registerMemoryManager(IMemoryManager manager);
+    std::any getMemoryManager(const std::string& tableName);
+    std::future<void> registerService(Service service);
+    void initializeDatabase();
+    void initialize();
+    void stop();
+    void getSetting(const std::string& key);
+    void getConversationLength();
+    void registerAction(Action action);
+    void registerEvaluator(Evaluator evaluator);
+    void registerContextProvider(Provider provider);
+    void registerAdapter(Adapter adapter);
+    std::future<void> processActions(Memory message, const std::vector<Memory>& responses, std::optional<State> state, std::optional<HandlerCallback> callback);
+    void evaluate(Memory message, State state, std::optional<bool> didRespond, std::optional<HandlerCallback> callback);
+    void ensureParticipantExists(UUID userId, UUID roomId);
+    void ensureUserExists(UUID userId, const std::optional<std::string>& userName, const std::optional<std::string>& name, std::optional<std::optional<std::string>> email, std::optional<std::optional<std::string>> source);
+    void ensureParticipantInRoom(UUID userId, UUID roomId);
+    void ensureConnection(UUID userId, UUID roomId, std::optional<std::string> userName, std::optional<std::string> userScreenName, std::optional<std::string> source);
+    void ensureRoomExists(UUID roomId);
+    void composeState(Memory message, const std::any& additionalKeys);
+    std::future<State> updateRecentMessageState(State state);
 
 
 } // namespace elizaos

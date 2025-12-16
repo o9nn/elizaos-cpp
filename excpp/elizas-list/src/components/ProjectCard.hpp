@@ -1,10 +1,11 @@
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -13,6 +14,6 @@ namespace elizaos {
 
 
 
-void ProjectCard(auto { project, { project: Project; index: number } index });
+void ProjectCard(auto { project, const std::any& index });
 
 } // namespace elizaos

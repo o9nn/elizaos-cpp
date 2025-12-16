@@ -1,10 +1,12 @@
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -14,8 +16,8 @@ namespace elizaos {
 
 
 struct CaptchaInfo {
-    'turnstile' | 'recaptcha-v2' | 'recaptcha-v3' | 'hcaptcha' | null type;
-    string | null siteKey;
+    std::variant<'turnstile', 'recaptcha-v2', 'recaptcha-v3', 'hcaptcha'> type;
+    std::optional<std::string> siteKey;
 };
 
 std::future<CaptchaInfo> detectCaptchaType(Page page);

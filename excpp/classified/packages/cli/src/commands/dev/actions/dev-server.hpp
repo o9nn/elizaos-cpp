@@ -1,15 +1,16 @@
-#include ".types.hpp"
-#include ".utils/build-utils.hpp"
-#include ".utils/file-watcher.hpp"
-#include ".utils/server-manager.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".types.hpp"
+#include ".utils/build-utils.hpp"
+#include ".utils/file-watcher.hpp"
+#include ".utils/server-manager.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 

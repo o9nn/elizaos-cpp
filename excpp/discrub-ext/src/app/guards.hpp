@@ -1,14 +1,14 @@
-#include ".classes/attachment.hpp"
-#include ".classes/guild.hpp"
-#include ".classes/message.hpp"
-#include ".classes/role.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".classes/attachment.hpp"
+#include ".classes/guild.hpp"
+#include ".classes/message.hpp"
+#include ".classes/role.hpp"
 
 namespace elizaos {
 

@@ -1,11 +1,13 @@
-#include "database.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "database.hpp"
 
 namespace elizaos {
 
@@ -22,7 +24,6 @@ struct CoinGeckoPrice {
 };
 
 struct BirdeyeResponse {
-    { data;
     double value;
     double updateUnixTime;
     double liquidity;
@@ -31,21 +32,15 @@ struct BirdeyeResponse {
 };
 
 class MarketDataService {
-  private coingeckoApiKey?: string;
-  private birdeyeApiKey?: string;
-
-  constructor() {
-    this.coingeckoApiKey = process.env.COINGECKO_API_KEY;
-    this.birdeyeApiKey = process.env.BIRDEYE_API_KEY;
-  }
-
-    // Map chain to CoinGecko platform ID
-
-    // Solana addresses are Base58 encoded and case-sensitive - preserve original case
-    // In local development without Birdeye, return mock data
-    // The actual price comes from on-chain (desk.token_usd_price_8d)
-
-        // Return placeholder data for localnet - actual price from on-chain
+public:
+    MarketDataService();
+    std::future<double> fetchTokenPrice(const std::string& tokenAddress, Chain chain);
+    std::future<TokenMarketData> fetchMarketData(const std::string& tokenAddress, Chain chain);
+    std::future<TokenMarketData> fetchEVMData(const std::string& tokenAddress, Chain chain);
+    std::future<TokenMarketData> fetchSolanaData(const std::string& tokenAddress);
+    std::future<void> refreshTokenData(const std::string& tokenId, const std::string& tokenAddress, Chain chain);
+    std::future<void> refreshAllTokenData(const std::vector<std::any>& tokens);
+};
 
 
 } // namespace elizaos

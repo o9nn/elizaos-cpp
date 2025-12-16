@@ -1,12 +1,15 @@
-#include "elizaos/core.hpp"
-#include "index.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
+#include "index.hpp"
 
 namespace elizaos {
 
@@ -25,7 +28,7 @@ struct ClaudeTool {
 using ClaudeContent = std::variant<, std::string, Array<{
 
 struct ClaudeMessage {
-    'user' | 'assistant' role;
+    std::variant<'user', 'assistant'> role;
     ClaudeContent content;
 };
 
@@ -40,32 +43,29 @@ struct ClaudeMessagesRequest {
     std::optional<double> top_p;
     std::optional<double> top_k;
     std::optional<std::vector<ClaudeTool>> tools;
-    std::optional<{ type: 'auto' | 'any' | 'tool'; name?: string }> tool_choice;
+};
 
 struct ClaudeResponse {
     std::string id;
     'message' type;
     'assistant' role;
     std::string model;
-    Array<{ content;
-    'text' | 'tool_use' type;
+    std::variant<'text', 'tool_use'> type;
     std::optional<std::string> text;
     std::optional<std::string> id;
     std::optional<std::string> name;
     std::optional<std::any> input;
     std::string stop_reason;
-    { usage;
     double input_tokens;
     double output_tokens;
 };
 
 // OpenAI-style types for compatibility
 struct OpenAIMessage {
-    'system' | 'user' | 'assistant' | 'tool' role;
-    std::optional<Array<{> tool_calls;
+    std::variant<'system', 'user', 'assistant', 'tool'> role;
+    std::optional<std::string> text;
     std::string id;
     'function' type;
-    { function;
     std::string name;
     std::string arguments;
     std::optional<std::string> tool_call_id;
@@ -76,62 +76,20 @@ struct OpenAIMessage {
  * Converts Claude API requests to the appropriate provider format
  */
 class ClaudeProxy {
-  constructor(private runtime: IAgentRuntime) {}
-
-  /**
-   * Process a Claude API request and route it to the appropriate provider
-   */
-    // Determine which provider to use
-
-        // Native Anthropic - make direct API request
-
-  /**
-   * Make a direct proxy request to Anthropic's API
-   */
-
-      // Make direct request to Anthropic API
-
-  /**
-   * Select the best available provider
-   */
-    // Check available providers in order of preference
-
-  /**
-   * Check if a provider is available
-   */
-        // Ollama is always available if installed
-
-  /**
-   * Handle OpenAI requests by converting format
-   */
-
-    // Create a formatted prompt for the runtime
-
-  /**
-   * Handle Groq requests
-   */
-    // Groq uses OpenAI-compatible format
-
-  /**
-   * Handle Ollama requests
-   */
-    // Ollama also uses OpenAI-compatible format
-
-  /**
-   * Convert Claude messages to OpenAI format
-   */
-
-  /**
-   * Convert Claude messages to a simple prompt string
-   */
-
-  /**
-   * Format OpenAI messages as a prompt
-   */
-
-  /**
-   * Format response in Claude format
-   */
+public:
+    ClaudeProxy(IAgentRuntime private runtime);
+    std::future<ClaudeResponse> processRequest(ClaudeMessagesRequest claudeRequest);
+    std::future<ClaudeResponse> makeAnthropicProxyRequest(ClaudeMessagesRequest claudeRequest);
+    std::future<InferenceProvider> selectProvider();
+    std::future<bool> isProviderAvailable(InferenceProvider provider);
+    std::future<ClaudeResponse> handleOpenAIRequest(ClaudeMessagesRequest claudeRequest);
+    std::future<ClaudeResponse> handleGroqRequest(ClaudeMessagesRequest claudeRequest);
+    std::future<ClaudeResponse> handleOllamaRequest(ClaudeMessagesRequest claudeRequest);
+    std::vector<OpenAIMessage> convertClaudeToOpenAI(ClaudeMessagesRequest claudeRequest);
+    std::string convertClaudeToPrompt(ClaudeMessagesRequest claudeRequest);
+    std::string formatOpenAIPrompt(const std::vector<OpenAIMessage>& messages, std::optional<std::string> system);
+    ClaudeResponse formatClaudeResponse(const std::string& text, const std::string& model);
+};
 
 /**
  * Create a Claude API handler for the inference plugin

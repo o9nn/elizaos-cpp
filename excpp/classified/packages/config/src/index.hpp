@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -15,5 +15,13 @@ namespace elizaos {
  * Standard configuration exports for ElizaOS packages
  * Provides centralized access to all base configurations
  */
+
+// TypeScript configurations
+
+// ESLint configurations
+
+// Prettier configuration
+
+// Configuration paths for package.json references
 
 } // namespace elizaos

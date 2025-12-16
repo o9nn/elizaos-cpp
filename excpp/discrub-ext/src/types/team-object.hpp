@@ -1,11 +1,12 @@
-#include "team-member-object.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "team-member-object.hpp"
 
 namespace elizaos {
 

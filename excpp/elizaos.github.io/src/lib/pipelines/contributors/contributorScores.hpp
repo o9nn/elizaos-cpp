@@ -1,14 +1,14 @@
-#include "..scoring/scoreCalculator.hpp"
-#include ".queryHelpers.hpp"
-#include ".types.hpp"
-#include "context.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "..scoring/scoreCalculator.hpp"
+#include ".queryHelpers.hpp"
+#include ".types.hpp"
+#include "context.hpp"
 
 namespace elizaos {
 
@@ -29,7 +29,6 @@ namespace elizaos {
 
       // Only save if there's actual score
         // Save the calculated score to the database
-        await saveUserDailyScore(username, scoreResult, dateString);
 
 /**
  * Process contributors for a single interval

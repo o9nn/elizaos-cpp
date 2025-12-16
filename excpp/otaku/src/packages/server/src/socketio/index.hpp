@@ -1,12 +1,13 @@
-#include ".utils/media-transformer.hpp"
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".utils/media-transformer.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -16,37 +17,25 @@ namespace elizaos {
 
 
 class SocketIORouter {
-  private elizaOS: ElizaOS;
-  private connections: Map<string, UUID>; // socket.id -> agentId (for agent-specific interactions like log streaming, if any)
-  private logStreamConnections: Map<string, { agentName?: string; level?: string }>;
+public:
+    SocketIORouter(ElizaOS elizaOS, AgentServer serverInstance);
+    void setupListeners(SocketIOServer io);
+    void handleNewConnection(Socket socket, SocketIOServer _io);
+    void handleGenericMessage(Socket socket, const std::any& data);
+    void handleChannelJoining(Socket socket, const std::any& payload);
+    void handleMessageSubmission(Socket socket, const std::any& payload);
+    void sendErrorResponse(Socket socket, const std::string& errorMessage);
+    void handleLogSubscription(Socket socket);
+    void handleLogUnsubscription(Socket socket);
+    void handleLogFilterUpdate(Socket socket, std::optional<std::any> filters);
+    void broadcastLog(SocketIOServer io, const std::any& logEntry);
+    void handleDisconnect(Socket socket);
 
-    // Emit ENTITY_JOINED event for bootstrap plugin to handle world/entity creation
-
-      // Get the first available runtime (there should typically be one)
-
-    // Special handling for default server ID "0"
-
-      // Check if this is a DM channel and emit ENTITY_JOINED for proper world setup
-
-      // Ensure the channel exists before creating the message
-
-        // Auto-create the channel if it doesn't exist
-          // First verify the server exists
-
-          // Determine if this is likely a DM based on the context
-
-          // For DM channels, we need to determine the participants
-            // Try to extract the other participant from metadata or payload
-
-      // Transform attachments for web client
-
-      // Immediately broadcast the message to all clients in the channel
-
-      // Broadcast to everyone in the channel except the sender
-
-      // Also send back to the sender with the server-assigned ID
-
-          // Use logger levels directly from @elizaos/core
+private:
+    ElizaOS elizaOS_;
+    std::unordered_map<std::string, UUID> connections_;
+    AgentServer serverInstance_;
+};
 
 
 } // namespace elizaos

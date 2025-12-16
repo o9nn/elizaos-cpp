@@ -1,14 +1,14 @@
-#include "login/OAuth.hpp"
-#include "login/PasskeyLogin.hpp"
-#include "login/PrivyUI.hpp"
-#include "login/SMS.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "login/OAuth.hpp"
+#include "login/PasskeyLogin.hpp"
+#include "login/PrivyUI.hpp"
+#include "login/SMS.hpp"
 
 namespace elizaos {
 

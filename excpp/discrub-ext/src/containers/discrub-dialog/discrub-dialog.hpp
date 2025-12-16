@@ -1,3 +1,10 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include "..features/app/use-app-slice.hpp"
 #include "..features/channel/use-channel-slice.hpp"
 #include "..features/dm/use-dm-slice.hpp"
@@ -14,13 +21,6 @@
 #include "components/donation-component.hpp"
 #include "components/menu-bar.hpp"
 #include "components/settings.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 

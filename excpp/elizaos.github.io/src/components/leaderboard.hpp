@@ -1,11 +1,12 @@
-#include "leaderboard-card.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "leaderboard-card.hpp"
 
 namespace elizaos {
 
@@ -23,8 +24,10 @@ struct LeaderboardUser {
     double points;
     double totalXp;
     double totalLevel;
-    std::optional<string | null> avatarUrl;
-    std::vector<{ tagName: string; category: string | null; score: number }> allTags;
+    std::optional<std::optional<std::string>> avatarUrl;
+    std::optional<std::string> category;
+    std::vector<LinkedWallet> linkedWallets;
+};
 
 struct LeaderboardTab {
     LeaderboardPeriod id;
@@ -36,14 +39,13 @@ struct LeaderboardTab {
 
 struct LeaderboardProps {
     std::vector<LeaderboardTab> tabs;
-    std::vector<{ name: string; category: string }> tags;
+};
 
 void Leaderboard(auto { tabs, LeaderboardProps tags });
 
 struct PaginationControlsProps {
     double currentPage;
     double totalPages;
-    (page: number) => void onPageChange;
 };
 
 

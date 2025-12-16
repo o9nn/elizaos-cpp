@@ -1,11 +1,12 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -20,14 +21,9 @@ std::future<std::string> generateTeamReport(IAgentRuntime runtime, const std::st
 
       // Use AI to parse the input text and extract standup type
 
-          await callback(promptContent, []);
-
         // Validate standup type with more flexible matching
 
       // Generate the report
 
-      await callback(content, []);
-
-        await callback(errorContent, []);
 
 } // namespace elizaos

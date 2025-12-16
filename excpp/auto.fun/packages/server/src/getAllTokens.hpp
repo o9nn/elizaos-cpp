@@ -1,13 +1,14 @@
-#include "cron.hpp"
-#include "db.hpp"
-#include "logger.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "cron.hpp"
+#include "db.hpp"
+#include "logger.hpp"
 
 namespace elizaos {
 
@@ -16,7 +17,6 @@ namespace elizaos {
 
 
 
-std::future<number | null> getLastProcessedSlot();
 std::future<void> setLastProcessedSlot(double slot);
 
 std::future<double> findSlotAtOrBeforeTime(Connection connection, double targetTs, double low, double high);

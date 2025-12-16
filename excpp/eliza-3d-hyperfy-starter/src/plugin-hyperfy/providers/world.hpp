@@ -1,13 +1,13 @@
-#include ".hyperfy/src/core/extras/Vector3Enhanced.js.hpp"
-#include ".service.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".hyperfy/src/core/extras/Vector3Enhanced.js.hpp"
+#include ".service.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 

@@ -1,12 +1,12 @@
-#include "database-helpers.hpp"
-#include "knowledge-helpers.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "database-helpers.hpp"
+#include "knowledge-helpers.hpp"
 
 namespace elizaos {
 

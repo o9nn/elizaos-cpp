@@ -1,11 +1,13 @@
-#include "service.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "service.hpp"
 
 namespace elizaos {
 
@@ -19,7 +21,7 @@ struct MessageParticipant {
     std::string name;
     std::optional<std::string> username;
     std::optional<std::string> avatar;
-    std::optional<'online' | 'offline' | 'away' | 'busy'> status;
+    std::optional<std::variant<'online', 'offline', 'away', 'busy'>> status;
 };
 
 struct MessageAttachment {
@@ -44,7 +46,7 @@ struct MessageReaction {
 struct MessageReference {
     UUID messageId;
     UUID channelId;
-    'reply' | 'forward' | 'quote' type;
+    std::variant<'reply', 'forward', 'quote'> type;
 };
 
 struct MessageContent {
@@ -55,12 +57,10 @@ struct MessageContent {
     std::optional<std::vector<MessageReaction>> reactions;
     std::optional<MessageReference> reference;
     std::optional<std::vector<UUID>> mentions;
-    std::optional<Array<{> embeds;
     std::optional<std::string> title;
     std::optional<std::string> description;
     std::optional<std::string> url;
     std::optional<std::string> image;
-    std::optional<Array<{> fields;
     std::string name;
     std::string value;
     std::optional<bool> inline;
@@ -75,7 +75,6 @@ struct MessageInfo {
     std::optional<Date> edited;
     std::optional<Date> deleted;
     std::optional<bool> pinned;
-    std::optional<{> thread;
     UUID id;
     double messageCount;
     std::vector<UUID> participants;
@@ -107,10 +106,9 @@ struct MessageSearchOptions {
 struct MessageChannel {
     UUID id;
     std::string name;
-    'text' | 'voice' | 'dm' | 'group' | 'announcement' | 'thread' type;
+    std::variant<'text', 'voice', 'dm', 'group', 'announcement', 'thread'> type;
     std::optional<std::string> description;
     std::optional<std::vector<MessageParticipant>> participants;
-    std::optional<{> permissions;
     bool canSend;
     bool canRead;
     bool canDelete;
@@ -124,91 +122,7 @@ struct MessageChannel {
 /**
  * Interface for messaging services
  */
+    std::future<UUID> sendMessage(UUID channelId, MessageContent content, std::optional<MessageSendOptions> options);
 
-  /**
-   * Send a message to a channel
-   * @param channelId - Channel ID
-   * @param content - Message content
-   * @param options - Send options
-   * @returns Promise resolving to message ID
-   */
-
-  /**
-   * Get messages from a channel
-   * @param channelId - Channel ID
-   * @param options - Search options
-   * @returns Promise resolving to array of messages
-   */
-
-  /**
-   * Get a specific message by ID
-   * @param messageId - Message ID
-   * @returns Promise resolving to message
-   */
-
-  /**
-   * Edit a message
-   * @param messageId - Message ID
-   * @param content - New message content
-   * @returns Promise resolving when edit completes
-   */
-
-  /**
-   * Delete a message
-   * @param messageId - Message ID
-   * @returns Promise resolving when deletion completes
-   */
-
-  /**
-   * Add a reaction to a message
-   * @param messageId - Message ID
-   * @param emoji - Reaction emoji
-   * @returns Promise resolving when reaction is added
-   */
-
-  /**
-   * Remove a reaction from a message
-   * @param messageId - Message ID
-   * @param emoji - Reaction emoji
-   * @returns Promise resolving when reaction is removed
-   */
-
-  /**
-   * Pin a message
-   * @param messageId - Message ID
-   * @returns Promise resolving when message is pinned
-   */
-
-  /**
-   * Unpin a message
-   * @param messageId - Message ID
-   * @returns Promise resolving when message is unpinned
-   */
-
-  /**
-   * Get available channels
-   * @returns Promise resolving to array of channels
-   */
-
-  /**
-   * Get channel information
-   * @param channelId - Channel ID
-   * @returns Promise resolving to channel info
-   */
-
-  /**
-   * Create a new channel
-   * @param name - Channel name
-   * @param type - Channel type
-   * @param options - Channel options
-   * @returns Promise resolving to new channel ID
-   */
-
-  /**
-   * Search messages across channels
-   * @param query - Search query
-   * @param options - Search options
-   * @returns Promise resolving to search results
-   */
 
 } // namespace elizaos

@@ -1,11 +1,12 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -43,7 +44,6 @@ std::future<GoalSelection> extractGoalSelection(IAgentRuntime runtime, Memory me
 /**
  * Extracts what updates the user wants to make to the goal
  */
-std::future<GoalUpdate | null> extractGoalUpdate(IAgentRuntime runtime, Memory message, GoalData goal);
 
 /**
  * The UPDATE_GOAL action allows users to modify an existing goal.

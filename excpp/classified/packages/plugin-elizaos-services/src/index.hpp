@@ -1,3 +1,13 @@
+#pragma once
+#include <any>
+#include <functional>
+#include <future>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <variant>
+#include <vector>
 #include "auth/index.hpp"
 #include "elizaos/core.hpp"
 #include "providers/elizaos-provider.js.hpp"
@@ -5,13 +15,6 @@
 #include "tests/real-integration.test.hpp"
 #include "tests/storage-integration.test.hpp"
 #include "tests/validation-summary.test.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -23,7 +26,6 @@ namespace elizaos {
 // Removed multi-provider imports - now using ElizaOS API service directly
 
 /**
- * Dynamically import AWS SDK packages with fallback handling
  */
 std::future<void> importAWSSDK();
 
@@ -34,60 +36,50 @@ std::future<void> importAWSSDK();
 /**
  * Helper functions for API interactions
  */
+std::string getSetting(IAgentRuntime runtime, const std::string& key, std::optional<std::string> defaultValue);
 
 void getStorageConfig(IAgentRuntime runtime);
 
 /**
  * Create S3 client for storage operations
  */
-std::future<any | null> createS3Client(IAgentRuntime runtime);
 
 /**
  * Storage service for file uploads and management
  */
 class ElizaOSStorageService {
-  private s3Client: any | null = null;
-  private bucket: string;
-  private runtime: IAgentRuntime;
-  private awsSDK: any | null = null;
-  private clientInitialized = false;
+public:
+    ElizaOSStorageService(IAgentRuntime runtime);
+    std::future<void> ensureInitialized();
+    std::future<std::string> uploadFile(const std::string& key, const std::variant<Buffer, Uint8Array>& data, std::optional<std::string> contentType);
+    std::future<Buffer> downloadFile(const std::string& key);
+    std::future<void> deleteFile(const std::string& key);
+    std::future<std::string> getSignedUrl(const std::string& key, const std::variant<'get', 'put' = 'get'>& operation, number = 3600 expiresIn);
+    std::future<bool> fileExists(const std::string& key);
+    std::future<std::vector<std::string>> listFiles(std::optional<std::string> prefix, number = 1000 maxKeys);
+    Promise< getFileMetadata(const std::string& key);
+    void if(auto !this.s3Client || !this.awsSDK);
+    void catch(const std::any& error);
 
-  constructor(runtime: IAgentRuntime) {
-    this.runtime = runtime;
-    this.bucket = getSetting(runtime, 'ELIZAOS_STORAGE_BUCKET') || 'elizaos-storage';
-  }
-
-      // Convert stream to buffer
-
-      // S3 returns 404 for missing files
-
-      // Log other errors but still return false
-
-  /**
-   * List files in the bucket with optional prefix filter
-   */
-
-  /**
-   * Get file metadata without downloading the file
-   */
+private:
+    std::string bucket_;
+    IAgentRuntime runtime_;
+};
 
 /**
  * ElizaOS Services main service class
  */
-class ElizaOSService extends Service {
-  static override serviceType: ServiceTypeName = 'elizaos-services' as ServiceTypeName;
+class ElizaOSService {
+public:
+    ElizaOSService(IAgentRuntime runtime);
+    std::future<ElizaOSService> start(IAgentRuntime runtime);
+    std::future<void> stop();
+    std::future<void> stop(IAgentRuntime runtime);
+    ElizaOSStorageService getStorage();
 
-  override capabilityDescription =
-    'ElizaOS hosted AI inference and storage services with multi-provider support';
-
-  private storage: ElizaOSStorageService;
-
-  constructor(runtime: IAgentRuntime) {
-    super(runtime);
-    this.storage = new ElizaOSStorageService(runtime);
-  }
-
-    // Test API connection
+private:
+    ElizaOSStorageService storage_;
+};
 
 /**
  * ElizaOS Services Plugin - hosted AI inference and storage

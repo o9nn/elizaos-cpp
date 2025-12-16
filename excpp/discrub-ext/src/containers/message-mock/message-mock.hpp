@@ -1,3 +1,10 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include "..classes/message.hpp"
 #include "..components/author-avatar.hpp"
 #include "..enum/message-type.hpp"
@@ -21,13 +28,6 @@
 #include "components/replied-to-content.hpp"
 #include "components/thread-name.hpp"
 #include "components/webhook-embeds.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 

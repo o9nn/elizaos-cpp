@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -25,15 +26,14 @@ namespace elizaos {
 struct GoalData {
     UUID id;
     UUID agentId;
-    'agent' | 'entity' ownerType;
+    std::variant<'agent', 'entity'> ownerType;
     UUID ownerId;
     std::string name;
-    std::optional<string | null> description;
+    std::optional<std::optional<std::string>> description;
     bool isCompleted;
-    std::optional<Date | null> completedAt;
+    std::optional<std::optional<Date>> completedAt;
     Date createdAt;
     Date updatedAt;
-    std::unordered_map<std::string, std::any> metadata;
     std::optional<std::vector<std::string>> tags;
 };
 

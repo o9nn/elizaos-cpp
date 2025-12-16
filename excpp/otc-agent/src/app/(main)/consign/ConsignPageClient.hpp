@@ -1,10 +1,12 @@
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -18,6 +20,8 @@ namespace elizaos {
 // Solana config
 
 // Default gas deposit fallback (0.001 ETH) - used when RPC fetch fails
+
+std::variant<"evm", "solana"> getRequiredChain(const std::string& tokenId);
 
 std::future<Idl> fetchSolanaIdl();
 

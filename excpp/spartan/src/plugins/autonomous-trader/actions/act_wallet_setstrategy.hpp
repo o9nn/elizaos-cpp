@@ -1,13 +1,13 @@
-#include ".constants.hpp"
-#include ".utils.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".constants.hpp"
+#include ".utils.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -18,13 +18,9 @@ namespace elizaos {
 
 // handle starting new form and collecting first field
 
-    //console.log('entity', entity)
-
     // maybe sub words?
 
     // using the service to get this/components might be good way
-    //console.log('entity', entity)
-    //console.log('email', email)
 
     // should never hit it
 

@@ -1,11 +1,14 @@
-#include "database.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "database.hpp"
 
 namespace elizaos {
 
@@ -15,38 +18,22 @@ namespace elizaos {
 
 
 class TokenRegistryService {
-  async registerToken(params: {
-    symbol: string;
-    name: string;
-    contractAddress: string;
-    chain: Chain;
-    decimals: number;
-    logoUrl?: string;
-    description?: string;
-    website?: string;
-    twitter?: string;
-  }): Promise<Token> {
-    // EVM addresses can be lowercased (case-insensitive)
-    // Solana addresses are Base58 encoded and MUST preserve case
-    const normalizedAddress =
-      params.chain === "solana"
-        ? params.contractAddress
-        : params.contractAddress.toLowerCase();
+public:
+    std::future<Token> registerToken(std::optional<std::any> params);
+    std::future<Token> getToken(const std::string& tokenId);
+    std::future<std::vector<Token>> getAllTokens(std::optional<std::any> filters);
+    std::future<Token> updateTokenStatus(const std::string& tokenId, bool isActive);
+    std::future<Token> updateToken(const std::string& tokenId, const std::optional<Token>& updates);
+    std::variant<Promise<TokenMarketData, null>> getTokenMarketData(const std::string& tokenId);
+    std::future<void> setTokenMarketData(TokenMarketData data);
 
-    const token = await TokenDB.createToken({
-      symbol: params.symbol.toUpperCase(),
-      name: params.name,
-      contractAddress: normalizedAddress,
-      chain: params.chain,
-      decimals: params.decimals,
-      logoUrl: params.logoUrl || "",
-      description: params.description || "",
-      website: params.website,
-      twitter: params.twitter,
-      isActive: true,
-    });
-    return token;
-  }
+private:
+    std::string symbol_;
+    std::string name_;
+    std::string contractAddress_;
+    Chain chain_;
+    double decimals_;
+};
 
 
 } // namespace elizaos

@@ -1,13 +1,15 @@
-#include "config/manager.js.hpp"
-#include "core/gateway.js.hpp"
-#include "transports/http-wrapper.js.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "config/manager.js.hpp"
+#include "core/gateway.js.hpp"
+#include "transports/http-wrapper.js.hpp"
 
 namespace elizaos {
 

@@ -1,12 +1,12 @@
-#include "actions/dev-server.hpp"
-#include "types.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "actions/dev-server.hpp"
+#include "types.hpp"
 
 namespace elizaos {
 
@@ -18,7 +18,6 @@ namespace elizaos {
 /**
  * Create a command that runs start in watch mode with auto-restart
  */
-      await startDevMode(options);
 
 // Re-for backward compatibility
 * from './actions/dev-server';

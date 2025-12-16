@@ -1,12 +1,13 @@
-#include ".types.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".types.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -40,7 +41,6 @@ struct PluginDetails {
     std::optional<std::vector<std::string>> tags;
     std::optional<std::vector<std::string>> features;
     std::optional<std::vector<std::string>> requiredConfig;
-    std::optional<std::unordered_map<std::string, std::string>> dependencies;
     std::optional<std::vector<std::string>> dependedBy;
     std::optional<std::string> npmPackage;
     std::optional<double> installCount;
@@ -57,10 +57,7 @@ struct CloneResult {
     std::optional<std::string> pluginName;
     std::optional<std::string> localPath;
     std::optional<bool> hasTests;
-    std::optional<std::unordered_map<std::string, std::string>> dependencies;
 };
-
-std::future<PluginMetadata | null> getPluginDetails(const std::string& name);
 
 std::future<CloneResult> clonePlugin(const std::string& pluginName);
 

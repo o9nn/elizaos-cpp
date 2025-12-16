@@ -1,10 +1,13 @@
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -140,8 +143,6 @@ struct ServiceClassMap {
  * This state object is passed to handlers for actions, evaluators, and providers.
  */
 struct State {
-    { values;
-    { data;
     std::string text;
 };
 
@@ -160,11 +161,6 @@ using MemoryTypeAlias = std::string;
  * This enum is used in `MemoryMetadata` to categorize memories and influences how they are processed or queried.
  */
 enum MemoryType {
-  DOCUMENT = 'document',
-  FRAGMENT = 'fragment',
-  MESSAGE = 'message',
-  DESCRIPTION = 'description',
-  CUSTOM = 'custom',
 }
 /**
  * Defines the scope of a memory, indicating its visibility and accessibility.
@@ -221,7 +217,9 @@ struct Log {
     std::optional<UUID> id;
     UUID entityId;
     std::optional<UUID> roomId;
-    { [key: string]: unknown } body;
+    std::string type;
+    Date createdAt;
+};
 
 /**
  * Example message for demonstration
@@ -234,17 +232,17 @@ struct MessageExample {
 /**
  * Handler function type for processing messages
  */
-using Handler = (
+using Handler = std::function<std::future<unknown>(IAgentRuntime, Memory, State, std::any, HandlerCallback, std::vector<Memory>)>;
 
 /**
  * Callback function type for handlers
  */
-using HandlerCallback = (response: Content, files?: any) => Promise<Memory[]>;
+using HandlerCallback = std::function<std::future<std::vector<Memory>>(Content, std::any)>;
 
 /**
  * Validator function type for actions/evaluators
  */
-using Validator = (
+using Validator = std::function<std::future<bool>(IAgentRuntime, Memory, State)>;
 
 /**
  * Represents an action the agent can perform
@@ -281,8 +279,6 @@ struct Evaluator {
 };
 
 struct ProviderResult {
-    std::optional<{> values;
-    std::optional<{> data;
     std::optional<std::string> text;
 };
 
@@ -295,7 +291,6 @@ struct Provider {
     std::optional<bool> dynamic;
     std::optional<double> position;
     std::optional<bool> private;
-    (runtime: IAgentRuntime, message: Memory, state: State) => Promise<ProviderResult> get;
 };
 
 /**
@@ -307,7 +302,6 @@ struct Relationship {
     UUID targetEntityId;
     UUID agentId;
     std::vector<std::string> tags;
-    { metadata;
     std::optional<std::string> createdAt;
 };
 
@@ -320,7 +314,6 @@ struct Component {
     UUID sourceEntityId;
     std::string type;
     double createdAt;
-    { data;
 };
 
 /**
@@ -329,7 +322,9 @@ struct Component {
 struct Entity {
     std::optional<UUID> id;
     std::vector<std::string> names;
-    std::optional<{ [key: string]: any }> metadata;
+    UUID agentId;
+    std::optional<std::vector<Component>> components;
+};
 
 using World = {
 
@@ -364,41 +359,18 @@ using Media = {
   /** Content type */
 
 enum ContentType {
-  IMAGE = 'image',
-  VIDEO = 'video',
-  AUDIO = 'audio',
-  DOCUMENT = 'document',
-  LINK = 'link',
 }
 
 enum ChannelType {
-  SELF = 'SELF', // Messages to self
-  DM = 'dm', // Direct messages between two participants
-  GROUP = 'group', // Group messages with multiple participants
-  VOICE_DM = 'VOICE_DM', // Voice direct messages
-  VOICE_GROUP = 'VOICE_GROUP', // Voice channels with multiple participants
-  FEED = 'FEED', // Social media feed
-  THREAD = 'THREAD', // Threaded conversation
-  WORLD = 'WORLD', // World channel
-  FORUM = 'FORUM', // Forum discussion
   // Legacy types - kept for backward compatibility but should be replaced
-  API = 'API', // @deprecated - Use DM or GROUP instead
 }
 
 /**
  * Client instance
  */
-  /** Runtime instance */
-
-  /** Service type */
-
-  /** Service name */
-
-  /** Service configuration */
-
-  /** Start service connection */
-
-  /** Stop service connection */
+    std::future<void> stop();
+    std::future<Service> start(IAgentRuntime _runtime);
+    std::future<unknown> stop(IAgentRuntime _runtime);
 
 using Route = std::variant<{
 
@@ -411,21 +383,29 @@ using PluginEvents = std::vector<{
 struct Plugin {
     std::string name;
     std::string description;
-    std::optional<(config: Record<string, string>, runtime: IAgentRuntime) => Promise<void>> init;
-    std::optional<{ [key: string]: any }> config;
+    std::string name;
+    std::optional<std::vector<Action>> actions;
+    std::optional<std::vector<Provider>> providers;
+    std::optional<std::vector<Evaluator>> evaluators;
+    std::optional<IDatabaseAdapter> adapter;
+    std::optional<PluginEvents> events;
+    std::optional<std::vector<Route>> routes;
+    std::optional<std::vector<TestSuite>> tests;
+    std::optional<std::vector<std::string>> dependencies;
+    std::optional<double> priority;
+};
 
 struct ProjectAgent {
     Character character;
-    std::optional<(runtime: IAgentRuntime) => Promise<void>> init;
     std::optional<std::vector<Plugin>> plugins;
-    std::optional<std::vector<TestSuite | TestSuite>> tests;
+    std::optional<std::variant<TestSuite, std::vector<TestSuite>>> tests;
 };
 
 struct Project {
     std::vector<ProjectAgent> agents;
 };
 
-using TemplateType = std::variant<, std::string, ((options: { state: State, { [key: string]: string } }) => string)>;
+using TemplateType = std::variant<, std::string, ((options: { state: State, std::function<void()>>;
 
 /**
  * Configuration for an agent's character, defining its personality, knowledge, and capabilities.
@@ -448,25 +428,18 @@ struct Character {
     std::string name;
     std::optional<std::string> username;
     std::optional<std::string> system;
-    std::optional<{> templates;
-    std::vector<string | string> bio;
+    std::variant<std::string, std::vector<std::string>> bio;
     std::optional<std::vector<std::vector<MessageExample>>> messageExamples;
     std::optional<std::vector<std::string>> postExamples;
     std::optional<std::vector<std::string>> topics;
     std::optional<std::vector<std::string>> adjectives;
-    std::optional<(> knowledge;
     std::optional<std::vector<std::string>> plugins;
-    std::optional<{> settings;
-    std::optional<{> secrets;
-    std::optional<{> style;
     std::optional<std::vector<std::string>> all;
     std::optional<std::vector<std::string>> chat;
     std::optional<std::vector<std::string>> post;
 };
 
 enum AgentStatus {
-  ACTIVE = 'active',
-  INACTIVE = 'inactive',
 }
 
 /**
@@ -484,9 +457,6 @@ enum AgentStatus {
  */
 struct IDatabaseAdapter {
     std::any db;
-    UUID entityId;
-    std::string type;
-    std::optional<UUID> worldId;
     std::optional<UUID> sourceEntityId;
     std::optional<UUID> entityId;
     std::optional<UUID> agentId;
@@ -506,7 +476,34 @@ struct IDatabaseAdapter {
     std::string query_field_name;
     std::string query_field_sub_name;
     double query_match_count;
-    { [key: string]: unknown } body;
+    UUID entityId;
+    UUID roomId;
+    std::string type;
+    UUID entityId;
+    std::optional<UUID> roomId;
+    std::optional<std::string> type;
+    std::optional<double> count;
+    std::optional<double> offset;
+    std::vector<double> embedding;
+    std::optional<double> match_threshold;
+    std::optional<double> count;
+    std::optional<bool> unique;
+    std::string tableName;
+    std::optional<std::string> query;
+    std::optional<UUID> roomId;
+    std::optional<UUID> worldId;
+    std::optional<UUID> entityId;
+    std::variant<'FOLLOWED', 'MUTED'> state;
+    UUID sourceEntityId;
+    UUID targetEntityId;
+    std::optional<std::vector<std::string>> tags;
+    UUID sourceEntityId;
+    UUID targetEntityId;
+    std::optional<std::vector<std::string>> tags;
+    UUID worldId;
+    std::optional<double> count;
+    std::optional<std::string> tableName;
+};
 
 /**
  * Result interface for embedding similarity searches
@@ -556,11 +553,11 @@ struct MultiRoomMemoryOptions {
  */
 struct UnifiedMemoryOptions {
     UUID roomId;
-    std::optional<number; // Unified naming (replacing 'count')> limit;
-    std::optional<UUID; // Common optional parameter> agentId;
-    std::optional<boolean; // Common flag for duplication control> unique;
-    std::optional<number; // Pagination start> start;
-    std::optional<number; // Pagination end> end;
+    std::optional<double> limit;
+    std::optional<UUID> agentId;
+    std::optional<bool> unique;
+    std::optional<double> start;
+    std::optional<double> end;
 };
 
 /**
@@ -571,18 +568,18 @@ struct UnifiedMemoryOptions {
  * Information describing the target of a message.
  */
 struct TargetInfo {
-    string; // Platform identifier (e.g., 'discord', 'telegram', 'websocket-api') source;
-    std::optional<UUID; // Target room ID (platform-specific or runtime-specific)> roomId;
-    std::optional<string; // Platform-specific channel/chat ID> channelId;
-    std::optional<string; // Platform-specific server/guild ID> serverId;
-    std::optional<UUID; // Target user ID (for DMs)> entityId;
-    std::optional<string; // Platform-specific thread ID (e.g., Telegram topics)> threadId;
+    std::string source;
+    std::optional<UUID> roomId;
+    std::optional<std::string> channelId;
+    std::optional<std::string> serverId;
+    std::optional<UUID> entityId;
+    std::optional<std::string> threadId;
 };
 
 /**
  * Function signature for handlers responsible for sending messages to specific platforms.
  */
-using SendHandlerFunction = (
+using SendHandlerFunction = std::function<std::future<void>(IAgentRuntime, TargetInfo, Content)>;
 
 /**
  * Represents the core runtime environment for an agent.
@@ -638,7 +635,7 @@ struct RuntimeSettings {
  * The `id` is a unique identifier for the knowledge item, often derived from its source or content.
  */
 using KnowledgeItem = {
-  /** A Universally Unique Identifier for this specific knowledge item. */
+  /** A Universally Unique Identifier for this specific knowledge item:: */
   /** The actual content of the knowledge item, which must include text and can have other fields. */
   /** Optional metadata associated with this knowledge item, conforming to `MemoryMetadata`. */
 
@@ -649,8 +646,6 @@ using KnowledgeItem = {
  * This enum is used to manage access and retrieval of knowledge items, often in conjunction with `AgentRuntime.addKnowledge` or `AgentRuntime.getKnowledge` scopes.
  */
 enum KnowledgeScope {
-  SHARED = 'shared',
-  PRIVATE = 'private',
 }
 
 /**
@@ -660,7 +655,6 @@ enum KnowledgeScope {
  * Used internally by caching strategies, potentially within `IDatabaseAdapter` cache methods or runtime caching layers.
  */
 enum CacheKeyPrefix {
-  KNOWLEDGE = 'knowledge',
 }
 
 /**
@@ -693,7 +687,7 @@ struct ChunkRow {
  * It includes essential information like the prompt, model type, and various generation controls.
  */
 using GenerateTextParams = {
-  /** The `AgentRuntime` instance, providing access to models and other services. */
+  /** The `AgentRuntime` instance, providing access to models and other services:: */
   /** The input string or prompt that the language model will use to generate text. */
   /** Specifies the type of text generation model to use (e.g., TEXT_LARGE, REASONING_SMALL). */
   /** Optional. The maximum number of tokens to generate in the response. */
@@ -730,7 +724,6 @@ struct DetokenizeTextParams {
  */
 struct TestCase {
     std::string name;
-    (runtime: IAgentRuntime) => Promise<void> | void fn;
 };
 
 /**
@@ -751,7 +744,7 @@ struct TestSuite {
  * generating a new keypair and attestation each time.
  */
 struct TeeAgent {
-    string; // Primary key id;
+    std::string id;
     std::string agentId;
     std::string agentName;
     double createdAt;
@@ -766,13 +759,9 @@ struct TeeAgent {
  */
 enum TEEMode {
   /** TEE functionality is completely disabled. */
-  OFF = 'OFF',
   /** For local development, potentially using a TEE simulator. */
-  LOCAL = 'LOCAL', // For local development with simulator
   /** For Docker-based development environments, possibly with a TEE simulator. */
-  DOCKER = 'DOCKER', // For docker development with simulator
   /** For production deployments, using actual TEE hardware without a simulator. */
-  PRODUCTION = 'PRODUCTION', // For production without simulator
 }
 
 /**
@@ -804,7 +793,6 @@ struct DeriveKeyAttestationData {
 struct RemoteAttestationMessage {
     std::string agentId;
     double timestamp;
-    { message;
     std::string entityId;
     std::string roomId;
     std::string content;
@@ -816,7 +804,6 @@ struct RemoteAttestationMessage {
  */
 enum TeeType {
   /** Represents Intel Trusted Domain Extensions (TDX) running on DSTACK infrastructure. */
-  TDX_DSTACK = 'tdx_dstack',
 }
 
 /**
@@ -844,9 +831,8 @@ struct TeePluginConfig {
  */
 struct TaskWorker {
     std::string name;
-    ( execute;
-    IAgentRuntime runtime;
-    { [key: string]: unknown } options;
+    Task task;
+};
 
 /**
  * Defines metadata associated with a `Task`.
@@ -885,29 +871,23 @@ struct Task {
  * These roles are often used in `World.metadata.roles` to assign roles to entities.
  */
 enum Role {
-  OWNER = 'OWNER',
-  ADMIN = 'ADMIN',
-  NONE = 'NONE',
 }
 
 struct Setting {
     std::string name;
-    string; // Used in chat context when discussing the setting description;
-    string; // Used during settings to guide users usageDescription;
-    string | boolean | null value;
+    std::string description;
+    std::string usageDescription;
+    std::variant<std::string, bool> value;
     bool required;
-    std::optional<boolean; // If true, shown in public channels> public;
-    std::optional<boolean; // If true, value is masked and only shown during settings> secret;
-    std::optional<(value: any) => boolean> validation;
+    std::optional<bool> public;
+    std::optional<bool> secret;
     std::optional<std::vector<std::string>> dependsOn;
-    std::optional<(value: any) => string> onSetAction;
-    std::optional<(settings: { [key: string]: Setting }) => boolean> visibleIf;
+};
 
 struct WorldSettings {
 };
 
 struct OnboardingConfig {
-    { settings;
 };
 
 /**
@@ -1016,56 +996,30 @@ struct ModelResultMap {
  */
 enum EventType {
   // World events
-  WORLD_JOINED = 'WORLD_JOINED',
-  WORLD_CONNECTED = 'WORLD_CONNECTED',
-  WORLD_LEFT = 'WORLD_LEFT',
 
   // Entity events
-  ENTITY_JOINED = 'ENTITY_JOINED',
-  ENTITY_LEFT = 'ENTITY_LEFT',
-  ENTITY_UPDATED = 'ENTITY_UPDATED',
 
   // Room events
-  ROOM_JOINED = 'ROOM_JOINED',
-  ROOM_LEFT = 'ROOM_LEFT',
 
   // Message events
-  MESSAGE_RECEIVED = 'MESSAGE_RECEIVED',
-  MESSAGE_SENT = 'MESSAGE_SENT',
 
   // Voice events
-  VOICE_MESSAGE_RECEIVED = 'VOICE_MESSAGE_RECEIVED',
-  VOICE_MESSAGE_SENT = 'VOICE_MESSAGE_SENT',
 
   // Interaction events
-  REACTION_RECEIVED = 'REACTION_RECEIVED',
-  POST_GENERATED = 'POST_GENERATED',
-  INTERACTION_RECEIVED = 'INTERACTION_RECEIVED',
 
   // Run events
-  RUN_STARTED = 'RUN_STARTED',
-  RUN_ENDED = 'RUN_ENDED',
-  RUN_TIMEOUT = 'RUN_TIMEOUT',
 
   // Action events
-  ACTION_STARTED = 'ACTION_STARTED',
-  ACTION_COMPLETED = 'ACTION_COMPLETED',
 
   // Evaluator events
-  EVALUATOR_STARTED = 'EVALUATOR_STARTED',
-  EVALUATOR_COMPLETED = 'EVALUATOR_COMPLETED',
 
   // Model events
-  MODEL_USED = 'MODEL_USED',
 }
 
 /**
  * Platform-specific event type prefix
  */
 enum PlatformPrefix {
-  DISCORD = 'DISCORD',
-  TELEGRAM = 'TELEGRAM',
-  TWITTER = 'TWITTER',
 }
 
 /**
@@ -1074,7 +1028,6 @@ enum PlatformPrefix {
 struct EventPayload {
     IAgentRuntime runtime;
     std::string source;
-    std::optional<() => void> onComplete;
 };
 
 /**
@@ -1133,12 +1086,6 @@ struct EventPayloadMap {
  */
 
 enum SOCKET_MESSAGE_TYPE {
-  ROOM_JOINING = 1,
-  SEND_MESSAGE = 2,
-  MESSAGE = 3,
-  ACK = 4,
-  THINKING = 5,
-  CONTROL = 6,
 }
 
 /**
@@ -1148,6 +1095,7 @@ enum SOCKET_MESSAGE_TYPE {
 /**
  * Factory function to create a new message memory with proper defaults
  */
+MessageMemory createMessageMemory(std::optional<std::any> params);
 
 /**
  * Generic service interface that provides better type checking for services
@@ -1295,7 +1243,7 @@ using EventDataObject = std::unordered_map<std::string, unknown>;
  * for functions that respond to events emitted within the agent runtime (see `emitEvent` in `AgentRuntime`).
  * Handlers can be synchronous or asynchronous.
  */
-using TypedEventHandler = std::variant<(data: EventDataObject) => Promise<void>, void>;
+using TypedEventHandler = std::variant<std::function<std::future<void>(EventDataObject)>, void>;
 
 // Replace 'any' in database adapter
 /**
@@ -1324,9 +1272,8 @@ using MetadataObject = std::unordered_map<std::string, unknown>;
  * serves as a tie-breaker. See `AgentRuntime.registerModel` and `AgentRuntime.getModel`.
  */
 struct ModelHandler {
-    (runtime: IAgentRuntime, params: Record<string, unknown>) => Promise<unknown> handler;
     std::string provider;
-    std::optional<number; // Optional priority for selection order> priority;
+    std::optional<double> priority;
     std::optional<double> registrationOrder;
 };
 
@@ -1347,8 +1294,7 @@ using ServiceConfig = std::unordered_map<std::string, unknown>;
  */
 struct ControlMessage {
     'control' type;
-    { payload;
-    'disable_input' | 'enable_input' action;
+    std::variant<'disable_input', 'enable_input'> action;
     std::optional<std::string> target;
     UUID roomId;
 };

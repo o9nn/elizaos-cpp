@@ -1,13 +1,14 @@
-#include ".allowedOrigins.hpp"
-#include ".db.hpp"
-#include ".util.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".allowedOrigins.hpp"
+#include ".db.hpp"
+#include ".util.hpp"
 
 namespace elizaos {
 
@@ -21,24 +22,22 @@ namespace elizaos {
  * Custom Error Types
  * ------------------------------------------------------------------
  */
-class TwitterAPIError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "TwitterAPIError";
-  }
+class TwitterAPIError {
+public:
+    TwitterAPIError(const std::string& message);
+};
 
-class LLMError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "LLMError";
-  }
+class LLMError {
+public:
+    LLMError(const std::string& message);
+};
 
 /**
  * ------------------------------------------------------------------
  * Zod Schemas
  * ------------------------------------------------------------------
  */
-using TwitterMessage = z.infer<typeof TwitterMessageSchema>;
+using TwitterMessage = z::infer<typeof TwitterMessageSchema>;
 
 /**
  * ------------------------------------------------------------------
@@ -66,8 +65,6 @@ std::future<void> storeOAuthState(const std::string& state, const std::string& c
 
 std::future<void> storeAccessToken(const std::string& userId, const std::string& token, const std::string& refresh, double expiresIn);
 
-std::future<string | null> getRefreshToken(const std::string& userId);
-
 std::future<void> updateAccessToken(const std::string& userId, const std::string& token, const std::string& refresh, double expiresIn);
 
 std::future<bool> validateToken(const std::string& token, const std::string& userId);
@@ -79,7 +76,6 @@ std::future<bool> validateToken(const std::string& token, const std::string& use
  */
 
 // Enable CORS
-  await next();
 
 /**
  * ------------------------------------------------------------------
@@ -103,12 +99,9 @@ std::string getNormalizedTimestamp();
       // Request token from Twitter
 
       // Store the token secret for later use in the callback
-      await storeOAuthState(oauthToken, oauthTokenSecret || "");
 
       // Redirect to Twitter authorization page
     // Original OAuth 2.0 flow
-
-    await storeOAuthState(state, codeVerifier);
 
 // OAuth 1.0a Access Token Callback
 

@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -12,8 +12,6 @@ namespace elizaos {
 // Manual refinement required for production use
 
 enum ReactionType {
-  NORMAL = 0,
-  BURST = 1,
 }
 
 } // namespace elizaos

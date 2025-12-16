@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -31,7 +31,6 @@ namespace elizaos {
 // Import commands.ts
 
 // Alternatively you can use CommonJS syntax:
-// require('./commands')
 
 // Custom commands for Knowledge plugin testing
     struct Chainable {

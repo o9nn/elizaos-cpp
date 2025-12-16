@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -46,7 +47,6 @@ struct Session {
     Date expiresAt;
     SessionTimeoutConfig timeoutConfig;
     double renewalCount;
-    std::optional<{> warningState;
     bool sent;
     std::optional<Date> sentAt;
 };
@@ -79,7 +79,6 @@ struct CreateSessionResponse {
  */
 struct SendMessageRequest {
     std::string content;
-    std::optional<Array<{> attachments;
     std::string type;
     std::string url;
     std::optional<std::string> name;
@@ -104,7 +103,6 @@ struct SimplifiedMessage {
     std::string authorId;
     bool isAgent;
     Date createdAt;
-    { metadata;
     std::optional<std::string> thought;
     std::optional<std::vector<std::string>> actions;
 };
@@ -115,7 +113,6 @@ struct SimplifiedMessage {
 struct GetMessagesResponse {
     std::vector<SimplifiedMessage> messages;
     bool hasMore;
-    std::optional<{> cursors;
     std::optional<double> before;
     std::optional<double> after;
 };
@@ -141,7 +138,7 @@ struct SessionInfoResponse {
  * Health check response
  */
 struct HealthCheckResponse {
-    'healthy' | 'unhealthy' status;
+    std::variant<'healthy', 'unhealthy'> status;
     double activeSessions;
     std::string timestamp;
 };

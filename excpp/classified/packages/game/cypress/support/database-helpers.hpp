@@ -1,10 +1,12 @@
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -19,9 +21,7 @@ namespace elizaos {
 
 struct AuthTokenResponse {
     bool success;
-    { data;
     std::string token;
-    { user;
     std::string id;
     std::string username;
     std::vector<std::string> roles;
@@ -47,95 +47,41 @@ struct TableData {
     std::string table;
     std::vector<TableColumn> columns;
     std::vector<std::any> data;
-    { pagination;
     double page;
     double limit;
     double total;
     double totalPages;
     bool hasNext;
     bool hasPrev;
-    { filters;
     std::string search;
     std::string orderBy;
-    'ASC' | 'DESC' orderDir;
+    std::variant<'ASC', 'DESC'> orderDir;
 };
 
 class DatabaseTestHelper {
-  private backendUrl: string;
-  private authToken: string | null = null;
+public:
+    DatabaseTestHelper(string = 'http://localhost:7777' backendUrl);
+    Cypress::Chainable<string> authenticate(string = 'admin' username, string = 'password123' password);
+    Cypress::Chainable<DatabaseTable[]> getTables();
+    Cypress::Chainable<TableData> getTableData(const std::string& tableName, std::optional<std::any> options);
+    Cypress::Chainable<any> getRecord(const std::string& tableName, const std::string& recordId);
+    Cypress::Chainable<any> createRecord(const std::string& tableName, Record<string recordData, auto any>);
+    Cypress::Chainable<any> updateRecord(const std::string& tableName, const std::string& recordId, Record<string updateData, auto any>);
+    Cypress::Chainable<any> deleteRecord(const std::string& tableName, const std::string& recordId);
+    Cypress::Chainable<any> createTestMemory(const std::optional<std::any>& customData);
+    Cypress::Chainable<any> createTestAgent(const std::optional<std::any>& customData);
+    Cypress::Chainable<void> cleanupTestRecords(const std::string& tableName, string = 'test-' searchPattern);
+    Cypress::Chainable<void> waitForTableRowCount(const std::string& tableName, double expectedCount, number = 10000 timeout);
+    Cypress::Chainable<boolean> verifyRecordExists(const std::string& tableName, Record<string searchCriteria, auto any>);
+    std::unordered_map<std::string, std::string> getAuthHeaders();
+    std::unordered_map<std::string, std::any> generateTestData(const std::string& tableName);
 
-  constructor(backendUrl: string = 'http://localhost:7777') {
-    this.backendUrl = backendUrl;
-  }
-
-  /**
-   * Authenticate and get auth token
-   */
-
-  /**
-   * Get list of database tables
-   */
-
-  /**
-   * Get table data with optional parameters
-   */
-
-  /**
-   * Get specific record by ID
-   */
-
-  /**
-   * Create a new record
-   */
-
-  /**
-   * Update an existing record
-   */
-
-  /**
-   * Delete a record
-   */
-
-  /**
-   * Create a test memory record
-   */
-
-  /**
-   * Create a test agent record
-   */
-
-  /**
-   * Cleanup test records by pattern
-   */
-          // Check if any field contains the search pattern
-
-  /**
-   * Wait for table to have specific row count
-   */
-
-        return checkRowCount();
-
-    return checkRowCount();
-
-  /**
-   * Verify record exists in table
-   */
-
-  /**
-   * Get auth headers for requests
-   */
-
-  /**
-   * Generate test data for different table types
-   */
+private:
+    std::string backendUrl_;
+};
 
 // Cypress commands for database testing
     struct Chainable {
-    std::string tableName;
-    std::string recordId;
-    std::unordered_map<std::string, std::any> updateData;
-    std::string tableName;
-    std::unordered_map<std::string, std::any> searchCriteria;
 };
 
 // Register Cypress commands

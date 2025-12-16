@@ -1,11 +1,11 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -28,25 +28,8 @@ namespace elizaos {
  * @returns {Object} - A JSON object with a summary of the tweets and sentiment analysis of occurring tokens.
  */
 
-    // Create a consistent room ID for all sentiment analysis
-
-    /** Each timeframe is always 1 hour. */
-
-        /** If it is a timeslot in the future, there is no point in filling it in */
-
-        // Check if this timeslot already exists
-
-    // Get sentiments
-
-    /** Retrieve tweets from message manager */
-
-    // Filter for twitter messages only
-
-      // Mark as processed
-
-    // Parse the JSON response
-
-    // Update sentiment with analysis results
+    void fillTimeframe();
+    void parseTweets();
 
 
 } // namespace elizaos

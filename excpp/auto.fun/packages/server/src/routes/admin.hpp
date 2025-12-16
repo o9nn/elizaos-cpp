@@ -1,16 +1,17 @@
-#include ".db.hpp"
-#include ".logger.hpp"
-#include ".s3Client.hpp"
-#include ".util.hpp"
-#include "adminAddresses.hpp"
-#include "files.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".db.hpp"
+#include ".logger.hpp"
+#include ".s3Client.hpp"
+#include ".util.hpp"
+#include "adminAddresses.hpp"
+#include "files.hpp"
 
 namespace elizaos {
 
@@ -25,18 +26,13 @@ namespace elizaos {
 
 // Middleware to check if user has admin privileges
 
-  await next();
-
 // New middleware that checks for admin OR moderator status
 
     // Set a context variable to indicate this is a full admin
 
-    await next();
-
   // Check if user is a moderator
 
   // Mark this user as a moderator but not a full admin
-  await next();
 
 // Route to update a token's social links
 
@@ -135,8 +131,6 @@ namespace elizaos {
 
   // Fetch token data to check ownership using Drizzle syntax
 
-  await next();
-
 // Create owner router for token owner specific endpoints
 
 // Route to update a token's social links (owner version)
@@ -146,8 +140,10 @@ namespace elizaos {
     // Get the updated token data
 
 // --- Build Base Query for Admin Tokens (Omits hidden filter) ---
+PgSelect buildAdminTokensBaseQuery(const std::any& db, std::optional<std::any> params);
 
 // --- Build Count Query for Admin Tokens (Omits hidden filter) ---
+PgSelect buildAdminTokensCountBaseQuery(const std::any& db, std::optional<std::any> params);
 
 // --- NEW: Route to retrieve ALL tokens (including hidden) for Admin Panel ---
   // --- Parameter Reading (similar to /api/tokens) ---

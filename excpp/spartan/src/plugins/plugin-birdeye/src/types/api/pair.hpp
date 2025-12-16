@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -21,12 +22,10 @@ struct PairTradesParams {
 
 struct PairTradesResponse {
     bool success;
-    { data;
-    Array<{ items;
     std::optional<std::string> signature;
     std::optional<double> blockNumber;
     std::optional<double> unixTime;
-    std::optional<"buy" | "sell"> type;
+    std::optional<std::variant<"buy", "sell">> type;
     std::optional<std::string> tokenAddress;
     std::optional<double> tokenAmount;
     std::optional<double> tokenAmountUI;
@@ -52,8 +51,6 @@ struct OHLCVPairParams {
 
 struct OHLCVPairResponse {
     bool success;
-    { data;
-    Array<{ items;
     std::optional<double> unixTime;
     std::optional<std::string> address;
     std::optional<TimeInterval> type;
@@ -77,12 +74,10 @@ struct PairOverviewSingleParams {
 struct PairOverviewData {
     std::string address;
     std::string name;
-    { base;
     std::string address;
     double decimals;
     std::string icon;
     std::string symbol;
-    { quote;
     std::string address;
     double decimals;
     std::string icon;
@@ -90,14 +85,14 @@ struct PairOverviewData {
     std::string created_at;
     std::string source;
     double liquidity;
-    number | null liquidity_change_percentage_24h;
+    std::optional<double> liquidity_change_percentage_24h;
     double price;
     double volume_24h;
-    number | null volume_24h_change_percentage_24h;
+    std::optional<double> volume_24h_change_percentage_24h;
     double trade_24h;
     double trade_24h_change_percent;
     double unique_wallet_24h;
-    number | null unique_wallet_24h_change_percent;
+    std::optional<double> unique_wallet_24h_change_percent;
     double trade_30m;
     double trade_1h;
     double trade_2h;
@@ -132,15 +127,12 @@ struct PairOverviewData {
 
 struct PairOverviewSingleResponse {
     bool success;
-    { data;
     std::optional<std::string> address;
     std::optional<std::string> name;
-    std::optional<{> base;
     std::optional<std::string> address;
     std::optional<double> decimals;
     std::optional<std::string> icon;
     std::optional<std::string> symbol;
-    std::optional<{> quote;
     std::optional<std::string> address;
     std::optional<double> decimals;
     std::optional<std::string> icon;
@@ -148,14 +140,14 @@ struct PairOverviewSingleResponse {
     std::optional<std::string> created_at;
     std::optional<std::string> source;
     std::optional<double> liquidity;
-    std::optional<number | null> liquidity_change_percentage_24h;
+    std::optional<std::optional<double>> liquidity_change_percentage_24h;
     std::optional<double> price;
     std::optional<double> volume_24h;
-    std::optional<number | null> volume_24h_change_percentage_24h;
+    std::optional<std::optional<double>> volume_24h_change_percentage_24h;
     std::optional<double> trade_24h;
     std::optional<double> trade_24h_change_percent;
     std::optional<double> unique_wallet_24h;
-    std::optional<number | null> unique_wallet_24h_change_percent;
+    std::optional<std::optional<double>> unique_wallet_24h_change_percent;
     std::optional<double> trade_30m;
     std::optional<double> trade_1h;
     std::optional<double> trade_2h;
@@ -190,7 +182,6 @@ struct PairOverviewSingleResponse {
 
 struct PairOverviewMultiResponse {
     bool success;
-    { data;
 };
 
 

@@ -1,3 +1,11 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <variant>
+#include <vector>
 #include "...classes/channel.hpp"
 #include "...classes/guild.hpp"
 #include "...classes/message.hpp"
@@ -6,13 +14,6 @@
 #include "..message-mock/message-mock.hpp"
 #include "message-title-mock.hpp"
 #include "page-footer-controls.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 

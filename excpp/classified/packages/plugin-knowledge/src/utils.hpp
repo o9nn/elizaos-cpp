@@ -1,11 +1,13 @@
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -71,7 +73,7 @@ std::string normalizeS3Url(const std::string& url);
 
     // Convert to base64
 
-bool looksLikeBase64(std::optional<string | null> content);
+bool looksLikeBase64(std::optional<std::optional<std::string>> content);
 
 /**
  * Generates a consistent UUID for a document based on its content.
@@ -83,6 +85,7 @@ bool looksLikeBase64(std::optional<string | null> content);
  * @param options Optional configuration for ID generation
  * @returns A deterministic UUID based on the content
  */
+std::string generateContentBasedId(const std::string& content, const std::string& agentId, std::optional<std::any> options);
 
 /**
  * Extracts the first N lines from text content for ID generation

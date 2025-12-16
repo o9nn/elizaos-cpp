@@ -1,3 +1,10 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include "actions/cdp-check-tx-confirmation.hpp"
 #include "actions/cdp-resolve-ens.hpp"
 #include "actions/cdp-tx-explorer-link.hpp"
@@ -12,13 +19,6 @@
 #include "actions/cdp-wallet-unwrap.hpp"
 #include "providers/walletState.hpp"
 #include "services/cdp.service.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 

@@ -1,11 +1,11 @@
-#include "errors.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "errors.hpp"
 
 namespace elizaos {
 
@@ -38,61 +38,33 @@ struct SecurityConfig {
  * URL validation and sanitization
  */
 class UrlValidator {
-  private config: SecurityConfig;
+public:
+    UrlValidator(const std::optional<SecurityConfig>& config);
+     validateUrl(const std::string& url);
+    void if(auto isLocalhost && !this.config.allowLocalhost);
+    void if(auto this.config.blockedDomains);
+    void if(auto this.config.allowedDomains && this.config.allowedDomains.length > 0);
+    void catch(auto error);
+    void updateConfig(const std::optional<SecurityConfig>& config);
 
-  constructor(config: Partial<SecurityConfig> = {}) {
-    this.config = { ...defaultSecurityConfig, ...config };
-  }
-
-  /**
-   * Validate if a URL is allowed
-   */
-      // Check URL length
-
-      // Parse URL
-        // Try adding https:// if no protocol
-
-      // Check protocol
-
-      // Check localhost
-
-      // Check against blocked domains
-
-      // Check against allowed domains (if specified)
-
-  /**
-   * Update security configuration
-   */
+private:
+    SecurityConfig config_;
+};
 
 /**
  * Input sanitization utilities
  */
 class InputSanitizer {
-  /**
-   * Sanitize text input to prevent XSS and injection attacks
-   */
-  static sanitizeText(input: string): string {
-    return input
-      .replace(/[<>]/g, '') // Remove HTML tags
-      .replace(/javascript:/gi, '') // Remove javascript: protocol
-      .replace(/on\w+\s*=/gi, '') // Remove event handlers
-      .trim();
-  }
-
-  /**
-   * Sanitize selector strings for browser actions
-   */
-    // Remove potentially dangerous characters in selectors
-
-  /**
-   * Sanitize file paths
-   */
-    // Remove path traversal attempts
+public:
+    std::string sanitizeText(const std::string& input);
+    std::string sanitizeSelector(const std::string& selector);
+    std::string sanitizeFilePath(const std::string& path);
+};
 
 /**
  * Security middleware for actions
  */
-void validateSecureAction(string | null url, UrlValidator validator);
+void validateSecureAction(const std::optional<std::string>& url, UrlValidator validator);
 
 /**
  * Create a default URL validator instance
@@ -110,15 +82,11 @@ struct RateLimitConfig {
  * Simple rate limiter
  */
 class RateLimiter {
-  private actionCounts: Map<string, { count: number; resetTime: number }> = new Map();
-
-  /**
-   * Check if an action is allowed
-   */
-
-  /**
-   * Check if a new session is allowed
-   */
+public:
+    RateLimiter(RateLimitConfig private config);
+    bool checkActionLimit(const std::string& userId);
+    bool checkSessionLimit(const std::string& userId);
+};
 
 
 } // namespace elizaos

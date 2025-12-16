@@ -1,13 +1,13 @@
-#include ".constants.hpp"
-#include ".utils.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".constants.hpp"
+#include ".utils.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -19,7 +19,6 @@ namespace elizaos {
 void findGeneratedCode(auto message, auto length);
 
   // can only enter this if we don't have an email
-    //console.log('VERIFY_REGISTRATION_CODE validate')
 
     // if not a discord/telegram message, we can ignore it
 

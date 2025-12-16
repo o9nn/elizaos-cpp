@@ -1,11 +1,11 @@
-#include ".views/profile.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".views/profile.hpp"
 
 namespace elizaos {
 

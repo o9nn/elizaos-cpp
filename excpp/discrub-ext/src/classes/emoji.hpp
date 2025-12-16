@@ -1,11 +1,13 @@
-#include "user.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "user.hpp"
 
 namespace elizaos {
 
@@ -15,33 +17,13 @@ namespace elizaos {
 // https://discord.com/developers/docs/resources/emoji#emoji-object
 
 class Emoji {
-  id: Snowflake | Maybe;
-  name: string | Maybe;
-  roles?: Snowflake[];
-  user?: User;
-  require_colons?: boolean;
-  managed?: boolean;
-  animated?: boolean;
-  available?: boolean;
+public:
+    Emoji(std::optional<std::any> opts);
 
-  constructor(opts: {
-    id: Snowflake | Maybe;
-    name: string | Maybe;
-    roles?: Snowflake[];
-    user?: User;
-    require_colons?: boolean;
-    managed?: boolean;
-    animated?: boolean;
-    available?: boolean;
-  }) {
-    this.id = opts.id;
-    this.name = opts.name;
-    this.roles = opts.roles;
-    this.user = opts.user;
-    this.require_colons = opts.require_colons;
-    this.managed = opts.managed;
-    this.animated = opts.animated;
-    this.available = opts.available;
-  }
+private:
+    std::variant<Snowflake, Maybe> id_;
+    std::variant<std::string, Maybe> name_;
+};
+
 
 } // namespace elizaos

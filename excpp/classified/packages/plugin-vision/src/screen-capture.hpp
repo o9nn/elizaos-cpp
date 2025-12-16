@@ -1,11 +1,12 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -15,48 +16,19 @@ namespace elizaos {
 
 
 class ScreenCaptureService {
-  private config: VisionConfig;
-  private activeTileIndex = 0;
-  private lastCapture: ScreenCapture | null = null;
+public:
+    ScreenCaptureService(VisionConfig config);
+    Promise< getScreenInfo();
+    void catch(auto error);
+    std::future<ScreenCapture> captureScreen();
+    std::future<void> captureScreenToFile(const std::string& outputPath);
+    std::optional<ScreenTile> getActiveTile();
+    std::vector<ScreenTile> getAllTiles();
+    std::vector<ScreenTile> getProcessedTiles();
 
-  constructor(config: VisionConfig) {
-    this.config = config;
-  }
-
-        // macOS: Use system_profiler
-
-        // Linux: Use xrandr
-        // Windows: Use wmic
-
-    // Default fallback
-
-      // Capture the screen
-
-      // Load and process the image
-
-      // Create tiles
-
-      // Process active tile based on order
-        // Focus on center tiles first
-        // Sequential
-
-      // Extract active tile data
-
-      // Clean up temp file
-
-      // Create screen capture object
-
-      // Clean up temp file on error
-
-        // macOS: Use screencapture
-        await execAsync(`screencapture -x "${outputPath}"`);
-        // Linux: Use scrot or gnome-screenshot
-          await execAsync(`scrot "${outputPath}"`);
-          // Fallback to gnome-screenshot
-          await execAsync(`gnome-screenshot -f "${outputPath}"`);
-        // Windows: Use PowerShell
-
-      // Provide helpful error messages
+private:
+    VisionConfig config_;
+};
 
 
 } // namespace elizaos

@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -16,7 +17,7 @@ namespace elizaos {
 using BirdeyeSupportedChain = (typeof BIRDEYE_SUPPORTED_CHAINS)[number];
 
 struct BaseAddress {
-    std::optional<"wallet" | "token" | "contract"> type;
+    std::optional<std::variant<"wallet", "token", "contract">> type;
     std::optional<std::string> symbol;
     std::string address;
     BirdeyeSupportedChain chain;

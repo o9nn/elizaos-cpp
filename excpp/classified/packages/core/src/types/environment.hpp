@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -43,25 +43,12 @@ struct Entity {
  * These roles are often used in `World.metadata.roles` to assign roles to entities.
  */
 enum Role {
-  OWNER = 'OWNER',
-  ADMIN = 'ADMIN',
-  NONE = 'NONE',
 }
 
 using World = {
 
 enum ChannelType {
-  SELF = 'SELF', // Messages to self
-  DM = 'DM', // Direct messages between two participants
-  GROUP = 'GROUP', // Group messages with multiple participants
-  VOICE_DM = 'VOICE_DM', // Voice direct messages
-  VOICE_GROUP = 'VOICE_GROUP', // Voice channels with multiple participants
-  FEED = 'FEED', // Social media feed
-  THREAD = 'THREAD', // Threaded conversation
-  WORLD = 'WORLD', // World channel
-  FORUM = 'FORUM', // Forum discussion
   // Legacy types - kept for backward compatibility but should be replaced
-  API = 'API', // @deprecated - Use DM or GROUP instead
 }
 
 using Room = {

@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -23,7 +24,7 @@ struct Rule {
     std::optional<std::string> description;
     std::optional<std::vector<std::string>> globs;
     bool alwaysApply;
-    string | RuleContent content;
+    std::variant<std::string, RuleContent> content;
 };
 
 /**
@@ -50,7 +51,7 @@ struct ProjectStructure {
 struct EntryPoint {
     std::string path;
     std::string description;
-    'single' | 'batch' | 'other' type;
+    std::variant<'single', 'batch', 'other'> type;
 };
 
 struct ClassInfo {
@@ -75,7 +76,7 @@ struct ToolsInfo {
 struct Inspector {
     std::string name;
     std::string path;
-    'cli' | 'web' type;
+    std::variant<'cli', 'web'> type;
     std::string description;
 };
 
@@ -83,16 +84,15 @@ struct Inspector {
  * Coding guidelines configuration
  */
 struct CodingGuidelines {
-    'python' | 'typescript' language;
+    std::variant<'python', 'typescript'> language;
     std::string version;
     std::vector<CodingRule> rules;
 };
 
 struct CodingRule {
     std::string id;
-    'style' | 'imports' | 'api' | 'documentation' | 'filesystem' category;
     std::string rule;
-    std::optional<'required' | 'recommended' | 'optional'> enforcement;
+    std::optional<std::variant<'required', 'recommended', 'optional'>> enforcement;
     std::optional<std::vector<std::string>> alternatives;
 };
 

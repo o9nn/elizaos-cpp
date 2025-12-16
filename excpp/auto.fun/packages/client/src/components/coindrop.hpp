@@ -1,10 +1,11 @@
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -28,29 +29,23 @@ namespace elizaos {
 };
 
   struct ContactEquation {
-    CANNON.Vec3 ni;
+    CANNON::Vec3 ni;
 };
 
   struct ContactEvent {
-    CANNON.Body bodyA;
-    CANNON.Body bodyB;
+    CANNON::Body bodyA;
+    CANNON::Body bodyB;
     ContactEquation contact;
 };
 
 // Declare the debugDropCoins function on the window object
   struct Window {
-    std::optional<() => void> debugDropCoins;
-    std::optional<() => void> pauseCoins;
-    std::optional<() => void> resumeCoins;
-    std::optional<() => void> createConfettiFireworks;
-    std::optional<() => void> flushCoins;
 };
 
 // Constants for physics - match the same constants from header
 
 struct CoinDropProps {
     std::optional<std::string> imageUrl;
-    std::optional<() => void> onCancel;
 };
 
 // Create fireworks-like confetti effect
@@ -297,7 +292,7 @@ struct CoinDropProps {
     void createCoin();
 
     // Collision handler for more realistic physics - similar to dice in frontpage-header
-    void handleCollisions(CANNON.ContactEvent event);
+    void handleCollisions(CANNON::ContactEvent event);
 
     // Add collision event listener
 

@@ -1,12 +1,14 @@
-#include ".button.hpp"
-#include ".multiwallet.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include ".button.hpp"
+#include ".multiwallet.hpp"
 
 namespace elizaos {
 
@@ -37,7 +39,7 @@ void setTokenCache(const std::string& walletAddress, const std::string& chain, c
 void clearTokenCache(std::optional<std::string> walletAddress, std::optional<std::string> chain);
 
 struct TokenSelectionProps {
-    { tokenId: string } formData;
+};
 
 std::string formatBalance(const std::string& balance, double decimals);
 
@@ -48,7 +50,7 @@ struct LoadingState {
     bool hasLoadedOnce;
 };
 
-using LoadingAction = std::variant<{ type: "START_LOADING" }, { type: "FINISH_LOADING" }>;
+using LoadingAction = std::variant<std::any, std::any>;
 
 LoadingState loadingReducer(LoadingState state, LoadingAction action);
 

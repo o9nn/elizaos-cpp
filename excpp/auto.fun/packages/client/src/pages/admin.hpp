@@ -1,15 +1,15 @@
-#include ".components/admin/moderators.hpp"
-#include ".components/admin/overview.hpp"
-#include ".components/admin/pregenerated.hpp"
-#include ".components/admin/tokens.hpp"
-#include ".components/admin/users.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".components/admin/moderators.hpp"
+#include ".components/admin/overview.hpp"
+#include ".components/admin/pregenerated.hpp"
+#include ".components/admin/tokens.hpp"
+#include ".components/admin/users.hpp"
 
 namespace elizaos {
 

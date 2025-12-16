@@ -1,14 +1,15 @@
-#include ".agent/problem-statement.hpp"
-#include ".environment/deployment.hpp"
-#include ".environment/swe-env.hpp"
-#include "types.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".agent/problem-statement.hpp"
+#include ".environment/deployment.hpp"
+#include ".environment/swe-env.hpp"
+#include "types.hpp"
 
 namespace elizaos {
 
@@ -41,7 +42,6 @@ struct SimpleBatchInstance {
     std::string instanceId;
     std::optional<std::string> repoName;
     std::optional<std::string> baseCommit;
-    std::optional<std::unordered_map<std::string, unknown>> extraFields;
 };
 
 /**
@@ -57,51 +57,29 @@ void sliceSpecToSlice(const std::string& sliceSpec); {
 /**
  * Simple seeded random number generator
  */
+std::function<double()> seededRandom(double seed);
 
 /**
  * Filter batch items
  */
+std::vector<BatchInstance> filterBatchItems(const std::vector<BatchInstance>& instances, std::optional<std::any> options);
 
 /**
  * Load instances from file
  */
-class InstancesFromFile extends AbstractInstanceSource {
-  private path: string;
-  private _filter: string;
-  private _slice: string;
-  private _shuffle: boolean;
-  private _deployment: DeploymentConfig;
+class InstancesFromFile {
+public:
+    InstancesFromFile(std::optional<std::any> config);
+    std::vector<BatchInstance> getInstanceConfigs();
+    std::string id() const;
 
-  constructor(config: {
-    path: string;
-    filter?: string;
-    slice?: string;
-    shuffle?: boolean;
-    deployment?: DeploymentConfig;
-  }) {
-    super();
-    this.path = config.path;
-    this._filter = config.filter || '.*';
-    this._slice = config.slice || '';
-    this._shuffle = config.shuffle || false;
-    this._deployment = config.deployment || {
-      type: 'docker' as const,
-      image: 'python:3.11',
-      pythonStandaloneDir: '/root',
-      volumes: {},
-      environment: {},
-      removeOnStop: true,
-      workDir: '/workspace',
-    };
-  }
-
-    // Load instances from file
-
-    // Convert to batch instances
-        // Already a full batch instance
-        // Simple instance, convert
-
-    // Filter and return
+private:
+    std::string path_;
+    std::string _filter_;
+    std::string _slice_;
+    bool _shuffle_;
+    DeploymentConfig _deployment_;
+};
 
 /**
  * Convert SWE-bench instance to SimpleBatchInstance
@@ -111,51 +89,20 @@ SimpleBatchInstance fromSWEBench(Record<string sweBenchInstance, auto unknown>);
 /**
  * SWE-bench instances
  */
-class SWEBenchInstances extends AbstractInstanceSource {
-  public readonly subset: 'lite' | 'verified' | 'full' | 'multimodal' | 'multilingual';
-  public readonly split: 'dev' | 'test';
-  private pathOverride?: string;
-  private _filter: string;
-  private _slice: string;
-  private _shuffle: boolean;
-  public readonly evaluate: boolean;
-  private _deployment: DeploymentConfig;
+class SWEBenchInstances {
+public:
+    SWEBenchInstances(std::optional<std::any> config);
+    std::string getDatasetPath();
+    std::vector<BatchInstance> getInstanceConfigs();
+    std::string id() const;
+    bool isEvaluationEnabled() const;
 
-  constructor(config: {
-    subset?: 'lite' | 'verified' | 'full' | 'multimodal' | 'multilingual';
-    split?: 'dev' | 'test';
-    pathOverride?: string;
-    filter?: string;
-    slice?: string;
-    shuffle?: boolean;
-    evaluate?: boolean;
-    deployment?: DeploymentConfig;
-  }) {
-    super();
-    this.subset = config.subset || 'lite';
-    this.split = config.split || 'dev';
-    this.pathOverride = config.pathOverride;
-    this._filter = config.filter || '.*';
-    this._slice = config.slice || '';
-    this._shuffle = config.shuffle || false;
-    this.evaluate = config.evaluate || false;
-    this._deployment = config.deployment || {
-      type: 'docker' as const,
-      image: 'python:3.11',
-      pythonStandaloneDir: '/root',
-      volumes: {},
-      environment: {},
-      removeOnStop: true,
-      workDir: '/workspace',
-    };
-  }
-
-    // Map subset to HuggingFace dataset path
-
-    // In a real implementation, this would load from HuggingFace
-    // For now, return empty array
-    // TODO: Implement actual loading using deployment configuration
-    // The deployment config would be used as: this._deployment
+private:
+    std::string _filter_;
+    std::string _slice_;
+    bool _shuffle_;
+    DeploymentConfig _deployment_;
+};
 
 /**
  * Create instance source from config

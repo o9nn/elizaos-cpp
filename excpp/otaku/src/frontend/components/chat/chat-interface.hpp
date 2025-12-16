@@ -1,11 +1,12 @@
-#include ".ui/textarea.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".ui/textarea.hpp"
 
 namespace elizaos {
 
@@ -38,10 +39,8 @@ struct ChatInterfaceProps {
     Agent agent;
     std::string userId;
     std::string serverId;
-    string | null channelId;
+    std::optional<std::string> channelId;
     std::optional<bool> isNewChatMode;
-    std::optional<(channelId: string, channelName: string) => void> onChannelCreated;
-    std::optional<() => void // Callback when agent completes an action> onActionCompleted;
 };
 
 void ChatInterface(auto { agent, auto userId, auto serverId, auto channelId, auto isNewChatMode = false, auto onChannelCreated, ChatInterfaceProps onActionCompleted });

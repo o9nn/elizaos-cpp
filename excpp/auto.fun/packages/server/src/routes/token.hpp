@@ -1,3 +1,12 @@
+#pragma once
+#include <any>
+#include <functional>
+#include <future>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include ".db.hpp"
 #include ".externalToken.hpp"
 #include ".generation.hpp"
@@ -16,13 +25,6 @@
 #include "validators/tokenQuery.hpp"
 #include "validators/tokenSearchQuery.hpp"
 #include "validators/tokenUpdateQuery.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -40,13 +42,15 @@ namespace elizaos {
  // Import the S3 uploader
 
 // --- Validation Function ---
-std::future<void> validateQueryResults(std::optional<{ hideImported: number; status: string }> params, Token[] | null | undefined results, std::optional<{ mainQuerySql: string } // Optional parameter for SQL string> sqlStrings);
+std::future<void> validateQueryResults(std::optional<std::any> params, const std::optional<std::vector<Token>>& results, std::optional<{ mainQuerySql: string } // Optional parameter for SQL string> sqlStrings);
 
 // --- Build Base Query (Filters) ---
 // Adjust DB type if needed
+PgSelect buildTokensBaseQuery(const std::any& db, std::optional<std::any> params);
 
 // --- Build Count Query (Filters Only) ---
 // Adjust DB type if needed
+PgSelect buildTokensCountBaseQuery(const std::any& db, std::optional<std::any> params);
 
 // Define the router (Env removed from Bindings)
 
@@ -106,7 +110,6 @@ std::future<void> processTokenInfo(PublicKey mintPublicKey, AccountInfo<Buffer> 
           // Select all fields from tokens table
           // Select specific fields from users table, aliased
 
-      // || tokenResult?.[0]?.hidden === 1
       // Don't cache 404s for the main token endpoint
 
     // Process the result - tokenResult[0] contains token fields and a creatorProfile object (which is null if no matching user was found)

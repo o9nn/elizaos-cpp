@@ -1,11 +1,12 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -26,14 +27,13 @@ struct RunCounts {
 struct RunSummary {
     UUID runId;
     RunStatus status;
-    number | null startedAt;
-    std::optional<number | null> endedAt;
-    std::optional<number | null> durationMs;
+    std::optional<double> startedAt;
+    std::optional<std::optional<double>> endedAt;
+    std::optional<std::optional<double>> durationMs;
     std::optional<UUID> messageId;
     std::optional<UUID> roomId;
     std::optional<UUID> entityId;
     std::optional<RunCounts> counts;
-    std::optional<std::unordered_map<std::string, unknown>> metadata;
 };
 
 using RunEventType = std::variant<, 'RUN_STARTED', 'RUN_ENDED', 'ACTION_STARTED', 'ACTION_COMPLETED', 'MODEL_USED', 'EVALUATOR_COMPLETED', 'EMBEDDING_EVENT'>;
@@ -41,7 +41,6 @@ using RunEventType = std::variant<, 'RUN_STARTED', 'RUN_ENDED', 'ACTION_STARTED'
 struct RunEvent {
     RunEventType type;
     double timestamp;
-    std::unordered_map<std::string, unknown> data;
 };
 
 struct RunDetail {
@@ -51,10 +50,10 @@ struct RunDetail {
 
 struct ListRunsParams {
     std::optional<UUID> roomId;
-    std::optional<RunStatus | 'all'> status;
+    std::optional<std::variant<RunStatus, 'all'>> status;
     std::optional<double> limit;
-    std::optional<number; // epoch ms> from;
-    std::optional<number; // epoch ms> to;
+    std::optional<double> from;
+    std::optional<double> to;
 };
 
 

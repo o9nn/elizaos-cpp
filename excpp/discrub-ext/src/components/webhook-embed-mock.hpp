@@ -1,15 +1,15 @@
-#include ".classes/embed.hpp"
-#include ".classes/message.hpp"
-#include ".features/export/use-export-slice.hpp"
-#include ".types/embed-field-object.hpp"
-#include ".utils.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".classes/embed.hpp"
+#include ".classes/message.hpp"
+#include ".features/export/use-export-slice.hpp"
+#include ".types/embed-field-object.hpp"
+#include ".utils.hpp"
 
 namespace elizaos {
 

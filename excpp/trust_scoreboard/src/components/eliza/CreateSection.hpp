@@ -1,11 +1,11 @@
-#include "CreateSection.module.css.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "CreateSection.module.css.hpp"
 
 namespace elizaos {
 
@@ -16,11 +16,8 @@ namespace elizaos {
 
 struct CreateSectionProps {
     std::string characterName;
-    (name: string) => void setCharacterName;
     std::string selectedPersonality;
-    (personality: string) => void setSelectedPersonality;
     std::vector<std::string> selectedSkills;
-    (skills: string[]) => void setSelectedSkills;
 };
 
 

@@ -1,11 +1,12 @@
-#include "util.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "util.hpp"
 
 namespace elizaos {
 
@@ -36,16 +37,12 @@ std::future<void> ensureMinioBucketExists(S3Client client, const std::string& bu
 
         // --- Priority 1: Use MinIO if MINIO_ENDPOINT is explicitly set ---
 
-            await ensureMinioBucketExists(s3ClientInstance, resolvedBucketName);
-
         // --- Priority 2: Use Generic S3 if all S3_* vars are set (and MINIO_ENDPOINT wasn't) ---
 
             // Determine public base URL
                  // Fallback: Construct base url - consider adding S3_PUBLIC_BASE_URL env var
 
         // --- Priority 3: Fallback to Default MinIO if no specific config found ---
-
-            await ensureMinioBucketExists(s3ClientInstance, resolvedBucketName);
 
         // Final check after configuration attempts
 

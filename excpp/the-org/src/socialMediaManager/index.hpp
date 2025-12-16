@@ -1,12 +1,12 @@
-#include ".init.hpp"
-#include "actions/post.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".init.hpp"
+#include "actions/post.hpp"
 
 namespace elizaos {
 
@@ -34,9 +34,7 @@ namespace elizaos {
  */
 
 /**
- * Configuration object for onboarding process.
  * @typedef {Object} OnboardingConfig
- * @property {Object} settings - Settings for onboarding process.
  * @property {string} settings.ORG_NAME - Organization Name setting.
  * @property {string} settings.ORG_DESCRIPTION - Organization Description setting.
  * @property {string} settings.ORG_STYLE - Brand Style setting.

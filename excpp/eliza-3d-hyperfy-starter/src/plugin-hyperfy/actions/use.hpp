@@ -1,14 +1,14 @@
-#include ".service.hpp"
-#include ".systems/actions.hpp"
-#include ".systems/controls.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".service.hpp"
+#include ".systems/actions.hpp"
+#include ".systems/controls.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -18,8 +18,6 @@ namespace elizaos {
 
 
 // Template to extract entity to interact with
-
-      await callback({ text: "Error: Cannot use item. Agent action system unavailable." });
 
 
 } // namespace elizaos

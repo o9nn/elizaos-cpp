@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -14,18 +15,18 @@ namespace elizaos {
   
 
   struct NodeObject {
-    std::optional<string | number> id;
+    std::optional<std::variant<std::string, double>> id;
     std::optional<double> x;
     std::optional<double> y;
     std::optional<double> vx;
     std::optional<double> vy;
-    std::optional<number | null> fx;
-    std::optional<number | null> fy;
+    std::optional<std::optional<double>> fx;
+    std::optional<std::optional<double>> fy;
 };
 
   struct LinkObject {
-    string | number | NodeObject source;
-    string | number | NodeObject target;
+    std::variant<std::string, double, NodeObject> source;
+    std::variant<std::string, double, NodeObject> target;
 };
 
   struct ForceGraphMethods {

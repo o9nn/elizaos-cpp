@@ -1,11 +1,12 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -29,7 +30,6 @@ struct ReconstructedResponse {
     'reconstructed_response' type;
     std::optional<std::string> thought;
     std::optional<std::string> message;
-    std::optional<Array<{> codeBlocks;
     std::string language;
     std::string code;
 };

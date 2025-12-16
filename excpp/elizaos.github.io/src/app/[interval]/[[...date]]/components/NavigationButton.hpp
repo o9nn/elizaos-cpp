@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -15,7 +16,7 @@ namespace elizaos {
 
 struct NavigationButtonProps {
     std::string href;
-    "prev" | "next" direction;
+    std::variant<"prev", "next"> direction;
     bool isVisible;
 };
 

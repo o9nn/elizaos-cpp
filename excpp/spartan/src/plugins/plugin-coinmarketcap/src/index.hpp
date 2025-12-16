@@ -1,15 +1,15 @@
-#include "actions/getPrice.hpp"
-#include "elizaos/core.hpp"
-#include "providers/trending.hpp"
-#include "service.hpp"
-#include "tasks/coinmarketcap.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "actions/getPrice.hpp"
+#include "elizaos/core.hpp"
+#include "providers/trending.hpp"
+#include "service.hpp"
+#include "tasks/coinmarketcap.hpp"
 
 namespace elizaos {
 
@@ -22,7 +22,6 @@ namespace elizaos {
 
       // first, get all tasks with tags "queue", "repeat", "degen_intel" and delete them
 
-            //await birdeye.syncTrendingTokens('base');
             // kill this task
 
       /*

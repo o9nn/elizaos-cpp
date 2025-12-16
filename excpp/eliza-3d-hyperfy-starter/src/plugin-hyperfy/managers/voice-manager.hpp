@@ -1,15 +1,15 @@
-#include ".events.hpp"
-#include ".service.hpp"
-#include ".utils.hpp"
-#include "elizaos/core.hpp"
-#include "guards.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".events.hpp"
+#include ".service.hpp"
+#include ".utils.hpp"
+#include "elizaos/core.hpp"
+#include "guards.hpp"
 
 namespace elizaos {
 
@@ -21,27 +21,22 @@ namespace elizaos {
 using LiveKitAudioData = {
 
 class VoiceManager {
-  private runtime: IAgentRuntime;
-  private userStates: Map<
-    string,
-    {
-      buffers: Buffer[];
-      totalLength: number;
-      lastActive: number;
-      transcriptionText: string;
-    }
+public:
+    VoiceManager(IAgentRuntime runtime);
+    void start();
+    void handleUserBuffer(auto playerId, auto buffer);
+    void debouncedProcessTranscription(UUID playerId);
+    void processTranscription(UUID playerId);
+    void handleMessage(const std::string& message, UUID playerId);
+    void playAudio(auto audioBuffer);
+    void getService();
 
-      bool isLoudEnough(Buffer pcmBuffer, auto threshold = 1000);
+private:
+    IAgentRuntime runtime_;
+    std::vector<Buffer> buffers_;
+    double totalLength_;
+    double lastActive_;
+    std::string transcriptionText_;
+};
 
-          // Clean all users' previous buffers
-
-      // Convert Opus to WAV
-
-      bool isValidTranscription(const std::string& text);
-
-      // Ensure connection for the sender entity
-
-      // Emit voice-specific events
-
-  
 } // namespace elizaos

@@ -1,15 +1,16 @@
-#include "ChatInputArea.hpp"
-#include "ChatMessageListComponent.hpp"
-#include "agent-sidebar.hpp"
-#include "elizaos/core.hpp"
-#include "group-panel.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "ChatInputArea.hpp"
+#include "ChatMessageListComponent.hpp"
+#include "agent-sidebar.hpp"
+#include "elizaos/core.hpp"
+#include "group-panel.hpp"
 
 namespace elizaos {
 
@@ -19,10 +20,10 @@ namespace elizaos {
 
 
 struct UnifiedChatViewProps {
-    ChannelType.DM | ChannelType.GROUP chatType;
-    UUID; // agentId for DM, channelId for GROUP contextId;
-    std::optional<UUID; // Required for GROUP, optional for DM> serverId;
-    std::optional<UUID; // New prop for specific DM channel from URL> initialDmChannelId;
+    std::variant<ChannelType::DM, ChannelType::GROUP> chatType;
+    UUID contextId;
+    std::optional<UUID> serverId;
+    std::optional<UUID> initialDmChannelId;
 };
 
 // Consolidated chat state type
@@ -31,10 +32,10 @@ struct ChatUIState {
     bool showProfileOverlay;
     std::string input;
     bool inputDisabled;
-    UUID | null selectedGroupAgentId;
-    UUID | null currentDmChannelId;
+    std::optional<UUID> selectedGroupAgentId;
+    std::optional<UUID> currentDmChannelId;
     bool isCreatingDM;
-    boolean; // Add mobile state isMobile;
+    bool isMobile;
 };
 
 // Message content component - exported for use in ChatMessageListComponent

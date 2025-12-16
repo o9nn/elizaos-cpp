@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -48,7 +48,7 @@ struct TradingConfig {
 struct DatabaseConfig {
     std::string schemaVersion;
     bool enableCaching;
-    number; // in seconds cacheTimeout;
+    double cacheTimeout;
 };
 
 /**
@@ -58,7 +58,7 @@ struct MemoryConfig {
     std::string embeddingModel;
     double embeddingDimension;
     double similarityThreshold;
-    number; // in seconds cacheTimeout;
+    double cacheTimeout;
 };
 
 /**
@@ -78,11 +78,6 @@ struct MemoryConfig {
  * IMPORTANT: Must match the enum in types.ts
  */
 enum Conviction {
-  NONE = 'NONE',
-  LOW = 'LOW',
-  MEDIUM = 'MEDIUM',
-  HIGH = 'HIGH',
-  VERY_HIGH = 'VERY_HIGH',
 }
 
 /**
@@ -90,12 +85,6 @@ enum Conviction {
  * IMPORTANT: Must match the enum in types.ts
  */
 enum RecommendationType {
-  BUY = 'BUY',
-  DONT_BUY = 'DONT_BUY',
-  SELL = 'SELL',
-  DONT_SELL = 'DONT_SELL',
-  NONE = 'NONE',
-  HOLD = 'HOLD',
 }
 
 /**
@@ -103,10 +92,6 @@ enum RecommendationType {
  * IMPORTANT: Must match the enum in types.ts
  */
 enum TransactionType {
-  BUY = 'BUY',
-  SELL = 'SELL',
-  TRANSFER_IN = 'transfer_in',
-  TRANSFER_OUT = 'transfer_out',
 }
 
 /**

@@ -1,12 +1,12 @@
-#include "IntervalSelector.hpp"
-#include "NavigationButton.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "IntervalSelector.hpp"
+#include "NavigationButton.hpp"
 
 namespace elizaos {
 
@@ -16,8 +16,8 @@ namespace elizaos {
 
 
 struct DateNavigationProps {
-    string | null prevDate;
-    string | null nextDate;
+    std::optional<std::string> prevDate;
+    std::optional<std::string> nextDate;
     std::string currentDate;
     IntervalType intervalType;
 };

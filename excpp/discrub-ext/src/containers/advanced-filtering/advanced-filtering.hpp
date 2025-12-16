@@ -1,14 +1,14 @@
-#include "..features/dm/use-dm-slice.hpp"
-#include "..features/guild/use-guild-slice.hpp"
-#include "..features/message/use-message-slice.hpp"
-#include "components/advanced-filter-modal.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "..features/dm/use-dm-slice.hpp"
+#include "..features/guild/use-guild-slice.hpp"
+#include "..features/message/use-message-slice.hpp"
+#include "components/advanced-filter-modal.hpp"
 
 namespace elizaos {
 

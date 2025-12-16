@@ -1,0 +1,45 @@
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
+#pragma once
+
+namespace elizaos {
+
+// NOTE: This is auto-generated approximate C++ code
+// Manual refinement required for production use
+
+// Types for the registry API
+using RawRegistry = std::unordered_map<std::string, std::string>; // <npmName> → "github:owner/repo"
+
+struct VersionInfo {
+    std::optional<{> git;
+    std::string repo;
+    std::optional<{> v0;
+    string | null version;
+    string | null branch;
+    std::optional<{> v1;
+    string | null version;
+    string | null branch;
+    std::optional<{> npm;
+    string | null repo;
+    std::optional<string | null> v0;
+    std::optional<string | null> v1;
+    { supports;
+    bool v0;
+    bool v1;
+};
+
+struct CachedRegistry {
+    std::string lastUpdatedAt;
+    std::unordered_map<std::string, VersionInfo> registry;
+};
+
+struct NpmPackageMetadata {
+    std::optional<std::unordered_map<std::string, unknown>> versions;
+};
+
+
+} // namespace elizaos

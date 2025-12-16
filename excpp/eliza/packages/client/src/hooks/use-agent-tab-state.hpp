@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -24,6 +25,6 @@ struct AgentTabStates {
  * Custom hook to manage agent sidebar tab state with localStorage persistence
  * Each agent remembers its last selected tab when switching between agents
  */
-void useAgentTabState(UUID | undefined agentId);
+void useAgentTabState(UUID agentId);
 
 } // namespace elizaos

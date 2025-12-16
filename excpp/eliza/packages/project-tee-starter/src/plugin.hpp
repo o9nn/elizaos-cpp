@@ -1,11 +1,11 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -23,23 +23,17 @@ namespace elizaos {
  * @returns {object} - The configured schema object
  */
 
-class StarterService extends Service {
-  static serviceType = 'starter';
-  capabilityDescription = 'This is a starter service, can be customized for Mr. TEE.';
-  private teeClient: TappdClient;
-  private secretSalt: string;
-  constructor(protected runtime: IAgentRuntime) {
-    super(runtime);
-    this.teeClient = new TappdClient();
-    this.secretSalt = process.env.WALLET_SECRET_SALT || 'secret_salt';
-  }
+class StarterService {
+public:
+    StarterService(IAgentRuntime protected runtime);
+    void start(IAgentRuntime runtime);
+    void stop(IAgentRuntime runtime);
+    void stop();
 
-      // ECDSA Key
-
-      // ED25519 Key
-
-      // Handle TEE connection errors gracefully
-      // Continue without TEE functionality for testing
+private:
+    TappdClient teeClient_;
+    std::string secretSalt_;
+};
 
       // Set all environment variables at once
   // Enable this service to run when TEE mode is enabled

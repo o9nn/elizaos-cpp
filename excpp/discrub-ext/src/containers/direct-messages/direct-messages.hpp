@@ -1,3 +1,10 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include "..classes/channel.hpp"
 #include "..classes/message.hpp"
 #include "..common-components/tooltip/tooltip.hpp"
@@ -20,13 +27,6 @@
 #include ".export-button/export-button.hpp"
 #include ".message-table-toolbar/message-table-toolbar.hpp"
 #include ".purge-button/purge-button.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 

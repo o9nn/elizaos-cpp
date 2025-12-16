@@ -1,13 +1,13 @@
-#include "button.hpp"
-#include "holders-table.hpp"
-#include "swaps-table.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "button.hpp"
+#include "holders-table.hpp"
+#include "swaps-table.hpp"
 
 namespace elizaos {
 

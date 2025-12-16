@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -14,8 +15,8 @@ namespace elizaos {
 struct VoiceModel {
     std::string value;
     std::string label;
-    'local' | 'elevenlabs' | 'openai' | 'none' provider;
-    std::optional<'male' | 'female'> gender;
+    std::variant<'local', 'elevenlabs', 'openai', 'none'> provider;
+    std::optional<std::variant<'male', 'female'>> gender;
     std::optional<std::string> language;
     std::optional<std::vector<std::string>> features;
 };

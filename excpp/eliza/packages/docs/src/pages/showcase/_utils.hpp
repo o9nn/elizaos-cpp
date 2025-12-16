@@ -1,11 +1,11 @@
-#include "..data/users.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "..data/users.hpp"
 
 namespace elizaos {
 

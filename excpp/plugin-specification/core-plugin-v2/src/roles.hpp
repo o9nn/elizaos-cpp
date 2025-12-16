@@ -1,12 +1,13 @@
-#include "elizaos/core.hpp"
-#include "types.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
+#include "types.hpp"
 
 namespace elizaos {
 
@@ -20,7 +21,6 @@ namespace elizaos {
  * @property {Object.<string, World>} servers - The servers and their corresponding worlds, where the key is the server ID and the value is the World object.
  */
 struct ServerOwnershipState {
-    { servers;
 };
 
 /**
@@ -36,6 +36,5 @@ std::future<Role> getUserServerRole(IAgentRuntime runtime, const std::string& en
 /**
  * Finds a server where the given user is the owner
  */
-std::future<World[] | null> findWorldsForOwner(IAgentRuntime runtime, const std::string& entityId);
 
 } // namespace elizaos

@@ -1,10 +1,11 @@
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -14,23 +15,10 @@ namespace elizaos {
 
 
 class AdvancedVisualization {
-  static generateSegmentationSunburst(segments: any[]): ChartConfiguration {
-    return {
-      type: 'sunburst',
-      data: this.transformSegmentData(segments),
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { position: 'right' },
-          tooltip: {
-            callbacks: {
-              label: (ctx: any) => `${ctx.raw.value} users`
-            }
-          }
-        }
-      }
-    };
-  }
-
-
+public:
+    ChartConfiguration generateSegmentationSunburst(const std::vector<std::any>& segments);
+    ChartConfiguration generatePredictionGraph(const std::vector<std::any>& predictions);
+    void generateNetworkGraph(const std::any& data);
+};
+ 
 } // namespace elizaos

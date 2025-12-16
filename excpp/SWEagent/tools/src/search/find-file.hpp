@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -17,7 +17,7 @@ namespace elizaos {
  * Converted from tools/search/bin/find_file
  */
 
-void findFile(const std::string& fileName, string = './' dir);
+void findFile(const std::string& fileName, string = '::/' dir);
 
 // CLI if run directly
 // CLI setup

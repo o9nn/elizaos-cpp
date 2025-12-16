@@ -1,14 +1,14 @@
-#include "elizaos/core.hpp"
-#include "service.ts.hpp"
-#include "types.ts.hpp"
-#include "utils.ts.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
+#include "service.ts.hpp"
+#include "types.ts.hpp"
+#include "utils.ts.hpp"
 
 namespace elizaos {
 
@@ -53,5 +53,6 @@ std::vector<std::string> getAllFiles(const std::string& dirPath, const std::vect
 /**
  * Get content type based on file extension
  */
+std::optional<std::string> getContentType(const std::string& extension);
 
 } // namespace elizaos

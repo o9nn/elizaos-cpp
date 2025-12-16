@@ -1,10 +1,12 @@
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -23,14 +25,24 @@ using PluginEvents = std::vector<{
 struct Plugin {
     std::string name;
     std::string description;
-    std::optional<(config: Record<string, string>, runtime: IAgentRuntime) => Promise<void>> init;
-    std::optional<{ [key: string]: any }> config;
+    std::string name;
+    std::optional<std::vector<Action>> actions;
+    std::optional<std::vector<Provider>> providers;
+    std::optional<std::vector<Evaluator>> evaluators;
+    std::optional<IDatabaseAdapter> adapter;
+    std::optional<PluginEvents> events;
+    std::optional<std::vector<Route>> routes;
+    std::optional<std::vector<TestSuite>> tests;
+    std::optional<std::vector<std::string>> dependencies;
+    std::optional<std::vector<std::string>> testDependencies;
+    std::optional<double> priority;
+    std::optional<std::any> schema;
+};
 
 struct ProjectAgent {
     Character character;
-    std::optional<(runtime: IAgentRuntime) => Promise<void>> init;
     std::optional<std::vector<Plugin>> plugins;
-    std::optional<std::vector<TestSuite | TestSuite>> tests;
+    std::optional<std::variant<TestSuite, std::vector<TestSuite>>> tests;
 };
 
 struct Project {

@@ -1,11 +1,11 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -20,7 +20,7 @@ namespace elizaos {
 struct ContentQualityResult {
     bool isValid;
     std::optional<std::string> reason;
-    number; // 0-100, higher is better quality score;
+    double score;
 };
 
 /**

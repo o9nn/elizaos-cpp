@@ -1,11 +1,11 @@
-#include "NavBar.module.css.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "NavBar.module.css.hpp"
 
 namespace elizaos {
 
@@ -15,7 +15,7 @@ namespace elizaos {
 
 
 struct NavBarProps {
-    std::optional<React.ReactNode> children;
+    std::optional<ReactNode> children;
 };
 
     // Add search functionality

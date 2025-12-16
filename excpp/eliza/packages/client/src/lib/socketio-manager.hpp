@@ -1,13 +1,16 @@
-#include "elizaos/core.hpp"
-#include "logger.hpp"
-#include "utils.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
+#include "logger.hpp"
+#include "utils.hpp"
 
 namespace elizaos {
 
@@ -38,150 +41,46 @@ using LogStreamData = {
 
 // A simple class that provides EventEmitter-like interface using Evt internally
 class EventAdapter {
-  private events: Record<string, Evt<any>> = {};
-
-    // Initialize common events
-
-  // For checking if EventEmitter has listeners
-
-  // Used only for internal access to the Evt instances
+public:
+    EventAdapter();
+    void if(auto !this.events[eventName]);
+    void if(auto this.events[eventName]);
+    void emit(const std::string& eventName, const std::vector<std::any>& ...args);
+    void if(auto !this.events[eventName]);
+    double listenerCount(const std::string& eventName);
+    Evt<any> _getEvt(const std::string& eventName);
+};
 
 /**
  * SocketIOManager handles real-time communication between the client and server
  * using Socket.io. It maintains a single connection to the server and allows
  * joining and messaging in multiple rooms.
  */
-class SocketIOManager extends EventAdapter {
-  private static instance: SocketIOManager | null = null;
-  private socket: Socket | null = null;
-  private isConnected = false;
-  private connectPromise: Promise<void> | null = null;
-  private resolveConnect: (() => void) | null = null;
-  private activeChannelIds: Set<string> = new Set();
-  private clientEntityId: string | null = null;
-  private logStreamSubscribed: boolean = false;
-
-  // Public accessor for EVT instances (for advanced usage)
-  public get evtMessageBroadcast() {
-    return this._getEvt('messageBroadcast') as Evt<MessageBroadcastData>;
-  }
-
-  /**
-   * Initialize the Socket.io connection to the server
-   * @param clientEntityId The client entity ID (central user ID)
-   */
-
-    // Create a single socket connection
-
-    // Set up connection promise for async operations that depend on connection
-
-      // Add debug listener for all incoming events
-
-      // CRITICAL: Ensure this loop remains commented out or removed.
-      // this.activeChannelIds.forEach((channelId) => {
-      //   clientLogger.info(`[SocketIO] 'connect' event: Attempting to re-join active channel ${channelId} (THIS SHOULD NOT HAPPEN AUTOMATICALLY)`);
-      //   this.joinChannel(channelId);
-      // });
-
-      // Log the full data structure to understand formats
-
-      // Check if this is a message for one of our active channels
-        // Post the message to the event for UI updates
-
-    // Listen for control messages
-
-      // Check if this is for one of our active channels
-
-        // Emit the control message event
-
-    // Listen for message deletion events
-
-      // Check if this is for one of our active channels
-
-        // Emit the message deleted event
-
-    // Listen for channel cleared events
-
-      // Check if this is for one of our active channels
-
-        // Emit the channel cleared event
-
-    // Listen for channel deleted events
-
-      // Check if this is for one of our active channels
-
-        // Emit the channel deleted event (same as cleared for now)
-
-      // Reset connect promise for next connection
-
-    // Handle log stream events
-
-  /**
-   * Join a channel to receive messages from it
-   * @param channelId Channel ID to join
-   */
-
-    // Wait for connection if needed
-
-  /**
-   * @deprecated Use joinChannel instead
-   */
-
-  /**
-   * Leave a channel to stop receiving messages from it
-   * @param channelId Channel ID to leave
-   */
-
-    // No server-side message for leaving a room in this client's protocol,
-    // client just stops listening / tracking.
-
-  /**
-   * @deprecated Use leaveChannel instead
-   */
-
-  /**
-   * Send a message to a specific channel
-   * @param message Message text to send
-   * @param channelId Channel ID to send the message to
-   * @param serverId Server ID to send the message to
-   * @param source Source identifier (e.g., 'client_chat')
-   * @param attachments Optional media attachments
-   * @param messageId Optional message ID for tracking optimistic updates
-   */
-
-    // Wait for connection if needed
-
-    // Use provided messageId or generate a new one
-
-    // Emit message to server
-
-    // Note: We no longer broadcast locally - the server will send the message back with the proper ID
-
-  /**
-   * Subscribe to log streaming
-   */
-
-    // Wait for connection if needed
-
-  /**
-   * Unsubscribe from log streaming
-   */
-
-    // Wait for connection if needed
-
-  /**
-   * Update log stream filters
-   */
-
-    // Wait for connection if needed
-
-  /**
-   * Check if subscribed to log streaming
-   */
-
-  /**
-   * Disconnect from the server
-   */
+class SocketIOManager {
+public:
+    SocketIOManager();
+    void evtMessageBroadcast();
+    void evtMessageComplete();
+    void evtControlMessage();
+    void evtMessageDeleted();
+    void evtChannelCleared();
+    void evtChannelDeleted();
+    void evtLogStream();
+    SocketIOManager getInstance();
+    bool isConnected();
+    bool isChannelActive(const std::string& channelId);
+    void initialize(const std::string& clientEntityId);
+    std::future<void> joinChannel(const std::string& channelId);
+    std::future<void> joinRoom(const std::string& channelId);
+    void leaveChannel(const std::string& channelId);
+    void leaveRoom(const std::string& channelId);
+    std::future<void> sendMessage(const std::string& message, const std::string& channelId, const std::string& serverId, const std::string& source, std::optional<std::vector<std::any>> attachments, std::optional<std::string> messageId, std::optional<Record<string> metadata, auto any>);
+    std::future<void> subscribeToLogStream();
+    std::future<void> unsubscribeFromLogStream();
+    std::future<void> updateLogStreamFilters(std::optional<std::any> filters);
+    bool isLogStreamSubscribed();
+    void disconnect();
+};
 
 
 } // namespace elizaos

@@ -1,11 +1,12 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -16,18 +17,13 @@ namespace elizaos {
 
 struct ChatInputAreaProps {
     std::string input;
-    (value: string) => void setInput;
     bool inputDisabled;
     std::vector<UploadingFile> selectedFiles;
-    (fileId: string) => void removeFile;
-    (e: React.ChangeEvent<HTMLInputElement>) => void handleFileChange;
-    (e: React.FormEvent<HTMLFormElement>) => void handleSendMessage;
-    (e: React.KeyboardEvent<HTMLTextAreaElement>) => void handleKeyDown;
-    ChannelType.DM | ChannelType.GROUP chatType;
+    std::variant<ChannelType::DM, ChannelType::GROUP> chatType;
     std::optional<Agent> targetAgentData;
-    React.RefObject<HTMLFormElement | null> formRef;
-    React.RefObject<HTMLTextAreaElement | null> inputRef;
-    React.RefObject<HTMLInputElement | null> fileInputRef;
+    std::optional<std::shared_ptr<HTMLFormElement>> formRef;
+    std::optional<std::shared_ptr<HTMLTextAreaElement>> inputRef;
+    std::optional<std::shared_ptr<HTMLInputElement>> fileInputRef;
 };
 
 

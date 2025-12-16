@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -17,7 +17,7 @@ namespace elizaos {
  * Zod schema for create command options validation
  */
 
-using CreateOptions = z.infer<typeof initOptionsSchema>;
+using CreateOptions = z::infer<typeof initOptionsSchema>;
 
 /**
  * Available AI model configuration

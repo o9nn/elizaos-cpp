@@ -1,12 +1,13 @@
-#include ".repo.hpp"
-#include "abstract.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include ".repo.hpp"
+#include "abstract.hpp"
 
 namespace elizaos {
 
@@ -21,20 +22,25 @@ namespace elizaos {
 /**
  * Status update callback type
  */
-using StatusCallback = (id: string, message: string) => void;
+using StatusCallback = std::function<void(std::string, std::string)>;
 
 /**
  * Environment hook that updates status messages
  */
-class SetStatusEnvironmentHook extends EnvHook {
-  private callable: StatusCallback;
-  private id: string;
+class SetStatusEnvironmentHook {
+public:
+    SetStatusEnvironmentHook(const std::string& id, StatusCallback callable);
+    void update(const std::string& message);
+    void onCopyRepoStarted(const std::variant<Repo, RepoConfig>& repo);
+    void onStartDeployment();
+    void onInstallEnvStarted();
+    void onEnvironmentStartup();
+    void onClose();
 
-  constructor(id: string, callable: StatusCallback) {
-    super();
-    this.id = id;
-    this.callable = callable;
-  }
+private:
+    StatusCallback callable_;
+    std::string id_;
+};
 
 
 } // namespace elizaos

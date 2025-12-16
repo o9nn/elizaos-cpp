@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -27,9 +27,6 @@ namespace elizaos {
 
 // Declare custom commands for TypeScript
     struct Chainable {
-    std::string selector;
-    std::string fileName;
-    std::string fileContent;
     std::optional<std::string> mimeType;
 };
 

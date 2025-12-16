@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -23,7 +24,6 @@ struct CachedPrice {
 /**
  * Get cached token price
  */
-std::future<number | null> getCachedPrice(const std::string& chain, const std::string& address);
 
 /**
  * Set cached token price

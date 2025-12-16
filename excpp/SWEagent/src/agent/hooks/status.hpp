@@ -1,12 +1,12 @@
-#include "..types.hpp"
-#include "abstract.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "..types.hpp"
+#include "abstract.hpp"
 
 namespace elizaos {
 
@@ -21,23 +21,17 @@ namespace elizaos {
 /**
  * Hook for setting status during agent execution
  */
-class SetStatusAgentHook extends AbstractAgentHook {
-  private callable: (id: string, message: string) => void;
-  private id: string;
-  private iStep: number = 0;
-  private cost: number = 0.0;
-  private iAttempt: number = 0;
-  private previousCost: number = 0.0;
+class SetStatusAgentHook {
+public:
+    void onSetupAttempt();
+    void update(const std::string& message);
+    void onStepStart();
+    void onStepDone(StepOutput _step, AgentInfo info);
+    void onToolsInstallationStarted();
 
-  constructor(id: string, callable: (id: string, message: string) => void) {
-    super();
-    this.id = id;
-    this.callable = callable;
-  }
-
-    // Costs will be reset for the next attempt
-
-    // Update cost from model stats
+private:
+    std::string id_;
+};
 
 
 } // namespace elizaos

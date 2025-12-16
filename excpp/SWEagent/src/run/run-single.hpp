@@ -1,3 +1,13 @@
+#pragma once
+#include <any>
+#include <functional>
+#include <future>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <variant>
+#include <vector>
 #include ".agent/agents.hpp"
 #include ".agent/problem-statement.hpp"
 #include ".environment/swe-env.hpp"
@@ -7,13 +17,6 @@
 #include "common.hpp"
 #include "hooks/types.hpp"
 #include "types.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -40,69 +43,23 @@ std::string getDefaultOutputDir(const std::string& outputDir, ProblemStatement p
  * Run single instance
  */
 class RunSingle {
-  private env: SWEEnv;
-  private agent: AbstractAgent;
-  private problemStatement: ProblemStatement | ProblemStatementConfig;
-  private outputDir: string;
-  private hooks: RunHook[];
-  private actions: RunSingleActionConfig;
-  private logger: AgentLogger;
+public:
+    RunSingle(std::optional<std::any> config);
+    std::future<RunSingle> fromConfig(RunSingleConfig config);
+    void addHook(RunHook hook);
+    std::future<AgentRunResult> run();
+    std::future<void> applyPatchLocally(const std::string& patch);
+    std::future<void> openPullRequest(const std::string& _patch);
 
-  constructor(config: {
-    env: SWEEnv;
-    agent: AbstractAgent;
-    problemStatement: ProblemStatement | ProblemStatementConfig;
-    outputDir?: string;
-    hooks?: RunHook[];
-    actions?: RunSingleActionConfig;
-  }) {
-    this.env = config.env;
-    this.agent = config.agent;
-    this.problemStatement = config.problemStatement;
-    this.outputDir = config.outputDir || '.';
-    this.hooks = config.hooks || [];
-    this.actions = config.actions || {
-      openPr: false,
-      applyPatchLocally: false,
-    };
-    this.logger = getLogger('run-single', '🏃');
-
-    // RunHook and AbstractAgentHook are different interfaces
-    // We don't add RunHooks to the agent, they're managed separately
-  }
-
-    // Load environment variables
-
-    // Create environment
-
-    // Create agent
-
-    // Set default output directory
-
-    // RunHook and AbstractAgentHook are different interfaces
-    // RunHooks are managed separately from agent hooks
-
-    // Create output directory
-
-    // Start environment
-
-      // Run hooks before start
-
-      // Run agent
-
-      // Save predictions if we have a promising patch
-
-      // Run hooks after completion
-
-      // Apply actions if configured
-
-      // Clean up environment
-
-    // Save patch to file
-
-    // Apply using git apply (would need actual implementation)
-
-    // This would need actual GitHub API implementation
+private:
+    SWEEnv env_;
+    AbstractAgent agent_;
+    std::variant<ProblemStatement, ProblemStatementConfig> problemStatement_;
+    std::string outputDir_;
+    std::vector<RunHook> hooks_;
+    RunSingleActionConfig actions_;
+    AgentLogger logger_;
+};
 
 /**
  * Run from configuration

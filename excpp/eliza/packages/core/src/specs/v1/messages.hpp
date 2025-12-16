@@ -1,11 +1,12 @@
-#include ".v2.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".v2.hpp"
 
 namespace elizaos {
 
@@ -23,7 +24,7 @@ namespace elizaos {
  * @param actors - list of actors
  * @returns string
  */
-void formatActors({ actors: Actor[] } { actors });
+void formatActors(const std::any& { actors });
 
 /**
  * Format messages into a string

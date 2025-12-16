@@ -1,11 +1,13 @@
-#include ".lib/base-client.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include ".lib/base-client.hpp"
 
 namespace elizaos {
 
@@ -26,10 +28,10 @@ struct Token {
     std::string balanceFormatted;
     double usdValue;
     double usdPrice;
-    string | null contractAddress;
+    std::optional<std::string> contractAddress;
     std::string chain;
     double decimals;
-    std::optional<string; // Token icon URL from CoinGecko> icon;
+    std::optional<std::string> icon;
 };
 
 struct NFT {
@@ -41,7 +43,7 @@ struct NFT {
     std::string image;
     std::string contractName;
     std::string tokenType;
-    std::optional<string; // For ERC1155> balance;
+    std::optional<std::string> balance;
 };
 
 struct Transaction {
@@ -55,7 +57,7 @@ struct Transaction {
     double timestamp;
     std::string blockNum;
     std::string explorerUrl;
-    'sent' | 'received' direction;
+    std::variant<'sent', 'received'> direction;
 };
 
 struct WalletInfo {
@@ -160,15 +162,14 @@ struct CoinGeckoToken {
     std::string id;
     std::string symbol;
     std::string name;
-    string | null contractAddress;
-    string | null chain;
-    string | null icon;
-    number | null price;
-    std::optional<std::unordered_map<std::string, std::string>> platforms;
+    std::optional<std::string> contractAddress;
+    std::optional<std::string> chain;
+    std::optional<std::string> icon;
+    std::optional<double> price;
     std::optional<double> decimals;
-    std::optional<number | null> marketCap;
-    std::optional<number | null> volume24h;
-    std::optional<number | null> priceChange24h;
+    std::optional<std::optional<double>> marketCap;
+    std::optional<std::optional<double>> volume24h;
+    std::optional<std::optional<double>> priceChange24h;
 };
 
 struct SearchTokenResponse {
@@ -178,66 +179,21 @@ struct SearchTokenResponse {
 /**
  * Service for interacting with CDP wallet endpoints
  */
-class CdpService extends BaseApiClient {
-  /**
-   * Get or create a server wallet for a user
-   */
-  async getOrCreateWallet(name: string): Promise<WalletInfo> {
-    const response = await this.post<WalletInfo>('/api/cdp/wallet', { name });
-    return response;
-  }
+class CdpService {
+public:
+    std::future<WalletInfo> getOrCreateWallet(const std::string& name);
+    std::future<TokensResponse> getTokens(std::optional<std::string> chain);
+    std::future<TokensResponse> syncTokens(std::optional<std::string> chain);
+    std::future<NFTsResponse> getNFTs(std::optional<std::string> chain);
+    std::future<NFTsResponse> syncNFTs(std::optional<std::string> chain);
+    std::future<TransactionHistoryResponse> getHistory();
+    std::future<SendTokenResponse> sendToken(SendTokenRequest request);
+    std::future<SendNFTResponse> sendNFT(SendNFTRequest request);
+    std::future<SwapPriceResponse> getSwapPrice(SwapPriceRequest request);
+    std::future<SwapResponse> swap(SwapRequest request);
+    std::future<SearchTokenResponse> searchTokens(SearchTokenRequest request);
+    std::future<TopAndTrendingTokensResponse> getTopAndTrendingTokens(TopAndTrendingTokensRequest request);
+};
 
-  /**
-   * Get token balances across all networks (uses cache if available)
-   * Uses authenticated userId from JWT token
-   * @param chain Optional specific chain to fetch (e.g., 'base', 'ethereum', 'polygon')
-   */
-
-  /**
-   * Force sync token balances (bypasses cache)
-   * Uses authenticated userId from JWT token
-   * @param chain Optional specific chain to fetch (e.g., 'base', 'ethereum', 'polygon')
-   */
-
-  /**
-   * Get NFT holdings across networks (uses cache if available)
-   * Uses authenticated userId from JWT token
-   * @param chain Optional specific chain to fetch (e.g., 'base', 'ethereum', 'polygon')
-   */
-
-  /**
-   * Force sync NFTs (bypasses cache)
-   * Uses authenticated userId from JWT token
-   * @param chain Optional specific chain to fetch (e.g., 'base', 'ethereum', 'polygon')
-   */
-
-  /**
-   * Get transaction history across networks
-   * Uses authenticated userId from JWT token
-   */
-
-  /**
-   * Send tokens from server wallet
-   */
-
-  /**
-   * Send NFT from server wallet
-   */
-
-  /**
-   * Get swap price estimate
-   */
-
-  /**
-   * Execute token swap
-   */
-
-  /**
-   * Search for tokens using CoinGecko
-   */
-
-  /**
-   * Get top tokens by market cap and trending tokens for a specific chain
-   */
 
 } // namespace elizaos

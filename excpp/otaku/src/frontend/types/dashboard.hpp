@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -15,10 +16,10 @@ struct DashboardStat {
     std::string label;
     std::string value;
     std::string description;
-    "positive" | "negative" | "neutral" intent;
+    std::variant<"positive", "negative", "neutral"> intent;
     std::string icon;
     std::optional<std::string> tag;
-    std::optional<"up" | "down"> direction;
+    std::optional<std::variant<"up", "down">> direction;
 };
 
 struct ChartDataPoint {
@@ -49,7 +50,7 @@ struct SecurityStatus {
     std::string title;
     std::string value;
     std::string status;
-    "success" | "warning" | "destructive" variant;
+    std::variant<"success", "warning", "destructive"> variant;
 };
 
 struct Notification {
@@ -57,9 +58,9 @@ struct Notification {
     std::string title;
     std::string message;
     std::string timestamp;
-    "info" | "warning" | "success" | "error" type;
+    std::variant<"info", "warning", "success", "error"> type;
     bool read;
-    "low" | "medium" | "high" priority;
+    std::variant<"low", "medium", "high"> priority;
 };
 
 struct WidgetData {

@@ -1,12 +1,15 @@
-#include ".utils/log.hpp"
-#include "types.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include ".utils/log.hpp"
+#include "types.hpp"
 
 namespace elizaos {
 
@@ -32,148 +35,91 @@ struct ProblemStatement {
  * Base class for built-in problem statements
  */
 
+    ExtraFields getExtraFields();
+
 /**
  * Empty problem statement
  */
-class EmptyProblemStatement extends BuiltinProblemStatementBase {
-  id: string;
-  type: 'empty' = 'empty';
+class EmptyProblemStatement {
+public:
+    EmptyProblemStatement();
+    std::string getProblemStatement();
 
-  constructor() {
-    super();
-    this.id = crypto.randomUUID();
-  }
+private:
+    std::string id_;
+};
 
 /**
  * Text-based problem statement
  */
-class TextProblemStatement extends BuiltinProblemStatementBase {
-  id: string;
-  text: string;
-  extraFields: ExtraFields;
-  type: 'text' = 'text';
+class TextProblemStatement {
+public:
+    TextProblemStatement(std::optional<std::any> config);
+    std::string getProblemStatement();
+    ExtraFields getExtraFields();
+    std::string toString();
 
-  constructor(config: { text: string; extraFields?: ExtraFields; id?: string }) {
-    super();
-    this.text = config.text;
-    this.extraFields = config.extraFields || {};
-
-    if (config.id) {
-      this.id = config.id;
-    } else {
-      logger.info('Setting problem statement id to hash of text');
-      this.id = crypto.createHash('sha256').update(this.text).digest('hex').substring(0, 6);
-    }
-  }
+private:
+    std::string id_;
+    std::string text_;
+    ExtraFields extraFields_;
+};
 
 /**
  * File-based problem statement
  */
-class FileProblemStatement extends BuiltinProblemStatementBase {
-  id: string;
-  filepath: string;
-  extraFields: ExtraFields;
-  type: 'text_file' = 'text_file';
+class FileProblemStatement {
+public:
+    FileProblemStatement(std::optional<std::any> config);
+    std::string getProblemStatement();
+    ExtraFields getExtraFields();
 
-  constructor(config: { path: string; extraFields?: ExtraFields; id?: string }) {
-    super();
-    this.filepath = config.path;
-    this.extraFields = config.extraFields || {};
-
-    if (config.id) {
-      this.id = config.id;
-    } else {
-      logger.info(`Setting problem statement id to hash of file contents (path: ${this.filepath})`);
-      const content = this.getProblemStatement();
-      this.id = crypto.createHash('sha256').update(content).digest('hex').substring(0, 6);
-    }
-  }
+private:
+    std::string id_;
+    std::string filepath_;
+    ExtraFields extraFields_;
+};
 
 /**
  * GitHub issue problem statement
  */
-class GithubIssue extends BuiltinProblemStatementBase {
-  id: string;
-  githubUrl: string;
-  extraFields: ExtraFields;
-  type: 'github' = 'github';
+class GithubIssue {
+public:
+    GithubIssue(std::optional<std::any> config);
+     parseGithubUrl(const std::string& url);
+    void if(auto !match);
+    std::future<std::string> getProblemStatementAsync();
+    std::string getProblemStatement();
+    ExtraFields getExtraFields();
 
-  constructor(config: { githubUrl: string; extraFields?: ExtraFields; id?: string }) {
-    super();
-    this.githubUrl = config.githubUrl;
-    this.extraFields = config.extraFields || {};
-
-    if (config.id) {
-      this.id = config.id;
-    } else {
-      logger.info('Setting problem statement based on github issue url');
-      const { owner, repo, issueNumber } = this.parseGithubUrl(this.githubUrl);
-      this.id = `${owner}__${repo}-i${issueNumber}`;
-    }
-  }
-
-    // For synchronous compatibility, we cache the result after first async fetch
-
-    // Synchronous HTTP request using Node.js built-in modules
-
-      // Use curl for synchronous HTTP request
-
-      // Fallback to basic issue reference
+private:
+    std::string id_;
+    std::string githubUrl_;
+    ExtraFields extraFields_;
+};
 
 /**
  * SWE-Bench multimodal problem statement with image support
  */
-class SWEBenchMultimodalProblemStatement extends BuiltinProblemStatementBase {
-  id: string;
-  text: string;
-  issueImages: string[];
-  disableImageProcessing: boolean;
-  extraFields: ExtraFields;
-  type: 'swe_bench_multimodal' = 'swe_bench_multimodal';
-  private cachedProblemStatement: string | null = null;
-
-  constructor(config: {
+class SWEBenchMultimodalProblemStatement {
+public:
+    SWEBenchMultimodalProblemStatement(std::optional<{
     text: string;
-    issueImages?: string[];
-    disableImageProcessing?: boolean;
-    extraFields?: Record<string, any>;
-    id?: string;
-  }) {
-    super();
-    this.text = config.text;
-    this.issueImages = config.issueImages || [];
-    this.disableImageProcessing = config.disableImageProcessing || false;
-    this.extraFields = config.extraFields || {};
-
-    if (config.id) {
-      this.id = config.id;
-    } else {
-      logger.info('Setting problem statement id to hash of text');
-      this.id = crypto.createHash('sha256').update(this.text).digest('hex').substring(0, 6);
-    }
-  }
-
-    // Return text without images for environment
-
-    // For backwards compatibility, use the synchronous version
-    // Tests can use getProblemStatementAsync() instead
-
-    // Process images synchronously
-
-    // Process images asynchronously
-
-    // Only allow HTTP and HTTPS protocols
-
-      // Download image using curl and get headers
-
-      // Check content type
-
-      // Download the actual image
+    issueImages: string[];
+    disableImageProcessing: boolean;
+    extraFields: Record<string> config, std::optional<string;
+  }> any>;
+    std::string getProblemStatementForEnv();
+    std::string getProblemStatement();
+    std::future<std::string> getProblemStatementAsync();
+    std::optional<std::string> downloadAndConvertImageSync(const std::string& url);
+    ExtraFields getExtraFields();
+    std::string toString();
 
 /**
  * Factory function to create problem statement from simplified input
  */
-ProblemStatement problemStatementFromSimplifiedInput(const std::string& input, 'text' | 'text_file' | 'github_issue' | 'swe_bench_multimodal' type);
+ProblemStatement problemStatementFromSimplifiedInput(const std::string& input, const std::variant<'text', 'text_file', 'github_issue', 'swe_bench_multimodal'>& type);
 
 /**
  * Type for problem statement configurations

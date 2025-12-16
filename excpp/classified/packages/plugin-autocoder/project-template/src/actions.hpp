@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -31,7 +31,6 @@ namespace elizaos {
 //     similes: ['GREET', 'SAY_HELLO'],
 //     description: 'Responds with a simple hello world message',
 
-//     validate: async (_runtime: IAgentRuntime, _message: Memory, _state: State): Promise<boolean> => {
 //       // Always valid
 //       return true;
 //     },
@@ -43,7 +42,6 @@ namespace elizaos {
 //       _options: any,
 //       callback: HandlerCallback,
 //       _responses: Memory[]
-//     ): Promise<ActionResult> => {
 //       try {
 //         logger.info('Handling HELLO_WORLD action');
 
@@ -55,9 +53,7 @@ namespace elizaos {
 //         };
 
 //         // Call back with the hello world message
-//         await callback(responseContent);
 
-//         return {
 //           text: 'Sent hello world greeting',
 //           values: {
 //             success: true,
@@ -73,7 +69,6 @@ namespace elizaos {
 //       } catch (error) {
 //         logger.error('Error in HELLO_WORLD action:', error);
 
-//         return {
 //           text: 'Failed to send hello world greeting',
 //           values: {
 //             success: false,

@@ -1,11 +1,11 @@
-#include ".types.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".types.hpp"
 
 namespace elizaos {
 
@@ -15,14 +15,12 @@ namespace elizaos {
 
 
 struct AutocoderProjectPanelProps {
-    std::optional<AutocoderSocket; // WebSocket connection if available> socket;
-    std::optional<(projectId: string) => void> onProjectSelect;
+    std::optional<AutocoderSocket> socket;
 };
 
 struct ProjectStatus {
     std::vector<ProjectStatusUpdate> active;
     std::vector<ProjectHistory> history;
-    { summary;
     double active;
     double completed;
     double failed;

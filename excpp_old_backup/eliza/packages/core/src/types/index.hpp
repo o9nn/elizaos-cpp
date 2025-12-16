@@ -1,0 +1,36 @@
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
+#pragma once
+
+namespace elizaos {
+
+// NOTE: This is auto-generated approximate C++ code
+// Manual refinement required for production use
+
+* from './primitives';
+* from './state';
+* from './memory';
+* from './knowledge';
+* from './environment';
+* from './agent';
+* from './components';
+* from './plugin';
+* from './service';
+* from './model';
+* from './database';
+* from './events';
+* from './task';
+* from './tee';
+* from './runtime';
+* from './token';
+* from './messaging';
+* from './testing';
+* from './settings';
+* from './wallet';
+* from './lp';
+
+} // namespace elizaos

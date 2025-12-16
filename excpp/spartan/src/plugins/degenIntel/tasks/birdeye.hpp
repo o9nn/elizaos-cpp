@@ -1,11 +1,14 @@
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -70,50 +73,12 @@ struct Portfolio {
  */
 std::string makeBulletpointList(const std::vector<std::string>& array);
 
-      // First get data from Birdeye
-
-      //console.log('intel/be/syncWalletHistory - birdeyeData', birdeyeData)
-
-      // Convert Birdeye data to our transaction format
-
-      //console.log('intel/be/syncWalletHistory - transactions', transactions)
-
-      // Then try to get cached transactions
-          // Add cached transactions that don't exist in Birdeye data
-        // If cache fails, continue with just Birdeye data
-
-      //console.log('intel/be/syncWalletHistory - transactions', transactions)
-        //console.log('test', typeof(tx.blockTime), tx.blockTime, tx.blockTime?.getTime && tx.blockTime?.getTime())
-
-      // Sort transactions by blockTime descending (newest first)
-
-      // Try to update cache, but don't fail if it doesn't work
-
-      // Return empty array if everything fails
-
-    /** Get entire portfolio */
-
-      // Get existing tokens
-
-      /** Fetch top 100 in batches of 20 (which is the limit) */
-
-        // Add extra delay
-
-    // Get the latest sentiment analysis
-
-    // Create memories for each timeslot
-
-        // Create memory for this timeslot
-
-    // Find the next unprocessed sentiment timeslot
-
-    // Get tweets from the twitter feed room
-
-      // Mark as processed even if no tweets
-
-    // Parse the JSON response
-
-    // Update the sentiment analysis
+    void syncWalletHistory();
+    void syncWalletPortfolio();
+    void syncWallet();
+    std::future<bool> syncTrendingTokens(const std::variant<'solana', 'base'>& chain);
+    void fillTimeframe();
+    void parseTweets();
 
 
 } // namespace elizaos

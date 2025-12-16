@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -13,7 +13,6 @@ namespace elizaos {
 
 
 
-// We need to import the component directly since it's not exported
 // In a real scenario, you'd the component from index.tsx
 
       // Clear the config before mounting
@@ -55,29 +54,21 @@ namespace elizaos {
  *
  * EXAMPLE TEST STRUCTURE:
  *
- * describe('Component Name', () => {
- *   beforeEach(() => {
  *     // Set up common test data
  *     cy.setElizaConfig({ agentId: 'test-id', apiBase: 'http://localhost:3000' });
  *   });
  *
- *   describe('Rendering', () => {
- *     it('should render correctly', () => {
  *       cy.mount(<Component />);
  *       // Assertions
  *     });
  *   });
  *
- *   describe('User Interactions', () => {
- *     it('should handle click events', () => {
  *       cy.mount(<Component />);
  *       cy.findByRole('button').click();
  *       // Assertions
  *     });
  *   });
  *
- *   describe('API Integration', () => {
- *     it('should fetch and display data', () => {
  *       cy.intercept('GET', '/api/data', { fixture: 'mockData.json' });
  *       cy.mount(<Component />);
  *       // Assertions

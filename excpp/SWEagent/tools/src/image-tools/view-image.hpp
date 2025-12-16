@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -16,6 +16,8 @@ namespace elizaos {
  * Displays an image file as a base64-encoded markdown image
  * Converted from tools/image_tools/bin/view_image
  */
+
+std::optional<std::string> getMimeType(const std::string& filename);
 
 void viewImage(const std::string& imagePath);
 

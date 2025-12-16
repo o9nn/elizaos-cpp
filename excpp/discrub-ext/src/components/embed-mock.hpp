@@ -1,3 +1,10 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include ".classes/attachment.hpp"
 #include ".classes/embed.hpp"
 #include ".enum/embed-type.hpp"
@@ -6,13 +13,6 @@
 #include ".features/export/use-export-slice.hpp"
 #include ".utils.hpp"
 #include "attachment-mock.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 

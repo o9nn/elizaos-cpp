@@ -1,10 +1,11 @@
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -21,8 +22,18 @@ namespace elizaos {
  * Registry class for managing environment state
  */
 class EnvRegistry {
-  private envFile: string;
-  private data: Record<string, any> = {};
+public:
+    EnvRegistry(std::optional<std::string> envFile);
+    void loadData();
+    void saveData();
+    unknown get(const std::string& key, unknown = '' defaultValue, boolean = true fallbackToEnv);
+    void set(const std::string& key, unknown value);
+    void delete(const std::string& key);
+    std::unordered_map<std::string, std::any> getAll();
+
+private:
+    std::string envFile_;
+};
 
 // Global registry instance
 

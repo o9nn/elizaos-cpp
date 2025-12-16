@@ -1,12 +1,12 @@
-#include "..classes/guild.hpp"
-#include ".dm/dm-types.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "..classes/guild.hpp"
+#include ".dm/dm-types.hpp"
 
 namespace elizaos {
 

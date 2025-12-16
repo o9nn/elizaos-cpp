@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -14,7 +14,6 @@ namespace elizaos {
 
 
 struct ExamplePromptsProps {
-    (prompt: string) => void onPromptSelect;
 };
 
 void ExamplePrompts(ExamplePromptsProps { onPromptSelect });

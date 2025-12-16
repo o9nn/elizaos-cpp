@@ -1,12 +1,13 @@
-#include ".types.hpp"
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".types.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -24,7 +25,6 @@ namespace elizaos {
  *
  * Handles both local development plugins and published plugins, with automatic installation if needed.
  */
-std::future<Plugin | null> loadAndPreparePlugin(const std::string& pluginName);
 
 /**
  * Validate a plugin object

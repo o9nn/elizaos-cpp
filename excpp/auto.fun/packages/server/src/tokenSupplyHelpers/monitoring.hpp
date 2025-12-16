@@ -1,14 +1,14 @@
-#include ".db.hpp"
-#include ".externalToken.hpp"
-#include ".redis.hpp"
-#include ".util.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".db.hpp"
+#include ".externalToken.hpp"
+#include ".redis.hpp"
+#include ".util.hpp"
 
 namespace elizaos {
 
@@ -18,8 +18,6 @@ namespace elizaos {
 
 
 // TODO: Replace with redis cache
-
-      // await ext.registerWebhook();
 
 
 } // namespace elizaos

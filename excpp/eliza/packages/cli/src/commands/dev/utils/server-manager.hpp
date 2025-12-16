@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -18,45 +19,12 @@ namespace elizaos {
  *
  * Manages the lifecycle of the development server process, including starting, stopping, and restarting.
  */
-class DevServerManager implements ServerProcess {
-  public process: ChildProcess | null = null;
-
-  /**
-   * Stops the currently running server process
-   */
-  async stop(): Promise<void> {
-    if (this.process) {
-      console.info('Stopping current server process...');
-
-      // Send SIGTERM to the process group
-      const killed = this.process.kill('SIGTERM');
-      if (!killed) {
-        console.warn('Failed to kill server process, trying force kill...');
-        this.process.kill('SIGKILL');
-      }
-
-      this.process = null;
-
-      // Give the process a moment to fully terminate
-      await new Promise((resolve) => setTimeout(resolve, 500));
-    }
-  }
-
-  /**
-   * Starts the server process with the given arguments
-   */
-
-    // We'll use the same executable that's currently running, with 'start' command
-
-    // Use spawn to create a process
-
-    // Handle process exit events
-
-    // Handle process errors
-
-  /**
-   * Restarts the server process
-   */
+class DevServerManager {
+public:
+    std::future<void> stop();
+    std::future<void> start(const std::vector<string[] =>& args);
+    std::future<void> restart(const std::vector<string[] =>& args);
+};
 
 // Global server instance
 

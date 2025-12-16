@@ -1,10 +1,12 @@
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -22,16 +24,6 @@ namespace elizaos {
  * This enum is used in `MemoryMetadata` to categorize memories and influences how they are processed or queried.
  */
 enum MemoryType {
-  DOCUMENT = 'document',
-  FRAGMENT = 'fragment',
-  MESSAGE = 'message',
-  DESCRIPTION = 'description',
-  CUSTOM = 'custom',
-  ACTION = 'action',
-  ACTION_RESULT = 'action_result',
-  KNOWLEDGE = 'knowledge',
-  EXPERIENCE = 'experience',
-  REFLECTION = 'reflection',
 }
 /**
  * Defines the scope of a memory, indicating its visibility and accessibility.
@@ -90,6 +82,7 @@ struct Memory {
 /**
  * Factory function to create a new message memory with proper defaults
  */
+MessageMemory createMessageMemory(std::optional<std::any> params);
 
 /**
  * Type guard to check if a memory metadata is a DocumentMetadata

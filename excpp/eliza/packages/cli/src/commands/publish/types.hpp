@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -25,7 +26,6 @@ struct PackageMetadata {
     std::vector<std::string> maintainers;
     std::string publishedAt;
     std::string publishedBy;
-    std::unordered_map<std::string, std::string> dependencies;
     std::vector<std::string> tags;
     std::string license;
     std::optional<std::string> npmPackage;
@@ -63,7 +63,6 @@ struct DirectoryInfo {
  */
 struct RegistrySettings {
     std::string defaultRegistry;
-    std::optional<{> publishConfig;
     std::string registry;
     std::string username;
     bool useNpm;
@@ -78,24 +77,18 @@ struct PackageJson {
     std::string version;
     std::optional<std::string> description;
     std::optional<std::string> type;
-    std::optional<'node' | 'browser' | 'universal'> platform;
-    std::optional<{> repository;
+    std::optional<std::variant<'node', 'browser', 'universal'>> platform;
     std::string type;
     std::string url;
     std::optional<std::vector<std::string>> maintainers;
-    std::optional<std::unordered_map<std::string, std::string>> dependencies;
     std::optional<std::vector<std::string>> keywords;
     std::optional<std::string> license;
     std::optional<std::string> author;
-    std::optional<{> bugs;
     std::string url;
     std::optional<std::string> npmPackage;
     std::optional<std::string> githubRepo;
-    std::optional<'plugin' | 'project'> packageType;
-    std::optional<{> agentConfig;
+    std::optional<std::variant<'plugin', 'project'>> packageType;
     std::string pluginType;
-    std::unordered_map<std::string, std::any> pluginParameters;
-    std::optional<{> eliza;
     std::string type;
 };
 
@@ -103,8 +96,6 @@ struct PackageJson {
  * Placeholder replacement configuration
  */
 struct PlaceholderReplacement {
-    () => boolean check;
-    () => void replace;
 };
 
 /**

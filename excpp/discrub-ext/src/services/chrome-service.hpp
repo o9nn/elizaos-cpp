@@ -1,14 +1,16 @@
-#include ".enum/discrub-setting.hpp"
-#include ".enum/resolution-type.hpp"
-#include ".enum/sort-direction.hpp"
-#include ".features/app/app-types.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include ".enum/discrub-setting.hpp"
+#include ".enum/resolution-type.hpp"
+#include ".enum/sort-direction.hpp"
+#include ".features/app/app-types.hpp"
 
 namespace elizaos {
 
@@ -17,7 +19,7 @@ namespace elizaos {
 
 /*global chrome*/
 
-using ChromeCallback = std::variant<(param: string) => Promise<void>, void, Maybe>;
+using ChromeCallback = std::variant<std::function<std::future<void>(std::string)>, void, Maybe>;
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
 

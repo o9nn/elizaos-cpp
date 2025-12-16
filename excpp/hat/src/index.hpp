@@ -1,12 +1,12 @@
-#include "App.hpp"
-#include "reportWebVitals.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "App.hpp"
+#include "reportWebVitals.hpp"
 
 namespace elizaos {
 
@@ -16,7 +16,6 @@ namespace elizaos {
 
 
 // If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 
 } // namespace elizaos

@@ -1,3 +1,10 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include "components/agent-creator.hpp"
 #include "components/agent-log-viewer.hpp"
 #include "components/app-sidebar.hpp"
@@ -20,13 +27,6 @@
 #include "routes/group.hpp"
 #include "routes/home.hpp"
 #include "routes/not-found.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 

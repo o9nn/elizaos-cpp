@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -15,8 +15,8 @@ namespace elizaos {
 
 struct WalletAddressBadgeProps {
     std::string address;
-    React.ReactNode icon;
-    string; // e.g., "ETH" or "SOL" label;
+    ReactNode icon;
+    std::string label;
     std::optional<std::string> className;
 };
 

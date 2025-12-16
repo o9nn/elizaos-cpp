@@ -1,16 +1,16 @@
-#include "..config/trading.hpp"
-#include "..types/trading.hpp"
-#include ".analyticsService.hpp"
-#include ".dataService.hpp"
-#include ".walletService.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "..config/trading.hpp"
+#include "..types/trading.hpp"
+#include ".analyticsService.hpp"
+#include ".dataService.hpp"
+#include ".walletService.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -18,6 +18,10 @@ namespace elizaos {
 // Manual refinement required for production use
 
 
+
+    void getWalletService();
+    void getDataService();
+    void getAnalyticsService();
 
 
 } // namespace elizaos

@@ -1,13 +1,14 @@
-#include ".date-utils.hpp"
-#include "storage.hpp"
-#include "types.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".date-utils.hpp"
+#include "storage.hpp"
+#include "types.hpp"
 
 namespace elizaos {
 
@@ -25,7 +26,6 @@ namespace elizaos {
  * @example
  * ```typescript
  * const scoreFields = generateScoreSelectFields(userDailyScores);
- * const results = await db
  *   .select({
  *     ...scoreFields,
  *     username: userDailyScores.username,
@@ -93,6 +93,6 @@ std::future<void> getUserActivityHeatmaps(const std::string& username, const std
 
 using UserActivityHeatmap = Awaited<
 
-std::future<void> getTopUsersByScore(std::optional<std::string> startDate, std::optional<std::string> endDate, std::optional<number | null> limit);
+std::future<void> getTopUsersByScore(std::optional<std::string> startDate, std::optional<std::string> endDate, std::optional<std::optional<double>> limit);
 
 } // namespace elizaos

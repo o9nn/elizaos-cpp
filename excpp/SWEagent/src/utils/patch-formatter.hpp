@@ -1,10 +1,11 @@
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -31,44 +32,18 @@ struct PatchFile {
 };
 
 class PatchFormatter {
-  private readMethod: (path: string) => string;
-  private parsedPatch: PatchFile[];
-  private fileContents: Map<string, string> = new Map();
+public:
+    std::vector<PatchFile> parsePatch(const std::string& patch);
+    [number[], number[]] mergeIntervals(const std::vector<double>& starts, const std::vector<double>& stops);
+    std::string formatFile(const std::string& text, const std::vector<double>& starts, const std::vector<double>& stops, std::optional<std::any> options);
+    std::unordered_map<std::string, std::vector<[number>, number[]]> getHunkLines(bool original, number = 50 contextLength);
+    void readFiles(bool original);
+    std::string concatFilesStrings(Map<string files, auto string>);
+    std::string getFilesStr(std::optional<std::any> options);
 
-  constructor(patch: string, readMethod: (path: string) => string) {
-    this.readMethod = readMethod;
-    this.parsedPatch = this.parsePatch(patch);
-  }
-
-  /**
-   * Parse a unified diff patch
-   */
-    // This is a simplified patch parser
-    // In production, you'd want to use a library like 'diff' or 'unidiff'
-
-  /**
-   * Merge overlapping intervals
-   */
-
-  /**
-   * Format a file with line numbers
-   */
-
-  /**
-   * Get hunk line ranges
-   */
-
-  /**
-   * Read files referenced in the patch
-   */
-
-  /**
-   * Concatenate file strings
-   */
-
-  /**
-   * Get formatted files as string
-   */
+private:
+    std::vector<PatchFile> parsedPatch_;
+};
 
 
 } // namespace elizaos

@@ -1,11 +1,11 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -26,7 +26,6 @@ using DocumentMetadata = MemoryMetadata & KnowledgeDocumentProperties;
 
 struct MemoryGraphProps {
     std::vector<Memory> memories;
-    (memory: Memory) => void onNodeClick;
     std::optional<UUID> selectedMemoryId;
 };
 

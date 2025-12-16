@@ -1,3 +1,10 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include "elizaos/core.hpp"
 #include "elizaos/plugin-groq.hpp"
 #include "elizaos/plugin-openai.hpp"
@@ -10,13 +17,6 @@
 #include "plugin-self-modification.hpp"
 #include "plugin-shell/index.js.hpp"
 #include "plugin-todo/index.js.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -28,9 +28,6 @@ namespace elizaos {
 /**
  * Represents the default character (Autoliza) with her specific attributes and behaviors.
  */
-    // ...(process.env.DISCORD_API_TOKEN ? ['@elizaos/plugin-discord'] : []),
-    // ...(process.env.TWITTER_USERNAME ? ['@elizaos/plugin-twitter'] : []),
-    // ...(process.env.TELEGRAM_BOT_TOKEN ? ['@elizaos/plugin-telegram'] : []),
     // Example 1: Debugging a script
     // Example 2: File not found, then locating it
     // Example 3: Learning and using a new tool

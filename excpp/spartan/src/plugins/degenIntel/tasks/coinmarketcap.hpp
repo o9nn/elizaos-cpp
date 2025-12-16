@@ -1,11 +1,12 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -14,14 +15,7 @@ namespace elizaos {
 
 
 
-    //console.log('resp', resp)
-
-      /** If the token is not a Layer 1 token it will have platform defined */
-
-    // this isn't right
-    //const writeResult = await this.runtime.databaseAdapter.Token.bulkWrite(ops);
-    //logger.info("Coinmarketcap sync done");
-    //logger.info(ops, "Coinmarketcap sync resulted in:");
+    std::future<bool> syncTokens();
 
 
 } // namespace elizaos

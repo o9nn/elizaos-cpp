@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -18,7 +19,7 @@ namespace elizaos {
  */
 using AggregationPeriod = std::variant<, "daily", "weekly", "monthly", "quarterly", "yearly">;
 
-using UserScoreMetrics = z.infer<typeof UserScoreMetricsSchema>;
+using UserScoreMetrics = z::infer<typeof UserScoreMetricsSchema>;
 /**
  * Interface for userDailyScores with typed metrics
  */
@@ -26,9 +27,6 @@ using UserScoreMetrics = z.infer<typeof UserScoreMetricsSchema>;
 using UserScoreWithMetrics = InferSelectModel<typeof userDailyScores> & {
 
 enum TagType {
-  AREA = "AREA",
-  ROLE = "ROLE",
-  TECH = "TECH",
 }
 
 } // namespace elizaos

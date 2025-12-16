@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -13,7 +13,7 @@ namespace elizaos {
 
 
 
-using ToasterProps = React.ComponentProps<typeof Sonner>;
+using ToasterProps = ComponentProps<typeof Sonner>;
 
 
 } // namespace elizaos

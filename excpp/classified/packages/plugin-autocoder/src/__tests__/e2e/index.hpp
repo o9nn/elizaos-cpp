@@ -1,15 +1,15 @@
-#include "basic-functionality.test.hpp"
-#include "claude-code-integration.test.hpp"
-#include "claude-code-stress-test.hpp"
-#include "code-generation.test.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "basic-functionality.test.hpp"
+#include "claude-code-integration.test.hpp"
+#include "claude-code-stress-test.hpp"
+#include "code-generation.test.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 

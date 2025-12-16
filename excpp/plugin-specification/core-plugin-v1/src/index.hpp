@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -12,7 +12,6 @@ namespace elizaos {
 // Manual refinement required for production use
 
 // this just imported dotenv, settings will handle wrapping this
-//import "./config.ts"; // Add this line first
 
 /*
 * from "./actions.ts";

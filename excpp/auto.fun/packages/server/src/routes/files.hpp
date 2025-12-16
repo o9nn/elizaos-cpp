@@ -1,13 +1,16 @@
-#include ".db.hpp"
-#include ".s3Client.hpp"
-#include ".util.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include ".db.hpp"
+#include ".s3Client.hpp"
+#include ".util.hpp"
 
 namespace elizaos {
 
@@ -28,14 +31,13 @@ namespace elizaos {
 // Helper function to upload to R2/MinIO
 std::future<std::string> uploadToStorage(Buffer buffer, { contentType: string options, string } key);
 
-// Define the router (Env removed from Bindings as we use process.env)
-
 // Define context variables for Hono
-using Variables = std::variant<{
+using Variables = std::variant<std::any, nullptr>;
 
 // Extend Context type for variables
   struct ContextVariableMap {
-    std::optional<{ publicKey: string } | null> user;
+    Socket socket;
+};
 
     // Use the shared S3 client getter
 

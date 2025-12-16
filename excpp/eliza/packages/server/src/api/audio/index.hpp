@@ -1,13 +1,13 @@
-#include "conversation.hpp"
-#include "processing.hpp"
-#include "synthesis.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "conversation.hpp"
+#include "processing.hpp"
+#include "synthesis.hpp"
 
 namespace elizaos {
 

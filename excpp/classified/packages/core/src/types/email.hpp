@@ -1,11 +1,12 @@
-#include "service.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "service.hpp"
 
 namespace elizaos {
 
@@ -21,9 +22,9 @@ struct EmailAddress {
 
 struct EmailAttachment {
     std::string filename;
-    Buffer | string content;
+    std::variant<Buffer, std::string> content;
     std::optional<std::string> contentType;
-    std::optional<'attachment' | 'inline'> contentDisposition;
+    std::optional<std::variant<'attachment', 'inline'>> contentDisposition;
     std::optional<std::string> cid;
 };
 
@@ -41,7 +42,7 @@ struct EmailMessage {
     std::optional<std::string> messageId;
     std::optional<std::vector<std::string>> references;
     std::optional<std::string> inReplyTo;
-    std::optional<'high' | 'normal' | 'low'> priority;
+    std::optional<std::variant<'high', 'normal', 'low'>> priority;
 };
 
 struct EmailSendOptions {
@@ -70,7 +71,7 @@ struct EmailSearchOptions {
 struct EmailFolder {
     std::string name;
     std::string path;
-    'inbox' | 'sent' | 'drafts' | 'trash' | 'spam' | 'custom' type;
+    std::variant<'inbox', 'sent', 'drafts', 'trash', 'spam', 'custom'> type;
     std::optional<double> messageCount;
     std::optional<double> unreadCount;
     std::optional<std::vector<EmailFolder>> children;
@@ -89,74 +90,5 @@ struct EmailAccount {
  * Interface for email services
  */
 
-  /**
-   * Send an email
-   * @param message - Email message to send
-   * @param options - Send options
-   * @returns Promise resolving to message ID
-   */
-
-  /**
-   * Get emails from a folder
-   * @param options - Search options
-   * @returns Promise resolving to array of emails
-   */
-
-  /**
-   * Get a specific email by ID
-   * @param messageId - Message ID
-   * @returns Promise resolving to email message
-   */
-
-  /**
-   * Delete an email
-   * @param messageId - Message ID
-   * @returns Promise resolving when deletion completes
-   */
-
-  /**
-   * Mark an email as read/unread
-   * @param messageId - Message ID
-   * @param read - True to mark as read, false for unread
-   * @returns Promise resolving when operation completes
-   */
-
-  /**
-   * Flag/unflag an email
-   * @param messageId - Message ID
-   * @param flagged - True to flag, false to unflag
-   * @returns Promise resolving when operation completes
-   */
-
-  /**
-   * Move email to a different folder
-   * @param messageId - Message ID
-   * @param folderPath - Destination folder path
-   * @returns Promise resolving when move completes
-   */
-
-  /**
-   * Get available folders
-   * @returns Promise resolving to array of folders
-   */
-
-  /**
-   * Create a new folder
-   * @param folderName - Name of the folder
-   * @param parentPath - Optional parent folder path
-   * @returns Promise resolving when folder is created
-   */
-
-  /**
-   * Get account information
-   * @returns Promise resolving to account details
-   */
-
-  /**
-   * Search emails
-   * @param query - Search query
-   * @param options - Search options
-   * @returns Promise resolving to search results
-   */
 
 } // namespace elizaos

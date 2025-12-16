@@ -1,11 +1,11 @@
-#include "summarize/config.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "summarize/config.hpp"
 
 namespace elizaos {
 
@@ -19,10 +19,10 @@ namespace elizaos {
   // List of bot usernames to be ignored during processing
 // Type exports
 
-using PipelineConfig = z.infer<typeof PipelineConfigSchema>;
-using ScoringConfig = z.infer<typeof ScoringConfigSchema>;
-using TagConfig = z.infer<typeof TagConfigSchema>;
-using RepositoryConfig = z.infer<typeof RepositoryConfigSchema>;
+using PipelineConfig = z::infer<typeof PipelineConfigSchema>;
+using ScoringConfig = z::infer<typeof ScoringConfigSchema>;
+using TagConfig = z::infer<typeof TagConfigSchema>;
+using RepositoryConfig = z::infer<typeof RepositoryConfigSchema>;
 using ScoringRules = ScoringConfig;
 
 } // namespace elizaos

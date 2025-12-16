@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -16,27 +16,27 @@ namespace elizaos {
  */
 struct LoginRequest {
     std::string email;
-    string; // User's display name from CDP username;
-    string; // CDP's user identifier (UUID) cdpUserId;
+    std::string username;
+    std::string cdpUserId;
 };
 
 /**
  * Response from login endpoint
  */
 struct LoginResponse {
-    string; // JWT authentication token token;
-    string; // Secure user ID generated from email userId;
-    string; // User's display name username;
-    string; // Token expiration time (e.g., "7d") expiresIn;
+    std::string token;
+    std::string userId;
+    std::string username;
+    std::string expiresIn;
 };
 
 /**
  * Response from refresh token endpoint
  */
 struct RefreshTokenResponse {
-    string; // New JWT authentication token token;
+    std::string token;
     std::string userId;
-    string; // User's display name username;
+    std::string username;
     std::string expiresIn;
 };
 
@@ -46,7 +46,7 @@ struct RefreshTokenResponse {
 struct CurrentUserResponse {
     std::string userId;
     std::string email;
-    string; // User's display name username;
+    std::string username;
 };
 
 

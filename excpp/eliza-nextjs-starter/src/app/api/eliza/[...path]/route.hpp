@@ -1,10 +1,12 @@
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -13,13 +15,13 @@ namespace elizaos {
 
 
 
-std::future<void> GET(NextRequest request, { params: Promise<{ path: string[] }> } { params });
+std::future<void> GET(NextRequest request, const std::any& { params });
 
-std::future<void> POST(NextRequest request, { params: Promise<{ path: string[] }> } { params });
+std::future<void> POST(NextRequest request, const std::any& { params });
 
-std::future<void> PUT(NextRequest request, { params: Promise<{ path: string[] }> } { params });
+std::future<void> PUT(NextRequest request, const std::any& { params });
 
-std::future<void> DELETE(NextRequest request, { params: Promise<{ path: string[] }> } { params });
+std::future<void> DELETE(NextRequest request, const std::any& { params });
 
 std::future<void> OPTIONS();
 

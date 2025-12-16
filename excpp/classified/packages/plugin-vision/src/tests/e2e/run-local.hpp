@@ -1,13 +1,14 @@
-#include "..service.hpp"
-#include "vision-autonomy.hpp"
-#include "vision-basic.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "..service.hpp"
+#include "vision-autonomy.hpp"
+#include "vision-basic.hpp"
 
 namespace elizaos {
 

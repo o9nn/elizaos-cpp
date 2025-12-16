@@ -1,14 +1,14 @@
-#include ".audio-player.hpp"
-#include ".button.hpp"
-#include ".copy-button.hpp"
-#include ".loader.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".audio-player.hpp"
+#include ".button.hpp"
+#include ".copy-button.hpp"
+#include ".loader.hpp"
 
 namespace elizaos {
 

@@ -1,11 +1,11 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -14,6 +14,6 @@ namespace elizaos {
 
 
 
-bool validateSolanaAddress(string | undefined address);
+bool validateSolanaAddress(const std::string& address);
 
 } // namespace elizaos

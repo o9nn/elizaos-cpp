@@ -1,11 +1,12 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -21,6 +22,7 @@ namespace elizaos {
  * @returns {string | null} The contents of the file as a string, or null if an error occurred.
  * @throws {Error} If an error occurs while loading the file.
  */
+std::optional<std::string> tryLoadFile(const std::string& filePath);
 
 /**
  * Load characters from a specified URL and return them as an array of Character objects.
@@ -50,7 +52,6 @@ std::future<Character> loadCharacter(const std::string& filePath);
  * Handles errors when loading a character from a specific path.
  *
  * @param {string} path - The path from which the character is being loaded.
- * @param {unknown} error - The error that occurred during the loading process.
  * @returns {never}
  */
 never handleCharacterLoadError(const std::string& path, unknown error);

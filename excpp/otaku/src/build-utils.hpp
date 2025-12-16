@@ -1,10 +1,13 @@
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -19,13 +22,15 @@ struct ElizaBuildOptions {
     std::optional<std::string> root;
     std::optional<std::vector<std::string>> entrypoints;
     std::optional<std::string> outdir;
-    std::optional<'node' | 'bun' | 'browser'> target;
+    std::optional<std::variant<'node', 'bun', 'browser'>> target;
     std::optional<std::vector<std::string>> external;
-    std::optional<boolean | 'linked' | 'inline' | 'external'> sourcemap;
+    std::optional<std::variant<bool, 'linked', 'inline', 'external'>> sourcemap;
     std::optional<bool> minify;
     std::optional<std::vector<BunPlugin>> plugins;
-    std::optional<'esm' | 'cjs'> format;
-    std::optional<std::vector<{ from: string; to: string }>> assets;
+    std::optional<std::variant<'esm', 'cjs'>> format;
+    std::optional<bool> isCli;
+    std::optional<bool> generateDts;
+};
 
 /**
  * Get performance timer
@@ -46,7 +51,7 @@ std::future<BuildConfig> createElizaBuildConfig(ElizaBuildOptions options);
 /**
  * Copy assets after build with proper error handling (parallel processing)
  */
-std::future<void> copyAssets(const std::vector<{ from: string; to: string }>& assets);
+std::future<void> copyAssets(const std::vector<std::any>& assets);
 
 /**
  * Generate TypeScript declarations using tsc
@@ -88,7 +93,6 @@ std::future<void> cleanBuild(auto outdir = 'dist', auto maxRetries = 3);
 struct BuildRunnerOptions {
     std::string packageName;
     ElizaBuildOptions buildOptions;
-    std::optional<(success: boolean) => void> onBuildComplete;
 };
 
 /**

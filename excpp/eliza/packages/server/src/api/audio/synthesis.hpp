@@ -1,13 +1,13 @@
-#include ".shared/response-utils.hpp"
-#include "audioBuffer.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".shared/response-utils.hpp"
+#include "audioBuffer.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 

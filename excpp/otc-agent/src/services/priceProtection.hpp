@@ -1,12 +1,13 @@
-#include "database.hpp"
-#include "marketDataService.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "database.hpp"
+#include "marketDataService.hpp"
 
 namespace elizaos {
 
@@ -26,11 +27,13 @@ struct ValidationResult {
 };
 
 class PriceProtectionService {
-  private marketDataService: MarketDataService;
+public:
+    PriceProtectionService();
+    std::future<ValidationResult> validateQuotePrice(const std::string& tokenId, const std::string& tokenAddress, Chain chain, double priceAtQuote, double maxDeviationBps);
 
-  constructor() {
-    this.marketDataService = new MarketDataService();
-  }
+private:
+    MarketDataService marketDataService_;
+};
 
 
 } // namespace elizaos

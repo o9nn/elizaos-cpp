@@ -1,11 +1,11 @@
-#include "channel.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "channel.hpp"
 
 namespace elizaos {
 

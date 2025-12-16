@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -21,7 +22,7 @@ struct OTCQuote {
     std::string tokenAmount;
     std::optional<std::string> tokenAmountFormatted;
     std::string tokenSymbol;
-    std::optional<"ethereum" | "base" | "bsc" | "solana"> tokenChain;
+    std::optional<std::variant<"ethereum", "base", "bsc", "solana">> tokenChain;
     std::optional<double> apr;
     double lockupMonths;
     double lockupDays;
@@ -66,14 +67,17 @@ struct QuoteAccepted {
 /**
  * Extract XML from message text
  */
+std::optional<std::string> extractXMLFromMessage(const std::string& messageText);
 
 /**
  * Parse quote from XML
  */
+std::optional<OTCQuote> parseOTCQuoteXML(const std::string& xmlString);
 
 /**
  * Parse quote accepted XML
  */
+std::optional<QuoteAccepted> parseQuoteAcceptedXML(const std::string& xmlString);
 
 /**
  * Check if message contains a quote

@@ -1,11 +1,13 @@
-#include ".types.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".types.hpp"
 
 namespace elizaos {
 
@@ -27,6 +29,6 @@ bool isMaintainer(PackageJson packageJson, const std::string& username);
 /**
  * Display appropriate registry publication messaging based on options and user status
  */
-void displayRegistryPublicationMessage(std::optional<{ skipRegistry: boolean; npm: boolean }> opts, bool userIsMaintainer, std::optional<std::string> registryPrUrl);
+void displayRegistryPublicationMessage(std::optional<std::any> opts, bool userIsMaintainer, std::optional<std::string> registryPrUrl);
 
 } // namespace elizaos

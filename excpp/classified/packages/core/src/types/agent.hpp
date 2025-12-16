@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -20,7 +21,7 @@ struct MessageExample {
     Content content;
 };
 
-using TemplateType = std::variant<, std::string, ((options: { state: State, { [key: string]: string } }) => string)>;
+using TemplateType = std::variant<, std::string, ((options: { state: State, std::function<void()>>;
 
 /**
  * Configuration for an agent's character, defining its personality, knowledge, and capabilities.
@@ -43,25 +44,18 @@ struct Character {
     std::string name;
     std::optional<std::string> username;
     std::optional<std::string> system;
-    std::optional<{> templates;
-    std::vector<string | string> bio;
+    std::variant<std::string, std::vector<std::string>> bio;
     std::optional<std::vector<std::vector<MessageExample>>> messageExamples;
     std::optional<std::vector<std::string>> postExamples;
     std::optional<std::vector<std::string>> topics;
     std::optional<std::vector<std::string>> adjectives;
-    std::optional<std::vector<(string | { path: string; shared?: boolean } | DirectoryItem)>> knowledge;
     std::optional<std::vector<std::string>> plugins;
-    std::optional<{> settings;
-    std::optional<{> secrets;
-    std::optional<{> style;
     std::optional<std::vector<std::string>> all;
     std::optional<std::vector<std::string>> chat;
     std::optional<std::vector<std::string>> post;
 };
 
 enum AgentStatus {
-  ACTIVE = 'active',
-  INACTIVE = 'inactive',
 }
 
 /**

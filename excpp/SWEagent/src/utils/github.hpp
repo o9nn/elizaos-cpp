@@ -1,10 +1,12 @@
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -16,11 +18,10 @@ namespace elizaos {
  * Converted from sweagent/utils/github.py
  */
 
-class InvalidGithubURL extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'InvalidGithubURL';
-  }
+class InvalidGithubURL {
+public:
+    InvalidGithubURL(const std::string& message);
+};
 
 /**
  * Check if URL is a GitHub repository URL

@@ -1,11 +1,12 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -21,7 +22,7 @@ using UploadingFile = {
 struct UseFileUploadProps {
     std::optional<UUID> agentId;
     std::optional<UUID> channelId;
-    ChannelType.DM | ChannelType.GROUP chatType;
+    std::variant<ChannelType::DM, ChannelType::GROUP> chatType;
 };
 
 void useFileUpload(auto { agentId, auto channelId, UseFileUploadProps chatType });

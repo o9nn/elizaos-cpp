@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -35,7 +35,6 @@ struct WalletModalProps {
 
         // If direct connection failed or this isn't Phantom, try adapter approach
           // Select and connect via adapter
-            await connect();
 
             // If we're using Phantom and direct connection was successful, ignore adapter errors
 
@@ -73,7 +72,6 @@ struct WalletModalProps {
         struct AuthResponse {
     std::string token;
     std::string message;
-    std::optional<{> user;
     std::string address;
 };
 

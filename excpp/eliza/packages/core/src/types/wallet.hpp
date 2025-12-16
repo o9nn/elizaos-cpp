@@ -1,11 +1,11 @@
-#include "service.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "service.hpp"
 
 namespace elizaos {
 
@@ -33,26 +33,5 @@ struct WalletPortfolio {
  * It provides a standardized way for other plugins to query the state of a wallet.
  */
 
-  /**
-   * Retrieves the entire portfolio of assets held by the wallet.
-   * @param owner - Optional: The specific wallet address/owner to query if the service manages multiple.
-   * @returns A promise that resolves to the wallet's portfolio.
-   */
-
-  /**
-   * Retrieves the balance of a specific asset in the wallet.
-   * @param assetAddress - The mint address or native identifier of the asset.
-   * @param owner - Optional: The specific wallet address/owner to query.
-   * @returns A promise that resolves to the user-friendly (decimal-adjusted) balance of the asset held.
-   */
-
-  /**
-   * Transfers SOL from a specified keypair to a given public key.
-   * This is a low-level function primarily for Solana-based wallet services.
-   * @param from - The Keypair of the sender.
-   * @param to - The PublicKey of the recipient.
-   * @param lamports - The amount in lamports to transfer.
-   * @returns A promise that resolves with the transaction signature.
-   */
 
 } // namespace elizaos

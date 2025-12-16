@@ -1,13 +1,15 @@
-#include ".services/CodeGenerationService.hpp"
-#include "elizaos/core.hpp"
-#include "elizaos/plugin-forms.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".services/CodeGenerationService.hpp"
+#include "elizaos/core.hpp"
+#include "elizaos/plugin-forms.hpp"
 
 namespace elizaos {
 
@@ -42,6 +44,8 @@ std::future<std::string> extractProjectType(IAgentRuntime runtime, Memory messag
 std::vector<std::string> extractRequirements(const std::string& text);
 
 std::vector<std::string> extractAPIs(const std::string& text);
+
+std::optional<std::string> extractProjectName(const std::string& text);
 
 std::string getNextStepPrompt(const std::any& form, const std::string& completedStepId);
 

@@ -1,11 +1,11 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -56,38 +56,24 @@ struct WebSocketOutgoingMessage {
 };
 
 class WebSocketRouter {
-  private agents: Map<UUID, IAgentRuntime>;
-  private connections: Map<WebSocket, { agentId?: UUID; channelId?: string }>;
+public:
+    WebSocketRouter(Map<UUID agents, auto IAgentRuntime>, AgentServer serverInstance);
+    void setupServer(WebSocketServer wss);
+    void handleNewConnection(WebSocket ws, IncomingMessage request);
+    void handleMessage(WebSocket ws, Buffer data);
+    void handleConnect(WebSocket ws, WebSocketConnectMessage message);
+    void handleChannelJoining(WebSocket ws, WebSocketChannelJoinMessage message);
+    void handleUserMessage(WebSocket ws, WebSocketUserMessage message);
+    void handleSendMessage(WebSocket ws, WebSocketSendMessage message);
+    void processAgentMessage(WebSocket ws, ProcessAgentMessageData messageData);
+    void sendMessage(WebSocket ws, WebSocketOutgoingMessage message);
+    void sendError(WebSocket ws, const std::string& error);
+    void broadcastMessage(UUID agentId, const std::string& channelId, WebSocketOutgoingMessage message);
 
-    // Initialize connection metadata
-
-    // Send connection confirmation
-
-    // Send ping every 30 seconds to keep connection alive
-
-    // Update connection metadata
-
-    // Update connection metadata
-
-    // Get connection data or use provided IDs
-
-    // Instead of processing directly through agent, use the message bus system
-
-      // Create a message to route through the server's message ingestion system
-
-      // Convert channel ID to UUID (use existing string or generate new UUID)
-
-      // Create message in the database first
-
-      // Emit to the internal message bus for agent processing
-
-      // Import the message bus
-
-      // Send acknowledgment back to WebSocket client
-
-      // Also broadcast to other WebSocket clients watching this channel
-
-  // Broadcast message to all connected clients for a specific agent/channel
+private:
+    std::unordered_map<UUID, IAgentRuntime> agents_;
+    AgentServer serverInstance_;
+};
 
 
 } // namespace elizaos

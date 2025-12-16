@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -12,12 +12,11 @@ namespace elizaos {
 // Manual refinement required for production use
 
 
-class MyDocument extends Document {
-  static async getInitialProps(ctx: DocumentContext) {
-    const initialProps = await Document.getInitialProps(ctx)
-
-    return initialProps
-  }
+class MyDocument {
+public:
+    void getInitialProps(DocumentContext ctx);
+    void render();
+};
 
 
 } // namespace elizaos

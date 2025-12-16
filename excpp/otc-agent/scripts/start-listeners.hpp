@@ -1,12 +1,13 @@
-#include ".src/services/token-registration-listener-base.hpp"
-#include ".src/services/token-registration-listener-solana.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".src/services/token-registration-listener-base.hpp"
+#include ".src/services/token-registration-listener-solana.hpp"
 
 namespace elizaos {
 

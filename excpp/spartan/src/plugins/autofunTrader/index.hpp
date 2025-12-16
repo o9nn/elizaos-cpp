@@ -1,13 +1,13 @@
-#include "elizaos/core.hpp"
-#include "tradingService.hpp"
-#include "types.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
+#include "tradingService.hpp"
+#include "types.hpp"
 
 namespace elizaos {
 
@@ -19,15 +19,11 @@ namespace elizaos {
     // first, get all tasks with tags "queue", "repeat", "autofun_trader" and delete them
 
           // Check if we have some sentiment data before proceeding
-          //const sentimentsData = (await runtime.getCache<Sentiment[]>('sentiments')) || [];
-          //if (sentimentsData.length === 0) {
           //return false;
           //}
             // Log the error but don't delete the task
 
           // Check if we have some sentiment data before proceeding
-          //const sentimentsData = (await runtime.getCache<Sentiment[]>('sentiments')) || [];
-          //if (sentimentsData.length === 0) {
           //return false;
           //}
             // Log the error but don't delete the task

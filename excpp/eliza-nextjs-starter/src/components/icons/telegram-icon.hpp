@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -13,6 +13,6 @@ namespace elizaos {
 
 
 
-void TelegramIcon(React.SVGProps<SVGSVGElement> props);
+void TelegramIcon(SVGProps<SVGSVGElement> props);
 
 } // namespace elizaos

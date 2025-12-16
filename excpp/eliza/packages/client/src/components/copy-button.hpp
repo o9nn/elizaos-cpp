@@ -1,11 +1,11 @@
-#include "ui/tooltip.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "ui/tooltip.hpp"
 
 namespace elizaos {
 

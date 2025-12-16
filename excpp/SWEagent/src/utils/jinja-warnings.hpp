@@ -1,11 +1,11 @@
-#include "log.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "log.hpp"
 
 namespace elizaos {
 
@@ -20,7 +20,7 @@ namespace elizaos {
 /**
  * Warn about probably wrong Jinja syntax
  */
-void warnProbablyWrongJinjaSyntax(string | null template);,
+void warnProbablyWrongJinjaSyntax(const std::optional<std::string>& template);,
 
   // Check for unclosed tags
 

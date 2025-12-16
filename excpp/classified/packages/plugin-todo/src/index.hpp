@@ -1,3 +1,10 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include "__tests__/e2e.hpp"
 #include "actions/cancelTodo.hpp"
 #include "actions/completeTodo.hpp"
@@ -9,13 +16,6 @@
 #include "schema.hpp"
 #include "services/reminderService.hpp"
 #include "services/todoService.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 

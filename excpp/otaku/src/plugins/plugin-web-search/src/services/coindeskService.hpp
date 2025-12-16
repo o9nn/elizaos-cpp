@@ -1,11 +1,13 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -31,7 +33,6 @@ struct CoinDeskArticle {
 
 struct CoinDeskNewsResponse {
     bool success;
-    std::optional<{> data;
     std::vector<CoinDeskArticle> articles;
     std::optional<double> total;
     std::optional<double> page;
@@ -40,87 +41,35 @@ struct CoinDeskNewsResponse {
 };
 
 struct CoinDeskSearchOptions {
-    std::optional<string;                    // Search query for article content> query;
-    std::optional<string[];               // Specific keywords to filter by> keywords;
-    std::optional<number;                    // Number of results (1-100)> limit;
-    std::optional<number;                   // Pagination offset> offset;
-    std::optional<number;                     // Page number> page;
-    std::optional<string[];             // Filter by categories (e.g., 'markets', 'tech', 'policy', 'defi')> categories;
-    std::optional<string[];                   // Filter by tags> tags;
-    std::optional<string[];                // Filter by author names> authors;
-    std::optional<string;                // Start date (YYYY-MM-DD or ISO 8601)> startDate;
-    std::optional<string;                  // End date (YYYY-MM-DD or ISO 8601)> endDate;
-    std::optional<string;           // Articles published after this timestamp> publishedAfter;
-    std::optional<string;          // Articles published before this timestamp> publishedBefore;
-    std::optional<'published' | 'updated' | 'relevance';  // Sort field> sortBy;
-    std::optional<'asc' | 'desc';        // Sort direction> sortOrder;
-    std::optional<boolean;             // Include full article body> includeBody;
-    std::optional<boolean;          // Include article summary> includeSummary;
-    std::optional<boolean;        // Include thumbnail image URL> includeThumbnail;
+    std::optional<std::string> query;
+    std::optional<std::vector<std::string>> keywords;
+    std::optional<double> limit;
+    std::optional<double> offset;
+    std::optional<double> page;
+    std::optional<std::vector<std::string>> categories;
+    std::optional<std::vector<std::string>> tags;
+    std::optional<std::vector<std::string>> authors;
+    std::optional<std::string> startDate;
+    std::optional<std::string> endDate;
+    std::optional<std::string> publishedAfter;
+    std::optional<std::string> publishedBefore;
+    std::optional<std::variant<'published', 'updated', 'relevance'>> sortBy;
+    std::optional<std::variant<'asc', 'desc'>> sortOrder;
+    std::optional<bool> includeBody;
+    std::optional<bool> includeSummary;
+    std::optional<bool> includeThumbnail;
 };
 
-class CoinDeskService extends Service {
-    static serviceType = "COINDESK_NEWS" as const;
-    capabilityDescription = "Fetch cryptocurrency news articles from CoinDesk API";
-    
-    private apiKey: string;
-    private baseUrl: string = "https://data-api.coindesk.com";
-
-    static async start(runtime: IAgentRuntime): Promise<CoinDeskService> {
-        const service = new CoinDeskService();
-        await service.initialize(runtime);
-        return service;
-    }
-
-    /**
-     * Search for news articles using CoinDesk API
-     * @param options - Comprehensive search and filter options
-     * @returns Promise with article results
-     */
-
-            // Search and filtering
-            
-            // Pagination
-            
-            // Categorization
-            
-            // Date filtering - support multiple formats
-            
-            // Sorting
-            
-            // Content options
-
-            // Handle different possible response formats
-
-    /**
-     * Get latest crypto news headlines (convenience method)
-     * @param limit - Number of headlines to fetch (default: 10)
-     * @returns Promise with article results
-     */
-
-    /**
-     * Search news by category
-     * @param category - Category name (e.g., 'markets', 'tech', 'policy', 'defi')
-     * @param limit - Number of results
-     * @returns Promise with article results
-     */
-
-    /**
-     * Search news within date range
-     * @param query - Search query
-     * @param startDate - Start date (YYYY-MM-DD)
-     * @param endDate - End date (YYYY-MM-DD)
-     * @param limit - Number of results
-     * @returns Promise with article results
-     */
-
-    /**
-     * Check if the service is properly configured
-     */
-
-    /**
-     * Stop the service (cleanup if needed)
-     */
+class CoinDeskService {
+public:
+    std::future<CoinDeskService> start(IAgentRuntime runtime);
+    std::future<void> initialize(IAgentRuntime runtime);
+    std::future<CoinDeskNewsResponse> searchNews(CoinDeskSearchOptions = {} options);
+    std::future<CoinDeskNewsResponse> getLatestHeadlines(number = 10 limit);
+    std::future<CoinDeskNewsResponse> searchByCategory(const std::string& category, number = 10 limit);
+    std::future<CoinDeskNewsResponse> searchByDateRange(const std::string& query, const std::string& startDate, const std::string& endDate, number = 10 limit);
+    bool isConfigured();
+    std::future<void> stop();
 
 
 } // namespace elizaos

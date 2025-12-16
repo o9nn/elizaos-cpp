@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -14,7 +15,6 @@ namespace elizaos {
 
 
 struct RouteParams {
-    Promise<{ params;
     std::string sessionId;
 };
 

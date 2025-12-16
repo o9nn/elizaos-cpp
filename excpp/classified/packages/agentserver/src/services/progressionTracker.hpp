@@ -1,12 +1,14 @@
-#include "capabilityProgressionService.hpp"
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "capabilityProgressionService.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -16,43 +18,22 @@ namespace elizaos {
 
 
 class ProgressionTracker {
-  private runtime: IAgentRuntime;
-  private progressionService: CapabilityProgressionService;
+public:
+    ProgressionTracker(IAgentRuntime runtime, CapabilityProgressionService progressionService);
+    void stop();
+    void setupEventListeners();
+    std::future<void> handleShellCommandExecuted(std::optional<std::any> params);
+    std::future<void> handleAgentNamed(const std::any& _params);
+    std::future<void> handleGoalCreated({ goalData: Record<string _params, auto unknown> });
+    std::future<void> handleTodoCreated({ todoData: Record<string _params, auto unknown> });
+    std::future<void> handleFormSubmitted(std::optional<{ details: Record<string> params, auto unknown> });
+    std::future<void> trackShellCommand(const std::string& command, double exitCode);
+    std::future<void> trackGoalCreation(Record<string goalData, auto unknown>);
+    std::future<void> trackTodoCreation(Record<string todoData, auto unknown>);
+    std::future<void> trackAgentNaming(const std::string& name);
+    std::future<void> trackAction(const std::string& actionType, std::optional<Record<string> details, auto unknown>);
+    std::unordered_map<std::string, unknown> getProgressionStatus();
+    void cleanup();
 
-  constructor(runtime: IAgentRuntime, progressionService: CapabilityProgressionService) {
-    this.runtime = runtime;
-    this.progressionService = progressionService;
-    this.setupEventListeners();
-  }
-
-    // Event listeners are automatically cleaned up with the runtime
-    // No manual cleanup needed for event-based approach
-
-    // Skip setup in unlocked mode
-
-    // Register event listeners for progression tracking
-
-  // Event handlers for progression tracking
-
-  // Method to track shell command execution - called from API endpoints
-    // Emit event instead of direct tracking
-
-  // Method to track goal creation - called from API endpoints
-    // Emit event instead of direct tracking
-
-  // Method to track todo creation - called from API endpoints
-    // Emit event instead of direct tracking
-
-  // Method to track agent naming - should be called when agent name changes
-    // Emit event instead of direct tracking
-
-  // Method to manually track specific actions
-
-    // Emit appropriate events based on action type
-        // For generic capability usage
-
-  // Method to check and display current progression status
-
-  // Cleanup method to stop intervals
 
 } // namespace elizaos

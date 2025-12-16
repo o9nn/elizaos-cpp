@@ -1,11 +1,13 @@
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -78,7 +80,6 @@ struct MorphoWithdrawResult {
     std::string transactionHash;
     BigNumber withdrawnAmount;
     BigNumber matchingImpact;
-    { executionDetails;
     BigNumber fromMatched;
     BigNumber fromPool;
     BigNumber gasUsed;
@@ -101,7 +102,6 @@ struct MorphoRepayResult {
     std::string transactionHash;
     BigNumber repaidAmount;
     BigNumber interestSaved;
-    { positionUpdate;
     BigNumber remainingDebt;
     double newHealthFactor;
 };
@@ -194,7 +194,7 @@ struct MatchingImpact {
  * Plugin Configuration
  */
 struct MorphoConfig {
-    "base" | "base-sepolia" network;
+    std::variant<"base", "base-sepolia"> network;
     std::string rpcUrl;
     std::optional<std::string> morphoApiUrl;
     BigNumber defaultMaxGasForMatching;
@@ -255,16 +255,6 @@ struct RepayActionParams {
  * Error codes
  */
 enum MorphoErrorCode {
-  INSUFFICIENT_COLLATERAL = "INSUFFICIENT_COLLATERAL",
-  MATCHING_FAILED = "MATCHING_FAILED",
-  POSITION_NOT_FOUND = "POSITION_NOT_FOUND",
-  RATE_CALCULATION_ERROR = "RATE_CALCULATION_ERROR",
-  LIQUIDITY_ERROR = "LIQUIDITY_ERROR",
-  GAS_ESTIMATION_ERROR = "GAS_ESTIMATION_ERROR",
-  TRANSACTION_FAILED = "TRANSACTION_FAILED",
-  INVALID_PARAMETERS = "INVALID_PARAMETERS",
-  NETWORK_ERROR = "NETWORK_ERROR",
-  UNKNOWN_ERROR = "UNKNOWN_ERROR",
 }
 
 /**
@@ -371,10 +361,12 @@ struct RewardsClaimParams {
 struct RewardsClaimResult {
     std::string transactionHash;
     BigNumber totalClaimed;
-    std::vector<{ token: string; amount: BigNumber }> claimedTokens;
+};
 
 struct UserRewards {
-    std::vector<{ token: string; amount: BigNumber }> claimable;
+    BigNumber totalValue;
+    double lastUpdate;
+};
 
 /**
  * Liquidation Types
@@ -382,7 +374,7 @@ struct UserRewards {
 struct LiquidationAlert {
     std::string userAddress;
     double healthFactor;
-    "LOW" | "MEDIUM" | "HIGH" | "CRITICAL" riskLevel;
+    std::variant<"LOW", "MEDIUM", "HIGH", "CRITICAL"> riskLevel;
     std::vector<std::string> recommendedActions;
     std::optional<double> timeToLiquidation;
 };
@@ -422,13 +414,12 @@ struct MarketCreationParams {
     std::string collateralToken;
     std::string oracle;
     std::string irm;
-    BigNumber; // Loan-to-value ratio in basis points lltv;
+    BigNumber lltv;
 };
 
 struct MarketCreationResult {
     Hex marketId;
     std::string transactionHash;
-    { market;
     std::string loanToken;
     std::string collateralToken;
     std::string oracle;
@@ -488,92 +479,39 @@ using MarketSummary = {
 struct UserPosition {
     std::string marketId;
     std::string pairLabel;
-    { symbols;
     std::string collateral;
     std::string loan;
-    { decimals;
     double collateral;
     double loan;
-    { amounts;
     std::string collateralTokens;
     std::string loanTokens;
-    string | null collateralUsd;
-    string | null loanUsd;
+    std::optional<std::string> collateralUsd;
+    std::optional<std::string> loanUsd;
     std::string suppliedTokens;
-    string | null suppliedUsd;
+    std::optional<std::string> suppliedUsd;
     std::string withdrawableTokens;
-    { shares;
     std::string borrowShares;
     std::string supplyShares;
-    { prices;
-    number | null collateralUsd;
-    number | null loanUsd;
-    string | null liquidationLoanPerCollateral;
-    string | null currentLoanPerCollateral;
-    { risk;
+    std::optional<double> collateralUsd;
+    std::optional<double> loanUsd;
+    std::optional<std::string> liquidationLoanPerCollateral;
+    std::optional<std::string> currentLoanPerCollateral;
     double lltvPct;
-    number | null ltvPct;
-    number | null dropToLiquidationPct;
-    { addresses;
-    `0x${string}` collateral;
-    `0x${string}` loan;
-    `0x${string}` user;
-    { supply;
+    std::optional<double> ltvPct;
+    std::optional<double> dropToLiquidationPct;
     bool hasSupplied;
-    string | null earnedInterest;
-    number | null currentApy;
+    std::optional<std::string> earnedInterest;
+    std::optional<double> currentApy;
     bool hasPosition;
 };
 
 using UserVaultPosition = {
-  vault: {
-    address: `0x${string}`;
-    name: string;
-    asset: {
-      address: `0x${string}`;
-      symbol: string;
-      decimals: number;
-    };
-    state: {
-      dailyApy: number | null;
-      weeklyApy: number | null;
-      monthlyApy: number | null;
-      yearlyApy: number | null;
-    };
-  };
-  shares: string;
-  assets: string;
-};
 
 using MorphoVaultData = {
-  address: `0x${string}`;
-  name: string;
-  asset: {
-    address: `0x${string}`;
-    symbol: string;
-    decimals: number;
-  };
   // Totals
-  totalDepositsTokens: BigNumber; // state.totalAssets (normalized)
-  totalDepositsUsd?: BigNumber | null; // state.totalAssetsUsd (if you want it)
-  totalSupplyShares?: BigNumber | null; // state.totalSupply (vault shares)
 
   // APYs (decimals, e.g. 0.046 -> 4.6%)
-  apy: {
-    daily: number | null;
-    weekly: number | null;
-    monthly: number | null;
-    yearly: number | null;
-    apy?: number | null; // overall apy if you want to expose it
-  };
 
   // Optional: per-allocation info (array of markets)
-  allocations?: Array<{
-    marketId: string;
-    supplyAssetsTokens: BigNumber;
-    supplyAssetsUsd?: BigNumber | null;
-    supplyCapTokens?: BigNumber | null;
-  }>;
-};
 
 } // namespace elizaos

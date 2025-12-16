@@ -1,16 +1,16 @@
-#include "actions/component-tests.hpp"
-#include "actions/e2e-tests.hpp"
-#include "actions/run-all-tests.hpp"
-#include "elizaos/core.hpp"
-#include "types.hpp"
-#include "utils/project-utils.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "actions/component-tests.hpp"
+#include "actions/e2e-tests.hpp"
+#include "actions/run-all-tests.hpp"
+#include "elizaos/core.hpp"
+#include "types.hpp"
+#include "utils/project-utils.hpp"
 
 namespace elizaos {
 
@@ -21,9 +21,6 @@ namespace elizaos {
 
 // Create base test command with basic description only
     // Install plugin dependencies before running tests
-    await installPluginDependencies(projectInfo);
-
-          await runAllTests(testPath, options);
 
 // This is the function that registers the command with the CLI
 

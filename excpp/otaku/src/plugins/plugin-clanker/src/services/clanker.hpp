@@ -1,14 +1,16 @@
-#include ".types.hpp"
-#include ".utils/errors.hpp"
-#include ".utils/transactions.hpp"
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".types.hpp"
+#include ".utils/errors.hpp"
+#include ".utils/transactions.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -23,30 +25,18 @@ std::any sanitizeError(const std::any& error);
 // Helper function to detect platform from URL
 std::string detectPlatform(const std::string& url);
 
-class ClankerService extends Service {
-  static serviceType = "clanker";
-  capabilityDescription = "";
-  private transactionManager: CdpTransactionManager;
+class ClankerService {
+public:
+    ClankerService(IAgentRuntime runtime);
+    Promise< getOrCreateWallet(const std::string& accountName);
+    std::future<void> initialize(IAgentRuntime runtime);
+    std::future<ClankerService> start(IAgentRuntime runtime);
+    std::future<DeployResult> deployToken(TokenDeployParams params, const std::string& accountName);
+    std::future<void> stop();
 
-  constructor(runtime: IAgentRuntime) {
-    super(runtime);
-    this.transactionManager = CdpTransactionManager.getInstance();
-  }
-
-    // Test connections
-
-      // Validate parameters
-
-          // Transform string URLs to objects with platform and url
-
-          // Sanitize error to remove BigInt before logging/throwing
-
-          // Sanitize error to remove BigInt before logging/throwing
-        
-        // Fetch transaction receipt to get actual deployment cost
-          // Keep deploymentCost as 0 if we can't fetch it
-
-      // Sanitize error to remove BigInt before logging/throwing
+private:
+    CdpTransactionManager transactionManager_;
+};
 
 
 } // namespace elizaos

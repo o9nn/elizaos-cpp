@@ -1,11 +1,11 @@
-#include "config.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "config.hpp"
 
 namespace elizaos {
 
@@ -31,7 +31,7 @@ struct CreateContributorSummaryContextOptions {
     std::string outputDir;
     AISummaryConfig aiSummaryConfig;
     std::optional<bool> overwrite;
-    { startDate: string; endDate?: string } dateRange;
+};
 
 /**
  * Create a context for contributor summary pipelines

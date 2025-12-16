@@ -1,11 +1,12 @@
-#include ".services/TauriService.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include ".services/TauriService.hpp"
 
 namespace elizaos {
 
@@ -16,10 +17,9 @@ namespace elizaos {
 
 struct AgentLog {
     std::string timestamp;
-    'agent' | 'system' | 'error' type;
-    'info' | 'warn' | 'error' | 'debug' level;
+    std::variant<'agent', 'system', 'error'> type;
+    std::variant<'info', 'warn', 'error', 'debug'> level;
     std::string message;
-    std::optional<std::unordered_map<std::string, unknown>> metadata;
 };
 
     // Initial fetch

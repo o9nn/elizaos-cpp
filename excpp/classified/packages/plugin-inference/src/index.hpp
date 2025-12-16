@@ -1,3 +1,12 @@
+#pragma once
+#include <functional>
+#include <future>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <variant>
+#include <vector>
 #include "claude-proxy.hpp"
 #include "elizaos/core.hpp"
 #include "elizaos/plugin-anthropic.hpp"
@@ -6,13 +15,6 @@
 #include "elizaos/plugin-local-embedding.hpp"
 #include "elizaos/plugin-ollama.hpp"
 #include "elizaos/plugin-openai.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -38,12 +40,6 @@ namespace elizaos {
  * Enum for supported inference providers
  */
 enum InferenceProvider {
-  OPENAI = 'openai',
-  ANTHROPIC = 'anthropic',
-  OLLAMA = 'ollama',
-  ELIZAOS = 'elizaos',
-  GROQ = 'groq',
-  LOCAL_EMBEDDING = 'local_embedding',
 }
 
 // Provider configuration
@@ -51,23 +47,14 @@ struct ProviderInfo {
     std::optional<std::string> name;
     Plugin plugin;
     std::string displayName;
-    'available' | 'not_configured' | 'error' status;
+    std::variant<'available', 'not_configured', 'error'> status;
     std::string message;
 };
 
 // Inference plugin state
 class InferenceState {
-  public providers: Map<InferenceProvider, ProviderInfo> = new Map([
-    [
-      InferenceProvider.OPENAI,
-      {
-        plugin: openaiPlugin as Plugin,
-        status: 'not_configured',
-        displayName: 'OpenAI',
-        message: 'API key required',
-      },
-
-  // Default preferences order (can be overridden by environment variable)
+public:
+};
 
 /**
  * Reset state for testing purposes
@@ -97,7 +84,6 @@ std::string getProviderConfigMessage(InferenceProvider provider);
 /**
  * Get the active provider based on selection and availability
  */
-  await initializeProviders(runtime);
 
   // If a specific provider is selected, try to use it first
 
@@ -107,7 +93,6 @@ std::string getProviderConfigMessage(InferenceProvider provider);
  * Route model calls to the active provider
  */
   // For TEXT_EMBEDDING, always try to use the local FastEmbed plugin first
-    await initializeProviders(runtime);
 
     // Try local embedding first
 
@@ -116,8 +101,6 @@ std::string getProviderConfigMessage(InferenceProvider provider);
   // Check if the provider supports this model type
     // Try to find another provider that supports this model type
 
-    await initializeProviders(runtime);
-
     // Search through all available providers for one that supports this model type
 
     // If no provider supports this model type, throw an error
@@ -125,12 +108,11 @@ std::string getProviderConfigMessage(InferenceProvider provider);
 /**
  * Get provider status for all providers
  */
-  await initializeProviders(runtime);
 
 /**
  * Set the selected provider
  */
-std::future<void> setSelectedProvider(IAgentRuntime runtime, string | null provider);
+std::future<void> setSelectedProvider(IAgentRuntime runtime, const std::optional<std::string>& provider);
 
 /**
  * Set provider preferences
@@ -142,7 +124,6 @@ std::future<void> setProviderPreferences(IAgentRuntime runtime, const std::vecto
  */
 
     // Ensure local embedding is initialized for embedding support
-    await initializeProviders(runtime);
 
       return routeToProvider(runtime, ModelType.TEXT_EMBEDDING, params);
 

@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -17,7 +18,7 @@ struct CodeBlockCodeProps {
     std::string code;
     std::optional<std::string> language;
     std::optional<std::string> className;
-    std::optional<'user' | 'agent'> variant;
+    std::optional<std::variant<'user', 'agent'>> variant;
 };
 
 

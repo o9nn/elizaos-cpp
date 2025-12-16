@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -22,8 +23,6 @@ namespace elizaos {
  * This state object is passed to handlers for actions, evaluators, and providers.
  */
 struct State {
-    { values;
-    { data;
     std::string text;
 };
 

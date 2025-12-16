@@ -1,13 +1,16 @@
-#include "AuthenticationService.js.hpp"
-#include "CLIAuthCommands.js.hpp"
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "AuthenticationService.js.hpp"
+#include "CLIAuthCommands.js.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -22,60 +25,22 @@ namespace elizaos {
 /**
  * Authentication Service for Plugin Integration
  */
-class AgentAuthService extends Service {
-  capabilityDescription = 'Manages API key authentication and validation for ElizaOS services';
+class AgentAuthService {
+public:
+    AgentAuthService(std::optional<IAgentRuntime> runtime);
+    std::future<AgentAuthService> start(IAgentRuntime runtime);
+    void getAuthStatus();
+    void validateApiKey(const std::string& provider, const std::string& apiKey);
+    void testApiFunctionality(const std::string& provider);
+    std::future<bool> isProviderReady(const std::string& provider, std::optional<std::string> capability);
+    std::variant<Promise<string, null>> getBestProvider(const std::string& capability);
+    void validateAllProviders();
+    void clearCache();
+    std::future<void> stop();
 
-  private authService: AuthenticationService;
-
-  constructor(runtime?: IAgentRuntime) {
-    super(runtime);
-    if (!runtime) {
-      throw new Error('Runtime is required for AgentAuthService');
-    }
-    this.authService = new AuthenticationService(runtime);
-  }
-
-    // Perform initial auth check
-
-  /**
-   * Get current authentication status
-   */
-
-  /**
-   * Validate specific API key
-   */
-
-  /**
-   * Test API functionality
-   */
-
-  /**
-   * Check if provider is authenticated and capable
-   */
-
-  /**
-   * Get the best available provider for a capability
-   */
-
-      // Find all providers that support the capability
-
-      // Prefer production keys over test keys
-
-        // Return first production provider (could add load balancing logic here)
-
-      // Fall back to test providers
-
-  /**
-   * Validate all providers and return summary
-   */
-
-  /**
-   * Clear authentication cache
-   */
-
-  /**
-   * Stop the service and cleanup resources
-   */
+private:
+    AuthenticationService authService_;
+};
 
 /**
  * Plugin Integration for Authentication
@@ -89,34 +54,14 @@ class AgentAuthService extends Service {
  * Helper functions for plugin usage
  */
 class AuthHelper {
-  /**
-   * Check if a provider is ready for use
-   */
-  static async isProviderReady(
-    runtime: IAgentRuntime,
-    provider: string,
-    capability?: string
-  ): Promise<boolean> {
-    const authService = runtime.getService<AgentAuthService>('elizaos-services-auth');
-    if (!authService) {
-      logger.warn('Authentication service not available');
-      return false;
-    }
-
-    return authService.isProviderReady(provider, capability);
-  }
-
-  /**
-   * Get the best provider for a capability
-   */
-
-  /**
-   * Validate provider before using in model calls
-   */
-
-  /**
-   * Get authentication status for debugging
-   */
+public:
+    std::future<bool> isProviderReady(IAgentRuntime runtime, const std::string& provider, std::optional<std::string> capability);
+    std::variant<Promise<string, null>> getBestProvider(IAgentRuntime runtime, const std::string& capability);
+    Promise< validateBeforeUse(IAgentRuntime runtime, const std::string& provider, const std::string& capability);
+    void if(auto !isReady);
+    void catch(auto error);
+    std::future<std::any> getDebugInfo(IAgentRuntime runtime);
+};
 
 
 } // namespace elizaos

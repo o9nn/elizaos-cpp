@@ -1,11 +1,11 @@
-#include "team-coordinator.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "team-coordinator.hpp"
 
 namespace elizaos {
 

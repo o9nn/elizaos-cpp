@@ -1,12 +1,14 @@
-#include "elizaos/core.hpp"
-#include "spinner-utils.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
+#include "spinner-utils.hpp"
 
 namespace elizaos {
 
@@ -39,7 +41,7 @@ std::string getPackageName(const std::string& templateType);
 /**
  * Copy a project or plugin template to target directory
  */
-std::future<void> copyTemplate('project' | 'project-starter' | 'project-tee-starter' | 'plugin' | 'plugin-quick' templateType, const std::string& targetDir);
+std::future<void> copyTemplate(const std::variant<'project', 'project-starter', 'project-tee-starter', 'plugin', 'plugin-quick'>& templateType, const std::string& targetDir);
 
 /**
  * Replace hardcoded "plugin-starter" or "plugin-quick-starter" strings in source files with the actual plugin name

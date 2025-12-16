@@ -1,13 +1,14 @@
-#include "config.hpp"
-#include "elizaos/core.hpp"
-#include "types.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "config.hpp"
+#include "elizaos/core.hpp"
+#include "types.hpp"
 
 namespace elizaos {
 
@@ -72,11 +73,9 @@ std::future<std::vector> generateTextEmbeddingsBatch(IAgentRuntime runtime, cons
  *
  * @example
  * // Regular text generation
- * const response = await generateText("Summarize this article: " + articleText);
  *
  * @example
  * // Text generation with system prompt
- * const response = await generateText(
  *   "Summarize this article: " + articleText,
  *   "You are a helpful assistant specializing in concise summaries."
  * );
@@ -84,7 +83,6 @@ std::future<std::vector> generateTextEmbeddingsBatch(IAgentRuntime runtime, cons
  * @example
  * // Using document caching with OpenRouter (available with Claude and Gemini models)
  * // This can reduce costs up to 90% when working with the same document repeatedly
- * const response = await generateText(
  *   "Extract key topics from this chunk: " + chunk,
  *   "You are a precision information extraction tool.",
  *   {

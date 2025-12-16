@@ -1,11 +1,12 @@
-#include ".types/project.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".types/project.hpp"
 
 namespace elizaos {
 
@@ -20,5 +21,5 @@ struct DocSection {
     std::optional<std::string> code;
 };
 
-void TechnicalDocs({ project: Project } { project }); 
+void TechnicalDocs(const std::any& { project }); 
 } // namespace elizaos

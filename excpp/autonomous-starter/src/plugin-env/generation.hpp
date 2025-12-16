@@ -1,11 +1,11 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -36,6 +36,7 @@ bool canGenerateEnvVar(const std::string& varName, const std::string& type, std:
 /**
  * Generates a script for creating an environment variable
  */
+std::optional<GenerationScript> generateScript(const std::string& varName, const std::string& type, const std::string& pluginName, std::optional<std::string> description);
 
 /**
  * Gets a human-readable description of what will be generated

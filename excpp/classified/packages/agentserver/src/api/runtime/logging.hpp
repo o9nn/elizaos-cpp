@@ -1,11 +1,12 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -25,7 +26,7 @@ using LogLevel = std::variant<keyof typeof LOG_LEVELS, 'all'>;
  * Represents a log entry with specific properties.
  */
 struct LogEntry {
-    number | string level;
+    std::variant<double, std::string> level;
     double time;
     std::optional<std::string> msg;
     std::optional<std::string> message;

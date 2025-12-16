@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -28,6 +28,5 @@ namespace elizaos {
 
 // Clean up after tests
   // Close any open handles
-  await delay(100);
 
 } // namespace elizaos

@@ -1,14 +1,14 @@
-#include ".hooks/useProfileWallets.hpp"
-#include "ProfileRepoNotice.hpp"
-#include "WalletLinkBoard.hpp"
-#include "WalletLinkForm.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".hooks/useProfileWallets.hpp"
+#include "ProfileRepoNotice.hpp"
+#include "WalletLinkBoard.hpp"
+#include "WalletLinkForm.hpp"
 
 namespace elizaos {
 

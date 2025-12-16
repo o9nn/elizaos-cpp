@@ -1,13 +1,13 @@
-#include ".contexts/NetworkConfigurationProvider.hpp"
-#include ".stores/useNotificationStore.hpp"
-#include ".utils/explorer.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".contexts/NetworkConfigurationProvider.hpp"
+#include ".stores/useNotificationStore.hpp"
+#include ".utils/explorer.hpp"
 
 namespace elizaos {
 

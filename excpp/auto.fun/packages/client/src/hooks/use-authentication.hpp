@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -20,7 +20,6 @@ namespace elizaos {
 struct AuthStatus {
     bool authenticated;
     std::optional<std::vector<std::string>> privileges;
-    std::optional<{> user;
     std::string address;
     double points;
     std::optional<double> solBalance;

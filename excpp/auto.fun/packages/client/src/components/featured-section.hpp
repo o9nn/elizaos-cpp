@@ -1,12 +1,12 @@
-#include "grid-view.hpp"
-#include "loader.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "grid-view.hpp"
+#include "loader.hpp"
 
 namespace elizaos {
 

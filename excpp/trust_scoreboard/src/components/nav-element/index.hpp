@@ -1,12 +1,12 @@
-#include "..utils.hpp"
-#include ".Text.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "..utils.hpp"
+#include ".Text.hpp"
 
 namespace elizaos {
 

@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -22,7 +22,6 @@ struct Option {
 struct MultiSelectComboboxProps {
     std::vector<Option> options;
     std::optional<std::string> className;
-    std::optional<(selected: Option[]) => void> onSelect;
     std::optional<std::vector<Option>> initialSelected;
 };
 

@@ -1,11 +1,11 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -18,12 +18,10 @@ using EnvVariable = {
 
 struct SecretPanelProps {
     Agent characterValue;
-    std::optional<(secrets: Record<string, string | null>) => void> onChange;
 };
 
 struct SecretPanelRef {
-    () => Record<string, string | null> getSecrets;
-    () => { isValid: boolean; missingSecrets: string[] } validateSecrets;
+};
 
     // Raw editor modal state
 
@@ -74,8 +72,6 @@ struct SecretPanelRef {
       // or if envs is empty (meaning we haven't initialized yet)
         // Decrypt secrets from the server using the core decryption function
         // Ensure we're working with a plain object
-
-          // Filter out process.env values - these should not be stored as actual values
 
         // Create a map for quick lookup
 
@@ -128,19 +124,13 @@ struct SecretPanelRef {
         // Only call onChange if secrets actually changed
         // Sort keys to ensure consistent comparison
 
-              // Filter out process.env values
-
             // Sort: required secrets first, then alphabetically
-
-        // Filter out process.env values
 
           // Sort: required secrets first, then alphabetically
 
       // Close any other editing
 
       // Show the secret when editing
-
-      // Filter out process.env values
 
       // Hide the secret after saving
 

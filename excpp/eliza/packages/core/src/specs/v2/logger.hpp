@@ -1,11 +1,12 @@
-#include "..logger.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "..logger.hpp"
 
 namespace elizaos {
 
@@ -17,7 +18,7 @@ namespace elizaos {
 /**
  * Type definition for logger methods
  */
-using LogMethod = (...args: any[]) => void;
+using LogMethod = std::function<void(std::vector<std::any>)>;
 
 // logger wrapper/specification
 

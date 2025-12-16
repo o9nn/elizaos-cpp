@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -36,6 +37,7 @@ std::future<void> setupEmbeddingModelConfig(const std::string& embeddingModel, c
 /**
  * Resolves AI model name to plugin name
  */
+std::optional<std::string> resolveModelToPlugin(const std::string& modelName);
 
 /**
  * Helper function to install a model plugin with error handling

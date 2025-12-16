@@ -1,15 +1,15 @@
-#include ".constants.js.hpp"
-#include ".hyperfy/src/core/extras/playerEmotes.js.hpp"
-#include ".service.js.hpp"
-#include ".utils.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".constants.js.hpp"
+#include ".hyperfy/src/core/extras/playerEmotes.js.hpp"
+#include ".service.js.hpp"
+#include ".utils.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -19,18 +19,17 @@ namespace elizaos {
 
 
 class EmoteManager {
-  private emoteHashMap: Map<string, string>
-  private currentEmoteTimeout: NodeJS.Timeout | null
-  private movementCheckInterval: NodeJS.Timeout | null = null;
-  private runtime: IAgentRuntime;
+public:
+    EmoteManager(auto runtime);
+    void uploadEmotes();
+    void playEmote(const std::string& name);
+    void clearEmote(auto player);
+    void clearTimers();
+    void getService();
 
-  constructor(runtime) {
-    this.runtime = runtime;
-    this.emoteHashMap = new Map()
-    this.currentEmoteTimeout = null
-  }
-
-    // Get duration from EMOTES_LIST
+private:
+    IAgentRuntime runtime_;
+};
 
 
 } // namespace elizaos

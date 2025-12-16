@@ -1,12 +1,12 @@
-#include "leaderboard.hpp"
-#include "stat-badge.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "leaderboard.hpp"
+#include "stat-badge.hpp"
 
 namespace elizaos {
 
@@ -22,7 +22,6 @@ namespace elizaos {
   // // Get top 3 skills across all categories
   // const topSkills = allTags.sort((a, b) => b.level - a.level).slice(0, 3);
 
-  // const handleSkillClick = (skill: string, e: React.MouseEvent) => {
   //   e.preventDefault();
   //   onSkillClick(skill.toLowerCase());
   // };

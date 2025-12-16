@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -20,7 +20,7 @@ namespace elizaos {
  * The `id` is a unique identifier for the knowledge item, often derived from its source or content.
  */
 using KnowledgeItem = {
-  /** A Universally Unique Identifier for this specific knowledge item. */
+  /** A Universally Unique Identifier for this specific knowledge item:: */
   /** The actual content of the knowledge item, which must include text and can have other fields. */
   /** Optional metadata associated with this knowledge item, conforming to `MemoryMetadata`. */
 
@@ -31,8 +31,6 @@ using KnowledgeItem = {
  * This enum is used to manage access and retrieval of knowledge items, often in conjunction with `AgentRuntime.addKnowledge` or `AgentRuntime.getKnowledge` scopes.
  */
 enum KnowledgeScope {
-  SHARED = 'shared',
-  PRIVATE = 'private',
 }
 
 /**
@@ -42,7 +40,6 @@ enum KnowledgeScope {
  * Used internally by caching strategies, potentially within `IDatabaseAdapter` cache methods or runtime caching layers.
  */
 enum CacheKeyPrefix {
-  KNOWLEDGE = 'knowledge',
 }
 
 /**

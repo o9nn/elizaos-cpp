@@ -1,12 +1,12 @@
-#include "elizaos/core.hpp"
-#include "use-query-hooks.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
+#include "use-query-hooks.hpp"
 
 namespace elizaos {
 
@@ -26,7 +26,7 @@ void useGetOrCreateDmChannel();
 /**
  * Hook to fetch all DM conversations (channels marked as DMs) for a specific agent.
  */
-void useDmChannelsForAgent(UUID | undefined agentId, UUID = '00000000-0000-0000-0000-000000000000' as UUID serverId);
+void useDmChannelsForAgent(UUID agentId, UUID = '00000000-0000-0000-0000-000000000000' as UUID serverId);
 
 /**
  * Hook to create a new, distinct DM channel (conversation) with an agent.

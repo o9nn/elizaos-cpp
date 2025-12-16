@@ -1,14 +1,14 @@
-#include ".app/guards.hpp"
-#include ".features/app/app-types.hpp"
-#include ".utils.hpp"
-#include "webhook-embed-mock.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".app/guards.hpp"
+#include ".features/app/app-types.hpp"
+#include ".utils.hpp"
+#include "webhook-embed-mock.hpp"
 
 namespace elizaos {
 

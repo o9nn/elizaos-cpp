@@ -1,11 +1,12 @@
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -43,56 +44,25 @@ namespace elizaos {
 
   // Logging
 
-using VisionConfigInput = z.input<typeof VisionConfigSchema>;
-using VisionConfigOutput = z.output<typeof VisionConfigSchema>;
+using VisionConfigInput = z::input<typeof VisionConfigSchema>;
+using VisionConfigOutput = z::output<typeof VisionConfigSchema>;
 
 class ConfigurationManager {
-  private config: VisionConfigOutput;
-  private runtime: any;
+public:
+    ConfigurationManager(const std::any& runtime);
+    VisionConfigOutput loadConfiguration();
+    std::string getSetting(const std::string& key);
+    bool getBooleanSetting(const std::string& key, bool defaultValue);
+    double getNumberSetting(const std::string& key, double defaultValue);
+    VisionConfigOutput get();
+    void update(const std::optional<VisionConfigInput>& updates);
+    VisionConfig toLegacyFormat();
+    std::optional<VisionConfigInput> getPreset(const std::string& name);
 
-  constructor(runtime: any) {
-    this.runtime = runtime;
-    this.config = this.loadConfiguration();
-  }
-
-    // Load from environment variables and runtime settings
-      // Camera
-
-      // Vision processing
-
-      // Object detection
-
-      // Pose detection
-
-      // Update intervals
-
-      // Vision mode
-
-      // Screen capture
-
-      // OCR
-
-      // Florence-2
-
-      // Face recognition
-
-      // Entity tracking
-
-      // Performance
-
-      // Logging
-
-    // Validate and parse configuration
-
-      // Return default configuration on error
-
-    // Try with VISION_ prefix first
-
-  // Public API
-
-  // Convert to legacy VisionConfig format for backward compatibility
-
-  // Configuration presets
+private:
+    VisionConfigOutput config_;
+    std::any runtime_;
+};
 
 
 } // namespace elizaos

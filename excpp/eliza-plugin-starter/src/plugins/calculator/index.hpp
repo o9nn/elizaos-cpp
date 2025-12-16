@@ -1,12 +1,12 @@
-#include "action.ts.hpp"
-#include "evaluator.ts.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "action.ts.hpp"
+#include "evaluator.ts.hpp"
 
 namespace elizaos {
 

@@ -1,3 +1,10 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include "..common-components/tooltip/tooltip.hpp"
 #include "..features/app/use-app-slice.hpp"
 #include "..features/dm/use-dm-slice.hpp"
@@ -8,13 +15,6 @@
 #include "components/delete-modal.hpp"
 #include "components/edit-modal.hpp"
 #include "components/filter-modal.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 

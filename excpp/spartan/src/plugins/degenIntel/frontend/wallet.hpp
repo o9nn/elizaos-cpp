@@ -1,12 +1,12 @@
-#include "loader.hpp"
-#include "ui/card.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "loader.hpp"
+#include "ui/card.hpp"
 
 namespace elizaos {
 

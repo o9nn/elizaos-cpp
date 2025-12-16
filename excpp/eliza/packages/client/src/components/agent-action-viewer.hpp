@@ -1,10 +1,11 @@
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -17,11 +18,6 @@ namespace elizaos {
 
 // Enums
 enum ActionType {
-  all = 'all',
-  llm = 'llm',
-  transcription = 'transcription',
-  image = 'image',
-  other = 'other',
 }
 
 // Types
@@ -34,7 +30,7 @@ using AgentActionViewerProps = {
 // Helper functions
 std::string getModelUsageType(const std::string& modelType);
 
-void formatDate(number | undefined timestamp);
+void formatDate(double timestamp);
 
 void getModelIcon(auto modelType = '');
 

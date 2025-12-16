@@ -1,12 +1,12 @@
-#include ".types.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".types.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -102,8 +102,6 @@ namespace elizaos {
  * Updates the .env file with a new environment variable
  */
 
-  // Update the environment variable and process.env
-
 /**
  * Prompts for environment variables based on the plugin's agentConfig.pluginParameters
  * and writes them to the .env file
@@ -131,8 +129,6 @@ namespace elizaos {
   // Configure each missing variable
 
     // Add visual separation between variables
-
-        await updateEnvFile(cwd, varName, value);
 
   // Final status with actionable next steps
 

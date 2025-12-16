@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -16,8 +17,8 @@ namespace elizaos {
 struct CreateDMChannelRequest {
     std::string userId;
     std::string agentId;
-    std::optional<string; // Optional - will be generated if not provided> channelId;
-    std::optional<string; // Optional title for the channel> title;
+    std::optional<std::string> channelId;
+    std::optional<std::string> title;
 };
 
 struct DMChannelMetadata {

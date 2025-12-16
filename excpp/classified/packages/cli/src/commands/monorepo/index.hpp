@@ -1,13 +1,13 @@
-#include "actions/clone.hpp"
-#include "types.hpp"
-#include "utils/setup-instructions.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "actions/clone.hpp"
+#include "types.hpp"
+#include "utils/setup-instructions.hpp"
 
 namespace elizaos {
 
@@ -25,7 +25,6 @@ namespace elizaos {
       // Create clone information
 
       // Clone the repository
-      await cloneMonorepo(cloneInfo);
 
       // Display instructions for next steps
 

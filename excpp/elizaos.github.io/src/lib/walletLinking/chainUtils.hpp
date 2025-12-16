@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -15,8 +15,7 @@ namespace elizaos {
 
 struct ChainConfig {
     std::string chainId;
-    (address: string) => boolean validator;
-    React.ElementType icon;
+    ElementType icon;
 };
 
 /**

@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -15,12 +16,11 @@ namespace elizaos {
 
 struct StopAgentButtonProps {
     Agent agent;
-    std::optional<'default' | 'destructive' | 'outline'> variant;
-    std::optional<'default' | 'sm' | 'lg' | 'icon'> size;
+    std::optional<std::variant<'default', 'destructive', 'outline'>> variant;
+    std::optional<std::variant<'default', 'sm', 'lg', 'icon'>> size;
     std::optional<std::string> className;
     std::optional<bool> showIcon;
     std::optional<bool> redirectToHome;
-    std::optional<() => void> onStopComplete;
 };
 
 

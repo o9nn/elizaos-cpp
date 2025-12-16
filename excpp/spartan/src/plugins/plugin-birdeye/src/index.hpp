@@ -1,3 +1,10 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include "actions/token-search-address.hpp"
 #include "actions/token-search-symbol.hpp"
 #include "actions/wallet-search-address.hpp"
@@ -8,13 +15,6 @@
 #include "providers/wallet.hpp"
 #include "service.hpp"
 #include "tasks/birdeye.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -46,7 +46,6 @@ namespace elizaos {
 
       // how do we turn this on and off?
       // I guess we can check for the plugin-trader service
-            //await birdeye.syncTrendingTokens('base');
             // kill this task
 
     // shouldn't plugin-solana and plugin-evm handle this?

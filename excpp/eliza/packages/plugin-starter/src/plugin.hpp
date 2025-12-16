@@ -1,12 +1,12 @@
-#include "elizaos/core.hpp"
-#include "tests.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
+#include "tests.hpp"
 
 namespace elizaos {
 
@@ -41,22 +41,19 @@ namespace elizaos {
       // Simple response content
 
       // Call back with the hello world message if callback is provided
-        await callback(responseContent);
 
 /**
  * Example Hello World Provider
  * This demonstrates the simplest possible provider implementation
  */
 
-class StarterService extends Service {
-  static serviceType = 'starter';
-  capabilityDescription =
-    'This is a starter service which is attached to the agent through the starter plugin.';
-  constructor(protected runtime: IAgentRuntime) {
-    super(runtime);
-  }
-
-    // get the service from the runtime
+class StarterService {
+public:
+    StarterService(IAgentRuntime protected runtime);
+    void start(IAgentRuntime runtime);
+    void stop(IAgentRuntime runtime);
+    void stop();
+};
 
       // Set all environment variables at once
         // send a response

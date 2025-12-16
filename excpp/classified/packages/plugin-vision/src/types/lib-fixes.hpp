@@ -1,10 +1,12 @@
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -63,12 +65,11 @@ using _Uint32List = std::variant<Uint32Array, ArrayLike<number>>;
 };
 
   struct PromptProps {
-    string | ((location: Location) => string | boolean) message;
     std::optional<bool> when;
 };
 
   struct RedirectProps {
-    string | Location to;
+    std::variant<std::string, Location> to;
     std::optional<bool> push;
     std::optional<std::string> from;
     std::optional<std::string> path;

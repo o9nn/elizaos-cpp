@@ -1,11 +1,11 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -21,7 +21,7 @@ struct EntitySourceMetadata {
 };
 
 // Helper function to safely get entity metadata
-std::string getEntityUsername(Entity | undefined entity);
+std::string getEntityUsername(Entity entity);
 
 // Move getRecentInteractions outside the provider
 /**

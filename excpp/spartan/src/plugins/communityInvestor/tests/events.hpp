@@ -1,14 +1,14 @@
-#include ".events.hpp"
-#include ".service.hpp"
-#include ".types.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".events.hpp"
+#include ".service.hpp"
+#include ".types.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -18,22 +18,6 @@ namespace elizaos {
 // Unit tests for event handlers (e.g., messageReceivedHandler)
 
 using Message = MessagePayload['message'];
-
-  await messageHandler(payload);
-
-        await callMessageHandlerForEventsTest(buyMessage, runtime);
-
-        await callMessageHandlerForEventsTest(sellMessage, runtime);
-
-        await callMessageHandlerForEventsTest(dupMessage, runtime);
-
-        await callMessageHandlerForEventsTest(msg, runtime);
-
-        await callMessageHandlerForEventsTest(msg, runtime);
-
-        await callMessageHandlerForEventsTest(msg, runtime);
-
-        await callMessageHandlerForEventsTest(msg, runtime);
 
 // Helper for creating components in event tests
 

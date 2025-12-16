@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -18,5 +18,6 @@ namespace elizaos {
  * Handles potential exceptions during Local Storage access (e.g., in private browsing).
  * @returns {string | null} The seed string or null if Local Storage is unavailable.
  */
+std::optional<std::string> getOrGenerateSeed();
 
 } // namespace elizaos

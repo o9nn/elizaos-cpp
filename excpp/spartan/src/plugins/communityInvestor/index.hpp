@@ -1,15 +1,15 @@
-#include "elizaos/core.hpp"
-#include "events.hpp"
-#include "routes.hpp"
-#include "service.hpp"
-#include "tests.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
+#include "events.hpp"
+#include "routes.hpp"
+#include "service.hpp"
+#include "tests.hpp"
 
 namespace elizaos {
 

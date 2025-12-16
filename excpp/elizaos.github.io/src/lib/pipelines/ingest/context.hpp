@@ -1,12 +1,12 @@
-#include ".pipelineConfig.hpp"
-#include ".types.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".pipelineConfig.hpp"
+#include ".types.hpp"
 
 namespace elizaos {
 
@@ -22,7 +22,7 @@ namespace elizaos {
   /** Flag to force fetch data regardless of lastFetched timestamp */
 
 struct CreateIngestionContextOptions {
-    string | undefined repoId;
+    std::string repoId;
     Logger logger;
     PipelineConfig config;
     DateRange dateRange;

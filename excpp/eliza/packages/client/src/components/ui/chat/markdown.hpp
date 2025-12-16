@@ -1,11 +1,12 @@
-#include "code-block.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "code-block.hpp"
 
 namespace elizaos {
 
@@ -17,8 +18,7 @@ namespace elizaos {
 struct MarkdownProps {
     std::string children;
     std::optional<std::string> className;
-    std::optional<std::unordered_map<std::string, React.ComponentType<any>>> components;
-    std::optional<'user' | 'agent'> variant;
+    std::optional<std::variant<'user', 'agent'>> variant;
 };
 
   // Code blocks

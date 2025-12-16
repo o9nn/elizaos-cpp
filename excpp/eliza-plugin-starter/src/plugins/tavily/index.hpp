@@ -1,12 +1,12 @@
-#include "..common/types.ts.hpp"
-#include "..common/utils.ts.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "..common/types.ts.hpp"
+#include "..common/utils.ts.hpp"
 
 namespace elizaos {
 
@@ -16,24 +16,20 @@ namespace elizaos {
 
 
 struct TavilySearchResponse {
-    Array<{ results;
     std::string title;
     std::string url;
     std::string content;
 };
 
-class TavilySearchPlugin implements SearchPlugin {
-  readonly name: string = "tavily-search";
-  readonly description: string = "Search the web using Tavily API";
-  config: TavilyPluginConfig;
-  private rateLimiter = createRateLimiter(60, 60000); // 60 requests per minute
+class TavilySearchPlugin {
+public:
+    TavilySearchPlugin(TavilyPluginConfig config);
+    void if(auto !response.ok);
+    void catch(auto error);
 
-  constructor(config: TavilyPluginConfig) {
-    this.config = { ...DEFAULT_CONFIG, ...config };
-    validateApiKey(this.config);
-  }
-
-          return handleApiError(error);
+private:
+    TavilyPluginConfig config_;
+};
 
 
 } // namespace elizaos

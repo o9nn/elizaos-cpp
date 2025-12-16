@@ -1,12 +1,13 @@
-#include ".types.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".types.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -16,10 +17,10 @@ namespace elizaos {
 
 
 struct SamTTSOptions {
-    std::optional<number; // 0-255, default 72> speed;
-    std::optional<number; // 0-255, default 64> pitch;
-    std::optional<number; // 0-255, default 128> throat;
-    std::optional<number; // 0-255, default 128> mouth;
+    std::optional<double> speed;
+    std::optional<double> pitch;
+    std::optional<double> throat;
+    std::optional<double> mouth;
 };
 
 /**
@@ -28,70 +29,16 @@ struct SamTTSOptions {
  * Provides retro text-to-speech using the SAM Speech Synthesizer.
  * Generates 8-bit audio buffers that can be streamed through the hardware bridge.
  */
-class SamTTSService extends Service {
-  public static serviceType = SAMServiceType.SAM_TTS;
+class SamTTSService {
+public:
+    SamTTSService(std::optional<IAgentRuntime> runtime);
+    std::future<SamTTSService> start(IAgentRuntime runtime);
+    std::future<void> stop();
+    std::future<Uint8Array> generateAudio(const std::string& text, SamTTSOptions = {} options);
+    std::future<Uint8Array> speakText(const std::string& text, SamTTSOptions = {} options);
+    Uint8Array createWAVBuffer(Uint8Array audioData, number = 22050 sampleRate);
+    std::string capabilityDescription() const;
+    std::future<bool> testSynthesis();
 
-  private defaultOptions: SamTTSOptions;
-
-  constructor(runtime?: IAgentRuntime) {
-    super();
-
-    this.runtime = runtime;
-
-    // Default SAM voice settings
-    this.defaultOptions = {
-      speed: 72, // Normal speaking speed
-      pitch: 64, // Normal pitch
-      throat: 128, // Normal throat setting
-      mouth: 128, // Normal mouth setting
-    };
-  }
-
-  /**
-   * Generate audio buffer from text using SAM TTS
-   */
-    // Handle empty text
-
-    // Create new SAM instance with parameters (correct API)
-
-    // Generate 8-bit audio buffer
-
-    // Handle both boolean and Uint8Array returns
-
-  /**
-   * Generate audio and send to hardware bridge for playback
-   */
-    // Generate SAM audio
-
-    // Convert Uint8Array to WAV format buffer
-
-    // Get hardware bridge service from runtime
-    struct HardwareBridgeService {
-    (audioBuffer: Uint8Array) => Promise<void> sendAudioData;
-    std::optional<() => boolean> isConnected;
-    std::optional<std::string> capabilityDescription;
-};
-
-  /**
-   * Create WAV file buffer from raw 8-bit audio data
-   */
-
-    // Create WAV header
-
-    // RIFF header
-
-    // Format chunk
-
-    // Data chunk
-
-    // Audio data
-
-  /**
-   * Get service capabilities description
-   */
-
-  /**
-   * Test if SAM TTS is working
-   */
 
 } // namespace elizaos

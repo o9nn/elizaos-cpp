@@ -1,15 +1,15 @@
-#include ".scripts/prefetch.hpp"
-#include ".services/background/token-metadata.hpp"
-#include ".services/csv.hpp"
-#include ".services/database.hpp"
-#include ".services/solana.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".scripts/prefetch.hpp"
+#include ".services/background/token-metadata.hpp"
+#include ".services/csv.hpp"
+#include ".services/database.hpp"
+#include ".services/solana.hpp"
 
 namespace elizaos {
 

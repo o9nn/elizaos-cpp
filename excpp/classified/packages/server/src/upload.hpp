@@ -1,13 +1,14 @@
-#include "api/shared/constants.js.hpp"
-#include "api/shared/file-utils.js.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "api/shared/constants.js.hpp"
+#include "api/shared/file-utils.js.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -20,7 +21,7 @@ namespace elizaos {
 std::string generateSecureFilename(const std::string& originalName);
 
 // Helper function to create upload directory
-std::string ensureUploadDir(const std::string& id, 'agents' | 'channels' type);
+std::string ensureUploadDir(const std::string& id, const std::variant<'agents', 'channels'>& type);
 
 // Multer memory storage
 

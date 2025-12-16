@@ -1,3 +1,11 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <variant>
+#include <vector>
 #include "app/guards.hpp"
 #include "classes/attachment.hpp"
 #include "classes/channel.hpp"
@@ -12,13 +20,6 @@
 #include "enum/message-regex.hpp"
 #include "enum/message-type.hpp"
 #include "features/export/export-types.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -74,11 +75,11 @@ namespace elizaos {
  */
 
 struct FormatUserData {
-    std::optional<string | Maybe> userId;
-    std::optional<string | Maybe> userName;
-    std::optional<string | Maybe> displayName;
-    std::optional<string | Maybe> guildNickname;
-    std::optional<string | Maybe> joinedAt;
+    std::optional<std::variant<std::string, Maybe>> userId;
+    std::optional<std::variant<std::string, Maybe>> userName;
+    std::optional<std::variant<std::string, Maybe>> displayName;
+    std::optional<std::variant<std::string, Maybe>> guildNickname;
+    std::optional<std::variant<std::string, Maybe>> joinedAt;
     std::optional<std::vector<std::string>> roleNames;
 };
 

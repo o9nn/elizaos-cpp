@@ -1,12 +1,12 @@
-#include ".db.hpp"
-#include ".logger.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".db.hpp"
+#include ".logger.hpp"
 
 namespace elizaos {
 

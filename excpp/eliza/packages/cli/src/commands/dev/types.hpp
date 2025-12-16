@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -30,7 +31,7 @@ struct DevOptions {
  * Server process management interface
  */
 struct ServerProcess {
-    ChildProcess | null process;
+    std::optional<ChildProcess> process;
 };
 
 /**
@@ -51,7 +52,6 @@ struct WatcherConfig {
  */
 struct DevContext {
     std::string directory;
-    import('@/src/utils/directory-detection').DirectoryInfo directoryType;
     std::string watchDirectory;
     bool buildRequired;
 };
@@ -60,9 +60,8 @@ struct DevContext {
  * File change event
  */
 struct FileChangeEvent {
-    'add' | 'change' | 'unlink' type;
+    std::variant<'add', 'change', 'unlink'> type;
     std::string path;
-    std::optional<import('node:fs').Stats> stats;
 };
 
 /**

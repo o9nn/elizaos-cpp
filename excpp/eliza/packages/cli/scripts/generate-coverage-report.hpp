@@ -1,10 +1,12 @@
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -18,12 +20,13 @@ struct CoverageReport {
     double testedFiles;
     std::vector<std::string> untestedFiles;
     double coverage;
-    { byCategory;
-    { total: number; tested: number; untested: string[] } commands;
-    { total: number; tested: number; untested: string[] } utils;
-    { total: number; tested: number; untested: string[] } types;
-    { total: number; tested: number; untested: string[] } other;
+    double tested;
+    double tested;
+    double tested;
+    double tested;
 };
+
+std::variant<'commands', 'utils', 'types', 'other'> categorizeFile(const std::string& filePath);
 
 std::future<CoverageReport> generateCoverageReport();
 

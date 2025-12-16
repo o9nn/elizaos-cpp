@@ -1,15 +1,16 @@
-#include ".types/profileTypes.hpp"
-#include "api.hpp"
-#include "env.hpp"
-#include "program.hpp"
-#include "swapUtils.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".types/profileTypes.hpp"
+#include "api.hpp"
+#include "env.hpp"
+#include "program.hpp"
+#include "swapUtils.hpp"
 
 namespace elizaos {
 
@@ -23,7 +24,7 @@ struct UserProfileData {
     std::string id;
     std::string address;
     std::string displayName;
-    string | null profilePictureUrl;
+    std::optional<std::string> profilePictureUrl;
     double points;
     double rewardPoints;
     std::string createdAt;
@@ -55,16 +56,9 @@ using MetadataAccount = AccountInfo<Buffer>;
           // Skip if URI is not HTTPS
 
     // Get all tokens with bonding curve info
-      await removeNonAutofunTokens(ownedTokenAccounts);
 
     // Get metadata for all owned tokens
 
-    // === 1) Build headers ===
-
-    // === 2) Fetch the raw tokens list ===
-
-    // === 3) Pull your on‐chain token accounts **once** ===
-    // === 4) Map into ProfileToken[] ===
       // const mint = t.mint; // Extract mint property
       // parse the mint
 
@@ -102,8 +96,6 @@ using MetadataAccount = AccountInfo<Buffer>;
   // Return the updated user data from the response
 
 // Function to trigger profile picture generation (placeholder)
-
-      // body: JSON.stringify({ prompt: "Optional prompt here" }) // Optional: Add if backend supports it
 
 
 } // namespace elizaos

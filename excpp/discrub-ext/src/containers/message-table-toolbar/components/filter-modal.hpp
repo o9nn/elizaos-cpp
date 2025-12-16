@@ -1,13 +1,13 @@
-#include "...classes/channel.hpp"
-#include "...features/message/message-types.hpp"
-#include "filter-component.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "...classes/channel.hpp"
+#include "...features/message/message-types.hpp"
+#include "filter-component.hpp"
 
 namespace elizaos {
 

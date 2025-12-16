@@ -1,12 +1,13 @@
-#include ".types.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include ".types.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -16,53 +17,29 @@ namespace elizaos {
 
 
 struct ExperienceChain {
-    string; // UUID of the root experience rootExperience;
-    string[]; // Ordered list of experience IDs chain;
-    number; // How strong the causal relationship is strength;
-    boolean; // Whether the chain has been validated validated;
+    std::string rootExperience;
+    std::vector<std::string> chain;
+    double strength;
+    bool validated;
 };
 
 struct ExperienceRelationship {
     std::string fromId;
     std::string toId;
-    "causes" | "contradicts" | "supports" | "supersedes" | "related" type;
-    number; // 0-1 strength;
-    std::optional<std::unordered_map<std::string, std::any>> metadata;
+    std::variant<"causes", "contradicts", "supports", "supersedes", "related"> type;
+    double strength;
 };
 
 class ExperienceRelationshipManager {
-  private relationships: Map<string, ExperienceRelationship[]> = new Map();
-  private chains: Map<string, ExperienceChain> = new Map();
-
-  addRelationship(relationship: ExperienceRelationship): void {
-    const { fromId } = relationship;
-    if (!this.relationships.has(fromId)) {
-      this.relationships.set(fromId, []);
-    }
-    this.relationships.get(fromId)!.push(relationship);
-  }
-
-    // Sort experiences by timestamp
-
-    // Look for sequences where success follows hypothesis
-
-        // Look for related experiences
-
-          // Check if next experience validates or contradicts the hypothesis
-
-            // If we found a validation, create a chain
-
-    // Check domain match
-      // Check temporal proximity (within 5 minutes)
-        // Check content similarity
-
-    // Simple keyword overlap for now
-
-      // Same action, different outcome
-
-      // Explicit contradiction relationship
-
-    // Add impact from relationships
+public:
+    void addRelationship(ExperienceRelationship relationship);
+    std::vector<ExperienceRelationship> findRelationships(const std::string& experienceId, std::optional<std::string> type);
+    std::vector<ExperienceChain> detectCausalChain(const std::vector<Experience>& experiences);
+    bool isRelated(Experience exp1, Experience exp2);
+    double contentSimilarity(Experience exp1, Experience exp2);
+    std::vector<Experience> findContradictions(Experience experience, const std::vector<Experience>& allExperiences);
+    double getExperienceImpact(const std::string& experienceId, const std::vector<Experience>& allExperiences);
+};
 
 
 } // namespace elizaos

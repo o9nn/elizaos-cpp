@@ -1,13 +1,15 @@
-#include ".service.js.hpp"
-#include ".utils.js.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include ".service.js.hpp"
+#include ".utils.js.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -17,38 +19,21 @@ namespace elizaos {
 //@ts-nocheck
 
 class PuppeteerManager {
-  private static instance: PuppeteerManager | null = null
-  
-  private runtime: IAgentRuntime
-  private browser: puppeteer.Browser
-  private page: puppeteer.Page
-  private initPromise: Promise<void> | null = null
-  private readonly STRIP_SLOTS = [
-    'map', 'aoMap', 'alphaMap',
-    'bumpMap', 'normalMap',
-    'metalnessMap', 'roughnessMap',
-    'emissiveMap', 'lightMap'
-  ] as const;
-
-  constructor(runtime: IAgentRuntime) {
-    this.runtime = runtime
-    this.init()
-
-    if (!PuppeteerManager.instance) {
-      PuppeteerManager.instance = this
-    } else {
-      throw new Error('PuppeteerManager has already been instantiated.')
-    }
-  }
-
-    // Only initialize once
-          // headless: false,
-
-      // Rehydrate materials
-
-      // Rehydrate player avatars
-
-      // Rehydrate environment
+public:
+    PuppeteerManager(IAgentRuntime runtime);
+    PuppeteerManager getInstance();
+    void init();
+    void injectScripts(const std::vector<std::string>& scriptPaths);
+    std::future<std::string> snapshotFacingDirection(const std::variant<'front', 'back', 'left', 'right'>& direction);
+    std::future<std::string> snapshotViewToTarget([number targetPosition, auto number, auto number]);
+    std::future<std::string> snapshotEquirectangular();
+    std::future<std::vector<double>> loadGlbBytes(const std::string& url);
+    std::future<std::vector<double>> loadVRMBytes(const std::string& url);
+    std::future<std::string> registerTexture(const std::string& url, const std::string& slot);
+    std::future<void> loadEnvironmentHDR(const std::string& url);
+    void rehydrateSceneAssets();
+    void getService();
+};
 
 
 } // namespace elizaos

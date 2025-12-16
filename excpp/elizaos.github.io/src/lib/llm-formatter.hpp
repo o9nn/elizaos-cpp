@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -21,8 +21,8 @@ struct FormatOptions {
 };
 
 // Helper to sanitize body content: remove HTML comments, make it single-line and escape newlines
-std::string sanitizeBodyText(string | undefined | null text, auto maxLength = 500);
+std::string sanitizeBodyText(const std::optional<std::string>& text, auto maxLength = 500);
 
-std::string formatDataForLLM(IntervalMetrics metrics, string | null summaryContent, FormatOptions options);
+std::string formatDataForLLM(IntervalMetrics metrics, const std::optional<std::string>& summaryContent, FormatOptions options);
 
 } // namespace elizaos

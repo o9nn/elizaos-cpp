@@ -1,11 +1,11 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -128,7 +128,6 @@ namespace elizaos {
     // availableSources.add(...registeredSources);
 
       // Handle initial responses
-        await callback(response.content);
 
       // Extract target and source information
 
@@ -137,13 +136,11 @@ namespace elizaos {
         // Get the component for the specified source
 
         // Send the message using the appropriate client
-          await sendDirectMessage(runtime, targetEntity.id!, source, message.content.text, worldId);
 
         // Try to find the target room
           // Match room name from identifiers
 
         // Send the message to the room
-          await sendRoomMessage(runtime, targetRoom.id, source, message.content.text, worldId);
 
 
 } // namespace elizaos

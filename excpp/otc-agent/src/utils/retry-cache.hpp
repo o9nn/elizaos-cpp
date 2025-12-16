@@ -1,10 +1,12 @@
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -55,6 +57,7 @@ bool isRetryableError(unknown error);
  * Fetch with exponential retry (for HTTP requests)
  * Automatically handles 429 and network errors
  */
+std::future<Response> fetchWithRetry(const std::string& url, std::optional<RequestInit> options, std::optional<std::any> retryOptions);
 
 /**
  * Fetch JSON with retry and caching

@@ -1,13 +1,15 @@
-#include "..agent/problem-statement.hpp"
-#include "..environment/swe-env.hpp"
-#include "..types.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "..agent/problem-statement.hpp"
+#include "..environment/swe-env.hpp"
+#include "..types.hpp"
 
 namespace elizaos {
 
@@ -24,33 +26,33 @@ namespace elizaos {
 struct RunHook {
     double index;
     SWEEnv env;
-    ProblemStatement | ProblemStatementConfig problemStatement;
+    std::variant<ProblemStatement, ProblemStatementConfig> problemStatement;
 };
 
 /**
  * Abstract base class for run hooks
  */
-    // Default implementation - can be overridden
-
-    // Default implementation - can be overridden
-
-    // Default implementation - can be overridden
-
-    // Default implementation - can be overridden
-
-    // Default implementation - can be overridden
-
-    // Default implementation - can be overridden
+    void onInit(Record<string _run, auto unknown>);
+    void onStart();
+    void onEnd();
+    void onInstanceStart(const std::any& _params);
+    void onInstanceSkipped();
+    void onInstanceCompleted(const std::any& _params);
 
 /**
  * Combined run hooks manager
  */
-class CombinedRunHooks implements RunHook {
-  private _hooks: RunHook[] = [];
-
-  addHook(hook: RunHook): void {
-    this._hooks.push(hook);
-  }
+class CombinedRunHooks {
+public:
+    void addHook(RunHook hook);
+    std::vector<RunHook> hooks() const;
+    void onInit(Record<string run, auto unknown>);
+    void onStart();
+    void onEnd();
+    void onInstanceStart(const std::any& params);
+    void onInstanceSkipped();
+    void onInstanceCompleted(const std::any& params);
+};
 
 
 } // namespace elizaos

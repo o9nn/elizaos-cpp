@@ -1,12 +1,14 @@
-#include "general.hpp"
-#include "types.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "general.hpp"
+#include "types.hpp"
 
 namespace elizaos {
 
@@ -32,31 +34,21 @@ struct Violation {
     std::optional<double> line;
     std::optional<double> column;
     std::string message;
-    'error' | 'warning' severity;
+    std::variant<'error', 'warning'> severity;
 };
 
 /**
  * Validate Python code against rules
  */
 class PythonValidator {
-  constructor(_rules: CodingRule[] = PYTHON_CODING_RULES) {
-    // Allow custom rules to be passed in but not used internally yet
-  }
-
-    // Check for type annotations
-
-    // Check for os.path usage
-
-    // Check for file open patterns
-
-    // Check for argparse usage in main scripts
-
-    // Check for excessive comments
-
-    // Check for function definitions with type hints
-    // Match all function definitions
-
-    // Check if functions have return type annotations (->)
+public:
+    PythonValidator(CodingRule[] = PYTHON_CODING_RULES _rules);
+    ValidationResult validate(const std::string& code, std::optional<std::string> filePath);
+    bool hasTypeAnnotations(const std::string& code);
+    double getLineNumber(const std::string& code, double index);
+    bool isMainScript(const std::string& filePath);
+    double calculateCommentDensity(const std::string& code);
+};
 
 /**
  * Validate TypeScript code against rules
@@ -79,6 +71,7 @@ class TypeScriptValidator {
 /**
  * Factory function to get appropriate validator
  */
+std::variant<PythonValidator, TypeScriptValidator> getValidator(const std::variant<'python', 'typescript'>& language);
 
 /**
  * Validate a file based on its extension

@@ -1,11 +1,11 @@
-#include ".services/TauriService.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".services/TauriService.hpp"
 
 namespace elizaos {
 
@@ -15,7 +15,7 @@ namespace elizaos {
 
 
 struct TauriInitializerProps {
-    React.ReactNode children;
+    ReactNode children;
 };
 
 /**

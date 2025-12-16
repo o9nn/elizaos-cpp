@@ -1,11 +1,12 @@
-#include ".types.js.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".types.js.hpp"
 
 namespace elizaos {
 
@@ -19,6 +20,8 @@ std::string formatExperienceForDisplay(Experience experience);
 std::string formatExperienceSummary(Experience experience);
 
 std::string formatExperienceList(const std::vector<Experience>& experiences);
+
+std::string formatPatternSummary(const std::any& pattern);
 
 void getExperienceStats(const std::vector<Experience>& experiences); {
 

@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -14,8 +15,8 @@ namespace elizaos {
 
 
 struct BadgeProps {
-    React.ReactNode children;
-    std::optional<'default' | 'outline' | 'secondary' | 'destructive'> variant;
+    ReactNode children;
+    std::optional<std::variant<'default', 'outline', 'secondary', 'destructive'>> variant;
     std::optional<std::string> className;
 };
 

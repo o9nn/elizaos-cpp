@@ -1,16 +1,16 @@
-#include "action-audio.hpp"
-#include "action.hpp"
-#include "elizaos/core.hpp"
-#include "provider.hpp"
-#include "service.hpp"
-#include "tests/e2e.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "action-audio.hpp"
+#include "action.hpp"
+#include "elizaos/core.hpp"
+#include "provider.hpp"
+#include "service.hpp"
+#include "tests/e2e.hpp"
 
 namespace elizaos {
 

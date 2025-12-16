@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -15,9 +16,8 @@ namespace elizaos {
 
 struct AcceptQuoteModalProps {
     bool isOpen;
-    () => void onClose;
     std::optional<std::optional<OTCQuote>> initialQuote;
-    std::optional<(data: { offerId: bigint; txHash?: `0x${string}` }) => void> onComplete;
+};
 
 using StepState = std::variant<, "amount", "sign", "creating", "await_approval", "paying", "complete">;
 
@@ -31,7 +31,11 @@ struct TokenMetadata {
 
 // Client-side token metadata cache (permanent - token metadata doesn't change)
 
+std::optional<TokenMetadata> getCachedTokenMetadata(const std::string& chain, const std::string& symbol);
+
 void setCachedTokenMetadata(const std::string& chain, const std::string& symbol, TokenMetadata metadata);
+
+std::optional<TokenMetadata> loadCachedTokenMetadata(const std::string& chain, const std::string& symbol);
 
 // Contract bytecode cache - keyed by address, stores whether contract exists with TTL
 // TTL of 5 minutes allows for contract deployment during development
@@ -40,21 +44,23 @@ struct ContractCacheEntry {
     double cachedAt;
 };
 
+std::optional<bool> getContractExists(const std::string& key);
+
 void setContractExists(const std::string& key, bool exists);
 
 // --- Consolidated Modal State ---
 struct ModalState {
     double tokenAmount;
-    "ETH" | "USDC" | "SOL" currency;
+    std::variant<"ETH", "USDC", "SOL"> currency;
     StepState step;
     bool isProcessing;
-    string | null error;
+    std::optional<std::string> error;
     bool requireApprover;
     bool contractValid;
-    string | null solanaTokenMint;
-    TokenMetadata | null tokenMetadata;
-    string | null completedTxHash;
-    string | null completedOfferId;
+    std::optional<std::string> solanaTokenMint;
+    std::optional<TokenMetadata> tokenMetadata;
+    std::optional<std::string> completedTxHash;
+    std::optional<std::string> completedOfferId;
 };
 
 using ModalAction = std::variant<, { type: "SET_TOKEN_AMOUNT">; payload: number }

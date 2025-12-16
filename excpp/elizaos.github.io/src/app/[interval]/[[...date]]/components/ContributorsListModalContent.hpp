@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -16,7 +16,7 @@ namespace elizaos {
 struct Contributor {
     std::string username;
     double totalScore;
-    std::optional<string | null> summary;
+    std::optional<std::optional<std::string>> summary;
 };
 
 struct ContributorsListModalContentProps {

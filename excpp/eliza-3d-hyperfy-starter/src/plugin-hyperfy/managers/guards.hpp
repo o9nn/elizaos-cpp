@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -18,11 +18,11 @@ namespace elizaos {
  */
 
 class AgentActivityLock {
-    private count = 0;
-  
-    isActive(): boolean {
-      return this.count > 0;
-    }
+public:
+    bool isActive();
+    void enter();
+    void exit();
+};
 
   
 } // namespace elizaos

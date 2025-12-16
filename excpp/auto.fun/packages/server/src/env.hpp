@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -22,7 +22,7 @@ struct Env {
     std::string CURVE_LIMIT;
     std::string EXECUTOR_PRIVATE_KEY;
     std::string CODEX_API_KEY;
-    string; // URL for self, for accessing cached assets API_URL;
+    std::string API_URL;
     std::string FAL_API_KEY;
     std::string LOCAL_DEV;
     std::string NODE_ENV;
@@ -32,7 +32,7 @@ struct Env {
     std::string DEVNET_SOLANA_RPC_URL;
     std::string DEVNET_PROGRAM_ID;
     std::string PROGRAM_ID;
-    string; // Used in tests to track the current test token tokenPubkey;
+    std::string tokenPubkey;
     std::string AUTH_TOKEN_SALT;
     std::string DEVNET_FRONTEND_URL;
     std::string MAINNET_FRONTEND_URL;

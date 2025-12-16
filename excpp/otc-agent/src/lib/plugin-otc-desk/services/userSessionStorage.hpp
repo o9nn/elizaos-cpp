@@ -1,11 +1,12 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -29,16 +30,17 @@ struct UserSessionMemory {
     double updatedAt;
 };
 
-class UserSessionStorageService extends Service {
-  static serviceType = "UserSessionService";
-  capabilityDescription = "User session and rate limiting service";
-
-  constructor(runtime: IAgentRuntime) {
-    super();
-    this.runtime = runtime;
-  }
-
-    // Cleanup if needed
+class UserSessionStorageService {
+public:
+    UserSessionStorageService(IAgentRuntime runtime);
+    std::future<void> initialize();
+    std::future<void> stop();
+    std::future<UserSessionStorageService> start(IAgentRuntime runtime);
+    std::future<UserSessionMemory> getOrCreateSession(const std::string& entityId, const std::string& walletAddress);
+    std::future<void> checkRateLimit(const std::string& entityId, const std::string& walletAddress);
+    std::future<void> incrementQuoteCount(const std::string& entityId, const std::string& walletAddress);
+    std::future<void> updateDealStats(const std::string& entityId, const std::string& walletAddress, double volumeUsd, double savedUsd);
+};
 
 UserSessionStorageService getUserSessionStorageService(IAgentRuntime runtime);
 

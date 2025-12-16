@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -17,9 +17,9 @@ struct StatCardProps {
     std::string title;
     LucideIcon icon;
     std::optional<std::string> bgColor;
-    React.ReactNode children;
+    ReactNode children;
     std::optional<std::string> className;
-    std::optional<React.ReactNode> modalContent;
+    std::optional<ReactNode> modalContent;
     std::optional<std::string> modalTitle;
     std::optional<std::string> modalDescription;
 };

@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -33,7 +34,7 @@ using ModelTypeName = std::variant<(typeof ModelType)[keyof typeof ModelType], s
  * It includes essential information like the prompt, model type, and various generation controls.
  */
 using GenerateTextParams = {
-  /** The `AgentRuntime` instance, providing access to models and other services. */
+  /** The `AgentRuntime` instance, providing access to models and other services:: */
   /** The input string or prompt that the language model will use to generate text. */
   /** Specifies the type of text generation model to use (e.g., TEXT_LARGE, REASONING_SMALL). */
   /** Optional. The maximum number of tokens to generate in the response. */
@@ -156,9 +157,8 @@ struct ModelResultMap {
  * serves as a tie-breaker. See `AgentRuntime.registerModel` and `AgentRuntime.getModel`.
  */
 struct ModelHandler {
-    (runtime: IAgentRuntime, params: Record<string, unknown>) => Promise<unknown> handler;
     std::string provider;
-    std::optional<number; // Optional priority for selection order> priority;
+    std::optional<double> priority;
     std::optional<double> registrationOrder;
 };
 

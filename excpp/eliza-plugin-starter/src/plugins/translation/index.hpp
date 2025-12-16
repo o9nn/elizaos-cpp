@@ -1,15 +1,15 @@
-#include "action.ts.hpp"
-#include "evaluator.ts.hpp"
-#include "provider/index.ts.hpp"
-#include "service.ts.hpp"
-#include "types.ts.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "action.ts.hpp"
+#include "evaluator.ts.hpp"
+#include "provider/index.ts.hpp"
+#include "service.ts.hpp"
+#include "types.ts.hpp"
 
 namespace elizaos {
 

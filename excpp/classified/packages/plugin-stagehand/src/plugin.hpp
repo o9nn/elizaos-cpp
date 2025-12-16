@@ -1,15 +1,16 @@
-#include "elizaos/core.hpp"
-#include "errors.js.hpp"
-#include "retry.js.hpp"
-#include "security.js.hpp"
-#include "service.js.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
+#include "errors.js.hpp"
+#include "retry.js.hpp"
+#include "security.js.hpp"
+#include "service.js.hpp"
 
 namespace elizaos {
 
@@ -21,6 +22,7 @@ namespace elizaos {
 // Configuration schema
 
 // Helper function to extract URL from text
+std::optional<std::string> extractUrl(const std::string& text);
 
 // Browser navigation action
 

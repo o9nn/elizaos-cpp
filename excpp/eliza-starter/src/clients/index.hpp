@@ -1,15 +1,16 @@
-#include "elizaos/client-auto.hpp"
-#include "elizaos/client-discord.hpp"
-#include "elizaos/client-telegram.hpp"
-#include "elizaos/client-twitter.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/client-auto.hpp"
+#include "elizaos/client-discord.hpp"
+#include "elizaos/client-telegram.hpp"
+#include "elizaos/client-twitter.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 

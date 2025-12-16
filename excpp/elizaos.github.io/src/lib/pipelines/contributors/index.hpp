@@ -1,16 +1,16 @@
-#include ".generateTimeIntervals.hpp"
-#include ".getActiveContributors.hpp"
-#include ".types.hpp"
-#include "calculateTags.hpp"
-#include "contributorScores.hpp"
-#include "fetchAllContributors.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".generateTimeIntervals.hpp"
+#include ".getActiveContributors.hpp"
+#include ".types.hpp"
+#include "calculateTags.hpp"
+#include "contributorScores.hpp"
+#include "fetchAllContributors.hpp"
 
 namespace elizaos {
 

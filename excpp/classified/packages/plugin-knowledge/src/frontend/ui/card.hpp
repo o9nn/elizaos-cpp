@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -14,7 +14,7 @@ namespace elizaos {
 
 
 struct CardProps {
-    React.ReactNode children;
+    ReactNode children;
     std::optional<std::string> className;
 };
 

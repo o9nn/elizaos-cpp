@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -13,11 +13,11 @@ namespace elizaos {
 
 
 
-void Sheet(React.ComponentProps<typeof SheetPrimitive.Root> { ...props });
+void Sheet(ComponentProps<typeof SheetPrimitive.Root> { ...props });
 
-void SheetHeader(auto { className, React.ComponentProps<"div"> ...props });
+void SheetHeader(auto { className, ComponentProps<"div"> ...props });
 
-void SheetFooter(auto { className, React.ComponentProps<"div"> ...props });
+void SheetFooter(auto { className, ComponentProps<"div"> ...props });
 
 
 } // namespace elizaos

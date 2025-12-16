@@ -1,10 +1,12 @@
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -35,44 +37,15 @@ namespace elizaos {
  */
 
 class HeliusWebSocket {
-  private ws: WebSocket | null = null;
-  private subscriptions: Map<string, number> = new Map();
-  private pingInterval: NodeJS.Timer | null = null;
-
-  constructor(
-    private apiKey: string,
-    private runtime: IAgentRuntime
-  ) {}
-
-  /**
-   * Connects to Helius WebSocket and sets up event handlers
-   */
-
-            // Handle different message types here
-
-          // Implement reconnection logic here if needed
-
-  /**
-   * Subscribes to account changes for a given wallet address
-   */
-
-        // Handle subscription response in message handler
-
-  /**
-   * Unsubscribes from a wallet's updates
-   */
-
-  /**
-   * Starts the ping interval to keep connection alive
-   */
-
-  /**
-   * Cleans up resources
-   */
-
-  /**
-   * Closes the WebSocket connection
-   */
+public:
+    HeliusWebSocket(const std::string& private apiKey, IAgentRuntime private runtime);
+    std::future<void> connect();
+    std::variant<Promise<number, null>> subscribeToWallet(const std::string& walletAddress);
+    std::future<bool> unsubscribeFromWallet(const std::string& walletAddress);
+    void startPing();
+    void cleanup();
+    void disconnect();
+};
 
 struct IToken {
     std::string symbol;

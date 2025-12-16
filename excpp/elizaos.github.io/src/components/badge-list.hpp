@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -14,7 +15,7 @@ namespace elizaos {
 
 
 struct BadgeItem {
-    string | number id;
+    std::variant<std::string, double> id;
     std::string label;
     std::optional<std::string> className;
 };

@@ -1,14 +1,14 @@
-#include "communityInvestor.e2e.hpp"
-#include "events.hpp"
-#include "service.hpp"
-#include "trustScore.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "communityInvestor.e2e.hpp"
+#include "events.hpp"
+#include "service.hpp"
+#include "trustScore.hpp"
 
 namespace elizaos {
 

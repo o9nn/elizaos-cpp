@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -20,7 +20,6 @@ namespace elizaos {
  * Render a template string with the given context
  * Supports {{variable}} syntax
  */
-std::string renderTemplate(const std::string& template, Record<string context, auto any>);/g, (match, key) => {
 
     // Handle nested properties like {{object.property}}
 
@@ -45,12 +44,13 @@ bool evaluateCondition(const std::string& condition, Record<string context, auto
  * Template class for more complex rendering needs
  */
 class Template {
-  private template: string;
+public:
+    Template(const std::string& template);
+    std::string render(Record<string context, auto any>);
 
-  constructor(template: string) {
-    this.template = template;
-  }
+private:
+    std::string template_;
+};
 
-    return renderAdvancedTemplate(this.template, context);
 
 } // namespace elizaos

@@ -1,11 +1,13 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -15,81 +17,26 @@ namespace elizaos {
 
 
 class EntityTracker {
-  private worldState: WorldState;
-  private readonly POSITION_THRESHOLD = 100; // pixels
-  private readonly MISSING_THRESHOLD = 5000; // 5 seconds
-  private readonly CLEANUP_THRESHOLD = 60000; // 1 minute
+public:
+    EntityTracker(const std::string& worldId);
+    std::future<std::vector<TrackedEntity>> updateEntities(const std::vector<DetectedObject>& detectedObjects, const std::vector<PersonInfo>& people, std::optional<Map<string> faceProfiles, auto string>, std::optional<IAgentRuntime> // Maps person ID to face profile ID
+    runtime);
+    std::future<TrackedEntity> trackPerson(PersonInfo person, const std::string& faceProfileId, double timestamp);
+    std::future<TrackedEntity> trackObject(DetectedObject obj, double timestamp);
+    std::optional<TrackedEntity> findMatchingEntity(BoundingBox boundingBox, const std::variant<'person', 'object'>& entityType, std::optional<std::string> faceProfileId);
+    double calculateDistance(BoundingBox box1, BoundingBox box2);
+    void updateWorldState(const std::unordered_set<std::string>& seenEntityIds, double timestamp);
+    std::future<void> syncWithRuntime(IAgentRuntime runtime, const std::vector<TrackedEntity>& frameEntities);
+    WorldState getWorldState();
+    std::vector<TrackedEntity> getActiveEntities();
+    TrackedEntity getEntity(const std::string& entityId);
+    Array< getRecentlyLeft();
+    bool assignNameToEntity(const std::string& entityId, const std::string& name);
+     getStatistics();
 
-  constructor(worldId: string) {
-    this.worldState = {
-      worldId,
-      entities: new Map(),
-      lastUpdate: Date.now(),
-      activeEntities: [],
-      recentlyLeft: [],
-    };
-  }
+private:
+    WorldState worldState_;
+};
 
-    // Process detected people
-
-    // Process detected objects
-
-    // Update world state
-
-    // Store entities in runtime if available
-
-    // Try to match with existing entities
-
-      // Update existing entity
-
-      // Update attributes
-
-      // Keep only last 100 appearances
-
-      // Create new entity
-
-    // Try to match with existing entities
-
-      // Update existing entity
-
-      // Keep only last 50 appearances for objects
-
-      // Create new entity
-
-      // Skip if wrong type
-
-      // Skip if entity has been missing too long
-
-      // If we have face ID, prioritize face matching for people
-
-      // Calculate position distance
-
-    // Update active entities
-
-    // Check for entities that left
-        // Entity just left the scene
-
-    // Clean up old "recently left" entries
-
-    // Clean up very old entities
-
-      // Create or update entities in the runtime
-
-        // For now, we'll just log the entity creation
-        // In a real implementation, this would integrate with runtime.createEntity
-
-        // TODO: When runtime supports entity management:
-        // const existing = await runtime.getEntity(entity.id as UUID);
-        // if (!existing) {
-        //   await runtime.createEntity(elizaEntity);
-        // } else {
-        //   await runtime.updateEntity({...});
-        // }
-
-  // Public API
-
-  // Name assignment
-
-  // Get statistics
 
 } // namespace elizaos

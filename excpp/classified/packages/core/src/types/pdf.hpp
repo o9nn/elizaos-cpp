@@ -1,11 +1,12 @@
-#include "service.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "service.hpp"
 
 namespace elizaos {
 
@@ -17,7 +18,6 @@ namespace elizaos {
 struct PdfExtractionResult {
     std::string text;
     double pageCount;
-    std::optional<{> metadata;
     std::optional<std::string> title;
     std::optional<std::string> author;
     std::optional<Date> createdAt;
@@ -25,9 +25,8 @@ struct PdfExtractionResult {
 };
 
 struct PdfGenerationOptions {
-    std::optional<'A4' | 'A3' | 'Letter'> format;
-    std::optional<'portrait' | 'landscape'> orientation;
-    std::optional<{> margins;
+    std::optional<std::variant<'A4', 'A3', 'Letter'>> format;
+    std::optional<std::variant<'portrait', 'landscape'>> orientation;
     std::optional<double> top;
     std::optional<double> bottom;
     std::optional<double> left;
@@ -37,8 +36,8 @@ struct PdfGenerationOptions {
 };
 
 struct PdfConversionOptions {
-    std::optional<'high' | 'medium' | 'low'> quality;
-    std::optional<'pdf' | 'pdf/a'> outputFormat;
+    std::optional<std::variant<'high', 'medium', 'low'>> quality;
+    std::optional<std::variant<'pdf', 'pdf/a'>> outputFormat;
     std::optional<bool> compression;
 };
 
@@ -46,36 +45,5 @@ struct PdfConversionOptions {
  * Interface for PDF processing services
  */
 
-  /**
-   * Extract text and metadata from a PDF file
-   * @param pdfPath - Path to the PDF file or buffer
-   * @returns Promise resolving to extracted text and metadata
-   */
-
-  /**
-   * Generate a PDF from HTML content
-   * @param htmlContent - HTML content to convert to PDF
-   * @param options - PDF generation options
-   * @returns Promise resolving to PDF buffer
-   */
-
-  /**
-   * Convert a document to PDF format
-   * @param filePath - Path to the document file
-   * @param options - Conversion options
-   * @returns Promise resolving to PDF buffer
-   */
-
-  /**
-   * Merge multiple PDF files into one
-   * @param pdfPaths - Array of PDF file paths or buffers
-   * @returns Promise resolving to merged PDF buffer
-   */
-
-  /**
-   * Split a PDF into individual pages
-   * @param pdfPath - Path to the PDF file or buffer
-   * @returns Promise resolving to array of page buffers
-   */
 
 } // namespace elizaos

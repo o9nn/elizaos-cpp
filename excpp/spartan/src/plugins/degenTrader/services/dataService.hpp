@@ -1,3 +1,12 @@
+#pragma once
+#include <any>
+#include <functional>
+#include <future>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include ".types/trading.hpp"
 #include ".utils/cacheManager.hpp"
 #include ".utils/wallet.hpp"
@@ -9,13 +18,6 @@
 #include "elizaos/core.hpp"
 #include "validation/tokenSecurity.hpp"
 #include "walletService.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -25,44 +27,28 @@ namespace elizaos {
 
 
 class DataService {
-  private cacheManager: CacheManager;
-  private birdeyeService: BirdeyeService;
-  private analyticsService: AnalyticsService;
-  private technicalAnalysisService: TechnicalAnalysisService;
-  private scoringService: ScoringService;
-  private tokenSecurityService: TokenSecurityService;
-  private tradeCalculationService: TradeCalculationService;
+public:
+    DataService(IAgentRuntime private runtime, WalletService private walletService);
+    std::future<void> initialize();
+    std::future<void> stop();
+    std::future<std::vector<TokenSignal>> getBirdeyeSignals();
+    std::future<std::vector<TokenSignal>> getTwitterSignals();
+    std::future<std::vector<TokenSignal>> getCMCSignals();
+    Promise< getTokenMarketData(const std::string& tokenAddress);
+    std::future<std::any> getTokensMarketData(const std::vector<std::string>& tokenAddresses);
+    std::future<std::vector<std::string>> getMonitoredTokens();
+    std::future<std::vector<std::any>> getPositions();
+    void getDefaultRecommendation();
 
-  constructor(
-    private runtime: IAgentRuntime,
-    private walletService: WalletService
-  ) {
-    this.cacheManager = new CacheManager();
-    this.analyticsService = new AnalyticsService(runtime);
-    this.technicalAnalysisService = new TechnicalAnalysisService(
-      runtime,
-      walletService,
-      this,
-      this.analyticsService
-    );
-    this.scoringService = new ScoringService(runtime, walletService, this, this.analyticsService);
-    this.tokenSecurityService = new TokenSecurityService(
-      runtime,
-      walletService,
-      this,
-      this.analyticsService
-    );
-    this.tradeCalculationService = new TradeCalculationService(
-      runtime,
-      walletService,
-      this,
-      this.analyticsService
-    );
-  }
-
-    // Check cache first
-
-      // Update cache and tokenDb
+private:
+    CacheManager cacheManager_;
+    BirdeyeService birdeyeService_;
+    AnalyticsService analyticsService_;
+    TechnicalAnalysisService technicalAnalysisService_;
+    ScoringService scoringService_;
+    TokenSecurityService tokenSecurityService_;
+    TradeCalculationService tradeCalculationService_;
+};
 
 
 } // namespace elizaos

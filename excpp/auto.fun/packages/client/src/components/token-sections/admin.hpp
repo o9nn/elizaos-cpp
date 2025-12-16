@@ -1,14 +1,14 @@
-#include ".audio-player.hpp"
-#include ".copy-button.hpp"
-#include ".icons.hpp"
-#include ".loader.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".audio-player.hpp"
+#include ".copy-button.hpp"
+#include ".icons.hpp"
+#include ".loader.hpp"
 
 namespace elizaos {
 
@@ -25,11 +25,11 @@ struct TokenData {
     std::string mint;
     std::string name;
     std::string creator;
-    string | null website;
-    string | null twitter;
-    string | null telegram;
-    string | null discord;
-    string | null farcaster;
+    std::optional<std::string> website;
+    std::optional<std::string> twitter;
+    std::optional<std::string> telegram;
+    std::optional<std::string> discord;
+    std::optional<std::string> farcaster;
     bool hidden;
     bool featured;
     bool verified;

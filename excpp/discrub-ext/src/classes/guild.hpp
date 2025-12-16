@@ -1,14 +1,16 @@
-#include ".types/sticker-object.hpp"
-#include ".types/welcome-screen-object.hpp"
-#include "emoji.hpp"
-#include "role.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include ".types/sticker-object.hpp"
+#include ".types/welcome-screen-object.hpp"
+#include "emoji.hpp"
+#include "role.hpp"
 
 namespace elizaos {
 
@@ -18,138 +20,39 @@ namespace elizaos {
 // https://discord.com/developers/docs/resources/guild#guild-object
 
 class Guild {
-  id: Snowflake;
-  name: string;
-  icon: string | Maybe;
-  icon_hash?: string | Maybe;
-  splash: string | Maybe;
-  discovery_splash: string | Maybe;
-  owner?: boolean;
-  owner_id: Snowflake;
-  permissions?: string;
-  region?: string | Maybe;
-  afk_channel_id: Snowflake | Maybe;
-  afk_timeout: number;
-  widget_enabled?: boolean;
-  widget_channel_id?: Snowflake | Maybe;
-  verification_level: number;
-  default_message_notifications: number;
-  explicit_content_filter: number;
-  roles: Role[];
-  emojis: Emoji[];
-  features: string[];
-  mfa_level: number;
-  application_id: Snowflake | Maybe;
-  system_channel_id: Snowflake | Maybe;
-  system_channel_flags: number;
-  rules_channel_id: Snowflake | Maybe;
-  max_presences?: number | Maybe;
-  max_members?: number;
-  vanity_url_code: string | Maybe;
-  description: string | Maybe;
-  banner: string | Maybe;
-  premium_tier: number;
-  premium_subscription_count?: number;
-  preferred_locale: string;
-  public_updates_channel_id: Snowflake | Maybe;
-  max_video_channel_users?: number;
-  max_stage_video_channel_users?: number;
-  approximate_member_count?: number;
-  approximate_presence_count?: number;
-  welcome_screen?: WelcomeScreenObject;
-  nsfw_level: number;
-  stickers?: StickerObject[];
-  premium_progress_bar_enabled: boolean;
-  safety_alerts_channel_id: Snowflake | Maybe;
+public:
+    Guild(std::optional<std::any> opts);
 
-  constructor(opts: {
-    id: Snowflake;
-    name: string;
-    icon: string | Maybe;
-    icon_hash?: string | Maybe;
-    splash: string | Maybe;
-    discovery_splash: string | Maybe;
-    owner?: boolean;
-    owner_id: Snowflake;
-    permissions?: string;
-    region?: string | Maybe;
-    afk_channel_id: Snowflake | Maybe;
-    afk_timeout: number;
-    widget_enabled?: boolean;
-    widget_channel_id?: Snowflake | Maybe;
-    verification_level: number;
-    default_message_notifications: number;
-    explicit_content_filter: number;
-    roles: Role[];
-    emojis: Emoji[];
-    features: string[];
-    mfa_level: number;
-    application_id: Snowflake | Maybe;
-    system_channel_id: Snowflake | Maybe;
-    system_channel_flags: number;
-    rules_channel_id: Snowflake | Maybe;
-    max_presences?: number | Maybe;
-    max_members?: number;
-    vanity_url_code: string | Maybe;
-    description: string | Maybe;
-    banner: string | Maybe;
-    premium_tier: number;
-    premium_subscription_count?: number;
-    preferred_locale: string;
-    public_updates_channel_id: Snowflake | Maybe;
-    max_video_channel_users?: number;
-    max_stage_video_channel_users?: number;
-    approximate_member_count?: number;
-    approximate_presence_count?: number;
-    welcome_screen?: WelcomeScreenObject;
-    nsfw_level: number;
-    stickers?: StickerObject[];
-    premium_progress_bar_enabled: boolean;
-    safety_alerts_channel_id: Snowflake | Maybe;
-  }) {
-    this.id = opts.id;
-    this.name = opts.name;
-    this.icon = opts.icon;
-    this.icon_hash = opts.icon_hash;
-    this.splash = opts.splash;
-    this.discovery_splash = opts.discovery_splash;
-    this.owner = opts.owner;
-    this.owner_id = opts.owner_id;
-    this.permissions = opts.permissions;
-    this.region = opts.region;
-    this.afk_channel_id = opts.afk_channel_id;
-    this.afk_timeout = opts.afk_timeout;
-    this.widget_enabled = opts.widget_enabled;
-    this.widget_channel_id = opts.widget_channel_id;
-    this.verification_level = opts.verification_level;
-    this.default_message_notifications = opts.default_message_notifications;
-    this.explicit_content_filter = opts.explicit_content_filter;
-    this.roles = opts.roles;
-    this.emojis = opts.emojis;
-    this.features = opts.features;
-    this.mfa_level = opts.mfa_level;
-    this.application_id = opts.application_id;
-    this.system_channel_id = opts.system_channel_id;
-    this.system_channel_flags = opts.system_channel_flags;
-    this.rules_channel_id = opts.rules_channel_id;
-    this.max_presences = opts.max_presences;
-    this.max_members = opts.max_members;
-    this.vanity_url_code = opts.vanity_url_code;
-    this.description = opts.description;
-    this.banner = opts.banner;
-    this.premium_tier = opts.premium_tier;
-    this.premium_subscription_count = opts.premium_subscription_count;
-    this.preferred_locale = opts.preferred_locale;
-    this.public_updates_channel_id = opts.public_updates_channel_id;
-    this.max_video_channel_users = opts.max_video_channel_users;
-    this.max_stage_video_channel_users = opts.max_stage_video_channel_users;
-    this.approximate_member_count = opts.approximate_member_count;
-    this.approximate_presence_count = opts.approximate_presence_count;
-    this.welcome_screen = opts.welcome_screen;
-    this.nsfw_level = opts.nsfw_level;
-    this.stickers = opts.stickers;
-    this.premium_progress_bar_enabled = opts.premium_progress_bar_enabled;
-    this.safety_alerts_channel_id = opts.safety_alerts_channel_id;
-  }
+private:
+    Snowflake id_;
+    std::string name_;
+    std::variant<std::string, Maybe> icon_;
+    std::variant<std::string, Maybe> splash_;
+    std::variant<std::string, Maybe> discovery_splash_;
+    Snowflake owner_id_;
+    std::variant<Snowflake, Maybe> afk_channel_id_;
+    double afk_timeout_;
+    double verification_level_;
+    double default_message_notifications_;
+    double explicit_content_filter_;
+    std::vector<Role> roles_;
+    std::vector<Emoji> emojis_;
+    std::vector<std::string> features_;
+    double mfa_level_;
+    std::variant<Snowflake, Maybe> application_id_;
+    std::variant<Snowflake, Maybe> system_channel_id_;
+    double system_channel_flags_;
+    std::variant<Snowflake, Maybe> rules_channel_id_;
+    std::variant<std::string, Maybe> vanity_url_code_;
+    std::variant<std::string, Maybe> description_;
+    std::variant<std::string, Maybe> banner_;
+    double premium_tier_;
+    std::string preferred_locale_;
+    std::variant<Snowflake, Maybe> public_updates_channel_id_;
+    double nsfw_level_;
+    bool premium_progress_bar_enabled_;
+    std::variant<Snowflake, Maybe> safety_alerts_channel_id_;
+};
+
 
 } // namespace elizaos

@@ -1,14 +1,14 @@
-#include "elizaos/plugin-openai.hpp"
-#include "elizaos/plugin-sql.hpp"
-#include "plugin-groq.hpp"
-#include "plugin-otc-desk.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/plugin-openai.hpp"
+#include "elizaos/plugin-sql.hpp"
+#include "plugin-groq.hpp"
+#include "plugin-otc-desk.hpp"
 
 namespace elizaos {
 

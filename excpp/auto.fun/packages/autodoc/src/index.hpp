@@ -1,3 +1,11 @@
+#pragma once
+#include <functional>
+#include <future>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include "AIService/AIService.js.hpp"
 #include "Configuration.js.hpp"
 #include "DirectoryTraversal.js.hpp"
@@ -7,13 +15,6 @@
 #include "JsDocGenerator.js.hpp"
 #include "PluginDocumentationGenerator.js.hpp"
 #include "TypeScriptParser.js.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -36,7 +37,6 @@ namespace elizaos {
  *    PluginDocumentationGenerator, etc.
  * 2. Analyzes the codebase and generates JSDoc documentation.
  * 3. Conditionally updates README and creates a pull request for documentation changes.
- * 4. Handles and logs any errors that occur during the documentation generation process.
  *
  * @returns {Promise<void>} A promise that resolves when the documentation generation is complete.
  */

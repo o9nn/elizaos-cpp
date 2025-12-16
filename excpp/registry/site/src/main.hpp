@@ -1,11 +1,11 @@
-#include "App.tsx.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "App.tsx.hpp"
 
 namespace elizaos {
 

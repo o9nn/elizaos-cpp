@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -25,7 +25,6 @@ namespace elizaos {
 // Validate required environment variables
 
 // Ingest data from GitHub
-      // Dynamically import the config
 
       // Create a root logger with appropriate log level
 
@@ -34,10 +33,8 @@ namespace elizaos {
       // Create ingestion context with date range
 
       // Run the ingestion pipeline - returns array of { repository, prs, issues }
-      await ingestPipeline(undefined, context);
 
 // Process and analyze data
-      // Dynamically import the config
 
       // Create a root logger
 
@@ -46,7 +43,6 @@ namespace elizaos {
       // Run the pipeline directly - no need for the ContributorPipeline class
 
 // Export repository stats
-      // Dynamically import the config
 
       // Create a root logger
 
@@ -57,10 +53,8 @@ namespace elizaos {
       // Create pipeline context
 
       // Run the repository summaries pipeline
-      await runPipeline(generateRepositoryStats, undefined, context);
 
 // Generate summaries
-      // Dynamically import the config
 
       // Create a root logger
 
@@ -75,8 +69,6 @@ namespace elizaos {
       // Create summarizer context
 
       // Run the appropriate pipeline based on summary type
-        await runPipeline(contributorSummariesPipeline, undefined, context);
-        await runPipeline(projectSummariesPipeline, undefined, context);
 
 
 } // namespace elizaos

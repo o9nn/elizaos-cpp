@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -15,7 +15,6 @@ namespace elizaos {
 
 struct FilterBarProps {
     std::vector<std::string> tags;
-    (search: string, tags: string[]) => void onFilterChange;
 };
 
 void FilterBar(auto { tags, FilterBarProps onFilterChange }); 

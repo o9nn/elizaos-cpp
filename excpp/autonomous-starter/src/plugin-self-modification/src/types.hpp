@@ -1,11 +1,11 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -16,11 +16,6 @@ namespace elizaos {
 
 // Temporary ModelClass enum until it's exported from @elizaos/core
 enum ModelClass {
-  SMALL = "small",
-  MEDIUM = "medium",
-  LARGE = "large",
-  EMBEDDING = "embedding",
-  IMAGE = "image",
 }
 
 // ... existing code ... 
