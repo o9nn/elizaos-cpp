@@ -18,27 +18,17 @@ namespace elizaos {
 // ***********************************************************
 
 // Import commands.js using ES2015 syntax:
-import './commands';
 
 // Import Testing Library Cypress commands
-import '@testing-library/cypress/add-commands';
 
 // Import styles
-import '../../../frontend/index.css';
 
 // Add custom TypeScript types
-declare global {
-  namespace Cypress {
     struct Chainable {
 };
 
-  }
-}
-
 // Import React mount function
-;
 
 // Make mount available globally
-Cypress.Commands.add('mount', mount);
 
 } // namespace elizaos

@@ -12,79 +12,19 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-#!/usr/bin/env node
 /**
  * Search file tool
  * Search for a term within a specific file
  * Converted from tools/search/bin/search_file
  */
 
-;
-;
-;
-;
-
-
-  }
-
-  // Check if file exists
-  if (!fs.existsSync(filePath)) {
-    console.error(`Error: File name ${filePath} not found. Please provide a valid file name.`);
-    process.exit(1);
-  }
-
-  // Resolve to absolute path
-  filePath = path.resolve(filePath);
-
-  // Read file and search
-  try {
-    const content = fs.readFileSync(filePath, 'utf-8');
-    const lines = content.split('\n');
-    const matches: Array<{ line: number; content: string }> = [];
-
-    lines.forEach((line, index) => {
-      if (line.includes(searchTerm)) {
-        matches.push({ line: index + 1, content: line });
-      }
-    });
-
-    if (matches.length === 0) {
-      console.log(`No matches found for "${searchTerm}" in ${filePath}`);
-      return;
-    }
-
-    // Check if too many matches
-    const uniqueLines = new Set(matches.map(m => m.line));
-    if (uniqueLines.size > 100) {
-      console.error(`More than ${uniqueLines.size} lines matched for "${searchTerm}" in ${filePath}. Please narrow your search.`);
-      return;
-    }
-
-    // Print results
-    console.log(`Found ${matches.length} matches for "${searchTerm}" in ${filePath}:`);
-    matches.forEach(match => {
-      console.log(`Line ${match.line}:${match.content}`);
-    });
-    console.log(`End of matches for "${searchTerm}" in ${filePath}`);
-
-  } catch (error) {
-    console.error(`Error reading file: ${error}`);
-    process.exit(1);
-  }
-}
+void searchFile(const std::string& searchTerm, std::optional<std::string> filePath);
 
 // CLI if run directly
 // CLI setup
-);
-
-  program.parse(process.argv);
-}
+void setupCLI();
 
 // Run CLI if called directly or from bin script
-if (require.main === module || require.main?.filename?.endsWith('/bin/search_file')) {
-  setupCLI();
-}
 
-{ searchFile };
 
 } // namespace elizaos

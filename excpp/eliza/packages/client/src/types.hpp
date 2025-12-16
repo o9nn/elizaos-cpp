@@ -14,15 +14,6 @@ namespace elizaos {
 
 // Update the IAttachment interface
 
-;
-import type {
-  Agent as CoreAgent,
-  Character as CoreCharacter,
-  Room as CoreRoom,
-  AgentStatus as CoreAgentStatus,
-  ChannelType as CoreChannelType,
-} from '@elizaos/core';
-
 /**
  * Interface representing an attachment.
  * @interface
@@ -36,25 +27,15 @@ struct IAttachment {
     std::string title;
 };
 
-
 // Agent type for client-side display, extending core Agent with a string status for UI flexibility if needed,
 // but ideally aligns with CoreAgentStatus enum.
-interface AgentWithStatus extends Partial<CoreAgent> {
-  id: UUID;
-  name: string;
-  characterName?: string; // From core Agent, which extends Character
-  bio?: string | string[];
-  status: CoreAgentStatus; // Use the enum from @elizaos/core
-  settings?: CoreCharacter['settings']; // From core Character
   // any other client-specific properties
-}
 
 // Interface for agent panels (public routes)
 struct AgentPanel {
     std::string name;
     std::string path;
 };
-
 
 // Represents a server/guild in the central messaging system for the client
 struct MessageServer {
@@ -66,7 +47,6 @@ struct MessageServer {
     string; // ISO Date string from server, or Date object createdAt;
     string; // ISO Date string from server, or Date object updatedAt;
 };
-
 
 // Represents a channel within a MessageServer for the client
 struct MessageChannel {
@@ -81,7 +61,6 @@ struct MessageChannel {
     string; // ISO Date string from server, or Date object createdAt;
     string; // ISO Date string from server, or Date object updatedAt;
 };
-
 
 // Represents a message from the central system for client display
 // This should align with what apiClient.getChannelMessages returns for each message

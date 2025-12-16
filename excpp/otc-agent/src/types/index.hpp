@@ -16,36 +16,15 @@ namespace elizaos {
  * Single source of truth for all shared types across the OTC Agent
  */
 
-import type { Address } from "viem";
-import type { Chain } from "@/config/chains";
-import type { PaymentCurrency } from "@/lib/plugin-otc-desk/types";
-
 // Re-from specific type files
-type { ChatMessage } from "./chat-message";
-type { Citation, ChatStreamData } from "./chat";
 
 // Re-from plugin types
-type {
-  PaymentCurrency,
-  QuoteStatus,
-  QuoteMemory,
-  UserSessionMemory as PluginUserSessionMemory,
-} from "@/lib/plugin-otc-desk/types";
 
 //==============================================================================
 // CHAIN TYPES
 //==============================================================================
 
 using EVMChain = std::variant<"base", "bsc">;
-type { Chain, ChainFamily, ChainConfig } from "@/config/chains";
-{
-  SUPPORTED_CHAINS,
-  isEVMChain,
-  isSolanaChain,
-  getChainConfig,
-  getChainFromId,
-  getChainFromNumericId,
-} from "@/config/chains";
 
 //==============================================================================
 // OTC CONTRACT TYPES
@@ -74,7 +53,6 @@ struct Offer {
     bigint amountPaid;
 };
 
-
 /**
  * Consignment parameters for on-chain creation
  */
@@ -98,7 +76,6 @@ struct ConsignmentParams {
     bigint gasDeposit;
 };
 
-
 /**
  * OTC Quote for XML parsing and frontend display
  */
@@ -120,7 +97,6 @@ struct OTCQuote {
     std::optional<bool> isFixedPrice;
 };
 
-
 /**
  * Quote accepted message
  */
@@ -128,7 +104,6 @@ struct QuoteAccepted {
     std::string quoteId;
     std::string txHash;
 };
-
 
 //==============================================================================
 // DATABASE TYPES
@@ -153,7 +128,6 @@ struct Token {
     double updatedAt;
 };
 
-
 /**
  * Token market data
  */
@@ -166,7 +140,6 @@ struct TokenMarketData {
     double liquidity;
     double lastUpdated;
 };
-
 
 /**
  * OTC Consignment in database
@@ -200,7 +173,6 @@ struct OTCConsignment {
     std::optional<double> lastDealAt;
 };
 
-
 /**
  * Consignment deal record
  */
@@ -217,7 +189,6 @@ struct ConsignmentDeal {
     std::optional<std::string> offerId;
     "pending" | "executed" | "failed" status;
 };
-
 
 //==============================================================================
 // USER SESSION TYPES
@@ -238,7 +209,6 @@ struct UserSessionMemory {
     double updatedAt;
 };
 
-
 //==============================================================================
 // UTILITY TYPES
 //==============================================================================
@@ -246,20 +216,12 @@ struct UserSessionMemory {
 /**
  * Token with balance information
  */
-interface TokenWithBalance extends Token {
-  balance: string;
-  balanceFormatted: string;
-  balanceUsd: number;
-  priceUsd: number;
-}
 
 /**
  * Consignment creation result
  */
 struct ConsignmentCreationResult {
     `0x${string}` txHash;
-    bigint consignmentId;
-};
 
 
 } // namespace elizaos

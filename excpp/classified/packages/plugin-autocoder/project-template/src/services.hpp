@@ -41,8 +41,6 @@ namespace elizaos {
 //     }
 //   }
 
-const services = [
   // services go here
-];
 
 } // namespace elizaos

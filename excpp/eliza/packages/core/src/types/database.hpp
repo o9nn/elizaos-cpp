@@ -11,11 +11,6 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { Agent } from './agent';
-import type { Component, Entity, Participant, Relationship, Room, World } from './environment';
-import type { Memory, MemoryMetadata } from './memory';
-import type { Metadata, UUID } from './primitives';
-import type { Task } from './task';
 
 /**
  * Represents a log entry
@@ -25,10 +20,6 @@ struct Log {
     UUID entityId;
     std::optional<UUID> roomId;
     { [key: string]: unknown } body;
-    std::string type;
-    Date createdAt;
-};
-
 
 /**
  * Interface for database operations
@@ -58,37 +49,6 @@ struct IDatabaseAdapter {
     std::string query_field_sub_name;
     double query_match_count;
     { [key: string]: unknown } body;
-    UUID entityId;
-    UUID roomId;
-    std::string type;
-    UUID entityId;
-    std::optional<UUID> roomId;
-    std::optional<std::string> type;
-    std::optional<double> count;
-    std::optional<double> offset;
-    std::vector<double> embedding;
-    std::optional<double> match_threshold;
-    std::optional<double> count;
-    std::optional<bool> unique;
-    std::string tableName;
-    std::optional<std::string> query;
-    std::optional<UUID> roomId;
-    std::optional<UUID> worldId;
-    std::optional<UUID> entityId;
-    UUID roomId;
-    UUID entityId;
-    'FOLLOWED' | 'MUTED' | null state;
-    UUID sourceEntityId;
-    UUID targetEntityId;
-    std::optional<std::vector<std::string>> tags;
-    std::optional<Metadata> metadata;
-    UUID sourceEntityId;
-    UUID targetEntityId;
-    UUID worldId;
-    std::optional<double> count;
-    std::optional<std::string> tableName;
-};
-
 
 /**
  * Result interface for embedding similarity searches
@@ -97,7 +57,6 @@ struct EmbeddingSearchResult {
     std::vector<double> embedding;
     double levenshtein_score;
 };
-
 
 /**
  * Options for memory retrieval operations
@@ -110,7 +69,6 @@ struct MemoryRetrievalOptions {
     std::optional<double> end;
     std::optional<UUID> agentId;
 };
-
 
 /**
  * Options for memory search operations
@@ -125,7 +83,6 @@ struct MemorySearchOptions {
     std::optional<std::optional<MemoryMetadata>> metadata;
 };
 
-
 /**
  * Options for multi-room memory retrieval
  */
@@ -134,7 +91,6 @@ struct MultiRoomMemoryOptions {
     std::optional<double> limit;
     std::optional<UUID> agentId;
 };
-
 
 /**
  * Unified options pattern for memory operations
@@ -149,14 +105,9 @@ struct UnifiedMemoryOptions {
     std::optional<number; // Pagination end> end;
 };
 
-
 /**
  * Specialized memory search options
  */
-interface UnifiedSearchOptions extends UnifiedMemoryOptions {
-  embedding: number[];
-  similarity?: number; // Clearer name than 'match_threshold'
-}
 
 /**
  * Represents a generic database connection object.
@@ -167,13 +118,5 @@ interface UnifiedSearchOptions extends UnifiedMemoryOptions {
 using DbConnection = unknown;
 
 // Allowable vector dimensions
-const VECTOR_DIMS = {
-  SMALL: 384,
-  MEDIUM: 512,
-  LARGE: 768,
-  XL: 1024,
-  XXL: 1536,
-  XXXL: 3072,
-} as const;
 
 } // namespace elizaos

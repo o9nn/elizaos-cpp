@@ -17,28 +17,14 @@ namespace elizaos {
  * Calls the centralized ElizaOS API service instead of direct provider APIs
  */
 
-;
-
 /**
  * Structured error type for ElizaOS API responses
  */
-interface ElizaOSAPIError extends Error {
-  code: string;
-  status: number;
-  details?: any;
-  retryable?: boolean;
-  requestId?: string;
-}
 
 /**
  * Creates a structured ElizaOS API error
  */
-`;
-  error.status = status;
-  error.details = details;
-  error.retryable = retryable;
-  return error;
-}
+ElizaOSAPIError createElizaOSError(const std::string& message, double status, std::optional<std::string> code, std::optional<std::any> details, auto retryable = false);
 
 struct ElizaOSAPIResponse {
     std::string id;
@@ -66,7 +52,6 @@ struct ElizaOSAPIResponse {
     double total_cost;
     std::optional<std::string> system_fingerprint;
 };
-
 
 struct ElizaOSChatCompletionRequest {
     std::string model;
@@ -103,16 +88,15 @@ struct ElizaOSChatCompletionRequest {
     std::optional<std::string> user;
 };
 
-
 /**
  * Get ElizaOS API URL from runtime settings
  */
-
+std::string getAPIUrl(IAgentRuntime runtime);
 
 /**
  * Get ElizaOS API key from runtime settings
  */
-
+string | undefined getAPIKey(IAgentRuntime runtime);
 
 /**
  * Makes a chat completion request to the ElizaOS API service
@@ -132,79 +116,15 @@ struct ElizaOSChatCompletionRequest {
  */
 std::future<ElizaOSAPIResponse> makeElizaOSRequest(IAgentRuntime runtime, ElizaOSChatCompletionRequest request);
 
-  const url = `${apiUrl}/api/v1/chat/completions`;
-  const requestId = generateRequestId();
-
-  logger.debug(`Making request to ElizaOS API: ${url} [${requestId}]`);
-  logger.debug(`Request payload:`, request);
-
-  try {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-        'X-Request-ID': requestId,
-      },
-      body: JSON.stringify(request),
-    });
-
-    if (!response.ok) {
-      let errorDetails: any;
-      let errorText: string;
-
-      try {
-        errorDetails = await response.json();
-        errorText = errorDetails.error?.message || response.statusText;
-      } catch {
-        errorText = (await response.text()) || response.statusText;
-      }
-
-      logger.error(`ElizaOS API error ${response.status}: ${errorText} [${requestId}]`);
-
-      const isRetryable = response.status >= 500 || response.status === 429;
-
-      throw createElizaOSError(
-        errorText,
-        response.status,
-        errorDetails?.error?.code || `HTTP_${response.status}`,
-        errorDetails,
-        isRetryable
-      );
-    }
-
-    const data = await response.json();
-    logger.debug(`ElizaOS API response: [${requestId}]`, data);
-
-    return data;
-  } catch (error) {
-    if (error instanceof Error && error.name === 'ElizaOSAPIError') {
-      throw error;
-    }
-
-    logger.error(`ElizaOS API request failed: [${requestId}]`, error);
-
-    throw createElizaOSError(
-      `Network error: ${error instanceof Error ? error.message : 'Unknown error'}`,
-      0,
-      'NETWORK_ERROR',
-      { originalError: error },
-      true
-    );
-  }
-}
-
 /**
  * Generates a unique request ID for tracing
  */
-_${Math.random().toString(36).substr(2, 9)}`;
-}
+std::string generateRequestId();
 
 /**
  * Get the appropriate model for a given model type
  */
-
-}
+std::string getModelForType(ModelTypeName modelType);
 
 /**
  * Check if ElizaOS API is available and accessible
@@ -221,30 +141,5 @@ _${Math.random().toString(36).substr(2, 9)}`;
  * ```
  */
 std::future<bool> checkElizaOSAPI(IAgentRuntime runtime);
-
-  try {
-    const response = await fetch(`${apiUrl}/api/models`, {
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-      },
-      // Add timeout to prevent hanging
-      signal: AbortSignal.timeout(10000), // 10 second timeout
-    });
-
-    if (response.ok) {
-      logger.debug('ElizaOS API health check passed');
-      return true;
-    } else {
-      logger.warn(`ElizaOS API health check failed: ${response.status}`);
-      return false;
-    }
-  } catch (error) {
-    logger.warn(
-      `ElizaOS API health check error: ${error instanceof Error ? error.message : 'Unknown error'}`
-    );
-    return false;
-  }
-}
 
 } // namespace elizaos

@@ -12,10 +12,5 @@ namespace elizaos {
 // Manual refinement required for production use
 
 // packages/eliza.how/src/utils/assert.ts
- else {
-      throw new Error("Assertion Failed: " + message);
-    }
-  }
-}
 
 } // namespace elizaos

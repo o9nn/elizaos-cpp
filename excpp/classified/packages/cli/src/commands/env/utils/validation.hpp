@@ -16,10 +16,6 @@ namespace elizaos {
  * @param value The value to mask
  * @returns The masked value
  */
-...${value.substring(value.length - 4)}`;
-  }
-
-  return value;
-}
+std::string maskedValue(const std::string& value);
 
 } // namespace elizaos

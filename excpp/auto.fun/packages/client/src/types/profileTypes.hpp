@@ -12,13 +12,5 @@ namespace elizaos {
 // Manual refinement required for production use
 
 using ProfileToken = std::variant<{
-  image: string, nullptr>;
-  name: string;
-  ticker: string;
-  tokensHeld: bigint;
-  solValue: number;
-  dollarValue?: number;
-  mint: string;
-};
 
 } // namespace elizaos

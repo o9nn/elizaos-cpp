@@ -11,7 +11,6 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { ASTQueueItem } from "../../types";
 
 /**
  * Interface representing a group of documentation for files.
@@ -31,7 +30,6 @@ struct FileDocsGroup {
     std::vector<ASTQueueItem> types;
     std::vector<ASTQueueItem> functions;
 };
-
 
 /**
  * Interface representing a collection of organized documentation items.

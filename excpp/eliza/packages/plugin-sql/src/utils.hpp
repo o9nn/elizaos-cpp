@@ -11,9 +11,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
-;
+
 
 /**
  * Expands a file path starting with `~` to the project directory.
@@ -21,9 +19,7 @@ namespace elizaos {
  * @param filepath - The path to expand.
  * @returns The expanded path.
  */
-
-  return filepath;
-}
+std::string expandTildePath(const std::string& filepath);
 
 /**
  * Resolves the path to the nearest `.env` file.
@@ -35,17 +31,6 @@ namespace elizaos {
  *   current working directory.
  * @returns The resolved path to the `.env` file.
  */
-
-
-    const parentDir = path.dirname(currentDir);
-    if (parentDir === currentDir) {
-      break;
-    }
-    currentDir = parentDir;
-  }
-
-  return path.join(startDir, '.env');
-}
 
 /**
  * Resolves the directory used for PGlite database storage.
@@ -60,25 +45,6 @@ namespace elizaos {
  * @param fallbackDir - Optional fallback directory when env var is not set.
  * @returns The resolved data directory with any tilde expanded.
  */
-);
-  }
-
-  const base =
-    dir ??
-    process.env.PGLITE_DATA_DIR ??
-    fallbackDir ??
-    path.join(process.cwd(), '.eliza', '.elizadb');
-
-  // Automatically migrate legacy path (<cwd>/.elizadb) to new location (<cwd>/.eliza/.elizadb)
-  const resolved = expandTildePath(base);
-  const legacyPath = path.join(process.cwd(), '.elizadb');
-  if (resolved === legacyPath) {
-    const newPath = path.join(process.cwd(), '.eliza', '.elizadb');
-    process.env.PGLITE_DATA_DIR = newPath;
-    return newPath;
-  }
-
-  return resolved;
-}
+std::string resolvePgliteDir(std::optional<std::string> dir, std::optional<std::string> fallbackDir);
 
 } // namespace elizaos

@@ -11,24 +11,13 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
 
 
 struct NetworkConfigurationState {
     std::string networkConfiguration;
 };
 
-
-const NetworkConfigurationContext = createContext<NetworkConfigurationState>({} as NetworkConfigurationState);
-
+NetworkConfigurationState useNetworkConfiguration();
 
 
-const NetworkConfigurationProvider: FC<{ children: ReactNode }> = ({ children }) => {
-    const [networkConfiguration, setNetworkConfiguration] = useLocalStorage("network", "devnet");
-
-    return (
-        <NetworkConfigurationContext.Provider value={{ networkConfiguration, setNetworkConfiguration }}>{children}</NetworkConfigurationContext.Provider>
-    );
-};
 } // namespace elizaos

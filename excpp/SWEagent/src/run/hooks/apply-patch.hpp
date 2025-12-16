@@ -21,34 +21,15 @@ namespace elizaos {
  * Hook for saving and applying patches
  */
 
-;
-;
-;
-;
-;
-;
-;
-;
-;
-
-const logger = getLogger('swea-save_apply_patch', '⚡️');
-
 /**
  * Check if patch is promising (likely to solve the issue)
  */
-
+bool isPromisingPatch(AgentInfo info);
 
 /**
  * Print patch message to console
  */
-'`);
-  console.log('# Inspect it:');
-  console.log('cat "${PATCH_FILE_PATH}"');
-  console.log('# Apply it to a local repository:');
-  console.log('cd <your local repo root>');
-  console.log('git apply "${PATCH_FILE_PATH}"');
-  console.log('```\n');
-}
+void printPatchMessage(const std::string& patchOutputFile);
 
 /**
  * This hook saves patches to a separate directory and optionally applies them to a local repository
@@ -66,110 +47,22 @@ class SaveApplyPatchHook extends AbstractRunHook {
     this.showSuccessMessage = showSuccessMessage;
   }
 
-  onInit(run: { outputDir?: string }): void {
-    this.outputDir = run.outputDir;
-  }
-
-  onInstanceStart(params: { index: number; env: SWEEnv; problemStatement: ProblemStatementConfig }): void {
-    this.env = params.env;
-    this.problemStatement = params.problemStatement;
-  }
-
-  onInstanceCompleted(params: { result: AgentRunResult }): void {
-    const instanceId = this.problemStatement?.id;
-    if (!instanceId) {
-      return;
-    }
-
-    const patchPath = this.savePatch(instanceId, params.result.info);
-
-    if (!patchPath) {
-      return;
-    }
-
-    if (!this.applyPatchLocally) {
-      return;
-    }
-
-    if (!isPromisingPatch(params.result.info)) {
-      return;
-    }
-
-    if (!this.env?.repo) {
-      return;
-    }
-
-    if (!(this.env.repo instanceof LocalRepo)) {
-      return;
-    }
-
-    const localDir = this.env.repo.path;
-    this.applyPatch(patchPath, localDir);
-  }
-
   /**
    * Create patch files that can be applied with `git am`.
    * Returns the path to the patch file if it was saved, otherwise null.
    */
-  private savePatch(instanceId: string, info: AgentInfo): string | null {
-    if (!this.outputDir) {
-      return null;
-    }
-
-    const patchOutputDir = path.join(this.outputDir, instanceId);
 
     // Create directory if it doesn't exist
-    if (!fs.existsSync(patchOutputDir)) {
-      fs.mkdirSync(patchOutputDir, { recursive: true });
-    }
 
-    const patchOutputFile = path.join(patchOutputDir, `${instanceId}.patch`);
-
-    if (!info.submission) {
-      logger.info('No patch to save.');
-      return null;
-    }
-
-    const modelPatch = info.submission;
-    fs.writeFileSync(patchOutputFile, modelPatch);
-
-    if (isPromisingPatch(info)) {
       // Only print big congratulations if we actually believe
       // the patch will solve the issue
-      if (this.showSuccessMessage) {
-        printPatchMessage(patchOutputFile);
-      }
-    }
-
-    return patchOutputFile;
-  }
 
   /**
    * Apply a patch to a local directory
    */
-  private applyPatch(patchFile: string, localDir: string): void {
-    if (!fs.existsSync(localDir) || !fs.statSync(localDir).isDirectory()) {
-      logger.error(`Local directory does not exist: ${localDir}`);
-      return;
-    }
-
-    if (!fs.existsSync(patchFile)) {
-      logger.error(`Patch file does not exist: ${patchFile}`);
-      return;
-    }
 
     // The resolve() is important, because we're gonna run the cmd
     // somewhere else
-    const cmd = `git apply "${path.resolve(patchFile)}"`;
 
-    try {
-      execSync(cmd, { cwd: localDir });
-      logger.info(`Applied patch ${patchFile} to ${localDir}`);
-    } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
-      logger.error(`Failed to apply patch ${patchFile} to ${localDir}: ${errorMessage}`);
-    }
-  }
-}
 
 } // namespace elizaos

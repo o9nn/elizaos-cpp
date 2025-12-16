@@ -11,9 +11,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
 
-{ ElizaServiceType as ServiceType };
 
 struct TranslationConfig {
     { provider;
@@ -21,7 +19,6 @@ struct TranslationConfig {
     std::optional<std::string> baseUrl;
     std::optional<std::string> model;
 };
-
 
 struct TranslationData {
     std::string sourceText;
@@ -31,21 +28,11 @@ struct TranslationData {
     std::optional<double> confidence;
 };
 
-
-interface TranslationActionContent extends Content {
-  text: string;
-}
-
-interface TranslationEvalContent extends Content {
-  text: string;
-}
-
 struct TranslationEvalResponse {
     bool success;
     std::string response;
     std::optional<double> confidence;
 };
-
 
 struct TranslationProviderResponse {
     bool success;
@@ -53,17 +40,11 @@ struct TranslationProviderResponse {
     std::optional<std::string> error;
 };
 
-
 struct TranslationServiceConfig {
     std::optional<std::string> model;
     std::optional<double> temperature;
     std::optional<double> maxTokens;
 };
-
-
-interface TranslationService extends Service {
-  translate(text: string, targetLang: string, sourceLang?: string): Promise<TranslationServiceResponse>;
-}
 
 struct TranslationServiceResponse {
     bool success;

@@ -11,10 +11,6 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-declare global {
-  let testHarness: { cleanup: () => Promise<void> } | undefined;
-}
 
-{};
 
 } // namespace elizaos

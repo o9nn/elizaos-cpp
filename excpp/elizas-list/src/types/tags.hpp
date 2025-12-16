@@ -11,7 +11,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
+
 
 struct TagMetadata {
     std::optional<IconType> icon;
@@ -23,7 +23,6 @@ struct TagMetadata {
     std::optional<std::vector<std::string>> relatedTags;
 };
 
-
 struct TagAnalytics {
     double usageCount;
     double trendingScore;
@@ -31,7 +30,6 @@ struct TagAnalytics {
     number; // percentage recentGrowth;
     double averageStars;
 };
-
 
 struct TagCategory {
     std::string id;

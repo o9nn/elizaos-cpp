@@ -12,14 +12,6 @@ namespace elizaos {
 // Manual refinement required for production use
 
 // @ts-nocheck
-;
-import NextLink, { type LinkProps } from "next/link";
-import React, { forwardRef } from "react";
 
-const Link = forwardRef(
-      <NextLink {...props} ref={ref} />
-    </Headless.DataInteractive>
-  );
-});
 
 } // namespace elizaos

@@ -17,13 +17,9 @@ namespace elizaos {
  * Converted from tools/forfeit/bin/exit_forfeit
  */
 
-
+void exitForfeit();
 
 // CLI if run directly
-if (require.main === module) {
-  exitForfeit();
-}
 
-{ exitForfeit };
 
 } // namespace elizaos

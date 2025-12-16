@@ -12,7 +12,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
+
 
 enum ServiceTypes {
   DEGEN_TRADING = 'DEGEN_TRADING',
@@ -47,14 +47,12 @@ struct TokenSignal {
     double volumeChange24h;
 };
 
-
 struct BuySignalMessage {
     UUID positionId;
     std::string tokenAddress;
     std::string entityId;
     std::string expectedOutAmount;
 };
-
 
 struct SellSignalMessage {
     UUID positionId;
@@ -69,7 +67,6 @@ struct SellSignalMessage {
     std::string reason;
 };
 
-
 struct PriceSignalMessage {
     std::string tokenAddress;
     double initialPrice;
@@ -77,14 +74,9 @@ struct PriceSignalMessage {
     double priceChange;
 };
 
-
 struct PortfolioStatus {
     double totalValue;
     { [tokenAddress: string]: { amount: number; value: number } } positions;
-    double solBalance;
-    double drawdown;
-};
-
 
 struct TradePerformanceData {
     std::string token_address;

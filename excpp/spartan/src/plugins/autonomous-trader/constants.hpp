@@ -12,6 +12,4 @@ namespace elizaos {
 // Manual refinement required for production use
 
 
-const EMAIL_TYPE = 'trader_email_v0'
-const SPARTAN_SERVICE_TYPE = 'spartan_services'
 } // namespace elizaos

@@ -12,7 +12,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
+
 
 struct Entity {
     UUID id;
@@ -21,7 +21,6 @@ struct Entity {
     std::optional<std::unordered_map<std::string, std::any>> metadata;
 };
 
-
 struct EntityCreateParams {
     UUID id;
     UUID agentId;
@@ -29,13 +28,11 @@ struct EntityCreateParams {
     std::optional<std::unordered_map<std::string, std::any>> metadata;
 };
 
-
 struct EntityUpdateParams {
     std::optional<std::vector<std::string>> names;
     std::optional<std::unordered_map<std::string, std::any>> metadata;
     std::optional<UUID> agentId;
 };
-
 
 
 } // namespace elizaos

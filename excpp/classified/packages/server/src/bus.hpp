@@ -37,83 +37,23 @@ class InternalMessageBus extends EventTarget {
     return this.dispatchEvent(new CustomEvent(event, { detail: data }));
   }
 
-  on(event: string, handler: (data: unknown) => void): this {
     // Check if handler is already registered
-    if (!this.handlers.has(event)) {
-      this.handlers.set(event, new Map());
-    }
-
-    const eventHandlers = this.handlers.get(event)!;
 
     // If handler already exists, don't add it again
-    if (eventHandlers.has(handler)) {
-      return this;
-    }
 
     // Wrap the handler to extract data from CustomEvent
-    const wrappedHandler = ((e: Event) => {
-      if (e instanceof CustomEvent) {
-        handler(e.detail);
-      } else {
-        handler(undefined);
-      }
-    }) as EventListener;
 
     // Store mapping for removal later
-    eventHandlers.set(handler, wrappedHandler);
-
-    this.addEventListener(event, wrappedHandler);
-    return this;
-  }
-
-  off(event: string, handler: (data: unknown) => void) {
-    const eventHandlers = this.handlers.get(event);
-    const wrappedHandler = eventHandlers?.get(handler);
-
-    if (wrappedHandler) {
-      this.removeEventListener(event, wrappedHandler);
-      eventHandlers?.delete(handler);
 
       // Clean up empty maps
-      if (eventHandlers && eventHandlers.size === 0) {
-        this.handlers.delete(event);
-      }
-    }
-  }
 
-  setMaxListeners(n: number) {
-    this.maxListeners = n;
     // EventTarget doesn't have a built-in max listeners concept,
     // but we keep this for API compatibility
-  }
 
-  removeAllListeners(event?: string) {
-    if (event) {
       // Remove all listeners for a specific event
-      const eventHandlers = this.handlers.get(event);
-      if (eventHandlers) {
-        for (const [handler, wrappedHandler] of eventHandlers) {
-          this.removeEventListener(event, wrappedHandler);
-        }
-        this.handlers.delete(event);
-      }
-    } else {
       // Remove all listeners for all events
-      for (const [eventName, eventHandlers] of this.handlers) {
-        for (const [handler, wrappedHandler] of eventHandlers) {
-          this.removeEventListener(eventName, wrappedHandler);
-        }
-      }
-      this.handlers.clear();
-    }
-  }
-}
-
-const internalMessageBus = new InternalMessageBus();
 
 // Increase the default max listeners if many agents might be running in one process
-internalMessageBus.setMaxListeners(50);
 
-default internalMessageBus;
 
 } // namespace elizaos

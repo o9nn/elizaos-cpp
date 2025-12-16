@@ -19,21 +19,17 @@ struct ListEnvOptions {
     std::optional<bool> local;
 };
 
-
 struct EditEnvOptions {
     std::optional<bool> yes;
 };
-
 
 struct ResetEnvOptions {
     std::optional<bool> yes;
 };
 
-
 struct InteractiveEnvOptions {
     std::optional<bool> yes;
 };
-
 
 /**
  * Reset operation types
@@ -50,7 +46,6 @@ struct ResetItem {
     std::optional<std::string> description;
     std::optional<bool> selected;
 };
-
 
 /**
  * Environment variable record type

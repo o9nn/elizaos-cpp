@@ -13,10 +13,5 @@ namespace elizaos {
 
 // https://discord.com/developers/docs/resources/channel#embed-object-embed-image-structure
 using EmbedImageObject = {
-  url: string;
-  proxy_url?: string;
-  height?: number;
-  width?: number;
-};
 
 } // namespace elizaos

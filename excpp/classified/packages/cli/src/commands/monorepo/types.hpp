@@ -19,7 +19,6 @@ struct MonorepoOptions {
     std::optional<std::string> dir;
 };
 
-
 /**
  * Information about the cloning operation
  */
@@ -28,7 +27,6 @@ struct CloneInfo {
     std::string branch;
     std::string destination;
 };
-
 
 /**
  * Platform-specific installation instructions

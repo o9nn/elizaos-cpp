@@ -16,18 +16,10 @@ namespace elizaos {
  */
 using UUID = `${string}-${string}-${string}-${string}-${string}`;
 
-
 /**
  * Represents a media object, such as an image, video, or other file, with various properties.
  */
 using Media = {
-    id: string;
-    url: string;
-    title: string;
-    source: string;
-    description: string;
-    text: string;
-};
 
 /**
  * Represents the content of a message, including its main text (`content`), any associated action (`action`), and the source of the content (`source`), if applicable.
@@ -41,43 +33,14 @@ struct Content {
     std::optional<std::vector<Media>> attachments;
 };
 
-
 /**
  * Represents an example of a message, typically used for demonstrating or testing purposes, including optional content and action.
  */
 struct MessageExample {
     string; // The user associated with the message example. If {{user1}}, {{user2}}, etc. will be replaced with random names user;
-    Content; // The content of the message example, which may be null for actions that don't produce visible content. content;
-};
-
 
 /**
  * Represents a character, which can be used for an LLM agent.
  */
 using Character = {
-    id?: UUID; // optional UUID which can be passed down to identify the character
-    name: string;
-    bio: string | string[];
-    lore: string[];
-    messageExamples: MessageExample[][];
-    postExamples: string[];
-    people: string[];
-    topics: string[];
-    adjectives: string[];
-    clients: string[]; // list of clients the character can interact with
-    settings?: {
-        secrets?: { [key: string]: string };
-        voice?: {
-            model?: string;
-            url?: string;
-        };
-        model?: string;
-        embeddingModel?: string;
-    };
-    style: {
-        all: string[];
-        chat: string[];
-        post: string[];
-    };
-};
 } // namespace elizaos

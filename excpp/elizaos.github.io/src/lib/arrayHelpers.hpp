@@ -17,14 +17,6 @@ namespace elizaos {
  * @param keyFn Function that returns the key to group by for each item
  * @returns Record mapping each key to array of items with that key
  */
-,
-    {} as Record<K, T[]>,
-  );
-}
 
-, (_, i) =>
-    array.slice(i * size, (i + 1) * size),
-  );
-}
 
 } // namespace elizaos

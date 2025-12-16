@@ -13,11 +13,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
-;
 
-const prisma = new PrismaClient();
 
 struct UserSession {
     std::optional<std::string> userId;
@@ -25,7 +21,6 @@ struct UserSession {
     std::string userAgent;
     std::string ipAddress;
 };
-
 
 class EnhancedAnalytics {
   static async trackProjectView(
@@ -59,79 +54,8 @@ class EnhancedAnalytics {
     }
   }
 
-  static async trackUserBehavior(
-    type: 'click' | 'scroll' | 'hover',
-    data: Record<string, any>,
-    session: UserSession
-  ) {
-    await prisma.userBehavior.create({
-      data: {
-        type,
-        data,
-        userId: session.userId,
-        sessionId: session.sessionId,
-        timestamp: new Date()
-      }
-    });
-  }
-
-  static async getProjectInsights(projectId: string) {
-    const [views, interactions, trends] = await Promise.all([
-      this.getViewStats(projectId),
-      this.getInteractionStats(projectId),
-      this.getTrendAnalysis(projectId)
-    ]);
-
-    return { views, interactions, trends };
-  }
-
-  private static async getViewStats(projectId: string) {
-    const [total, unique, recent] = await Promise.all([
-      prisma.projectView.count({ where: { projectId } }),
-      prisma.projectView.groupBy({
-        by: ['sessionId'],
-        where: { projectId },
-        _count: true
-      }),
-      prisma.projectView.groupBy({
-        by: ['date'],
-        where: {
-          projectId,
-          timestamp: { gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) }
-        },
-        _count: true
-      })
-    ]);
-
-    return { total, uniqueSessions: unique.length, recentTrend: recent };
-  }
-
-  private static async getTrendAnalysis(projectId: string) {
     // Complex trend analysis using time series data
-    const timeSeriesData = await prisma.$queryRaw`
-      SELECT 
-        date_trunc('day', timestamp) as date,
-        count(*) as views,
-        count(distinct "sessionId") as unique_views
-      FROM "ProjectView"
-      WHERE "projectId" = ${projectId}
-      GROUP BY date_trunc('day', timestamp)
-      ORDER BY date_trunc('day', timestamp)
-    `;
 
-    return this.calculateTrends(timeSeriesData);
-  }
-
-  private static calculateTrends(timeSeriesData: any[]) {
     // Calculate moving averages and growth rates
-    const movingAverage = this.calculateMovingAverage(timeSeriesData, 7);
-    const growthRate = this.calculateGrowthRate(timeSeriesData);
 
-    return {
-      movingAverage,
-      growthRate,
-      seasonality: this.detectSeasonality(timeSeriesData)
-    };
-  }
-} 
 } // namespace elizaos

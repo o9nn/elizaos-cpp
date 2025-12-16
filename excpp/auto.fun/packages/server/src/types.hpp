@@ -35,7 +35,6 @@ struct MediaGeneration {
     std::optional<std::string> lastGenerationReset;
 };
 
-
 using TTokenStatus = std::variant<, "pending", "active", "withdrawn", "migrating", "migrated", "locked", "harvested", "migration_failed">;
 
 struct IToken {
@@ -50,7 +49,6 @@ struct IToken {
     double marketCapUSD;
     double volume24h;
 };
-
 
 struct ITokenHolder {
     std::string id;

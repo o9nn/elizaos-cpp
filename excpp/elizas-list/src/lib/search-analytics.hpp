@@ -12,21 +12,9 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
 
-async ,
-  });
-}
 
-async ,
-    orderBy: {
-      _count: {
-        query: 'desc',
-      },
-    },
-    take: limit,
-  });
+std::future<void> trackSearch(const std::string& query, std::optional<std::string> userId);
 
-  return searches;
-} 
+std::future<void> getPopularSearches(auto limit = 10); 
 } // namespace elizaos

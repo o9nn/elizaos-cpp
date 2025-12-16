@@ -12,30 +12,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-'use client'
 
 
-
-
-
-
-: { children: React.ReactNode }) {
-  const [queryClient] = useState(() => new QueryClient({
-    defaultOptions: {
-      queries: {
-        staleTime: 30 * 1000,
-        refetchInterval: 30 * 1000,
-      },
-    },
-  }))
-
-  return (
-    <PHProvider>
-      <QueryClientProvider client={queryClient}>
-        {children}
-        <ReactQueryDevtools initialIsOpen={false} />
-      </QueryClientProvider>
-    </PHProvider>
-  )
-} 
+void Providers({ children: React.ReactNode } { children }); 
 } // namespace elizaos

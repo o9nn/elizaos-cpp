@@ -14,9 +14,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
-;
+
 
 class ScoringService extends BaseTradeService {
   async scoreTokenSignals(signals: TokenSignal[]): Promise<TokenSignal[]> {
@@ -70,6 +68,5 @@ class ScoringService extends BaseTradeService {
       )
       .sort((a, b) => b.score - a.score);
   }
-}
 
 } // namespace elizaos

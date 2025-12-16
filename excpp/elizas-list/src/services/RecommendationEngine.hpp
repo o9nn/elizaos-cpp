@@ -11,8 +11,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
+
 
 class RecommendationEngine {
   static async getRelatedProjects(projectId: string, limit = 4): Promise<Project[]> {
@@ -90,15 +89,4 @@ class RecommendationEngine {
       .map(({ score, ...project }) => project);
   }
 
-  static async updateUserBehavior(userId: string, projectId: string, action: 'view' | 'like' | 'share') {
-    await prisma.userBehavior.create({
-      data: {
-        userId,
-        projectId,
-        action,
-        timestamp: new Date()
-      }
-    });
-  }
-} 
 } // namespace elizaos

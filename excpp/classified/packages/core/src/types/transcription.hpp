@@ -12,7 +12,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
+
 
 struct TranscriptionOptions {
     std::optional<std::string> language;
@@ -25,7 +25,6 @@ struct TranscriptionOptions {
     std::optional<bool> segment_timestamps;
 };
 
-
 struct TranscriptionResult {
     std::string text;
     std::optional<std::string> language;
@@ -34,7 +33,6 @@ struct TranscriptionResult {
     std::optional<std::vector<TranscriptionWord>> words;
     std::optional<double> confidence;
 };
-
 
 struct TranscriptionSegment {
     double id;
@@ -49,14 +47,12 @@ struct TranscriptionSegment {
     std::optional<double> no_speech_prob;
 };
 
-
 struct TranscriptionWord {
     std::string word;
     double start;
     double end;
     std::optional<double> confidence;
 };
-
 
 struct SpeechToTextOptions {
     std::optional<std::string> language;
@@ -66,7 +62,6 @@ struct SpeechToTextOptions {
     std::optional<double> maxAlternatives;
 };
 
-
 struct TextToSpeechOptions {
     std::optional<std::string> voice;
     std::optional<std::string> model;
@@ -75,14 +70,9 @@ struct TextToSpeechOptions {
     std::optional<'mp3' | 'opus' | 'aac' | 'flac'> response_format;
 };
 
-
 /**
  * Interface for audio transcription and speech services
  */
-abstract class ITranscriptionService extends Service {
-  static override readonly serviceType = ServiceType.TRANSCRIPTION;
-
-  public readonly capabilityDescription = 'Audio transcription and speech processing capabilities';
 
   /**
    * Transcribe audio file to text
@@ -90,10 +80,6 @@ abstract class ITranscriptionService extends Service {
    * @param options - Transcription options
    * @returns Promise resolving to transcription result
    */
-  abstract transcribeAudio(
-    audioPath: string | Buffer,
-    options?: TranscriptionOptions
-  ): Promise<TranscriptionResult>;
 
   /**
    * Transcribe video file to text (extracts audio first)
@@ -101,10 +87,6 @@ abstract class ITranscriptionService extends Service {
    * @param options - Transcription options
    * @returns Promise resolving to transcription result
    */
-  abstract transcribeVideo(
-    videoPath: string | Buffer,
-    options?: TranscriptionOptions
-  ): Promise<TranscriptionResult>;
 
   /**
    * Real-time speech to text from audio stream
@@ -112,10 +94,6 @@ abstract class ITranscriptionService extends Service {
    * @param options - Speech to text options
    * @returns Promise resolving to transcription result
    */
-  abstract speechToText(
-    audioStream: NodeJS.ReadableStream | Buffer,
-    options?: SpeechToTextOptions
-  ): Promise<TranscriptionResult>;
 
   /**
    * Convert text to speech
@@ -123,33 +101,21 @@ abstract class ITranscriptionService extends Service {
    * @param options - Text to speech options
    * @returns Promise resolving to audio buffer
    */
-  abstract textToSpeech(text: string, options?: TextToSpeechOptions): Promise<Buffer>;
 
   /**
    * Get supported languages for transcription
    * @returns Promise resolving to array of supported language codes
    */
-  abstract getSupportedLanguages(): Promise<string[]>;
 
   /**
    * Get available voices for text to speech
    * @returns Promise resolving to array of available voices
    */
-  abstract getAvailableVoices(): Promise<
-    Array<{
-      id: string;
-      name: string;
-      language: string;
-      gender?: 'male' | 'female' | 'neutral';
-    }>
-  >;
 
   /**
    * Detect language of audio file
    * @param audioPath - Path to audio file or audio buffer
    * @returns Promise resolving to detected language code
    */
-  abstract detectLanguage(audioPath: string | Buffer): Promise<string>;
-}
 
 } // namespace elizaos

@@ -13,15 +13,5 @@ namespace elizaos {
 
 // Re-upload configurations from the main upload module
 // This allows us to import upload configs from the shared directory
-{
-  agentAudioUpload,
-  agentMediaUpload,
-  channelUpload,
-  validateAudioFile,
-  validateMediaFile,
-  processUploadedFile,
-  generateSecureFilename,
-  ensureUploadDir,
-} from '../../../upload';
 
 } // namespace elizaos

@@ -13,7 +13,6 @@ namespace elizaos {
 // Manual refinement required for production use
 
 // https://discord.com/developers/docs/topics/permissions#role-object
-;
 
 class Role {
   id: Snowflake;
@@ -56,8 +55,6 @@ class Role {
     this.tags = opts.tags;
     this.flags = opts.flags;
   }
-}
 
-default Role;
 
 } // namespace elizaos

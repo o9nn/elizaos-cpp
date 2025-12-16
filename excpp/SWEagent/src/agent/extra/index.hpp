@@ -15,6 +15,5 @@ namespace elizaos {
  * Extra agent implementations
  */
 
-{ ShellAgent } from './shell-agent';
 
 } // namespace elizaos

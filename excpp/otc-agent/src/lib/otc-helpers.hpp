@@ -35,30 +35,11 @@ struct ParsedOffer {
     bigint amountPaid;
 };
 
-
 /**
  * Raw offer data as returned from viem contract read - can be array or object.
  * Array format is the standard Solidity struct tuple return.
  */
 using RawOfferData = std::variant<, readonly [
-      bigint,
-      string,
-      string,
-      bigint,
-      bigint,
-      bigint,
-      bigint,
-      bigint,
-      bigint,
-      bigint,
-      number,
-      boolean,
-      boolean,
-      boolean,
-      boolean,
-      string,
-      bigint,
-    ], ParsedOffer>;
 
 /**
  * Parse an Offer struct from viem contract read.
@@ -83,9 +64,6 @@ using RawOfferData = std::variant<, readonly [
  * 15. payer (address)
  * 16. amountPaid (uint256)
  */
-;
-  }
-  return offerRaw as ParsedOffer;
-}
+ParsedOffer parseOfferStruct(RawOfferData offerRaw);
 
 } // namespace elizaos

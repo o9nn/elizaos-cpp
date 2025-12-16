@@ -11,7 +11,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
+
 
 struct PackageInfo {
     std::string name;
@@ -21,7 +21,6 @@ struct PackageInfo {
     std::string repository;
     std::vector<std::string> dependencies;
 };
-
 
 class PackageManagerClient {
   static async getNpmInfo(packageName: string): Promise<PackageInfo> {
@@ -43,18 +42,5 @@ class PackageManagerClient {
     };
   }
 
-  static async getPyPiInfo(packageName: string): Promise<PackageInfo> {
-    const response = await axios.get(`https://pypi.org/pypi/${packageName}/json`);
-    const info = response.data.info;
     
-    return {
-      name: packageName,
-      version: info.version,
-      description: info.summary,
-      downloads: 0, // PyPI doesn't provide download stats
-      repository: info.project_urls?.Repository,
-      dependencies: [], // Would need to parse requirements.txt
-    };
-  }
-} 
 } // namespace elizaos

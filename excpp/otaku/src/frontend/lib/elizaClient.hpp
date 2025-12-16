@@ -12,21 +12,9 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
 
-const elizaClient = ElizaClient.create({
-  baseUrl: window.location.origin,
-  timeout: 30000,
-  headers: {
-    'Accept': 'application/json',
-  },
-  apiKey: localStorage.getItem('eliza-api-key') || undefined,
-});
 
- else {
-    localStorage.removeItem('eliza-api-key');
-  }
-}
+void updateApiKey(string | null newKey);
 
 
 } // namespace elizaos

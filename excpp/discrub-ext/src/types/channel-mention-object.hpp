@@ -13,10 +13,5 @@ namespace elizaos {
 
 // https://discord.com/developers/docs/resources/channel#channel-mention-object
 using ChannelMentionObject = {
-  id: Snowflake;
-  guild_id: Snowflake;
-  type: number;
-  name: string;
-};
 
 } // namespace elizaos

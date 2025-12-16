@@ -11,7 +11,6 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { Metadata, UUID } from './primitives';
 
 struct Component {
     UUID id;
@@ -25,7 +24,6 @@ struct Component {
     Metadata data;
 };
 
-
 /**
  * Represents a user account
  */
@@ -36,7 +34,6 @@ struct Entity {
     UUID agentId;
     std::optional<std::vector<Component>> components;
 };
-
 
 /**
  * Defines roles within a system, typically for access control or permissions, often within a `World`.
@@ -52,20 +49,6 @@ enum Role {
 }
 
 using World = {
-  id: UUID;
-  name?: string;
-  agentId: UUID;
-  serverId: string;
-  metadata?: {
-    ownership?: {
-      ownerId: string;
-    };
-    roles?: {
-      [entityId: UUID]: Role;
-    };
-    [key: string]: unknown;
-  };
-};
 
 enum ChannelType {
   SELF = 'SELF', // Messages to self
@@ -82,20 +65,8 @@ enum ChannelType {
 }
 
 using Room = {
-  id: UUID;
-  name?: string;
-  agentId?: UUID;
-  source: string;
-  type: ChannelType;
-  channelId?: string;
-  serverId?: string;
-  worldId?: UUID;
-  metadata?: Metadata;
-};
 
 using RoomMetadata = {
-  [key: string]: unknown;
-};
 
 /**
  * Room participant with account details
@@ -104,7 +75,6 @@ struct Participant {
     UUID id;
     Entity entity;
 };
-
 
 /**
  * Represents a relationship between users

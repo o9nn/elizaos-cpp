@@ -11,7 +11,6 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { TimeInterval } from "./common";
 
 // Network Types
 struct DefiNetworksResponse {
@@ -20,14 +19,12 @@ struct DefiNetworksResponse {
     std::vector<std::string> chains;
 };
 
-
 // Price Types
 struct DefiPriceParams {
     std::string address;
     std::optional<double> check_liquidity;
     std::optional<bool> include_liquidity;
 };
-
 
 struct DefiPriceResponse {
     bool success;
@@ -38,14 +35,12 @@ struct DefiPriceResponse {
     std::optional<double> liquidity;
 };
 
-
 // Multi Price Types
 struct DefiMultiPriceParams {
     std::string list_address;
     std::optional<double> check_liquidity;
     std::optional<bool> include_liquidity;
 };
-
 
 struct DefiMultiPriceResponse {
     bool success;
@@ -56,14 +51,12 @@ struct DefiMultiPriceResponse {
     std::optional<double> priceChange24h;
 };
 
-
 // Multi Price Types POST
 struct DefiMultiPriceParamsPOST {
     std::optional<double> check_liquidity;
     std::optional<bool> include_liquidity;
     std::string list_address;
 };
-
 
 // History Price Types
 struct DefiHistoryPriceParams {
@@ -74,7 +67,6 @@ struct DefiHistoryPriceParams {
     std::optional<double> time_to;
 };
 
-
 struct DefiHistoryPriceResponse {
     bool success;
     { data;
@@ -83,13 +75,11 @@ struct DefiHistoryPriceResponse {
     std::optional<double> value;
 };
 
-
 // Historical Price Unix Types
 struct HistoricalPriceUnixParams {
     std::string address;
     std::optional<double> unixtime;
 };
-
 
 struct HistoricalPriceUnixResponse {
     bool success;
@@ -99,7 +89,6 @@ struct HistoricalPriceUnixResponse {
     std::optional<std::string> priceChange24h;
 };
 
-
 // OHLCV Types
 struct OHLCVParams {
     std::string address;
@@ -107,7 +96,6 @@ struct OHLCVParams {
     std::optional<double> time_from;
     std::optional<double> time_to;
 };
-
 
 struct OHLCVResponse {
     bool success;
@@ -123,13 +111,11 @@ struct OHLCVResponse {
     std::optional<double> v;
 };
 
-
 // Price Volume Types
 struct PriceVolumeParams {
     std::string address;
     std::optional<TimeInterval> type;
 };
-
 
 struct PriceVolumeResponse {
     bool success;
@@ -142,13 +128,11 @@ struct PriceVolumeResponse {
     std::optional<double> priceChangePercent;
 };
 
-
 // Multi Price Volume Types
 struct MultiPriceVolumeParams {
     std::string list_address;
     std::optional<TimeInterval> type;
 };
-
 
 struct MultiPriceVolumeResponse {
     bool success;
@@ -161,7 +145,6 @@ struct MultiPriceVolumeResponse {
     std::optional<double> priceChangePercent;
 };
 
-
 // Base Quote Types
 struct BaseQuoteParams {
     std::string base_address;
@@ -170,7 +153,6 @@ struct BaseQuoteParams {
     std::optional<double> time_from;
     std::optional<double> time_to;
 };
-
 
 struct BaseQuoteResponse {
     bool success;
@@ -184,7 +166,6 @@ struct BaseQuoteResponse {
     std::optional<double> c;
 };
 
-
 // Token Trades Types
 struct DefiTradesTokenParams {
     std::string address;
@@ -195,7 +176,6 @@ struct DefiTradesTokenParams {
     std::optional<double> before_time;
     std::optional<double> after_time;
 };
-
 
 struct DefiTradesTokenInfo {
     std::string symbol;
@@ -209,7 +189,6 @@ struct DefiTradesTokenInfo {
     double uiChangeAmount;
     std::optional<any | null> feeInfo;
 };
-
 
 struct DefiTradesTokenResponse {
     bool success;

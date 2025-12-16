@@ -11,10 +11,6 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { Memory } from './memory';
-import type { UUID } from './primitives';
-import type { IAgentRuntime } from './runtime';
-import type { State } from './state';
 
 /**
  * Defines the contract for a Task Worker, which is responsible for executing a specific type of task.
@@ -26,10 +22,6 @@ struct TaskWorker {
     ( execute;
     IAgentRuntime runtime;
     { [key: string]: unknown } options;
-    Task task;
-    std::optional<(runtime: IAgentRuntime, message: Memory, state: State) => Promise<boolean>> validate;
-};
-
 
 /**
  * Defines metadata associated with a `Task`.
@@ -39,15 +31,8 @@ struct TaskWorker {
  */
 using TaskMetadata = {
   /** Optional. If the task is recurring, this specifies the interval in milliseconds between updates or executions. */
-  updateInterval?: number;
   /** Optional. Describes options or parameters that can be configured for this task, often for UI presentation. */
-  options?: {
-    name: string;
-    description: string;
-  }[];
   /** Allows for other dynamic metadata properties related to the task. */
-  [key: string]: unknown;
-};
 
 /**
  * Represents a task to be performed, often in the background or at a later time.

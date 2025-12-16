@@ -13,21 +13,14 @@ namespace elizaos {
 
 
 
-
-
+void cn(const std::vector<ClassValue>& ...inputs);
 
 // Predefined avatars available in the public/avatars folder
-const PREDEFINED_AVATARS = [
-  '/avatars/user_joyboy.png',
-  '/avatars/user_krimson.png',
-  '/avatars/user_mati.png',
-  '/avatars/user_pek.png',
-] as const;
 
 /**
  * Returns a random avatar URL from the predefined avatars
  * @returns A random avatar URL path
  */
-
+std::string getRandomAvatar();
 
 } // namespace elizaos

@@ -12,7 +12,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
+
 
 struct VideoInfo {
     std::optional<std::string> title;
@@ -25,7 +25,6 @@ struct VideoInfo {
     std::optional<Date> uploadDate;
     std::optional<std::vector<VideoFormat>> formats;
 };
-
 
 struct VideoFormat {
     std::string formatId;
@@ -40,7 +39,6 @@ struct VideoFormat {
     std::optional<double> bitrate;
 };
 
-
 struct VideoDownloadOptions {
     std::optional<std::string> format;
     std::optional<'best' | 'worst' | 'bestvideo' | 'bestaudio' | string> quality;
@@ -51,7 +49,6 @@ struct VideoDownloadOptions {
     std::optional<bool> embedSubs;
     std::optional<bool> writeInfoJson;
 };
-
 
 struct VideoProcessingOptions {
     std::optional<double> startTime;
@@ -64,21 +61,15 @@ struct VideoProcessingOptions {
     std::optional<std::string> videoCodec;
 };
 
-
 /**
  * Interface for video processing and download services
  */
-abstract class IVideoService extends Service {
-  static override readonly serviceType = ServiceType.VIDEO;
-
-  public readonly capabilityDescription = 'Video download, processing, and conversion capabilities';
 
   /**
    * Get video information without downloading
    * @param url - Video URL
    * @returns Promise resolving to video information
    */
-  abstract getVideoInfo(url: string): Promise<VideoInfo>;
 
   /**
    * Download a video from URL
@@ -86,7 +77,6 @@ abstract class IVideoService extends Service {
    * @param options - Download options
    * @returns Promise resolving to downloaded file path
    */
-  abstract downloadVideo(url: string, options?: VideoDownloadOptions): Promise<string>;
 
   /**
    * Extract audio from video
@@ -94,7 +84,6 @@ abstract class IVideoService extends Service {
    * @param outputPath - Optional output path for audio file
    * @returns Promise resolving to audio file path
    */
-  abstract extractAudio(videoPath: string, outputPath?: string): Promise<string>;
 
   /**
    * Generate thumbnail from video
@@ -102,7 +91,6 @@ abstract class IVideoService extends Service {
    * @param timestamp - Timestamp in seconds to capture thumbnail
    * @returns Promise resolving to thumbnail image path
    */
-  abstract getThumbnail(videoPath: string, timestamp?: number): Promise<string>;
 
   /**
    * Convert video to different format
@@ -111,18 +99,11 @@ abstract class IVideoService extends Service {
    * @param options - Processing options
    * @returns Promise resolving to converted video path
    */
-  abstract convertVideo(
-    videoPath: string,
-    outputPath: string,
-    options?: VideoProcessingOptions
-  ): Promise<string>;
 
   /**
    * Get available formats for a video URL
    * @param url - Video URL
    * @returns Promise resolving to available formats
    */
-  abstract getAvailableFormats(url: string): Promise<VideoFormat[]>;
-}
 
 } // namespace elizaos

@@ -11,8 +11,6 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { MemoryMetadata } from './memory';
-import type { Content, UUID } from './primitives';
 
 /**
  * Represents a single item of knowledge that can be processed and stored by the agent.
@@ -23,12 +21,8 @@ import type { Content, UUID } from './primitives';
  */
 using KnowledgeItem = {
   /** A Universally Unique Identifier for this specific knowledge item. */
-  id: UUID;
   /** The actual content of the knowledge item, which must include text and can have other fields. */
-  content: Content;
   /** Optional metadata associated with this knowledge item, conforming to `MemoryMetadata`. */
-  metadata?: MemoryMetadata;
-};
 
 /**
  * Defines the scope or visibility of knowledge items within the agent's system.
@@ -62,7 +56,6 @@ struct DirectoryItem {
     std::string directory;
     std::optional<bool> shared;
 };
-
 
 /**
  * Represents a row structure, typically from a database query related to text chunking or processing.

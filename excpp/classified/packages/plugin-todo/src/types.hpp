@@ -11,22 +11,14 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { UUID } from '@elizaos/core';
 
 // Extend the core service types with todo service
-declare module '@elizaos/core' {
   struct ServiceTypeRegistry {
     'TODO' TODO;
     'TODO_REMINDER' TODO_REMINDER;
 };
 
-}
-
 // Export service type constant
-const TodoServiceType = {
-  TODO: 'TODO' as const,
-  TODO_REMINDER: 'TODO_REMINDER' as const,
-} satisfies Partial<import('@elizaos/core').ServiceTypeRegistry>;
 
 /**
  * Type for todo metadata
@@ -56,7 +48,6 @@ struct TodoData {
     std::optional<std::vector<std::string>> tags;
 };
 
-
 struct CreateTodoInput {
     UUID agentId;
     UUID worldId;
@@ -71,7 +62,6 @@ struct CreateTodoInput {
     std::optional<TodoMetadata> metadata;
     std::optional<std::vector<std::string>> tags;
 };
-
 
 struct UpdateTodoInput {
     std::optional<std::string> name;

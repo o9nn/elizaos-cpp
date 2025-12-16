@@ -21,8 +21,6 @@ namespace elizaos {
 * from './runtime';
 
 /*
-Core exports for Eliza SDK v1. This is the primary entrypoint for the SDK.
-These are the v1 specs, which are a shim over the v2 specs for backwards compatibility.
 */
 
 // Core types
@@ -30,27 +28,6 @@ These are the v1 specs, which are a shim over the v2 specs for backwards compati
 
 // Adapters created for v1 -> v2 compatibility
 // Export only the adapter functions and V1 types to avoid conflicts
-{ fromV2State, toV2State } from './state';
-type { State } from './state';
-
-{ asUUID, generateUuidFromString } from './uuid';
-
-{
-  fromV2ActionExample,
-  toV2ActionExample,
-  convertContentToV1,
-  convertContentToV2,
-} from './actionExample';
-
-type { ActionExample } from './actionExample';
-
-{ fromV2Provider, toV2Provider } from './provider';
-
-type { Provider } from './provider';
-
-{ createTemplateFunction, processTemplate, getTemplateValues } from './templates';
-
-type { TemplateType } from './templates';
 
 // Existing exports
 * from './messages';

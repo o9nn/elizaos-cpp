@@ -12,8 +12,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-import type { Content, UUID } from './primitives';
+
 
 /**
  * Defines the scope or visibility of knowledge items within the agent's system.
@@ -48,7 +47,6 @@ struct DirectoryItem {
     std::optional<bool> shared;
 };
 
-
 /**
  * Represents a row structure, typically from a database query related to text chunking or processing.
  * This interface is quite minimal and seems to be a placeholder or a base for more specific chunk-related types.
@@ -59,35 +57,22 @@ struct ChunkRow {
     std::string id;
 };
 
-
 /**
  * Extended knowledge item that includes additional properties commonly used
  * in knowledge management systems like creation timestamps, embeddings, etc.
  * This maintains compatibility with the base KnowledgeItem while adding
  * commonly needed fields for storage and retrieval.
  */
-interface KnowledgeItem extends Memory {
   /** A Universally Unique Identifier for this specific knowledge item. */
-  id: UUID;
   /** The actual content of the knowledge item, which must include text and can have other fields. */
-  content: Content;
   /** Optional metadata with extended document properties */
-  metadata?: DocumentMetadata;
   /** Creation timestamp */
-  createdAt: number;
   /** Associated agent ID */
-  agentId: UUID;
   /** Associated entity ID */
-  entityId: UUID;
   /** Associated room ID */
-  roomId: UUID;
   /** Associated world ID */
-  worldId?: UUID;
   /** Optional embedding vector for semantic search */
-  embedding?: number[];
   /** Similarity score when retrieved via search */
-  similarity?: number;
-}
 
 /**
  * Service interface for knowledge management operations.

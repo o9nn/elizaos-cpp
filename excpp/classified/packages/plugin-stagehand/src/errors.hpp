@@ -12,7 +12,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
+
 
 class StagehandError extends Error {
   public recoverable: boolean;
@@ -31,7 +31,6 @@ class StagehandError extends Error {
     this.isRetryable = isRetryable;
     this.details = details;
   }
-}
 
 class BrowserServiceNotAvailableError extends StagehandError {
   constructor() {
@@ -42,7 +41,6 @@ class BrowserServiceNotAvailableError extends StagehandError {
       false
     );
   }
-}
 
 class BrowserSessionError extends StagehandError {
   constructor(message: string, details?: any) {
@@ -54,7 +52,6 @@ class BrowserSessionError extends StagehandError {
       details
     );
   }
-}
 
 class BrowserNavigationError extends StagehandError {
   constructor(url: string, originalError?: Error) {
@@ -70,7 +67,6 @@ class BrowserNavigationError extends StagehandError {
       { url, originalError: originalError?.message }
     );
   }
-}
 
 class BrowserActionError extends StagehandError {
   constructor(action: string, target: string, originalError?: Error) {
@@ -86,7 +82,6 @@ class BrowserActionError extends StagehandError {
       { action, target, originalError: originalError?.message }
     );
   }
-}
 
 class BrowserSecurityError extends StagehandError {
   public details?: any;
@@ -95,23 +90,6 @@ class BrowserSecurityError extends StagehandError {
     super(message, 'SECURITY_ERROR', 'This action was blocked for security reasons.', false);
     this.details = details;
   }
-}
 
-]:`, error.message);
-    callback?.({
-      text: error.userMessage,
-      error: true,
-    });
-  } else {
-    logger.error('Unexpected browser error:', error);
-    callback?.({
-      text: action
-        ? `I encountered an error while trying to ${action}. Please try again.`
-        : 'I encountered an unexpected error. Please try again.',
-      error: true,
-    });
-  }
-  return [];
-}
 
 } // namespace elizaos

@@ -16,7 +16,6 @@ namespace elizaos {
 struct ImportMetaEnv {
 };
 
-
 struct ImportMeta {
 };
 

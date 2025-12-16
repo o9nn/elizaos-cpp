@@ -12,13 +12,8 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
+
 
 using ChannelState = std::vector<{
-  channels: Channel>;
-  selectedChannel: Channel | Maybe;
-  isLoading: boolean | Maybe;
-  selectedExportChannels: Snowflake[];
-};
 
 } // namespace elizaos

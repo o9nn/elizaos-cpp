@@ -13,11 +13,5 @@ namespace elizaos {
 
 // https://discord.com/developers/docs/resources/channel#forum-tag-object
 using ForumTagObject = {
-  id: Snowflake;
-  name: string;
-  moderated: boolean;
-  emoji_id: string | Maybe;
-  emoji_name: string | Maybe;
-};
 
 } // namespace elizaos

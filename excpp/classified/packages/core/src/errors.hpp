@@ -44,30 +44,7 @@ class ElizaError extends Error {
     super(message);
     this.name = 'ElizaError';
   }
-}
 
-,
-      statusCode: error.statusCode,
-    };
-  }
-
-  if (error instanceof Error) {
-    return {
-      error: {
-        code: ErrorCode.INTERNAL_ERROR,
-        message: error.message,
-      },
-      statusCode: 500,
-    };
-  }
-
-  return {
-    error: {
-      code: ErrorCode.INTERNAL_ERROR,
-      message: 'An unexpected error occurred',
-    },
-    statusCode: 500,
-  };
-}
+void createErrorResponse(unknown error);
 
 } // namespace elizaos

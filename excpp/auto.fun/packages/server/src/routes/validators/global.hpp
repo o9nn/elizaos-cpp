@@ -25,7 +25,6 @@ struct Pagination {
     double offset;
 };
 
-
 enum SortBy {
   CreatedAt = "createdAt",
   MarketCapUSD = "marketCapUSD",
@@ -56,7 +55,6 @@ struct RawTokenQuery {
     std::optional<std::string> sortOrder;
 };
 
-
 struct TokenQueryParams {
     double page;
     double limit;
@@ -68,31 +66,8 @@ struct TokenQueryParams {
     SortOrder sortOrder;
 };
 
+std::string parseSolanaAddress(unknown raw, auto name = "address");
 
-const MAX_LIMIT = 50;
-const MAX_PAGE = 500;
-
-const SOLANA_ADDRESS_REGEX = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
-
-`);
-  }
-  return raw;
-}
-
- = {}
-): Pagination {
-  const rawLimit = parseInt(query.limit || "", 10);
-  const rawPage = parseInt(query.page || "", 10);
-
-  const limit = Number.isNaN(rawLimit)
-    ? defaultLimit
-    : Math.min(rawLimit, maxLimit);
-
-  const page = Number.isNaN(rawPage)
-    ? 1
-    : Math.min(Math.max(1, rawPage), maxPage);
-
-  return { limit, page, offset: (page - 1) * limit };
-}
+Pagination parsePaginationQuery(Record<string query, auto string | undefined>, auto { defaultLimit = 50, auto maxLimit = 50, auto maxPage = 1000 } = {});
 
 } // namespace elizaos

@@ -12,12 +12,8 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
+
 
 using UserState = std::variant<{
-  currentUser: User, Maybe>;
-  token: string | Maybe;
-  isLoading: boolean | Maybe;
-};
 
 } // namespace elizaos

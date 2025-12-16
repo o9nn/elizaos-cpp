@@ -27,15 +27,12 @@ struct LoadTestMetrics {
     double throughput;
     double timeoutCount;
     { [key: string]: number } errorTypes;
-};
-
 
 struct ScaleConfig {
     double agents;
     double messageCount;
     std::string description;
 };
-
 
 struct SystemMetrics {
     std::vector<double> cpuUsage;

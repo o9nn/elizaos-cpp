@@ -12,19 +12,15 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
+
 
 // Export the plugin as default
-default clankerPlugin;
 
 // Export the plugin by name
-{ clankerPlugin };
 
 // Export services for direct use if needed
-{ ClankerService } from "./services";
 
 // Export actions for direct use if needed
-{ tokenDeployAction } from "./actions";
 
 // Export types
 * from "./types";

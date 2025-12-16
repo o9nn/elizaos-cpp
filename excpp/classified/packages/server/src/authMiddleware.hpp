@@ -12,8 +12,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
+
 
 /**
  * Express middleware for validating API Key authentication based on an environment variable.
@@ -28,22 +27,6 @@ namespace elizaos {
  * @param res - Express response object.
  * @param next - Express next function.
  */
-
-
-  // Allow OPTIONS requests for CORS preflight
-  if (req.method === 'OPTIONS') {
-    return next();
-  }
-
-  const apiKey = req.headers?.['x-api-key'];
-
-  if (!apiKey || apiKey !== serverAuthToken) {
-    logger.warn(`Unauthorized access attempt: Missing or invalid X-API-KEY from ${req.ip}`);
-    return res.status(401).send('Unauthorized: Invalid or missing X-API-KEY');
-  }
-
-  // If key is valid, proceed
-  next();
-}
+void apiKeyAuthMiddleware(Request req, Response res, NextFunction next);
 
 } // namespace elizaos

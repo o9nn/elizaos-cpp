@@ -16,8 +16,6 @@ namespace elizaos {
  * Type definitions for Project Manager
  */
 
-;
-
 // Team member enums
 using WeekDay = std::variant<, 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'>;
 
@@ -33,7 +31,6 @@ struct PlatformContact {
     string; // username, email, etc. identifier;
 };
 
-
 // Team member availability
 struct Availability {
     std::optional<std::vector<WeekDay>> workDays;
@@ -41,7 +38,6 @@ struct Availability {
     string; // 24-hour format HH:MM workHoursEnd;
     string; // e.g., 'America/New_York', 'UTC' timeZone;
 };
-
 
 // Team member interface
 struct TeamMember {
@@ -55,7 +51,6 @@ struct TeamMember {
     std::string createdAt;
     std::string updatedAt;
 };
-
 
 // Project status types
 using ProjectStatus = std::variant<'PLANNING', 'IN_PROGRESS', 'ON_HOLD', 'COMPLETED', 'CANCELLED'>;
@@ -80,7 +75,6 @@ struct Task {
     std::optional<std::string> dueDate;
 };
 
-
 // Milestone interface
 struct Milestone {
     UUID id;
@@ -91,7 +85,6 @@ struct Milestone {
     std::optional<std::string> completedAt;
 };
 
-
 // Progress metrics
 struct ProjectProgress {
     std::string date;
@@ -101,7 +94,6 @@ struct ProjectProgress {
     double totalMilestones;
     double blockedTasks;
 };
-
 
 // Project interface
 struct Project {
@@ -120,7 +112,6 @@ struct Project {
     std::string updatedAt;
 };
 
-
 // Daily update types
 using UpdateType = std::variant<'CHECK_IN', 'STATUS_UPDATE', 'BLOCKER_REPORT'>;
 
@@ -137,7 +128,6 @@ struct DailyUpdate {
     std::string timestamp;
 };
 
-
 struct TeamMemberUpdate {
     'team-member-update' type;
     UUID updateId;
@@ -150,7 +140,6 @@ struct TeamMemberUpdate {
     std::optional<std::string> serverId;
     string; // JSON stringified object containing all dynamic Q&A pairs answers;
 };
-
 
 struct CheckInSchedule {
     'team-member-checkin-schedule' type;

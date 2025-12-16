@@ -12,16 +12,11 @@ namespace elizaos {
 // Manual refinement required for production use
 
 // Export service type constant for shell service
-const ShellServiceType = {
-  SHELL: 'SHELL' as const,
-};
 
 // Extend the core service types with shell service
-declare module '@elizaos/core' {
   struct ServiceTypeRegistry {
     'SHELL' SHELL;
 };
 
-}
 
 } // namespace elizaos

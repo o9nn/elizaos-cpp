@@ -12,7 +12,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
+
 
 struct CharacterModification {
     UUID id;
@@ -25,7 +25,6 @@ struct CharacterModification {
     Date createdAt;
 };
 
-
 struct CharacterSnapshot {
     UUID id;
     UUID agentId;
@@ -34,7 +33,6 @@ struct CharacterSnapshot {
     Date createdAt;
 };
 
-
 struct ModificationOperation {
     "add" | "modify" | "delete" type;
     std::string path;
@@ -42,20 +40,17 @@ struct ModificationOperation {
     std::optional<std::string> dataType;
 };
 
-
 struct CharacterDiff {
     std::vector<ModificationOperation> operations;
     std::string reasoning;
     std::string timestamp;
 };
 
-
 struct ValidationResult {
     bool valid;
     std::vector<std::string> errors;
     std::vector<std::string> warnings;
 };
-
 
 struct ModificationOptions {
     std::optional<std::vector<std::string>> focusAreas;

@@ -13,10 +13,5 @@ namespace elizaos {
 
 // https://discord.com/developers/docs/resources/channel#overwrite-object
 using OverwriteObject = {
-  id: Snowflake;
-  type: number;
-  allow: string;
-  deny: string;
-};
 
 } // namespace elizaos

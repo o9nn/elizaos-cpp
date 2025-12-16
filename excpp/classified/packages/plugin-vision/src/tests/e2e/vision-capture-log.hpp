@@ -12,10 +12,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { TestSuite, IAgentRuntime } from '@elizaos/core';
-;
-;
-;
+
 
 class VisionCaptureLogTestSuite implements TestSuite {
   name = 'plugin-vision-capture-log';
@@ -317,9 +314,6 @@ ${captureData.captures
         console.log('✅ Vision capture log test PASSED');
       },
     },
-  ];
-}
 
-default new VisionCaptureLogTestSuite();
 
 } // namespace elizaos

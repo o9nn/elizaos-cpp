@@ -13,9 +13,5 @@ namespace elizaos {
 
 // https://discord.com/developers/docs/resources/sticker#sticker-item-object
 using StickerItemObject = {
-  id: Snowflake;
-  name: string;
-  format_type: number;
-};
 
 } // namespace elizaos

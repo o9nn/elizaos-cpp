@@ -17,7 +17,6 @@ namespace elizaos {
 struct RuntimeSettings {
 };
 
-
 struct Setting {
     std::string name;
     string; // Used in chat context when discussing the setting description;
@@ -30,12 +29,9 @@ struct Setting {
     std::optional<std::vector<std::string>> dependsOn;
     std::optional<(value: any) => string> onSetAction;
     std::optional<(settings: { [key: string]: Setting }) => boolean> visibleIf;
-};
-
 
 struct WorldSettings {
 };
-
 
 struct OnboardingConfig {
     { settings;

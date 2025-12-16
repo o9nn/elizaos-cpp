@@ -24,17 +24,32 @@ class FormatError extends Error {
     super(message);
     this.name = 'FormatError';
   }
-}
 
 /**
- * Exception for ,
-  ) {
-    super(message);
-    this.name = 'FunctionCallingFormatError';
-    this.errorCode = errorCode;
-    this.extraInfo = extraInfo;
-  }
-}
+ * Exception for function calling format errors
+ */
+class FunctionCallingFormatError extends FormatError {
+  errorCode:
+    | 'missing'
+    | 'multiple'
+    | 'incorrect_args'
+    | 'invalid_json'
+    | 'invalid_command'
+    | 'missing_arg'
+    | 'unexpected_arg';
+  extraInfo: Record<string, any>;
+
+  constructor(
+    message: string,
+    errorCode:
+      | 'missing'
+      | 'multiple'
+      | 'incorrect_args'
+      | 'invalid_json'
+      | 'invalid_command'
+      | 'missing_arg'
+      | 'unexpected_arg',
+    extraInfo: Record<string, any> = {},
 
 /**
  * Exception for context window exceeded
@@ -44,7 +59,6 @@ class ContextWindowExceededError extends Error {
     super(message || 'Context window exceeded');
     this.name = 'ContextWindowExceededError';
   }
-}
 
 /**
  * Base exception for cost limit errors
@@ -54,7 +68,6 @@ class CostLimitExceededError extends Error {
     super(message || 'Cost limit exceeded');
     this.name = 'CostLimitExceededError';
   }
-}
 
 /**
  * Exception for instance cost limit exceeded
@@ -64,7 +77,6 @@ class InstanceCostLimitExceededError extends CostLimitExceededError {
     super(message || 'Instance cost limit exceeded');
     this.name = 'InstanceCostLimitExceededError';
   }
-}
 
 /**
  * Exception for total cost limit exceeded
@@ -74,7 +86,6 @@ class TotalCostLimitExceededError extends CostLimitExceededError {
     super(message || 'Total cost limit exceeded');
     this.name = 'TotalCostLimitExceededError';
   }
-}
 
 /**
  * Exception for instance call limit exceeded
@@ -84,7 +95,6 @@ class InstanceCallLimitExceededError extends CostLimitExceededError {
     super(message || 'Instance call limit exceeded');
     this.name = 'InstanceCallLimitExceededError';
   }
-}
 
 /**
  * Exception for content policy violations
@@ -94,7 +104,6 @@ class ContentPolicyViolationError extends Error {
     super(message || 'Content policy violation');
     this.name = 'ContentPolicyViolationError';
   }
-}
 
 /**
  * Exception for model configuration errors
@@ -104,7 +113,6 @@ class ModelConfigurationError extends Error {
     super(message || 'Model configuration error');
     this.name = 'ModelConfigurationError';
   }
-}
 
 /**
  * Exception for EOF errors
@@ -114,7 +122,6 @@ class EOFError extends Error {
     super(message || 'End of file reached');
     this.name = 'EOFError';
   }
-}
 
 /**
  * Exception for blocked actions
@@ -124,7 +131,6 @@ class BlockedActionError extends Error {
     super(message || 'Action is blocked');
     this.name = 'BlockedActionError';
   }
-}
 
 /**
  * Exception for retry with output
@@ -134,7 +140,6 @@ class RetryWithOutputError extends Error {
     super(message || 'Retry with output');
     this.name = 'RetryWithOutputError';
   }
-}
 
 /**
  * Exception for retry without output
@@ -144,7 +149,6 @@ class RetryWithoutOutputError extends Error {
     super(message || 'Retry without output');
     this.name = 'RetryWithoutOutputError';
   }
-}
 
 /**
  * Exception for exit forfeit
@@ -154,7 +158,6 @@ class ExitForfeitError extends Error {
     super(message || 'Exit forfeit');
     this.name = 'ExitForfeitError';
   }
-}
 
 /**
  * Exception for total execution time exceeded
@@ -164,7 +167,6 @@ class TotalExecutionTimeExceededError extends Error {
     super(message || 'Total execution time exceeded');
     this.name = 'TotalExecutionTimeExceededError';
   }
-}
 
 /**
  * Exception for command timeout
@@ -174,7 +176,6 @@ class CommandTimeoutError extends Error {
     super(message || 'Command timed out');
     this.name = 'CommandTimeoutError';
   }
-}
 
 /**
  * Exception for bash syntax errors
@@ -187,6 +188,5 @@ class BashIncorrectSyntaxError extends Error {
     this.name = 'BashIncorrectSyntaxError';
     this.extraInfo = extraInfo;
   }
-}
 
 } // namespace elizaos

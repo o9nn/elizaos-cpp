@@ -22,41 +22,12 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { Plugin } from '@elizaos/core';
 
 // actions
-;
-;
-;
-;
-;
-;
-;
-;
-;
 
 // Strategies
-;
-;
 
-const autonomousTraderPlugin: Plugin = {
-  name: 'autonomous-trader',
-  description: 'Spartan Autonomous trading agent plugin',
-  evaluators: [],
-  providers: [],
-  actions: [
-    userRegistration, checkRegistrationCode, checkRegistration, deleteRegistration,
-    servicesMenu, walletCreate, setStrategy, userMetawalletList, devFix
-  ],
-  services: [],
-  init: async (_, runtime: IAgentRuntime) => {
-    console.log('autonomous-trader init');
     // register strategies
-    llmStrategy(runtime); // is async
-    copyStrategy(runtime); // is async
-  }
-};
 
-default autonomousTraderPlugin;
 
 } // namespace elizaos

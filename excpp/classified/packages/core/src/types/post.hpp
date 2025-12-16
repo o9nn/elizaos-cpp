@@ -12,8 +12,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-import type { UUID } from './primitives';
+
 
 struct PostMedia {
     UUID id;
@@ -29,7 +28,6 @@ struct PostMedia {
     std::optional<std::string> altText;
 };
 
-
 struct PostLocation {
     std::string name;
     std::optional<std::string> address;
@@ -38,7 +36,6 @@ struct PostLocation {
     double longitude;
     std::optional<std::string> placeId;
 };
-
 
 struct PostAuthor {
     UUID id;
@@ -52,7 +49,6 @@ struct PostAuthor {
     std::optional<std::string> website;
 };
 
-
 struct PostEngagement {
     double likes;
     double shares;
@@ -63,7 +59,6 @@ struct PostEngagement {
     bool hasCommented;
     bool hasSaved;
 };
-
 
 struct PostContent {
     std::optional<std::string> text;
@@ -85,7 +80,6 @@ struct PostContent {
     std::optional<Date> expiresAt;
     std::optional<bool> multipleChoice;
 };
-
 
 struct PostInfo {
     UUID id;
@@ -110,7 +104,6 @@ struct PostInfo {
     std::string url;
 };
 
-
 struct PostCreateOptions {
     std::optional<std::vector<std::string>> platforms;
     std::optional<Date> scheduledAt;
@@ -125,7 +118,6 @@ struct PostCreateOptions {
     std::optional<std::string> contentWarning;
     std::optional<bool> sensitive;
 };
-
 
 struct PostSearchOptions {
     std::optional<std::string> query;
@@ -142,7 +134,6 @@ struct PostSearchOptions {
     std::optional<PostInfo['visibility']> visibility;
     std::optional<'date' | 'engagement' | 'relevance'> sortBy;
 };
-
 
 struct PostAnalytics {
     UUID postId;
@@ -161,7 +152,6 @@ struct PostAnalytics {
     double hour;
     double engagement;
 };
-
 
 /**
  * Interface for social media posting services

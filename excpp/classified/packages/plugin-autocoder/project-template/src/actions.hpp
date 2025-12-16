@@ -22,7 +22,9 @@ namespace elizaos {
  * @property {string} name - The name of the action
  * @property {string[]} similes - The related similes of the action
  * @property {string} description - Description of the action
- * @property {Function} validate - Validation  handler - The  examples - Array of examples for the action
+ * @property {Function} validate - Validation function for the action
+ * @property {Function} handler - The function that handles the action
+ * @property {Object[]} examples - Array of examples for the action
  */
 // const helloWorldAction: Action = {
 //     name: 'HELLO_WORLD',
@@ -106,8 +108,6 @@ namespace elizaos {
 //     ],
 //   };
 
-const actions = [
   // actions go here
-];
 
 } // namespace elizaos

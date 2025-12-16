@@ -12,8 +12,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-import type { Chain } from "@/config/chains";
+
 
 class TokenRegistryService {
   async registerToken(params: {
@@ -49,65 +48,5 @@ class TokenRegistryService {
     return token;
   }
 
-  async getToken(tokenId: string): Promise<Token> {
-    return await TokenDB.getToken(tokenId);
-  }
-
-  async getAllTokens(filters?: {
-    chain?: Chain;
-    isActive?: boolean;
-    minMarketCap?: number;
-    maxMarketCap?: number;
-  }): Promise<Token[]> {
-    let tokens = await TokenDB.getAllTokens({
-      chain: filters?.chain,
-      isActive: filters?.isActive,
-    });
-
-    if (filters?.minMarketCap || filters?.maxMarketCap) {
-      const tokensWithMarketData = await Promise.all(
-        tokens.map(async (token) => {
-          const marketData = await MarketDataDB.getMarketData(token.id);
-          return { token, marketData };
-        }),
-      );
-
-      tokens = tokensWithMarketData
-        .filter(({ marketData }) => {
-          if (!marketData) return false;
-          if (
-            filters.minMarketCap &&
-            marketData.marketCap < filters.minMarketCap
-          )
-            return false;
-          if (
-            filters.maxMarketCap &&
-            marketData.marketCap > filters.maxMarketCap
-          )
-            return false;
-          return true;
-        })
-        .map(({ token }) => token);
-    }
-
-    return tokens;
-  }
-
-  async updateTokenStatus(tokenId: string, isActive: boolean): Promise<Token> {
-    return await TokenDB.updateToken(tokenId, { isActive });
-  }
-
-  async updateToken(tokenId: string, updates: Partial<Token>): Promise<Token> {
-    return await TokenDB.updateToken(tokenId, updates);
-  }
-
-  async getTokenMarketData(tokenId: string): Promise<TokenMarketData | null> {
-    return await MarketDataDB.getMarketData(tokenId);
-  }
-
-  async setTokenMarketData(data: TokenMarketData): Promise<void> {
-    await MarketDataDB.setMarketData(data);
-  }
-}
 
 } // namespace elizaos

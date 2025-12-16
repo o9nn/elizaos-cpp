@@ -11,7 +11,6 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-declare module 'canvas' {
   class Canvas {
     constructor(width: number, height: number);
     getContext(contextType: '2d'): CanvasRenderingContext2D;
@@ -37,6 +36,5 @@ declare module 'canvas' {
   struct CanvasRenderingContext2D {
 };
 
-}
 
 } // namespace elizaos

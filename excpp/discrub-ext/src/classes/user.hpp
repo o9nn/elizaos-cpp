@@ -68,6 +68,5 @@ class User {
     this.public_flags = opts.public_flags;
     this.avatar_decoration = opts.avatar_decoration;
   }
-}
 
 } // namespace elizaos

@@ -17,7 +17,6 @@ struct Partner {
     std::optional<std::string> image;
 };
 
-
 struct DashboardData {
     std::vector<Partner> partners;
 };

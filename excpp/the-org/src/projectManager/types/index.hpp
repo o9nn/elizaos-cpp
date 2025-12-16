@@ -12,7 +12,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
+
 
 // Define the days of the week for availability
 using WeekDay = std::variant<, 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'>;
@@ -45,7 +45,6 @@ struct Availability {
     EmploymentStatus employmentStatus;
 };
 
-
 /**
  * Interface for platform-specific contact information
  */
@@ -54,7 +53,6 @@ struct PlatformContact {
     std::string username;
     bool isPreferred;
 };
-
 
 /**
  * Interface representing a team member
@@ -69,7 +67,6 @@ struct TeamMember {
     string; // ISO date format dateAdded;
     std::optional<string; // ISO date format> lastCheckIn;
 };
-
 
 /**
  * Interface representing a task within a project
@@ -89,7 +86,6 @@ struct Task {
     std::optional<double> estimatedHours;
 };
 
-
 /**
  * Interface representing a project milestone
  */
@@ -102,7 +98,6 @@ struct Milestone {
     UUID[]; // Task IDs associated with this milestone tasks;
     bool completed;
 };
-
 
 /**
  * Interface representing a project
@@ -121,7 +116,6 @@ struct Project {
     string; // ISO date format updatedAt;
 };
 
-
 /**
  * Interface representing daily updates from team members
  */
@@ -137,7 +131,6 @@ struct DailyUpdate {
     std::optional<double> hoursWorked;
 };
 
-
 /**
  * Interface for team member summaries in reports
  */
@@ -149,7 +142,6 @@ struct TeamMemberSummary {
     double tasksInProgress;
     bool hasBlockers;
 };
-
 
 /**
  * Interface representing a project progress metrics
@@ -169,7 +161,6 @@ struct ProjectProgress {
     double tasksInProgress;
     bool hasUpdate;
 };
-
 
 /**
  * Interface representing a generated report
@@ -192,7 +183,6 @@ struct Report {
     string; // ISO date format dueDate;
     double completionPercentage;
 };
-
 
 /**
  * Interface for check-in status tracking

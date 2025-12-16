@@ -12,9 +12,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
-;
+
 
 class CollaborativeFilter {
   private userFactors: tf.Tensor2D | null = null;
@@ -43,35 +41,5 @@ class CollaborativeFilter {
     }
   }
 
-  async getRecommendations(userId: string, n: number = 10): Promise<RecommendedProject[]> {
-    if (!this.userFactors || !this.projectFactors) {
-      throw new Error('Model not trained');
-    }
 
-    const userVector = await this.getUserVector(userId);
-    const predictions = tf.matMul(userVector, this.projectFactors.transpose());
-    
-    const scores = await predictions.array();
-    const topIndices = this.getTopK(scores[0], n);
-
-    return this.getProjectDetails(topIndices);
-  }
-
-  async getSimilarProjects(projectId: string, n: number = 5): Promise<RecommendedProject[]> {
-    const projectVector = await this.getProjectVector(projectId);
-    const similarities = this.calculateCosineSimilarity(projectVector, this.projectFactors);
-    
-    const scores = await similarities.array();
-    const topIndices = this.getTopK(scores, n + 1).slice(1); // Exclude self
-
-    return this.getProjectDetails(topIndices);
-  }
-
-  private calculateCosineSimilarity(vector: tf.Tensor2D, matrix: tf.Tensor2D): tf.Tensor1D {
-    const normVector = tf.norm(vector);
-    const normMatrix = tf.norm(matrix, 2, 1);
-    const dot = tf.matMul(vector, matrix.transpose());
-    return tf.div(dot.squeeze(), tf.mul(normVector, normMatrix));
-  }
-} 
 } // namespace elizaos

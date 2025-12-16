@@ -11,12 +11,6 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { HandlerCallback } from './components';
-import type { Entity, Room, World } from './environment';
-import type { Memory } from './memory';
-import type { ModelTypeName } from './model';
-import type { Metadata, UUID } from './primitives';
-import type { IAgentRuntime } from './runtime';
 
 /**
  * Standard event types across all platforms
@@ -99,117 +93,43 @@ struct EventPayload {
     std::optional<() => void> onComplete;
 };
 
-
 /**
  * Payload for world-related events
  */
-interface WorldPayload extends EventPayload {
-  world: World;
-  rooms: Room[];
-  entities: Entity[];
-}
 
 /**
  * Payload for entity-related events
  */
-interface EntityPayload extends EventPayload {
-  entityId: UUID;
-  worldId?: UUID;
-  roomId?: UUID;
-  metadata?: {
-    orginalId: string;
-    username: string;
-    displayName?: string;
-    [key: string]: any;
-  };
-}
 
 /**
  * Payload for reaction-related events
  */
-interface MessagePayload extends EventPayload {
-  message: Memory;
-  callback?: HandlerCallback;
-  onComplete?: () => void;
-}
 
 /**
  * Payload for channel cleared events
  */
-interface ChannelClearedPayload extends EventPayload {
-  roomId: UUID;
-  channelId: string;
-  memoryCount: number;
-}
 
 /**
  * Payload for events that are invoked without a message
  */
-interface InvokePayload extends EventPayload {
-  worldId: UUID;
-  userId: string;
-  roomId: UUID;
-  callback?: HandlerCallback;
-  source: string;
-}
 
 /**
  * Run event payload type
  */
-interface RunEventPayload extends EventPayload {
-  runId: UUID;
-  messageId: UUID;
-  roomId: UUID;
-  entityId: UUID;
-  startTime: number;
-  status: 'started' | 'completed' | 'timeout';
-  endTime?: number;
-  duration?: number;
-  error?: string;
-}
 
 /**
  * Action event payload type
  */
-interface ActionEventPayload extends EventPayload {
-  actionId: UUID;
-  actionName: string;
-  startTime?: number;
-  completed?: boolean;
-  error?: Error;
-}
 
 /**
  * Evaluator event payload type
  */
-interface EvaluatorEventPayload extends EventPayload {
-  evaluatorId: UUID;
-  evaluatorName: string;
-  startTime?: number;
-  completed?: boolean;
-  error?: Error;
-}
 
 /**
  * Model event payload type
  */
-interface ModelEventPayload extends EventPayload {
-  provider: string;
-  type: ModelTypeName;
-  prompt: string;
-  tokens?: {
-    prompt: number;
-    completion: number;
-    total: number;
-  };
-}
 
 using MessageReceivedHandlerParams = {
-  runtime: IAgentRuntime;
-  message: Memory;
-  callback: HandlerCallback;
-  onComplete?: () => void;
-};
 
 /**
  * Maps event types to their corresponding payload types
@@ -217,13 +137,9 @@ using MessageReceivedHandlerParams = {
 struct EventPayloadMap {
 };
 
-
 /**
  * Event handler function type
  */
-type EventHandler<T extends keyof EventPayloadMap> = (
-  payload: EventPayloadMap[T]
-) => Promise<void>;
 
 /**
  * Defines a more specific type for event handlers, expecting an `Metadata`.

@@ -13,8 +13,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
+
 
 /**
  * Server metadata interface for message servers
@@ -24,7 +23,6 @@ struct ServerMetadata {
     std::optional<std::string> icon;
     std::optional<std::string> adminId;
 };
-
 
 /**
  * Channel metadata interface
@@ -44,7 +42,6 @@ struct ChannelMetadata {
     std::optional<double> maxDurationMinutes;
     std::optional<double> warningThresholdMinutes;
 };
-
 
 /**
  * Message metadata interface
@@ -80,7 +77,6 @@ struct MessageMetadata {
     std::optional<UUID> agent_id;
 };
 
-
 /**
  * External message metadata interface
  */
@@ -95,7 +91,6 @@ struct ExternalMessageMetadata {
     std::vector<std::string> users;
 };
 
-
 struct MessageServer {
     UUID id;
     std::string name;
@@ -105,7 +100,6 @@ struct MessageServer {
     Date createdAt;
     Date updatedAt;
 };
-
 
 struct MessageChannel {
     UUID id;
@@ -119,7 +113,6 @@ struct MessageChannel {
     Date createdAt;
     Date updatedAt;
 };
-
 
 struct Message {
     UUID id;
@@ -135,7 +128,6 @@ struct Message {
     std::optional<MessageMetadata> metadata;
 };
 
-
 struct MessageSubmitParams {
     UUID agentId;
     UUID channelId;
@@ -144,13 +136,11 @@ struct MessageSubmitParams {
     std::optional<MessageMetadata> metadata;
 };
 
-
 struct MessageCompleteParams {
     UUID messageId;
     'completed' | 'failed' status;
     std::optional<std::string> error;
 };
-
 
 struct ExternalMessageParams {
     std::string platform;
@@ -163,7 +153,6 @@ struct ExternalMessageParams {
     std::optional<ExternalMessageMetadata> metadata;
 };
 
-
 struct ChannelCreateParams {
     std::string name;
     ChannelType type;
@@ -171,18 +160,15 @@ struct ChannelCreateParams {
     std::optional<ChannelMetadata> metadata;
 };
 
-
 struct GroupChannelCreateParams {
     std::string name;
     std::vector<UUID> participantIds;
     std::optional<ChannelMetadata> metadata;
 };
 
-
 struct DmChannelParams {
     [UUID, UUID] participantIds;
 };
-
 
 struct ChannelParticipant {
     UUID id;
@@ -192,15 +178,6 @@ struct ChannelParticipant {
     Date joinedAt;
 };
 
-
-interface MessageSearchParams extends PaginationParams {
-  query?: string;
-  channelId?: UUID;
-  authorId?: UUID;
-  from?: Date | string;
-  to?: Date | string;
-}
-
 struct ServerCreateParams {
     std::optional<UUID> id;
     std::string name;
@@ -209,14 +186,12 @@ struct ServerCreateParams {
     std::optional<ServerMetadata> metadata;
 };
 
-
 struct ServerSyncParams {
     Array<{ channels;
     std::string name;
     ChannelType type;
     std::string sourceId;
 };
-
 
 struct ChannelUpdateParams {
     std::optional<std::string> name;

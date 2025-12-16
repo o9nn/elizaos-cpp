@@ -12,16 +12,10 @@ namespace elizaos {
 // Manual refinement required for production use
 
 // Extend the core service types with shell service
-declare module "@elizaos/core" {
   struct ServiceTypeRegistry {
     "SHELL" SHELL;
 };
 
-}
-
 // Export service type constant
-const ShellServiceType = {
-  SHELL: "SHELL" as const,
-} satisfies Partial<import("@elizaos/core").ServiceTypeRegistry>;
 
 } // namespace elizaos

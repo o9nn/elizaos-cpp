@@ -13,9 +13,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
-;
+
 
 /**
  * Preprocesses file paths for optimal matching
@@ -25,7 +23,7 @@ namespace elizaos {
  * @param content The file path content string
  * @returns The preprocessed content string
  */
-
+std::string preprocessFilePathContent(const std::string& content);
 
 /**
  * Preprocesses text content (commit messages, PR titles, etc.)
@@ -34,7 +32,7 @@ namespace elizaos {
  * @param content The text content string
  * @returns The preprocessed content string
  */
-
+std::string preprocessTextContent(const std::string& content);
 
 /**
  * Preprocesses code content
@@ -44,7 +42,7 @@ namespace elizaos {
  * @param content The code content string
  * @returns The preprocessed content string
  */
-
+std::string preprocessCodeContent(const std::string& content);
 
 /**
  * Preprocesses label content
@@ -54,7 +52,7 @@ namespace elizaos {
  * @param content The label content string
  * @returns The preprocessed content string
  */
-
+std::string preprocessLabelContent(const std::string& content);
 
 /**
  * Preprocesses content based on its type.
@@ -63,11 +61,6 @@ namespace elizaos {
  * @param content The content object to preprocess
  * @returns The preprocessed content object
  */
-
-  return {
-    ...content,
-    content: processedString,
-  };
-}
+MatchContent preprocessContent(MatchContent content);
 
 } // namespace elizaos

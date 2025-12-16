@@ -13,9 +13,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
-;
+
 
 class MorphoError extends Error {
   code: MorphoErrorCode;
@@ -40,7 +38,6 @@ class MorphoError extends Error {
     this.matchingImpact = matchingImpact;
     this.fallbackOptions = fallbackOptions;
   }
-}
 
 class ErrorHandler {
   static handle(error: any): MorphoError {
@@ -233,68 +230,5 @@ class ErrorHandler {
     );
   }
 
-  static createResponse(error: MorphoError): MorphoErrorResponse {
-    return {
-      code: error.code,
-      message: error.message,
-      details: error.details,
-      suggestions: error.suggestions,
-      matchingImpact: error.matchingImpact,
-      fallbackOptions: error.fallbackOptions,
-    };
-  }
-
-  static async withRetry<T>(
-    operation: () => Promise<T>,
-    maxRetries: number = 3,
-    delayMs: number = 1000,
-  ): Promise<T> {
-    let lastError: any;
-
-    for (let attempt = 1; attempt <= maxRetries; attempt++) {
-      try {
-        return await operation();
-      } catch (error) {
-        lastError = error;
-        logger.warn(`Attempt ${attempt} failed:`, error);
-
-        if (attempt < maxRetries) {
-          await new Promise((resolve) =>
-            setTimeout(resolve, delayMs * attempt),
-          );
-        }
-      }
-    }
-
-    throw this.handle(lastError);
-  }
-
-  static isRecoverableError(error: MorphoError): boolean {
-    const recoverableCodes = [
-      MorphoErrorCode.MATCHING_FAILED,
-      MorphoErrorCode.GAS_ESTIMATION_ERROR,
-      MorphoErrorCode.NETWORK_ERROR,
-    ];
-
-    return recoverableCodes.includes(error.code);
-  }
-
-  static getSuggestion(error: MorphoError): string {
-    if (error.suggestions && error.suggestions.length > 0) {
-      return error.suggestions[0];
-    }
-
-    switch (error.code) {
-      case MorphoErrorCode.INSUFFICIENT_COLLATERAL:
-        return "Supply more collateral or reduce borrow amount";
-      case MorphoErrorCode.MATCHING_FAILED:
-        return "Transaction will proceed with pool rates";
-      case MorphoErrorCode.LIQUIDITY_ERROR:
-        return "Try a smaller amount or different asset";
-      default:
-        return "Please try again or contact support";
-    }
-  }
-}
 
 } // namespace elizaos

@@ -18,12 +18,10 @@ struct CdpAuthMethod {
     std::optional<std::string> name;
 };
 
-
 struct CdpSmsMethod {
     std::optional<std::string> phoneNumber;
     std::optional<std::string> countryCode;
 };
-
 
 struct CdpAuthenticationMethods {
     std::optional<CdpAuthMethod> email;
@@ -31,7 +29,6 @@ struct CdpAuthenticationMethods {
     std::optional<CdpAuthMethod> google;
     std::optional<CdpSmsMethod> sms;
 };
-
 
 struct CdpUser {
     std::optional<std::string> userId;
@@ -41,11 +38,9 @@ struct CdpUser {
     std::optional<CdpAuthenticationMethods> authenticationMethods;
 };
 
-
 struct CdpUserInfoOptions {
     std::optional<bool> isSignedIn;
 };
-
 
 struct CdpUserInfo {
     std::optional<std::string> email;
@@ -53,28 +48,7 @@ struct CdpUserInfo {
     std::optional<std::string> phoneNumber;
 };
 
-
-@cdp.local` : undefined)
-  );
-}
-
-
-
-${raw}` : raw);
-  if (!combined) return undefined;
-  // Normalize to E.164 (+digits only)
-  const digits = combined.replace(/[^0-9]/g, '');
-  return digits ? `+${digits}` : undefined;
-}
-
-@cdp.local`;
-}
-
-@cdp.local` : undefined);
-  const username = extractUsernameFromCdpUser(user, email);
-  return { email, username, phoneNumber };
-}
-
+CdpUserInfo resolveCdpUserInfo(CdpUser | undefined user, std::optional<CdpUserInfoOptions> options);
 
 
 } // namespace elizaos

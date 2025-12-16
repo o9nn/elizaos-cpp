@@ -15,44 +15,15 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
-;
-;
+
 
 // Export the plugin
-const pluginDynamic: Plugin = {
-  name: "@elizaos/plugin-dynamic",
-  description: "Dynamic plugin creation system with AI-powered code generation",
-  actions: [
-    createPluginAction,
-    checkPluginCreationStatusAction,
-    cancelPluginCreationAction,
-    createPluginFromDescriptionAction,
-  ],
-  providers: [pluginCreationStatusProvider, pluginCreationCapabilitiesProvider],
-  services: [PluginCreationService],
-  evaluators: [],
-};
 
 // Export individual components
-{
-  PluginCreationService,
-  createPluginAction,
-  checkPluginCreationStatusAction,
-  cancelPluginCreationAction,
-  createPluginFromDescriptionAction,
-  pluginCreationStatusProvider,
-  pluginCreationCapabilitiesProvider,
-};
 
 // Default default pluginDynamic;
 
 // Re-types and utilities
-{
-  type PluginSpecification,
-  type PluginCreationJob,
-} from "./services/plugin-creation-service";
 * from "./utils/plugin-templates";
 
 } // namespace elizaos

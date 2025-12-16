@@ -20,7 +20,6 @@ struct GainersLosersParams {
     std::optional<double> limit;
 };
 
-
 struct GainersLosersResponse {
     bool success;
     { data;
@@ -32,7 +31,6 @@ struct GainersLosersResponse {
     std::optional<double> volume;
 };
 
-
 // Trader Transactions Seek Types
 struct TraderTransactionsSeekParams {
     std::string address;
@@ -42,7 +40,6 @@ struct TraderTransactionsSeekParams {
     std::optional<double> before_time;
     std::optional<double> after_time;
 };
-
 
 struct TraderTransactionsSeekResponse {
     bool success;

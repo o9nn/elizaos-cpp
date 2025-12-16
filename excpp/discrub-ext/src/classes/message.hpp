@@ -28,22 +28,6 @@ namespace elizaos {
 // Manual refinement required for production use
 
 // https://discord.com/developers/docs/resources/channel#message-object
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
 
 class Message {
   id: Snowflake;
@@ -148,7 +132,5 @@ class Message {
     this.resolved = opts.resolved;
     this.userName = opts.author.username;
   }
-}
-default Message;
 
 } // namespace elizaos

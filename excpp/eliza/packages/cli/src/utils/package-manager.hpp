@@ -15,13 +15,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
-;
-;
-;
-;
-;
+
 
 /**
  * Always returns 'bun' as the package manager for ElizaOS CLI.
@@ -53,33 +47,14 @@ std::future<bool> isRunningViaBunx();
  * @param {boolean} isGlobal - Whether to install globally
  * @returns {string[]} - The bun install command array
  */
-
+std::vector<std::string> getInstallCommand(bool isGlobal);
 
 /**
  * Removes a package from bun.lock file to prevent circular dependency issues
  * @param packageName - The package name to remove from lockfile
  * @param directory - The directory containing the bun.lock file
  */
-std::future<void> removeFromBunLock(const std::string& packageName, const std::string& directory);, skipping removal`);
-    return;
-  }
-
-  try {
-    // Use bun remove to cleanly remove the package from lockfile
-    await execa('bun', ['remove', packageName], {
-      cwd: directory,
-      stdio: 'pipe', // Don't show output for cleanup operation
-    });
-    logger.debug(`Successfully removed ${packageName} from bun.lock`);
-  } catch (error: any) {
-    // If the package isn't in the lockfile, that's fine - we just want to ensure it's not there
-    if (error.message?.includes('not found') || error.message?.includes('No such package')) {
-      logger.debug(`Package ${packageName} not found in lockfile (expected for cleanup)`);
-    } else {
-      logger.warn(`Failed to remove ${packageName} from bun.lock: ${error.message}`);
-    }
-  }
-}
+std::future<void> removeFromBunLock(const std::string& packageName, const std::string& directory);
 
 /**
  * Installs a package using the appropriate package manager, attempting multiple strategies if necessary.
@@ -92,41 +67,10 @@ std::future<void> removeFromBunLock(const std::string& packageName, const std::s
  * @param options - Optional settings to control which installation strategies to attempt and monorepo details.
  * @returns A promise resolving to an object indicating whether installation succeeded and the installed package identifier, or null if all methods failed.
  */
-async > {
-  const installCommand = getInstallCommand(false);
 
-  const finalSpecifier = packageName.startsWith('github:')
-    ? `${packageName}${versionOrTag ? `#${versionOrTag}` : ''}`
-    : versionOrTag
-      ? `${packageName}@${versionOrTag}`
-      : packageName;
-
-  try {
-    const args = [...installCommand, finalSpecifier];
     await runBunCommand(args, directory);
 
-    const installedIdentifier = packageName.startsWith('github:')
-      ? (() => {
-          const spec = packageName.replace(/^github:/, '');
-          const [owner, repoWithRef] = spec.split('/');
-          const repo = repoWithRef.split('#')[0];
-          return `@${owner}/${repo}`;
-        })()
-      : packageName;
-
-    return { success: true, installedIdentifier };
-  } catch (error: any) {
     // Check if it's a bun not found error
-    if (error.code === 'ENOENT' || error.message?.includes('bun: command not found')) {
-      logger.warn(
-        `Installation failed - bun command not found. ${displayBunInstallationTipCompact()}`
-      );
-    } else {
-      logger.warn(`Installation failed for ${finalSpecifier}: ${error.message}`);
-    }
-    return { success: false, installedIdentifier: null };
-  }
-}
 
 /**
  * Builds a GitHub specifier string for package installation.
@@ -135,31 +79,24 @@ async > {
  * @param versionOrTag - Optional version or tag to append
  * @returns The complete GitHub specifier string
  */
-
-
-  // If the spec already has a fragment (#), replace it
-  const baseSpec = githubSpec.split('#')[0];
-  return `${baseSpec}#${versionOrTag}`;
-}
+std::string buildGitHubSpecifier(const std::string& githubSpec, std::optional<std::string> versionOrTag);
 
 /**
- * Enhanced installation > {
+ * Enhanced installation function that supports GitHub fallback with lockfile cleanup.
+ *
+ * @param packageName - The name of the package to install
+ * @param versionOrTag - Optional version or tag to install
+ * @param directory - The directory in which to run the installation
+ * @param githubFallback - Optional GitHub repository path for fallback (e.g., "owner/repo")
+ * @returns A promise resolving to an object indicating success and installed identifier
+ */
   // First try normal installation
-  const result = await executeInstallation(packageName, versionOrTag, directory);
-
-  if (result.success || !githubFallback) {
-    return result;
-  }
 
   // If npm installation failed and we have a GitHub fallback, try GitHub installation
-  logger.debug(`npm installation failed, attempting GitHub fallback: ${githubFallback}`);
 
   // Remove package from lockfile to prevent circular dependencies
   await removeFromBunLock(packageName, directory);
 
   // Try GitHub installation
-  const githubSpecifier = `github:${githubFallback}${versionOrTag ? `#${versionOrTag}` : ''}`;
-  return await executeInstallation(githubSpecifier, '', directory);
-}
 
 } // namespace elizaos

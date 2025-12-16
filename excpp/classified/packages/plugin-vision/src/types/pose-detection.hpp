@@ -11,7 +11,6 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-declare module '@tensorflow-models/pose-detection' {
   struct Keypoint {
     double x;
     double y;
@@ -20,16 +19,13 @@ declare module '@tensorflow-models/pose-detection' {
     std::optional<std::string> name;
 };
 
-
   struct Pose {
     std::vector<Keypoint> keypoints;
     std::optional<double> score;
 };
 
-
   struct PoseDetector {
 };
-
 
   enum SupportedModels {
     PoseNet = 'PoseNet',
@@ -41,14 +37,6 @@ declare module '@tensorflow-models/pose-detection' {
     std::optional<'MobileNetV1' | 'ResNet50'> architecture;
     std::optional<double> outputStride;
     std::optional<{ width: number; height: number }> inputResolution;
-    std::optional<double> multiplier;
-};
 
-
-  function createDetector(
-    model: SupportedModels,
-    config?: PosenetModelConfig | any
-  ): Promise<PoseDetector>;
-}
 
 } // namespace elizaos

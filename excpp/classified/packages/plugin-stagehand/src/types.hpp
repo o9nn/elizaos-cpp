@@ -12,16 +12,10 @@ namespace elizaos {
 // Manual refinement required for production use
 
 // Extend the core service types with stagehand service
-declare module '@elizaos/core' {
   struct ServiceTypeRegistry {
     'STAGEHAND' STAGEHAND;
 };
 
-}
-
 // Export service type constant
-const StagehandServiceType = {
-  STAGEHAND: 'STAGEHAND' as const,
-} satisfies Partial<import('@elizaos/core').ServiceTypeRegistry>;
 
 } // namespace elizaos

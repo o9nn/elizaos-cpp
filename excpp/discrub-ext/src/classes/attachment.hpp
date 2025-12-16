@@ -56,7 +56,5 @@ class Attachment {
     this.waveform = opts.waveform;
     this.flags = opts.flags;
   }
-}
-default Attachment;
 
 } // namespace elizaos

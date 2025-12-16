@@ -16,14 +16,12 @@ struct Position {
     double y;
 };
 
-
 struct Transform {
     Position position;
     double rotation;
     double scale;
     bool flipX;
 };
-
 
 struct TouchData {
     double initialDistance;

@@ -13,8 +13,5 @@ namespace elizaos {
 
 // https://discord.com/developers/docs/resources/channel#embed-object-embed-provider-structure
 using EmbedProviderObject = {
-  name?: string;
-  url?: string;
-};
 
 } // namespace elizaos

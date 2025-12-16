@@ -52,7 +52,6 @@ struct QuoteMemory {
     std::optional<std::string> consignmentId;
 };
 
-
 struct UserSessionMemory {
     std::string id;
     std::string entityId;

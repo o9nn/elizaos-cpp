@@ -29,180 +29,51 @@ namespace elizaos {
  * @param context - Object containing values to replace in the template
  * @returns The rendered template string
  */
-
-
-  let result = template;
-
-  // Handle conditional blocks {% if ... %} ... {% elif ... %} ... {% else %} ... {% endif %}
-  result = handleConditionals(result, context);
-
-  // Handle for loops {% for item in items %} ... {% endfor %}
-  result = handleForLoops(result, context);
-
-  // Handle variable substitution {{variable}}
-  result = handleVariables(result, context);
-
-  // Handle filters like {{variable|default('default_value')}}
-  result = handleFilters(result, context);
-
-  return result;
-}
+std::string renderTemplate(const std::string& template, Record<string context, auto unknown>);
 
 /**
  * Handle conditional blocks
  */
-(.*?)(?:{%\s*else\s*%}(.*?))?{%\s*endif\s*%}/gs;
-
-  return template.replace(conditionalRegex, (_match, condition, ifBlock, elseBlock = '') => {
-    const evalCondition = evaluateCondition(condition, context);
-    return evalCondition ? ifBlock : elseBlock;
-  });
-}
+std::string handleConditionals(const std::string& template, Record<string context, auto any>);
 
 /**
  * Handle for loops
  */
-(.*?){%\s*endfor\s*%}/gs;
-
-  return template.replace(forRegex, (_match, itemName, listName, loopBody) => {
-    const items = context[listName];
-    if (!Array.isArray(items)) {
-      return '';
-    }
-
-    return items
-      .map((item) => {
-        const loopContext = { ...context, [itemName]: item };
-        return renderTemplate(loopBody, loopContext);
-      })
-      .join('');
-  });
-}
+std::string handleForLoops(const std::string& template, Record<string context, auto any>);
 
 /**
  * Handle variable substitution
  */
-}/g;
-
-  return template.replace(variableRegex, (match, variable) => {
-    const trimmedVar = variable.trim();
-    const value = getNestedValue(context, trimmedVar);
-    return value !== undefined ? String(value) : match;
-  });
-}
+std::string handleVariables(const std::string& template, Record<string context, auto any>);
 
 /**
  * Handle template filters
  */
-}/g;
-
-  return template.replace(filterRegex, (match, expression) => {
-    const [variable, ...filterParts] = expression.split('|').map((s: string) => s.trim());
-    let value = getNestedValue(context, variable);
-
-    if (filterParts.length > 0) {
-      const filterStr = filterParts.join('|');
-      value = applyFilter(value, filterStr);
-    }
-
-    return value !== undefined ? String(value) : match;
-  });
-}
+std::string handleFilters(const std::string& template, Record<string context, auto any>);
 
 /**
  * Get nested value from object using dot notation
  */
- else {
-      return undefined;
-    }
-  }
-
-  return current;
-}
+unknown getNestedValue(unknown obj, const std::string& path);
 
 /**
  * Evaluate a condition in the given context
  */
-
-
-  // Handle == comparisons
-  const eqMatch = condition.match(/(\w+)\s*==\s*["']([^"']+)["']/);
-  if (eqMatch) {
-    const [, variable, value] = eqMatch;
-    return context[variable] === value;
-  }
-
-  // Handle != comparisons
-  const neqMatch = condition.match(/(\w+)\s*!=\s*["']([^"']+)["']/);
-  if (neqMatch) {
-    const [, variable, value] = neqMatch;
-    return context[variable] !== value;
-  }
-
-  // Handle 'not' operator
-  if (condition.startsWith('not ')) {
-    const variable = condition.substring(4).trim();
-    return !context[variable];
-  }
-
-  // Default to false for unrecognized conditions
-  return false;
-}
+bool evaluateCondition(const std::string& condition, Record<string context, auto unknown>);
 
 /**
  * Apply a filter to a value
  */
-
-
-  const [, filterName, filterArgs] = filterMatch;
-
-  switch (filterName) {
-    case 'default':
-      if (value === undefined || value === null || value === '') {
-        // Parse the default value from the arguments
-        const defaultMatch = filterArgs?.match(/["']([^"']+)["']/);
-        return defaultMatch ? defaultMatch[1] : '';
-      }
-      return value;
-
-    case 'upper':
-      return String(value).toUpperCase();
-
-    case 'lower':
-      return String(value).toLowerCase();
-
-    case 'capitalize':
-      const str = String(value);
-      return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-
-    case 'length':
-      if (Array.isArray(value) || typeof value === 'string') {
-        return value.length;
-      }
-      return 0;
-
-    case 'join':
-      if (Array.isArray(value)) {
-        const separator = filterArgs?.replace(/["']/g, '') || ', ';
-        return value.join(separator);
-      }
-      return value;
-
-    default:
-      return value;
-  }
-}
+unknown applyFilter(unknown value, const std::string& filterStr);
 
 /**
  * Escape special characters in a string for use in templates
  */
-}/g, '\\}\\}').replace(/{%/g, '\\{\\%').replace(/%}/g, '\\%\\}');
-}
+std::string escapeTemplate(const std::string& str);
 
 /**
  * Check if a string contains template syntax
  */
-}|{%.*?%}/.test(str);
-}
+bool hasTemplateSyntax(const std::string& str);
 
 } // namespace elizaos

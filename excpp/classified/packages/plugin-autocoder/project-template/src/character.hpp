@@ -12,7 +12,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
+
 
 /**
  * Represents the default character (Eliza) with her specific attributes and behaviors.
@@ -20,22 +20,10 @@ namespace elizaos {
  * She interacts with users in a concise, direct, and helpful manner, using humor and empathy effectively.
  * Eliza's responses are geared towards providing assistance on various topics while maintaining a friendly demeanor.
  */
-const character: Character = {
-  name: 'Eliza',
-  plugins: [
     // any plugins go here
-  ],
-  settings: {
-    secrets: {},
-  },
   // system: - agent system prompt goes here
-  bio: [
     // strings of bio go here
-  ],
-  topics: [
     // topics the agent is interested in go here
-  ],
-  messageExamples: [
     // examples of conversation messages go here
     // especially with examples of how the agent might respond or ignore
     // [
@@ -90,18 +78,8 @@ const character: Character = {
     //     },
     //   },
     // ],
-  ],
-  style: {
-    all: [
       // general style directions for the agent
-    ],
-    chat: [
       // specific directions about how the agent should behave in a chat
-    ],
-    post: [
       // specific directions about how the agent should behave in a posts environment, like a forum or feed
-    ],
-  },
-};
 
 } // namespace elizaos

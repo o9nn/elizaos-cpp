@@ -19,14 +19,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
-;
-;
-;
-;
-;
-;
+
 
 class ElizaClient {
   public readonly agents: AgentsService;
@@ -51,9 +44,5 @@ class ElizaClient {
   /**
    * Create a new ElizaClient instance
    */
-  static create(config: ApiClientConfig): ElizaClient {
-    return new ElizaClient(config);
-  }
-}
 
 } // namespace elizaos

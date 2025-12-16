@@ -16,81 +16,11 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import React, { useState, useMemo } from 'react';
-;
-;
-;
-;
-;
-;
-;
-;
-
-const TITLE = 'elizaOS Packages';
-const DESCRIPTION = 'Discover the awesome plugins in the eliza ecosystem.';
-const GITHUB_LINK = 'https://github.com/elizaos-plugins/registry';
-
-</h1>
-      <p>{DESCRIPTION}</p>
-      <div className={styles.submitButton}>
-        <Link className="button button--primary" to={GITHUB_LINK}>
-          Submit your plugin
-        </Link>
-      </div>
-    </section>
-  );
-}
 
 
-    }
+void ShowcaseHeader();
 
-    // Tags filter
-    if (selectedTags.length === 0) {
-      return true;
-    }
+void filterUsers(const std::vector<User>& users, const std::string& search, const std::vector<std::string>& selectedTags, 'OR' | 'AND' operator);
 
-    if (operator === 'AND') {
-      return selectedTags.every((tag) => user.tags.includes(tag));
-    }
-    return selectedTags.some((tag) => user.tags.includes(tag));
-  });
-}
-
-default ;
-
-  const toggleOperator = () => {
-    setOperator((op) => (op === 'OR' ? 'AND' : 'OR'));
-  };
-
-  const filteredUsers = useMemo(() => {
-    return filterUsers(sortedUsers, searchValue, selectedTags, operator);
-  }, [searchValue, selectedTags, operator]);
-
-  return (
-    <Layout title={TITLE} description={DESCRIPTION}>
-      <main className="margin-vert--lg">
-        <ShowcaseHeader />
-
-        <div className="container">
-          <ShowcaseLayout selectedTags={selectedTags} toggleTag={toggleTag}>
-            <div className={styles.filtersContainer}>
-              <div className={styles.filtersRow}>
-                <ShowcaseFilters
-                  selectedTags={selectedTags}
-                  toggleTag={toggleTag}
-                  operator={operator}
-                  toggleOperator={toggleOperator}
-                />
-                <ShowcaseSearchBar onChange={setSearchValue} value={searchValue} />
-              </div>
-            </div>
-
-            <ShowcaseCards users={filteredUsers} />
-          </ShowcaseLayout>
-        </div>
-      </main>
-    </Layout>
-  );
-}
 
 } // namespace elizaos

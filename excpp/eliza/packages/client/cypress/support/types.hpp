@@ -15,29 +15,14 @@ namespace elizaos {
 /// <reference types="@testing-library/cypress" />
 /// <reference types="@cypress/react" />
 
-;
-
-declare module 'process/browser' {
-  const process: NodeJS.Process;
-  = process;
-}
-
 // Extend Cypress types
-declare global {
-  namespace Cypress {
     struct Chainable {
     typeof mount mount;
     typeof mountWithRouter mountWithRouter;
     typeof mountRadix mountRadix;
 };
 
-  }
-}
-
 // Import statements to ensure types are available
-;
-import type { mountWithRouter, mountRadix } from './component';
 
-{};
 
 } // namespace elizaos

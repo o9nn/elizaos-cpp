@@ -15,27 +15,4 @@ namespace elizaos {
 
 
 
-import type { Metadata } from 'next'
-import './globals.css'
-
-const metadata: Metadata = {
-  title: "Eliza's World (a16z)",
-  description: "Live 'Observatory' dashboard showcasing the emergent network of autonomous AI agents born from Eliza's core.",
-}
-
-default : {
-  children: React.ReactNode
-}) {
-  return (
-    <html lang="en">
-      <body>
-        <Analytics />
-        <Providers>
-          <NavHeader />
-          {children}
-        </Providers>
-      </body>
-    </html>
-  )
-} 
 } // namespace elizaos

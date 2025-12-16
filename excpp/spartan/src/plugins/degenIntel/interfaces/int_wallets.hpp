@@ -11,7 +11,6 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { Plugin } from '@elizaos/core';
 
 // look up by Ids
 
@@ -20,8 +19,6 @@ import type { Plugin } from '@elizaos/core';
 // list metawallets by userId
 
 // add/update/delete
-
-
 
 // look up wallet by Ids
 

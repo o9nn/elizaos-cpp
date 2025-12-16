@@ -18,9 +18,7 @@ namespace elizaos {
 // ***********************************************************
 
 // Import commands
-import './commands';
 
 // Import Testing Library Cypress commands
-import '@testing-library/cypress/add-commands';
 
 } // namespace elizaos

@@ -18,7 +18,6 @@ namespace elizaos {
 * from './config-manager';
 * from './copy-template';
 * from './display-banner';
-{ getEnvFilePath, readEnvFile, writeEnvFile } from './env-prompt';
 * from './get-config';
 * from './get-package-info';
 * from './github';

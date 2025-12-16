@@ -11,8 +11,6 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { Content, UUID } from './primitives';
-import type { IAgentRuntime } from './runtime';
 
 /**
  * Information describing the target of a message.
@@ -26,15 +24,10 @@ struct TargetInfo {
     std::optional<string; // Platform-specific thread ID (e.g., Telegram topics)> threadId;
 };
 
-
 /**
  * Function signature for handlers responsible for sending messages to specific platforms.
  */
 using SendHandlerFunction = (
-  runtime: IAgentRuntime,
-  target: TargetInfo,
-  content: Content
-) => Promise<void>;
 
 enum SOCKET_MESSAGE_TYPE {
   ROOM_JOINING = 1,

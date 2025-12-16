@@ -12,14 +12,13 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
+
 
 struct Room {
     std::string id;
     std::string name;
     ChannelType type;
     std::vector<{ id: string; agentId?: string }> entities;
-};
 
 
 } // namespace elizaos

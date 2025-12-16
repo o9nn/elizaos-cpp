@@ -18,7 +18,6 @@ struct WalletRequest {
     std::string name;
 };
 
-
 /**
  * CDP wallet response
  */
@@ -26,7 +25,6 @@ struct WalletResponse {
     std::string address;
     std::string accountName;
 };
-
 
 /**
  * Request for top and trending tokens
@@ -36,7 +34,6 @@ struct TopAndTrendingTokensRequest {
     std::optional<double> limit;
 };
 
-
 /**
  * Response for top and trending tokens
  */
@@ -44,7 +41,6 @@ struct TopAndTrendingTokensResponse {
     std::vector<std::any> topTokens;
     std::vector<std::any> trendingTokens;
 };
-
 
 
 } // namespace elizaos

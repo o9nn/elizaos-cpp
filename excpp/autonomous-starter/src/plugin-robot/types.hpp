@@ -12,23 +12,15 @@ namespace elizaos {
 // Manual refinement required for production use
 
 // Extend the core service types with robot service
-declare module "@elizaos/core" {
   struct ServiceTypeRegistry {
     "ROBOT" ROBOT;
 };
 
-}
-
 // Export service type constant
-const RobotServiceType = {
-  ROBOT: "ROBOT" as const,
-} satisfies Partial<import("@elizaos/core").ServiceTypeRegistry>;
 
 struct ScreenObject {
     std::string label;
     { x: number; y: number; width: number; height: number } bbox;
-};
-
 
 struct ScreenActionStep {
     "move" | "click" | "type" action;
@@ -38,13 +30,11 @@ struct ScreenActionStep {
     std::optional<"left" | "right" | "middle"> button;
 };
 
-
 struct ScreenDescription {
     std::string description;
     double timestamp;
     std::string relativeTime;
 };
-
 
 struct ScreenContext {
     Buffer screenshot;
@@ -57,12 +47,10 @@ struct ScreenContext {
     std::optional<double> pixelDifferencePercentage;
 };
 
-
 struct ChangeDetectionConfig {
     number; // Percentage of pixels that must change to trigger AI processing threshold;
     bool enabled;
 };
-
 
 struct RobotServiceConfig {
     double cacheTTL;

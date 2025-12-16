@@ -18,30 +18,18 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { Plugin } from '@elizaos/core';
 
-;
-;
-;
-;
-;
-;
-;
 
 // Export types
 * from './types';
 
 // Export service
-{ FormsService };
 
 // Export provider
-{ formsProvider };
 
 // Export actions
-{ createFormAction, updateFormAction, cancelFormAction };
 
 // Export schema
-{ formsSchema };
 
 /**
  * Forms Plugin for ElizaOS
@@ -64,28 +52,14 @@ import type { Plugin } from '@elizaos/core';
  * 3. Forms are filled through natural conversation
  * 4. Other plugins can use the FormsService to create custom forms
  */
-const formsPlugin: Plugin = {
-  name: '@elizaos/plugin-forms',
-  description: 'Structured form collection capabilities for conversational data gathering',
-
-  services: [FormsService],
-  providers: [formsProvider],
-  actions: [createFormAction, updateFormAction, cancelFormAction],
 
   // Database schema for migrations
-  schema: formsSchema,
 
   // No evaluators needed for this plugin
-  evaluators: [],
 
   // Test suite for the plugin
-  tests: [FormsPluginTestSuite],
 
   // Dependencies
-  dependencies: ['@elizaos/plugin-sql'],
-  testDependencies: ['@elizaos/plugin-sql'],
-};
 
-default formsPlugin;
 
 } // namespace elizaos

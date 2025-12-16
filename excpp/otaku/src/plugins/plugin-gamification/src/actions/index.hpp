@@ -11,9 +11,6 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-{ getPointsSummaryAction } from './getPointsSummary';
-{ getReferralCodeAction } from './getReferralCode';
-{ getLeaderboardAction } from './getLeaderboard';
 
 
 } // namespace elizaos

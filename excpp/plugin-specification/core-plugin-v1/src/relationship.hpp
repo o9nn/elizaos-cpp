@@ -13,8 +13,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
+
 
 /**
  * Relationship interface for v1 compatibility
@@ -28,88 +27,50 @@ using Relationship = RelationshipFromTypes;
  * - V2 has tags array and metadata object, V1 has status string
  * - V1 has userId and roomId fields that don't exist in V2
  */
-;
-}
+Relationship fromV2Relationship(RelationshipV2 relationshipV2);
 
 /**
  * Converts V1 Relationship to V2 compatible Relationship
  * Maps V1 relationship structure to V2 format
  */
-,
-    createdAt: relationship.createdAt,
-  };
-}
+RelationshipV2 toV2Relationship(Relationship relationship, UUID agentId);
 
 /**
  * Converts an array of V2 Relationships to V1 format
  */
-
+std::vector<Relationship> fromV2Relationships(const std::vector<RelationshipV2>& relationshipsV2);
 
 /**
  * Converts an array of V1 Relationships to V2 format
  */
-
+std::vector<RelationshipV2> toV2Relationships(const std::vector<Relationship>& relationships, UUID agentId);
 
 /**
  * Relationship status constants commonly used in V1
  * These can be used to standardize relationship statuses
  */
-const RELATIONSHIP_STATUSES = {
-  FRIEND: 'friend',
-  BLOCKED: 'blocked',
-  MUTED: 'muted',
-  FOLLOWING: 'following',
-  FOLLOWED_BY: 'followed_by',
-  ACQUAINTANCE: 'acquaintance',
-  UNKNOWN: 'unknown',
-} as const;
 
 /**
  * Converts V2 tags to V1 status string with common mappings
  * Provides more intelligent conversion than simple join
  */
-;
-
-  // Check for known status mappings first
-  for (const tag of tags) {
-    const normalizedTag = tag.toLowerCase();
-    if (statusMap[normalizedTag]) {
-      return statusMap[normalizedTag];
-    }
-  }
-
-  // If no known mapping, join all tags
-  return tags.join(',');
-}
+std::string tagsToStatus(const std::vector<std::string>& tags);
 
 /**
  * Converts V1 status string to V2 tags array with common mappings
  * Provides more intelligent conversion than simple split
  */
-;
-
-  const normalizedStatus = status.toLowerCase();
-  if (tagMap[normalizedStatus]) {
-    return tagMap[normalizedStatus];
-  }
-
-  // If no known mapping, split by comma
-  return status.split(',').map(s => s.trim()).filter(Boolean);
-}
+std::vector<std::string> statusToTags(const std::string& status);
 
 /**
  * Enhanced conversion with intelligent status mapping
  */
-;
-}
+Relationship fromV2RelationshipEnhanced(RelationshipV2 relationshipV2);
 
 /**
  * Enhanced conversion with intelligent tag mapping
  */
-,
-    createdAt: relationship.createdAt,
-  };
-}
+RelationshipV2 toV2RelationshipEnhanced(Relationship relationship, UUID agentId);
 
 /**
  * Utility functions for relationship management
@@ -118,28 +79,20 @@ const RELATIONSHIP_STATUSES = {
 /**
  * Creates a new V1 relationship with default values
  */
--${userB}-${Date.now()}` as UUID,
-    userA,
-    userB,
-    userId: userA,
-    roomId: roomId || userA, // Use userA as fallback roomId
-    status,
-    createdAt: new Date().toISOString(),
-  };
-}
+Relationship createV1Relationship(UUID userA, UUID userB, string = RELATIONSHIP_STATUSES.UNKNOWN status, std::optional<UUID> roomId);
 
 /**
  * Checks if two relationships represent the same connection (bidirectional)
  */
-
+bool areRelationshipsEquivalent(Relationship rel1, Relationship rel2);
 
 /**
  * Filters relationships by status
  */
-
+std::vector<Relationship> filterRelationshipsByStatus(const std::vector<Relationship>& relationships, const std::string& status);
 
 /**
  * Gets all relationships for a specific user (where user is either userA or userB)
  */
-
+std::vector<Relationship> getRelationshipsForUser(const std::vector<Relationship>& relationships, UUID userId);
 } // namespace elizaos

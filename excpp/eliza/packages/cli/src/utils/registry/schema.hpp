@@ -12,9 +12,6 @@ namespace elizaos {
 // Manual refinement required for production use
 
 // src/utils/registry/schema.ts
-;
-
-const registrySchema = z.record(z.string(), z.string());
 
 /**
  * Defines the possible types of plugins:
@@ -30,7 +27,7 @@ using PluginType = std::variant<'adapter', 'client', 'plugin'>;
  * @param {string} name - The name of the plugin.
  * @returns {PluginType} The type of plugin ('adapter', 'client', or 'plugin').
  */
-
+PluginType getPluginType(const std::string& name);
 
 /**
  * Type definition for the Registry type which is inferred from the registrySchema

@@ -11,45 +11,16 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
-;
+
 
 /**
  * Expands tilde path to current working directory
  */
-
-
-  if (filepath.startsWith('~')) {
-    return path.join(process.cwd(), filepath.slice(1));
-  }
-
-  return filepath;
-}
+std::string expandTildePath(const std::string& filepath);
 
 /**
  * Resolves the PGlite directory with proper fallbacks
  */
-
-
-  // Try environment variable
-  const envFile = '.env';
-  if (fs.existsSync(envFile)) {
-    dotenv.config({ path: envFile });
-  }
-
-  const envDir = process.env.PGLITE_DIR;
-  if (envDir) {
-    return expandTildePath(envDir);
-  }
-
-  // Use fallback directory if provided
-  if (fallbackDir) {
-    return expandTildePath(fallbackDir);
-  }
-
-  // Default fallback
-  return expandTildePath('~/eliza/data');
-}
+std::string resolvePgliteDir(std::optional<std::string> dir, std::optional<std::string> fallbackDir);
 
 } // namespace elizaos

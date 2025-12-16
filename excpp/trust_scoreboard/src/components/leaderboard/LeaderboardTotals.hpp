@@ -12,9 +12,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { FC } from 'react';
-;
-;
+
 
 struct DashboardData {
     { partners;
@@ -25,7 +23,6 @@ struct DashboardData {
     std::string address;
     double usdPrice;
 };
-
 
 const AI16Z_ADDRESS = 'HeLp6NuQkmYB4pYWo2zYs22mESHXPQYzXbB8n4V98jwC';
 const DECIMALS = 1_000_000_000;

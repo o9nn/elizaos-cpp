@@ -12,12 +12,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
 
-interface ApiSuccessResponse<T> {
-  success: true;
-  data: T;
-}
 
 struct ApiErrorResponse {
     { error;
@@ -26,22 +21,17 @@ struct ApiErrorResponse {
     std::optional<std::string> details;
 };
 
-
-type ApiResponse<T> = ApiSuccessResponse<T> | ApiErrorResponse;
-
 struct RequestConfig {
     std::optional<std::unordered_map<std::string, std::string>> headers;
     std::optional<std::unordered_map<std::string, std::any>> params;
     std::optional<double> timeout;
 };
 
-
 struct PaginationParams {
     std::optional<double> page;
     std::optional<double> limit;
     std::optional<double> offset;
 };
-
 
 struct ApiClientConfig {
     std::string baseUrl;

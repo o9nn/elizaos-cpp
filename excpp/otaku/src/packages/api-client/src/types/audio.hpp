@@ -12,7 +12,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
+
 
 struct SpeechConversationParams {
     Blob | Buffer | string audio;
@@ -20,7 +20,6 @@ struct SpeechConversationParams {
     std::optional<std::string> language;
     std::optional<std::unordered_map<std::string, std::any>> metadata;
 };
-
 
 struct SpeechGenerateParams {
     std::string text;
@@ -30,13 +29,11 @@ struct SpeechGenerateParams {
     std::optional<double> pitch;
 };
 
-
 struct AudioSynthesizeParams {
     UUID messageId;
     std::optional<std::string> voice;
     std::optional<'mp3' | 'wav' | 'ogg'> format;
 };
-
 
 struct TranscribeParams {
     Blob | Buffer | string audio;
@@ -44,14 +41,12 @@ struct TranscribeParams {
     std::optional<std::string> language;
 };
 
-
 struct SpeechResponse {
     std::optional<std::string> text;
     std::optional<std::string> audio;
     std::optional<double> duration;
     std::optional<std::unordered_map<std::string, std::any>> metadata;
 };
-
 
 struct TranscriptionResponse {
     std::string text;

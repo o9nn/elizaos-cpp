@@ -11,12 +11,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
-;
-;
-;
-;
+
 
 struct InsightsResponse {
     { insights;
@@ -31,46 +26,5 @@ struct InsightsResponse {
     std::any engagementHeatmap;
 };
 
-
-async : { params: { id: string } }
-) {
-  try {
-    const [
-      insights,
-      abTestResults,
-      realtimeStats
-    ] = await Promise.all([
-      EnhancedAnalytics.getProjectInsights(params.id),
-      ABTestingService.getResults('project-layout-test'),
-      redis.hgetall(`realtime:${params.id}`)
-    ]);
-
-    const visualizations = {
-      timeSeriesChart: AnalyticsVisualization.generateTimeSeriesChart(
-        insights.trends.timeSeriesData
-      ),
-      engagementHeatmap: AnalyticsVisualization.generateHeatmap(
-        insights.interactions.hourlyData
-      )
-    };
-
-    return NextResponse.json({
-      insights,
-      abTestResults,
-      realtimeStats,
-      visualizations
-    } as InsightsResponse);
-
-  } catch (error) {
-    logger.error('Error generating insights', {
-      error,
-      projectId: params.id
-    });
-
-    return NextResponse.json(
-      { error: 'Failed to generate insights' },
-      { status: 500 }
-    );
-  }
-} 
+std::future<void> GET(Request request, { params: { id: string } } { params }); 
 } // namespace elizaos

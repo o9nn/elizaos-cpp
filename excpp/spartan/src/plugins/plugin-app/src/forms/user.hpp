@@ -13,10 +13,9 @@ namespace elizaos {
 
 
 
-
 // user create form
 
-
+void userreg_create_addfields(auto form, auto values);
 
 // user update form
 

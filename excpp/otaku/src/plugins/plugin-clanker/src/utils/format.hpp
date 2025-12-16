@@ -12,58 +12,22 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-
-).format(amount);
-}
-
-%`;
-}
-
-...${address.slice(-4)}`;
-}
 
 
+std::string formatUsd(double amount);
 
+std::string formatPercentage(double value);
 
+std::string shortenAddress(const std::string& address);
 
- (${info.symbol})`];
+std::string formatTransactionHash(const std::string& hash);
 
-  // Only show address for non-native tokens
-  const isNativeEth = info.address === NATIVE_TOKEN_ADDRESSES;
-  if (!isNativeEth) {
-    lines.push(`Address: ${info.address}`);
-  } else {
-    lines.push(`Type: Native ETH on Base`);
-  }
+double calculatePriceImpact(bigint inputAmount, bigint outputAmount, double inputPrice, double outputPrice);
 
-  if (info.price !== undefined) {
-    lines.push(`Price: ${formatUsd(info.price)}`);
-  }
+std::string formatTokenInfo(const std::any& info);
 
-  if (info.marketCap !== undefined) {
-    lines.push(`Market Cap: ${formatCompactUsd(Number(info.marketCap))}`);
-  }
+std::string formatGasPrice(bigint gasPrice);
 
-  if (info.liquidity !== undefined) {
-    lines.push(`Liquidity: ${formatCompactUsd(Number(info.liquidity))}`);
-  }
-
-  if (info.holders !== undefined) {
-    lines.push(`Holders: ${info.holders.toLocaleString()}`);
-  }
-
-  if (info.volume24h !== undefined) {
-    lines.push(`24h Volume: ${formatCompactUsd(Number(info.volume24h))}`);
-  }
-
-  return lines.join("\n");
-}
-
- gwei`;
-}
-
-).format(amount);
-}
+std::string formatCompactUsd(double amount);
 
 } // namespace elizaos

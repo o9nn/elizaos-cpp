@@ -11,10 +11,6 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { Memory } from './memory';
-import type { Content } from './primitives';
-import type { IAgentRuntime } from './runtime';
-import type { State } from './state';
 
 /**
  * Example content with associated user for demonstration purposes
@@ -24,16 +20,32 @@ struct ActionExample {
     Content content;
 };
 
+/**
+ * Callback function type for handlers
+ */
+using HandlerCallback = (response: Content, files?: any) => Promise<Memory[]>;
 
 /**
- * Callback ,
-  callback?: HandlerCallback,
-  responses?: Memory[]
-) => Promise<unknown>;
+ * Handler function type for processing messages
+ */
+using Handler = (
 
 /**
- * Validator ;
+ * Validator function type for actions/evaluators
+ */
+using Validator = (
 
+/**
+ * Represents an action the agent can perform
+ */
+struct Action {
+    std::optional<std::vector<std::string>> similes;
+    std::string description;
+    std::optional<std::vector<std::vector<ActionExample>>> examples;
+    Handler handler;
+    std::string name;
+    Validator validate;
+};
 
 /**
  * Example for evaluating agent behavior
@@ -43,7 +55,6 @@ struct EvaluationExample {
     std::vector<ActionExample> messages;
     std::string outcome;
 };
-
 
 /**
  * Evaluator for assessing agent responses
@@ -58,13 +69,11 @@ struct Evaluator {
     Validator validate;
 };
 
-
 struct ProviderResult {
     std::optional<{> values;
     std::optional<{> data;
     std::optional<std::string> text;
 };
-
 
 /**
  * Provider for external data/services

@@ -40,12 +40,10 @@ struct MigrationData {
     std::optional<std::string> lastStep;
 };
 
-
 struct WithdrawnAmountsData {
     double withdrawnSol;
     double withdrawnTokens;
 };
-
 
 struct PoolInfoData {
     std::string id;
@@ -53,7 +51,6 @@ struct PoolInfoData {
     std::string baseVault;
     std::string quoteVault;
 };
-
 
 struct TokenData {
     std::string id;
@@ -111,7 +108,6 @@ struct TokenData {
     std::optional<double> tokenDecimals;
     std::optional<Date> lastSupplyUpdate;
 };
-
 
 struct TokenDBData {
     std::optional<std::string> id;

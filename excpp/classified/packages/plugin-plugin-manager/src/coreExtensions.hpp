@@ -12,7 +12,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
+
 
 /**
  * Core Runtime Extensions
@@ -26,57 +26,17 @@ namespace elizaos {
  * Extends the runtime with an unregisterEvent method
  * This allows plugins to remove their event handlers when unloaded
  */
- else {
-          this.events.delete(event);
-        }
-      }
-    };
-  }
-}
+void extendRuntimeWithEventUnregistration(IAgentRuntime runtime);
 
 /**
  * Extends the runtime with component unregistration methods
  * These are needed for proper plugin unloading
  */
-
-    };
-  }
-
-  // Add unregisterProvider method if it doesn't exist
-  if (!extendedRuntime.unregisterProvider) {
-    extendedRuntime.unregisterProvider = function (providerName: string) {
-      const index = this.providers.findIndex((p) => p.name === providerName);
-      if (index !== -1) {
-        this.providers.splice(index, 1);
-      }
-    };
-  }
-
-  // Add unregisterEvaluator method if it doesn't exist
-  if (!extendedRuntime.unregisterEvaluator) {
-    extendedRuntime.unregisterEvaluator = function (evaluatorName: string) {
-      const index = this.evaluators.findIndex((e) => e.name === evaluatorName);
-      if (index !== -1) {
-        this.evaluators.splice(index, 1);
-      }
-    };
-  }
-
-  // Add unregisterService method if it doesn't exist
-  if (!extendedRuntime.unregisterService) {
-    extendedRuntime.unregisterService = async function (serviceType: string) {
-      const service = this.services.get(serviceType);
-      if (service) {
-        await service.stop();
-        this.services.delete(serviceType);
-      }
-    };
-  }
-}
+void extendRuntimeWithComponentUnregistration(IAgentRuntime runtime);
 
 /**
  * Apply all runtime extensions
  */
-
+void applyRuntimeExtensions(IAgentRuntime runtime);
 
 } // namespace elizaos

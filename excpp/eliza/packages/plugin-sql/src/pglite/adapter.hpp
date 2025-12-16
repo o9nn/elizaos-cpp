@@ -14,11 +14,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
-;
-;
-import type { PGliteClientManager } from './manager';
+
 
 /**
  * PgliteDatabaseAdapter class represents an adapter for interacting with a PgliteDatabase.
@@ -58,10 +54,7 @@ class PgliteDatabaseAdapter extends BaseDrizzleAdapter {
    * migration service, not the adapter itself.
    * @returns {Promise<void>}
    */
-  async runMigrations(): Promise<void> {
-    logger.debug('PgliteDatabaseAdapter: Migrations are handled by the migration service');
     // Migrations are handled by the migration service, not the adapter
-  }
 
   /**
    * Asynchronously runs the provided database operation while checking if the database is currently shutting down.
@@ -70,47 +63,28 @@ class PgliteDatabaseAdapter extends BaseDrizzleAdapter {
    * @param {Function} operation - The database operation to be performed.
    * @returns {Promise<T>} A promise that resolves with the result of the database operation.
    */
-  protected async withDatabase<T>(operation: () => Promise<T>): Promise<T> {
-    if (this.manager.isShuttingDown()) {
-      logger.warn('Database is shutting down');
-      return null as unknown as T;
-    }
     return operation();
-  }
 
   /**
    * Asynchronously initializes the database by running migrations.
    *
    * @returns {Promise<void>} A Promise that resolves when the database initialization is complete.
    */
-  async init(): Promise<void> {
-    logger.debug('PGliteDatabaseAdapter initialized, skipping automatic migrations.');
-  }
 
   /**
    * Checks if the database connection is ready and active.
    * For PGLite, this checks if the client is not in a shutting down state.
    * @returns {Promise<boolean>} A Promise that resolves to true if the connection is healthy.
    */
-  async isReady(): Promise<boolean> {
-    return !this.manager.isShuttingDown();
-  }
 
   /**
    * Asynchronously closes the database.
    */
-  async close() {
-    await this.manager.close();
-  }
 
   /**
    * Asynchronously retrieves the connection from the client.
    *
    * @returns {Promise<PGlite>} A Promise that resolves with the connection.
    */
-  async getConnection() {
-    return this.manager.getConnection();
-  }
-}
 
 } // namespace elizaos

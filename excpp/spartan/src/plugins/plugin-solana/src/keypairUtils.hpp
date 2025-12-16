@@ -12,9 +12,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
-;
+
 
 /**
  * Interface representing the result of a keypair generation.
@@ -26,7 +24,6 @@ struct KeypairResult {
     std::optional<Keypair> keypair;
     std::optional<PublicKey> publicKey;
 };
-
 
 /**
  * Gets either a keypair or public key based on TEE mode and runtime settings
@@ -42,35 +39,5 @@ struct KeypairResult {
  * @returns {Promise<KeypairResult>} The keypair result object containing the keypair or public key.
  */
 std::future<KeypairResult> getWalletKey(IAgentRuntime runtime, auto requirePrivateKey = true);
-
-    try {
-      // First try base58
-      const secretKey = bs58.decode(privateKeyString);
-      return { keypair: Keypair.fromSecretKey(secretKey) };
-    } catch (e) {
-      logger.log('Error decoding base58 private key:', e);
-      try {
-        // Then try base64
-        logger.log('Try decoding base64 instead');
-        const secretKey = Uint8Array.from(Buffer.from(privateKeyString, 'base64'));
-        return { keypair: Keypair.fromSecretKey(secretKey) };
-      } catch (e2) {
-        logger.error('Error decoding private key: ', e2);
-        throw new Error('Invalid private key format');
-      }
-    }
-  } else {
-    const publicKeyString =
-      runtime.getSetting('SOLANA_PUBLIC_KEY') ?? runtime.getSetting('WALLET_PUBLIC_KEY');
-
-    if (!publicKeyString) {
-      throw new Error(
-        'Solana Public key not found in settings, but plugin was loaded, please set SOLANA_PUBLIC_KEY'
-      );
-    }
-
-    return { publicKey: new PublicKey(publicKeyString) };
-  }
-}
 
 } // namespace elizaos

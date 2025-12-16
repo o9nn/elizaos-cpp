@@ -11,7 +11,6 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { Plugin } from '@elizaos/core';
 
 /*
 struct RiskLimits {
@@ -20,7 +19,6 @@ struct RiskLimits {
     double stopLossPercentage;
     double takeProfitPercentage;
 };
-
 
 struct TradingConfig {
     { intervals;
@@ -38,7 +36,6 @@ struct TradingConfig {
     number; // Multiplier for liquidity-based adjustment liquidityMultiplier;
     number; // Multiplier for volume-based adjustment volumeMultiplier;
 };
-
 
 const DEFAULT_CONFIG = {
   intervals: {

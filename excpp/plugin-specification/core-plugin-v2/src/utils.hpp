@@ -13,19 +13,9 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
-import type { Content, Entity, IAgentRuntime, Memory, State, TemplateType } from './types';
-
-;
-
-;
-
-;
 
 
-
-
+Buffer getWavHeader(double audioLength, double sampleRate, auto channelCount = 1, auto bitsPerSample = 16);
 
 // Text Utils
 
@@ -42,7 +32,7 @@ import type { Content, Entity, IAgentRuntime, Memory, State, TemplateType } from
  */
 // really shouldn't be exported
 /*
-
+void upgradeDoubleToTriple(auto tpl);
 */
 
 /**
@@ -53,16 +43,9 @@ import type { Content, Entity, IAgentRuntime, Memory, State, TemplateType } from
  *
  * @param {Object} options - Object containing state and template information.
  * @param {State} options.state - The state object containing values to fill the template.
- * @param {TemplateType} options.template - The template string or  The composed prompt output, with state values and random user names populated.
+ * @param {TemplateType} options.template - The template string or function to be used for composing the prompt.
+ * @returns {string} The composed prompt output, with state values and random user names populated.
  */
-const composePrompt = ({
-  state,
-  template,
-}: {
-  state: { [key: string]: string };
-  template: TemplateType;
-}) => {
-}
 
 /**
  * Function to compose a prompt using a provided template and state.
@@ -72,19 +55,14 @@ const composePrompt = ({
  * @param {TemplateType} options.template - The template to be used for composing the prompt.
  * @returns {string} The composed prompt output.
  */
-const composePromptFromState = ({
-  state,
-  template,
-}: {
-  state: State;
-  template: TemplateType;
-}) => {
-}
 
 /**
  * Adds a header to a body of text.
  *
- * This  header - The header to add to the body.
+ * This function takes a header string and a body string and returns a new string with the header prepended to the body.
+ * If the body string is empty, the header is returned as is.
+ *
+ * @param {string} header - The header to add to the body.
  * @param {string} body - The body to which to add the header.
  * @returns {string} The body with the header prepended.
  *
@@ -97,22 +75,7 @@ const composePromptFromState = ({
  * // "Header\nBody"
  * const text = addHeader(header, body);
  */
-const addHeader = (header: string, body: string) => {
   return coreAddHeader(header, body);
-};
-
-
-const formatPosts = ({
-  messages,
-  entities,
-  conversationHeader = true,
-}: {
-  messages: Memory[];
-  entities: Entity[];
-  conversationHeader?: boolean;
-}) => {
-  return coreFormatPosts({ messages, entities, conversationHeader })
-}
 
 /**
  * Format messages into a string
@@ -121,19 +84,9 @@ const formatPosts = ({
  * @param {Entity[]} params.entities - List of entities for name resolution
  * @returns {string} Formatted message string with timestamps and user information
  */
-const formatMessages = ({
-  messages,
-  entities,
-}: {
-  messages: Memory[];
-  entities: Entity[];
-}) => {
   return coreFormatMessages({ messages, entities });
-}
 
-const formatTimestamp = (messageDate: number) => {
   return coreFormatTimestamp(messageDate);
-}
 
 /**
  * Validates a UUID value.
@@ -142,7 +95,6 @@ const formatTimestamp = (messageDate: number) => {
  * @returns {UUID | null} Returns the validated UUID value or null if validation fails.
  */
 
-
 /**
  * Converts a string or number to a UUID.
  *
@@ -150,5 +102,5 @@ const formatTimestamp = (messageDate: number) => {
  * @returns {UUID} The UUID generated from the input target.
  * @throws {TypeError} Throws an error if the input target is not a string.
  */
-
+UUID stringToUuid(string | number target);
 } // namespace elizaos

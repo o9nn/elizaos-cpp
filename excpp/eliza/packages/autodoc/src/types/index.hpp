@@ -11,7 +11,6 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { TSESTree } from '@typescript-eslint/types';
 
 /**
  * Represents an item in the Abstract Syntax Tree (AST) queue.
@@ -39,7 +38,6 @@ struct ASTQueueItem {
     std::optional<std::string> jsDoc;
 };
 
-
 /**
  * Represents a repository.
  * @typedef {Object} Repository
@@ -53,7 +51,6 @@ struct Repository {
     std::optional<double> pullNumber;
 };
 
-
 /**
  * Represents a file change in full mode.
  * @typedef {Object} FullModeFileChange
@@ -65,7 +62,6 @@ struct FullModeFileChange {
     std::string status;
 };
 
-
 /**
  * Interface representing a Pull Request mode file change, extending Full Mode File Change.
  * @interface
@@ -75,12 +71,6 @@ struct FullModeFileChange {
  * @property {number} changes - The total number of changes (additions + deletions) in the file change.
  * @property {string} contents_url - The URL to the contents of the file change.
  */
-interface PrModeFileChange extends FullModeFileChange {
-  additions: number;
-  deletions: number;
-  changes: number;
-  contents_url: string;
-}
 
 /**
  * Interface representing a section of todos.
@@ -92,7 +82,6 @@ struct TodoSection {
     std::string todos;
     double todoCount;
 };
-
 
 /**
  * Interface representing a todo item.
@@ -129,7 +118,6 @@ struct TodoItem {
     { line: number; column: number } end;
 };
 
-
 /**
  * Represents the usage of a particular environment variable in the code.
  * @interface EnvUsage
@@ -165,7 +153,6 @@ struct EnvUsage {
     { line: number; column: number } end;
 };
 
-
 /**
  * Interface for representing the documentation structure of a plugin.
  * Includes sections for overview, installation, configuration, usage,
@@ -200,7 +187,6 @@ struct PluginDocumentation {
     std::string faq;
 };
 
-
 /**
  * Interface for defining metadata for an action.
  * @interface
@@ -219,7 +205,6 @@ struct ActionMetadata {
     std::vector<std::string> examples;
     std::string description;
 };
-
 
 /**
  * Interface representing the bounds of an action in terms of start and end line numbers.

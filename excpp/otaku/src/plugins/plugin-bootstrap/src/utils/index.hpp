@@ -11,12 +11,6 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-{ fetchMediaData, processAttachments, type MediaData } from './media.js';
-{
-  refreshStateAfterAction,
-  updateActionPlanStep,
-  updateWorkingMemory,
-} from './state.js';
 
 
 } // namespace elizaos

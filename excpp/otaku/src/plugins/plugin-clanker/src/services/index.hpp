@@ -11,6 +11,5 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-{ ClankerService } from "./clanker.service";
 
 } // namespace elizaos

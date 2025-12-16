@@ -11,7 +11,6 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { Content, UUID } from './primitives';
 
 /**
  * Enumerates the built-in types of memories that can be stored and retrieved.
@@ -63,78 +62,7 @@ struct BaseMetadata {
     std::optional<std::vector<std::string>> tags;
 };
 
-
-interface DocumentMetadata extends BaseMetadata {
-  type: MemoryType.DOCUMENT;
-
-  source?: string;
-  sourceId?: UUID;
-  scope?: 'shared' | 'private' | 'room';
-  timestamp?: number;
-  tags?: string[];
-
   // Document-specific properties
-  title?: string;
-  filename?: string;
-  originalFilename?: string;
-  contentType?: string;
-  fileType?: string; // MIME type
-  fileExt?: string;
-  fileSize?: number;
-  size?: number;
-  fragmentCount?: number;
-  path?: string;
-  documentId?: UUID;
-  position?: number;
-}
-
-interface FragmentMetadata extends BaseMetadata {
-  type: MemoryType.FRAGMENT;
-  documentId: UUID;
-  position: number;
-}
-
-interface MessageMetadata extends BaseMetadata {
-  type: MemoryType.MESSAGE;
-}
-
-interface DescriptionMetadata extends BaseMetadata {
-  type: MemoryType.DESCRIPTION;
-}
-
-interface CustomMetadata extends BaseMetadata {
-  type: MemoryType.CUSTOM;
-  [key: string]: unknown;
-}
-
-interface ActionMetadata extends BaseMetadata {
-  type: MemoryType.ACTION;
-  actionName: string;
-  actionId: UUID;
-  runId: UUID;
-}
-
-interface ActionResultMetadata extends BaseMetadata {
-  type: MemoryType.ACTION_RESULT;
-  actionName: string;
-  actionId: UUID;
-  runId: UUID;
-  error?: boolean;
-  totalSteps?: number;
-  currentStep?: number;
-}
-
-interface KnowledgeMetadata extends BaseMetadata {
-  type: MemoryType.KNOWLEDGE;
-}
-
-interface ExperienceMetadata extends BaseMetadata {
-  type: MemoryType.EXPERIENCE;
-}
-
-interface ReflectionMetadata extends BaseMetadata {
-  type: MemoryType.REFLECTION;
-}
 
 using MemoryMetadata = std::variant<, DocumentMetadata, FragmentMetadata, MessageMetadata, DescriptionMetadata, CustomMetadata, ActionMetadata, ActionResultMetadata, KnowledgeMetadata, ExperienceMetadata, ReflectionMetadata>;
 
@@ -155,31 +83,13 @@ struct Memory {
     std::optional<MemoryMetadata> metadata;
 };
 
-
 /**
  * Specialized memory type for messages with enhanced type checking
  */
-interface MessageMemory extends Memory {
-  metadata: MessageMetadata;
-  content: Content & {
-    text: string; // Message memories must have text content
-  };
-}
 
 /**
- * Factory ;
-  embedding?: number[];
-}): MessageMemory {
-  return {
-    ...params,
-    createdAt: Date.now(),
-    metadata: {
-      type: MemoryType.MESSAGE,
-      timestamp: Date.now(),
-      scope: params.agentId ? 'private' : 'shared',
-    },
-  };
-}
+ * Factory function to create a new message memory with proper defaults
+ */
 
 /**
  * Type guard to check if a memory metadata is a DocumentMetadata
@@ -187,13 +97,11 @@ interface MessageMemory extends Memory {
  * @returns True if the metadata is a DocumentMetadata
  */
 
-
 /**
  * Type guard to check if a memory metadata is a FragmentMetadata
  * @param metadata The metadata to check
  * @returns True if the metadata is a FragmentMetadata
  */
-
 
 /**
  * Type guard to check if a memory metadata is a MessageMetadata
@@ -201,13 +109,11 @@ interface MessageMemory extends Memory {
  * @returns True if the metadata is a MessageMetadata
  */
 
-
 /**
  * Type guard to check if a memory metadata is a DescriptionMetadata
  * @param metadata The metadata to check
  * @returns True if the metadata is a DescriptionMetadata
  */
-
 
 /**
  * Type guard to check if a memory metadata is a CustomMetadata
@@ -215,13 +121,11 @@ interface MessageMemory extends Memory {
  * @returns True if the metadata is a CustomMetadata
  */
 
-
 /**
  * Type guard to check if a memory metadata is an ActionMetadata
  * @param metadata The metadata to check
  * @returns True if the metadata is an ActionMetadata
  */
-
 
 /**
  * Type guard to check if a memory metadata is an ActionResultMetadata
@@ -229,13 +133,11 @@ interface MessageMemory extends Memory {
  * @returns True if the metadata is an ActionResultMetadata
  */
 
-
 /**
  * Type guard to check if a memory metadata is a KnowledgeMetadata
  * @param metadata The metadata to check
  * @returns True if the metadata is a KnowledgeMetadata
  */
-
 
 /**
  * Type guard to check if a memory metadata is an ExperienceMetadata
@@ -243,62 +145,39 @@ interface MessageMemory extends Memory {
  * @returns True if the metadata is an ExperienceMetadata
  */
 
-
 /**
  * Type guard to check if a memory metadata is a ReflectionMetadata
  * @param metadata The metadata to check
  * @returns True if the metadata is a ReflectionMetadata
  */
 
-
 /**
  * Memory type guard for document memories
  */
- {
-  return memory.metadata?.type === MemoryType.DOCUMENT;
-}
 
 /**
  * Memory type guard for fragment memories
  */
- {
-  return memory.metadata?.type === MemoryType.FRAGMENT;
-}
 
 /**
  * Memory type guard for action memories
  */
- {
-  return memory.metadata?.type === MemoryType.ACTION;
-}
 
 /**
  * Memory type guard for action result memories
  */
- {
-  return memory.metadata?.type === MemoryType.ACTION_RESULT;
-}
 
 /**
  * Memory type guard for knowledge memories
  */
- {
-  return memory.metadata?.type === MemoryType.KNOWLEDGE;
-}
 
 /**
  * Memory type guard for experience memories
  */
- {
-  return memory.metadata?.type === MemoryType.EXPERIENCE;
-}
 
 /**
  * Memory type guard for reflection memories
  */
- {
-  return memory.metadata?.type === MemoryType.REFLECTION;
-}
 
 /**
  * Safely access the text content of a memory
@@ -306,6 +185,6 @@ interface MessageMemory extends Memory {
  * @param defaultValue Optional default value if no text is found
  * @returns The text content or default value
  */
-
+std::string getMemoryText(Memory memory, auto defaultValue = '');
 
 } // namespace elizaos

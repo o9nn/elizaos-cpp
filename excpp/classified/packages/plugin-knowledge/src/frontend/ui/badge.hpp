@@ -11,7 +11,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
+
 
 struct BadgeProps {
     React.ReactNode children;
@@ -19,20 +19,6 @@ struct BadgeProps {
     std::optional<std::string> className;
 };
 
-
-: BadgeProps) {
-  const baseClasses = 'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium';
-
-  const variantClasses = {
-    default: 'bg-primary text-primary-foreground',
-    outline: 'border border-input bg-background text-foreground',
-    secondary: 'bg-secondary text-secondary-foreground',
-    destructive: 'bg-destructive text-destructive-foreground',
-  };
-
-  return (
-    <span className={`${baseClasses} ${variantClasses[variant]} ${className}`}>{children}</span>
-  );
-}
+void Badge(auto { children, auto variant = 'default', BadgeProps className = '' });
 
 } // namespace elizaos

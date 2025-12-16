@@ -17,11 +17,11 @@ namespace elizaos {
 using UUID = `${string}-${string}-${string}-${string}-${string}`;
 
 /**
- * Helper -[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) {
-    throw new Error(`Invalid UUID format: ${id}`);
-  }
-  return id as UUID;
-}
+ * Helper function to safely cast a string to strongly typed UUID
+ * @param id The string UUID to validate and cast
+ * @returns The same UUID with branded type information
+ */
+UUID asUUID(const std::string& id);
 
 /**
  * Represents the content of a memory, message, or other information
@@ -39,32 +39,23 @@ struct Content {
     std::optional<std::string> channelType;
 };
 
-
 /**
  * Represents a media attachment
  */
 using Media = {
   /** Unique identifier */
-  id: string;
 
   /** Media URL */
-  url: string;
 
   /** Media title */
-  title?: string;
 
   /** Media source */
-  source?: string;
 
   /** Media description */
-  description?: string;
 
   /** Text content */
-  text?: string;
 
   /** Content type */
-  contentType?: ContentType;
-};
 
 enum ContentType {
   IMAGE = 'image',

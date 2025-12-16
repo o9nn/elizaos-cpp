@@ -11,25 +11,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
-const BracketsIcon = (props: SVGProps<SVGSVGElement>) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width={20}
-    height={20}
-    viewBox="0 0 20 20"
-    fill="none"
-    {...props}
-  >
-    <path
-      stroke="currentColor"
-      strokeLinecap="square"
-      strokeWidth={1.667}
-      d="M5.833 3.333h-2.5v13.334h2.5m8.333-13.334h2.5v13.334h-2.5"
-    />
-  </svg>
-);
-default BracketsIcon;
+
+
 
 } // namespace elizaos

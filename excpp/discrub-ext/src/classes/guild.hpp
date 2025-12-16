@@ -16,10 +16,6 @@ namespace elizaos {
 // Manual refinement required for production use
 
 // https://discord.com/developers/docs/resources/guild#guild-object
-;
-;
-;
-;
 
 class Guild {
   id: Snowflake;
@@ -155,7 +151,5 @@ class Guild {
     this.premium_progress_bar_enabled = opts.premium_progress_bar_enabled;
     this.safety_alerts_channel_id = opts.safety_alerts_channel_id;
   }
-}
-default Guild;
 
 } // namespace elizaos

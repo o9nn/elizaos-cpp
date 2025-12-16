@@ -13,13 +13,10 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
-;
+
 
 /**
  * Creates the media router for file uploads and media handling
  */
-
 
 } // namespace elizaos

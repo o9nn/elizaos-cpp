@@ -20,7 +20,6 @@ struct LoginRequest {
     string; // CDP's user identifier (UUID) cdpUserId;
 };
 
-
 /**
  * Response from login endpoint
  */
@@ -30,7 +29,6 @@ struct LoginResponse {
     string; // User's display name username;
     string; // Token expiration time (e.g., "7d") expiresIn;
 };
-
 
 /**
  * Response from refresh token endpoint
@@ -42,7 +40,6 @@ struct RefreshTokenResponse {
     std::string expiresIn;
 };
 
-
 /**
  * Response from /me endpoint (current user info)
  */
@@ -51,7 +48,6 @@ struct CurrentUserResponse {
     std::string email;
     string; // User's display name username;
 };
-
 
 
 } // namespace elizaos

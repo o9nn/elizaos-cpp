@@ -13,9 +13,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
 
-;
 
 /**
  * Service builder class that provides type-safe service creation
@@ -27,7 +25,6 @@ class ServiceBuilder<TService extends Service = Service> extends coreServiceBuil
     //this.serviceType = serviceType;
     this.description = '';
   }
-}
 
 /**
  * Create a type-safe service builder
@@ -35,20 +32,12 @@ class ServiceBuilder<TService extends Service = Service> extends coreServiceBuil
  * @returns A new ServiceBuilder instance
  */
 
-
 /**
  * Type-safe service definition helper
  */
-interface ServiceDefinition<T extends Service = Service> {
-  serviceType: ServiceTypeName;
-  description: string;
-  start: (runtime: IAgentRuntime) => Promise<T>;
-  stop?: () => Promise<void>;
-}
 
 /**
  * Define a service with type safety
  */
-
 
 } // namespace elizaos

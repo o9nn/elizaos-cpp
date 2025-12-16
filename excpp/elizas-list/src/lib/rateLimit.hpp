@@ -11,9 +11,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
 
-const rateLimitRedis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379');
 
 class RateLimiter {
   static async checkLimit(key: string, limit: number = 100, window: number = 3600): Promise<boolean> {
@@ -24,9 +22,4 @@ class RateLimiter {
     return current <= limit;
   }
 
-  static async getRemainingLimit(key: string): Promise<number> {
-    const current = await rateLimitRedis.get(key);
-    return 100 - (parseInt(current || '0'));
-  }
-} 
 } // namespace elizaos

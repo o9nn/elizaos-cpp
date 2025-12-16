@@ -11,12 +11,11 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
+
 
 /**
- * Helper );
-    server.listen(port);
-  });
-}
+ * Helper function to check port availability
+ */
+std::future<bool> checkPortAvailable(double port);
 
 } // namespace elizaos

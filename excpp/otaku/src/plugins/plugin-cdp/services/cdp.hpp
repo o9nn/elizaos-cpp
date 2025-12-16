@@ -13,9 +13,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
-;
+
 
 struct WalletToken {
     std::string symbol;
@@ -29,7 +27,6 @@ struct WalletToken {
     double decimals;
 };
 
-
 struct WalletNFT {
     std::string chain;
     std::string contractAddress;
@@ -42,14 +39,12 @@ struct WalletNFT {
     std::optional<std::vector<unknown>> attributes;
 };
 
-
 struct WalletInfo {
     std::string address;
     std::vector<WalletToken> tokens;
     std::vector<WalletNFT> nfts;
     double totalUsdValue;
 };
-
 
 class CdpService extends Service {
   static serviceType = "CDP_SERVICE";
@@ -62,38 +57,15 @@ class CdpService extends Service {
     this.transactionManager = CdpTransactionManager.getInstance();
   }
 
-  static async start(runtime: IAgentRuntime): Promise<CdpService> {
-    const svc = new CdpService(runtime);
-    logger.info("CDP_SERVICE: Started with CdpTransactionManager");
-    return svc;
-  }
-
-  async stop(): Promise<void> {
-    logger.info("CDP_SERVICE: Stopping");
-  }
-
   /**
    * Get or create wallet for account
    * Delegates to transaction manager
    */
-  async getOrCreateWallet(accountName: string): Promise<{ address: string; accountName: string }> {
-    return this.transactionManager.getOrCreateWallet(accountName);
-  }
 
   /**
    * Get Viem wallet and public clients for a CDP account on a specific network
    * Delegates to transaction manager
    */
-  async getViemClientsForAccount(options: {
-    accountName: string;
-    network?: string;
-  }): Promise<{
-    address: `0x${string}`;
-    walletClient: any;
-    publicClient: any;
-  }> {
-    return this.transactionManager.getViemClientsForAccount(options);
-  }
 
   /**
    * Get comprehensive wallet information from cache if available and not expired
@@ -102,23 +74,9 @@ class CdpService extends Service {
    * @param accountName User's account identifier
    * @param chain Optional specific chain to fetch (if not provided, fetches all chains)
    */
-  async getWalletInfoCached(accountName: string, chain?: string, address?: string): Promise<WalletInfo> {
-    logger.info(`[CDP Service] Getting wallet info for ${accountName}${chain ? ` (chain: ${chain})` : ' (all chains)'}${address ? ` (address: ${address.substring(0, 10)}...)` : ''}`);
 
     // Use manager's cache (5-minute TTL)
     // Pass address if available to avoid CDP account lookup
-    const [tokensResult, nftsResult] = await Promise.all([
-      this.transactionManager.getTokenBalances(accountName, chain, false, address), // use cache, pass address
-      this.transactionManager.getNFTs(accountName, chain, false, address), // use cache, pass address
-    ]);
-
-    return {
-      address: tokensResult.address,
-      tokens: tokensResult.tokens,
-      nfts: nftsResult.nfts,
-      totalUsdValue: tokensResult.totalUsdValue,
-    };
-  }
 
   /**
    * Fetch fresh wallet information, bypassing cache
@@ -128,52 +86,14 @@ class CdpService extends Service {
    * @param chain Optional specific chain to fetch (if not provided, fetches all chains)
    * @param address Optional wallet address to avoid CDP account lookup
    */
-  async fetchWalletInfo(accountName: string, chain?: string, address?: string): Promise<WalletInfo> {
-    logger.info(`[CDP Service] Force fetching wallet info for ${accountName}${chain ? ` on chain: ${chain}` : ' (all chains)'}${address ? ` (address: ${address.substring(0, 10)}...)` : ''}`);
 
     // Force sync - bypass manager's cache
     // Pass address if available to avoid CDP account lookup
-    const [tokensResult, nftsResult] = await Promise.all([
-      this.transactionManager.getTokenBalances(accountName, chain, false, address),
-      this.transactionManager.getNFTs(accountName, chain, false, address),
-    ]);
-
-    return {
-      address: tokensResult.address,
-      tokens: tokensResult.tokens,
-      nfts: nftsResult.nfts,
-      totalUsdValue: tokensResult.totalUsdValue,
-    };
-  }
 
   /**
    * Transfer tokens from CDP wallet
    * Delegates to transaction manager
    */
-  async transfer(params: {
-    accountName: string;
-    network: CdpNetwork;
-    to: `0x${string}`;
-    token: `0x${string}` | "eth";
-    amount: bigint;
-  }): Promise<{ transactionHash: string; from: string }> {
-    const { accountName, network, to, token, amount } = params;
-
-    logger.info(`[CDP Service] Transferring ${amount.toString()} ${token} to ${to} on ${network} for ${accountName}`);
-
-    const result = await this.transactionManager.sendToken({
-      userId: accountName,
-      network,
-      to,
-      token,
-      amount: amount.toString(),
-    });
-
-    return {
-      transactionHash: result.transactionHash,
-      from: result.from,
-    };
-  }
 
   /**
    * Execute token swap with automatic fallback to multiple swap providers
@@ -186,94 +106,16 @@ class CdpService extends Service {
    * 
    * Reference: https://docs.cdp.coinbase.com/trade-api/quickstart#3-execute-a-swap
    */
-  async swap(params: {
-    accountName: string;
-    network: CdpNetwork;
-    fromToken: `0x${string}`;
-    toToken: `0x${string}`;
-    fromAmount: bigint;
-    slippageBps?: number;
-  }): Promise<{ transactionHash: string }> {
-    const { accountName, network, fromToken, toToken, fromAmount, slippageBps = 100 } = params;
-
-    logger.info(`[CDP Service] Executing swap: ${fromAmount.toString()} ${fromToken} to ${toToken} on ${network} for ${accountName}`);
-
-    const result = await this.transactionManager.swap({
-      userId: accountName,
-      network,
-      fromToken,
-      toToken,
-      fromAmount: fromAmount.toString(),
-      slippageBps,
-    });
-
-    return {
-      transactionHash: result.transactionHash,
-    };
-  }
 
   /**
    * Get swap price estimate
    * Delegates to transaction manager
    */
-  async getSwapPrice(params: {
-    accountName: string;
-    network: CdpNetwork;
-    fromToken: `0x${string}`;
-    toToken: `0x${string}`;
-    fromAmount: bigint;
-  }): Promise<{
-    liquidityAvailable: boolean;
-    toAmount: string;
-    minToAmount: string;
-  }> {
-    const { accountName, network, fromToken, toToken, fromAmount } = params;
-
-    logger.info(`[CDP Service] Getting swap price: ${fromAmount.toString()} ${fromToken} to ${toToken} on ${network} for ${accountName}`);
-
-    const result = await this.transactionManager.getSwapPrice({
-      userId: accountName,
-      network,
-      fromToken,
-      toToken,
-      fromAmount: fromAmount.toString(),
-    });
-
-    return {
-      liquidityAvailable: result.liquidityAvailable,
-      toAmount: result.toAmount,
-      minToAmount: result.minToAmount,
-    };
-  }
 
   /**
    * Transfer NFT from CDP wallet
    * Delegates to transaction manager
    */
-  async transferNft(params: {
-    accountName: string;
-    network: CdpNetwork;
-    to: `0x${string}`;
-    contractAddress: `0x${string}`;
-    tokenId: string;
-  }): Promise<{ transactionHash: string; from: string }> {
-    const { accountName, network, to, contractAddress, tokenId } = params;
-
-    logger.info(`[CDP Service] Transferring NFT ${contractAddress}:${tokenId} to ${to} on ${network} for ${accountName}`);
-
-    const result = await this.transactionManager.sendNFT({
-      userId: accountName,
-      network,
-      to,
-      contractAddress,
-      tokenId,
-    });
-
-    return {
-      transactionHash: result.transactionHash,
-      from: result.from,
-    };
-  }
 
   /**
    * Get actual on-chain token balance for a specific token
@@ -284,23 +126,6 @@ class CdpService extends Service {
    * @param tokenAddress Token contract address (or native token address)
    * @param walletAddress Optional wallet address to avoid CDP account lookup
    */
-  async getOnChainBalance(params: {
-    accountName: string;
-    network: CdpNetwork;
-    tokenAddress: `0x${string}`;
-    walletAddress?: string;
-  }): Promise<bigint> {
-    const { accountName, network, tokenAddress, walletAddress } = params;
 
-    logger.info(`[CDP Service] Getting on-chain balance for token ${tokenAddress} on ${network} for ${accountName}`);
-
-    return this.transactionManager.getOnChainTokenBalance({
-      userId: accountName,
-      network,
-      tokenAddress,
-      walletAddress,
-    });
-  }
-}
 
 } // namespace elizaos

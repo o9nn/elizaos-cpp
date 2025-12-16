@@ -14,9 +14,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
-;
+
 
 class RunsService extends BaseApiClient {
   async listRuns(
@@ -29,11 +27,5 @@ class RunsService extends BaseApiClient {
     );
   }
 
-  async getRun(agentId: UUID, runId: UUID, roomId?: UUID): Promise<RunDetail> {
-    return this.get<RunDetail>(`/api/agents/${agentId}/runs/${runId}`, {
-      params: roomId ? { roomId } : undefined,
-    });
-  }
-}
 
 } // namespace elizaos

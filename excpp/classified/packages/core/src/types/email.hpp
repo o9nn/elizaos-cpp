@@ -12,13 +12,12 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
+
 
 struct EmailAddress {
     std::string email;
     std::optional<std::string> name;
 };
-
 
 struct EmailAttachment {
     std::string filename;
@@ -27,7 +26,6 @@ struct EmailAttachment {
     std::optional<'attachment' | 'inline'> contentDisposition;
     std::optional<std::string> cid;
 };
-
 
 struct EmailMessage {
     EmailAddress from;
@@ -46,7 +44,6 @@ struct EmailMessage {
     std::optional<'high' | 'normal' | 'low'> priority;
 };
 
-
 struct EmailSendOptions {
     std::optional<double> retry;
     std::optional<double> timeout;
@@ -54,7 +51,6 @@ struct EmailSendOptions {
     std::optional<bool> trackClicks;
     std::optional<std::vector<std::string>> tags;
 };
-
 
 struct EmailSearchOptions {
     std::optional<std::string> query;
@@ -71,7 +67,6 @@ struct EmailSearchOptions {
     std::optional<bool> hasAttachments;
 };
 
-
 struct EmailFolder {
     std::string name;
     std::string path;
@@ -80,7 +75,6 @@ struct EmailFolder {
     std::optional<double> unreadCount;
     std::optional<std::vector<EmailFolder>> children;
 };
-
 
 struct EmailAccount {
     std::string email;
@@ -91,14 +85,9 @@ struct EmailAccount {
     std::optional<double> quotaLimit;
 };
 
-
 /**
  * Interface for email services
  */
-abstract class IEmailService extends Service {
-  static override readonly serviceType = ServiceType.EMAIL;
-
-  public readonly capabilityDescription = 'Email sending, receiving, and management capabilities';
 
   /**
    * Send an email
@@ -106,28 +95,24 @@ abstract class IEmailService extends Service {
    * @param options - Send options
    * @returns Promise resolving to message ID
    */
-  abstract sendEmail(message: EmailMessage, options?: EmailSendOptions): Promise<string>;
 
   /**
    * Get emails from a folder
    * @param options - Search options
    * @returns Promise resolving to array of emails
    */
-  abstract getEmails(options?: EmailSearchOptions): Promise<EmailMessage[]>;
 
   /**
    * Get a specific email by ID
    * @param messageId - Message ID
    * @returns Promise resolving to email message
    */
-  abstract getEmail(messageId: string): Promise<EmailMessage>;
 
   /**
    * Delete an email
    * @param messageId - Message ID
    * @returns Promise resolving when deletion completes
    */
-  abstract deleteEmail(messageId: string): Promise<void>;
 
   /**
    * Mark an email as read/unread
@@ -135,7 +120,6 @@ abstract class IEmailService extends Service {
    * @param read - True to mark as read, false for unread
    * @returns Promise resolving when operation completes
    */
-  abstract markEmailAsRead(messageId: string, read: boolean): Promise<void>;
 
   /**
    * Flag/unflag an email
@@ -143,7 +127,6 @@ abstract class IEmailService extends Service {
    * @param flagged - True to flag, false to unflag
    * @returns Promise resolving when operation completes
    */
-  abstract flagEmail(messageId: string, flagged: boolean): Promise<void>;
 
   /**
    * Move email to a different folder
@@ -151,13 +134,11 @@ abstract class IEmailService extends Service {
    * @param folderPath - Destination folder path
    * @returns Promise resolving when move completes
    */
-  abstract moveEmail(messageId: string, folderPath: string): Promise<void>;
 
   /**
    * Get available folders
    * @returns Promise resolving to array of folders
    */
-  abstract getFolders(): Promise<EmailFolder[]>;
 
   /**
    * Create a new folder
@@ -165,13 +146,11 @@ abstract class IEmailService extends Service {
    * @param parentPath - Optional parent folder path
    * @returns Promise resolving when folder is created
    */
-  abstract createFolder(folderName: string, parentPath?: string): Promise<void>;
 
   /**
    * Get account information
    * @returns Promise resolving to account details
    */
-  abstract getAccountInfo(): Promise<EmailAccount>;
 
   /**
    * Search emails
@@ -179,7 +158,5 @@ abstract class IEmailService extends Service {
    * @param options - Search options
    * @returns Promise resolving to search results
    */
-  abstract searchEmails(query: string, options?: EmailSearchOptions): Promise<EmailMessage[]>;
-}
 
 } // namespace elizaos

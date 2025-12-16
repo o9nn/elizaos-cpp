@@ -19,7 +19,6 @@ struct ChatUser {
     std::optional<bool> isOnline;
 };
 
-
 struct ChatMessage {
     std::string id;
     std::string content;
@@ -28,7 +27,6 @@ struct ChatMessage {
     bool isFromCurrentUser;
 };
 
-
 struct ChatConversation {
     std::string id;
     std::vector<ChatUser> participants;
@@ -36,7 +34,6 @@ struct ChatConversation {
     double unreadCount;
     std::vector<ChatMessage> messages;
 };
-
 
 using ChatState = std::variant<"collapsed", "expanded", "conversation">;
 

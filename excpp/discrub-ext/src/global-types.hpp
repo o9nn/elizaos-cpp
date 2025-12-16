@@ -13,9 +13,5 @@ namespace elizaos {
 
 using Maybe = std::variant<nullptr, std::nullopt>;
 using Snowflake = std::string;
-type DiscordApiResponse<T = void> = {
-  success: boolean;
-  data?: T;
-};
 
 } // namespace elizaos

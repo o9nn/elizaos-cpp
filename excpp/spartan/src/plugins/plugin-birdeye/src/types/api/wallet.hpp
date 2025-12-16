@@ -16,7 +16,6 @@ struct WalletPortfolioParams {
     std::string wallet;
 };
 
-
 struct WalletPortfolioResponse {
     bool success;
     { data;
@@ -35,13 +34,11 @@ struct WalletPortfolioResponse {
     std::optional<double> valueUsd;
 };
 
-
 // Wallet Token Balance Types
 struct WalletTokenBalanceParams {
     std::string wallet;
     std::string token_address;
 };
-
 
 struct WalletTokenBalanceResponse {
     bool success;
@@ -57,14 +54,12 @@ struct WalletTokenBalanceResponse {
     std::optional<double> valueUsd;
 };
 
-
 // Wallet Transaction History Types
 struct WalletTransactionHistoryParams {
     std::string wallet;
     std::optional<double> limit;
     std::optional<std::string> before;
 };
-
 
 struct WalletTransactionHistoryResponse {
     bool success;
@@ -94,7 +89,6 @@ struct WalletTransactionHistoryResponse {
     std::optional<double> decimals;
 };
 
-
 // Wallet Networks Types
 struct WalletNetworksResponse {
     bool success;
@@ -102,12 +96,10 @@ struct WalletNetworksResponse {
     std::optional<std::vector<std::string>> chains;
 };
 
-
 // Wallet Portfolio Multichain Types
 struct WalletPortfolioMultichainParams {
     std::string wallet;
 };
-
 
 struct WalletPortfolioMultichainResponse {
     bool success;
@@ -126,12 +118,10 @@ struct WalletPortfolioMultichainResponse {
     std::optional<double> totalValue;
 };
 
-
 // Wallet Transaction History Multichain Types
 struct WalletTransactionHistoryMultichainParams {
     std::string wallet;
 };
-
 
 struct WalletTransactionHistoryMultichainResponse {
     bool success;
@@ -161,7 +151,6 @@ struct WalletTransactionHistoryMultichainResponse {
     std::optional<double> decimals;
 };
 
-
 // Wallet Transaction Simulation Types
 struct WalletSimulationParams {
     std::optional<std::string> from;
@@ -169,7 +158,6 @@ struct WalletSimulationParams {
     std::optional<std::string> data;
     std::optional<std::string> value;
 };
-
 
 struct WalletSimulationResponse {
     bool success;

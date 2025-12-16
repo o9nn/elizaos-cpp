@@ -11,7 +11,6 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { Content, UUID } from './primitives';
 
 /**
  * Memory type enumeration for built-in memory types
@@ -63,29 +62,6 @@ struct BaseMetadata {
     std::optional<std::vector<std::string>> tags;
 };
 
-
-interface DocumentMetadata extends BaseMetadata {
-  type: MemoryType.DOCUMENT;
-}
-
-interface FragmentMetadata extends BaseMetadata {
-  type: MemoryType.FRAGMENT;
-  documentId: UUID;
-  position: number;
-}
-
-interface MessageMetadata extends BaseMetadata {
-  type: MemoryType.MESSAGE;
-}
-
-interface DescriptionMetadata extends BaseMetadata {
-  type: MemoryType.DESCRIPTION;
-}
-
-interface CustomMetadata extends BaseMetadata {
-  [key: string]: unknown;
-}
-
 using MemoryMetadata = std::variant<, DocumentMetadata, FragmentMetadata, MessageMetadata, DescriptionMetadata, CustomMetadata>;
 
 /**
@@ -105,31 +81,13 @@ struct Memory {
     std::optional<MemoryMetadata> metadata;
 };
 
-
 /**
  * Specialized memory type for messages with enhanced type checking
  */
-interface MessageMemory extends Memory {
-  metadata: MessageMetadata;
-  content: Content & {
-    text: string; // Message memories must have text content
-  };
-}
 
 /**
- * Factory ;
-  embedding?: number[];
-}): MessageMemory {
-  return {
-    ...params,
-    createdAt: Date.now(),
-    metadata: {
-      type: MemoryType.MESSAGE,
-      timestamp: Date.now(),
-      scope: params.agentId ? 'private' : 'shared',
-    },
-  };
-}
+ * Factory function to create a new message memory with proper defaults
+ */
 
 /**
  * Type guard to check if a memory metadata is a DocumentMetadata
@@ -137,13 +95,11 @@ interface MessageMemory extends Memory {
  * @returns True if the metadata is a DocumentMetadata
  */
 
-
 /**
  * Type guard to check if a memory metadata is a FragmentMetadata
  * @param metadata The metadata to check
  * @returns True if the metadata is a FragmentMetadata
  */
-
 
 /**
  * Type guard to check if a memory metadata is a MessageMetadata
@@ -151,13 +107,11 @@ interface MessageMemory extends Memory {
  * @returns True if the metadata is a MessageMetadata
  */
 
-
 /**
  * Type guard to check if a memory metadata is a DescriptionMetadata
  * @param metadata The metadata to check
  * @returns True if the metadata is a DescriptionMetadata
  */
-
 
 /**
  * Type guard to check if a memory metadata is a CustomMetadata
@@ -165,20 +119,13 @@ interface MessageMemory extends Memory {
  * @returns True if the metadata is a CustomMetadata
  */
 
-
 /**
  * Memory type guard for document memories
  */
- {
-  return memory.metadata?.type === MemoryType.DOCUMENT;
-}
 
 /**
  * Memory type guard for fragment memories
  */
- {
-  return memory.metadata?.type === MemoryType.FRAGMENT;
-}
 
 /**
  * Safely access the text content of a memory
@@ -186,6 +133,6 @@ interface MessageMemory extends Memory {
  * @param defaultValue Optional default value if no text is found
  * @returns The text content or default value
  */
-
+std::string getMemoryText(Memory memory, auto defaultValue = '');
 
 } // namespace elizaos

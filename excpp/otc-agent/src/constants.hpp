@@ -12,9 +12,7 @@ namespace elizaos {
 // Manual refinement required for production use
 
 // --- Constants ---
-const USER_NAME = "User";
 
 // Source identifier for this Next.js application
-const CHAT_SOURCE = "API";
 
 } // namespace elizaos

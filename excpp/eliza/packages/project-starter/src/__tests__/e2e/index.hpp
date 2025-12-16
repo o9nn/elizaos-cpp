@@ -20,13 +20,7 @@ namespace elizaos {
  * This file exports all E2E test suites for the ElizaOS test runner.
  */
 
-;
-;
-;
-
 // Export test suites for the test runner to discover
-const testSuites = [projectTestSuite, starterTestSuite, naturalLanguageTestSuite];
 
-default testSuites;
 
 } // namespace elizaos

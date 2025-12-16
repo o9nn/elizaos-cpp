@@ -33,7 +33,6 @@ struct Project {
     double forks;
 };
 
-
 struct Collection {
     std::string id;
     std::string name;

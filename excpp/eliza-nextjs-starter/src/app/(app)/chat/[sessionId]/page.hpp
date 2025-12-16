@@ -11,24 +11,12 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
 
-;
 
 struct ChatPageProps {
     Promise<{ params;
     std::string sessionId;
 };
 
-
-default async : ChatPageProps) {
-  const { sessionId } = await params;
-
-  return (
-    <Suspense fallback={null}>
-      <Chat sessionId={sessionId} />
-    </Suspense>
-  );
-}
 
 } // namespace elizaos

@@ -12,7 +12,6 @@ namespace elizaos {
 // Manual refinement required for production use
 
 // Main client
-{ ElizaClient } from './client';
 
 // Base types
 * from './types/base';
@@ -27,15 +26,7 @@ namespace elizaos {
 * from './types/system';
 
 // Services (for advanced usage)
-{ AgentsService } from './services/agents';
-{ MessagingService } from './services/messaging';
-{ MemoryService } from './services/memory';
-{ AudioService } from './services/audio';
-{ MediaService } from './services/media';
-{ ServerService } from './services/server';
-{ SystemService } from './services/system';
 
 // Base client and error
-{ BaseApiClient, ApiError } from './lib/base-client';
 
 } // namespace elizaos

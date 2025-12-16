@@ -12,9 +12,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
-;
+
 
 class FeatureEngineering {
   async engineerFeatures(
@@ -61,61 +59,9 @@ class FeatureEngineering {
     }
   }
 
-  private async processNumericalFeatures(
-    data: Record<string, any>[],
-    config: NumericalFeatureConfig
-  ) {
-    const features = [];
-
-    for (const feature of config.features) {
       // Basic transformations
-      features.push(
-        this.normalize(data, feature),
-        this.standardize(data, feature),
-        this.polynomialFeatures(data, feature, config.degree)
-      );
 
       // Advanced transformations
-      if (config.advanced) {
-        features.push(
-          this.boxCoxTransform(data, feature),
-          this.yeojohnsonTransform(data, feature),
-          this.robustScaling(data, feature)
-        );
-      }
-    }
 
-    return features;
-  }
 
-  private async processCategoricalFeatures(
-    data: Record<string, any>[],
-    config: CategoricalFeatureConfig
-  ) {
-    const features = [];
-
-    for (const feature of config.features) {
-      switch (config.encoding) {
-        case 'onehot':
-          features.push(await this.oneHotEncode(data, feature));
-          break;
-        case 'target':
-          features.push(
-            await this.targetEncode(data, feature, config.target)
-          );
-          break;
-        case 'frequency':
-          features.push(await this.frequencyEncode(data, feature));
-          break;
-        case 'embedding':
-          features.push(
-            await this.categoryEmbedding(data, feature, config.embeddingDim)
-          );
-          break;
-      }
-    }
-
-    return features;
-  }
-} 
 } // namespace elizaos

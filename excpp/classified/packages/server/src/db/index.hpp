@@ -11,9 +11,6 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-{ createDatabaseConnection, getDatabase, closeDatabase } from './connection';
-{ runMigrations } from './migrations';
-{ MessageDatabaseAdapter } from './adapter';
 * from './schema';
 
 } // namespace elizaos

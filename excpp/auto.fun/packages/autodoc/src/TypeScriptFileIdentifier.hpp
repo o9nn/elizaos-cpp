@@ -11,8 +11,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
+
 
 /**
  * Class representing a TypeScript file identifier.
@@ -45,10 +44,5 @@ class TypeScriptFileIdentifier {
    * @param {string} directory - The directory path to search for TypeScript files.
    * @returns {string[]} - An array of TypeScript files found in the directory.
    */
-  public getTypeScriptFiles(directory: string): string[] {
-    const files = fs.readdirSync(directory);
-    return files.filter((file) => this.isTypeScriptFile(file));
-  }
-}
 
 } // namespace elizaos

@@ -13,9 +13,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { IAgentRuntime, Memory, Provider } from '@elizaos/core';
-;
-;
+
 
 /**
  * Represents a knowledge provider that retrieves knowledge from the knowledge base.
@@ -28,84 +26,13 @@ import type { IAgentRuntime, Memory, Provider } from '@elizaos/core';
  * @param {Memory} message - The message containing the query for knowledge retrieval.
  * @returns {Object} An object containing the retrieved knowledge data, values, and text.
  */
-const knowledgeProvider: Provider = {
-  name: 'KNOWLEDGE',
-  description:
-    'Knowledge from the knowledge base that the agent knows, retrieved whenever the agent needs to answer a question about their expertise.',
-  dynamic: true,
-  get: async (runtime: IAgentRuntime, message: Memory) => {
-    const knowledgeService = runtime.getService('knowledge') as KnowledgeService;
-    const knowledgeData = await knowledgeService?.getKnowledge(message);
-
-    const firstFiveKnowledgeItems = knowledgeData?.slice(0, 5);
-
-    let knowledge =
-      (firstFiveKnowledgeItems && firstFiveKnowledgeItems.length > 0
-        ? addHeader(
-            '# Knowledge',
-            firstFiveKnowledgeItems.map((knowledge) => `- ${knowledge.content.text}`).join('\n')
-          )
-        : '') + '\n';
-
-    const tokenLength = 3.5;
-
-    if (knowledge.length > 4000 * tokenLength) {
-      knowledge = knowledge.slice(0, 4000 * tokenLength);
-    }
 
     // 📊 Prepare RAG metadata for conversation memory tracking
-    let ragMetadata = null;
-    if (knowledgeData && knowledgeData.length > 0) {
-      ragMetadata = {
-        retrievedFragments: knowledgeData.map((fragment) => ({
-          fragmentId: fragment.id,
-          documentTitle:
-            (fragment.metadata as any)?.filename ||
-            (fragment.metadata as any)?.title ||
-            'Unknown Document',
-          similarityScore: (fragment as any).similarity,
-          contentPreview: (fragment.content?.text || 'No content').substring(0, 100) + '...',
-        })),
-        queryText: message.content?.text || 'Unknown query',
-        totalFragments: knowledgeData.length,
-        retrievalTimestamp: Date.now(),
-      };
-    }
 
     // 🎯 Store RAG metadata for conversation memory enrichment
-    if (knowledgeData && knowledgeData.length > 0 && knowledgeService && ragMetadata) {
-      try {
-        knowledgeService.setPendingRAGMetadata(ragMetadata);
 
         // Schedule enrichment check (with small delay to allow memory creation)
-        setTimeout(async () => {
-          try {
-            await knowledgeService.enrichRecentMemoriesWithPendingRAG();
-          } catch (error: any) {
-            logger.warn('RAG memory enrichment failed:', error.message);
-          }
-        }, 2000); // 2 second delay
-      } catch (error: any) {
         // Don't fail the provider if enrichment fails
-        logger.warn('RAG memory enrichment failed:', error.message);
-      }
-    }
 
-    return {
-      data: {
-        knowledge,
-        ragMetadata, // 🎯 Include RAG metadata for memory tracking
-        knowledgeUsed: knowledgeData && knowledgeData.length > 0, // Simple flag for easy detection
-      },
-      values: {
-        knowledge,
-        knowledgeUsed: knowledgeData && knowledgeData.length > 0, // Simple flag for easy detection
-      },
-      text: knowledge,
-      ragMetadata, // 🎯 Also include at top level for easy access
-      knowledgeUsed: knowledgeData && knowledgeData.length > 0, // 🎯 Simple flag at top level too
-    };
-  },
-};
 
 } // namespace elizaos

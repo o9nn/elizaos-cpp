@@ -17,8 +17,6 @@ namespace elizaos {
  * This file centralizes all configuration options for the trading system.
  */
 
-import type { UUID } from './types';
-
 /**
  * Buy amount configuration
  */
@@ -29,7 +27,6 @@ struct BuyAmountConfig {
     double trustScoreMultiplier;
     double convictionMultiplier;
 };
-
 
 /**
  * Trading configuration
@@ -45,7 +42,6 @@ struct TradingConfig {
     BuyAmountConfig buyAmountConfig;
 };
 
-
 /**
  * Database configuration
  */
@@ -54,7 +50,6 @@ struct DatabaseConfig {
     bool enableCaching;
     number; // in seconds cacheTimeout;
 };
-
 
 /**
  * Memory configuration
@@ -66,45 +61,17 @@ struct MemoryConfig {
     number; // in seconds cacheTimeout;
 };
 
-
 /**
  * Default trading configuration
  */
-const DEFAULT_TRADING_CONFIG: TradingConfig = {
-  slippageBps: 100, // 1%
-  forceSimulation: false,
-  defaultChain: 'solana',
-  maxPositionsPerToken: 3,
-  maxPositionsPerRecommender: 5,
-  minLiquidityUsd: 10000, // $10k
-  maxMarketCapUsd: 100000000, // $100M
-  buyAmountConfig: {
-    baseAmount: 0.1, // 0.1 SOL
-    minAmount: 0.01, // 0.01 SOL
-    maxAmount: 1.0, // 1 SOL
-    trustScoreMultiplier: 0.5,
-    convictionMultiplier: 0.3,
-  },
-};
 
 /**
  * Default database configuration
  */
-const DEFAULT_DATABASE_CONFIG: DatabaseConfig = {
-  schemaVersion: '1.0',
-  enableCaching: true,
-  cacheTimeout: 3600, // 1 hour
-};
 
 /**
  * Default memory configuration
  */
-const DEFAULT_MEMORY_CONFIG: MemoryConfig = {
-  embeddingModel: 'text-embedding-ada-002',
-  embeddingDimension: 1536,
-  similarityThreshold: 0.7,
-  cacheTimeout: 3600, // 1 hour
-};
 
 /**
  * Conviction levels for recommendations
@@ -159,7 +126,6 @@ struct BuySignalMessage {
     std::optional<RecommendationType> type;
 };
 
-
 /**
  * Sell signal message interface
  */
@@ -171,7 +137,6 @@ struct SellSignalMessage {
     std::optional<bool> isSimulation;
 };
 
-
 /**
  * Utility functions for configuration
  */
@@ -179,22 +144,21 @@ struct SellSignalMessage {
 /**
  * Get conviction multiplier
  */
-
-}
+double getConvictionMultiplier(Conviction conviction);
 
 /**
  * Get liquidity multiplier
  */
-
+double getLiquidityMultiplier(double liquidity);
 
 /**
  * Get market cap multiplier
  */
-
+double getMarketCapMultiplier(double marketCap);
 
 /**
  * Get volume multiplier
  */
-
+double getVolumeMultiplier(double volume);
 
 } // namespace elizaos

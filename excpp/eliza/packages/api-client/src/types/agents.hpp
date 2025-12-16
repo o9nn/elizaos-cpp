@@ -13,8 +13,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
+
 
 struct Agent {
     UUID id;
@@ -26,20 +25,17 @@ struct Agent {
     std::optional<std::unordered_map<std::string, std::any>> metadata;
 };
 
-
 struct AgentCreateParams {
     std::string name;
     std::optional<std::string> description;
     std::optional<std::unordered_map<std::string, std::any>> metadata;
 };
 
-
 struct AgentUpdateParams {
     std::optional<std::string> name;
     std::optional<std::string> description;
     std::optional<std::unordered_map<std::string, std::any>> metadata;
 };
-
 
 struct AgentWorld {
     UUID id;
@@ -48,12 +44,10 @@ struct AgentWorld {
     std::optional<std::vector<Agent>> agents;
 };
 
-
 struct AgentWorldSettings {
     UUID worldId;
     std::unordered_map<std::string, std::any> settings;
 };
-
 
 struct AgentPanel {
     std::string id;
@@ -62,7 +56,6 @@ struct AgentPanel {
     std::string type;
     std::optional<std::unordered_map<std::string, std::any>> metadata;
 };
-
 
 struct AgentLog {
     UUID id;
@@ -73,12 +66,5 @@ struct AgentLog {
     std::optional<std::unordered_map<std::string, std::any>> metadata;
 };
 
-
-interface AgentLogsParams extends PaginationParams {
-  level?: 'debug' | 'info' | 'warn' | 'error';
-  from?: Date | string;
-  to?: Date | string;
-  search?: string;
-}
 
 } // namespace elizaos

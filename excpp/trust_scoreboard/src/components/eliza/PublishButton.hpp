@@ -12,14 +12,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
 
-const PublishButton: FC = () => {
-  return (
-    <button className={styles.publishButton}>
-      Publish (1 SOL)
-    </button>
-  );
-}; 
+
+
 } // namespace elizaos

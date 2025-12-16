@@ -11,13 +11,5 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-{
-  EnvFileService,
-  getEnvFileService,
-  createEnvFileService,
-  type EnvVarEntry,
-  type WriteOptions,
-  type ValidationResult,
-} from './env-file.service';
 
 } // namespace elizaos

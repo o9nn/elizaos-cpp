@@ -11,7 +11,6 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { BirdeyeSupportedChain } from "../shared";
 
 // Search Types
 struct TokenMarketSearchParams {
@@ -25,7 +24,6 @@ struct TokenMarketSearchParams {
     std::optional<double> limit;
 };
 
-
 struct TokenMarketSearchResponse {
     bool success;
     { data;
@@ -33,7 +31,6 @@ struct TokenMarketSearchResponse {
     std::optional<"token" | "market"> type;
     std::optional<std::vector<TokenResult | MarketResult>> result;
 };
-
 
 struct TokenResult {
     std::optional<std::string> name;
@@ -60,7 +57,6 @@ struct TokenResult {
     std::optional<double> volume_24h_usd;
     std::optional<std::string> logo_uri;
 };
-
 
 struct MarketResult {
     std::string name;

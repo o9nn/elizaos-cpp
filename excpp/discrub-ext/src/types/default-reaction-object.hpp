@@ -13,8 +13,5 @@ namespace elizaos {
 
 // https://discord.com/developers/docs/resources/channel#default-reaction-object
 using DefaultReactionObject = std::variant<{
-  emoji_id: Snowflake, Maybe>;
-  emoji_name: string | Maybe;
-};
 
 } // namespace elizaos

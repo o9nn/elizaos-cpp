@@ -14,9 +14,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
-;
+
 
 class MediaService extends BaseApiClient {
   /**
@@ -38,19 +36,6 @@ class MediaService extends BaseApiClient {
   /**
    * Upload file to a channel
    */
-  async uploadChannelMedia(channelId: UUID, file: File): Promise<ChannelUploadResponse> {
-    const formData = new FormData();
 
-    formData.append('file', file);
-
-    return this.request<ChannelUploadResponse>(
-      'POST',
-      `/api/messaging/central-channels/${channelId}/upload-media`,
-      {
-        body: formData,
-      }
-    );
-  }
-}
 
 } // namespace elizaos

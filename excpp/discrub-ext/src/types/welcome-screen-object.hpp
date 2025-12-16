@@ -13,11 +13,7 @@ namespace elizaos {
 // Manual refinement required for production use
 
 // https://discord.com/developers/docs/resources/guild#welcome-screen-object
-;
 
 using WelcomeScreenObject = std::variant<{
-  description: string, Maybe>;
-  welcome_channels: WelcomeScreenChannelObject[];
-};
 
 } // namespace elizaos

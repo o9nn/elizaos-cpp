@@ -16,17 +16,13 @@ namespace elizaos {
  * Converted from sweagent/utils/log.py
  */
 
-;
-
 // Thread name registry
-const threadNames = new Map<string, string>();
 
 /**
  * Agent logger interface to match Python implementation
  */
 struct AgentLogger {
 };
-
 
 /**
  * Custom Pino logger that implements AgentLogger interface
@@ -66,50 +62,7 @@ class SweAgentLogger implements AgentLogger {
     });
   }
 
-  private formatMessage(message: string): string {
-    const prefix = this.emoji ? `${this.emoji} ` : '';
-    const threadName = threadNames.get(process.pid.toString()) || '';
-    const threadPrefix = threadName ? `[${threadName}] ` : '';
-    return `${threadPrefix}(${this.name}): ${prefix}${message}`;
-  }
-
-  debug(message: string, ...args: unknown[]): void {
-    this.logger.debug(this.formatMessage(message), ...args);
-  }
-
-  info(message: string, ...args: unknown[]): void {
-    this.logger.info(this.formatMessage(message), ...args);
-  }
-
-  warn(message: string, ...args: unknown[]): void {
-    this.logger.warn(this.formatMessage(message), ...args);
-  }
-
-  error(message: string, ...args: unknown[]): void {
-    this.logger.error(this.formatMessage(message), ...args);
-  }
-
-  critical(message: string, ...args: unknown[]): void {
-    this.logger.fatal(this.formatMessage(message), ...args);
-  }
-
-  warning(message: string, ...args: unknown[]): void {
-    this.warn(message, ...args);
-  }
-
-  exception(message: string, error?: Error, includeStack: boolean = true): void {
-    const errorInfo = error
-      ? {
-          error: error.message,
-          ...(includeStack && { stack: error.stack }),
-        }
-      : {};
-    this.logger.error(errorInfo, this.formatMessage(message));
-  }
-}
-
 // Registry to store logger instances
-const loggers = new Map<string, AgentLogger>();
 
 /**
  * Get or create a logger instance
@@ -117,79 +70,52 @@ const loggers = new Map<string, AgentLogger>();
  * @param emoji Optional emoji prefix for the logger
  * @returns AgentLogger instance
  */
--${emoji}`;
-  if (!loggers.has(key)) {
-    // Map specific logger names to emojis if not provided
-    if (!emoji) {
-      const emojiMap: Record<string, string> = {
-        agent: '🤖',
-        model: '🧠',
-        config: '🔧',
-        run: '🏃',
-        env: '🌍',
-        tools: '🔨',
-        hook: '🪝',
-      };
-
-      // Check for exact match or partial match
-      for (const [prefix, defaultEmoji] of Object.entries(emojiMap)) {
-        if (name === prefix || name.startsWith(`${prefix}-`) || name.includes(prefix)) {
-          emoji = defaultEmoji;
-          break;
-        }
-      }
-    }
-
-    loggers.set(key, new SweAgentLogger(name, emoji));
-  }
-  return loggers.get(key)!;
-}
+AgentLogger getLogger(const std::string& name, string = '' emoji);
 
 /**
  * Set thread name for current thread/process
  * In Node.js, this associates the process ID with a name
  */
-
+void setThreadName(const std::string& name);
 
 /**
  * Get current thread name
  */
-
+std::string getThreadName();
 
 /**
  * Set global log level
  */
-
-  }
-}
+void setLogLevel(const std::string& level);
 
 /**
  * Add a file handler to the logger (no-op for pino, kept for compatibility)
  */
-
+void addFileHandler(const std::string& _logFile);
 
 /**
  * Remove file handler (no-op for pino, kept for compatibility)
  */
-
+void removeFileHandler(const std::string& _logFile);
 
 /**
  * Add logger names to stream handlers (no-op for pino, kept for compatibility)
  */
-
+void addLoggerNamesToStreamHandlers();
 
 /**
  * Register thread name (alias for setThreadName)
  */
-
+void registerThreadName(const std::string& name);
 
 /**
  * Set stream handler levels (no-op for pino, kept for compatibility)
  */
-
+void setStreamHandlerLevels(const std::string& level);
 
 /**
- * Convenience 
-}
+ * Convenience function to get the default logger
+ */
+void log(const std::string& message, string = 'info' level);
 
 } // namespace elizaos

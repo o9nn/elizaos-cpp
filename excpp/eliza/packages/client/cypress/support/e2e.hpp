@@ -30,44 +30,21 @@ namespace elizaos {
 // ***********************************************************
 
 // Import commands.js using ES2015 syntax:
-import './commands';
-import 'cypress-real-events/support';
-import '@testing-library/cypress/add-commands';
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 
 // Hide fetch/XHR requests from command log to reduce noise
-const app = window.top;
-if (app && !app.document.head.querySelector('[data-hide-command-log-request]')) {
-  const style = app.document.createElement('style');
-  style.innerHTML = '.command-name-request, .command-name-xhr { display: none }';
-  style.setAttribute('data-hide-command-log-request', '');
-  app.document.head.appendChild(style);
-}
 
 // Prevent Cypress from failing tests on uncaught exceptions
-Cypress.on('uncaught:exception', (err, runnable) => {
   // Return false to prevent the error from failing the test
   // You might want to log these errors for debugging
-  console.error('Uncaught exception:', err);
-  return false;
-});
 
 // Custom error handling for WebSocket errors
-Cypress.on('window:before:load', (win) => {
   // Stub console methods to prevent noise in tests
-  win.console.error = (...args) => {
-    if (args[0]?.includes?.('WebSocket') || args[0]?.includes?.('Socket')) {
-      return; // Suppress WebSocket errors
-    }
-    console.error(...args);
-  };
-});
 
 // TypeScript declarations are in ./commands.ts
 
 // Ensure this file is treated as a module
-{};
 
 } // namespace elizaos

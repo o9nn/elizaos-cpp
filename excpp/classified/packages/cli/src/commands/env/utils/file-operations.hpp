@@ -12,10 +12,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
-;
-;
+
 
 /**
  * Get the path to the project's .env file.
@@ -41,29 +38,13 @@ std::future<EnvVars> parseEnvFile(const std::string& filePath);
  * @param filePath Path to the .env file
  * @param envVars Object containing the key-value pairs
  */
-std::future<void> writeEnvFile(const std::string& filePath, EnvVars envVars););
-}
+std::future<void> writeEnvFile(const std::string& filePath, EnvVars envVars);
 
 /**
- * Helper 
-
-    const resetVars = Object.keys(envVars).reduce((acc, key) => {
-      acc[key] = '';
-      return acc;
-    }, {} as EnvVars);
-
-    await service.write(resetVars, {
-      preserveComments: true,
-      updateProcessEnv: false, // Don't update process.env with empty values
-    });
-
-    return true;
-  } catch (error) {
-    console.error(
-      `Error resetting environment file: ${error instanceof Error ? error.message : String(error)}`
-    );
-    return false;
-  }
-}
+ * Helper function to reset an environment file by keeping keys but clearing values
+ * @param filePath Path to the environment file
+ * @returns A boolean indicating success/failure
+ */
+std::future<bool> resetEnvFile(const std::string& filePath);
 
 } // namespace elizaos

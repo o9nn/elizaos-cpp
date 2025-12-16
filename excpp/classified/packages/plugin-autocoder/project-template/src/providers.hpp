@@ -16,7 +16,7 @@ namespace elizaos {
  * Example Hello World Provider
  * This demonstrates the simplest possible provider implementation
  */
-// ;
+// 
 // const helloWorldProvider: Provider = {
 //     name: 'HELLO_WORLD_PROVIDER',
 //     description: 'A simple example provider',
@@ -34,8 +34,6 @@ namespace elizaos {
 //     },
 //   };
 
-const providers = [
   // providers go here
-];
 
 } // namespace elizaos

@@ -12,7 +12,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
+
 
 using RunStatus = std::variant<'completed', 'timeout', 'error', 'started'>;
 
@@ -22,7 +22,6 @@ struct RunCounts {
     double errors;
     double evaluators;
 };
-
 
 struct RunSummary {
     UUID runId;
@@ -37,7 +36,6 @@ struct RunSummary {
     std::optional<std::unordered_map<std::string, unknown>> metadata;
 };
 
-
 using RunEventType = std::variant<, 'RUN_STARTED', 'RUN_ENDED', 'ACTION_STARTED', 'ACTION_COMPLETED', 'MODEL_USED', 'EVALUATOR_COMPLETED', 'EMBEDDING_EVENT'>;
 
 struct RunEvent {
@@ -46,12 +44,10 @@ struct RunEvent {
     std::unordered_map<std::string, unknown> data;
 };
 
-
 struct RunDetail {
     RunSummary summary;
     std::vector<RunEvent> events;
 };
-
 
 struct ListRunsParams {
     std::optional<UUID> roomId;

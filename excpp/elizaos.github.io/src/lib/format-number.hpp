@@ -11,8 +11,6 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-);
-  return formatter.format(number);
-}
+std::string formatCompactNumber(double number, auto maximumFractionDigits = 1);
 
 } // namespace elizaos

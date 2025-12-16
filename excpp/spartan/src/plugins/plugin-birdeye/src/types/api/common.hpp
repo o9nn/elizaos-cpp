@@ -11,56 +11,8 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type {
-    BaseQuoteParams,
-    DefiHistoryPriceParams,
-    DefiMultiPriceParams,
-    DefiPriceParams,
-    HistoricalPriceUnixParams,
-    MultiPriceVolumeParams,
-    OHLCVParams,
-    PriceVolumeParams,
-} from "./defi";
-import type {
-    OHLCVPairParams,
-    PairOverviewMultiParams,
-    PairOverviewSingleParams,
-    PairTradesParams,
-} from "./pair";
-import type { TokenMarketSearchParams } from "./search";
-import type {
-    AllMarketsParams,
-    MintBurnParams,
-    NewListingParams,
-    TokenCreationInfoParams,
-    TokenHoldersParams,
-    TokenListV2Params,
-    TokenMarketDataParams,
-    TokenMetadataMultiParams,
-    TokenMetadataSingleParams,
-    TokenOverviewParams,
-    TokenSecurityParams,
-    TokenTradeDataMultiParams,
-    TokenTradeDataSingleParams,
-    TokenTradesParams,
-    TopTradersParams,
-} from "./token";
-import type { GainersLosersParams, TraderTransactionsSeekParams } from "./trader";
-import type {
-    WalletPortfolioMultichainParams,
-    WalletPortfolioParams,
-    WalletSimulationParams,
-    WalletTokenBalanceParams,
-    WalletTransactionHistoryMultichainParams,
-    WalletTransactionHistoryParams,
-} from "./wallet";
 
 using BirdeyeApiParams = std::variant<, DefiPriceParams, DefiMultiPriceParams, DefiHistoryPriceParams, HistoricalPriceUnixParams, OHLCVParams, PriceVolumeParams, MultiPriceVolumeParams, PairTradesParams, OHLCVPairParams, PairOverviewMultiParams, PairOverviewSingleParams, TokenMarketSearchParams, TokenTradesParams, TokenSecurityParams, TokenOverviewParams, TokenCreationInfoParams, TokenListV2Params, TokenMetadataMultiParams, TokenTradeDataMultiParams, GainersLosersParams, TraderTransactionsSeekParams, WalletPortfolioParams, WalletTokenBalanceParams, WalletTransactionHistoryParams, BaseQuoteParams, TokenHoldersParams, MintBurnParams, TopTradersParams, AllMarketsParams, NewListingParams, TokenMetadataSingleParams, TokenMarketDataParams, TokenTradeDataSingleParams, WalletPortfolioMultichainParams, WalletTransactionHistoryMultichainParams, WalletSimulationParams, std::unordered_map<std::string, never>>;
-
-interface BirdeyeApiResponseWrapper<T> {
-    data: T;
-    success: boolean;
-}
 
 using BirdeyeApiResponse = BirdeyeApiResponseWrapper<any>;
 

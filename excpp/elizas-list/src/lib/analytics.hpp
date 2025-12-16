@@ -12,8 +12,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
+
 
 class Analytics {
   static async trackProjectView(projectId: string, userId?: string) {
@@ -28,20 +27,4 @@ class Analytics {
     });
   }
 
-  static async trackRelatedProjectClick(
-    sourceProjectId: string,
-    targetProjectId: string,
-    userId?: string
-  ) {
-    await prisma.projectInteraction.create({
-      data: {
-        sourceProjectId,
-        targetProjectId,
-        userId,
-        type: 'RELATED_CLICK',
-        timestamp: new Date()
-      }
-    });
-  }
-} 
 } // namespace elizaos

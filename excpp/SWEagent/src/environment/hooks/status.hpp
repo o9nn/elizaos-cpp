@@ -18,9 +18,6 @@ namespace elizaos {
  * Converted from sweagent/environment/hooks/status.py
  */
 
-;
-;
-
 /**
  * Status update callback type
  */
@@ -39,30 +36,5 @@ class SetStatusEnvironmentHook extends EnvHook {
     this.callable = callable;
   }
 
-  private update(message: string): void {
-    this.callable(this.id, message);
-  }
-
-  onCopyRepoStarted(repo: Repo | RepoConfig): void {
-    const repoName = 'repoName' in repo ? repo.repoName : 'unknown';
-    this.update(`Copying repo ${repoName}`);
-  }
-
-  onStartDeployment(): void {
-    this.update('Starting deployment');
-  }
-
-  onInstallEnvStarted(): void {
-    this.update('Installing environment');
-  }
-
-  onEnvironmentStartup(): void {
-    this.update('Starting environment');
-  }
-
-  onClose(): void {
-    this.update('Closing environment');
-  }
-}
 
 } // namespace elizaos

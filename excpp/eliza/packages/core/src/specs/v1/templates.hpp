@@ -12,11 +12,14 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
+
 
 /**
  * Template type definition for v1 compatibility
- * A template can be either a string or a ) => string)>;
+ * A template can be either a string or a function that takes state and returns a string
+ * This aligns with V2's TemplateType
+ */
+using TemplateType = std::variant<std::string, ((options: { state: State }) => string)>;
 
 /**
  * Generic template values interface for typed access to state.values
@@ -25,14 +28,11 @@ namespace elizaos {
 struct TemplateValues {
 };
 
-
 /**
- * Create a template  else {
-    // For 
-      return template({ state });
-    };
-  }
-}
+ * Create a template function from a v1 template
+ * @param template The v1 template (string or function)
+ * @returns A function that processes the template with the given state
+ */
 
 /**
  * Process a template with the given state
@@ -40,19 +40,7 @@ struct TemplateValues {
  * @param state The state to use for processing
  * @returns The processed template string
  */
-
-
-  // Handle null/undefined state
-  if (!state) {
-    return typeof template === 'string' ? template : '';
-  }
-
-  if (typeof template === 'string') {
-    return template;
-  } else {
-    return template({ state });
-  }
-}
+std::string processTemplate(TemplateType template, State state);
 
 /**
  * Type-safe accessor for template values
@@ -60,15 +48,9 @@ struct TemplateValues {
  * @param defaultValues Optional default values to use if values are missing
  * @returns The values object with type information
  */
-) as T;
-  }
 
   // First cast state.values to a valid object type to use with spread
-  const stateValues = state.values as Record<string, unknown>;
-  const defaults = defaultValues || ({} as Partial<T>);
 
   // Create a new object with both default values and state values
-  return { ...defaults, ...stateValues } as T;
-}
 
 } // namespace elizaos

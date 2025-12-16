@@ -20,48 +20,6 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { Plugin } from "@elizaos/core";
-;
-;
-;
-;
-;
-;
-;
-;
-;
-
-const coingeckoPlugin: Plugin = {
-  name: "plugin-coingecko",
-  description: "CoinGecko plugin exposing token metadata lookup, trending tokens, NFT collection stats, trending searches, price charts, historical prices, and coin categories",
-  actions: [
-    getTokenMetadataAction,
-    getTrendingTokensAction,
-    getNFTCollectionStatsAction,
-    getTrendingSearchAction,
-    getTokenPriceChartAction,
-    getHistoricalPriceAction,
-    getCategoriesListAction,
-    getCategoriesWithMarketDataAction,
-  ],
-  services: [CoinGeckoService],
-  evaluators: [],
-  providers: [],
-};
-
-default coingeckoPlugin;
-
-{
-  CoinGeckoService,
-  getTokenMetadataAction,
-  getTrendingTokensAction,
-  getNFTCollectionStatsAction,
-  getTrendingSearchAction,
-  getTokenPriceChartAction,
-  getHistoricalPriceAction,
-  getCategoriesListAction,
-  getCategoriesWithMarketDataAction,
-};
 
 
 
