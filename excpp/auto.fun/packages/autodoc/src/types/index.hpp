@@ -1,0 +1,236 @@
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
+#pragma once
+
+namespace elizaos {
+
+// NOTE: This is auto-generated approximate C++ code
+// Manual refinement required for production use
+
+import type { TSESTree } from "@typescript-eslint/types";
+
+/**
+ * Represents an item in the Abstract Syntax Tree (AST) queue.
+ *
+ * @typedef {Object} ASTQueueItem
+ * @property {string} name - The name of the item.
+ * @property {string} filePath - The file path of the item.
+ * @property {number} startLine - The starting line number of the item.
+ * @property {number} endLine - The ending line number of the item.
+ * @property {string} nodeType - The type of node in the AST.
+ * @property {string} code - The code snippet of the item.
+ * @property {string} [className] - The class name of the item (if applicable).
+ * @property {string} [methodName] - The method name of the item (if applicable).
+ * @property {string} [jsDoc] - The JSDoc comment associated with the item.
+ */
+struct ASTQueueItem {
+    std::string name;
+    std::string filePath;
+    double startLine;
+    double endLine;
+    std::string nodeType;
+    std::string code;
+    std::optional<std::string> className;
+    std::optional<std::string> methodName;
+    std::optional<std::string> jsDoc;
+};
+
+
+/**
+ * Represents a repository.
+ * @typedef {Object} Repository
+ * @property {string} owner - The owner of the repository.
+ * @property {string} name - The name of the repository.
+ * @property {number} [pullNumber] - The pull number of the repository (optional).
+ */
+struct Repository {
+    std::string owner;
+    std::string name;
+    std::optional<double> pullNumber;
+};
+
+
+/**
+ * Represents a file change in full mode.
+ * @typedef {Object} FullModeFileChange
+ * @property {string} filename - The name of the file that has changed.
+ * @property {string} status - The status of the file change.
+ */
+struct FullModeFileChange {
+    std::string filename;
+    std::string status;
+};
+
+
+/**
+ * Interface representing a Pull Request mode file change, extending Full Mode File Change.
+ * @interface
+ * @extends {FullModeFileChange}
+ * @property {number} additions - The number of additions made in the file change.
+ * @property {number} deletions - The number of deletions made in the file change.
+ * @property {number} changes - The total number of changes (additions + deletions) in the file change.
+ * @property {string} contents_url - The URL to the contents of the file change.
+ */
+interface PrModeFileChange extends FullModeFileChange {
+  additions: number;
+  deletions: number;
+  changes: number;
+  contents_url: string;
+}
+
+/**
+ * Interface representing a section of todos.
+ * @typedef {object} TodoSection
+ * @property {string} todos - The list of todos in the section.
+ * @property {number} todoCount - The number of todos in the section.
+ */
+struct TodoSection {
+    std::string todos;
+    double todoCount;
+};
+
+
+/**
+ * Interface representing a todo item.
+ * @typedef {Object} TodoItem
+ * @property {string} comment - The comment describing the todo item.
+ * @property {string} code - The code related to the todo item.
+ * @property {string} fullContext - The full context of the todo item.
+ * @property {TSESTree.Node} node - The AST node related to the todo item.
+ * @property {Object} location - The location information of the todo item.
+ * @property {Object} location.start - The start location of the todo item.
+ * @property {number} location.start.line - The start line of the todo item.
+ * @property {number} location.start.column - The start column of the todo item.
+ * @property {Object} location.end - The end location of the todo item.
+ * @property {number} location.end.line - The end line of the todo item.
+ * @property {number} location.end.column - The end column of the todo item.
+ * @property {Object} contextLocation - The context location information of the todo item.
+ * @property {Object} contextLocation.start - The start context location of the todo item.
+ * @property {number} contextLocation.start.line - The start line of the todo item context.
+ * @property {number} contextLocation.start.column - The start column of the todo item context.
+ * @property {Object} contextLocation.end - The end context location of the todo item.
+ * @property {number} contextLocation.end.line - The end line of the todo item context.
+ * @property {number} contextLocation.end.column - The end column of the todo item context.
+ */
+struct TodoItem {
+    std::string comment;
+    std::string code;
+    std::string fullContext;
+    TSESTree.Node node;
+    { location;
+    { line: number; column: number } start;
+    { line: number; column: number } end;
+    { contextLocation;
+    { line: number; column: number } start;
+    { line: number; column: number } end;
+};
+
+
+/**
+ * Represents the usage of a particular environment variable in the code.
+ * @interface EnvUsage
+ * @property {string} code - The code snippet where the environment variable is used.
+ * @property {string} context - The context in which the environment variable is used.
+ * @property {string} fullContext - The full context of the environment variable.
+ * @property {TSESTree.Node} node - The AST node where the environment variable is used.
+ * @property {Object} location - The location of the environment variable in the code.
+ * @property {Object} location.start - The start line and column of the environment variable in the code.
+ * @property {number} location.start.line - The start line number of the environment variable.
+ * @property {number} location.start.column - The start column number of the environment variable.
+ * @property {Object} location.end - The end line and column of the environment variable in the code.
+ * @property {number} location.end.line - The end line number of the environment variable.
+ * @property {number} location.end.column - The end column number of the environment variable.
+ * @property {Object} contextLocation - The location of the context in the code where the environment variable is used.
+ * @property {Object} contextLocation.start - The start line and column of the context in the code.
+ * @property {number} contextLocation.start.line - The start line number of the context.
+ * @property {number} contextLocation.start.column - The start column number of the context.
+ * @property {Object} contextLocation.end - The end line and column of the context in the code.
+ * @property {number} contextLocation.end.line - The end line number of the context.
+ * @property {number} contextLocation.end.column - The end column number of the context.
+ */
+struct EnvUsage {
+    std::string code;
+    std::string context;
+    std::string fullContext;
+    TSESTree.Node node;
+    { location;
+    { line: number; column: number } start;
+    { line: number; column: number } end;
+    { contextLocation;
+    { line: number; column: number } start;
+    { line: number; column: number } end;
+};
+
+
+/**
+ * Interface for representing the documentation structure of a plugin.
+ * Includes sections for overview, installation, configuration, usage,
+ * API reference, troubleshooting, todos, actions documentation,
+ * providers documentation, evaluators documentation, and FAQ.
+ *
+ * @interface
+ * @property {string} overview - Overview section of the documentation.
+ * @property {string} installation - Installation section of the documentation.
+ * @property {string} configuration - Configuration section of the documentation.
+ * @property {string} usage - Usage section of the documentation.
+ * @property {string} apiReference - API reference section of the documentation.
+ * @property {string} troubleshooting - Troubleshooting section of the documentation.
+ * @property {string} todos - Todos section of the documentation.
+ * @property {string} actionsDocumentation - Actions documentation section of the documentation.
+ * @property {string} providersDocumentation - Providers documentation section of the documentation.
+ * @property {string} evaluatorsDocumentation - Evaluators documentation section of the documentation.
+ * @property {string} faq - FAQ section of the documentation.
+ */
+
+struct PluginDocumentation {
+    std::string overview;
+    std::string installation;
+    std::string configuration;
+    std::string usage;
+    std::string apiReference;
+    std::string troubleshooting;
+    std::string todos;
+    std::string actionsDocumentation;
+    std::string providersDocumentation;
+    std::string evaluatorsDocumentation;
+    std::string faq;
+};
+
+
+/**
+ * Interface for defining metadata for an action.
+ * @interface
+ * @property {string} name - The name of the action.
+ * @property {string[]} similes - An array of similes related to the action.
+ * @property {string} validate - The validation method for the action.
+ * @property {string} handler - The handler method for the action.
+ * @property {string[]} examples - An array of example scenarios for the action.
+ * @property {string} description - A brief description of the action.
+ */
+struct ActionMetadata {
+    std::string name;
+    std::vector<std::string> similes;
+    std::string validate;
+    std::string handler;
+    std::vector<std::string> examples;
+    std::string description;
+};
+
+
+/**
+ * Interface representing the bounds of an action in terms of start and end line numbers.
+ * @typedef {Object} ActionBounds
+ * @property {number} startLine - The line number where the action begins.
+ * @property {number} endLine - The line number where the action ends.
+ */
+struct ActionBounds {
+    double startLine;
+    double endLine;
+};
+
+
+} // namespace elizaos

@@ -1,0 +1,37 @@
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
+#pragma once
+
+namespace elizaos {
+
+// NOTE: This is auto-generated approximate C++ code
+// Manual refinement required for production use
+
+import type { Program, AnchorProvider as AnchorProviderType } from "@coral-xyz/anchor";
+;
+;
+;
+import type { Otc } from "../target/types/otc";
+
+// ESM/CJS compatibility: import as default then destructure
+const { AnchorProvider, setProvider, workspace } = pkg as typeof import("@coral-xyz/anchor");
+
+async )
+    .signers([owner])
+    .rpc();
+  
+  console.log("✅ Owner added as approver, tx:", tx);
+}
+
+addApprover()
+  .then(() => process.exit(0))
+  .catch((err) => {
+    console.error("❌ Error:", err);
+    process.exit(1);
+  });
+
+} // namespace elizaos

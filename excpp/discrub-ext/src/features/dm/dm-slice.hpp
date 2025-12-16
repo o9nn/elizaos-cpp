@@ -1,0 +1,135 @@
+#include "..app/store.hpp"
+#include "..classes/channel.hpp"
+#include "..services/discord-service.hpp"
+#include ".message/message-slice.hpp"
+#include "dm-types.hpp"
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
+#pragma once
+
+namespace elizaos {
+
+// NOTE: This is auto-generated approximate C++ code
+// Manual refinement required for production use
+
+;
+;
+;
+;
+;
+;
+
+const initialState: DmState = {
+  dms: [],
+  selectedDms: [],
+  isLoading: null,
+  preFilterUserId: null,
+  preFilterUsers: [],
+};
+
+const dmSlice = createSlice({
+  name: "dm",
+  initialState: initialState,
+  reducers: {
+    setIsLoading: (state, { payload }: { payload: boolean }): void => {
+      state.isLoading = payload;
+    },
+    setDms: (state, { payload }: { payload: Channel[] }): void => {
+      state.dms = payload.map((dm) =>
+        Object.assign(dm, { name: _getDmName(dm) })
+      );
+    },
+    resetDm: (state): void => {
+      state.preFilterUserId = null;
+      state.preFilterUsers = [];
+      state.selectedDms = [];
+    },
+    setPreFilterUserId: (
+      state,
+      { payload }: { payload: Snowflake | Maybe }
+    ): void => {
+      state.preFilterUserId = payload;
+    },
+    setSelectedDms: (
+      state,
+      { payload }: { payload: SetSelectedDmsProps }
+    ): void => {
+      const { dmIds, preFilterUser } = payload;
+      const selectedDms = state.dms.filter((dm) =>
+        dmIds.some((id) => id === dm.id)
+      );
+
+      state.selectedDms = selectedDms;
+
+      let recipients: PreFilterUser[] = [];
+      selectedDms.forEach((dm) => {
+        if (dm.recipients?.length) {
+          recipients = [
+            ...recipients,
+            ...dm.recipients.map((r) => ({ name: r.username, id: r.id })),
+          ];
+        }
+      });
+
+      state.preFilterUsers = [...recipients, preFilterUser].filter(
+        (r) => !state.preFilterUsers.some((p) => p.id === r.id)
+      );
+      state.preFilterUserId = null;
+    },
+  },
+});
+
+const {
+  setIsLoading,
+  setDms,
+  resetDm,
+  setPreFilterUserId,
+  setSelectedDms,
+} = dmSlice.actions;
+
+const getDms = (): AppThunk => async (dispatch, getState) => {
+  const { settings } = getState().app;
+  const { token } = getState().user;
+  if (token) {
+    dispatch(setIsLoading(true));
+    const { success, data } = await new DiscordService(
+      settings
+    ).fetchDirectMessages(token);
+    if (success && data) {
+      dispatch(setDms(data));
+      dispatch(setIsLoading(false));
+    }
+  }
+};
+
+const mutateSelectedDms =
+  (dmIds: Snowflake[]): AppThunk =>
+  (dispatch, getState) => {
+    const { currentUser } = getState().user;
+    if (currentUser) {
+      dispatch(setPreFilterUserId(null));
+      dispatch(resetMessageData());
+      dispatch(resetFilters());
+      dispatch(
+        setSelectedDms({
+          preFilterUser: { name: currentUser.username, id: currentUser.id },
+          dmIds,
+        })
+      );
+    }
+  };
+
+const _getDmName = (dm: Channel) => {
+  const { recipients, name, id } = dm;
+  return recipients?.length === 1
+    ? recipients[0].username
+    : `${name ? "" : "Unnamed "}Group Chat - ${name || id}`;
+};
+
+default dmSlice.reducer;
+
+} // namespace elizaos

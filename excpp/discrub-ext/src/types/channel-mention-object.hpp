@@ -1,0 +1,22 @@
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
+#pragma once
+
+namespace elizaos {
+
+// NOTE: This is auto-generated approximate C++ code
+// Manual refinement required for production use
+
+// https://discord.com/developers/docs/resources/channel#channel-mention-object
+using ChannelMentionObject = {
+  id: Snowflake;
+  guild_id: Snowflake;
+  type: number;
+  name: string;
+};
+
+} // namespace elizaos

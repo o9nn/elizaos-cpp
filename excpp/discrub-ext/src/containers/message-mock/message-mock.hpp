@@ -1,0 +1,294 @@
+#include "..classes/message.hpp"
+#include "..components/author-avatar.hpp"
+#include "..enum/message-type.hpp"
+#include "..features/app/use-app-slice.hpp"
+#include "..features/channel/use-channel-slice.hpp"
+#include "..features/export/use-export-slice.hpp"
+#include "..features/guild/use-guild-slice.hpp"
+#include "..features/message/use-message-slice.hpp"
+#include "..features/thread/use-thread-slice.hpp"
+#include "..features/user/use-user-slice.hpp"
+#include "..utils.hpp"
+#include "components/attachments.hpp"
+#include "components/author-name.hpp"
+#include "components/call-message.hpp"
+#include "components/chained-date.hpp"
+#include "components/channel-name.hpp"
+#include "components/date.hpp"
+#include "components/message-content.hpp"
+#include "components/pin-message.hpp"
+#include "components/reactions.hpp"
+#include "components/replied-to-content.hpp"
+#include "components/thread-name.hpp"
+#include "components/webhook-embeds.hpp"
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
+#pragma once
+
+namespace elizaos {
+
+// NOTE: This is auto-generated approximate C++ code
+// Manual refinement required for production use
+
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+
+using MessageMockProps = {
+  message: Message;
+  index: number | string;
+  browserView?: boolean;
+  isChained?: boolean;
+};
+
+const MessageMock = ({
+  message,
+  index,
+  browserView = false,
+  isChained = false,
+}: MessageMockProps) => {
+  const theme = useTheme();
+
+  const { state: appState } = useAppSlice();
+  const settings = appState.settings();
+
+  const { state: guildState } = useGuildSlice();
+  const selectedGuild = guildState.selectedGuild();
+
+  const { state: channelState } = useChannelSlice();
+  const selectedChannel = channelState.selectedChannel();
+  const channels = channelState.channels();
+
+  const { state: threadState } = useThreadSlice();
+  const threads = threadState.threads();
+
+  const { state: messageState } = useMessageSlice();
+  const messages = messageState.messages();
+
+  const { state: userState } = useUserSlice();
+  const currentUser = userState.currentUser();
+
+  const { state: exportState, getFormattedInnerHtml } = useExportSlice();
+  const userMap = exportState.userMap();
+  const roleMap = exportState.roleMap();
+  const emojiMap = exportState.emojiMap();
+  const reactionMap = exportState.reactionMap();
+  const avatarMap = exportState.avatarMap();
+
+  const isCall = messageTypeEquals(message.type, MessageType.CALL);
+  const isPinMessage = messageTypeEquals(
+    message.type,
+    MessageType.CHANNEL_PINNED_MESSAGE
+  );
+  const nonStandardMessage = isNonStandardMessage(message);
+
+  const messageDate = parseISO(message.timestamp);
+  const tz = getTimeZone(messageDate);
+  const shortDateTime = `${format(messageDate, "MM/dd/yyyy")} ${
+    isCall ? "" : "at"
+  } ${format(messageDate, "HH:mm:ss")} ${tz}`;
+  const longDateTime = `${format(
+    messageDate,
+    "EEEE, LLLL d, yyyy HH:mm:ss"
+  )} ${tz}`;
+
+  const foundThread = threads?.find(
+    (thread) => thread.id === message.id || thread.id === message.channel_id
+  );
+  const repliedToMsg = messageTypeEquals(message.type, MessageType.REPLY)
+    ? messages.find((msg) => msg.id === message.message_reference?.message_id)
+    : null;
+
+  const showChannelName = selectedGuild?.id && !selectedChannel?.id;
+
+  const getRawHtml = (content: string, isReply: boolean = false) => {
+    return getFormattedInnerHtml({
+      content,
+      isReply,
+      exportView: !browserView,
+      message,
+    });
+  };
+
+  const getLocalAvatar = (userId: Snowflake, avatar: string | Maybe) => {
+    return resolveAvatarUrl(userId, avatar, avatarMap).local;
+  };
+
+  const getLocalEmoji = (id: Snowflake | Maybe) => {
+    return resolveEmojiUrl(id, emojiMap).local;
+  };
+
+  const getRolePath = (id: Snowflake, icon: string | Maybe) => {
+    return resolveRoleUrl(id, icon, roleMap);
+  };
+
+  return (
+    <Stack
+      direction="column"
+      alignItems="flex-start"
+      justifyContent="flex-start"
+      id={message.id}
+      sx={{
+        width: "calc(100% - 10px)",
+        "&:hover": {
+          backgroundColor: !browserView ? "#2e2f35" : undefined,
+          "& span": { opacity: "1 !important" },
+        },
+        margin: isChained ? "0px 0px 0px !important" : undefined,
+        "&:target": {
+          background: "rgb(92, 107, 192, 0.25)",
+          padding: "5px",
+          width: "calc(100% - 10px)",
+        },
+      }}
+    >
+      {repliedToMsg && (
+        <RepliedToContent
+          browserView={browserView}
+          message={repliedToMsg}
+          selectedGuild={selectedGuild}
+          userMap={userMap}
+          id={`reply-data-${index}`}
+          rawHtml={getRawHtml(repliedToMsg.content, true)}
+          getRolePath={getRolePath}
+        />
+      )}
+      <Stack
+        direction="row"
+        alignItems={nonStandardMessage && browserView ? "center" : "flex-start"}
+        justifyContent="flex-start"
+        spacing={1}
+        sx={{
+          paddingLeft: !browserView ? "8px" : undefined,
+          maxWidth: "100vw",
+          wordBreak: "break-all",
+          minHeight: isChained ? 0 : "50px",
+        }}
+      >
+        {!isChained && !nonStandardMessage && (
+          <AuthorAvatar browserView={browserView} message={message} />
+        )}
+        {isChained && (
+          <ChainedDate message={message} longDateTime={longDateTime} />
+        )}
+        <Stack
+          direction="column"
+          alignItems="flex-start"
+          justifyContent="flex-start"
+        >
+          <Stack
+            direction="row"
+            justifyContent="flex-start"
+            alignItems="center"
+            spacing={1}
+          >
+            <Typography
+              sx={{
+                display: "flex",
+                gap: "5px",
+                "& a": {
+                  display: "flex",
+                  gap: "5px",
+                },
+                color: theme.palette.text.primary,
+              }}
+              variant="body2"
+            >
+              {!isChained && !nonStandardMessage && (
+                <AuthorName
+                  msg={message}
+                  userMap={userMap}
+                  selectedGuild={selectedGuild}
+                  getRolePath={getRolePath}
+                />
+              )}
+            </Typography>
+            {!isChained && !nonStandardMessage && (
+              <>
+                <Date
+                  longDateTime={longDateTime}
+                  shortDateTime={shortDateTime}
+                />
+                {showChannelName && (
+                  <ChannelName
+                    channels={channels}
+                    message={message}
+                    thread={foundThread}
+                  />
+                )}
+              </>
+            )}
+          </Stack>
+          {!isChained && foundThread && <ThreadName thread={foundThread} />}
+          <MessageContent
+            id={`message-data-${index}`}
+            rawHtml={getRawHtml(message.content)}
+          />
+          {isCall && (
+            <CallMessage
+              call={message.call}
+              currentUser={currentUser}
+              msg={message}
+              selectedGuild={selectedGuild}
+              userMap={userMap}
+              longDateTime={longDateTime}
+              shortDateTime={shortDateTime}
+              getRolePath={getRolePath}
+            />
+          )}
+          {isPinMessage && (
+            <PinMessage
+              msg={message}
+              selectedGuild={selectedGuild}
+              userMap={userMap}
+              longDateTime={longDateTime}
+              shortDateTime={shortDateTime}
+              getRolePath={getRolePath}
+            />
+          )}
+          {!browserView && <Attachments message={message} />}
+          {!browserView && <WebhookEmbeds message={message} />}
+          {!browserView && stringToBool(settings.reactionsEnabled) && (
+            <Reactions
+              message={message}
+              reactionMap={reactionMap}
+              selectedGuild={selectedGuild}
+              userMap={userMap}
+              getLocalAvatar={getLocalAvatar}
+              getLocalEmoji={getLocalEmoji}
+            />
+          )}
+        </Stack>
+      </Stack>
+    </Stack>
+  );
+};
+default MessageMock;
+
+} // namespace elizaos

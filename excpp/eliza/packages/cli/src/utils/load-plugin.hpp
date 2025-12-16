@@ -1,0 +1,204 @@
+#include "elizaos/core.hpp"
+#include "plugin-context.hpp"
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
+#pragma once
+
+namespace elizaos {
+
+// NOTE: This is auto-generated approximate C++ code
+// Manual refinement required for production use
+
+;
+;
+;
+;
+
+struct PackageJson {
+    std::optional<std::string> module;
+    std::optional<std::string> main;
+};
+
+
+struct ImportStrategy {
+    std::string name;
+    (repository: string) => Promise<any | null> tryImport;
+};
+
+
+const DEFAULT_ENTRY_POINT = 'dist/index.js';
+
+/**
+ * Get the global node_modules path based on Node.js installation
+ */
+ else {
+    // On Unix systems, we go up one level from bin directory
+    return path.join(nodeDir, '..', 'lib', 'node_modules');
+  }
+}
+
+/**
+ * Helper 
+
+/**
+ * Helper ':`, error);
+  }
+  return null;
+}
+
+/**
+ * Attempts to import a module from a given path and logs the outcome.
+ */
+std::future<any | null> tryImporting(const std::string& importPath, const std::string& strategy, const std::string& repository);' using ${strategy} (${importPath})`);
+    return module;
+  } catch (error) {
+    logger.debug(`Import failed using ${strategy} ('${importPath}'):`, error);
+    return null;
+  }
+}
+
+/**
+ * Collection of import strategies
+ */
+const importStrategies: ImportStrategy[] = [
+  // Try local development first - this is the most important for plugin testing
+  {
+    name: 'local development plugin',
+    tryImport: async (repository: string) => {
+      const context = detectPluginContext(repository);
+
+      if (context.isLocalDevelopment) {
+        logger.debug(`Detected local development for plugin: ${repository}`);
+
+        // Ensure the plugin is built
+        const isBuilt = await ensurePluginBuilt(context);
+        if (!isBuilt) {
+          provideLocalPluginGuidance(repository, context);
+          return null;
+        }
+
+        // Try to load from built output
+        if (context.localPath && existsSync(context.localPath)) {
+          logger.info(`Loading local development plugin: ${repository}`);
+          return tryImporting(context.localPath, 'local development plugin', repository);
+        }
+
+        // This shouldn't happen if ensurePluginBuilt succeeded, but handle it gracefully
+        logger.warn(`Plugin built but output not found at expected path: ${context.localPath}`);
+        provideLocalPluginGuidance(repository, context);
+        return null;
+      }
+
+      return null;
+    },
+  },
+  // Try workspace dependencies (for monorepo packages)
+  {
+    name: 'workspace dependency',
+    tryImport: async (repository: string) => {
+      if (repository.startsWith('@elizaos/plugin-')) {
+        // Try to find the plugin in the workspace
+        const pluginName = repository.replace('@elizaos/', '');
+        const workspacePath = path.resolve(process.cwd(), '..', pluginName, 'dist', 'index.js');
+        if (existsSync(workspacePath)) {
+          return tryImporting(workspacePath, 'workspace dependency', repository);
+        }
+      }
+      return null;
+    },
+  },
+  {
+    name: 'direct path',
+    tryImport: async (repository: string) => tryImporting(repository, 'direct path', repository),
+  },
+  {
+    name: 'local node_modules',
+    tryImport: async (repository: string) =>
+      tryImporting(resolveNodeModulesPath(repository), 'local node_modules', repository),
+  },
+  {
+    name: 'global node_modules',
+    tryImport: async (repository: string) => {
+      const globalPath = path.resolve(getGlobalNodeModulesPath(), repository);
+      if (!existsSync(path.dirname(globalPath))) {
+        logger.debug(
+          `Global node_modules directory not found at ${path.dirname(globalPath)}, skipping for ${repository}`
+        );
+        return null;
+      }
+      return tryImporting(globalPath, 'global node_modules', repository);
+    },
+  },
+  {
+    name: 'package.json entry',
+    tryImport: async (repository: string) => {
+      const packageJson = await readPackageJson(repository);
+      if (!packageJson) return null;
+
+      const entryPoint = packageJson.module || packageJson.main || DEFAULT_ENTRY_POINT;
+      return tryImporting(
+        resolveNodeModulesPath(repository, entryPoint),
+        `package.json entry (${entryPoint})`,
+        repository
+      );
+    },
+  },
+  {
+    name: 'common dist pattern',
+    tryImport: async (repository: string) => {
+      const packageJson = await readPackageJson(repository);
+      if (packageJson?.main === DEFAULT_ENTRY_POINT) return null;
+
+      return tryImporting(
+        resolveNodeModulesPath(repository, DEFAULT_ENTRY_POINT),
+        'common dist pattern',
+        repository
+      );
+    },
+  },
+];
+
+/**
+ * Determines if a package name is from the ElizaOS ecosystem
+ */
+
+
+/**
+ * Get relevant import strategies based on plugin type
+ */
+ else {
+    // Third-party plugins: only try relevant strategies
+    return importStrategies.filter(
+      (strategy) =>
+        strategy.name === 'local development plugin' ||
+        strategy.name === 'package.json entry' ||
+        strategy.name === 'common dist pattern'
+    );
+  }
+}
+
+/**
+ * Attempts to load a plugin module using relevant strategies based on plugin type.
+ * ElizaOS ecosystem plugins (@elizaos/*) use all strategies,
+ * while third-party plugins use only relevant strategies to avoid noise.
+ *
+ * @param repository - The plugin repository/package name to load.
+ * @returns The loaded plugin module or null if loading fails after all attempts.
+ */
+std::future<any | null> loadPluginModule(const std::string& repository); plugin: ${repository} (${strategies.length} strategies)`
+  );
+
+  for (const strategy of strategies) {
+    const result = await strategy.tryImport(repository);
+    if (result) return result;
+  }
+
+  logger.warn(`Failed to load plugin module '${repository}' using all relevant strategies.`);
+  return null;
+}
+
+} // namespace elizaos
