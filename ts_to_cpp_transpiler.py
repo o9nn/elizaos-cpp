@@ -11,8 +11,10 @@ This is an EXPERIMENTAL method for evaluating rapid transpiling effectiveness.
 The generated code will likely need manual fixes and is intended for comparison
 against a 2-step TS -> Z++ -> C++ approach.
 
+Version 2.1 - Performance improvements and bug fixes
+
 Usage:
-    python3 ts_to_cpp_transpiler.py [--input-dir DIR] [--output-dir DIR] [--verbose]
+    python3 ts_to_cpp_transpiler.py [--input-dir DIR] [--output-dir DIR] [--verbose] [--parallel]
 """
 
 import os
@@ -22,21 +24,27 @@ import argparse
 from pathlib import Path
 from typing import List, Dict, Tuple, Optional
 import json
+from concurrent.futures import ThreadPoolExecutor, as_completed
+import time
 
 class TypeScriptToCppTranspiler:
     """Main transpiler class for converting TypeScript to C++"""
     
-    def __init__(self, input_dir: str, output_dir: str, verbose: bool = False):
+    def __init__(self, input_dir: str, output_dir: str, verbose: bool = False, parallel: bool = False, max_workers: int = 4):
         self.input_dir = Path(input_dir)
         self.output_dir = Path(output_dir)
         self.verbose = verbose
+        self.parallel = parallel
+        self.max_workers = max_workers
         self.stats = {
             'files_processed': 0,
             'files_skipped': 0,
             'errors': 0,
             'warnings': 0,
             'headers_generated': 0,
-            'implementations_generated': 0
+            'implementations_generated': 0,
+            'start_time': None,
+            'end_time': None
         }
         
         # TypeScript to C++ type mappings
@@ -62,6 +70,37 @@ class TypeScriptToCppTranspiler:
         self.import_to_include = {
             '@elizaos/core': '#include "elizaos/core.hpp"',
             'elizaos': '#include "elizaos/core.hpp"',
+        }
+        
+        # Compiled regex patterns for performance
+        self._compiled_patterns = {}
+        self._compile_patterns()
+    
+    def _compile_patterns(self):
+        """Pre-compile frequently used regex patterns for better performance"""
+        self._compiled_patterns = {
+            'interface': re.compile(r'interface\s+(\w+)\s*\{'),
+            'class': re.compile(r'(?:export\s+)?class\s+(\w+)(?:\s+extends\s+\w+)?(?:\s+implements\s+[\w,\s]+)?\s*\{'),
+            'function': re.compile(r'(export\s+)?(async\s+)?function\s+(\w+)\s*\(([^)]*)\)\s*(?::\s*([^{]+))?\s*\{'),
+            'type_alias': re.compile(r'type\s+(\w+)\s*=\s*([^;]+);'),
+            'import': re.compile(r'import\s+(?:{([^}]+)}|(\w+)|\*\s+as\s+(\w+))\s+from\s+["\']([^"\']+)["\']'),
+            'generic': re.compile(r'(\w+)<(.+)>'),
+            'property': re.compile(r'^(\w+)(\?)?:\s*([^;,{}\(\)]+?)$'),
+            'ts_code_patterns': [
+                re.compile(r'\breturn\s+\{'),
+                re.compile(r'\bawait\s+'),
+                re.compile(r'\bconsole\.'),
+                re.compile(r'\bprocess\.'),
+                re.compile(r'=>\s*\{'),
+                re.compile(r'\bJSON\.'),
+                re.compile(r'\brequire\('),
+                re.compile(r'\bimport\s+'),
+                re.compile(r'===|!=='),
+                re.compile(r'\bconst\s+\w+\s*=\s*\{'),
+                re.compile(r'\blet\s+\w+\s*=\s*\{'),
+                re.compile(r'\.then\('),
+                re.compile(r'\.catch\('),
+            ]
         }
     
     def log(self, message: str, level: str = "INFO"):
@@ -958,22 +997,51 @@ class TypeScriptToCppTranspiler:
     
     def transpile(self):
         """Main transpilation process"""
+        self.stats['start_time'] = time.time()
         self.log(f"Starting transpilation from {self.input_dir} to {self.output_dir}")
         
         # Find all TypeScript files
         ts_files = list(self.input_dir.rglob('*.ts')) + list(self.input_dir.rglob('*.tsx'))
         self.log(f"Found {len(ts_files)} TypeScript files")
         
-        # Process each file
-        for ts_file in ts_files:
-            if self.should_process_file(ts_file):
-                self.process_file(ts_file)
-            else:
-                self.log(f"Skipping {ts_file.name}")
-                self.stats['files_skipped'] += 1
+        # Filter files to process
+        files_to_process = [f for f in ts_files if self.should_process_file(f)]
+        files_to_skip = [f for f in ts_files if not self.should_process_file(f)]
+        
+        self.log(f"Will process {len(files_to_process)} files")
+        self.log(f"Will skip {len(files_to_skip)} files")
+        self.stats['files_skipped'] = len(files_to_skip)
+        
+        # Process files (parallel or sequential)
+        if self.parallel and len(files_to_process) > 1:
+            self.log(f"Using parallel processing with {self.max_workers} workers")
+            self._process_parallel(files_to_process)
+        else:
+            self._process_sequential(files_to_process)
+        
+        self.stats['end_time'] = time.time()
         
         # Print summary
         self.print_summary()
+    
+    def _process_sequential(self, files: List[Path]):
+        """Process files sequentially"""
+        for ts_file in files:
+            self.process_file(ts_file)
+    
+    def _process_parallel(self, files: List[Path]):
+        """Process files in parallel using thread pool"""
+        with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
+            # Submit all tasks
+            future_to_file = {executor.submit(self.process_file, f): f for f in files}
+            
+            # Collect results
+            for future in as_completed(future_to_file):
+                file = future_to_file[future]
+                try:
+                    future.result()
+                except Exception as e:
+                    self.log(f"Error processing {file}: {e}", "ERROR")
     
     def print_summary(self):
         """Print transpilation summary"""
@@ -986,7 +1054,20 @@ class TypeScriptToCppTranspiler:
         print(f"Implementation files generated (.cpp): {self.stats['implementations_generated']}")
         print(f"Validation warnings: {self.stats['warnings']}")
         print(f"Errors: {self.stats['errors']}")
-        print(f"Output directory: {self.output_dir}")
+        
+        # Performance metrics
+        if self.stats['start_time'] and self.stats['end_time']:
+            duration = self.stats['end_time'] - self.stats['start_time']
+            files_per_sec = self.stats['files_processed'] / duration if duration > 0 else 0
+            print(f"\nPerformance:")
+            print(f"  Duration: {duration:.2f} seconds")
+            print(f"  Processing rate: {files_per_sec:.1f} files/second")
+            if self.parallel:
+                print(f"  Mode: Parallel ({self.max_workers} workers)")
+            else:
+                print(f"  Mode: Sequential")
+        
+        print(f"\nOutput directory: {self.output_dir}")
         print("="*60)
         print("\nNOTE: Generated code is approximate and will require manual fixes.")
         print("This is an experimental rapid transpilation for evaluation purposes.")
@@ -998,7 +1079,7 @@ class TypeScriptToCppTranspiler:
 def main():
     """Main entry point"""
     parser = argparse.ArgumentParser(
-        description='Experimental TypeScript to C++ Transpiler',
+        description='Experimental TypeScript to C++ Transpiler (v2.1)',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
@@ -1010,6 +1091,9 @@ Examples:
   
   # Verbose output
   python3 ts_to_cpp_transpiler.py --verbose
+  
+  # Use parallel processing for faster conversion
+  python3 ts_to_cpp_transpiler.py --parallel --max-workers 8
         """
     )
     
@@ -1033,13 +1117,28 @@ Examples:
         help='Enable verbose output'
     )
     
+    parser.add_argument(
+        '--parallel',
+        action='store_true',
+        help='Enable parallel processing for faster conversion'
+    )
+    
+    parser.add_argument(
+        '--max-workers',
+        type=int,
+        default=4,
+        help='Maximum number of parallel workers (default: 4, only used with --parallel)'
+    )
+    
     args = parser.parse_args()
     
     # Create transpiler and run
     transpiler = TypeScriptToCppTranspiler(
         input_dir=args.input_dir,
         output_dir=args.output_dir,
-        verbose=args.verbose
+        verbose=args.verbose,
+        parallel=args.parallel,
+        max_workers=args.max_workers
     )
     
     transpiler.transpile()
