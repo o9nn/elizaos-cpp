@@ -17,36 +17,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
-;
-;
-;
-;
 
-abstract class BaseTradeService {
-  protected tradingConfig: TradingConfig;
 
-  constructor(
-    protected runtime: IAgentRuntime,
-    protected walletService: WalletService,
-    protected dataService: DataService,
-    protected analyticsService: AnalyticsService
-  ) {
-    this.tradingConfig = DEFAULT_CONFIG;
-  }
-
-  public getWalletService() {
-    return this.walletService;
-  }
-
-  public getDataService() {
-    return this.dataService;
-  }
-
-  public getAnalyticsService() {
-    return this.analyticsService;
-  }
-}
 
 } // namespace elizaos

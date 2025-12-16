@@ -18,43 +18,12 @@ namespace elizaos {
 /**
  * Base class for all session-related errors
  */
-abstract class SessionError extends Error {
-  public readonly code: string;
-  public readonly statusCode: number;
-  public readonly details?: any;
-  public readonly timestamp: Date;
-
-  constructor(code: string, message: string, statusCode: number = 500, details?: any) {
-    super(message);
-    this.name = this.constructor.name;
-    this.code = code;
-    this.statusCode = statusCode;
-    this.details = details;
-    this.timestamp = new Date();
 
     // Maintains proper stack trace for where our error was thrown (only available on V8)
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, this.constructor);
-    }
-  }
 
   /**
    * Convert error to JSON for API responses
    */
-  toJSON() {
-    return {
-      error: {
-        code: this.code,
-        message: this.message,
-        timestamp: this.timestamp.toISOString(),
-        ...(process.env.NODE_ENV === 'development' && {
-          details: this.details,
-          stack: this.stack,
-        }),
-      },
-    };
-  }
-}
 
 /**
  * Error thrown when a session is not found
@@ -63,7 +32,6 @@ class SessionNotFoundError extends SessionError {
   constructor(sessionId: string, details?: any) {
     super('SESSION_NOT_FOUND', `Session with ID '${sessionId}' not found`, 404, details);
   }
-}
 
 /**
  * Error thrown when a session has expired
@@ -76,7 +44,6 @@ class SessionExpiredError extends SessionError {
 
     super('SESSION_EXPIRED', message, 410, details);
   }
-}
 
 /**
  * Error thrown when session creation fails
@@ -85,7 +52,6 @@ class SessionCreationError extends SessionError {
   constructor(reason: string, details?: any) {
     super('SESSION_CREATION_FAILED', `Failed to create session: ${reason}`, 500, details);
   }
-}
 
 /**
  * Error thrown when an agent is not found
@@ -94,7 +60,6 @@ class AgentNotFoundError extends SessionError {
   constructor(agentId: string, details?: any) {
     super('AGENT_NOT_FOUND', `Agent with ID '${agentId}' not found`, 404, details);
   }
-}
 
 /**
  * Error thrown when input validation fails
@@ -108,7 +73,6 @@ class ValidationError extends SessionError {
     this.field = field;
     this.value = value;
   }
-}
 
 /**
  * Error thrown when a UUID is invalid
@@ -120,7 +84,6 @@ class InvalidUuidError extends ValidationError {
       expectedFormat: 'UUID v4',
     });
   }
-}
 
 /**
  * Error thrown when required fields are missing
@@ -131,7 +94,6 @@ class MissingFieldsError extends ValidationError {
       missingFields: fields,
     });
   }
-}
 
 /**
  * Error thrown when content validation fails
@@ -140,7 +102,6 @@ class InvalidContentError extends ValidationError {
   constructor(reason: string, content?: any) {
     super(`Invalid content: ${reason}`, 'content', content, { reason });
   }
-}
 
 /**
  * Error thrown when metadata validation fails
@@ -152,7 +113,6 @@ class InvalidMetadataError extends ValidationError {
       providedMetadata: metadata,
     });
   }
-}
 
 /**
  * Error thrown when pagination parameters are invalid
@@ -165,7 +125,6 @@ class InvalidPaginationError extends ValidationError {
       reason,
     });
   }
-}
 
 /**
  * Error thrown when timeout configuration is invalid
@@ -177,7 +136,6 @@ class InvalidTimeoutConfigError extends ValidationError {
       providedConfig: config,
     });
   }
-}
 
 /**
  * Error thrown when a session cannot be renewed
@@ -186,7 +144,6 @@ class SessionRenewalError extends SessionError {
   constructor(sessionId: string, reason: string, details?: any) {
     super('SESSION_RENEWAL_FAILED', `Cannot renew session '${sessionId}': ${reason}`, 400, details);
   }
-}
 
 /**
  * Error thrown when session deletion fails
@@ -200,7 +157,6 @@ class SessionDeletionError extends SessionError {
       details
     );
   }
-}
 
 /**
  * Error thrown when message sending fails
@@ -214,7 +170,6 @@ class MessageSendError extends SessionError {
       details
     );
   }
-}
 
 /**
  * Error thrown when message retrieval fails
@@ -228,7 +183,6 @@ class MessageRetrievalError extends SessionError {
       details
     );
   }
-}
 
 /**
  * Error thrown when database operations fail
@@ -237,7 +191,6 @@ class DatabaseError extends SessionError {
   constructor(operation: string, reason: string, details?: any) {
     super('DATABASE_ERROR', `Database operation '${operation}' failed: ${reason}`, 500, details);
   }
-}
 
 /**
  * Error thrown when session limit is exceeded
@@ -251,7 +204,6 @@ class SessionLimitExceededError extends SessionError {
       details
     );
   }
-}
 
 /**
  * Error thrown when rate limit is exceeded
@@ -263,55 +215,18 @@ class RateLimitError extends SessionError {
     super('RATE_LIMIT_EXCEEDED', message, 429, details);
     this.retryAfter = retryAfter;
   }
-}
 
 /**
  * Error handler utility for Express middleware
  */
-
-
-    // Handle SessionError instances
-    if (err instanceof SessionError) {
-      return res.status(err.statusCode).json(err.toJSON());
-    }
-
-    // Handle other known error types
-    if (err.name === 'ValidationError') {
-      return res.status(400).json({
-        error: {
-          code: 'VALIDATION_ERROR',
-          message: err.message,
-          timestamp: new Date().toISOString(),
-        },
-      });
-    }
-
-    // Log unexpected errors
-    console.error('Unexpected error:', err);
-
-    // Default error response
-    return res.status(500).json({
-      error: {
-        code: 'INTERNAL_SERVER_ERROR',
-        message: 'An unexpected error occurred',
-        timestamp: new Date().toISOString(),
-        ...(process.env.NODE_ENV === 'development' && {
-          details: err.message,
-          stack: err.stack,
-        }),
-      },
-    });
-  };
-}
+void createErrorHandler();
 
 /**
  * Type guard to check if an error is a SessionError
  */
 
-
 /**
  * Type guard to check if an error is a validation error
  */
-
 
 } // namespace elizaos

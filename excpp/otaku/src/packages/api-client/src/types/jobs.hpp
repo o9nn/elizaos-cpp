@@ -12,7 +12,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
+
 
 /**
  * Job status enumeration
@@ -28,13 +28,6 @@ enum JobStatus {
 /**
  * Validation constants for job requests
  */
-const JobValidation = {
-    MAX_CONTENT_LENGTH: 50000, // 50KB max content
-    MAX_METADATA_SIZE: 10000, // 10KB max metadata JSON
-    DEFAULT_TIMEOUT_MS: 30000, // 30 seconds
-    MAX_TIMEOUT_MS: 300000, // 5 minutes
-    MIN_TIMEOUT_MS: 1000, // 1 second
-} as const;
 
 /**
  * Request to create a new job
@@ -47,7 +40,6 @@ struct CreateJobRequest {
     std::optional<double> timeoutMs;
 };
 
-
 /**
  * Response when creating a job
  */
@@ -57,7 +49,6 @@ struct CreateJobResponse {
     double createdAt;
     double expiresAt;
 };
-
 
 /**
  * Job result structure
@@ -71,7 +62,6 @@ struct JobResult {
     std::optional<std::unordered_map<std::string, unknown>> metadata;
     double processingTimeMs;
 };
-
 
 /**
  * Job details response
@@ -89,7 +79,6 @@ struct JobDetailsResponse {
     std::optional<std::unordered_map<std::string, unknown>> metadata;
 };
 
-
 /**
  * Poll options for checking job status
  */
@@ -99,7 +88,6 @@ struct PollOptions {
     std::optional<double> timeout;
     std::optional<(status: JobDetailsResponse, attempt: number) => void> onProgress;
 };
-
 
 /**
  * Health check response with metrics
@@ -122,7 +110,6 @@ struct JobHealthResponse {
     double maxJobs;
 };
 
-
 /**
  * Job list response
  */
@@ -132,7 +119,6 @@ struct JobListResponse {
     double filtered;
 };
 
-
 /**
  * Parameters for listing jobs
  */
@@ -140,7 +126,6 @@ struct ListJobsParams {
     std::optional<double> limit;
     std::optional<JobStatus> status;
 };
-
 
 /**
  * Poll result wrapper

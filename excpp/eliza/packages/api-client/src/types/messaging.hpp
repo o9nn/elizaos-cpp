@@ -13,8 +13,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
+
 
 struct MessageServer {
     UUID id;
@@ -25,7 +24,6 @@ struct MessageServer {
     Date createdAt;
     Date updatedAt;
 };
-
 
 struct MessageChannel {
     UUID id;
@@ -39,7 +37,6 @@ struct MessageChannel {
     Date createdAt;
     Date updatedAt;
 };
-
 
 struct Message {
     UUID id;
@@ -55,7 +52,6 @@ struct Message {
     std::optional<std::unordered_map<std::string, std::any>> metadata;
 };
 
-
 struct MessageSubmitParams {
     UUID agentId;
     UUID channelId;
@@ -64,13 +60,11 @@ struct MessageSubmitParams {
     std::optional<std::unordered_map<std::string, std::any>> metadata;
 };
 
-
 struct MessageCompleteParams {
     UUID messageId;
     'completed' | 'failed' status;
     std::optional<std::string> error;
 };
-
 
 struct ExternalMessageParams {
     std::string platform;
@@ -83,7 +77,6 @@ struct ExternalMessageParams {
     std::optional<std::unordered_map<std::string, std::any>> metadata;
 };
 
-
 struct ChannelCreateParams {
     std::string name;
     ChannelType type;
@@ -91,18 +84,15 @@ struct ChannelCreateParams {
     std::optional<std::unordered_map<std::string, std::any>> metadata;
 };
 
-
 struct GroupChannelCreateParams {
     std::string name;
     std::vector<UUID> participantIds;
     std::optional<std::unordered_map<std::string, std::any>> metadata;
 };
 
-
 struct DmChannelParams {
     [UUID, UUID] participantIds;
 };
-
 
 struct ChannelParticipant {
     UUID id;
@@ -112,15 +102,6 @@ struct ChannelParticipant {
     Date joinedAt;
 };
 
-
-interface MessageSearchParams extends PaginationParams {
-  query?: string;
-  channelId?: UUID;
-  authorId?: UUID;
-  from?: Date | string;
-  to?: Date | string;
-}
-
 struct ServerCreateParams {
     std::string name;
     std::string sourceType;
@@ -128,14 +109,12 @@ struct ServerCreateParams {
     std::optional<std::unordered_map<std::string, std::any>> metadata;
 };
 
-
 struct ServerSyncParams {
     Array<{ channels;
     std::string name;
     ChannelType type;
     std::string sourceId;
 };
-
 
 struct ChannelUpdateParams {
     std::optional<std::string> name;

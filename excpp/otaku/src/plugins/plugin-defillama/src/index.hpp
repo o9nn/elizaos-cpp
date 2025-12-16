@@ -18,41 +18,6 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { Plugin } from "@elizaos/core";
-;
-;
-;
-;
-;
-;
-;
-
-const defiLlamaPlugin: Plugin = {
-  name: "plugin-defillama",
-  description: "DeFiLlama integration: protocol discovery, TVL lookups, yield opportunities, and historical trends",
-  actions: [
-    getProtocolSlugAction,
-    getProtocolTvlAction,
-    getProtocolTvlHistoryAction,
-    getChainTvlHistoryAction,
-    getYieldRatesAction,
-    getYieldHistoryAction,
-  ],
-  evaluators: [],
-  providers: [],
-  services: [DefiLlamaService],
-};
-
-default defiLlamaPlugin;
-{
-  DefiLlamaService,
-  getProtocolSlugAction,
-  getProtocolTvlAction,
-  getProtocolTvlHistoryAction,
-  getChainTvlHistoryAction,
-  getYieldRatesAction,
-  getYieldHistoryAction,
-};
 
 
 

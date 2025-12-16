@@ -13,8 +13,5 @@ namespace elizaos {
 
 // https://discord.com/developers/docs/resources/channel#message-object-message-activity-structure
 using MessageActivityObject = {
-  type: number;
-  party_id?: string;
-};
 
 } // namespace elizaos

@@ -13,21 +13,9 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
-;
-;
-;
 
-}
-      />
-      <ThemeProvider theme={theme}>
-        <DiscrubDialog />
-      </ThemeProvider>
-    </>
-  );
-}
 
-default App;
+void App();
+
 
 } // namespace elizaos

@@ -17,9 +17,5 @@ class MLPredictor {
     return true;
   }
 
-  async predictEngagement(features: any) {
     // Simple scoring based on features
-    return Math.random() * 100;
-  }
-} 
 } // namespace elizaos

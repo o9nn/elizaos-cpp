@@ -11,15 +11,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
 
-default defineConfig({
-  entry: ["src/index.ts"],
-  format: ["cjs", "esm"],
-  dts: true,
-  sourcemap: true,
-  clean: true,
-  external: ["@elizaos/core"],
-});
+
 
 } // namespace elizaos

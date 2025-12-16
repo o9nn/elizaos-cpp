@@ -16,9 +16,6 @@ namespace elizaos {
  * TypeScript interfaces for gamification system
  */
 
-import type { UUID } from '@elizaos/core';
-;
-
 /**
  * Input for recording a gamification event
  */
@@ -30,7 +27,6 @@ struct GamificationEventInput {
     std::optional<double> volumeUsd;
     std::optional<std::string> chain;
 };
-
 
 /**
  * Point balance record
@@ -45,7 +41,6 @@ struct PointBalance {
     std::string levelName;
     Date updatedAt;
 };
-
 
 /**
  * User summary with gamification stats
@@ -65,7 +60,6 @@ struct UserSummary {
     std::optional<double> swapsCompleted;
 };
 
-
 /**
  * Leaderboard entry
  */
@@ -79,7 +73,6 @@ struct LeaderboardEntry {
     std::optional<std::string> avatar;
 };
 
-
 /**
  * Referral code record
  */
@@ -91,7 +84,6 @@ struct ReferralCode {
     Date createdAt;
 };
 
-
 /**
  * Referral stats
  */
@@ -100,7 +92,6 @@ struct ReferralStats {
     double activatedReferrals;
     double totalPointsEarned;
 };
-
 
 /**
  * Campaign configuration
@@ -114,7 +105,6 @@ struct Campaign {
     Date endAt;
     bool active;
 };
-
 
 
 } // namespace elizaos

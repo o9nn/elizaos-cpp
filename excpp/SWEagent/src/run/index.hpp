@@ -24,6 +24,5 @@ namespace elizaos {
 * from './hooks/';
 
 // Main run function
-{ run } from './run';
 
 } // namespace elizaos

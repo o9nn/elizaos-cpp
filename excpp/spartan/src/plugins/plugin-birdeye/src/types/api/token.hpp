@@ -11,7 +11,6 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { TimeInterval, TokenTradeData } from "./common";
 
 // Token Trades Types
 struct TokenTradesParams {
@@ -20,7 +19,6 @@ struct TokenTradesParams {
     std::optional<double> offset;
     std::optional<"buy" | "sell" | "all"> type;
 };
-
 
 struct TokenTradesResponse {
     bool success;
@@ -45,7 +43,6 @@ struct TokenTradesResponse {
     std::optional<std::string> dex;
 };
 
-
 struct TokenListParams {
     std::optional<"mc" | "v24hUSD" | "v24hChangePercent"> sort_by;
     std::optional<"asc" | "desc"> sort_type;
@@ -53,7 +50,6 @@ struct TokenListParams {
     std::optional<double> limit;
     std::optional<double> min_liquidity;
 };
-
 
 // Token List Types
 struct TokenListResponse {
@@ -71,12 +67,10 @@ struct TokenListResponse {
     std::optional<double> price;
 };
 
-
 // Token Security Types
 struct TokenSecurityParams {
     std::string address;
 };
-
 
 struct TokenSecurityResponse {
     bool success;
@@ -110,12 +104,10 @@ struct TokenSecurityResponse {
     std::optional<bool> is_wrapped;
 };
 
-
 // Token Overview Types
 struct TokenOverviewParams {
     std::string address;
 };
-
 
 struct TokenOverviewResponse {
     bool success;
@@ -326,12 +318,10 @@ struct TokenOverviewResponse {
     std::optional<double> numberMarkets;
 };
 
-
 // Token Creation Info Types
 struct TokenCreationInfoParams {
     std::string address;
 };
-
 
 struct TokenCreationInfoResponse {
     bool success;
@@ -345,14 +335,12 @@ struct TokenCreationInfoResponse {
     std::optional<std::string> blockHumanTime;
 };
 
-
 struct TokenTrendingParams {
     std::optional<"rank" | "volume24hUSD" | "liquidity"> sort_by;
     std::optional<"asc" | "desc"> sort_type;
     std::optional<double> offset;
     std::optional<double> limit;
 };
-
 
 // Token Trending Types
 struct TokenTrendingResponse {
@@ -373,7 +361,6 @@ struct TokenTrendingResponse {
     std::optional<double> total;
 };
 
-
 // Token List V2 Types
 struct TokenListV2Params {
     std::optional<double> offset;
@@ -382,18 +369,15 @@ struct TokenListV2Params {
     std::optional<"asc" | "desc"> sortOrder;
 };
 
-
 // this endpoint is for enterprise only and the response is not documented
 struct TokenListV2Response {
     bool success;
     std::any data;
 };
 
-
 struct TokenMetadataMultiParams {
     std::string list_addresses;
 };
-
 
 struct TokenMetadataMultiResponse {
     bool success;
@@ -411,23 +395,19 @@ struct TokenMetadataMultiResponse {
     std::optional<std::string> logo_uri;
 };
 
-
 struct TokenTradeDataMultiParams {
     std::string list_addresses;
 };
-
 
 struct TokenTradeDataMultiResponse {
     bool success;
     { data;
 };
 
-
 // Token Metadata Single Types
 struct TokenMetadataSingleParams {
     std::string address;
 };
-
 
 struct TokenMetadataSingleResponse {
     bool success;
@@ -445,12 +425,10 @@ struct TokenMetadataSingleResponse {
     std::optional<std::string> logo_uri;
 };
 
-
 // Token Market Data Types
 struct TokenMarketDataParams {
     std::string address;
 };
-
 
 struct TokenMarketDataResponse {
     bool success;
@@ -464,18 +442,15 @@ struct TokenMarketDataResponse {
     std::optional<double> circulating_marketcap;
 };
 
-
 // Token Trade Data Single Types
 struct TokenTradeDataSingleParams {
     std::string address;
 };
 
-
 struct TokenTradeDataSingleResponse {
     bool success;
     TokenTradeData data;
 };
-
 
 // Token Market Stats Types
 struct TokenMarketStatsResponse {
@@ -490,14 +465,12 @@ struct TokenMarketStatsResponse {
     double circulating_marketcap;
 };
 
-
 // Token Holders Types
 struct TokenHoldersParams {
     std::string address;
     std::optional<double> offset;
     std::optional<double> limit;
 };
-
 
 struct TokenHoldersResponse {
     bool success;
@@ -511,7 +484,6 @@ struct TokenHoldersResponse {
     std::optional<double> ui_amount;
 };
 
-
 // Token Mint Burn Types
 struct MintBurnParams {
     std::string address;
@@ -523,7 +495,6 @@ struct MintBurnParams {
     std::optional<double> offset;
     std::optional<double> limit;
 };
-
 
 struct MintBurnResponse {
     bool success;
@@ -542,14 +513,12 @@ struct MintBurnResponse {
     std::optional<std::string> ui_amount_string;
 };
 
-
 // New Listing Types
 struct NewListingParams {
     double time_to;
     bool meme_platform_enabled;
     std::optional<double> limit;
 };
-
 
 struct NewListingResponse {
     bool success;
@@ -565,7 +534,6 @@ struct NewListingResponse {
     double liquidity;
 };
 
-
 // Top Traders Types
 struct TopTradersParams {
     std::string address;
@@ -575,7 +543,6 @@ struct TopTradersParams {
     std::optional<double> offset;
     std::optional<double> limit;
 };
-
 
 struct TopTradersResponse {
     bool success;
@@ -588,7 +555,6 @@ struct TopTradersResponse {
     double total;
 };
 
-
 // All Markets Types
 struct AllMarketsParams {
     std::string address;
@@ -598,7 +564,6 @@ struct AllMarketsParams {
     std::optional<double> offset;
     std::optional<double> limit;
 };
-
 
 struct AllMarketsResponse {
     bool success;
@@ -627,7 +592,6 @@ struct AllMarketsResponse {
     double volume24h;
     double total;
 };
-
 
 // Token Volume By Owner Types
 struct TokenVolumeByOwnerResponse {

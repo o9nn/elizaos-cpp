@@ -11,8 +11,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { Address } from "viem";
-;
+
 
 /**
  * Get the appropriate OTC contract address based on network configuration.
@@ -20,6 +19,6 @@ import type { Address } from "viem";
  * @deprecated Use `getOtcAddress()` from `@/config/contracts` directly.
  * This wrapper exists for backwards compatibility.
  */
-
+Address getContractAddress();
 
 } // namespace elizaos

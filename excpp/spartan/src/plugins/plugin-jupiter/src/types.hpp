@@ -18,13 +18,11 @@ struct JupiterQuoteParams {
     double slippageBps;
 };
 
-
 struct JupiterSwapParams {
     std::any quoteResponse;
     std::string userPublicKey;
     double slippageBps;
 };
-
 
 struct JupiterQuoteResponse {
     std::string inputMint;
@@ -39,7 +37,6 @@ struct JupiterQuoteResponse {
     double contextSlot;
     double timeTaken;
 };
-
 
 struct JupiterSwapResponse {
     std::string swapTransaction;

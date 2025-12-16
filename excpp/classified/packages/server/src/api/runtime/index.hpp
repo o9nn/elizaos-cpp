@@ -14,16 +14,10 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { IAgentRuntime, UUID } from '@elizaos/core';
-;
-import type { AgentServer } from '../../index';
-;
-;
-;
+
 
 /**
  * Creates the runtime router for system operations and health monitoring
  */
-
 
 } // namespace elizaos

@@ -12,23 +12,14 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
+
 
 // Service type declarations for plugin manager
-declare module '@elizaos/core' {
   struct ServiceTypeRegistry {
     'plugin_manager' PLUGIN_MANAGER;
     'plugin_configuration' PLUGIN_CONFIGURATION;
     'registry' REGISTRY;
 };
-
-}
-
-const PluginManagerServiceType = {
-  PLUGIN_MANAGER: 'plugin_manager' as ServiceTypeName,
-  PLUGIN_CONFIGURATION: 'plugin_configuration' as ServiceTypeName,
-  REGISTRY: 'registry' as ServiceTypeName,
-} as const;
 
 enum PluginStatus {
   BUILDING = 'building',
@@ -52,7 +43,6 @@ struct PluginEnvironmentVariable {
     std::optional<std::vector<std::string>> enum;
 };
 
-
 struct PluginComponents {
     std::unordered_set<std::string> actions;
     std::unordered_set<std::string> providers;
@@ -61,14 +51,12 @@ struct PluginComponents {
     std::unordered_map<std::string, std::unordered_set<(params: any) => Promise<void>>> eventHandlers;
 };
 
-
 struct ComponentRegistration {
     std::string pluginId;
     'action' | 'provider' | 'evaluator' | 'service' | 'eventHandler' componentType;
     std::string componentName;
     double timestamp;
 };
-
 
 struct PluginState {
     std::string id;
@@ -91,22 +79,18 @@ struct PluginState {
     std::optional<PluginComponents> components;
 };
 
-
 struct PluginRegistry {
     std::unordered_map<std::string, PluginState> plugins;
 };
-
 
 struct LoadPluginParams {
     std::string pluginId;
     std::optional<bool> force;
 };
 
-
 struct UnloadPluginParams {
     std::string pluginId;
 };
-
 
 struct PluginManagerConfig {
     std::optional<double> maxBuildAttempts;
@@ -115,13 +99,11 @@ struct PluginManagerConfig {
     std::optional<bool> enableHotReload;
 };
 
-
 struct InstallProgress {
     'downloading' | 'extracting' | 'installing' | 'validating' | 'complete' phase;
     number; // 0-100 progress;
     std::string message;
 };
-
 
 struct PluginMetadata {
     std::string name;

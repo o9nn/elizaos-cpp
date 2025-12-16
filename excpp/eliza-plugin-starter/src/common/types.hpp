@@ -11,7 +11,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
+
 
 struct SearchResult {
     std::string title;
@@ -22,17 +22,14 @@ struct SearchResult {
     std::optional<std::unordered_map<std::string, unknown>> metadata;
 };
 
-
 struct SearchOptions {
     std::optional<double> maxResults;
     std::optional<std::string> searchType;
     std::optional<std::unordered_map<std::string, unknown>> filters;
 };
 
-
 struct SearchProvider {
 };
-
 
 struct SearchPluginConfig {
     std::string apiKey;
@@ -41,21 +38,5 @@ struct SearchPluginConfig {
     std::optional<std::unordered_map<std::string, unknown>> filters;
 };
 
-
-interface SearchAction extends Action {
-  name: string;
-  description: string;
-  examples: ActionExample[][];
-  similes: string[];
-  handler: Handler;
-  validate: Validator;
-}
-
-interface SearchPlugin extends Plugin {
-  name: string;
-  description: string;
-  actions: SearchAction[];
-  config: SearchPluginConfig;
-}
 
 } // namespace elizaos

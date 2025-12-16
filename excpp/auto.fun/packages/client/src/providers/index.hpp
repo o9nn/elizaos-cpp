@@ -15,23 +15,8 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-import "react-tooltip/dist/react-tooltip.css";
-;
-;
-;
-;
 
-: PropsWithChildren) {
-  return (
-    <Fragment>
-      <TosProvider />
-      <MainentenaceProvider />
-      <Wallet>
-        <SolPriceProvider>{children}</SolPriceProvider>
-      </Wallet>
-    </Fragment>
-  );
-}
+
+void Providers(PropsWithChildren { children });
 
 } // namespace elizaos

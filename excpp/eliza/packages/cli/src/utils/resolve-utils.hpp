@@ -12,11 +12,9 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
-;
-// ; // Replaced by UserEnvironment
-;
+
+
+//  // Replaced by UserEnvironment
 
 /**
  * Expands a file path starting with `~` to the project directory.
@@ -24,9 +22,8 @@ namespace elizaos {
  * @param filepath - The path to expand.
  * @returns The expanded path.
  */
-
-  return filepath;
-}
+    // If ~ means project root, use projectRootForTilde. If it means OS home, os.homedir() would be used.
+    // Assuming ~ means project root in this context based on previous behavior with cwd.
 
 /**
  * Resolves the path to the `.env` file, searching only within the start directory or
@@ -36,24 +33,7 @@ namespace elizaos {
  * @param boundaryDir - Optional directory at which to stop searching upward.
  * @returns The path to the found `.env` file, or a path to `.env` in startDir if none found.
  */
-
-  let current = root;
-  while (true) {
-    const candidate = path.join(current, '.env');
-    if (existsSync(candidate)) {
-      return candidate;
-    }
-    if (stopAt && current === stopAt) {
-      break;
-    }
-    const parent = path.dirname(current);
-    if (parent === current) {
-      break;
-    }
-    current = parent;
-  }
-  return path.join(root, '.env');
-}
+  // If no boundary provided, only consider .env in the start directory
 
 /**
  * Resolves the directory used for PGlite database storage.
@@ -68,26 +48,6 @@ namespace elizaos {
  * @param fallbackDir - Optional fallback directory when env var is not set.
  * @returns The resolved data directory with any tilde expanded.
  */
-std::future<std::string> resolvePgliteDir(std::optional<std::string> dir, std::optional<std::string> fallbackDir););
-  }
-
-  // The fallbackDir passed from getElizaDirectories will be monorepoRoot + '.elizadb' or similar.
-  // If fallbackDir is not provided (e.g. direct call to resolvePgliteDir),
-  // then we construct the default path using projectRoot.
-  const defaultBaseDir = path.join(projectRoot, '.eliza', '.elizadb');
-
-  const base = dir ?? process.env.PGLITE_DATA_DIR ?? fallbackDir ?? defaultBaseDir;
-
-  // Resolve and migrate legacy default (<projectRoot>/.elizadb) if detected
-  const resolved = expandTildePath(base, projectRoot);
-  const legacyPath = path.join(projectRoot, '.elizadb');
-  if (resolved === legacyPath) {
-    const newPath = path.join(projectRoot, '.eliza', '.elizadb');
-    process.env.PGLITE_DATA_DIR = newPath;
-    return newPath;
-  }
-
-  return resolved;
-}
+std::future<std::string> resolvePgliteDir(std::optional<std::string> dir, std::optional<std::string> fallbackDir);
 
 } // namespace elizaos

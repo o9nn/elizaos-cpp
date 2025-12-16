@@ -18,25 +18,20 @@ namespace elizaos {
 struct TodoReminderService {
 };
 
-
 struct TodoNotificationService {
 };
 
-
 struct TodoDailyResetService {
 };
-
 
 struct ContentWithText {
     std::optional<std::string> text;
 };
 
-
 struct ServiceClass {
     std::optional<std::string> serviceType;
     std::optional<std::string> serviceName;
 };
-
 
 struct MockFunction {
     { mock;

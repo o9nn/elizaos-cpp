@@ -27,7 +27,6 @@ struct State {
     std::string text;
 };
 
-
 /**
  * Defines the possible primitive types or structured types for a value within the agent's state.
  * This type is used to provide more specific typing for properties within `StateObject` and `StateArray`,

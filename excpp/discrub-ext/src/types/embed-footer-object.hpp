@@ -13,9 +13,5 @@ namespace elizaos {
 
 // https://discord.com/developers/docs/resources/channel#embed-object-embed-footer-structure
 using EmbedFooterObject = {
-  text: string;
-  icon_url?: string;
-  proxy_icon_url?: string;
-};
 
 } // namespace elizaos

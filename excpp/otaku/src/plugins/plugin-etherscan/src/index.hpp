@@ -13,22 +13,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { Plugin } from "@elizaos/core";
-;
-;
 
-const etherscanPlugin: Plugin = {
-  name: "etherscan",
-  description:
-    "Etherscan integration for checking transaction confirmations, contract verification status, and blockchain data on Ethereum and other EVM chains",
-  actions: [checkTransactionConfirmationAction],
-  services: [EtherscanService],
-  evaluators: [],
-  providers: [],
-};
-
-default etherscanPlugin;
-{ EtherscanService, checkTransactionConfirmationAction };
 
 
 } // namespace elizaos

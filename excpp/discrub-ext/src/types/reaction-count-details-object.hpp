@@ -13,8 +13,5 @@ namespace elizaos {
 
 // https://discord.com/developers/docs/resources/channel#reaction-count-details-object
 using ReactionCountDetailsObject = {
-  burst: number;
-  normal: number;
-};
 
 } // namespace elizaos

@@ -19,160 +19,36 @@ namespace elizaos {
 // loaded automatically before your component test files.
 
 // Import commands.js using ES2015 syntax:
-import './commands';
-;
-;
-;
-;
-import '@/index.css'; // Import global styles
-;
-;
-// ;
-// ;
+
+// 
+// 
 
 // Import polyfills
-;
+
 // @ts-ignore
-;
 
 // Mock environment variables to prevent errors
-(globalThis as any).process = process;
-(globalThis as any).process.env = {
-  SENTRY_DSN: '',
-  NODE_ENV: 'test',
-  ...process.env,
-};
-(globalThis as any).process.versions = {
-  node: '18.0.0',
-};
 
 // Add Buffer polyfill globally
-(globalThis as any).Buffer = Buffer;
-if (typeof window !== 'undefined') {
-  (window as any).Buffer = Buffer;
-}
 
 // Fix for Radix UI components - they need proper React import
-if (typeof window !== 'undefined') {
-  (window as any).React = React;
-}
 
 // Ensure React is properly available globally
-if (typeof globalThis !== 'undefined') {
-  (globalThis as any).React = React;
-}
 
 // Remove duplicate declarations - they're already in types.d.ts
 
 // Create a default query client for tests
-const createTestQueryClient = () =>
-  new QueryClient({
-    defaultOptions: {
-      queries: {
-        retry: false,
-        refetchOnWindowFocus: false,
-      },
-      mutations: {
-        retry: false,
-      },
-    },
-  });
 
 // Mount with all common providers
-) {
-  const queryClient = createTestQueryClient();
-
-  const wrapped = React.createElement(TooltipProvider, {
-    children: React.createElement(
-      QueryClientProvider,
-      { client: queryClient },
-      React.createElement(
-        BrowserRouter,
-        {},
-        // Add a div container for portals
-        React.createElement(
-          'div',
-          {
-            id: 'root',
-            style: { width: '100%', height: '100%' },
-          },
-          component,
-          // Portal container for Radix UI
-          React.createElement('div', { id: 'radix-portal' })
-        )
-      )
-    ),
-  });
-
-  return mount(wrapped, options);
-}
+void mountWithProviders(React.ReactNode component, auto options = {});
 
 // Mount with just router (for simpler components)
-) {
-  const queryClient = createTestQueryClient();
-
-  const wrapped = React.createElement(TooltipProvider, {
-    children: React.createElement(
-      QueryClientProvider,
-      { client: queryClient },
-      React.createElement(
-        BrowserRouter,
-        {},
-        // Add a div container for portals
-        React.createElement(
-          'div',
-          {
-            id: 'root',
-            style: { width: '100%', height: '100%' },
-          },
-          component,
-          // Portal container for Radix UI
-          React.createElement('div', { id: 'radix-portal' })
-        )
-      )
-    ),
-  });
-
-  return mount(wrapped, options);
-}
+void mountWithRouter(React.ReactNode component, auto options = {});
 
 // Mount specifically for Radix UI components with DirectionProvider
-) {
-  const queryClient = createTestQueryClient();
-
-  const wrapped = React.createElement(TooltipProvider, {
-    children: React.createElement(
-      DirectionProvider,
-      { dir: 'ltr' },
-      React.createElement(
-        QueryClientProvider,
-        { client: queryClient },
-        React.createElement(
-          BrowserRouter,
-          {},
-          // Add a div container for portals
-          React.createElement(
-            'div',
-            {
-              id: 'root',
-              style: { width: '100%', height: '100%' },
-            },
-            component,
-            // Portal container for Radix UI
-            React.createElement('div', { id: 'radix-portal' })
-          )
-        )
-      )
-    ),
-  });
-
-  return mount(wrapped, options);
-}
+void mountRadix(React.ReactNode component, auto options = {});
 
 // Add commands
-Cypress.Commands.add('mount', mountWithProviders);
-Cypress.Commands.add('mountWithRouter', mountWithRouter);
-Cypress.Commands.add('mountRadix', mountRadix);
 
 // Example of how to use:
 // cy.mount(<Button onClick={handleClick}>Click me</Button>);

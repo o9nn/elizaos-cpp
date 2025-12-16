@@ -11,8 +11,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
+
 
 /**
  * Basic MetaMask wallet setup for Synpress tests
@@ -29,50 +28,21 @@ namespace elizaos {
  * .cache/synpress-cache and reused across test runs to prevent re-setup loops.
  */
 
-const SEED_PHRASE = process.env.SEED_PHRASE || 'test test test test test test test test test test test junk';
-const PASSWORD = process.env.WALLET_PASSWORD || 'Tester@1234';
-
 // Wallet setup function - this runs ONCE and is cached
-const setupWallet = defineWalletSetup(PASSWORD, async (context, walletPage) => {
   // Wait for page to be fully loaded in CI
-  await walletPage.waitForLoadState('domcontentloaded');
-  
-  const metamask = new MetaMask(context, walletPage, PASSWORD);
-  
+
   // Import wallet with test seed
-  await metamask.importWallet(SEED_PHRASE);
 
   // Add Anvil network - chainId 31337
-  const chainId = parseInt(process.env.CHAIN_ID || '31337');
-  const rpcUrl = process.env.NEXT_PUBLIC_RPC_URL || 'http://localhost:8545';
   
-  try {
-    await metamask.addNetwork({
-      name: 'Anvil Localnet',
-      rpcUrl: rpcUrl,
-      chainId: chainId,
-      symbol: 'ETH',
-    });
-  } catch (e) {
     // Network may already exist - that's fine
-    console.log('Network may already be added, continuing...', e);
-  }
 
   // Switch to Anvil network
-  try {
-    await metamask.switchNetwork('Anvil Localnet');
-  } catch (e) {
     // Already on the network or network doesn't exist yet
-    console.log('Could not switch network, continuing...', e);
-  }
-});
 
 // Export password for tests to use with MetaMask class
-const walletPassword = PASSWORD;
-const seedPhrase = SEED_PHRASE;
 
 // Default is the wallet setup
-default setupWallet;
 
 
 } // namespace elizaos

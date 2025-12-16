@@ -20,14 +20,6 @@ namespace elizaos {
 // Manual refinement required for production use
 
 // https://discord.com/developers/docs/resources/channel#embed-object
-;
-;
-;
-;
-;
-;
-;
-;
 
 class Embed {
   title?: string;
@@ -73,8 +65,6 @@ class Embed {
     this.author = opts.author;
     this.fields = opts.fields;
   }
-}
 
-default Embed;
 
 } // namespace elizaos

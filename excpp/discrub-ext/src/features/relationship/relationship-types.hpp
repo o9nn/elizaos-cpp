@@ -12,13 +12,7 @@ namespace elizaos {
 // Manual refinement required for production use
 
 using RelationshipState = std::variant<{
-  isLoading: boolean, Maybe>;
-  friends: unknown[];
-};
 
 using AddFriendProps = {
-  username: string;
-  discriminator: string;
-};
 
 } // namespace elizaos

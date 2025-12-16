@@ -11,17 +11,9 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
 
-const client = algoliasearch(
-  process.env.NEXT_PUBLIC_ALGOLIA_APP_ID!,
-  process.env.ALGOLIA_ADMIN_KEY!
-);
 
-const index = client.initIndex('projects');
+std::future<void> indexProject(const std::any& project);
 
-async );
-}
-
-async  
+std::future<void> removeProject(const std::string& projectId); 
 } // namespace elizaos

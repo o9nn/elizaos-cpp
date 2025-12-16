@@ -12,7 +12,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
+
 
 struct SearchOptions {
     std::optional<double> limit;
@@ -28,7 +28,6 @@ struct SearchOptions {
     std::optional<'strict' | 'moderate' | 'off'> safeSearch;
 };
 
-
 struct SearchResult {
     std::string title;
     std::string url;
@@ -41,7 +40,6 @@ struct SearchResult {
     std::optional<std::string> snippet;
 };
 
-
 struct SearchResponse {
     std::string query;
     std::vector<SearchResult> results;
@@ -52,53 +50,9 @@ struct SearchResponse {
     std::optional<std::vector<std::string>> relatedSearches;
 };
 
-
-interface NewsSearchOptions extends SearchOptions {
-  category?:
-    | 'general'
-    | 'business'
-    | 'entertainment'
-    | 'health'
-    | 'science'
-    | 'sports'
-    | 'technology';
-  freshness?: 'day' | 'week' | 'month';
-}
-
-interface ImageSearchOptions extends SearchOptions {
-  size?: 'small' | 'medium' | 'large' | 'wallpaper' | 'any';
-  color?:
-    | 'color'
-    | 'monochrome'
-    | 'red'
-    | 'orange'
-    | 'yellow'
-    | 'green'
-    | 'blue'
-    | 'purple'
-    | 'pink'
-    | 'brown'
-    | 'black'
-    | 'gray'
-    | 'white';
-  type?: 'photo' | 'clipart' | 'line' | 'animated';
-  layout?: 'square' | 'wide' | 'tall' | 'any';
-  license?: 'any' | 'public' | 'share' | 'sharecommercially' | 'modify';
-}
-
-interface VideoSearchOptions extends SearchOptions {
-  duration?: 'short' | 'medium' | 'long' | 'any';
-  resolution?: 'high' | 'standard' | 'any';
-  quality?: 'high' | 'standard' | 'any';
-}
-
 /**
  * Interface for web search services
  */
-abstract class IWebSearchService extends Service {
-  static override readonly serviceType = ServiceType.WEB_SEARCH;
-
-  public readonly capabilityDescription = 'Web search and content discovery capabilities';
 
   /**
    * Perform a general web search
@@ -106,7 +60,6 @@ abstract class IWebSearchService extends Service {
    * @param options - Search options
    * @returns Promise resolving to search results
    */
-  abstract search(query: string, options?: SearchOptions): Promise<SearchResponse>;
 
   /**
    * Search for news articles
@@ -114,7 +67,6 @@ abstract class IWebSearchService extends Service {
    * @param options - News search options
    * @returns Promise resolving to news search results
    */
-  abstract searchNews(query: string, options?: NewsSearchOptions): Promise<SearchResponse>;
 
   /**
    * Search for images
@@ -122,7 +74,6 @@ abstract class IWebSearchService extends Service {
    * @param options - Image search options
    * @returns Promise resolving to image search results
    */
-  abstract searchImages(query: string, options?: ImageSearchOptions): Promise<SearchResponse>;
 
   /**
    * Search for videos
@@ -130,35 +81,23 @@ abstract class IWebSearchService extends Service {
    * @param options - Video search options
    * @returns Promise resolving to video search results
    */
-  abstract searchVideos(query: string, options?: VideoSearchOptions): Promise<SearchResponse>;
 
   /**
    * Get search suggestions for a query
    * @param query - Partial search query
    * @returns Promise resolving to array of suggestions
    */
-  abstract getSuggestions(query: string): Promise<string[]>;
 
   /**
    * Get trending searches
    * @param region - Optional region code
    * @returns Promise resolving to trending search queries
    */
-  abstract getTrendingSearches(region?: string): Promise<string[]>;
 
   /**
    * Get detailed information about a specific URL
    * @param url - URL to analyze
    * @returns Promise resolving to page information
    */
-  abstract getPageInfo(url: string): Promise<{
-    title: string;
-    description: string;
-    content: string;
-    metadata: Record<string, string>;
-    images: string[];
-    links: string[];
-  }>;
-}
 
 } // namespace elizaos

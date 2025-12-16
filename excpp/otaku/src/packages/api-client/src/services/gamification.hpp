@@ -13,8 +13,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
+
 
 struct LeaderboardEntry {
     double rank;
@@ -26,14 +25,12 @@ struct LeaderboardEntry {
     std::optional<std::string> avatar;
 };
 
-
 struct LeaderboardResponse {
     'weekly' | 'all_time' scope;
     std::vector<LeaderboardEntry> entries;
     double userRank;
     double limit;
 };
-
 
 struct UserSummary {
     std::string userId;
@@ -50,20 +47,17 @@ struct UserSummary {
     std::optional<double> swapsCompleted;
 };
 
-
 struct ReferralStats {
     double totalReferrals;
     double activatedReferrals;
     double totalPointsEarned;
 };
 
-
 struct ReferralCodeResponse {
     std::string code;
     ReferralStats stats;
     std::string referralLink;
 };
-
 
 class GamificationService extends BaseApiClient {
   /**
@@ -99,31 +93,12 @@ class GamificationService extends BaseApiClient {
    * @param agentId Agent ID to route the request to
    * @param userId User ID to get summary for
    */
-  async getUserSummary(
-    agentId: UUID,
-    userId: UUID
-  ): Promise<UserSummary> {
-    return this.get<UserSummary>(
-      `/api/agents/${agentId}/plugins/gamification/summary`,
-      { params: { userId } }
-    );
-  }
 
   /**
    * Get or create referral code for user
    * @param agentId Agent ID to route the request to
    * @param userId User ID to get referral code for
    */
-  async getReferralCode(
-    agentId: UUID,
-    userId: UUID
-  ): Promise<ReferralCodeResponse> {
-    return this.get<ReferralCodeResponse>(
-      `/api/agents/${agentId}/plugins/gamification/referral`,
-      { params: { userId } }
-    );
-  }
-}
 
 
 } // namespace elizaos

@@ -22,77 +22,27 @@ namespace elizaos {
  * Converted from sweagent/agent/models.py
  */
 
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-
-const logger = getLogger('models');
-
 /**
  * Retry configuration
  */
-const RetryConfigSchema = z.object({
-  retries: z.number().default(20),
-  minWait: z.number().default(10),
-  maxWait: z.number().default(120),
-});
 
 using RetryConfig = z.infer<typeof RetryConfigSchema>;
 
 /**
  * Generic API model configuration
  */
-const GenericAPIModelConfigSchema = z.object({
-  name: z.string().describe('Name of the model'),
-  perInstanceCostLimit: z.number().default(3.0).describe('Cost limit for every instance (task)'),
-  totalCostLimit: z.number().default(0.0).describe('Total cost limit'),
-  perInstanceCallLimit: z.number().default(0).describe('Per instance call limit'),
-  temperature: z.number().default(0.0).describe('Sampling temperature'),
-  topP: z.number().nullable().default(1.0).describe('Sampling top-p'),
-  apiBase: z.string().nullable().optional(),
-  apiVersion: z.string().nullable().optional(),
-  apiKey: z.string().nullable().optional().describe('API key to the model'),
-  stop: z.array(z.string()).default([]).describe('Custom stop sequences'),
-  completionKwargs: z.record(z.any()).default({}).describe('Additional kwargs for completion'),
-  convertSystemToUser: z.boolean().default(false).describe('Whether to convert system messages to user messages'),
-  retry: RetryConfigSchema.default({}),
-  delay: z.number().default(0.0).describe('Minimum delay before querying'),
-  fallbacks: z.array(z.record(z.any())).default([]),
-  chooseApiKeyByThread: z.boolean().default(true),
-  maxInputTokens: z.number().nullable().optional(),
-  maxOutputTokens: z.number().nullable().optional(),
-  litellmModelRegistry: z.string().nullable().optional(),
-  customTokenizer: z.record(z.any()).nullable().optional(),
-});
 
 using GenericAPIModelConfig = z.infer<typeof GenericAPIModelConfigSchema>;
 
 /**
  * Human model configuration
  */
-const HumanModelConfigSchema = z.object({
-  name: z.literal('human'),
-  costPerCall: z.number().default(0),
-  catchEof: z.boolean().optional(),
-});
 
 using HumanModelConfig = z.infer<typeof HumanModelConfigSchema>;
 
 /**
  * Replay model configuration
  */
-const ReplayModelConfigSchema = z.object({
-  name: z.literal('replay'),
-  replayPath: z.string(),
-});
 
 using ReplayModelConfig = z.infer<typeof ReplayModelConfigSchema>;
 
@@ -104,7 +54,6 @@ struct InstantEmptySubmitModelConfig {
     std::optional<double> delay;
 };
 
-
 /**
  * Human thought model configuration
  */
@@ -112,7 +61,6 @@ struct HumanThoughtModelConfig {
     'human_thought' name;
     std::optional<bool> catchEof;
 };
-
 
 /**
  * Union type for all model configurations
@@ -129,11 +77,6 @@ class GlobalStats {
   addCost(cost: number): void {
     this.totalCost += cost;
   }
-
-  updateTimestamp(): void {
-    this.lastQueryTimestamp = Date.now() / 1000;
-  }
-}
 
 /**
  * Instance-specific statistics
@@ -153,78 +96,9 @@ class InstanceStats {
     return result;
   }
 
-  subtract(other: InstanceStats): InstanceStats {
-    const result = new InstanceStats();
-    result.instanceCost = this.instanceCost - other.instanceCost;
-    result.tokensSent = this.tokensSent - other.tokensSent;
-    result.tokensReceived = this.tokensReceived - other.tokensReceived;
-    result.apiCalls = this.apiCalls - other.apiCalls;
-    return result;
-  }
-}
-
 /**
  * Abstract base class for all models
  */
-abstract class AbstractModel {
-  protected config: ModelConfig;
-  protected stats: InstanceStats;
-  protected globalStats: GlobalStats;
-  protected tools: ToolConfig;
-
-  constructor(config: ModelConfig, tools: ToolConfig) {
-    this.config = config;
-    this.tools = tools;
-    this.stats = new InstanceStats();
-    this.globalStats = new GlobalStats();
-  }
-
-  resetStats(): void {
-    this.stats = new InstanceStats();
-  }
-
-  getStats(): InstanceStats {
-    return this.stats;
-  }
-
-  abstract query(history: History, temperature?: number, n?: number): Promise<ModelOutput | ModelOutput[]>;
-
-  get instanceCostLimit(): number {
-    return ('perInstanceCostLimit' in this.config ? this.config.perInstanceCostLimit : 0) || 0;
-  }
-
-  protected checkCostLimits(): void {
-    if (
-      'perInstanceCostLimit' in this.config &&
-      this.config.perInstanceCostLimit > 0 &&
-      this.stats.instanceCost >= this.config.perInstanceCostLimit
-    ) {
-      throw new InstanceCostLimitExceededError(
-        `Instance cost ${this.stats.instanceCost} exceeds limit ${this.config.perInstanceCostLimit}`,
-      );
-    }
-
-    if (
-      'totalCostLimit' in this.config &&
-      this.config.totalCostLimit > 0 &&
-      this.globalStats.totalCost >= this.config.totalCostLimit
-    ) {
-      throw new TotalCostLimitExceededError(
-        `Total cost ${this.globalStats.totalCost} exceeds limit ${this.config.totalCostLimit}`,
-      );
-    }
-
-    if (
-      'perInstanceCallLimit' in this.config &&
-      this.config.perInstanceCallLimit > 0 &&
-      this.stats.apiCalls >= this.config.perInstanceCallLimit
-    ) {
-      throw new InstanceCallLimitExceededError(
-        `API calls ${this.stats.apiCalls} exceeds limit ${this.config.perInstanceCallLimit}`,
-      );
-    }
-  }
-}
 
 /**
  * Human model for interactive input
@@ -240,83 +114,19 @@ class HumanModel extends AbstractModel {
     this.loadReadlineHistory();
   }
 
-  protected loadReadlineHistory(): void {
     // In Node.js, readline history handling is different
     // We'd need to implement custom history management
-  }
-
-  protected updateStats(): void {
-    this.stats.apiCalls++;
-    const config = this.config as HumanModelConfig;
-    this.stats.instanceCost += config.costPerCall || 0;
-    this.globalStats.addCost(config.costPerCall || 0);
-    this.globalStats.updateTimestamp();
-    this.checkCostLimits();
-  }
-
-  async query(
-    _history: History,
-    actionPrompt: string | number = '> ',
-    n?: number,
-  ): Promise<ModelOutput | ModelOutput[]> {
-    this.updateStats();
-
-    const prompt = typeof actionPrompt === 'string' ? actionPrompt : '> ';
 
     // Create readline interface
-    const rl = readline.createInterface({
-      input: process.stdin,
-      output: process.stdout,
-      prompt,
-    });
 
-    return new Promise((resolve, _reject) => {
       // Handle EOF (Ctrl+D)
-      rl.on('close', () => {
-        if (!this.catchEof) {
           // Re-raise EOFError when catchEof is disabled
-          throw new EOFError();
-        }
-        console.log('\nGoodbye!');
-        const result: ModelOutput = {
-          message: 'exit',
-        };
-        resolve(n ? [result] : result);
-      });
 
-      rl.question(prompt, (answer) => {
         // Check if answer is null (EOF)
-        if (answer === null) {
-          rl.close();
-          return;
-        }
-
-        rl.close();
 
         // Handle special commands
-        if (answer.startsWith('RAISE_')) {
-          this.handleRaiseCommands(answer);
-        }
 
-        const result: ModelOutput = {
-          message: answer,
-        };
-
-        resolve(n ? [result] : result);
-      });
-    });
-  }
-
-  protected handleRaiseCommands(action: string): void {
-    if (action === 'RAISE_InstanceCostLimitExceededError') {
-      throw new InstanceCostLimitExceededError();
-    }
-    if (action === 'RAISE_ContentPolicyViolationError') {
-      throw new ContentPolicyViolationError();
-    }
     // Add other raise commands as needed
-  }
-}
 
 /**
  * LiteLLM model for API-based models
@@ -330,69 +140,13 @@ class LiteLLMModel extends AbstractModel {
     this.apiKeys = this.getApiKeys();
   }
 
-  private getApiKeys(): string[] {
-    const config = this.config as GenericAPIModelConfig;
-    if (!config.apiKey) {
       // Try to get from environment
-      const envKey = process.env[`${config.name.toUpperCase().replace(/-/g, '_')}_API_KEY`];
-      if (envKey) {
-        return envKey.split(':::');
-      }
-      return [];
-    }
 
-    const apiKey = config.apiKey;
-    if (apiKey.startsWith('$')) {
       // It's an environment variable
-      const envKey = process.env[apiKey.substring(1)];
-      if (envKey) {
-        return envKey.split(':::');
-      }
-      return [];
-    }
 
-    return apiKey.split(':::');
-  }
-
-  private chooseApiKey(): string | null {
-    if (this.apiKeys.length === 0) {
-      return null;
-    }
-
-    const config = this.config as GenericAPIModelConfig;
-    if (config.chooseApiKeyByThread) {
       // Use thread-based selection
-      const threadId = process.pid % this.apiKeys.length;
-      return this.apiKeys[threadId];
-    }
 
     // Round-robin selection
-    const key = this.apiKeys[this.currentKeyIndex];
-    this.currentKeyIndex = (this.currentKeyIndex + 1) % this.apiKeys.length;
-    return key;
-  }
-
-  protected async sleep(): Promise<void> {
-    const config = this.config as GenericAPIModelConfig;
-    const timeSinceLastQuery = Date.now() / 1000 - this.globalStats.lastQueryTimestamp;
-    const sleepTime = Math.max(0, config.delay - timeSinceLastQuery);
-    if (sleepTime > 0) {
-      await new Promise((resolve) => setTimeout(resolve, sleepTime * 1000));
-    }
-  }
-
-  async query(history: History, temperature?: number, n: number = 1): Promise<ModelOutput | ModelOutput[]> {
-    await this.sleep();
-
-    const messages = this.historyToMessages(history);
-    const results = await this.singleQuery(messages, n, temperature);
-
-    return n === 1 ? results[0] : results;
-  }
-
-  private async singleQuery(messages: HistoryItem[], n?: number, temperature?: number): Promise<ModelOutput[]> {
-    const apiKey = this.chooseApiKey();
-    const config = this.config as GenericAPIModelConfig;
 
     struct RequestData {
     std::string model;
@@ -404,156 +158,19 @@ class LiteLLMModel extends AbstractModel {
     std::optional<double> max_tokens;
     std::optional<std::string> system;
     std::optional<std::vector<{ role: string; parts: Array<{ text: string }> }>> contents;
-};
-
-
-    const requestData: RequestData = {
-      model: config.name,
-      messages,
-      temperature: temperature ?? config.temperature,
-      top_p: config.topP,
-      n: n || 1,
-      stop: config.stop,
-      ...config.completionKwargs,
-      ...(config.maxOutputTokens && { max_tokens: config.maxOutputTokens }),
-    };
 
     // Determine API endpoint and headers based on provider
-    const isAnthropic = config.name.includes('claude') || config.name.includes('anthropic');
-    const isGemini = config.name.includes('gemini') || config.name.includes('google');
-
-    let apiUrl: string;
-    let headers: Record<string, string>;
-    let finalRequestData: RequestData = requestData;
-
-    if (isAnthropic) {
-      apiUrl = config.apiBase || 'https://api.anthropic.com/v1/messages';
-      headers = {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey || '',
-        'anthropic-version': '2023-06-01',
-      };
 
       // Convert messages format for Anthropic
-      const system = messages.find((m) => m.role === 'system');
-      if (system) {
-        finalRequestData = {
-          ...requestData,
-          system: typeof system.content === 'string' ? system.content : JSON.stringify(system.content),
-          messages: messages.filter((m) => m.role !== 'system'),
-        };
-      }
-    } else if (isGemini) {
-      apiUrl =
-        config.apiBase ||
-        `https://generativelanguage.googleapis.com/v1beta/models/${config.name}:generateContent?key=${apiKey}`;
-      headers = {
-        'Content-Type': 'application/json',
-      };
 
       // Convert messages format for Google
-      finalRequestData = {
-        ...requestData,
-        contents: messages.map((m) => ({
-          role: m.role === 'assistant' ? 'model' : 'user',
-          parts: [{ text: typeof m.content === 'string' ? m.content : JSON.stringify(m.content) }],
-        })),
-      };
-    } else {
       // OpenAI and compatible APIs
-      apiUrl = config.apiBase || 'https://api.openai.com/v1/chat/completions';
-      headers = {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${apiKey}`,
-      };
-    }
-
-    try {
-      const response = await axios.post<APIResponse>(apiUrl, finalRequestData, { headers });
-
-      this.updateStatsFromResponse(response.data);
 
       // Convert API response to ModelOutput format
-      const outputs: ModelOutput[] = [];
-      if (response.data.choices) {
-        for (const choice of response.data.choices) {
-          outputs.push({
-            message: choice.message?.content || '',
-          });
-        }
-      }
-      return outputs;
-    } catch (error) {
-      logger.error('API call failed', error);
-      throw error;
-    }
-  }
-
-  private updateStatsFromResponse(response: APIResponse): void {
-    const usage = response.usage || {};
-    const inputTokens = usage.prompt_tokens || 0;
-    const outputTokens = usage.completion_tokens || 0;
 
     // Calculate cost (this would need proper model pricing data)
-    const cost = this.calculateCost(inputTokens, outputTokens);
 
-    this.stats.tokensSent += inputTokens;
-    this.stats.tokensReceived += outputTokens;
-    this.stats.instanceCost += cost;
-    this.stats.apiCalls++;
-
-    this.globalStats.addCost(cost);
-    this.globalStats.updateTimestamp();
-
-    this.checkCostLimits();
-  }
-
-  private calculateCost(inputTokens: number, outputTokens: number): number {
-    const config = this.config as GenericAPIModelConfig;
     return calculateCost(config.name, inputTokens, outputTokens);
-  }
-
-  private historyToMessages(history: History): HistoryItem[] {
-    const messages: HistoryItem[] = [];
-    const config = this.config as GenericAPIModelConfig;
-
-    for (const item of history) {
-      const role = this.getRole(item);
-
-      if (config.convertSystemToUser && role === 'system') {
-        messages.push({
-          role: 'user',
-          content: item.content,
-        });
-      } else {
-        messages.push({
-          role,
-          content: item.content,
-          ...(item.toolCalls && { tool_calls: item.toolCalls }),
-          ...(item.toolCallIds && { tool_call_id: item.toolCallIds[0] }),
-        });
-      }
-    }
-
-    return messages;
-  }
-
-  private getRole(historyItem: HistoryItem): string {
-    if (historyItem.role === 'user' || historyItem.role === 'system' || historyItem.role === 'assistant') {
-      return historyItem.role;
-    }
-
-    if (historyItem.agent) {
-      return 'assistant';
-    }
-
-    if (historyItem.role === 'tool' || historyItem.messageType === 'observation') {
-      return 'tool';
-    }
-
-    return 'user';
-  }
-}
 
 /**
  * Human model with thought prompting
@@ -611,7 +228,6 @@ class HumanThoughtModel extends HumanModel {
 
     return n ? [result] : result;
   }
-}
 
 /**
  * Replay model for replaying trajectories
@@ -643,56 +259,6 @@ class ReplayModel extends AbstractModel {
     this.submitCommand = tools.submitCommand || 'submit';
   }
 
-  private nextReplay(): void {
-    this.replayIdx++;
-    this.actionIdx = 0;
-  }
-
-  async query(_history: History): Promise<ModelOutput> {
-    this.stats.apiCalls++;
-
-    const actions = this.replays[this.replayIdx];
-    let action: string | ModelOutput;
-
-    if (this.actionIdx >= actions.length) {
-      logger.error('Reached end of replay trajectory without submitting. Submitting now.');
-
-      if (this.usesFunctionCalling) {
-        action = {
-          message: `Calling \`${this.submitCommand}\` to submit.`,
-          toolCalls: [
-            {
-              type: 'function',
-              id: 'call_submit',
-              function: {
-                name: this.submitCommand,
-                arguments: '{}',
-              },
-            },
-          ],
-        };
-      } else {
-        action = `\`\`\`\n${this.submitCommand}\n\`\`\``;
-      }
-    } else {
-      action = actions[this.actionIdx];
-    }
-
-    this.actionIdx++;
-
-    if (typeof action === 'string' && action === 'submit') {
-      this.nextReplay();
-      return { message: action };
-    }
-
-    if (typeof action === 'object') {
-      return action as ModelOutput;
-    }
-
-    return { message: action };
-  }
-}
-
 /**
  * Instant empty submit model for testing
  */
@@ -705,32 +271,7 @@ class InstantEmptySubmitModel extends AbstractModel {
     this.delay = config.delay || 0;
   }
 
-  async query(_history: History): Promise<ModelOutput> {
     // Add random delay if configured
-    if (this.delay > 0) {
-      const sleepTime = Math.random() * this.delay;
-      await new Promise((resolve) => setTimeout(resolve, sleepTime * 1000));
-    }
-
-    let action: string;
-
-    if (this.actionIdx === 0) {
-      this.actionIdx = 1;
-      action =
-        'DISCUSSION\n' +
-        "Let's reproduce the bug by creating a `reproduce.py` file.\n\n" +
-        '```\n' +
-        'touch reproduce.py\n' +
-        '```\n';
-    } else {
-      this.actionIdx = 0;
-      action = "DISCUSSION\nThe task should be resolved, so let's submit the patch.\n\n```\nsubmit\n```\n";
-    }
-
-    this.stats.apiCalls++;
-    return { message: action };
-  }
-}
 
 /**
  * Predetermined test model for testing
@@ -744,51 +285,14 @@ class PredeterminedTestModel extends AbstractModel {
     this.responses = responses;
   }
 
-  async query(_history: History): Promise<ModelOutput> {
-    if (this.responseIdx >= this.responses.length) {
-      throw new Error('Ran out of predetermined responses');
-    }
-
-    const response = this.responses[this.responseIdx++];
-
     // Handle special test commands
-    if (typeof response === 'string') {
-      if (response === 'raise_cost') {
-        throw new InstanceCostLimitExceededError('Test cost limit exceeded');
-      }
-      if (response === 'raise_context') {
-        throw new ContextWindowExceededError('Test context window exceeded');
-      }
-      if (response === 'raise_runtime' || response === 'raise_model_error') {
         // Create a RuntimeError-like error that the agent will recognize
-        const error = new Error('Test runtime error');
-        error.name = 'RuntimeError';
-        throw error;
-      }
-      if (response === 'raise_format_error') {
-        throw new RetryWithOutputError('Test format error');
-      }
-
-      return { message: response };
-    }
-
-    return response;
-  }
-}
 
 // Export types for testing
-{ ModelOutput } from './types';
 
 /**
- * Factory ;
-      return new HumanThoughtModel(humanThoughtConfig, tools);
-    case 'replay':
-      return new ReplayModel(config as ReplayModelConfig, tools);
-    case 'instant_empty_submit':
-      return new InstantEmptySubmitModel(config as InstantEmptySubmitModelConfig, tools);
-    default:
-      return new LiteLLMModel(config as GenericAPIModelConfig, tools);
-  }
-}
+ * Factory function to create model instances
+ */
+AbstractModel getModel(ModelConfig config, ToolConfig tools);
 
 } // namespace elizaos

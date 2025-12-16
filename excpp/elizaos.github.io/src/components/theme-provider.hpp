@@ -11,13 +11,8 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-"use client";
 
-;
-;
 
-: ThemeProviderProps) {
-  return <NextThemesProvider {...props}>{children}</NextThemesProvider>;
-}
+void ThemeProvider(auto { children, ThemeProviderProps ...props });
 
 } // namespace elizaos

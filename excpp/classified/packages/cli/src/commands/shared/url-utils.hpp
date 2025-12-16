@@ -11,15 +11,15 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { OptionValues } from 'commander';
 
 /**
- * Helper ` // Use port flag or env var, default to 3000
-  );
-}
+ * Helper function to determine the agent runtime URL
+ */
+std::string getAgentRuntimeUrl(OptionValues opts);
 
 /**
- * Helper /api/agents`;
-}
+ * Helper function to get the agents base API URL
+ */
+std::string getAgentsBaseUrl(OptionValues opts);
 
 } // namespace elizaos

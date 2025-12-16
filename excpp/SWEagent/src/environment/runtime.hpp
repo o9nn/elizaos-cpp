@@ -25,7 +25,6 @@ struct BashAction {
     std::optional<'silent' | 'ignore'> check;
 };
 
-
 /**
  * Bash action result
  */
@@ -34,14 +33,12 @@ struct BashActionResult {
     double exitCode;
 };
 
-
 /**
  * Interrupt action for stopping running commands
  */
 struct BashInterruptAction {
     'interrupt' type;
 };
-
 
 /**
  * Create bash session request
@@ -50,7 +47,6 @@ struct CreateBashSessionRequest {
     std::optional<std::vector<std::string>> startupSource;
     std::optional<double> startupTimeout;
 };
-
 
 /**
  * Command execution request (non-session)
@@ -64,7 +60,6 @@ struct Command {
     std::optional<double> timeout;
 };
 
-
 /**
  * Command execution result
  */
@@ -73,7 +68,6 @@ struct CommandResult {
     std::string stdout;
     std::string stderr;
 };
-
 
 /**
  * File read request
@@ -84,14 +78,12 @@ struct ReadFileRequest {
     std::optional<std::string> errors;
 };
 
-
 /**
  * File read response
  */
 struct ReadFileResponse {
     std::string content;
 };
-
 
 /**
  * File write request
@@ -101,7 +93,6 @@ struct WriteFileRequest {
     std::string content;
 };
 
-
 /**
  * Upload request for copying files/directories
  */
@@ -110,17 +101,8 @@ struct UploadRequest {
     std::string targetPath;
 };
 
-
 /**
  * Abstract runtime interface
  */
-abstract class AbstractRuntime {
-  abstract createSession(request: CreateBashSessionRequest): Promise<void>;
-  abstract runInSession(action: BashAction | BashInterruptAction): Promise<BashActionResult>;
-  abstract execute(command: Command): Promise<CommandResult>;
-  abstract readFile(request: ReadFileRequest): Promise<ReadFileResponse>;
-  abstract writeFile(request: WriteFileRequest): Promise<void>;
-  abstract upload(request: UploadRequest): Promise<void>;
-}
 
 } // namespace elizaos

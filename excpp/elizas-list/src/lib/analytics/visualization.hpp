@@ -11,17 +11,15 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
+
 
 struct TimeSeriesDataPoint {
     std::string date;
     double value;
 };
 
-
 struct InteractionData {
 };
-
 
 class AnalyticsVisualization {
   static generateTimeSeriesChart(data: TimeSeriesDataPoint[]): ChartConfiguration {
@@ -40,20 +38,4 @@ class AnalyticsVisualization {
     };
   }
 
-  static generateHeatmap(data: InteractionData): ChartConfiguration {
-    return {
-      type: 'bar',
-      data: {
-        labels: Object.keys(data),
-        datasets: [{
-          label: 'Interactions',
-          data: Object.values(data)
-        }]
-      },
-      options: {
-        responsive: true
-      }
-    };
-  }
-} 
 } // namespace elizaos

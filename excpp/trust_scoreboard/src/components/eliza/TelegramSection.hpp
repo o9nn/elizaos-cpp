@@ -12,17 +12,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
 
-const TelegramSection: FC = () => {
-  return (
-    <div className={styles.formGroup}>
-      <label>Telegram Skills</label>
-      <button className={styles.connectButton}>
-        Connect Account
-      </button>
-    </div>
-  );
-}; 
+
+
 } // namespace elizaos

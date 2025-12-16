@@ -11,9 +11,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
 
-const useSolPriceContext = () => useContext(SolPriceContext);
 
 struct SolPriceContextType {
     number | undefined solPrice;
@@ -21,11 +19,5 @@ struct SolPriceContextType {
     Error | null error;
 };
 
-
-const SolPriceContext = createContext<SolPriceContextType>({
-  solPrice: undefined,
-  isLoading: false,
-  error: null,
-});
 
 } // namespace elizaos

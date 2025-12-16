@@ -12,7 +12,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-// ;
+// 
 
 // class StarterService extends Service {
 //     static serviceType = 'starter';
@@ -43,10 +43,7 @@ namespace elizaos {
 //     }
 //   }
 
-const Services = [
   // add services here
-];
 
-default Services;
 
 } // namespace elizaos

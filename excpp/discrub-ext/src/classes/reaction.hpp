@@ -14,8 +14,6 @@ namespace elizaos {
 // Manual refinement required for production use
 
 // https://discord.com/developers/docs/resources/channel#reaction-object
-;
-;
 
 class Reaction {
   count: number;
@@ -40,6 +38,5 @@ class Reaction {
     this.emoji = opts.emoji;
     this.burst_colors = opts.burst_colors;
   }
-}
 
 } // namespace elizaos

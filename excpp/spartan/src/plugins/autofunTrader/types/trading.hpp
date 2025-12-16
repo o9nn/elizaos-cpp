@@ -12,7 +12,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
+
 
 struct TokenSignal {
     std::string address;
@@ -43,14 +43,12 @@ struct TokenSignal {
     double volumeChange24h;
 };
 
-
 struct RiskLimits {
     double maxPositionSize;
     double maxDrawdown;
     double stopLossPercentage;
     double takeProfitPercentage;
 };
-
 
 struct TradingConfig {
     { intervals;
@@ -69,14 +67,9 @@ struct TradingConfig {
     double volumeMultiplier;
 };
 
-
 struct PortfolioStatus {
     double totalValue;
     { [tokenAddress: string]: { amount: number; value: number } } positions;
-    double solBalance;
-    double drawdown;
-};
-
 
 struct SellSignalMessage {
     UUID positionId;
@@ -86,22 +79,7 @@ struct SellSignalMessage {
     std::optional<std::string> expectedOutAmount;
 };
 
-
 using WalletPortfolioItem = {
-  name: string;
-  address: string;
-  symbol: string;
-  decimals: number;
-  balance: string;
-  uiAmount: string;
-  priceUsd: string;
-  valueUsd: string;
-  valueSol?: string;
-};
 using WalletPortfolio = {
-  totalUsd: string;
-  totalSol?: string;
-  items: WalletPortfolioItem[];
-};
 
 } // namespace elizaos

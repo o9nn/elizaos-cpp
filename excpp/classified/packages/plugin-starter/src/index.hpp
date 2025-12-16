@@ -16,24 +16,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { Plugin } from '@elizaos/core';
-;
-;
-;
-;
-;
 
-const plugin: Plugin = {
-  name: 'plugin',
-  description: 'Plugin for ElizaOS',
-  config: configSchema,
-  services: Services,
-  actions: Actions,
-  providers: Providers,
-  tests: [PluginTestSuite],
-  dependencies: [],
-};
 
-default plugin;
 
 } // namespace elizaos

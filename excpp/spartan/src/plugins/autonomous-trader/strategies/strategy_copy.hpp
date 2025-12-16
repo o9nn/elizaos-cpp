@@ -12,16 +12,10 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { IAgentRuntime } from '@elizaos/core';
 
-;
 
-async ;
-  const hndl = await service.register_strategy(me);
+std::future<void> copyStrategy(IAgentRuntime runtime);
 
-  // ok which wallets do we need to set up listeners on?
-}
-
-async 
+std::future<void> onWalletEvent(auto runtime, auto strategyService, auto hndl);
 
 } // namespace elizaos

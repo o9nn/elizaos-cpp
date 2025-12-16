@@ -20,30 +20,8 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { Plugin } from "@elizaos/core";
 
 // actions
-;
-;
-;
-;
-;
-;
-;
-;
-;
 
-const appPlugin: Plugin = {
-    name: "AppDev",
-    description: "application development framework for ElizaOS",
-    actions: [
-      userRegistration, checkRegistrationCode, checkRegistration, deleteRegistration,
-      servicesMenu, walletCreate, setStrategy, userMetawalletList, devFix
-    ],
-    evaluators: [],
-    providers: [],
-};
-
-default appPlugin;
 
 } // namespace elizaos

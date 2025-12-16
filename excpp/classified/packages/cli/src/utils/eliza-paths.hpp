@@ -11,7 +11,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
+
 
 /**
  * Utility helpers for resolving standard Eliza directories.
@@ -21,17 +21,6 @@ namespace elizaos {
  * centralising the path logic here we avoid the hard-coded scattered
  * variants that previously lived throughout the codebase.
  */
-
-
-
-
-
-
-
-
-
-
-
 
 
 } // namespace elizaos

@@ -19,7 +19,6 @@ struct ListPluginsOptions {
     std::optional<bool> v0;
 };
 
-
 struct AddPluginOptions {
     std::optional<bool> skipEnvPrompt;
     std::optional<bool> skipVerification;
@@ -27,13 +26,11 @@ struct AddPluginOptions {
     std::optional<std::string> tag;
 };
 
-
 struct UpgradePluginOptions {
     std::optional<std::string> apiKey;
     std::optional<bool> skipTests;
     std::optional<bool> skipValidation;
 };
-
 
 struct GeneratePluginOptions {
     std::optional<std::string> apiKey;
@@ -42,7 +39,6 @@ struct GeneratePluginOptions {
     std::optional<bool> skipPrompts;
     std::optional<std::string> specFile;
 };
-
 
 /**
  * Plugin registry interfaces
@@ -65,11 +61,9 @@ struct PluginRegistryInfo {
     bool v1;
 };
 
-
 struct PluginRegistry {
     std::unordered_map<std::string, PluginRegistryInfo> registry;
 };
-
 
 /**
  * Environment variable configuration
@@ -82,7 +76,6 @@ struct EnvVarConfig {
     std::optional<bool> sensitive;
 };
 
-
 /**
  * Plugin migration result
  */
@@ -92,7 +85,6 @@ struct MigrationResult {
     std::optional<std::string> repoPath;
     std::optional<Error> error;
 };
-
 
 /**
  * Plugin generation result
@@ -104,7 +96,6 @@ struct GenerationResult {
     std::optional<Error> error;
 };
 
-
 /**
  * Directory information from detection
  */
@@ -112,7 +103,6 @@ struct DirectoryInfo {
     std::string type;
     bool hasPackageJson;
 };
-
 
 /**
  * Package.json dependencies

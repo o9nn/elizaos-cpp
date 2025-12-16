@@ -19,23 +19,9 @@ namespace elizaos {
  * Converted from sweagent/tools/parsing.py
  */
 
-;
-;
-;
-
 /**
  * Abstract base class for parsing functions
  */
-abstract class AbstractParseFunction {
-  errorMessage: string = '';
-  type?: string;
-
-  abstract parse(modelResponse: ModelResponse, commands: Command[], strict?: boolean): [string, string];
-
-  get formatErrorTemplate(): string {
-    return this.errorMessage;
-  }
-}
 
 /**
  * Action parser - expects single command
@@ -46,18 +32,6 @@ class ActionParser extends AbstractParseFunction {
 
 COMMANDS:
 {command_docs}`;
-
-  parse(modelResponse: ModelResponse, _commands: Command[], _strict: boolean = false): [string, string] {
-    const message = modelResponse.message || '';
-    const action = message.trim();
-
-    if (!action) {
-      throw new FormatError('No action found in response');
-    }
-
-    return ['', action];
-  }
-}
 
 /**
  * Action-only parser
@@ -70,7 +44,6 @@ class ActionOnlyParser extends AbstractParseFunction {
     const message = modelResponse.message || '';
     return ['', message];
   }
-}
 
 /**
  * Thought-action parser - expects discussion followed by backtick-wrapped command
@@ -110,7 +83,6 @@ command(s) that you're going to run
 
     return [thought, codeBlock];
   }
-}
 
 /**
  * XML thought-action parser
@@ -143,7 +115,6 @@ class XMLThoughtActionParser extends AbstractParseFunction {
 
     return [thought, command];
   }
-}
 
 /**
  * Function calling parser - expects LiteLLM tool calls
@@ -151,115 +122,25 @@ class XMLThoughtActionParser extends AbstractParseFunction {
 class FunctionCallingParser extends AbstractParseFunction {
   type = 'function_calling';
   errorMessage = `{%- if error_code == "missing" -%}
-Your last output did not use any tool calls!
-Please make sure your output includes exactly _ONE_ 
-Your last output included multiple tool calls!
-Please make sure your output includes a thought and exactly _ONE_ 
-Your action could not be parsed properly: {{exception_message}}.
-{% endif %}`;
 
-  parse(modelResponse: ModelResponse, commands: Command[], _strict: boolean = false): [string, string] {
-    const toolCalls = modelResponse.toolCalls || modelResponse.tool_calls;
-    const message = modelResponse.message || '';
-
-    if (!toolCalls || toolCalls.length === 0) {
-      throw new FunctionCallingFormatError('No tool calls found', 'missing');
-    }
-
-    if (toolCalls.length > 1) {
-      throw new FunctionCallingFormatError('Multiple tool calls found', 'multiple');
-    }
-
-    const toolCall = toolCalls[0];
-    const action = this.parseToolCall(toolCall, commands);
-
-    return [message, action];
-  }
-
-  private parseToolCall(
-    toolCall: { function?: { name?: string; arguments?: string | Record<string, unknown> } },
-    commands: Command[],
-  ): string {
-    const functionName = toolCall.function?.name;
-    const args = toolCall.function?.arguments;
-
-    if (!functionName) {
-      throw new FunctionCallingFormatError('No `, 'invalid_command');
-    }
+    // Find the command
 
     // Parse arguments
-    let parsedArgs: Record<string, unknown> = {};
-    if (typeof args === 'string') {
-      try {
-        parsedArgs = JSON.parse(args);
-      } catch {
-        throw new FunctionCallingFormatError('Invalid JSON in arguments', 'invalid_json');
-      }
-    } else if (args) {
-      parsedArgs = args;
-    }
 
     // Build command string
-    let actionStr = functionName;
 
-    for (const arg of command.arguments) {
-      if (arg.required && !(arg.name in parsedArgs)) {
-        throw new FunctionCallingFormatError(`Missing required argument: ${arg.name}`, 'missing_arg');
-      }
-
-      if (arg.name in parsedArgs) {
-        const value = parsedArgs[arg.name];
-        actionStr += ` ${this.formatArgValue(value)}`;
-      }
-    }
-
-    return actionStr;
-  }
-
-  private formatArgValue(value: unknown): string {
-    if (typeof value === 'string') {
       // Quote if contains spaces or special characters
-      if (/[\s"'`$]/.test(value)) {
-        return `"${value.replace(/"/g, '\\"')}"`;
-      }
-      return value;
-    }
     return String(value);
-  }
 
-  formatErrorMessage(error: FunctionCallingFormatError): string {
     // Simple template processing for error messages
-    let message = this.errorMessage;
 
     // Handle conditional blocks based on error code
-    const errorCode = error.errorCode || '';
 
-    if (errorCode === 'missing') {
       // Extract the "missing" block
-      const missingMatch = message.match(/{%- if error_code == "missing" -%}([\s\S]*?){%- elif/);
-      if (missingMatch) {
-        message = missingMatch[1].trim();
-      }
-    } else if (errorCode === 'multiple') {
       // Extract the "multiple" block
-      const multipleMatch = message.match(/{%- elif error_code == "multiple" -%}([\s\S]*?){%- else/);
-      if (multipleMatch) {
-        message = multipleMatch[1].trim();
-      }
-    } else {
       // Extract the else block
-      const elseMatch = message.match(/{%- else -%}([\s\S]*?){% endif %}/);
-      if (elseMatch) {
-        message = elseMatch[1].trim();
-      }
-    }
 
     // Replace template variables
-    message = message.replace(/{{exception_message}}/g, error.message);
-
-    return message;
-  }
-}
 
 /**
  * JSON parser
@@ -288,7 +169,6 @@ class JsonParser extends AbstractParseFunction {
       throw new FormatError('Invalid JSON in response');
     }
   }
-}
 
 /**
  * EditFormat parser - expects discussion followed by replacement text in backticks
@@ -320,35 +200,17 @@ class Identity extends AbstractParseFunction {
     const message = modelResponse.message || '';
     return [message, message];
   }
-}
 
 // Export Identity as IdentityParser for backward compatibility
-{ Identity as IdentityParser };
 
 /**
- * Parse ): AbstractParseFunction {
-  const type = typeof config === 'string' ? config : config.type;
+ * Parse function type
+ */
+using ParseFunction = std::variant<, ActionParser, ActionOnlyParser, ThoughtActionParser, XMLThoughtActionParser, FunctionCallingParser, JsonParser, EditFormat, Identity>;
 
-  switch (type) {
-    case 'action':
-      return new ActionParser();
-    case 'action_only':
-      return new ActionOnlyParser();
-    case 'thought_action':
-      return new ThoughtActionParser();
-    case 'xml_thought_action':
-      return new XMLThoughtActionParser();
-    case 'function_calling':
-      return new FunctionCallingParser();
-    case 'json':
-      return new JsonParser();
-    case 'edit_format':
-      return new EditFormat();
-    case 'identity':
-      return new Identity();
-    default:
-      throw new Error(`Unknown parser type: ${type}`);
-  }
-}
+/**
+ * Create parser from config
+ */
+AbstractParseFunction createParser(string | { type: string } config);
 
 } // namespace elizaos

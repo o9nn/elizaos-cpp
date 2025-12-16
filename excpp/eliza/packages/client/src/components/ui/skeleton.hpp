@@ -11,22 +11,9 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
 
-interface SkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
-  'data-testid'?: string;
-}
 
-: SkeletonProps) {
-  return (
-    <div
-      className={cn('animate-pulse rounded-md bg-primary/10', className)}
-      data-testid={props['data-testid'] || 'skeleton'}
-      {...props}
-    />
-  );
-}
+void Skeleton(auto { className, SkeletonProps ...props });
 
-{ Skeleton };
 
 } // namespace elizaos

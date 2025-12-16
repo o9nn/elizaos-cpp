@@ -16,7 +16,6 @@ namespace elizaos {
  */
 
 // Import types from core
-import type { KnowledgeItem } from '@elizaos/core';
 
 // Common interfaces
 struct BaseMessage {
@@ -26,24 +25,11 @@ struct BaseMessage {
     std::unordered_map<std::string, unknown> metadata;
 };
 
-
-interface TauriEvent<T = Record<string, unknown>> {
-  payload: T;
-}
-
 struct TauriWindow {
     std::optional<{> __TAURI_INTERNALS__;
     (command: string, args?: Record<string, unknown>) => Promise<unknown> invoke;
     (event: string, callback: (event: TauriEvent) => void) => Promise<() => void> listen;
 };
-
-
-interface ApiResponse<T = unknown> {
-  success: boolean;
-  data?: T;
-  error?: string;
-  message?: string;
-}
 
 // WebSocket message types
 struct WebSocketMessage {
@@ -60,7 +46,6 @@ struct WebSocketMessage {
     std::optional<std::unordered_map<std::string, unknown>> metadata;
 };
 
-
 // Configuration types
 struct ConfigurationValue {
     std::string key;
@@ -68,13 +53,11 @@ struct ConfigurationValue {
     'string' | 'number' | 'boolean' | 'url' | 'api_key' type;
 };
 
-
 struct ValidationResult {
     bool valid;
     std::optional<std::string> error;
     std::optional<string | number | boolean> sanitizedValue;
 };
-
 
 // Agent and Runtime types
 struct AgentConfiguration {
@@ -84,16 +67,10 @@ struct AgentConfiguration {
     std::unordered_map<std::string, bool> capabilities;
 };
 
-
 struct RuntimeSettings {
 };
 
-
 // Error types
-interface AppError extends Error {
-  code?: string;
-  details?: Record<string, unknown>;
-}
 
 // Log entry types
 struct LogEntry {
@@ -104,7 +81,6 @@ struct LogEntry {
     std::optional<std::unordered_map<std::string, unknown>> metadata;
 };
 
-
 // HTTP Request/Response types
 struct HttpRequestOptions {
     std::optional<'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'> method;
@@ -112,15 +88,6 @@ struct HttpRequestOptions {
     std::optional<string | FormData | Record<string, unknown>> body;
     std::optional<double> timeout;
 };
-
-
-interface HttpResponse<T = unknown> {
-  ok: boolean;
-  status: number;
-  statusText: string;
-  data?: T;
-  error?: string;
-}
 
 // Provider and Model types
 struct ModelProvider {
@@ -131,14 +98,12 @@ struct ModelProvider {
     std::optional<std::vector<std::string>> models;
 };
 
-
 struct ModelInfo {
     std::string name;
     std::string description;
     std::string provider;
     std::vector<std::string> capabilities;
 };
-
 
 // Memory and Knowledge types - Extended from @elizaos/core
 struct MemoryEntry {
@@ -154,15 +119,7 @@ struct MemoryEntry {
     std::unordered_map<std::string, unknown> metadata;
 };
 
-
 // Re-unified knowledge types from core
-type {
-  KnowledgeItem,
-  DocumentMetadata,
-  IKnowledgeService,
-  KnowledgeScope,
-  DirectoryItem,
-} from '@elizaos/core';
 
 // Goal and Todo types
 struct Goal {
@@ -173,7 +130,6 @@ struct Goal {
     string | Date createdAt;
     std::optional<std::unordered_map<std::string, unknown>> metadata;
 };
-
 
 struct Todo {
     std::string id;
@@ -188,7 +144,6 @@ struct Todo {
     std::optional<std::unordered_map<std::string, unknown>> metadata;
 };
 
-
 // Capability and Status types
 struct CapabilityStatus {
     bool enabled;
@@ -197,7 +152,6 @@ struct CapabilityStatus {
     std::optional<string | Date> lastUsed;
     std::unordered_map<std::string, unknown> metadata;
 };
-
 
 struct AgentStatus {
     std::string name;
@@ -209,7 +163,6 @@ struct AgentStatus {
     std::unordered_map<std::string, unknown> metadata;
 };
 
-
 // File and Upload types
 struct FileUpload {
     std::string name;
@@ -218,7 +171,6 @@ struct FileUpload {
     string | ArrayBuffer content;
     std::optional<double> lastModified;
 };
-
 
 // Use unified knowledge item type for knowledge files
 using KnowledgeFile = KnowledgeItem;
@@ -233,20 +185,17 @@ struct BackupInfo {
     BackupMetadata metadata;
 };
 
-
 struct BackupComponent {
     std::string name;
     std::string component_type;
     double size_bytes;
 };
 
-
 struct BackupMetadata {
     std::string agent_name;
     std::string eliza_version;
     std::optional<std::string> notes;
 };
-
 
 struct RestoreOptions {
     bool restore_database;
@@ -256,7 +205,6 @@ struct RestoreOptions {
     bool force;
 };
 
-
 // Container and System types
 struct ContainerInfo {
     std::string name;
@@ -264,7 +212,6 @@ struct ContainerInfo {
     std::optional<double> uptime;
     std::vector<LogEntry> logs;
 };
-
 
 struct SystemInfo {
     std::string platform;
@@ -276,17 +223,10 @@ struct SystemInfo {
     double used;
 };
 
-
 // Event callback types
-type EventCallback<T = Record<string, unknown>> = (data: T) => void;
 using UnsubscribeFunction = () => void;
 
 // API Response types for Tauri
-interface TauriApiResponse<T = unknown> {
-  success: boolean;
-  data?: T;
-  error?: string;
-}
 
 struct HealthCheckResponse {
     'healthy' | 'unhealthy' status;
@@ -294,18 +234,15 @@ struct HealthCheckResponse {
     std::unordered_map<std::string, bool> services;
 };
 
-
 struct ValidationResponse {
     bool valid;
     std::vector<std::string> errors;
 };
 
-
 struct TestConfigurationResponse {
     bool success;
     std::unordered_map<std::string, unknown> results;
 };
-
 
 struct AutonomyStatusResponse {
     bool enabled;
@@ -313,12 +250,10 @@ struct AutonomyStatusResponse {
     double interval;
 };
 
-
 struct CapabilityStatusResponse {
     bool enabled;
     bool service_available;
 };
-
 
 struct AgentInfoResponse {
     std::string id;
@@ -326,13 +261,11 @@ struct AgentInfoResponse {
     std::string version;
 };
 
-
 struct DatabaseStatsResponse {
     double connections;
     double queries;
     double uptime;
 };
-
 
 struct PluginRoutesResponse {
     Array<{ routes;
@@ -341,11 +274,9 @@ struct PluginRoutesResponse {
     std::optional<std::string> display_name;
 };
 
-
 struct TabContentResponse {
     std::string content;
 };
-
 
 struct OllamaModelStatus {
     bool models_ready;
@@ -353,7 +284,6 @@ struct OllamaModelStatus {
     string | null downloading;
     number | null progress;
 };
-
 
 // Additional response types for TauriService
 struct TauriMemoryResponse {
@@ -371,12 +301,10 @@ struct TauriMemoryResponse {
     std::optional<std::vector<MemoryEntry>> memories;
 };
 
-
 struct TauriStringResponse {
     bool success;
     std::optional<std::string> data;
 };
-
 
 struct TauriSettingsResponse {
     bool success;

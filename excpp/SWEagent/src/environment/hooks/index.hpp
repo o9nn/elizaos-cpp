@@ -15,7 +15,5 @@ namespace elizaos {
  * Environment hooks module exports
  */
 
-{ EnvHook, CombinedEnvHooks } from './abstract';
-{ SetStatusEnvironmentHook, StatusCallback } from './status';
 
 } // namespace elizaos

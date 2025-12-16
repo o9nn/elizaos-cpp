@@ -13,8 +13,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
+
 
 class TokenValidationService extends BaseTradeService {
   async validateTokenForTrading(tokenAddress: string): Promise<{
@@ -61,18 +60,6 @@ class TokenValidationService extends BaseTradeService {
     }
   }
 
-  private async fetchTokenMetadata(tokenAddress: string): Promise<{
-    verified: boolean;
-    suspiciousAttributes: string[];
-    ownershipConcentration: number;
-  }> {
     // FIXME: Implement token metadata fetching
-    return {
-      verified: true,
-      suspiciousAttributes: [],
-      ownershipConcentration: 0,
-    };
-  }
-}
 
 } // namespace elizaos

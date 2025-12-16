@@ -11,8 +11,6 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { ASTQueueItem } from '../../types';
-import type { FileDocsGroup, OrganizedDocs } from '../types';
 
 /**
  * Class representing a DocumentOrganizer.
@@ -70,31 +68,8 @@ class DocumentOrganizer {
    * @param {OrganizedDocs} docs - The organized documentation to group.
    * @returns {FileDocsGroup[]} An array of grouped documentation based on file paths.
    */
-  public groupDocsByFile(docs: OrganizedDocs): FileDocsGroup[] {
     // Get unique file paths
-    const filePaths = new Set<string>();
-    [
-      ...docs.classes,
-      ...docs.methods,
-      ...docs.interfaces,
-      ...docs.types,
-      ...docs.functions,
-      ...docs.variables,
-    ].forEach((item) => filePaths.add(item.filePath));
 
     // Create groups for each file path
-    return Array.from(filePaths).map((filePath) => {
-      return {
-        filePath,
-        classes: docs.classes.filter((c) => c.filePath === filePath),
-        methods: docs.methods.filter((m) => m.filePath === filePath),
-        interfaces: docs.interfaces.filter((i) => i.filePath === filePath),
-        types: docs.types.filter((t) => t.filePath === filePath),
-        functions: docs.functions.filter((f) => f.filePath === filePath),
-        variables: docs.variables.filter((v) => v.filePath === filePath),
-      };
-    });
-  }
-}
 
 } // namespace elizaos

@@ -15,21 +15,9 @@ namespace elizaos {
 /**
  * Seed data for agent integration tests
  */
-;
 
 /**
  * Test agent data used across agent integration tests
  */
-const testAgent: Agent = {
-  name: 'Integration Test Agent',
-  username: 'test_agent',
-  bio: 'A test agent for integration tests',
-  enabled: true,
-  settings: {
-    testSetting: 'test value',
-  },
-  createdAt: new Date().getTime(),
-  updatedAt: new Date().getTime(),
-};
 
 } // namespace elizaos

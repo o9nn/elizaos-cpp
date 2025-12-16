@@ -19,21 +19,10 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { ElizaOS } from '@elizaos/core';
-;
-import type { AgentServer } from '../../index';
-;
-;
-;
-;
-;
-;
-;
-;
+
 
 /**
  * Creates the agents router for agent lifecycle and management operations
  */
-
 
 } // namespace elizaos

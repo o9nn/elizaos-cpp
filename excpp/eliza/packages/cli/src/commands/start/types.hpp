@@ -13,8 +13,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
+
 
 /**
  * Start command options and interfaces
@@ -28,7 +27,6 @@ struct StartOptions {
     std::optional<std::string> configDir;
 };
 
-
 /**
  * Agent start configuration
  */
@@ -40,14 +38,12 @@ struct AgentStartConfig {
     std::optional<AgentStartOptions> options;
 };
 
-
 /**
  * Agent start options
  */
 struct AgentStartOptions {
     std::optional<bool> isTestMode;
 };
-
 
 /**
  * Plugin validation interface
@@ -58,7 +54,6 @@ struct PluginValidation {
     std::optional<std::string> error;
 };
 
-
 /**
  * Plugin context information
  */
@@ -68,7 +63,6 @@ struct PluginContext {
     std::optional<std::string> path;
 };
 
-
 /**
  * Server startup configuration
  */
@@ -77,7 +71,6 @@ struct ServerConfig {
     std::optional<std::string> configDir;
     std::optional<bool> skipBuild;
 };
-
 
 /**
  * Runtime configuration

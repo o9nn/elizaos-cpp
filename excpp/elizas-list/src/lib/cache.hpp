@@ -11,11 +11,9 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
+
 
 // Initialize Redis client
-const redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379');
 
 class CacheManager {
   static async get(key: string) {
@@ -28,12 +26,4 @@ class CacheManager {
     }
   }
 
-  static async set(key: string, data: any, ttl: number = 300) {
-    try {
-      await redis.setex(key, ttl, JSON.stringify(data));
-    } catch (error) {
-      console.error('Cache set error:', error);
-    }
-  }
-} 
 } // namespace elizaos

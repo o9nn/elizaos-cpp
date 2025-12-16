@@ -14,16 +14,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
-;
 
-const testSuites = [
-  TodoPluginE2ETestSuite,
-  TodoPluginComprehensiveE2ETestSuite,
-  ReminderDeliveryE2ETestSuite,
-];
 
-default testSuites;
 
 } // namespace elizaos

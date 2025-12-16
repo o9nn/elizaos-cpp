@@ -12,12 +12,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
-;
-;
-;
-;
+
 
 /**
  * Get the path to the project's .env file.
@@ -36,59 +31,20 @@ std::future<string | null> getLocalEnvPath();
  * @param filePath Path to the .env file
  * @returns Object containing the key-value pairs
  */
-std::future<EnvVars> parseEnvFile(const std::string& filePath);;
-    }
-
-    const content = await fs.readFile(filePath, 'utf-8');
-    // Handle empty file case gracefully
-    if (content.trim() === '') {
-      return {};
-    }
-    return dotenv.parse(content);
-  } catch (error) {
-    console.error(
-      `Error parsing .env file: ${error instanceof Error ? error.message : String(error)}`
-    );
-    return {};
-  }
-}
+std::future<EnvVars> parseEnvFile(const std::string& filePath);
 
 /**
  * Write key-value pairs to an .env file
  * @param filePath Path to the .env file
  * @param envVars Object containing the key-value pairs
  */
-std::future<void> writeEnvFile(const std::string& filePath, EnvVars envVars););
-    }
-
-    const content = Object.entries(envVars)
-      .map(([key, value]) => `${key}=${value}`)
-      .join('\n');
-
-    await fs.writeFile(filePath, content);
-  } catch (error) {
-    console.error(
-      `Error writing .env file: ${error instanceof Error ? error.message : String(error)}`
-    );
-  }
-}
+std::future<void> writeEnvFile(const std::string& filePath, EnvVars envVars);
 
 /**
- * Helper 
-
-    const resetVars = Object.keys(envVars).reduce((acc, key) => {
-      acc[key] = '';
-      return acc;
-    }, {} as EnvVars);
-
-    await writeEnvFile(filePath, resetVars);
-    return true;
-  } catch (error) {
-    console.error(
-      `Error resetting environment file: ${error instanceof Error ? error.message : String(error)}`
-    );
-    return false;
-  }
-}
+ * Helper function to reset an environment file by keeping keys but clearing values
+ * @param filePath Path to the environment file
+ * @returns A boolean indicating success/failure
+ */
+std::future<bool> resetEnvFile(const std::string& filePath);
 
 } // namespace elizaos

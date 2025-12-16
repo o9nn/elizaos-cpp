@@ -17,7 +17,6 @@ struct Citation {
     std::string title;
 };
 
-
 struct ChatStreamData {
     std::optional<std::vector<Citation>> citations;
 };

@@ -11,20 +11,13 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { UUID, Memory } from "@elizaos/core";
 
 // Extend the core service types with experience service
-declare module "@elizaos/core" {
   struct ServiceTypeRegistry {
     "EXPERIENCE" EXPERIENCE;
 };
 
-}
-
 // Export service type constant
-const ExperienceServiceType = {
-  EXPERIENCE: "EXPERIENCE" as const,
-} satisfies Partial<import("@elizaos/core").ServiceTypeRegistry>;
 
 enum ExperienceType {
   SUCCESS = "success", // Agent accomplished something
@@ -69,7 +62,6 @@ struct Experience {
     std::optional<UUID[]; // Related memory IDs> memoryIds;
 };
 
-
 struct ExperienceQuery {
     std::optional<std::vector<ExperienceType | ExperienceType>> type;
     std::optional<std::vector<OutcomeType | OutcomeType>> outcome;
@@ -84,7 +76,6 @@ struct ExperienceQuery {
     std::optional<bool> includeRelated;
 };
 
-
 struct ExperienceAnalysis {
     std::optional<string; // Detected pattern> pattern;
     std::optional<number; // How often this occurs> frequency;
@@ -93,7 +84,6 @@ struct ExperienceAnalysis {
     std::optional<string[]; // Recommendations based on experience> recommendations;
 };
 
-
 struct ExperienceEvent {
     UUID experienceId;
     "created" | "accessed" | "updated" | "superseded" eventType;
@@ -101,10 +91,5 @@ struct ExperienceEvent {
     std::optional<std::unordered_map<std::string, std::any>> metadata;
 };
 
-
-interface ExperienceMemory extends Memory {
-  experienceId: string;
-  experienceType: ExperienceType;
-}
 
 } // namespace elizaos

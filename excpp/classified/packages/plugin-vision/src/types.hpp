@@ -12,17 +12,11 @@ namespace elizaos {
 // Manual refinement required for production use
 
 // Extend the core service types with vision service
-declare module '@elizaos/core' {
   struct ServiceTypeRegistry {
     'VISION' VISION;
 };
 
-}
-
 // Export service type constant
-const VisionServiceType = {
-  VISION: 'VISION' as const,
-} satisfies Partial<import('@elizaos/core').ServiceTypeRegistry>;
 
 // Vision-specific types
 struct CameraInfo {
@@ -30,7 +24,6 @@ struct CameraInfo {
     std::string name;
     bool connected;
 };
-
 
 struct SceneDescription {
     double timestamp;
@@ -42,14 +35,12 @@ struct SceneDescription {
     std::optional<string; // Latest audio transcription> audioTranscription;
 };
 
-
 struct DetectedObject {
     std::string id;
     std::string type;
     double confidence;
     BoundingBox boundingBox;
 };
-
 
 struct PersonInfo {
     std::string id;
@@ -63,14 +54,12 @@ struct PersonInfo {
     double score;
 };
 
-
 struct BoundingBox {
     double x;
     double y;
     double width;
     double height;
 };
-
 
 struct VisionFrame {
     double timestamp;
@@ -79,7 +68,6 @@ struct VisionFrame {
     Buffer data;
     'rgb' | 'rgba' | 'jpeg' | 'png' format;
 };
-
 
 // Vision modes
 enum VisionMode {
@@ -98,7 +86,6 @@ struct ScreenCapture {
     std::vector<ScreenTile> tiles;
 };
 
-
 struct ScreenTile {
     std::string id;
     double row;
@@ -111,7 +98,6 @@ struct ScreenTile {
     std::optional<TileAnalysis> analysis;
 };
 
-
 struct TileAnalysis {
     double timestamp;
     std::optional<Florence2Result> florence2;
@@ -120,7 +106,6 @@ struct TileAnalysis {
     std::optional<std::string> text;
     std::optional<std::string> summary;
 };
-
 
 struct Florence2Result {
     std::optional<std::string> caption;
@@ -134,7 +119,6 @@ struct Florence2Result {
     std::optional<std::vector<std::string>> tags;
 };
 
-
 struct OCRResult {
     std::string text;
     Array<{ blocks;
@@ -147,7 +131,6 @@ struct OCRResult {
     double confidence;
     std::string fullText;
 };
-
 
 // Enhanced scene description with screen data
 interface EnhancedSceneDescription extends SceneDescription {
@@ -197,7 +180,6 @@ struct VisionConfig {
     double height;
 };
 
-
 // Entity tracking types
 struct TrackedEntity {
     std::string id;
@@ -211,7 +193,6 @@ struct TrackedEntity {
     std::optional<std::string> roomId;
 };
 
-
 struct EntityAppearance {
     double timestamp;
     BoundingBox boundingBox;
@@ -222,7 +203,6 @@ struct EntityAppearance {
     { x: number; y: number } position;
     double score;
 };
-
 
 struct EntityAttributes {
     std::optional<std::string> name;
@@ -238,12 +218,10 @@ struct EntityAttributes {
     std::optional<std::vector<std::string>> tags;
 };
 
-
 struct FaceLibrary {
     std::unordered_map<std::string, FaceProfile> faces;
     std::unordered_map<std::string, std::vector<std::vector<double>>> embeddings;
 };
-
 
 struct FaceProfile {
     std::string id;
@@ -257,7 +235,6 @@ struct FaceProfile {
     std::optional<std::string> gender;
     std::optional<std::string> emotion;
 };
-
 
 struct WorldState {
     std::string worldId;

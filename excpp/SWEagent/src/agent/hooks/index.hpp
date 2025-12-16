@@ -15,7 +15,5 @@ namespace elizaos {
  * Hooks module exports
  */
 
-{ AbstractAgentHook, CombinedAgentHook, DefaultAgent } from './abstract';
-{ SetStatusAgentHook } from './status';
 
 } // namespace elizaos

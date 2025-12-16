@@ -11,14 +11,8 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-"use client";
 
-;
-;
 
-);
-  }, []);
-  return null;
-}
+void XShareResume();
 
 } // namespace elizaos

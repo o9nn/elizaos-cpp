@@ -14,9 +14,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
-;
+
 
 /**
  * Jobs API Service - One-off messaging with automatic polling support
@@ -78,9 +76,6 @@ class JobsService extends BaseApiClient {
      * }
      * ```
      */
-    async getJob(jobId: string): Promise<JobDetailsResponse> {
-        return this.get<JobDetailsResponse>(`/api/messaging/jobs/${jobId}`);
-    }
 
     /**
      * List jobs with optional filtering
@@ -100,9 +95,6 @@ class JobsService extends BaseApiClient {
      * const allJobs = await client.jobs.list();
      * ```
      */
-    async list(params?: ListJobsParams): Promise<JobListResponse> {
-        return this.get<JobListResponse>('/api/messaging/jobs', { params });
-    }
 
     /**
      * Get jobs API health status and metrics
@@ -116,9 +108,6 @@ class JobsService extends BaseApiClient {
      * console.log('Active jobs:', health.statusCounts.processing);
      * ```
      */
-    async health(): Promise<JobHealthResponse> {
-        return this.get<JobHealthResponse>('/api/messaging/jobs/health');
-    }
 
     /**
      * Poll a job until completion, failure, or timeout
@@ -147,78 +136,20 @@ class JobsService extends BaseApiClient {
      * }
      * ```
      */
-    async poll(jobId: string, options: PollOptions = {}): Promise<PollResult> {
-        const {
-            interval = 1000,
-            maxAttempts = 30,
-            timeout,
-            onProgress,
-        } = options;
-
-        const startTime = Date.now();
-        let attempts = 0;
 
         // Calculate effective max attempts from timeout if provided
-        const effectiveMaxAttempts = timeout
-            ? Math.ceil(timeout / interval)
-            : maxAttempts;
 
-        while (attempts < effectiveMaxAttempts) {
             // Check timeout if provided
-            if (timeout && Date.now() - startTime > timeout) {
-                const job = await this.getJob(jobId);
-                return {
-                    success: false,
-                    job,
-                    attempts,
-                    timeMs: Date.now() - startTime,
-                };
-            }
 
             // Wait before polling (except first attempt)
-            if (attempts > 0) {
-                await new Promise((resolve) => setTimeout(resolve, interval));
-            }
-
-            attempts++;
 
             // Get current job status
-            const job = await this.getJob(jobId);
 
             // Call progress callback if provided
-            if (onProgress) {
-                onProgress(job, attempts);
-            }
 
             // Check if job reached terminal state
-            if (job.status === JobStatus.COMPLETED) {
-                return {
-                    success: true,
-                    job,
-                    attempts,
-                    timeMs: Date.now() - startTime,
-                };
-            }
-
-            if (job.status === JobStatus.FAILED || job.status === JobStatus.TIMEOUT) {
-                return {
-                    success: false,
-                    job,
-                    attempts,
-                    timeMs: Date.now() - startTime,
-                };
-            }
-        }
 
         // Max attempts reached
-        const job = await this.getJob(jobId);
-        return {
-            success: false,
-            job,
-            attempts,
-            timeMs: Date.now() - startTime,
-        };
-    }
 
     /**
      * Create a job and automatically poll until completion
@@ -259,13 +190,6 @@ class JobsService extends BaseApiClient {
      * );
      * ```
      */
-    async createAndPoll(
-        params: CreateJobRequest,
-        pollOptions?: PollOptions
-    ): Promise<PollResult> {
-        const createResponse = await this.create(params);
-        return this.poll(createResponse.jobId, pollOptions);
-    }
 
     /**
      * Create a job and wait for completion with exponential backoff
@@ -290,91 +214,19 @@ class JobsService extends BaseApiClient {
      * });
      * ```
      */
-    async createAndPollWithBackoff(
-        params: CreateJobRequest,
-        options: {
-            initialInterval?: number;
-            maxInterval?: number;
-            multiplier?: number;
-            maxAttempts?: number;
-            timeout?: number;
-            onProgress?: (status: JobDetailsResponse, attempt: number) => void;
-        } = {}
-    ): Promise<PollResult> {
-        const {
-            initialInterval = 500,
-            maxInterval = 5000,
-            multiplier = 1.5,
-            maxAttempts = 40,
-            timeout,
-            onProgress,
-        } = options;
 
-        const createResponse = await this.create(params);
-        const jobId = createResponse.jobId;
-
-        const startTime = Date.now();
-        let attempts = 0;
-        let currentInterval = initialInterval;
-
-        while (attempts < maxAttempts) {
             // Check timeout if provided
-            if (timeout && Date.now() - startTime > timeout) {
-                const job = await this.getJob(jobId);
-                return {
-                    success: false,
-                    job,
-                    attempts,
-                    timeMs: Date.now() - startTime,
-                };
-            }
 
             // Wait before polling (except first attempt)
-            if (attempts > 0) {
-                await new Promise((resolve) => setTimeout(resolve, currentInterval));
                 // Increase interval with exponential backoff
-                currentInterval = Math.min(currentInterval * multiplier, maxInterval);
-            }
-
-            attempts++;
 
             // Get current job status
-            const job = await this.getJob(jobId);
 
             // Call progress callback if provided
-            if (onProgress) {
-                onProgress(job, attempts);
-            }
 
             // Check if job reached terminal state
-            if (job.status === JobStatus.COMPLETED) {
-                return {
-                    success: true,
-                    job,
-                    attempts,
-                    timeMs: Date.now() - startTime,
-                };
-            }
-
-            if (job.status === JobStatus.FAILED || job.status === JobStatus.TIMEOUT) {
-                return {
-                    success: false,
-                    job,
-                    attempts,
-                    timeMs: Date.now() - startTime,
-                };
-            }
-        }
 
         // Max attempts reached
-        const job = await this.getJob(jobId);
-        return {
-            success: false,
-            job,
-            attempts,
-            timeMs: Date.now() - startTime,
-        };
-    }
 
     /**
      * Convenience method to ask a question and get the response
@@ -402,30 +254,6 @@ class JobsService extends BaseApiClient {
      * }
      * ```
      */
-    async ask(
-        userId: UUID,
-        content: string,
-        agentId?: UUID,
-        pollOptions?: PollOptions
-    ): Promise<string> {
-        const result = await this.createAndPoll(
-            {
-                userId,
-                content,
-                ...(agentId && { agentId }),
-            },
-            pollOptions
-        );
-
-        if (!result.success || !result.job.result) {
-            throw new Error(
-                result.job.error || 'Job failed or timed out without a response'
-            );
-        }
-
-        return result.job.result.message.content;
-    }
-}
 
 
 } // namespace elizaos

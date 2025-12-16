@@ -22,32 +22,12 @@ namespace elizaos {
  *
  * This file exports all the necessary functions and types for the Knowledge plugin.
  */
-import type { Plugin, IAgentRuntime } from '@elizaos/core';
-;
-;
-;
-;
-;
-;
 
 /**
  * Knowledge Plugin - Provides Retrieval Augmented Generation capabilities
  */
-const knowledgePlugin: Plugin = {
-  name: 'knowledge',
-  description:
-    'Plugin for Retrieval Augmented Generation, including knowledge management and embedding.',
-  services: [KnowledgeService],
-  providers: [knowledgeProvider],
-  routes: knowledgeRoutes,
-  actions: knowledgeActions,
-  tests: [knowledgeTestSuite],
-};
-
-default knowledgePlugin;
 
 // Export service for external use
-{ KnowledgeService } from './service';
 
 * from './types';
 

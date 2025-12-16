@@ -11,7 +11,6 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { Metadata } from './primitives';
 
 // Represents an agent in the TeeAgent table, containing details about the agent.
 /**
@@ -28,7 +27,6 @@ struct TeeAgent {
     std::string publicKey;
     std::string attestation;
 };
-
 
 /**
  * Defines the operational modes for a Trusted Execution Environment (TEE).
@@ -56,7 +54,6 @@ struct RemoteAttestationQuote {
     double timestamp;
 };
 
-
 /**
  * Data structure used in the attestation process for deriving a key within a Trusted Execution Environment (TEE).
  * This information helps establish a secure channel or verify the identity of the agent instance
@@ -67,7 +64,6 @@ struct DeriveKeyAttestationData {
     std::string publicKey;
     std::optional<std::string> subject;
 };
-
 
 /**
  * Represents a message that has been attested by a Trusted Execution Environment (TEE).
@@ -82,7 +78,6 @@ struct RemoteAttestationMessage {
     std::string roomId;
     std::string content;
 };
-
 
 /**
  * Enumerates different types or vendors of Trusted Execution Environments (TEEs).

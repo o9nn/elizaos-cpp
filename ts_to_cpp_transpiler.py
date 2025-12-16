@@ -142,8 +142,11 @@ class TypeScriptToCppTranspiler:
                     clean_path += '.hpp'
                 includes.add(f'#include "{clean_path}"')
         
-        # Remove import statements from content
-        content_no_imports = re.sub(import_pattern, '', ts_content)
+        # Remove import statements from content (including any trailing semicolons)
+        content_no_imports = re.sub(import_pattern + r';?', '', ts_content)
+        
+        # Clean up any remaining stray semicolons after import removal
+        content_no_imports = re.sub(r'^\s*;\s*$', '', content_no_imports, flags=re.MULTILINE)
         
         return sorted(list(includes)), content_no_imports
     
@@ -326,19 +329,58 @@ class TypeScriptToCppTranspiler:
                 return f'using {name} = {self.convert_type(type_def)};'
         content = re.sub(type_pattern, convert_type_alias, content)
         
-        # Convert async functions to function declarations
-        async_func_pattern = r'async\s+function\s+(\w+)\s*\(([^)]*)\)\s*:\s*Promise<([^>]+)>\s*\{[^}]*\}'
-        def convert_async_func(m):
-            func_name = m.group(1)
-            params = m.group(2)
-            return_type = m.group(3)
-            cpp_params = self.convert_params(params)
-            cpp_return = self.convert_type(return_type)
-            return f'std::future<{cpp_return}> {func_name}({cpp_params});'
-        content = re.sub(async_func_pattern, convert_async_func, content)
+        # Extract and convert function declarations properly
+        # First, handle async functions with proper brace matching
+        content = self._extract_function_declarations(content)
         
-        # Remove remaining function implementations (keep only declarations)
-        content = re.sub(r'function\s+\w+[^{]*\{[^}]*\}', '', content)
+        # Keep only declaration lines (structs, using, function signatures, comments)
+        lines = content.split('\n')
+        filtered_lines = []
+        in_struct = False
+        struct_brace_count = 0
+        
+        for line in lines:
+            stripped = line.strip()
+            
+            # Keep comments
+            if stripped.startswith('//') or stripped.startswith('/*') or stripped.startswith('*'):
+                filtered_lines.append(line)
+                continue
+            
+            # Track struct/class blocks
+            if re.match(r'^\s*(?:struct|class|enum)\s+\w+', line):
+                in_struct = True
+                struct_brace_count = 0
+                filtered_lines.append(line)
+                continue
+            
+            if in_struct:
+                # Count braces
+                struct_brace_count += line.count('{') - line.count('}')
+                filtered_lines.append(line)
+                if struct_brace_count <= 0 and '}' in line:
+                    in_struct = False
+                continue
+            
+            # Keep using statements (type aliases)
+            if re.match(r'^\s*using\s+\w+\s*=', line):
+                filtered_lines.append(line)
+                continue
+            
+            # Keep function declarations (end with ;)
+            if re.match(r'^\s*(?:std::)?\w+(?:<[^>]+>)?\s+\w+\s*\([^)]*\)\s*;', line):
+                filtered_lines.append(line)
+                continue
+            
+            # Keep blank lines for readability
+            if not stripped:
+                filtered_lines.append(line)
+                continue
+        
+        content = '\n'.join(filtered_lines)
+        
+        # Clean up extra blank lines
+        content = re.sub(r'\n\s*\n\s*\n+', '\n\n', content)
         
         # Build header
         header = '\n'.join(includes) + '\n\n'
@@ -349,6 +391,70 @@ class TypeScriptToCppTranspiler:
         header += f'\n}} // namespace {namespace}\n'
         
         return header
+    
+    def _extract_function_declarations(self, content: str) -> str:
+        """Extract function declarations while removing implementations.
+        Uses proper brace matching to avoid code leakage."""
+        result = []
+        pos = 0
+        
+        # Pattern for function declaration start
+        func_pattern = r'(export\s+)?(async\s+)?function\s+(\w+)\s*\(([^)]*)\)\s*(?::\s*([^{]+))?\s*\{'
+        
+        while pos < len(content):
+            match = re.search(func_pattern, content[pos:])
+            if not match:
+                # No more functions, append remaining content
+                result.append(content[pos:])
+                break
+            
+            # Append content before function
+            result.append(content[pos:pos + match.start()])
+            
+            # Extract function info
+            is_async = match.group(2) is not None
+            func_name = match.group(3)
+            params = match.group(4)
+            return_type = match.group(5).strip() if match.group(5) else None
+            
+            # Convert to C++ declaration
+            cpp_params = self.convert_params(params)
+            
+            # Handle return type
+            if return_type:
+                # Remove Promise< > wrapper if async
+                if is_async and return_type.startswith('Promise<'):
+                    inner_type = return_type[8:-1]  # Remove 'Promise<' and '>'
+                    cpp_return = self.convert_type(inner_type)
+                    cpp_return = f'std::future<{cpp_return}>'
+                else:
+                    cpp_return = self.convert_type(return_type)
+                    if is_async:
+                        cpp_return = f'std::future<{cpp_return}>'
+            else:
+                cpp_return = 'void'
+                if is_async:
+                    cpp_return = 'std::future<void>'
+            
+            # Generate declaration
+            result.append(f'{cpp_return} {func_name}({cpp_params});')
+            
+            # Find matching closing brace to skip function body
+            brace_start = pos + match.end() - 1  # Position of opening {
+            brace_count = 1
+            i = brace_start + 1
+            
+            while i < len(content) and brace_count > 0:
+                if content[i] == '{':
+                    brace_count += 1
+                elif content[i] == '}':
+                    brace_count -= 1
+                i += 1
+            
+            # Move past the function body
+            pos = i
+        
+        return ''.join(result)
     
     def convert_interface_body(self, name: str, body: str) -> str:
         """Convert interface body to C++ struct"""

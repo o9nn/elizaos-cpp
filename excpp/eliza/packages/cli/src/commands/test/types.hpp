@@ -24,7 +24,6 @@ struct ComponentTestOptions {
     std::optional<bool> skipTypeCheck;
 };
 
-
 /**
  * Options for e2e test execution
  */
@@ -34,16 +33,9 @@ struct E2ETestOptions {
     std::optional<bool> skipBuild;
 };
 
-
 /**
  * Combined test command options
  */
-interface TestCommandOptions extends ComponentTestOptions, E2ETestOptions {
-  type?: 'component' | 'e2e' | 'all';
-  port?: number;
-  name?: string;
-  skipBuild?: boolean;
-}
 
 /**
  * Test execution result
@@ -51,7 +43,6 @@ interface TestCommandOptions extends ComponentTestOptions, E2ETestOptions {
 struct TestResult {
     bool failed;
 };
-
 
 /**
  * Test context configuration
@@ -62,7 +53,6 @@ struct TestContext {
     TestCommandOptions options;
 };
 
-
 /**
  * Server configuration for e2e tests
  */
@@ -70,7 +60,6 @@ struct ServerConfig {
     double port;
     std::optional<import('@elizaos/core').IAgentRuntime> runtime;
 };
-
 
 /**
  * Plugin dependency information

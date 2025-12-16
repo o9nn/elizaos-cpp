@@ -12,7 +12,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
+
 
 /**
  * E2E (End-to-End) Test Suite for ElizaOS Plugins
@@ -39,7 +39,17 @@ namespace elizaos {
  * 1. Add a new test object to the `tests` array below
  * 2. Each test must have:
  *    - `name`: A unique identifier for the test
- *    - `fn`: An async 
+ *    - `fn`: An async function that receives the runtime and performs the test
+ *
+ * Example structure:
+ * ```typescript
+ * {
+ *   name: 'my_new_test',
+ *   fn: async (runtime) => {
+ *     // Your test logic here
+ *     if (someCondition !== expected) {
+ *       throw new Error('Test failed: reason');
+ *     }
  *   }
  * }
  * ```
@@ -73,7 +83,6 @@ struct TestSuite {
     (runtime: any) => Promise<any> fn;
 };
 
-
 // Define minimal interfaces for the types we need
 using UUID = `${string}-${string}-${string}-${string}-${string}`;
 
@@ -86,69 +95,27 @@ struct Memory {
     std::optional<std::vector<std::string>> actions;
 };
 
-
 struct State {
     std::unordered_map<std::string, std::any> values;
     std::unordered_map<std::string, std::any> data;
     std::string text;
 };
 
-
-const StarterPluginTestSuite: TestSuite = {
-  name: 'plugin_starter_test_suite',
-  description: 'E2E tests for the starter plugin',
-
-  tests: [
     /**
      * Basic Plugin Verification Test
      * ------------------------------
      * This test verifies that the plugin is properly loaded and initialized
      * within the runtime environment.
      */
-    {
-      name: 'example_test',
-      fn: async (runtime) => {
         // Test the character name
-        if (runtime.character.name !== 'Eliza') {
-          throw new Error(
-            `Expected character name to be "Eliza" but got "${runtime.character.name}"`
-          );
-        }
 
         // Debug: Check if getService exists
-        if (!runtime.getService) {
-          throw new Error('Runtime does not have getService method');
-        }
 
         // Verify the plugin is loaded properly
         // First try the expected service name patterns
-        let service =
-          runtime.getService('starter') ||
-          runtime.getService('_StarterService') ||
-          runtime.getService('StarterService');
 
         // If not found, try to get all services and find it
-        if (!service && runtime.getAllServices) {
-          const allServices = runtime.getAllServices();
           // Look for our service in the returned services
-          for (const [key, svc] of Object.entries(allServices || {})) {
-            if (key.toLowerCase().includes('starter')) {
-              service = svc;
-              break;
-            }
-          }
-        }
-
-        if (!service) {
-          const serviceList = runtime.getAllServices
-            ? Object.keys(runtime.getAllServices() || {})
-            : [];
-          throw new Error(
-            `Starter service not found. Available services: ${serviceList.join(', ') || 'none'}`
-          );
-        }
-      },
-    },
 
     /**
      * Action Registration Test
@@ -156,16 +123,7 @@ const StarterPluginTestSuite: TestSuite = {
      * Verifies that custom actions are properly registered with the runtime.
      * This is important to ensure actions are available for the agent to use.
      */
-    {
-      name: 'should_have_hello_world_action',
-      fn: async (runtime) => {
         // Access actions through runtime.actions instead of getPlugin
-        const actionExists = runtime.actions?.some((a: any) => a.name === 'HELLO_WORLD');
-        if (!actionExists) {
-          throw new Error('Hello world action not found in runtime actions');
-        }
-      },
-    },
 
     /**
      * Hello World Action Response Test
@@ -178,67 +136,26 @@ const StarterPluginTestSuite: TestSuite = {
      * This is a key pattern for testing agent behaviors - you simulate
      * a user message and verify the agent's response.
      */
-    {
-      name: 'hello_world_action_test',
-      fn: async (runtime) => {
         // Create a test message asking the agent to say hello
-        const testMessage: Memory = {
-          entityId: '12345678-1234-1234-1234-123456789012' as UUID,
-          roomId: '12345678-1234-1234-1234-123456789012' as UUID,
-          content: {
-            text: 'Can you say hello?',
-            source: 'test',
-            actions: ['HELLO_WORLD'], // Specify which action we expect to trigger
-          },
-        };
 
         // Create a test state (can include context if needed)
-        const testState: State = {
-          values: {},
-          data: {},
-          text: '',
-        };
-
-        let responseText = '';
-        let responseReceived = false;
 
         // Find the hello world action in runtime.actions
-        const helloWorldAction = runtime.actions?.find((a: any) => a.name === 'HELLO_WORLD');
-        if (!helloWorldAction) {
-          throw new Error('Hello world action not found in runtime actions');
-        }
 
         // Create a callback that captures the agent's response
         // This simulates how the runtime would handle the action's response
-        const callback: HandlerCallback = async (response: Content) => {
-          responseReceived = true;
-          responseText = response.text || '';
 
           // Verify the response includes the expected action
-          if (!response.actions?.includes('HELLO_WORLD')) {
-            throw new Error('Response did not include HELLO_WORLD action');
-          }
 
           // Return Promise<Memory[]> as required by the HandlerCallback interface
-          return Promise.resolve([]);
-        };
 
         // Execute the action - this simulates the runtime calling the action
-        await helloWorldAction.handler(runtime, testMessage, testState, {}, callback);
 
         // Verify we received a response
-        if (!responseReceived) {
-          throw new Error('Hello world action did not produce a response');
-        }
 
         // Verify the response contains "hello world" (case-insensitive)
-        if (!responseText.toLowerCase().includes('hello world')) {
-          throw new Error(`Expected response to contain "hello world" but got: "${responseText}"`);
-        }
 
         // Success! The agent responded with "hello world" as expected
-      },
-    },
 
     /**
      * Provider Functionality Test
@@ -246,42 +163,13 @@ const StarterPluginTestSuite: TestSuite = {
      * Tests that providers can supply data to the agent when needed.
      * Providers are used to fetch external data or compute values.
      */
-    {
-      name: 'hello_world_provider_test',
-      fn: async (runtime) => {
         // Create a test message
-        const testMessage: Memory = {
-          entityId: '12345678-1234-1234-1234-123456789012' as UUID,
-          roomId: '12345678-1234-1234-1234-123456789012' as UUID,
-          content: {
-            text: 'What can you provide?',
-            source: 'test',
-          },
-        };
 
         // Create a test state
-        const testState: State = {
-          values: {},
-          data: {},
-          text: '',
-        };
 
         // Find the hello world provider in runtime.providers
-        const helloWorldProvider = runtime.providers?.find(
-          (p: any) => p.name === 'HELLO_WORLD_PROVIDER'
-        );
-        if (!helloWorldProvider) {
-          throw new Error('Hello world provider not found in runtime providers');
-        }
 
         // Test the provider
-        const result = await helloWorldProvider.get(runtime, testMessage, testState);
-
-        if (result.text !== 'I am a provider') {
-          throw new Error(`Expected provider to return "I am a provider", got "${result.text}"`);
-        }
-      },
-    },
 
     /**
      * Service Lifecycle Test
@@ -289,53 +177,16 @@ const StarterPluginTestSuite: TestSuite = {
      * Verifies that services can be started, accessed, and stopped properly.
      * Services run background tasks or manage long-lived resources.
      */
-    {
-      name: 'starter_service_test',
-      fn: async (runtime) => {
         // Check if getService exists
-        if (!runtime.getService) {
-          throw new Error('Runtime does not have getService method');
-        }
 
         // Get the service from the runtime
-        let service =
-          runtime.getService('starter') ||
-          runtime.getService('_StarterService') ||
-          runtime.getService('StarterService');
 
         // If not found, try to get all services and find it
-        if (!service && runtime.getAllServices) {
-          const allServices = runtime.getAllServices();
           // Look for our service in the returned services
-          for (const [key, svc] of Object.entries(allServices || {})) {
-            if (key.toLowerCase().includes('starter')) {
-              service = svc;
-              break;
-            }
-          }
-        }
-
-        if (!service) {
-          const serviceList = runtime.getAllServices
-            ? Object.keys(runtime.getAllServices() || {})
-            : [];
-          throw new Error(
-            `Starter service not found. Available services: ${serviceList.join(', ') || 'none'}`
-          );
-        }
 
         // Check service capability description
-        if (
-          service.capabilityDescription !==
-          'This is a starter service which is attached to the agent through the starter plugin.'
-        ) {
-          throw new Error('Incorrect service capability description');
-        }
 
         // Test service stop method
-        await service.stop();
-      },
-    },
 
     /**
      * ADD YOUR CUSTOM TESTS HERE
@@ -372,10 +223,7 @@ const StarterPluginTestSuite: TestSuite = {
      *    - Test one thing per test
      *    - Consider both success and failure scenarios
      */
-  ],
-};
 
 // Export a default instance of the test suite for the E2E test runner
-default StarterPluginTestSuite;
 
 } // namespace elizaos

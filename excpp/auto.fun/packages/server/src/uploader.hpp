@@ -14,176 +14,24 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
+
 // Removed Env import as we use process.env now
-// ;
-;
-; // Import crypto if not already available globally in the environment
-; // Ensure Buffer is available
-; // Import the shared S3 client function
+// 
+
+ // Import crypto if not already available globally in the environment
+ // Ensure Buffer is available
+ // Import the shared S3 client function
 
 // Store file mapping in a local cache for development
-const _fileCache: { [key: string]: string } = {};
 
 // Log uploaded files to an in-memory cache only
- -> ${publicUrl}`);
-  } catch (error) {
-    logger.warn("Error logging uploaded file:", error);
-  }
-}
+void logUploadedFile(const std::string& objectKey, const std::string& publicUrl);
 
 // Get all logged files
- {
-  return { ..._fileCache };
-}
+void getUploadedFiles(); {
 
 // CloudFlare storage utility (using S3 interface via process.env)
-async  = {},
-) {
-
-  // Generate a random UUID for uniqueness
-  const randomId = crypto.randomUUID();
-
-  // Determine base path
-  const basePath = options.basePath ?? (options.isJson ? "token-metadata" : "token-images");
-
-
-  // If filename is provided, use it to create a more meaningful object key
-  let objectKeySuffix = randomId; // Default suffix if no filename
-  if (options.filename) {
-    // Sanitize filename - remove any potentially problematic characters
-    const sanitizedFilename = options.filename.replace(/[^a-zA-Z0-9._-]/g, "_");
-    // Create a suffix that includes both the UUID (for uniqueness) and the filename (for identification)
-    objectKeySuffix = `${randomId}-${sanitizedFilename}`;
-  }
-
-  // Combine base path and suffix
-  const objectKey = `${basePath}/${objectKeySuffix}`;
-
-
-  // Set the appropriate content type
-  const contentType =
-    options.contentType || (options.isJson ? "application/json" : "image/jpeg");
-
-  logger.log(
-    `Preparing upload: Key=${objectKey}, ContentType=${contentType}, Filename=${options.filename || "none"}, CacheControl=${options.cacheControl || 'default'}`,
-  );
-
-
-  try {
-    // Prepare data for upload (needs to be Buffer or stream for S3)
-    let objectData: Buffer | Uint8Array;
-    if (options.isJson && !(data instanceof Buffer) && !(data instanceof Uint8Array)) {
-      // If JSON flag is set and data is not already binary, stringify
-      const jsonString = JSON.stringify(data);
-      objectData = Buffer.from(jsonString, 'utf8');
-    } else if (data instanceof ArrayBuffer) {
-      objectData = Buffer.from(data);
-    } else if (data instanceof Uint8Array || Buffer.isBuffer(data)) {
-       objectData = data;
-    } else {
-      // Fallback for non-binary, non-JSON flagged data: attempt stringify
-      logger.warn("Data provided to uploadWithS3 is not ArrayBuffer, Uint8Array, or Buffer, and not flagged as JSON. Attempting JSON stringify fallback.");
-      try {
-          const jsonString = JSON.stringify(data);
-          objectData = Buffer.from(jsonString, 'utf8');
-      } catch (stringifyError) {
-          logger.error("Failed to stringify fallback data:", stringifyError);
-          throw new Error("Unsupported data type for upload and failed to stringify.");
-      }
-    }
-
-     // Use the shared S3 client getter
-     const { client: s3Client, bucketName, publicBaseUrl } = await getS3Client();
-
-     const putCommand = new PutObjectCommand({
-         Bucket: bucketName,
-         Key: objectKey,
-         Body: objectData,
-         ContentType: contentType,
-         // Apply specific Cache-Control if provided, otherwise use default
-         CacheControl: options.cacheControl || "public, max-age=31536000", // Default: 1 year cache
-         Metadata: { // Pass custom metadata here if needed
-             publicAccess: "true", // Example custom metadata
-             originalFilename: options.filename || "",
-             ...(options.metadata || {}) // Include any other custom metadata
-         },
-     });
-
-     logger.log(`Uploading to S3: Bucket=${bucketName}, Key=${objectKey}`);
-     await s3Client.send(putCommand);
-     logger.log(`S3 Upload successful for Key: ${objectKey}`);
-
-
-      // Construct the public URL using the appropriate base URL
-      const publicUrl = `${publicBaseUrl}/${objectKey}`;
-
-      // Log file in development mode
-      logUploadedFile(objectKey, publicUrl);
-      logger.log(`Successfully uploaded to R2 (S3 API), Public URL: ${publicUrl}`);
-
-      return publicUrl;
-
-  } catch (error) {
-    logger.error(`S3 API upload failed for Key ${objectKey}:`, error);
-    throw new Error(`Failed to upload object: ${error instanceof Error ? error.message : String(error)}`);
-  }
-}
 
 // Function to upload a generated image to a predictable path for a token
-async  = {},
-) {
-
-  // Create predictable path based on token mint and generation number
-  const objectKey = `generations/${tokenMint}/gen-${generationNumber}.jpg`;
-
-  // Set the appropriate content type
-  const contentType = options.contentType || "image/jpeg";
-
-  logger.log(
-    `Preparing generated image upload: Key=${objectKey}, ContentType=${contentType}`,
-  );
-
-  try {
-    // Prepare data for upload
-    let objectData: Buffer | Uint8Array;
-     if (data instanceof ArrayBuffer) {
-        objectData = Buffer.from(data);
-     } else if (data instanceof Uint8Array || Buffer.isBuffer(data)) {
-        objectData = data;
-     } else {
-         logger.error("Invalid data type provided to uploadGeneratedImage. Expected ArrayBuffer, Buffer, or Uint8Array.");
-         throw new Error("Invalid data type for image upload.");
-     }
-
-
-      // Use the shared S3 client getter
-      const { client: s3Client, bucketName, publicBaseUrl } = await getS3Client();
-
-      // Use the uploadWithS3 `, // Custom base path
-          filename: `gen-${generationNumber}.jpg`, // Use the generation number in the filename part
-          metadata: { // Pass specific metadata for generated images
-              publicAccess: "true",
-              tokenMint: tokenMint,
-              generationNumber: generationNumber.toString(),
-          },
-          cacheControl: "public, max-age=31536000" // Keep 1 year cache for generated images unless overridden
-        }
-      );
-
-      // Construct the predictable object key for logging purposes (uploadWithS3 handles actual key creation)
-      // Note: uploadWithS3 adds a UUID, so the *actual* S3 key will differ.
-      // We log the intended *predictable* key structure for reference.
-      const predictableObjectKey = `generations/${tokenMint}/gen-${generationNumber}.jpg`;
-      logUploadedFile(predictableObjectKey, publicUrl); // Log with the *returned* public URL
-
-      logger.log(`Successfully uploaded generated image via S3 API, Public URL: ${publicUrl}`);
-      return publicUrl;
-
-  } catch (error) {
-    logger.error(`Error in uploadGeneratedImage (S3 API) for Key ${objectKey}:`, error);
-    throw new Error(`Failed to upload generated image: ${error instanceof Error ? error.message : String(error)}`);
-  }
-}
 
 } // namespace elizaos

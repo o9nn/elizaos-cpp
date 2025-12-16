@@ -25,10 +25,8 @@ struct EnvVarConfig {
     std::string plugin;
 };
 
-
 struct EnvVarMetadata {
 };
-
 
 struct GenerationScript {
     std::string variableName;
@@ -42,17 +40,14 @@ struct GenerationScript {
     double createdAt;
 };
 
-
 struct GenerationScriptMetadata {
 };
-
 
 struct EnvVarUpdate {
     std::string pluginName;
     std::string variableName;
     std::string value;
 };
-
 
 struct ValidationResult {
     bool isValid;

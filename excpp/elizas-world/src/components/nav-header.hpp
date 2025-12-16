@@ -11,7 +11,6 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-'use client'
 
- 
+void NavHeader(); 
 } // namespace elizaos

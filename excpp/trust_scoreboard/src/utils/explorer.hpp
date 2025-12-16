@@ -13,15 +13,5 @@ namespace elizaos {
 
 
 
-
-`
-      } else if (endpoint === 'https://api.devnet.solana.com') {
-        cluster = 'devnet'
-      }
-  
-      return cluster ? `?cluster=${cluster}` : ''
-    }
-  
-    return `https://explorer.solana.com/${itemType}/${viewTypeOrItemAddress}${getClusterUrlParam()}`
-  }
+void getExplorerUrl(const std::string& endpoint, 'inspector' | PublicKey | string viewTypeOrItemAddress, auto itemType = 'address' // | 'tx' | 'block');
 } // namespace elizaos

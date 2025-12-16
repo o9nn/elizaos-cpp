@@ -13,8 +13,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
+
 
 /**
  * Represents a UUID string in the format "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
@@ -23,10 +22,14 @@ namespace elizaos {
 using UUID = UUIDv1;
 
 /**
- * Helper `);
-  }
-  return id.toLowerCase() as UUID;
-}
+ * Helper function to safely cast a string to strongly typed UUID
+ * Wraps V2's validateUuid function
+ *
+ * @param id The string UUID to validate and cast
+ * @returns The same UUID with branded type information
+ * @throws Error if the UUID format is invalid
+ */
+UUID asUUID(const std::string& id);
 
 /**
  * Generates a UUID from a string input
@@ -35,6 +38,6 @@ using UUID = UUIDv1;
  * @param input The string to convert to a UUID
  * @returns A UUID generated from the input string
  */
-
+UUID generateUuidFromString(const std::string& input);
 
 } // namespace elizaos

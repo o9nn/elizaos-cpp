@@ -18,10 +18,6 @@ namespace elizaos {
  * Type definitions for run hooks
  */
 
-;
-;
-;
-
 /**
  * Hook structure for the web server or other addons to interface with
  */
@@ -31,39 +27,20 @@ struct RunHook {
     ProblemStatement | ProblemStatementConfig problemStatement;
 };
 
-
 /**
  * Abstract base class for run hooks
  */
-abstract class AbstractRunHook implements RunHook {
-  onInit(_run: Record<string, unknown>): void {
     // Default implementation - can be overridden
-  }
 
-  onStart(): void {
     // Default implementation - can be overridden
-  }
 
-  onEnd(): void {
     // Default implementation - can be overridden
-  }
 
-  onInstanceStart(_params: {
-    index: number;
-    env: SWEEnv;
-    problemStatement: ProblemStatement | ProblemStatementConfig;
-  }): void {
     // Default implementation - can be overridden
-  }
 
-  onInstanceSkipped(): void {
     // Default implementation - can be overridden
-  }
 
-  onInstanceCompleted(_params: { result: AgentRunResult }): void {
     // Default implementation - can be overridden
-  }
-}
 
 /**
  * Combined run hooks manager
@@ -75,49 +52,5 @@ class CombinedRunHooks implements RunHook {
     this._hooks.push(hook);
   }
 
-  get hooks(): RunHook[] {
-    return this._hooks;
-  }
-
-  onInit(run: Record<string, unknown>): void {
-    for (const hook of this._hooks) {
-      hook.onInit(run);
-    }
-  }
-
-  onStart(): void {
-    for (const hook of this._hooks) {
-      hook.onStart();
-    }
-  }
-
-  onEnd(): void {
-    for (const hook of this._hooks) {
-      hook.onEnd();
-    }
-  }
-
-  onInstanceStart(params: {
-    index: number;
-    env: SWEEnv;
-    problemStatement: ProblemStatement | ProblemStatementConfig;
-  }): void {
-    for (const hook of this._hooks) {
-      hook.onInstanceStart(params);
-    }
-  }
-
-  onInstanceSkipped(): void {
-    for (const hook of this._hooks) {
-      hook.onInstanceSkipped();
-    }
-  }
-
-  onInstanceCompleted(params: { result: AgentRunResult }): void {
-    for (const hook of this._hooks) {
-      hook.onInstanceCompleted(params);
-    }
-  }
-}
 
 } // namespace elizaos

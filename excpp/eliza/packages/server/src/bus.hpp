@@ -11,7 +11,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
+
 
 /**
  * A simple in-memory message bus for distributing messages from the server

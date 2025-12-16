@@ -14,20 +14,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { Plugin } from '@elizaos/core';
-;
-;
-;
 
-const communityManagerPlugin: Plugin = {
-  name: 'community-manager',
-  description: 'Community Manager Plugin for Eliza',
-  evaluators: [],
-  providers: [timeoutUserProvider],
-  actions: [timeoutUser],
-  services: [CommunityManagerService],
-};
 
-default communityManagerPlugin;
 
 } // namespace elizaos

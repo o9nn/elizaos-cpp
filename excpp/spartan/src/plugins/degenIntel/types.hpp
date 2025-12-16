@@ -11,7 +11,6 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { Content } from '@elizaos/core';
 
 /**
  * Represents a type that can be one of four values: "solana", "base", "ethereum", or "L1".
@@ -58,7 +57,6 @@ struct IToken {
     Date last_updated;
 };
 
-
 /**
  * Interface for a sentiment token, representing a token with its corresponding sentiment value and reason.
  *
@@ -72,7 +70,6 @@ struct ISentimentToken {
     double sentiment;
     std::string reason;
 };
-
 
 /**
  * Interface representing a sentiment analysis object.
@@ -89,7 +86,6 @@ struct ISentiment {
     std::vector<ISentimentToken> occuringTokens;
 };
 
-
 /**
  * Interface representing a data object with a key-value pair.
  * @typedef {object} IData
@@ -100,7 +96,6 @@ struct IData {
     object data;
     std::string key;
 };
-
 
 /**
  * Interface for representing a transaction history object.
@@ -115,7 +110,6 @@ struct ITransactionHistory {
     object data;
 };
 
-
 /**
  * Represents a job object with an id, name, and data.
  * @typedef {Object} Job
@@ -124,10 +118,6 @@ struct ITransactionHistory {
  * @property {any} data - Additional data related to the job.
  */
 using Job = {
-  id: string;
-  name: string;
-  data: any;
-};
 
 /**
  * Interface representing a sentiment object.
@@ -147,7 +137,6 @@ struct Sentiment {
     std::string reason;
 };
 
-
 /**
  * Interface representing content from Twitter.
  * Extends the Content interface.
@@ -160,15 +149,5 @@ struct Sentiment {
  * @property {number} [tweet.retweets] - Optional number of retweets of the tweet.
  */
 
-interface TwitterContent extends Content {
-  text: string;
-  source: 'twitter';
-  url?: string;
-  tweet?: {
-    username: string;
-    likes?: number;
-    retweets?: number;
-  };
-}
 
 } // namespace elizaos

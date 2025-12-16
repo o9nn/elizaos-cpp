@@ -11,7 +11,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
+
 
 struct WeatherConfig {
     { provider;
@@ -19,7 +19,6 @@ struct WeatherConfig {
     std::optional<'metric' | 'imperial'> units;
     std::optional<std::string> baseUrl;
 };
-
 
 struct WeatherData {
     std::string location;
@@ -30,20 +29,10 @@ struct WeatherData {
     'metric' | 'imperial' units;
 };
 
-
-interface WeatherActionContent extends Content {
-  text: string;
-}
-
-interface WeatherEvalContent extends Content {
-  text: string;
-}
-
 struct WeatherEvalResponse {
     bool success;
     std::string response;
 };
-
 
 struct WeatherProviderResponse {
     bool success;

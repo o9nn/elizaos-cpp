@@ -14,11 +14,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
 
-;
-
-;
 
 /**
  * Finds an entity by name in the given runtime environment.
@@ -37,9 +33,7 @@ std::future<Entity | null> findEntityByName(IAgentRuntime runtime, Memory messag
  * @param {UUID|string} baseUserId - The base user ID to use in generating the UUID.
  * @returns {UUID} - The unique UUID generated based on the runtime and base user ID.
  */
-const createUniqueUuid = (runtime: IAgentRuntime, baseUserId: UUID | string): UUID => {
   return coreCreateUniqueUuid(runtime, baseUserId);
-};
 
 /**
  * Retrieves entity details for a specific room from the database.
@@ -49,12 +43,6 @@ const createUniqueUuid = (runtime: IAgentRuntime, baseUserId: UUID | string): UU
  * @param {UUID} params.roomId - The ID of the room to retrieve entity details for
  * @returns {Promise<Array>} - A promise that resolves to an array of unique entity details
  */
-async : {
-  runtime: IAgentRuntime;
-  roomId: UUID;
-}) {
-  return coreGetEntityDetails({ runtime: runtime as any, roomId });
-}
 
 /**
  * Format the given entities into a string representation.
@@ -63,8 +51,6 @@ async : {
  * @param {Entity[]} options.entities - The list of entities to format.
  * @returns {string} A formatted string representing the entities.
  */
-: { entities: Entity[] }) {
-  return coreFormatEntities({ entities: entities as any });
-}
+void formatEntities({ entities: Entity[] } { entities });
 
 } // namespace elizaos

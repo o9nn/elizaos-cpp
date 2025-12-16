@@ -17,54 +17,22 @@ namespace elizaos {
  */
 
 // Re-just the types we need
-type {
-  Guild,
-  Channel,
-  Client,
-  GuildChannel,
-  TextChannel,
-  VoiceChannel,
-  ButtonInteraction,
-  ChatInputCommandInteraction,
-  CommandInteraction,
-  ModalSubmitInteraction,
-  SlashCommandBuilder,
-  PermissionsBitField,
-} from 'discord.js';
 
 // Create a lazy loader for anything that's not just a type
-let discordJsImport: any = null;
 
 /**
  * Safely gets discord.js exports, handling potential dynamic import issues
  */
-async  catch (error) {
-      console.error('Error importing discord.js, trying fallback method:', error);
-
-      // If that fails (e.g., due to node: protocol issues), use a workaround
-      // This assumes the discord.js package is installed in node_modules
-      try {
-        // Use the 'module' package to create a require  = await import('module');
-        const require = createRequire(import.meta.url);
-        discordJsImport = require('discord.js');
-      } catch (fallbackError) {
-        console.error('Discord.js fallback import also failed:', fallbackError);
-        throw new Error('Failed to import discord.js: ' + fallbackError);
-      }
-    }
-  }
-
-  return discordJsImport;
-}
+std::future<void> getDiscordJs();
 
 /**
  * Gets the PermissionsBitField from discord.js
  */
-async 
+std::future<void> getPermissionsBitField();
 
 /**
  * Gets the SlashCommandBuilder from discord.js
  */
-async 
+std::future<void> getSlashCommandBuilder();
 
 } // namespace elizaos

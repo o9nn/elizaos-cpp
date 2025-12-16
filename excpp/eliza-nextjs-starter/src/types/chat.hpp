@@ -11,7 +11,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
+
 
 struct Citation {
     std::string url;
@@ -19,21 +19,13 @@ struct Citation {
     std::string title;
 };
 
-
 struct ChatStreamData {
     std::optional<std::vector<Citation>> citations;
 };
-
 
 struct ChatRequest {
     std::vector<Message> messages;
 };
 
-
-interface ChatResponse extends ChatStreamData {
-  id: string;
-  messages: Message[];
-  followUpPrompts?: string[];
-}
 
 } // namespace elizaos

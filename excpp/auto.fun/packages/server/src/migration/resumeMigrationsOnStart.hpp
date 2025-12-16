@@ -13,16 +13,16 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-// ;
-// ;
-// ;
-// ;
-// ;
-// ;
-// ;
-// ;
-// ;
-// ;
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
 
 // // Parse IDLs
 // const idl: Autofun = JSON.parse(JSON.stringify(idlJson));
@@ -34,45 +34,13 @@ namespace elizaos {
 //    ? process.env.DEVNET_SOLANA_RPC_URL!
 //    : process.env.MAINNET_SOLANA_RPC_URL!;
 
-
-// async 
-
+// std::future<void> createMigrator();
 
 // const CONCURRENCY = Number(process.env.MIGRATION_CONCURRENCY ?? '5');
 
-// async ] Running migration resume tick`);
-//    try {
-//       const keys = await redisCache.keys('migration:*:currentStep');
-//       if (!keys.length) {
-//          console.log(`[${now}] No in‑flight migrations found`);
-//          return;
-//       }
-//       const limit = pLimit(CONCURRENCY);
-//       const tasks = keys.map((key) =>
-//          limit(async () => {
-//             const parts = key.split(':');
-//             const mint = parts[2];
-//             console.log({ mint })
+// std::future<void> resumeTick(TokenMigrator migrator);
 
-//             try {
-//                const { ranStep, nextStep } = await migrator.resumeOneStep(mint);
-
-//                if (ranStep) {
-//                   console.log(`[${now}] ${mint}: ran step '${ranStep}', next: '${nextStep ?? 'none'}'`);
-//                }
-
-
-//             } catch (err) {
-//                console.error(`Error resuming ${mint}:`, err);
-//             }
-//          })
-//       );
-//    } catch (err) {
-//       console.error('Resume tick failed:', err);
-//    }
-// }
-
-// async 
+// std::future<void> startMigrationCron();
 // if (require.main === module) {
 //    startMigrationCron().catch((err) => {
 //       console.error('Migration cron failed to start:', err);

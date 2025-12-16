@@ -13,27 +13,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
-;
-;
-;
 
-const CloseWindowButton = () => {
-  return (
-    <Box sx={{ position: "fixed", top: "12px", right: "267px" }}>
-      <Tooltip placement="left" arrow title="Quit">
-        <IconButton
-          onClick={() => sendChromeMessage("CLOSE_INJECTED_DIALOG")}
-          color="secondary"
-        >
-          <CloseOutlinedIcon />
-        </IconButton>
-      </Tooltip>
-    </Box>
-  );
-};
 
-default CloseWindowButton;
 
 } // namespace elizaos

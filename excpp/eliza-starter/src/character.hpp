@@ -12,10 +12,8 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
 
-const character: Character = {
-    ...defaultCharacter,
+
     // name: "Eliza",
     // plugins: [],
     // clients: [],
@@ -412,6 +410,5 @@ const character: Character = {
     //         "dive deeper into stuff when its interesting",
     //     ],
     // },
-};
 
 } // namespace elizaos

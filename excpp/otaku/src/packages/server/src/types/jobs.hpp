@@ -11,7 +11,6 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { UUID } from '@elizaos/core';
 
 /**
  * Job status enumeration
@@ -35,7 +34,6 @@ struct CreateJobRequest {
     std::optional<double> timeoutMs;
 };
 
-
 /**
  * Response when creating a job
  */
@@ -45,7 +43,6 @@ struct CreateJobResponse {
     double createdAt;
     double expiresAt;
 };
-
 
 /**
  * Job result structure
@@ -59,7 +56,6 @@ struct JobResult {
     std::optional<std::unordered_map<std::string, unknown>> metadata;
     double processingTimeMs;
 };
-
 
 /**
  * Job details response
@@ -77,7 +73,6 @@ struct JobDetailsResponse {
     std::optional<std::unordered_map<std::string, unknown>> metadata;
 };
 
-
 /**
  * Poll options for checking job status
  */
@@ -87,7 +82,6 @@ struct PollOptions {
     std::optional<double> maxAttempts;
     std::optional<double> timeout;
 };
-
 
 /**
  * Internal job storage structure
@@ -107,7 +101,6 @@ struct Job {
     std::optional<std::string> error;
     std::optional<std::unordered_map<std::string, unknown>> metadata;
 };
-
 
 
 } // namespace elizaos

@@ -12,8 +12,5 @@ namespace elizaos {
 // Manual refinement required for production use
 
 using MessageCallObject = {
-  ended_timestamp: string;
-  participants: Snowflake[];
-};
 
 } // namespace elizaos

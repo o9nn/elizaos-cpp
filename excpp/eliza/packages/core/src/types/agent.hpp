@@ -11,9 +11,6 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { DirectoryItem } from './knowledge';
-import type { Content, UUID } from './primitives';
-import type { State } from './state';
 
 /**
  * Example message for demonstration
@@ -22,7 +19,6 @@ struct MessageExample {
     std::string name;
     Content content;
 };
-
 
 using TemplateType = std::variant<, std::string, ((options: { state: State, { [key: string]: string } }) => string)>;
 
@@ -63,7 +59,6 @@ struct Character {
     std::optional<std::vector<std::string>> post;
 };
 
-
 enum AgentStatus {
   ACTIVE = 'active',
   INACTIVE = 'inactive',
@@ -78,11 +73,5 @@ enum AgentStatus {
  * - `createdAt`, `updatedAt`: Timestamps for when the agent record was created and last updated in the database.
  * This interface is primarily used by the `IDatabaseAdapter` for agent management.
  */
-interface Agent extends Character {
-  enabled?: boolean;
-  status?: AgentStatus;
-  createdAt: number;
-  updatedAt: number;
-}
 
 } // namespace elizaos

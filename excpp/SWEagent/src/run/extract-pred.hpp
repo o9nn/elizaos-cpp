@@ -15,16 +15,9 @@ namespace elizaos {
  * If for some reason the .pred file isn't saved, we can extract it from the .traj file
  */
 
-;
-;
-
 /**
  * Extract prediction from trajectory file
  */
-;
-
-  fs.writeFileSync(predPath, JSON.stringify(predData));
-  console.log(`Extracted prediction to ${predPath}`);
-}
+void extractPred(const std::string& trajPath);
 
 } // namespace elizaos

@@ -11,37 +11,13 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { Service } from "@elizaos/core";
 
-interface ITavilyService extends Service {
-    search(
-        query: string,
-        options?: SearchOptions,
-    ): Promise<SearchResponse>;
-}
 
 using SearchResult = {
-    title: string;
-    url: string;
-    content: string;
-    rawContent?: string;
-    score: number;
-    publishedDate?: string;
-};
 
 using SearchImage = {
-    url: string;
-    description?: string;
-};
-
 
 using SearchResponse = {
-    answer?: string;
-    query: string;
-    responseTime: number;
-    images: SearchImage[];
-    results: SearchResult[];
-};
 
 struct SearchOptions {
     std::optional<bool> auto_parameters;

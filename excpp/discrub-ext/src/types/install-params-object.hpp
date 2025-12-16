@@ -13,8 +13,5 @@ namespace elizaos {
 
 // https://discord.com/developers/docs/resources/application#install-params-object
 using InstallParamsObject = std::vector<{
-  scopes: string>;
-  permissions: string;
-};
 
 } // namespace elizaos

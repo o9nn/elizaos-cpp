@@ -18,12 +18,6 @@ namespace elizaos {
 // Manual refinement required for production use
 
 // https://discord.com/developers/docs/resources/channel#channel-object
-;
-;
-;
-;
-;
-;
 
 class Channel {
   id: Snowflake;
@@ -136,7 +130,5 @@ class Channel {
     this.default_sort_order = opts.default_sort_order;
     this.default_forum_layout = opts.default_forum_layout;
   }
-}
-default Channel;
 
 } // namespace elizaos

@@ -25,30 +25,19 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { Plugin } from "@elizaos/core";
 
 // Services
-;
 
 // Actions
-// ;
-// ;
-;
-;
-;
-;
-;
-;
-;
-;
-// ;
-// ;
+// 
+// 
+
+// 
+// 
 
 // Providers
-;
 
 // Types
-type { CdpNetwork } from "./types";
 
 /**
  * CDP Plugin
@@ -69,18 +58,6 @@ type { CdpNetwork } from "./types";
  * - CHECK_TX_CONFIRMATION: Check block confirmation status for transactions using viem
  * - FETCH_WITH_PAYMENT: Make paid requests to x402 APIs
  */
-const cdpPlugin: Plugin = {
-  name: "cdp",
-  description:
-    "Coinbase Developer Platform plugin providing authenticated EVM account creation, token transfers, NFT transfers, swaps, and x402 paid API requests via CDP SDK",
-  evaluators: [],
-  providers: [walletStateProvider],
-  actions: [cdpWalletInfo, cdpWalletCheckBalance, cdpWalletTokenTransfer, cdpWalletNftTransfer, cdpWalletSwap, cdpResolveEns, cdpTxExplorerLink, cdpCheckTxConfirmation],
-  services: [CdpService],
-};
-
-default cdpPlugin;
-
 
 
 } // namespace elizaos

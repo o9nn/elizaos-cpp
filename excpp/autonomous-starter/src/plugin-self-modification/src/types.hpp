@@ -12,7 +12,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
+
 
 // Temporary ModelClass enum until it's exported from @elizaos/core
 enum ModelClass {

@@ -11,32 +11,11 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { NextApiRequest, NextApiResponse } from 'next';
-;
+
 
 // Create cache instance with 30 minute TTL
-const cache = new NodeCache({ 
-  stdTTL: 1800, // 30 minutes in seconds
-  checkperiod: 120 // Check for expired keys every 2 minutes
-});
-
-const CACHE_KEY = 'dashboard_data';
 
 // Constants
-const HELIUS_API = `https://mainnet.helius-rpc.com/?api-key=${process.env.NEXT_PUBLIC_SOLANA_API}`;
-const TOKENS = {
-  DEGENAI: {
-    address: 'Gu3LDkn7Vx3bmCzLafYNKcDxv2mH7YN44NJZFXnyai16z',
-    totalSupply: 999994411.71,
-  },
-  AI16Z: {
-    address: 'HeLp6NuQkmYB4pYWo2zYs22mESHXPQYzXbB8n4V98jwC',
-    totalSupply: 1099999775.54,
-  }
-};
-const DAO_WALLET = 'AM84n1iLdxgVTAyENBcLdjXoyvjentTbu5Q6EpKV1PeG';
-const DECIMALS = 9;
-const MIN_AMOUNT = 100000;
 
 // Additional Interfaces
 struct TokenHolding {
@@ -46,7 +25,6 @@ struct TokenHolding {
     double price;
     double value;
 };
-
 
 struct TrustScoreResult {
     double score;
@@ -62,7 +40,6 @@ struct Partner {
     double trustScore;
 };
 
-
 struct DashboardResponse {
     std::vector<Partner> partners;
     std::vector<std::any> holdings;
@@ -71,343 +48,20 @@ struct DashboardResponse {
     std::optional<std::vector<TokenHolding>> userHoldings;
 };
 
+// Add new ai16zer function for trust score calculation with tiers
 
-// Add new ai16zer ;
+// Add function to fetch token prices from Helius
+std::future<void> getTokenPrices();
 
-  if (score === 0) {
-    result.imagePath = '/null.png';
-  } else if (score >= 8) {
-    result.label = 'Diamond Partner';
-    result.imagePath = '/diamond.png';
-  } else if (score >= 5) {
-    result.label = 'Gold Partner';
-    result.imagePath = '/gold.png';
-  } else if (score >= 2) {
-    result.label = 'Silver Partner';
-    result.imagePath = '/silver.png';
-  } else {
-    result.label = 'Bronze Partner';
-    result.imagePath = '/bronze.png';
-  }
-
-  return result;
-};
-
-// Add ,
-        body: JSON.stringify({
-          jsonrpc: '2.0',
-          id: 'ai16z-price',
-          method: 'getAsset',
-          params: {
-            id: TOKENS.AI16Z.address,
-            displayOptions: {
-              showFungible: true
-            }
-          },
-        }),
-      }),
-      fetch(HELIUS_API, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          jsonrpc: '2.0',
-          id: 'degenai-price',
-          method: 'getAsset',
-          params: {
-            id: TOKENS.DEGENAI.address,
-            displayOptions: {
-              showFungible: true
-            }
-          },
-        }),
-      })
-    ]);
-
-    const [ai16zData, degenAiData] = await Promise.all(responses.map(r => r.json()));
-    console.log('Price data:', { ai16z: ai16zData, degenAi: degenAiData });
-
-    return [
-      {
-        address: TOKENS.AI16Z.address,
-        usdPrice: ai16zData.result?.token_info?.price_info?.price_per_token || 0
-      },
-      {
-        address: TOKENS.DEGENAI.address,
-        usdPrice: ai16zData.result?.token_info?.price_info?.price_per_token || 0
-      }
-    ];
-  } catch (error) {
-    console.error('Token price API error:', error);
-    return Object.values(TOKENS).map(token => ({
-      address: token.address,
-      usdPrice: 0
-    }));
-  }
-}
-
-// Add ,
-        },
-      }),
-    });
-
-    const data = await response.json();
-    console.log('Raw balance response:', data);
-
-    // Get token prices
-    const prices = await getTokenPrices();
-    console.log('Token prices:', prices);
-
-    const holdings: TokenHolding[] = [];
-
-    // Process all items from searchAssets response
-    if (data.result?.items) {
-      data.result.items.forEach((item: any) => {
-        const tokenAddress = item.id;
-        const tokenInfo = item.token_info;
-        
-        // Check if it's AI16Z
-        if (tokenAddress === TOKENS.AI16Z.address) {
-          const amount = Number(tokenInfo?.amount || 0) / Math.pow(10, DECIMALS);
-          const price = prices.find(p => p.address === TOKENS.AI16Z.address)?.usdPrice || 0;
-          holdings.push({
-            name: 'AI16Z',
-            amount,
-            price,
-            value: amount * price,
-            allocation: 0 // Will be calculated later
-          });
-        }
-        
-        // Check if it's DEGENAI
-        if (tokenAddress === TOKENS.DEGENAI.address) {
-          const amount = Number(tokenInfo?.amount || 0) / Math.pow(10, DECIMALS);
-          const price = prices.find(p => p.address === TOKENS.DEGENAI.address)?.usdPrice || 0;
-          holdings.push({
-            name: 'DEGENAI',
-            amount,
-            price,
-            value: amount * price,
-            allocation: 0 // Will be calculated later
-          });
-        }
-      });
-    }
-
-    // Calculate allocations
-    const totalValue = holdings.reduce((sum, h) => sum + h.value, 0);
-    holdings.forEach(holding => {
-      holding.allocation = totalValue > 0 ? (holding.value / totalValue) * 100 : 0;
-    });
-
-    console.log('Processed holdings:', holdings);
-    return holdings.sort((a, b) => b.value - a.value);
-
-  } catch (error) {
-    console.error('Error fetching user holdings:', error);
-    return [];
-  }
-}
+// Add function to get user holdings
 
 // Main Data Fetching Functions
-std::future<std::vector<Partner>> getAllPartners();,
-        body: JSON.stringify({
-          jsonrpc: "2.0",
-          id: "helius-test",
-          method: "getTokenAccounts",
-          params: {
-            mint: TOKENS.AI16Z.address,
-            limit: 1000,
-            displayOptions: {
-              showZeroBalance: false
-            },
-            ...(cursor && { cursor })
-          },
-        }),
-      });
 
-      const data = await response.json();
-      
-      if (!data.result?.token_accounts || data.result.token_accounts.length === 0) {
-        break;
-      }
-
-      // Process current batch of holders
-      const currentHolders = data.result.token_accounts
-        .map((account: any) => {
-          const amount = Number(account.amount || 0) / Math.pow(10, DECIMALS);
-          if (amount >= MIN_AMOUNT) {
-            return {
-              owner: account.owner,
-              displayAddress: `${account.owner.slice(0, 6)}...${account.owner.slice(-4)}`,
-              amount: amount,
-              createdAt: new Date().toISOString(),
-              trustScore: 0 // Default trust score
-            };
-          }
-          return null;
-        })
-        .filter(Boolean);
-
-      allHolders = [...allHolders, ...currentHolders];
-      
-      // Get cursor for next page
-      cursor = data.result.cursor;
-      
-      // If no cursor, we've reached the end
-      if (!cursor) {
-        break;
-      }
-    }
-
-    // Sort by amount and ensure unique holders
-    const uniqueHolders = Array.from(
-      new Map(allHolders.map(holder => [holder.owner, holder]))
-      .values()
-    ).sort((a, b) => b.amount - a.amount);
-
-    console.log(`Found ${uniqueHolders.length} unique holders with > ${MIN_AMOUNT} AI16Z`);
-    return uniqueHolders;
-  } catch (error) {
-    console.error("Error fetching partner accounts:", error);
-    return [];
-  }
-}
-
-async ,
-      body: JSON.stringify({
-        jsonrpc: '2.0',
-        id: 'my-id',
-        method: 'searchAssets',
-        params: {
-          ownerAddress: DAO_WALLET,
-          tokenType: 'fungible',
-          displayOptions: { showNativeBalance: true },
-        },
-      }),
-    });
-
-    const data = await response.json();
-    
-    // Better error handling and default values
-    if (!data?.result) {
-      console.warn('Empty result from Helius API');
-      return [];
-    }
-
-    const items = data.result.items || [];
-    const totalValue = data.result.nativeBalance?.total_price || 0;
-    
-    return items.map((item: any, index: number) => {
-      const tokenInfo = item.token_info || {};
-      const tokenValue = tokenInfo.price_info?.total_price || 0;
-      const tokenAmount = Number(item.amount || 0);
-      
-      return {
-        rank: index + 1,
-        name: tokenInfo.symbol || tokenInfo.name || 'Unknown',
-        holdings: tokenAmount.toLocaleString(undefined, {
-          minimumFractionDigits: 0,
-          maximumFractionDigits: tokenInfo.decimals || 6
-        }),
-        value: tokenValue.toLocaleString('en-US', {
-          style: 'currency',
-          currency: 'USD'
-        }),
-        percentage: totalValue > 0 ? ((tokenValue / totalValue) * 100).toFixed(2) + '%' : '0%',
-        imageUrl: `/images/tokens/${tokenInfo.symbol || 'default'}.png`,
-      };
-    });
-  } catch (error) {
-    console.error('Error fetching DAO holdings:', error);
-    return [];
-  }
-}
+std::future<void> getDAOHoldings();
 
 // Main API Handler with retry logic
-default async );
-  }
 
-  try {
-    // Check if we have cached data
-    const cachedData = cache.get(CACHE_KEY);
-    if (cachedData) {
-      console.log('Returning cached dashboard data');
-      return res.status(200).json(cachedData);
-    }
-
-    // If no cached data, fetch fresh data
-    const MAX_RETRIES = 3;
-    let attempt = 0;
-    
-    while (attempt < MAX_RETRIES) {
-      try {
-        const walletAddress = req.query.wallet as string;
-        
-        const timeout = (promise: Promise<any>, ms: number) => {
-          return Promise.race([
-            promise,
-            new Promise((_, reject) => 
-              setTimeout(() => reject(new Error('Timeout')), ms)
-            )
-          ]);
-        };
-
-        const [partnersResult, holdingsResult, pricesResult, userHoldingsResult] = await Promise.allSettled([
-          timeout(getAllPartners(), 10000),
-          timeout(getDAOHoldings(), 10000),
-          timeout(getTokenPrices(), 10000),
-          walletAddress ? timeout(getUserHoldings(walletAddress), 10000) : Promise.resolve(undefined)
-        ]);
-
-        const partners = partnersResult.status === 'fulfilled' ? partnersResult.value : [];
-        const holdings = holdingsResult.status === 'fulfilled' ? holdingsResult.value : [];
-        const prices = pricesResult.status === 'fulfilled' ? pricesResult.value : [];
-        const userHoldings = userHoldingsResult.status === 'fulfilled' ? userHoldingsResult.value : undefined;
-
-        if (!partners.length || !prices.length) {
-          throw new Error('Missing critical data');
-        }
-
-        const trustScores = partners.reduce((acc, partner) => {
-          // Default all trust scores to 0 for now
-          acc[partner.owner] = 0;
-          return acc;
-        }, {} as Record<string, number>);
-
-        const response: DashboardResponse = {
-          partners,
-          holdings,
-          prices,
-          trustScores,
-          ...(userHoldings && { userHoldings })
-        };
-
-        // Cache the response
-        cache.set(CACHE_KEY, response);
-        console.log('Cached fresh dashboard data');
-
-        return res.status(200).json(response);
-      } catch (error) {
-        attempt++;
-        if (attempt === MAX_RETRIES) {
-          console.error('Dashboard API Error after retries:', error);
-          return res.status(500).json({ 
-            error: 'Failed to fetch dashboard data',
-            details: error instanceof Error ? error.message : 'Unknown error'
-          });
-        }
-        await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
-      }
-    }
-  } catch (error) {
-    console.error('Cache error:', error);
-    return res.status(500).json({ 
-      error: 'Server error',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    });
-  }
-}
-
-// Add 
+// Add function to manually clear cache if needed
+void clearDashboardCache();
 
 } // namespace elizaos

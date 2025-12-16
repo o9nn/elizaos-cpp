@@ -13,7 +13,6 @@ namespace elizaos {
 // Manual refinement required for production use
 
 // https://discord.com/developers/docs/resources/emoji#emoji-object
-;
 
 class Emoji {
   id: Snowflake | Maybe;
@@ -44,6 +43,5 @@ class Emoji {
     this.animated = opts.animated;
     this.available = opts.available;
   }
-}
 
 } // namespace elizaos

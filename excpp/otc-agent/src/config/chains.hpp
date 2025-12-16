@@ -12,8 +12,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
+
 
 // String-based chain identifier for database/API (lowercase, URL-safe)
 using Chain = std::variant<"ethereum", "base", "bsc", "solana">;
@@ -35,7 +34,6 @@ struct ChainConfig {
     std::optional<ViemChain; // Reference to viem chain for wagmi (EVM only)> viemChain;
     std::optional<number; // Numeric chain ID (EVM only)> chainId;
 };
-
 
 // Use centralized network resolution from contracts.ts
 const env = getCurrentNetwork();
@@ -171,35 +169,31 @@ const SUPPORTED_CHAINS: Record<Chain, ChainConfig> = {
 /**
  * Get chain config by identifier
  */
-
+ChainConfig getChainConfig(Chain chain);
 
 /**
  * Check if chain is EVM-based
  */
-
+bool isEVMChain(Chain chain);
 
 /**
  * Check if chain is Solana-based
  */
-
+bool isSolanaChain(Chain chain);
 
 /**
  * Get chain identifier from string chain ID (database format)
  */
-
-  return null;
-}
+Chain | null getChainFromId(const std::string& chainId);
 
 /**
  * Get chain identifier from numeric chain ID (wagmi/viem format)
  */
-
-  return null;
-}
+Chain | null getChainFromNumericId(double chainId);
 
 /**
  * Get all viem chains for wagmi configuration
  */
-
+std::vector<ViemChain> getAllViemChains();
 
 } // namespace elizaos

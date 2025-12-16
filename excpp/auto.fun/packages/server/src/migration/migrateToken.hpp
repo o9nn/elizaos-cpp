@@ -15,26 +15,26 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-// ;
-// ;
-// ;
-// ;
-// ;
-// ;
-// ;
-// ;
-// ;
-// ;
-// ;
-// ;
-// ;
-// ;
-// ;
-// ;
-// ;
-// ;
-// ;
 // 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// 
+// void asBN(BN | string x);
 // class TokenMigrator {
 //   constructor(
 //     public connection: Connection,

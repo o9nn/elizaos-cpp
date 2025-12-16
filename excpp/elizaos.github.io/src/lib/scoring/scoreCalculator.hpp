@@ -11,13 +11,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
-;
-;
-;
-;
-;
+
 
 struct ScoreResult {
     double totalScore;
@@ -48,7 +42,6 @@ struct ScoreResult {
     double deletions;
     double files;
 };
-
 
 /**
  * Calculate score for pull requests
@@ -214,22 +207,6 @@ const calculateCommentScore = (
 /**
  * Calculate contributor score directly using query functions
  */
-std::future<ScoreResult> calculateContributorScore(const std::string& username, QueryParams queryParams, ScoringConfig scoringConfig);;
-
-  return {
-    totalScore,
-    prScore,
-    issueScore,
-    reviewScore,
-    commentScore,
-    metrics: {
-      pullRequests: contributorPRMetrics,
-      issues: issueMetrics,
-      reviews: reviewMetrics,
-      comments: commentMetrics,
-      codeChanges,
-    },
-  };
-}
+std::future<ScoreResult> calculateContributorScore(const std::string& username, QueryParams queryParams, ScoringConfig scoringConfig);
 
 } // namespace elizaos

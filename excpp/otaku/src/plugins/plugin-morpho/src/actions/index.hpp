@@ -11,11 +11,5 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-{ marketInfoAction } from "./marketDataAction";
-{ marketPositionsAction } from "./marketPositionAction";
-{ marketTransferAction } from "./marketTransfer";
-{ vaultPositionsAction } from "./vaultPositionAction";
-{ vaultInfoAction } from "./vaultDataAction";
-{ vaultTransferAction } from "./vaultTransfer";
 
 } // namespace elizaos

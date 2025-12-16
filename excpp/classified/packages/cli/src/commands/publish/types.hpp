@@ -32,7 +32,6 @@ struct PackageMetadata {
     std::optional<std::string> githubRepo;
 };
 
-
 /**
  * Publish command options
  */
@@ -43,7 +42,6 @@ struct PublishOptions {
     std::optional<bool> skipRegistry;
 };
 
-
 /**
  * Credentials interface
  */
@@ -52,7 +50,6 @@ struct Credentials {
     std::string token;
 };
 
-
 /**
  * Directory information from detection
  */
@@ -60,7 +57,6 @@ struct DirectoryInfo {
     std::string type;
     bool hasPackageJson;
 };
-
 
 /**
  * Registry settings interface
@@ -73,7 +69,6 @@ struct RegistrySettings {
     bool useNpm;
     std::string platform;
 };
-
 
 /**
  * Package.json structure with optional fields used in publishing
@@ -104,7 +99,6 @@ struct PackageJson {
     std::string type;
 };
 
-
 /**
  * Placeholder replacement configuration
  */
@@ -112,7 +106,6 @@ struct PlaceholderReplacement {
     () => boolean check;
     () => void replace;
 };
-
 
 /**
  * Publish result from GitHub publishing

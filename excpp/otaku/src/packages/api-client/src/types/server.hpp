@@ -12,7 +12,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
+
 
 struct ServerHealth {
     'healthy' | 'degraded' | 'unhealthy' status;
@@ -23,7 +23,6 @@ struct ServerHealth {
     'pass' | 'fail' status;
     std::optional<std::string> message;
 };
-
 
 struct ServerStatus {
     { agents;
@@ -38,7 +37,6 @@ struct ServerStatus {
     std::string version;
 };
 
-
 struct ServerDebugInfo {
     { runtime;
     Array<{ agents;
@@ -49,7 +47,6 @@ struct ServerDebugInfo {
     std::any memory;
     std::unordered_map<std::string, std::string> environment;
 };
-
 
 struct LogSubmitParams {
     'debug' | 'info' | 'warn' | 'error' level;

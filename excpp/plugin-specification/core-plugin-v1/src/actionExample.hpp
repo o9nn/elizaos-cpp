@@ -13,8 +13,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
+
 
 /**
  * Example content with associated user for demonstration purposes
@@ -29,20 +28,7 @@ using ActionExample = ActionExampleFromTypes;
  * @param content V2 content object
  * @returns Content compatible with V1
  */
- as Content;
-  }
-
-  return {
-    text: content.text || '',
-    // V2 uses 'actions' array, V1 might use 'action' string
-    action:
-      Array.isArray(content.actions) && content.actions.length > 0 ? content.actions[0] : undefined,
-    // Copy all other properties
-    ...Object.entries(content)
-      .filter(([key]) => !['text', 'actions', 'action'].includes(key))
-      .reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {}),
-  } as Content;
-}
+Content convertContentToV1(ContentV2 content);
 
 /**
  * Safely converts a V1 Content object to a V2 compatible content type
@@ -51,19 +37,7 @@ using ActionExample = ActionExampleFromTypes;
  * @param content V1 Content object
  * @returns Content compatible with V2
  */
- as ContentV2;
-  }
-
-  return {
-    text: content.text || '',
-    // V1 uses 'action' string, V2 uses 'actions' array
-    actions: content.action ? [content.action] : [],
-    // Copy all other properties
-    ...Object.entries(content)
-      .filter(([key]) => !['text', 'action'].includes(key))
-      .reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {}),
-  } as ContentV2;
-}
+ContentV2 convertContentToV2(Content content);
 
 /**
  * Converts v2 ActionExample to v1 compatible ActionExample
@@ -71,15 +45,7 @@ using ActionExample = ActionExampleFromTypes;
  * @param exampleV2 The V2 action example to convert
  * @returns V1 compatible ActionExample
  */
- as Content };
-  }
-
-  // The main difference is that v2 uses 'name' instead of 'user'
-  return {
-    user: exampleV2.name || '',
-    content: convertContentToV1(exampleV2.content),
-  };
-}
+ActionExample fromV2ActionExample(ActionExampleV2 exampleV2);
 
 /**
  * Converts v1 ActionExample to v2 ActionExample
@@ -87,14 +53,6 @@ using ActionExample = ActionExampleFromTypes;
  * @param example The V1 action example to convert
  * @returns V2 compatible ActionExample
  */
- as ContentV2 };
-  }
-
-  // Convert v1 format to v2 format
-  return {
-    name: example.user || '',
-    content: convertContentToV2(example.content),
-  };
-}
+ActionExampleV2 toV2ActionExample(ActionExample example);
 
 } // namespace elizaos

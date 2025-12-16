@@ -12,9 +12,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { FC } from 'react';
-;
-;
+
 
 struct DashboardData {
     { partners;
@@ -27,7 +25,6 @@ struct DashboardData {
     { holdings;
     std::string value;
 };
-
 
 const AI16Z_ADDRESS = 'HeLp6NuQkmYB4pYWo2zYs22mESHXPQYzXbB8n4V98jwC';
 const AI16Z_TOTAL_SUPPLY = 1099999775.54;

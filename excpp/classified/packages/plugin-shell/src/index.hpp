@@ -15,21 +15,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
-;
-;
-import './types'; // Ensure module augmentation is loaded
 
-const shellPlugin: Plugin = {
-  name: 'plugin-shell',
-  description:
-    'Provides shell access to the agent, allowing it to run commands and view history.',
-  actions: [runShellCommandAction, clearShellHistoryAction],
-  providers: [shellProvider],
-  services: [ShellService],
-};
 
-default shellPlugin;
 
 } // namespace elizaos

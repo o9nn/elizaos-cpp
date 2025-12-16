@@ -11,12 +11,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { Content } from "@elizaos/core";
 
-interface GetPriceContent extends Content {
-    symbol: string;
-    currency: string;
-}
 
 struct PriceData {
     double price;
@@ -24,7 +19,6 @@ struct PriceData {
     double volume24h;
     double percentChange24h;
 };
-
 
 struct ApiResponse {
     { data;

@@ -12,40 +12,13 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-#!/usr/bin/env bun
 
 /**
  * Build script using bun build
  * Replaces tsup with native bun build functionality
  */
 
-;
-;
+std::future<void> build();
 
-async );
-
-  if (!result.success) {
-    console.error('❌ Build failed:');
-    for (const message of result.logs) {
-      console.error(message);
-    }
-    process.exit(1);
-  }
-
-  console.log(`✅ Built ${result.outputs.length} files`);
-
-  // Generate TypeScript declarations
-  console.log('📝 Generating TypeScript declarations...');
-  try {
-    await $`tsc --project tsconfig.build.json`;
-    console.log('✅ TypeScript declarations generated');
-  } catch (error) {
-    console.warn('⚠️ TypeScript declaration generation had issues, but continuing...');
-  }
-
-  console.log('✅ Build complete!');
-}
-
-build().catch(console.error);
 
 } // namespace elizaos

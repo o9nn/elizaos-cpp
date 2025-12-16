@@ -12,9 +12,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
-;
+
 
 /**
  * Delete a directory with error handling
@@ -23,23 +21,6 @@ namespace elizaos {
  * @param label Description label for this operation
  * @returns Success or failure
  */
-std::future<bool> safeDeleteDirectory(const std::string& dir, ResetActionRecord actions, const std::string& label); (not found)`);
-    return false;
-  }
-
-  try {
-    await rimraf(dir);
-    if (!existsSync(dir)) {
-      actions.deleted.push(label);
-      return true;
-    } else {
-      actions.warning.push(`Failed to delete ${label.toLowerCase()}`);
-      return false;
-    }
-  } catch (error) {
-    actions.warning.push(`Failed to delete ${label.toLowerCase()}`);
-    return false;
-  }
-}
+std::future<bool> safeDeleteDirectory(const std::string& dir, ResetActionRecord actions, const std::string& label);
 
 } // namespace elizaos

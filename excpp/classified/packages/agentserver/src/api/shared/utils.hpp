@@ -14,6 +14,5 @@ namespace elizaos {
 /**
  * Shared utilities - re-exports from @elizaos/core for compatibility
  */
-{ stringToUuid } from '@elizaos/core';
 
 } // namespace elizaos

@@ -13,9 +13,5 @@ namespace elizaos {
 
 // https://discord.com/developers/docs/resources/channel#embed-object-embed-field-structure
 using EmbedFieldObject = {
-  name: string;
-  value: string;
-  inline?: boolean;
-};
 
 } // namespace elizaos

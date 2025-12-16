@@ -13,17 +13,8 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
 
-std::future<CachedRegistry | null> fetchPluginRegistry();`);
-      throw new Error(`Failed to fetch registry: ${resp.statusText}`);
-    }
-    const raw = await resp.json();
-    return raw as CachedRegistry;
-  } catch {
-    return null;
-  }
-}
+
+std::future<CachedRegistry | null> fetchPluginRegistry();
 
 } // namespace elizaos

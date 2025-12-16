@@ -13,21 +13,10 @@ namespace elizaos {
 // Manual refinement required for production use
 
 // Export service
-{ StagehandService, BrowserSession } from './service.js';
 
 // Export actions for testing
-{
-  browserNavigateAction,
-  browserClickAction,
-  browserTypeAction,
-  browserSelectAction,
-  browserExtractAction,
-  browserScreenshotAction,
-} from './plugin.js';
 
 // Re-plugin
-{ stagehandPlugin } from './plugin.js';
-;
-default stagehandPlugin;
+
 
 } // namespace elizaos

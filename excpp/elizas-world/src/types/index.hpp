@@ -11,14 +11,13 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
+
 
 struct TokenAmount {
     std::string amount;
     double decimals;
     double uiAmount;
 };
-
 
 struct ParsedTokenAccount {
     { data;
@@ -28,7 +27,6 @@ struct ParsedTokenAccount {
     TokenAmount tokenAmount;
 };
 
-
 struct TokenBalance {
     std::string mint;
     { tokenAmount;
@@ -37,21 +35,14 @@ struct TokenBalance {
     std::string amount;
 };
 
-
 struct Social {
     std::string platform;
     std::string handle;
 };
 
-
 struct TokenInfo {
     std::optional<std::string> imageUrl;
     std::optional<std::vector<{ label: string; url: string }>> websites;
-    std::optional<Array<{> socials;
-    std::string type;
-    std::string url;
-};
-
 
 struct BaseToken {
     std::string address;
@@ -59,13 +50,11 @@ struct BaseToken {
     std::string symbol;
 };
 
-
 struct Liquidity {
     double usd;
     double base;
     double quote;
 };
-
 
 struct TokenPair {
     std::string chainId;
@@ -86,7 +75,6 @@ struct TokenPair {
     double pairCreatedAt;
     std::optional<double> score;
 };
-
 
 struct TokenHolding {
     std::string address;
@@ -116,7 +104,6 @@ struct TokenHolding {
     std::optional<double> score;
 };
 
-
 struct TokenData {
     std::vector<TokenHolding> holdings;
     { summary;
@@ -128,13 +115,11 @@ struct TokenData {
     double topHoldingsPercentage;
 };
 
-
 struct TimeSeriesPoint {
     double timestamp;
     double price;
     double volume;
 };
-
 
 struct TokenAnalysis {
     double priceChange24h;
@@ -145,7 +130,6 @@ struct TokenAnalysis {
     std::optional<double> holders;
     std::vector<TimeSeriesPoint> timeSeries;
 };
-
 
 struct DexScreenerResponse {
     Array<{ pairs;
@@ -167,7 +151,6 @@ struct DexScreenerResponse {
     std::optional<TokenInfo> info;
     double pairCreatedAt;
 };
-
 
 type {
     TokenAmount,

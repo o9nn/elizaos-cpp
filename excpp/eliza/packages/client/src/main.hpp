@@ -12,21 +12,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
-import './index.css';
-;
 
-const rootElement = document.getElementById('root');
 
-if (!rootElement) {
-  throw new Error('Root element not found');
-}
-
-createRoot(rootElement).render(
-  <StrictMode>
-    <App />
-  </StrictMode>
-);
 
 } // namespace elizaos

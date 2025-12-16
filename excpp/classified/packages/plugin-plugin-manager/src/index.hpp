@@ -24,21 +24,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-import './types'; // Ensure module augmentation is loaded
-;
+
 
 /**
  * Plugin Manager Plugin for ElizaOS
@@ -66,38 +52,8 @@ import './types'; // Ensure module augmentation is loaded
  * Protected plugins (loaded at startup) CANNOT be unloaded or modified
  * to ensure system stability and core functionality.
  */
-const pluginManagerPlugin: Plugin = {
-  name: 'plugin-manager',
-  description:
-    'Manages dynamic loading and unloading of plugins at runtime, with registry integration and configuration status checking',
 
-  services: [PluginManagerService, PluginConfigurationService],
-
-  actions: [
-    loadPluginAction,
-    unloadPluginAction,
-    installPluginFromRegistryAction,
-    searchPluginAction,
-    getPluginDetailsAction,
-    clonePluginAction,
-    publishPluginAction,
-  ],
-
-  providers: [
-    pluginStateProvider,
-    pluginConfigurationStatusProvider,
-    registryPluginsProvider,
-    pluginKnowledgeProvider,
-  ],
-
-  evaluators: [],
-
-  routes: [],
-
-  init: async (config: Record<string, any>, runtime: IAgentRuntime) => {
     // Service initialization is handled by the runtime when calling static start()
     // No need to manually initialize here
-  },
-};
 
 } // namespace elizaos

@@ -28,61 +28,10 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
 
-;
-;
-;
-;
-;
 
-const initCharacter = ({ runtime }: { runtime: IAgentRuntime }) => {
-  logger.info('Initializing character');
-  logger.info({ name: character.name }, 'Character loaded:');
-};
-
-const projectAgent: ProjectAgent = {
-  character,
-  init: async (runtime: IAgentRuntime) => await initCharacter({ runtime }),
   // Import actual plugin modules instead of using string names
-  plugins: [
-    sqlPlugin, 
-    bootstrapPlugin, 
-    openrouterPlugin,
-    openaiPlugin, 
-    cdpPlugin, 
-    coingeckoPlugin, 
-    webSearchPlugin,
-    defiLlamaPlugin,
-    relayPlugin,
-    etherscanPlugin,
-    mcpPlugin,
-    analyticsPlugin,
-    clankerPlugin,
-    morphoPlugin,
-    gamificationPlugin,
     // x402DiscoveryPlugin,
-  ],
-};
-
-const project: Project = {
-  agents: [projectAgent],
-};
-
-{ character } from './character';
-
-default project;
 
 
 } // namespace elizaos

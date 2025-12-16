@@ -18,104 +18,11 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
-;
-;
-;
-;
-;
-;
 
-const defaultSettings: AppSettings = {
-  [DiscrubSetting.REACTIONS_ENABLED]: "false",
-  [DiscrubSetting.SERVER_NICKNAME_LOOKUP]: "false",
-  [DiscrubSetting.DISPLAY_NAME_LOOKUP]: "false",
-  [DiscrubSetting.RANDOM_DELETE_DELAY]: "0",
-  [DiscrubSetting.RANDOM_SEARCH_DELAY]: "0",
-
-  [DiscrubSetting.EXPORT_SEPARATE_THREAD_AND_FORUM_POSTS]: "false",
-  [DiscrubSetting.EXPORT_ARTIST_MODE]: "false",
-  [DiscrubSetting.EXPORT_MESSAGE_SORT_ORDER]: SortDirection.DESCENDING,
-  [DiscrubSetting.EXPORT_PREVIEW_MEDIA]: "",
-  [DiscrubSetting.EXPORT_DOWNLOAD_MEDIA]: "",
-  [DiscrubSetting.EXPORT_MESSAGES_PER_PAGE]: "1000",
-  [DiscrubSetting.EXPORT_IMAGE_RES_MODE]: ResolutionType.HOVER_LIMITED,
-};
-
-const emptyTask: AppTask = {
-  active: false,
-  entity: null,
-  statusText: null,
-};
-
-const initialState: AppState = {
-  discrubPaused: false, // Flag to pause Export/Purge/Search
-  discrubCancelled: false, // Flag to cancel Export/Purge/Search
-  task: emptyTask, // AppTask object, used for manipulating an entity
-  settings: defaultSettings,
-};
-
-const appSlice = createSlice({
-  name: "app",
-  initialState: initialState,
-  reducers: {
-    setDiscrubPaused: (state, { payload }: { payload: boolean }): void => {
-      state.discrubPaused = payload;
-    },
-    setDiscrubCancelled: (state, { payload }: { payload: boolean }): void => {
-      state.discrubCancelled = payload;
-    },
-    setIsModifying: (state, { payload }: { payload: boolean }): void => {
-      state.task.active = payload;
-    },
-    setModifyEntity: (
-      state,
-      { payload }: { payload: Message | Maybe }
-    ): void => {
-      state.task.entity = payload;
-    },
-    setStatus: (state, { payload }: { payload: string | Maybe }): void => {
-      state.task.statusText = payload;
-    },
-    resetStatus: (state): void => {
-      state.task.statusText = "";
-    },
-    resetModify: (state): void => {
-      state.task = emptyTask;
-    },
-    setSettings: (state, { payload }: { payload: AppSettings }): void => {
-      state.settings = payload;
-    },
-  },
-});
-
-const {
-  setDiscrubPaused,
-  setDiscrubCancelled,
-  setIsModifying,
-  setModifyEntity,
-  setStatus,
-  resetStatus,
-  resetModify,
-  setSettings,
-} = appSlice.actions;
-
-const checkDiscrubPaused =
-  (): AppThunk<Promise<void>> => async (_, getState) => {
-    while (getState().app.discrubPaused) await wait(2);
-  };
 
 /**
  * Used for temporary status updates regarding the task object
  */
-const setTimeoutMessage =
-  ({ message, timeout }: Timeout): AppThunk<Promise<void>> =>
-  async (dispatch) => {
-    dispatch(setStatus(message));
-    await wait(timeout, () => dispatch(resetStatus()));
-  };
 
-default appSlice.reducer;
 
 } // namespace elizaos

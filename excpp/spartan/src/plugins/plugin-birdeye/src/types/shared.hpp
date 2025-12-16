@@ -11,7 +11,6 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { BIRDEYE_SUPPORTED_CHAINS } from "../utils";
 
 // Types
 using BirdeyeSupportedChain = (typeof BIRDEYE_SUPPORTED_CHAINS)[number];
@@ -23,17 +22,5 @@ struct BaseAddress {
     BirdeyeSupportedChain chain;
 };
 
-
-interface WalletAddress extends BaseAddress {
-    type: "wallet";
-}
-
-interface TokenAddress extends BaseAddress {
-    type: "token";
-}
-
-interface ContractAddress extends BaseAddress {
-    type: "contract";
-}
 
 } // namespace elizaos

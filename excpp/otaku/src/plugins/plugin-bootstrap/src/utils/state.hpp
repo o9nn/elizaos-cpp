@@ -11,7 +11,6 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { IAgentRuntime, Memory, State } from '@elizaos/core';
 
 /**
  * Refreshes state after action execution to keep prompts and action results in sync
@@ -25,13 +24,6 @@ import type { IAgentRuntime, Memory, State } from '@elizaos/core';
  */
 std::future<State> refreshStateAfterAction(IAgentRuntime runtime, Memory message, State currentState, const std::vector<unknown>& actionResults);
 
-  if (currentState.data?.workingMemory) {
-    refreshedState.data.workingMemory = currentState.data.workingMemory;
-  }
-
-  return refreshedState;
-}
-
 /**
  * Updates action plan state with step completion status
  *
@@ -42,33 +34,7 @@ std::future<State> refreshStateAfterAction(IAgentRuntime runtime, Memory message
  * @param error - Optional error message
  * @returns Updated state
  */
-
-
-  const updatedPlan = { ...state.data.actionPlan };
-  const steps = [...updatedPlan.steps];
-
-  if (stepIndex >= 0 && stepIndex < steps.length) {
-    steps[stepIndex] = {
-      ...steps[stepIndex],
-      status,
-      result,
-      error,
-    };
-
-    updatedPlan.steps = steps;
-    updatedPlan.currentStep = stepIndex + 1;
-
-    return {
-      ...state,
-      data: {
-        ...state.data,
-        actionPlan: updatedPlan,
-      },
-    };
-  }
-
-  return state;
-}
+State updateActionPlanStep(State state, double stepIndex, 'completed' | 'failed' | 'pending' status, std::optional<Record<string> result, auto unknown>, std::optional<std::string> error);
 
 /**
  * Initializes or updates working memory in state
@@ -78,22 +44,7 @@ std::future<State> refreshStateAfterAction(IAgentRuntime runtime, Memory message
  * @param value - Memory value
  * @returns Updated state
  */
-;
-
-  return {
-    ...state,
-    data: {
-      ...state.data,
-      workingMemory: {
-        ...workingMemory,
-        [key]: {
-          ...value,
-          timestamp: Date.now(),
-        },
-      },
-    },
-  };
-}
+State updateWorkingMemory(State state, const std::string& key, Record<string value, auto unknown>);
 
 
 } // namespace elizaos

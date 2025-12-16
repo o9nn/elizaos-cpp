@@ -11,7 +11,5 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-{ EVMLogo } from "./evm-logo";
-{ SolanaLogo } from "./solana-logo";
 
 } // namespace elizaos

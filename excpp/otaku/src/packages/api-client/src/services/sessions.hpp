@@ -12,18 +12,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-import type {
-  CreateSessionParams,
-  CreateSessionResponse,
-  SendMessageParams,
-  GetMessagesParams,
-  GetMessagesResponse,
-  SessionInfoResponse,
-  SessionsHealthResponse,
-  ListSessionsResponse,
-  MessageResponse,
-} from '../types/sessions';
+
 
 /**
  * Query parameters for session messages API
@@ -34,31 +23,12 @@ struct SessionMessageQueryParams {
     std::optional<std::string> after;
 };
 
-
 /**
  * Validates and converts a date parameter to timestamp string
  * @param value Date, string, or number to convert
  * @param paramName Name of the parameter for error messages
  * @returns Timestamp string or undefined if value is invalid
  */
- else if (typeof value === 'string') {
-    const date = new Date(value);
-    timestamp = date.getTime();
-
-    // Check for invalid date
-    if (isNaN(timestamp)) {
-      console.warn(`Invalid date string for ${paramName}: ${value}`);
-      return undefined;
-    }
-  } else if (typeof value === 'number') {
-    timestamp = value;
-  } else {
-    console.warn(`Invalid type for ${paramName}: ${typeof value}`);
-    return undefined;
-  }
-
-  return timestamp.toString();
-}
 
 /**
  * Validates required parameters
@@ -66,9 +36,6 @@ struct SessionMessageQueryParams {
  * @param paramName Name of the parameter for error messages
  * @throws Error if the parameter is invalid
  */
- is required and cannot be empty`);
-  }
-}
 
 /**
  * Service for managing messaging sessions between users and agents
@@ -87,19 +54,12 @@ class SessionsService extends BaseApiClient {
    * @param params Session creation parameters
    * @returns Created session response
    */
-  async createSession(params: CreateSessionParams): Promise<CreateSessionResponse> {
-    return this.post<CreateSessionResponse>('/api/messaging/sessions', params);
-  }
 
   /**
    * Get session details
    * @param sessionId Session ID
    * @returns Session information
    */
-  async getSession(sessionId: string): Promise<SessionInfoResponse> {
-    validateRequiredParam(sessionId, 'sessionId');
-    return this.get<SessionInfoResponse>(`/api/messaging/sessions/${sessionId}`);
-  }
 
   /**
    * Send a message in a session
@@ -107,11 +67,6 @@ class SessionsService extends BaseApiClient {
    * @param params Message parameters
    * @returns Message response
    */
-  async sendMessage(sessionId: string, params: SendMessageParams): Promise<MessageResponse> {
-    validateRequiredParam(sessionId, 'sessionId');
-    validateRequiredParam(params?.content, 'content');
-    return this.post<MessageResponse>(`/api/messaging/sessions/${sessionId}/messages`, params);
-  }
 
   /**
    * Get messages from a session
@@ -119,48 +74,18 @@ class SessionsService extends BaseApiClient {
    * @param params Query parameters for pagination and filtering
    * @returns Messages response
    */
-  async getMessages(sessionId: string, params?: GetMessagesParams): Promise<GetMessagesResponse> {
-    validateRequiredParam(sessionId, 'sessionId');
-
-    const queryParams: SessionMessageQueryParams = {};
-
-    if (params?.limit) {
-      queryParams.limit = params.limit.toString();
-    }
 
     // Convert date parameters with validation
-    const beforeTimestamp = toTimestampString(params?.before, 'before');
-    if (beforeTimestamp) {
-      queryParams.before = beforeTimestamp;
-    }
-
-    const afterTimestamp = toTimestampString(params?.after, 'after');
-    if (afterTimestamp) {
-      queryParams.after = afterTimestamp;
-    }
-
-    return this.get<GetMessagesResponse>(`/api/messaging/sessions/${sessionId}/messages`, {
-      params: queryParams,
-    });
-  }
 
   /**
    * Delete a session
    * @param sessionId Session ID
    * @returns Success response
    */
-  async deleteSession(sessionId: string): Promise<{ success: boolean }> {
-    validateRequiredParam(sessionId, 'sessionId');
-    return this.delete<{ success: boolean }>(`/api/messaging/sessions/${sessionId}`);
-  }
 
   /**
    * List all active sessions (admin endpoint)
    * @returns List of active sessions
    */
-  async listSessions(): Promise<ListSessionsResponse> {
-    return this.get<ListSessionsResponse>('/api/messaging/sessions');
-  }
-}
 
 } // namespace elizaos

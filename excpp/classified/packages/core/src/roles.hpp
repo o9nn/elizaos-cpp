@@ -17,10 +17,6 @@ namespace elizaos {
 // File: /swarm/shared/ownership/core.ts
 // Updated to use world metadata instead of cache
 
-;
-;
-;
-
 /**
  * Represents the state of server ownership, including a mapping of server IDs to their respective World objects.
  */
@@ -31,7 +27,6 @@ namespace elizaos {
 struct ServerOwnershipState {
     { servers;
 };
-
 
 /**
  * Gets a user's role from world metadata
@@ -46,40 +41,9 @@ struct ServerOwnershipState {
  */
 std::future<Role> getUserServerRole(IAgentRuntime runtime, const std::string& entityId, const std::string& serverId);
 
-  if (world.metadata.roles[entityId]) {
-    return world.metadata.roles[entityId] as Role;
-  }
-
-  // Also check original ID format
-  if (world.metadata.roles[entityId]) {
-    return world.metadata.roles[entityId] as Role;
-  }
-
-  return Role.NONE;
-}
-
 /**
  * Finds a server where the given user is the owner
  */
 std::future<World[] | null> findWorldsForOwner(IAgentRuntime runtime, const std::string& entityId);
-
-  // Get all worlds for this agent
-  const worlds = await runtime.getAllWorlds();
-
-  if (!worlds || worlds.length === 0) {
-    logger.info('No worlds found for this agent');
-    return null;
-  }
-
-  const ownerWorlds = [];
-  // Find world where the user is the owner
-  for (const world of worlds) {
-    if (world.metadata?.ownership?.ownerId === entityId) {
-      ownerWorlds.push(world);
-    }
-  }
-
-  return ownerWorlds.length ? ownerWorlds : null;
-}
 
 } // namespace elizaos

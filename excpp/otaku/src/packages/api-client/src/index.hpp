@@ -12,7 +12,6 @@ namespace elizaos {
 // Manual refinement required for production use
 
 // Main client
-{ ElizaClient } from './client';
 
 // Base types
 * from './types/base';
@@ -30,32 +29,7 @@ namespace elizaos {
 * from './types/jobs';
 
 // Services (for advanced usage)
-{ AgentsService } from './services/agents';
-{ MessagingService } from './services/messaging';
-{ MemoryService } from './services/memory';
-{ AudioService } from './services/audio';
-{ MediaService } from './services/media';
-{ ServerService } from './services/server';
-{ SystemService } from './services/system';
-{ SessionsService } from './services/sessions';
-{ RunsService } from './services/runs';
-{ JobsService } from './services/jobs';
-{ CdpService } from './services/cdp';
-type {
-  Token,
-  NFT,
-  Transaction,
-  WalletInfo,
-  TokensResponse,
-  NFTsResponse,
-  TransactionHistoryResponse,
-  SendTokenRequest,
-  SendTokenResponse,
-  SendNFTRequest,
-  SendNFTResponse,
-} from './services/cdp';
 
 // Base client and error
-{ BaseApiClient, ApiError } from './lib/base-client';
 
 } // namespace elizaos

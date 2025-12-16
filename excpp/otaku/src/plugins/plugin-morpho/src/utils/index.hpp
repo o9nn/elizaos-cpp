@@ -11,5 +11,5 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-{ ErrorHandler, MorphoError } from "./errorHandler";
+
 } // namespace elizaos

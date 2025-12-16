@@ -19,11 +19,6 @@ namespace elizaos {
  * Type definitions for the run module
  */
 
-;
-;
-;
-;
-
 /**
  * Configuration for single run actions
  */
@@ -33,7 +28,6 @@ struct RunSingleActionConfig {
     std::optional<bool> skipIfCommitsReferenceIssue;
     bool applyPatchLocally;
 };
-
 
 /**
  * Configuration for running a single instance
@@ -46,7 +40,6 @@ struct RunSingleConfig {
     RunSingleActionConfig actions;
     std::optional<std::string> envVarPath;
 };
-
 
 /**
  * Configuration for batch instances source
@@ -65,7 +58,6 @@ struct BatchInstanceSourceConfig {
     std::optional<std::string> dataset_name;
 };
 
-
 /**
  * Configuration for running batch instances
  */
@@ -81,7 +73,6 @@ struct RunBatchConfig {
     std::optional<double> randomDelayMultiplier;
     std::optional<bool> progressBar;
 };
-
 
 /**
  * Command line configuration
@@ -99,22 +90,11 @@ struct CLIConfig {
     std::optional<double> randomDelayMultiplier;
 };
 
-
 /**
  * Trajectory data structure
  */
 struct TrajectoryData {
     std::optional<std::vector<{ role: string; content: string; tool_calls?: unknown }>> history;
-    std::optional<string | RunSingleConfig> replay_config;
-    std::optional<{ instance_id?: string; submission?: string; exitStatus?: string }> info;
-    std::optional<std::unordered_map<std::string, unknown>> environment;
-    std::optional<ProblemStatementConfig> problemStatement;
-    std::optional<Array<{> trajectory;
-    std::optional<std::string> action;
-    std::optional<std::string> observation;
-    std::optional<std::string> response;
-};
-
 
 /**
  * SWE-Bench instance data
@@ -129,7 +109,6 @@ struct SWEBenchInstanceData {
     std::optional<std::string> created_at;
     std::optional<std::string> test_patch;
 };
-
 
 /**
  * Demo data structure for trajectory conversion

@@ -11,14 +11,15 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
+
 
 /**
- * Asynchronous 
+ * Asynchronous function that runs the copy-client-dist script.
+ * It first logs a message indicating that the script is running,
+ * then awaits the completion of the copyClientDist function,
+ * and finally logs a message indicating that the script has been completed.
+ */
+std::future<void> main();
 
-main().catch((error) => {
-  console.error('Error running copy-client-dist script:', error);
-  process.exit(1);
-});
 
 } // namespace elizaos

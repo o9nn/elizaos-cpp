@@ -26,21 +26,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
+
 
 class ElizaClient {
   public readonly agents: AgentsService;
@@ -102,32 +88,14 @@ class ElizaClient {
    * 
    * @param token JWT authentication token
    */
-  setAuthToken(token: string) {
-    for (const service of this.services) {
-      if (service && typeof service.setAuthToken === 'function') {
-        service.setAuthToken(token);
-      }
-    }
-  }
 
   /**
    * Clear authentication token from all services
    * Call this on logout or when token expires
    */
-  clearAuthToken() {
-    for (const service of this.services) {
-      if (service && typeof service.clearAuthToken === 'function') {
-        service.clearAuthToken();
-      }
-    }
-  }
 
   /**
    * Create a new ElizaClient instance
    */
-  static create(config: ApiClientConfig): ElizaClient {
-    return new ElizaClient(config);
-  }
-}
 
 } // namespace elizaos

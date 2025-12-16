@@ -12,8 +12,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { IAgentRuntime, Memory, Provider } from "@elizaos/core";
-;
+
 
 /**
  * Represents a knowledge provider that retrieves knowledge from the knowledge base.
@@ -26,48 +25,8 @@ import type { IAgentRuntime, Memory, Provider } from "@elizaos/core";
  * @param {Memory} message - The message containing the query for knowledge retrieval.
  * @returns {Object} An object containing the retrieved knowledge data, values, and text.
  */
-const knowledgeProvider: Provider = {
-  name: "KNOWLEDGE",
-  description:
-    "Knowledge from the knowledge base that the agent knows, retrieved whenever the agent needs to answer a question about their expertise.",
-  get: async (runtime: IAgentRuntime, message: Memory) => {
-    console.log("*** RETRIEVING KNOWLEDGE ***");
     // TODO: getKnowledge method not available in current IAgentRuntime interface
     // const knowledgeData = await runtime.getKnowledge(message);
-    const knowledgeData: any[] = []; // Empty for now
 
-    const firstFiveKnowledgeItems = knowledgeData?.slice(0, 5);
-
-    let knowledge =
-      (firstFiveKnowledgeItems && firstFiveKnowledgeItems.length > 0
-        ? addHeader(
-            "# Knowledge",
-            firstFiveKnowledgeItems
-              .map((knowledge) => `- ${knowledge.content.text}`)
-              .join("\n"),
-          )
-        : "") + "\n";
-
-    const tokenLength = 3.5;
-
-    console.log("*** knowledge", knowledge);
-
-    if (knowledge.length > 4000 * tokenLength) {
-      knowledge = knowledge.slice(0, 4000 * tokenLength);
-    }
-
-    console.log("*** KNOWLEDGE RETRIEVED, LENGTH: ", knowledge.length, " ***");
-
-    return {
-      data: {
-        knowledge,
-      },
-      values: {
-        knowledge,
-      },
-      text: knowledge,
-    };
-  },
-};
 
 } // namespace elizaos

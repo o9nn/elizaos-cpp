@@ -14,15 +14,7 @@ namespace elizaos {
 // Manual refinement required for production use
 
 // https://discord.com/developers/docs/interactions/receiving-and-responding#message-interaction-object-message-interaction-structure
-;
-;
 
 using MessageInteractionObject = {
-  id: Snowflake;
-  type: string;
-  name: string;
-  user: User;
-  member?: GuildMemberObject;
-};
 
 } // namespace elizaos

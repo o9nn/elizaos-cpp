@@ -22,7 +22,6 @@ struct SystemEnvironment {
     std::unordered_map<std::string, std::any> configuration;
 };
 
-
 struct LocalEnvironmentUpdateParams {
     std::unordered_map<std::string, std::string> variables;
     std::optional<bool> merge;

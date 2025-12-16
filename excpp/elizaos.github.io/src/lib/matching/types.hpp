@@ -12,7 +12,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
+
 
 /**
  * Enum for pattern matching method types
@@ -32,7 +32,6 @@ struct PatternOptions {
     std::optional<boolean; // Whether this is a negative pattern (match means exclusion) (default: false)> negative;
 };
 
-
 /**
  * Interface defining a pattern to be matched against content
  */
@@ -43,13 +42,9 @@ struct TagPattern {
     PatternOptions; // Matching options options;
 };
 
-
 /**
  * Type for content that can be matched
  */
 using MatchContent = {
-  content: string; // The actual content to match against
-  contentType: TagPatternType; // The type of content
-};
 
 } // namespace elizaos

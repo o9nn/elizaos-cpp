@@ -12,7 +12,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
+
 
 struct MediaUploadParams {
     File | Blob file;
@@ -21,7 +21,6 @@ struct MediaUploadParams {
     std::optional<std::unordered_map<std::string, std::any>> metadata;
 };
 
-
 struct MediaUploadResponse {
     std::string url;
     std::string type;
@@ -29,7 +28,6 @@ struct MediaUploadResponse {
     std::string originalName;
     double size;
 };
-
 
 struct ChannelUploadResponse {
     std::string url;

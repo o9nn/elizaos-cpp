@@ -21,7 +21,6 @@ struct DashboardStat {
     std::optional<"up" | "down"> direction;
 };
 
-
 struct ChartDataPoint {
     std::string date;
     double spendings;
@@ -29,13 +28,11 @@ struct ChartDataPoint {
     double coffee;
 };
 
-
 struct ChartData {
     std::vector<ChartDataPoint> week;
     std::vector<ChartDataPoint> month;
     std::vector<ChartDataPoint> year;
 };
-
 
 struct RebelRanking {
     double id;
@@ -48,14 +45,12 @@ struct RebelRanking {
     std::optional<std::string> subtitle;
 };
 
-
 struct SecurityStatus {
     std::string title;
     std::string value;
     std::string status;
     "success" | "warning" | "destructive" variant;
 };
-
 
 struct Notification {
     std::string id;
@@ -67,7 +62,6 @@ struct Notification {
     "low" | "medium" | "high" priority;
 };
 
-
 struct WidgetData {
     std::string location;
     std::string timezone;
@@ -75,7 +69,6 @@ struct WidgetData {
     std::string weather;
     std::string date;
 };
-
 
 struct MockData {
     std::vector<DashboardStat> dashboardStats;
@@ -85,7 +78,6 @@ struct MockData {
     std::vector<Notification> notifications;
     WidgetData widgetData;
 };
-
 
 using TimePeriod = std::variant<"week", "month", "year">;
 

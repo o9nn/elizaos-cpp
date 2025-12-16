@@ -29,28 +29,18 @@ namespace elizaos {
 // Cypress support file for Knowledge plugin tests
 
 // Import commands.ts
-import './commands';
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 
 // Custom commands for Knowledge plugin testing
-declare global {
-  namespace Cypress {
     struct Chainable {
 };
 
-  }
-}
-
 // Prevent TypeScript errors
-{};
 
 // Disable uncaught exception handling for React development warnings
-Cypress.on('uncaught:exception', (err, runnable) => {
   // Returning false here prevents Cypress from failing the test
   // on uncaught exceptions, which is useful for React development warnings
-  return false;
-});
 
 } // namespace elizaos

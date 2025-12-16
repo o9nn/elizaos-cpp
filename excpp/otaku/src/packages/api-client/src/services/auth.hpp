@@ -12,13 +12,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-import type { 
-  LoginRequest, 
-  LoginResponse, 
-  RefreshTokenResponse,
-  CurrentUserResponse 
-} from '../types/auth';
+
 
 /**
  * Service for JWT authentication endpoints
@@ -41,10 +35,6 @@ class AuthService extends BaseApiClient {
    * 
    * @returns New JWT token with extended expiration
    */
-  async refreshToken(): Promise<RefreshTokenResponse> {
-    const response = await this.post<RefreshTokenResponse>('/api/auth/refresh', {});
-    return response;
-  }
   
   /**
    * Get current authenticated user info
@@ -52,11 +42,6 @@ class AuthService extends BaseApiClient {
    * 
    * @returns Current user information
    */
-  async getCurrentUser(): Promise<CurrentUserResponse> {
-    const response = await this.get<CurrentUserResponse>('/api/auth/me');
-    return response;
-  }
-}
 
 
 } // namespace elizaos

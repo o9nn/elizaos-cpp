@@ -11,56 +11,19 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
+
 
 using ChatContainerRootProps = {
-  children: React.ReactNode;
-  className?: string;
-} & React.HTMLAttributes<HTMLDivElement>;
 
 using ChatContainerContentProps = {
-  children: React.ReactNode;
-  className?: string;
-} & React.HTMLAttributes<HTMLDivElement>;
 
 using ChatContainerScrollAnchorProps = {
-  className?: string;
-  ref?: React.RefObject<HTMLDivElement>;
-} & React.HTMLAttributes<HTMLDivElement>;
 
-: ChatContainerRootProps) {
-  return (
-    <StickToBottom
-      className={cn('flex overflow-y-auto', className)}
-      resize="smooth"
-      initial="smooth"
-      role="log"
-      {...props}
-    >
-      {children}
-    </StickToBottom>
-  );
-}
+void ChatContainerRoot(auto { children, auto className, ChatContainerRootProps ...props });
 
-: ChatContainerContentProps) {
-  return (
-    <StickToBottom.Content className={cn('flex w-full flex-col', className)} {...props}>
-      {children}
-    </StickToBottom.Content>
-  );
-}
+void ChatContainerContent(auto { children, auto className, ChatContainerContentProps ...props });
 
-: ChatContainerScrollAnchorProps) {
-  return (
-    <div
-      className={cn('h-px w-full shrink-0 scroll-mt-4', className)}
-      aria-hidden="true"
-      {...props}
-    />
-  );
-}
+void ChatContainerScrollAnchor(auto { className, ChatContainerScrollAnchorProps ...props });
 
-{ ChatContainerRoot, ChatContainerContent, ChatContainerScrollAnchor };
 
 } // namespace elizaos

@@ -17,7 +17,6 @@ struct ChatMessageAction {
     std::optional<std::unordered_map<std::string, unknown>> data;
 };
 
-
 struct ChatMessage {
     std::string id;
     std::string name;
@@ -31,8 +30,6 @@ struct ChatMessage {
     std::optional<bool> isUserMessage;
     std::optional<std::string> serverMessageId;
     std::optional<{ text?: string }; // For messages that have structured content> content;
-    std::optional<std::vector<ChatMessageAction>> actions;
-};
 
 
 } // namespace elizaos

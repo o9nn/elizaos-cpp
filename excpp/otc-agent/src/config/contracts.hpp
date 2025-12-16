@@ -17,12 +17,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
-;
-;
-;
-;
+
 
 // =============================================================================
 // TYPES
@@ -47,7 +42,6 @@ struct EvmDeployment {
     std::optional<std::string> testWallet;
 };
 
-
 struct SolanaDeployment {
     std::string network;
     std::string rpc;
@@ -63,25 +57,9 @@ struct SolanaDeployment {
     std::optional<double> priceUsd;
 };
 
-
 // =============================================================================
 // DEPLOYMENT CONFIGS
 // =============================================================================
-
-const CONTRACT_DEPLOYMENTS = {
-  local: {
-    evm: localEvm as EvmDeployment,
-    solana: localSolana as SolanaDeployment,
-  },
-  testnet: {
-    evm: testnetEvm as EvmDeployment,
-    solana: testnetSolana as SolanaDeployment,
-  },
-  mainnet: {
-    evm: mainnetEvm as EvmDeployment,
-    solana: mainnetSolana as SolanaDeployment,
-  },
-};
 
 using NetworkType = std::variant<"local", "testnet", "mainnet">;
 
@@ -96,43 +74,36 @@ using NetworkType = std::variant<"local", "testnet", "mainnet">;
  * This is the SINGLE SOURCE OF TRUTH for network resolution.
  * Do not duplicate this logic elsewhere.
  */
-
+NetworkType getCurrentNetwork();
 
 /**
  * Get deployment configs for a network
  */
-
+void getContracts(std::optional<NetworkType> network);
 
 /**
  * Get EVM contract addresses with env overrides
  */
-,
-    accounts: {
-      ...config.accounts,
-      approver: process.env.APPROVER_ADDRESS || config.accounts?.approver,
-    },
-  };
-}
+EvmDeployment getEvmConfig(std::optional<NetworkType> network);
 
 /**
  * Get Solana config with env overrides
  */
-;
-}
+SolanaDeployment getSolanaConfig(std::optional<NetworkType> network);
 
 /**
  * Get OTC contract address for current network
  */
-
+std::string getOtcAddress(std::optional<NetworkType> network);
 
 /**
  * Get Solana desk address for current network
  */
-
+std::string getSolanaDesk(std::optional<NetworkType> network);
 
 /**
  * Get Solana program ID for current network
  */
-
+std::string getSolanaProgramId(std::optional<NetworkType> network);
 
 } // namespace elizaos

@@ -11,24 +11,15 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { Plugin, IAgentRuntime, UUID } from "@elizaos/core";
 
 // Extend the core service types with plugin manager service
-declare module "@elizaos/core" {
   struct ServiceTypeRegistry {
     "PLUGIN_MANAGER" PLUGIN_MANAGER;
     "PLUGIN_CONFIGURATION" PLUGIN_CONFIGURATION;
     "PLUGIN_USER_INTERACTION" PLUGIN_USER_INTERACTION;
 };
 
-}
-
 // Export service type constant
-const PluginManagerServiceType = {
-  PLUGIN_MANAGER: "PLUGIN_MANAGER" as const,
-  PLUGIN_CONFIGURATION: "PLUGIN_CONFIGURATION" as const,
-  PLUGIN_USER_INTERACTION: "PLUGIN_USER_INTERACTION" as const,
-} satisfies Partial<import("@elizaos/core").ServiceTypeRegistry>;
 
 enum PluginStatus {
   BUILDING = "building",
@@ -54,14 +45,12 @@ struct PluginEnvironmentVariable {
     std::optional<std::vector<std::string>> enum;
 };
 
-
 struct PluginConfigurationRequest {
     std::string pluginName;
     std::vector<PluginEnvironmentVariable> requiredVars;
     std::vector<std::string> missingVars;
     std::vector<PluginEnvironmentVariable> optionalVars;
 };
-
 
 struct ConfigurationDialog {
     std::string id;
@@ -73,7 +62,6 @@ struct ConfigurationDialog {
     Date startedAt;
     std::optional<Date> completedAt;
 };
-
 
 struct PluginState {
     std::string id;
@@ -95,11 +83,9 @@ struct PluginState {
     std::optional<std::vector<std::string>> configurationErrors;
 };
 
-
 struct PluginRegistry {
     std::unordered_map<std::string, PluginState> plugins;
 };
-
 
 struct CreatePluginParams {
     std::string name;
@@ -108,17 +94,14 @@ struct CreatePluginParams {
     std::optional<std::vector<std::string>> dependencies;
 };
 
-
 struct LoadPluginParams {
     std::string pluginId;
     std::optional<bool> force;
 };
 
-
 struct UnloadPluginParams {
     std::string pluginId;
 };
-
 
 struct PluginManagerConfig {
     std::optional<double> maxBuildAttempts;
@@ -127,17 +110,5 @@ struct PluginManagerConfig {
     std::optional<bool> enableHotReload;
 };
 
-
-const EventType = {
-  PLUGIN_BUILDING: "PLUGIN_BUILDING",
-  PLUGIN_READY: "PLUGIN_READY",
-  PLUGIN_LOADED: "PLUGIN_LOADED",
-  PLUGIN_UNLOADED: "PLUGIN_UNLOADED",
-  PLUGIN_ERROR: "PLUGIN_ERROR",
-  PLUGIN_ENV_MISSING: "PLUGIN_ENV_MISSING",
-  PLUGIN_CONFIGURATION_REQUIRED: "PLUGIN_CONFIGURATION_REQUIRED",
-  PLUGIN_CONFIGURATION_STARTED: "PLUGIN_CONFIGURATION_STARTED",
-  PLUGIN_CONFIGURATION_COMPLETED: "PLUGIN_CONFIGURATION_COMPLETED",
-} as const;
 
 } // namespace elizaos

@@ -11,7 +11,6 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { TimeInterval } from "./common";
 
 // Pair Trades Types
 struct PairTradesParams {
@@ -19,7 +18,6 @@ struct PairTradesParams {
     std::optional<double> limit;
     std::optional<double> offset;
 };
-
 
 struct PairTradesResponse {
     bool success;
@@ -44,7 +42,6 @@ struct PairTradesResponse {
     std::optional<std::string> dex;
 };
 
-
 // OHLCV Pair Types
 struct OHLCVPairParams {
     std::string address;
@@ -52,7 +49,6 @@ struct OHLCVPairParams {
     std::optional<double> time_from;
     std::optional<double> time_to;
 };
-
 
 struct OHLCVPairResponse {
     bool success;
@@ -68,18 +64,15 @@ struct OHLCVPairResponse {
     std::optional<double> v;
 };
 
-
 // Pair Overview Types
 struct PairOverviewMultiParams {
     std::string list_address;
     std::optional<double> before_time;
 };
 
-
 struct PairOverviewSingleParams {
     std::string address;
 };
-
 
 struct PairOverviewData {
     std::string address;
@@ -136,7 +129,6 @@ struct PairOverviewData {
     double volume_8h_base;
     double volume_12h_base;
 };
-
 
 struct PairOverviewSingleResponse {
     bool success;
@@ -195,7 +187,6 @@ struct PairOverviewSingleResponse {
     std::optional<double> volume_8h_base;
     std::optional<double> volume_12h_base;
 };
-
 
 struct PairOverviewMultiResponse {
     bool success;

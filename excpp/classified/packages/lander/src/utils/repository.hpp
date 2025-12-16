@@ -15,43 +15,25 @@ namespace elizaos {
  * Extract repository information from the current URL
  * Defaults to elizaos/eliza if not running on GitHub Pages
  */
-;
-  }
-  
-  // Check for environment variable override (useful for custom domains)
-  if (typeof process !== 'undefined' && process.env?.VITE_GITHUB_REPOSITORY) {
-    const [owner, repo] = process.env.VITE_GITHUB_REPOSITORY.split('/');
-    if (owner && repo) {
-      return { owner, repo };
-    }
-  }
-  
-  // Default fallback for local development or non-GitHub Pages hosting
-  return { owner: 'elizaos', repo: 'eliza' };
-}
+void getRepositoryInfo();
 
 /**
  * Get the full repository path (owner/repo)
  */
- = getRepositoryInfo();
-  return `${owner}/${repo}`;
-}
+void getRepositoryPath();
 
 /**
  * Get the GitHub repository URL
  */
-`;
-}
+void getGitHubUrl();
 
 /**
  * Get the GitHub releases URL
  */
-/releases`;
-}
+void getReleasesUrl();
 
 /**
  * Get the GitHub API releases URL
  */
-/releases`;
-}
+void getApiReleasesUrl();
 } // namespace elizaos

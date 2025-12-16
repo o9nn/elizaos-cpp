@@ -32,12 +32,10 @@ struct VersionInfo {
     bool v1;
 };
 
-
 struct CachedRegistry {
     std::string lastUpdatedAt;
     std::unordered_map<std::string, VersionInfo> registry;
 };
-
 
 struct NpmPackageMetadata {
     std::optional<std::unordered_map<std::string, unknown>> versions;

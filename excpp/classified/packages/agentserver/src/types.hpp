@@ -11,7 +11,6 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { UUID, ChannelType } from '@elizaos/core';
 
 struct MessageServer {
     UUID; // global serverId id;
@@ -22,7 +21,6 @@ struct MessageServer {
     Date createdAt;
     Date updatedAt;
 };
-
 
 struct MessageChannel {
     UUID; // global channelId id;
@@ -37,7 +35,6 @@ struct MessageChannel {
     Date updatedAt;
 };
 
-
 struct CentralRootMessage {
     UUID id;
     UUID; // FK to MessageChannel.id channelId;
@@ -51,7 +48,6 @@ struct CentralRootMessage {
     Date updatedAt;
     std::optional<std::unordered_map<std::string, unknown>> metadata;
 };
-
 
 // This is what goes on the internal bus and often what APIs might return for a "full" message
 struct MessageServiceStructure {
@@ -69,18 +65,11 @@ struct MessageServiceStructure {
     std::optional<std::any> metadata;
 };
 
-
 // Extend the core service types with message bus service
-declare module '@elizaos/core' {
   struct ServiceTypeRegistry {
     'MESSAGE_BUS_SERVICE' MESSAGE_BUS_SERVICE;
 };
 
-}
-
 // Export service type constant
-const AgentServerServiceType = {
-  MESSAGE_BUS_SERVICE: 'MESSAGE_BUS_SERVICE' as const,
-} satisfies Partial<import('@elizaos/core').ServiceTypeRegistry>;
 
 } // namespace elizaos

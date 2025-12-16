@@ -11,9 +11,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
-;
+
 
 /**
  * Custom hook to access CDP wallet information
@@ -33,60 +31,10 @@ namespace elizaos {
  * 
  * @example
  * ```tsx
- *  = useCDPWallet();
- *   
- *   // Always wait for initialization first
- *   if (!isInitialized) {
- *     return <p>Loading wallet...</p>;
- *   }
- *   
- *   if (!isSignedIn) {
- *     return <p>Please sign in to access wallet features</p>;
- *   }
- *   
- *   return (
- *     <div>
- *       <p>Your wallet: {evmAddress}</p>
- *       <p>Your email: {userEmail}</p>
- *       <button onClick={signOut}>Sign Out</button>
- *     </div>
- *   );
- * }
+ * void MyComponent();
  * ```
  */
- = useIsInitialized();
-  const { isSignedIn } = useIsSignedIn();
-  const { signOut } = useSignOut();
-  const { currentUser } = useCurrentUser();
-
-  // Check if CDP is properly configured
-  const cdpProjectId = import.meta.env.VITE_CDP_PROJECT_ID;
-  const isCdpConfigured = Boolean(cdpProjectId);
-
-  // Normalize user info using shared helper (DRY) - memoized to prevent excessive re-renders
-  const { email: userEmail, username: userName } = useMemo(
-    () => resolveCdpUserInfo(currentUser as CdpUser | undefined, { isSignedIn }),
-    [currentUser, isSignedIn]
-  );
-
-  return {
-    // Loading state
-    isInitialized,
-    
-    // Auth state
-    isSignedIn,
-    isCdpConfigured,
-    
-    // User info
-    userEmail,
-    userName,
-    currentUser: currentUser as CdpUser | undefined, // narrowed for consumers
-
-    // Actions
-    signOut,
-    
-  };
-}
+void useCDPWallet();
 
 /**
  * Type definition for the wallet info returned by useCDPWallet

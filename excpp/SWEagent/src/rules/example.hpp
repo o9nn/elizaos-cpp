@@ -16,57 +16,25 @@ namespace elizaos {
  * Example usage of the SWE-agent rules module
  */
 
-;
-
 // Example 1: Validate a Python file
-async 
+std::future<void> validatePythonExample();
 
 // Example 2: Validate a TypeScript file
-async 
-`;
-
-  const validator = new TypeScriptValidator();
-  const result = validator.validate(tsCode, 'example.ts');
-
-  console.log('Valid:', result.valid);
-  console.log('Violations:', result.violations);
-  console.log('Warnings:', result.warnings);
-}
+std::future<void> validateTypeScriptExample();
 
 // Example 3: Get project structure information
-: ${entry.description}`);
-  });
-
-  console.log('\nInspectors:');
-  PROJECT_STRUCTURE.inspectors.forEach((inspector) => {
-    console.log(`  - ${inspector.name} (${inspector.type}): ${inspector.path}`);
-  });
-}
+void projectStructureExample();
 
 // Example 4: Get applicable rules for different file types
-: ${rule.rule}`);
-  });
-
-  console.log('\nTypeScript rules:');
-  const tsRules = getApplicableRules('example.ts');
-  tsRules.forEach((rule) => {
-    console.log(`  - ${rule.id}: ${rule.rule}`);
-  });
-}
+void rulesExample();
 
 // Example 5: Export rules to Cursor IDE format
- (${cursorRules[filename].length} bytes)`);
-  });
-}
+void exportExample();
 
 // Run all examples
-async 
+std::future<void> runExamples();
 
 // Execute if run directly
-if (require.main === module) {
-  runExamples().catch(console.error);
-}
 
-{ runExamples };
 
 } // namespace elizaos

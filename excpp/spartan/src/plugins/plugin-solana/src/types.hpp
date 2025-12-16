@@ -11,7 +11,6 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { PublicKey } from '@solana/web3.js';
 
 /**
  * Interface representing an item with specific properties.
@@ -38,7 +37,6 @@ struct Item {
     std::optional<std::string> valueSol;
 };
 
-
 /**
  * Defines the interface for storing price information for various cryptocurrencies.
  *
@@ -52,10 +50,6 @@ struct Item {
  */
 struct Prices {
     { usd: string } solana;
-    { usd: string } bitcoin;
-    { usd: string } ethereum;
-};
-
 
 /**
  * Interface representing a wallet portfolio.
@@ -73,7 +67,6 @@ struct WalletPortfolio {
     std::optional<Prices> prices;
     std::optional<double> lastUpdated;
 };
-
 
 /**
  * Represents the structure of a Token Account Info object.

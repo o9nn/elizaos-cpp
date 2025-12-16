@@ -17,12 +17,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
-;
-;
-;
-;
+
 
 /**
  * Clean autonomy plugin with settings-based control:
@@ -32,23 +27,8 @@ namespace elizaos {
  * 4. Action: Send message to admin (autonomous context only)
  * 5. Routes: API for enable/disable/status
  */
-const autonomyPlugin: Plugin = {
-  name: 'autonomy',
-  description: 'Clean autonomous loop plugin with settings-based control',
-
-  services: [AutonomyService],
-  providers: [adminChatProvider, autonomyStatusProvider],
-  actions: [sendToAdminAction],
-  routes: autonomyRoutes,
-};
 
 // Export components
-{ AutonomyService } from './service';
-{ adminChatProvider } from './provider';
-{ autonomyStatusProvider } from './status-provider';
-{ sendToAdminAction } from './action';
-{ autonomyRoutes } from './routes';
 
-default autonomyPlugin;
 
 } // namespace elizaos

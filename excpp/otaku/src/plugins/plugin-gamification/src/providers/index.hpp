@@ -11,8 +11,6 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-{ pointsProvider } from './pointsProvider';
-{ leaderboardProvider } from './leaderboardProvider';
 
 
 } // namespace elizaos

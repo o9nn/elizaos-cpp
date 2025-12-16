@@ -12,6 +12,5 @@ namespace elizaos {
 // Manual refinement required for production use
 
 // @hidden
-default 
 
 } // namespace elizaos

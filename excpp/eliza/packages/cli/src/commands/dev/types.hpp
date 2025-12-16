@@ -11,7 +11,6 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { ChildProcess } from 'node:child_process';
 
 /**
  * Dev command types and interfaces
@@ -27,14 +26,12 @@ struct DevOptions {
     std::optional<bool> configure;
 };
 
-
 /**
  * Server process management interface
  */
 struct ServerProcess {
     ChildProcess | null process;
 };
-
 
 /**
  * File watcher configuration
@@ -49,7 +46,6 @@ struct WatcherConfig {
     double interval;
 };
 
-
 /**
  * Development context information
  */
@@ -60,7 +56,6 @@ struct DevContext {
     bool buildRequired;
 };
 
-
 /**
  * File change event
  */
@@ -69,7 +64,6 @@ struct FileChangeEvent {
     std::string path;
     std::optional<import('node:fs').Stats> stats;
 };
-
 
 /**
  * Build result

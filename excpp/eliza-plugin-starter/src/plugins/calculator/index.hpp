@@ -13,16 +13,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
-;
 
-const calculatorPlugin: Plugin = {
-  name: "calculator",
-  description: "Basic arithmetic calculator plugin",
-  actions: [calculateAction],
-  evaluators: [calculateEvaluator],
-  providers: [],
-};
+
 
 } // namespace elizaos

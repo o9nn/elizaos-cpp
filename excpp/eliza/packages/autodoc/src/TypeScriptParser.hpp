@@ -12,9 +12,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
-;
+
 
 /**
  * A class for parsing TypeScript files.
@@ -101,120 +99,25 @@ class TypeScriptParser {
     }
   }
 
-  public extractExports(file: string): {
-    actions: string[];
-    providers: string[];
-    evaluators: string[];
-  } {
     //const content = fs.readFileSync(file, 'utf-8');
-    const ast = this.parse(file);
 
-    const exports: {
-      actions: string[];
-      providers: string[];
-      evaluators: string[];
-    } = {
-      actions: [],
-      providers: [],
-      evaluators: [],
-    };
-
-    if (ast && ast.body) {
       // Traverse the AST to find declarations
-      ast.body.forEach((node: any) => {
-        if (node.type === 'ImportDeclaration') {
-          const source = node.source?.value;
-          if (typeof source === 'string') {
-            if (source.startsWith('./actions/')) {
-              exports.actions.push(source);
-            } else if (source.startsWith('./providers/')) {
-              exports.providers.push(source);
-            } else if (source.startsWith('./evaluators/')) {
-              exports.evaluators.push(source);
-            }
-          }
-        }
-      });
-    }
-
-    return exports;
-  }
-
-  public findActionBounds(ast: any): ActionBounds | null {
-    let startLine: number | null = null;
-    let endLine: number | null = null;
-    let actionNameStartLine: number | null = null;
 
     // write ast to json file
     // fs.writeFileSync("ast.json", JSON.stringify(ast, null, 2));
 
-    const findActionTypeAnnotation = (node: any) => {
       // Look for Action type annotation
-      if (node?.typeAnnotation?.typeAnnotation?.typeName?.name === 'Action') {
-        startLine = node.loc.start.line;
-      }
 
       // Look for ActionExample type annotation to find the end
-      if (node?.typeAnnotation?.elementType?.elementType?.typeName?.name === 'ActionExample') {
-        endLine = node.loc.end.line;
-      }
 
       // Backup: Look for action name property
-      if (
-        node?.type === 'Property' &&
-        node?.key?.type === 'Identifier' &&
-        node?.key?.name === 'name' &&
-        node?.value?.type === 'Literal'
-      ) {
-        actionNameStartLine = node.loc.start.line;
-      }
 
       // Recursively search in child nodes
-      for (const key in node) {
-        if (node[key] && typeof node[key] === 'object') {
-          if (Array.isArray(node[key])) {
-            node[key].forEach(findActionTypeAnnotation);
-          } else {
-            findActionTypeAnnotation(node[key]);
-          }
-        }
-      }
-    };
-
-    findActionTypeAnnotation(ast);
 
     // If we found a valid end line but no start line, use the action name line as fallback
-    if (!startLine && actionNameStartLine && endLine) {
-      console.log('Using action name line as fallback');
-      startLine = actionNameStartLine;
-    }
-
-    if (startLine && endLine) {
-      return { startLine, endLine };
-    }
-
-    return null;
-  }
-
-  public extractActionCode(filePath: string, bounds: ActionBounds): string {
-    const fileContent = fs.readFileSync(filePath, 'utf-8');
-    const lines = fileContent.split('\n');
 
     // Extract lines from start to end (inclusive)
-    return lines.slice(bounds.startLine - 1, bounds.endLine).join('\n');
-  }
-
-  private handleParseError(error: Error, file?: string): void {
-    const fileInfo = file ? ` in file ${file}` : '';
-    console.error(`Error parsing TypeScript file${fileInfo}:`, error.message);
 
     // Don't log full stack trace for parsing errors to reduce noise
-    if (error.message.includes('Unexpected token')) {
-      console.warn(
-        `Skipping file due to parsing error${fileInfo}. This might be due to unsupported syntax.`
-      );
-    }
-  }
-}
 
 } // namespace elizaos

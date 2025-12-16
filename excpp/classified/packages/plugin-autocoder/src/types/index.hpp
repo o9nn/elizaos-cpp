@@ -11,8 +11,6 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { Service, UUID } from '@elizaos/core';
-import type { Socket } from 'socket.io';
 
 /**
  * Core types for Plugin Autocoder
@@ -31,9 +29,7 @@ using ProjectStatus = std::variant<'planning', 'generating', 'testing', 'complet
 /**
  * WebSocket-related types
  */
-interface AutocoderSocket extends Socket {
   // Extend with autocoder-specific events if needed
-}
 
 /**
  * Autocoder WebSocket message types
@@ -44,7 +40,6 @@ struct AutocoderWebSocketMessage {
     std::optional<double> timestamp;
 };
 
-
 struct ProjectUpdateData {
     std::string projectId;
     ProjectStatus status;
@@ -53,13 +48,9 @@ struct ProjectUpdateData {
     std::optional<std::string> currentStep;
 };
 
-
 struct ProjectCompleteData {
     std::string projectId;
     std::vector<{ path: string; content: string }> files;
-    std::string summary;
-};
-
 
 struct ProjectErrorData {
     std::string projectId;
@@ -67,13 +58,11 @@ struct ProjectErrorData {
     std::optional<std::string> details;
 };
 
-
 struct StatusUpdateData {
     double activeProjects;
     double completedProjects;
     double failedProjects;
 };
-
 
 /**
  * Project metadata
@@ -110,13 +99,11 @@ struct ProjectMetadata {
     std::unordered_map<std::string, unknown> details;
 };
 
-
 /**
  * Project planning service interface
  */
 struct IProjectPlanningService {
 };
-
 
 /**
  * Form step completion data
@@ -126,7 +113,6 @@ struct StepCompletionData {
     std::unordered_map<std::string, unknown> formData;
     UUID projectId;
 };
-
 
 /**
  * Service type guards and utility types
@@ -141,17 +127,11 @@ struct CodeGenerationRequest {
     std::optional<std::string> githubRepo;
 };
 
-
 struct GenerationResult {
     bool success;
     std::optional<std::string> projectPath;
     std::optional<std::string> githubUrl;
     std::optional<std::vector<{ path: string; content: string }>> files;
-    std::optional<std::vector<std::string>> errors;
-    std::optional<std::vector<std::string>> warnings;
-    std::optional<ExecutionResults> executionResults;
-};
-
 
 struct ExecutionResults {
     std::optional<bool> testsPass;
@@ -161,7 +141,6 @@ struct ExecutionResults {
     std::optional<bool> buildSuccess;
     std::optional<bool> securityPass;
 };
-
 
 struct ProjectStatusUpdate {
     std::string projectId;
@@ -175,17 +154,9 @@ struct ProjectStatusUpdate {
     std::optional<double> startedAt;
     std::optional<double> completedAt;
     std::optional<std::vector<{ path: string; status: 'pending' | 'generating' | 'complete' | 'error' }>> files;
-    std::optional<ValidationResults> validationResults;
-};
-
 
 struct ValidationResults {
     { passed: boolean; errors?: string[] } lint;
-    { passed: boolean; errors?: string[] } typeCheck;
-    { passed: boolean; errors?: string[] } tests;
-    { passed: boolean; errors?: string[] } build;
-};
-
 
 struct ProjectHistory {
     std::string id;
@@ -199,43 +170,11 @@ struct ProjectHistory {
     std::optional<std::string> error;
 };
 
-
 /**
  * Service type guards
  */
 
-
-
-
-
-
 // Forward declarations for service interfaces
-interface CodeGenerationService extends Service {
-  generateCode(request: CodeGenerationRequest): Promise<GenerationResult>;
-}
-
-interface ProjectPlanningServiceInterface extends Service {
-  createProjectPlan(request: {
-    name: string;
-    description: string;
-    type: ProjectType;
-    requirements: string[];
-    constraints?: string[];
-  }): Promise<ProjectPlan>;
-  listProjectPlans(): Promise<ProjectPlan[]>;
-}
-
-interface ProjectStatusManagerInterface extends Service {
-  createProject(name: string, type: ProjectType): string;
-  updateStatus(projectId: string, updates: Partial<ProjectStatusUpdate>): void;
-  updateStep(projectId: string, step: string, message?: string): void;
-  updateValidation(
-    projectId: string,
-    type: 'lint' | 'typeCheck' | 'tests' | 'build',
-    passed: boolean,
-    errors?: string[]
-  ): void;
-}
 
 struct ProjectPlan {
     std::string id;

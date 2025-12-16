@@ -11,8 +11,6 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { UUID, ChannelType } from '@elizaos/core';
-import type { ServerMetadata, ChannelMetadata, MessageMetadata } from '@elizaos/api-client';
 
 struct MessageServer {
     UUID; // global serverId id;
@@ -23,7 +21,6 @@ struct MessageServer {
     Date createdAt;
     Date updatedAt;
 };
-
 
 struct MessageChannel {
     UUID; // global channelId id;
@@ -38,7 +35,6 @@ struct MessageChannel {
     Date updatedAt;
 };
 
-
 struct CentralRootMessage {
     UUID id;
     UUID; // FK to MessageChannel.id channelId;
@@ -52,7 +48,6 @@ struct CentralRootMessage {
     Date updatedAt;
     std::optional<MessageMetadata> metadata;
 };
-
 
 // This is what goes on the internal bus and often what APIs might return for a "full" message
 struct MessageServiceStructure {
@@ -70,12 +65,10 @@ struct MessageServiceStructure {
     std::optional<MessageMetadata> metadata;
 };
 
-
 // Attachment types for media transformation
 struct Attachment {
     std::optional<std::string> url;
 };
-
 
 using AttachmentInput = std::variant<std::string, Attachment, (string, std::vector<Attachment)>>;
 
@@ -83,17 +76,14 @@ struct MessageContentWithAttachments {
     std::optional<AttachmentInput> attachments;
 };
 
-
 struct MessageMetadataWithAttachments {
     std::optional<AttachmentInput> attachments;
 };
-
 
 struct MessageWithAttachments {
     std::optional<MessageContentWithAttachments | unknown> content;
     std::optional<MessageMetadataWithAttachments> metadata;
 };
-
 
 // Re-session types
 * from './types/sessions';

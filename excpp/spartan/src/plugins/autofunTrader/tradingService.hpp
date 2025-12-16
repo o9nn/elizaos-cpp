@@ -24,19 +24,7 @@ namespace elizaos {
 
 // Combined DegenTradingService that integrates all functionality
 
-;
-;
-
 // Service imports
-;
-;
-;
-;
-;
-;
-;
-;
-;
 
 struct TokenSignal {
     std::string address;
@@ -67,14 +55,12 @@ struct TokenSignal {
     double volumeChange24h;
 };
 
-
 struct RiskLimits {
     double maxPositionSize;
     double maxDrawdown;
     double stopLossPercentage;
     double takeProfitPercentage;
 };
-
 
 struct TradingConfig {
     { intervals;
@@ -92,7 +78,6 @@ struct TradingConfig {
     number; // Multiplier for liquidity-based adjustment liquidityMultiplier;
     number; // Multiplier for volume-based adjustment volumeMultiplier;
 };
-
 
 interface CacheEntry<T> {
   value: T;
@@ -166,86 +151,18 @@ class DegenTradingService extends Service {
    * @param {IAgentRuntime} runtime - The agent runtime
    * @returns {Promise<ScenarioService>} - The started scenario service
    */
-  static async start(runtime: IAgentRuntime) {
-    const service = new DegenTradingService(runtime);
-    service.start();
-    return service;
-  }
   /**
    * Stops the Scenario service associated with the given runtime.
    *
    * @param {IAgentRuntime} runtime The runtime to stop the service for.
    * @throws {Error} When the Scenario service is not found.
    */
-  static async stop(runtime: IAgentRuntime) {
-    const service = runtime.getService(DegenTradingService.serviceType);
-    if (!service) {
-      throw new Error('DegenTradingService service not found');
-    }
-    service.stop();
-  }
-
-  async start(): Promise<void> {
-    if (this.isRunning) {
-      logger.warn('Trading service is already running');
-      return;
-    }
-
-    try {
-      logger.info('Starting trading service...');
 
       // Initialize all services
-      await Promise.all([
-        this.dataService.initialize(),
-        this.analyticsService.initialize(),
-        this.walletService.initialize(),
-        this.tradeMemoryService.initialize(),
-        this.buyService.initialize(),
-        this.sellService.initialize(),
-        this.monitoringService.initialize(),
-      ]);
 
       // Register tasks after services are initialized
-      await this.taskService.registerTasks();
-
-      this.isRunning = true;
-      logger.info('Trading service started successfully');
-    } catch (error) {
-      logger.error('Error starting trading service:', error);
-      throw error;
-    }
-  }
-
-  async stop(): Promise<void> {
-    if (!this.isRunning) {
-      logger.warn('Trading service is not running');
-      return;
-    }
-
-    try {
-      logger.info('Stopping trading service...');
 
       // Stop all services
-      await Promise.all([
-        this.dataService.stop(),
-        this.analyticsService.stop(),
-        this.walletService.stop(),
-        this.buyService.stop(),
-        this.sellService.stop(),
-        this.monitoringService.stop(),
-      ]);
 
-      this.isRunning = false;
-      logger.info('Trading service stopped successfully');
-    } catch (error) {
-      logger.error('Error stopping trading service:', error);
-      throw error;
-    }
-  }
-
-  isServiceRunning(): boolean {
-    return this.isRunning;
-  }
-}
 
 } // namespace elizaos

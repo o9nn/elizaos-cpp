@@ -11,8 +11,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
+
 
 struct ConfirmationOptions {
     std::string title;
@@ -22,45 +21,6 @@ struct ConfirmationOptions {
     std::optional<'default' | 'destructive'> variant;
 };
 
-
->({
-    open: false,
-    options: null,
-    onConfirm: null,
-  });
-
-  const confirm = useCallback((options: ConfirmationOptions, onConfirm: () => void) => {
-    setConfirmationState({
-      open: true,
-      options,
-      onConfirm,
-    });
-  }, []);
-
-  const handleOpenChange = useCallback((open: boolean) => {
-    if (!open) {
-      setConfirmationState({
-        open: false,
-        options: null,
-        onConfirm: null,
-      });
-    }
-  }, []);
-
-  const handleConfirm = useCallback(() => {
-    if (confirmationState.onConfirm) {
-      confirmationState.onConfirm();
-    }
-    handleOpenChange(false);
-  }, [confirmationState.onConfirm, handleOpenChange]);
-
-  return {
-    confirm,
-    isOpen: confirmationState.open,
-    onOpenChange: handleOpenChange,
-    onConfirm: handleConfirm,
-    options: confirmationState.options,
-  };
-}
+void useConfirmation();
 
 } // namespace elizaos

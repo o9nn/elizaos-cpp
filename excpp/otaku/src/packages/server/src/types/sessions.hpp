@@ -11,8 +11,6 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { UUID } from '@elizaos/core';
-import type { MessageMetadata } from '@elizaos/api-client';
 
 /**
  * Session timeout configuration
@@ -24,7 +22,6 @@ struct SessionTimeoutConfig {
     std::optional<double> warningThresholdMinutes;
 };
 
-
 /**
  * Metadata associated with a session
  */
@@ -34,7 +31,6 @@ struct SessionMetadata {
     std::optional<std::string> discriminator;
     std::optional<std::string> avatar;
 };
-
 
 /**
  * Represents a messaging session between a user and an agent
@@ -55,7 +51,6 @@ struct Session {
     std::optional<Date> sentAt;
 };
 
-
 /**
  * Request body for creating a session
  */
@@ -65,7 +60,6 @@ struct CreateSessionRequest {
     std::optional<SessionMetadata> metadata;
     std::optional<SessionTimeoutConfig> timeoutConfig;
 };
-
 
 /**
  * Response for session creation
@@ -80,7 +74,6 @@ struct CreateSessionResponse {
     SessionTimeoutConfig timeoutConfig;
 };
 
-
 /**
  * Request body for sending a message
  */
@@ -93,7 +86,6 @@ struct SendMessageRequest {
     std::optional<MessageMetadata> metadata;
 };
 
-
 /**
  * Query parameters for retrieving messages
  */
@@ -102,7 +94,6 @@ struct GetMessagesQuery {
     std::optional<std::string> before;
     std::optional<std::string> after;
 };
-
 
 /**
  * Simplified message format for API responses
@@ -118,7 +109,6 @@ struct SimplifiedMessage {
     std::optional<std::vector<std::string>> actions;
 };
 
-
 /**
  * Response for message retrieval
  */
@@ -129,7 +119,6 @@ struct GetMessagesResponse {
     std::optional<double> before;
     std::optional<double> after;
 };
-
 
 /**
  * Session info response
@@ -147,7 +136,6 @@ struct SessionInfoResponse {
     double timeRemaining;
     bool isNearExpiration;
 };
-
 
 /**
  * Health check response

@@ -13,14 +13,7 @@ namespace elizaos {
 // Manual refinement required for production use
 
 // https://discord.com/developers/docs/topics/teams#data-models-team-object
-;
 
 using TeamObject = std::variant<{
-  icon: string, Maybe>;
-  id: Snowflake;
-  members: TeamMemberObject[];
-  name: string;
-  owner_user_id: Snowflake;
-};
 
 } // namespace elizaos

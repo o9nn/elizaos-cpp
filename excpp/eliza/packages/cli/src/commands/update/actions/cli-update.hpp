@@ -14,12 +14,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
-;
-;
-;
-;
+
 
 /**
  * Update CLI to latest version
@@ -27,58 +22,5 @@ namespace elizaos {
  * Handles CLI updates with automatic migration from npm to bun when appropriate, and supports both global and local installation scenarios.
  */
 std::future<bool> performCliUpdate(GlobalUpdateOptions = {} options);
-      latestVersion = fetchedVersion;
-    } else {
-      latestVersion = targetVersion;
-    }
-
-    const { needsUpdate } = checkVersionNeedsUpdate(currentVersion, latestVersion);
-    if (!needsUpdate) {
-      console.log(`CLI is already at the latest version (${currentVersion}) [✓]`);
-      return true;
-    }
-
-    console.log(`Updating CLI from ${currentVersion} to ${latestVersion}...`);
-
-    // Check if CLI is installed via npm and migrate to bun (unless skipped)
-    if (!options.skipBunMigration) {
-      const npmInstallation = await isCliInstalledViaNpm();
-      if (npmInstallation) {
-        logger.info('Detected npm installation, migrating to bun...');
-        try {
-          await migrateCliToBun(latestVersion);
-          console.log(`CLI updated successfully to version ${latestVersion} [✓]`);
-          return true;
-        } catch (migrationError) {
-          logger.warn('Migration to bun failed, falling back to npm update...');
-          logger.debug(
-            'Migration error:',
-            migrationError instanceof Error ? migrationError.message : String(migrationError)
-          );
-          // Fallback to npm installation since bun failed
-          try {
-            await execa('npm', ['install', '-g', `@elizaos/cli@${latestVersion}`], {
-              stdio: 'inherit',
-            });
-            console.log(`CLI updated successfully to version ${latestVersion} [✓]`);
-            return true;
-          } catch (npmError) {
-            throw new Error(
-              `Both bun migration and npm fallback failed. Bun: ${migrationError instanceof Error ? migrationError.message : String(migrationError)}, npm: ${npmError instanceof Error ? npmError.message : String(npmError)}`
-            );
-          }
-        }
-      }
-    }
-
-    // Standard bun installation (no npm installation detected or migration skipped)
-    await executeInstallation('@elizaos/cli', latestVersion, process.cwd());
-    console.log(`CLI updated successfully to version ${latestVersion} [✓]`);
-    return true;
-  } catch (error) {
-    console.error(`CLI update failed: ${error instanceof Error ? error.message : String(error)}`);
-    return false;
-  }
-}
 
 } // namespace elizaos

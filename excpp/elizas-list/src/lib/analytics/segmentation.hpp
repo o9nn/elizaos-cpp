@@ -12,11 +12,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
-;
 
-const prisma = new PrismaClient();
 
 struct UserSegment {
     std::string id;
@@ -24,7 +20,6 @@ struct UserSegment {
     std::unordered_map<std::string, std::any> characteristics;
     double size;
 };
-
 
 class UserSegmentation {
   static async generateSegments(): Promise<UserSegment[]> {
@@ -37,5 +32,4 @@ class UserSegmentation {
       }
     ];
   }
-} 
 } // namespace elizaos

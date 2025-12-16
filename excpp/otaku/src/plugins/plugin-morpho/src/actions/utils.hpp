@@ -11,85 +11,30 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-
-const stripZeros = (s: string) =>
-  s.replace(/(\.\d*?[1-9])0+$/, "$1").replace(/\.0+$/, "");
-const toBN = (x: BigNumber.Value) => new BigNumber(x ?? 0);
-
-B`;
-  if (n.abs().gte(1_000_000)) return `$${n.div(1_000_000).toFormat(1)}M`;
-  if (n.abs().gte(1_000)) return `$${n.div(1_000).toFormat(1)}K`;
-  return `$${n.toFormat(dp)}`;
-}
-
-%`;
-}
-
- ${sym.toLowerCase()}`;
-}
 
 
+std::string fmtUSD(BigNumber.Value v, auto dp = 2);
 
-$/.test(id)) return id;
-  return `${id.slice(0, 2 + prefix)}…${id.slice(-suffix)}`;
-}
+std::string fmtPct(number | null | undefined v, auto dp = 2);
 
- else if (abs.gte(1e9)) {
-    div = new BigNumber(1e9);
-    suffix = "B";
-  } else if (abs.gte(1e6)) {
-    div = new BigNumber(1e6);
-    suffix = "M";
-  } else if (abs.gte(1e3)) {
-    div = new BigNumber(1e3);
-    suffix = "K";
-  }
+std::string fmtTok(BigNumber.Value v, const std::string& sym, auto dp = 6);
 
-  if (suffix) {
-    const val = n.div(div);
-    const dp = val.abs().gte(100) ? 0 : digits;
-    return `${stripZeros(val.toFormat(dp))}${suffix}`;
-  }
-  return stripZeros(n.toFormat(2));
-}
+std::string fmtNum(BigNumber.Value v, auto dp = 2);
 
- ${sym}`;
-}
+void shortHex(std::optional<std::string> id, auto prefix = 6, auto suffix = 6);
+
+std::string fmtAbbrev(BigNumber.Value v, auto digits = 0);
+
+std::string fmtTokCompact(BigNumber.Value v, const std::string& sym, auto digits = 0);
 
 /**
  * Format data as a clean list for Discord display (no tables or emojis)
  */
->,
-): string {
-  const lines = [`**${title}**`, ""];
-
-  items.forEach((item, index) => {
-    if (index > 0) lines.push(""); // Add spacing between items
-
-    lines.push(`**${item.name}**`);
-    Object.entries(item.data).forEach(([key, value]) => {
-      lines.push(`  ${key}: ${value}`);
-    });
-  });
-
-  return lines.join("\n");
-}
+std::string formatDataList(const std::string& title, Array<{ name: string; data: Record<string items, auto string> }>);
 
 /**
  * Format a single item with key-value pairs in a clean format
  */
-**`, ""];
-
-  Object.entries(data).forEach(([key, value]) => {
-    lines.push(`**${key}**: ${value}`);
-  });
-
-  if (link) {
-    lines.push("", `Open in Morpho: ${link}`);
-  }
-
-  return lines.join("\n");
-}
+std::string formatItemDetails(const std::string& title, Record<string data, auto string>, std::optional<std::string> link);
 
 } // namespace elizaos

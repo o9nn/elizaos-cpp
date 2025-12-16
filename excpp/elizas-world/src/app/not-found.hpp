@@ -13,10 +13,5 @@ namespace elizaos {
 
 
 
-const metadata: Metadata = {
-  title: '404 - Not Found',
-  description: 'Page not found',
-}
 
-default  
 } // namespace elizaos

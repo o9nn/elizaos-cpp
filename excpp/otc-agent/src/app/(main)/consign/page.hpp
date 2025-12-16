@@ -11,14 +11,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-"use client";
 
-;
 
-const ConsignPageClient = dynamic(() => import("./ConsignPageClient"), {
-  ssr: false,
-});
-
-default 
 
 } // namespace elizaos

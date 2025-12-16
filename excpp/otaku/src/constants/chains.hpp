@@ -11,8 +11,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-import type { Chain } from 'viem/chains';
+
 
 /**
  * Supported blockchain networks
@@ -36,7 +35,6 @@ struct ChainConfig {
     { swap;
     boolean; // Does CDP SDK support swaps on this network? cdpSupported;
 };
-
 
 /**
  * Centralized chain configurations
@@ -191,69 +189,67 @@ const ALL_NETWORKS: SupportedNetwork[] = Object.keys(CHAIN_CONFIGS) as Supported
 /**
  * Helper: Get chain config by network name
  */
-
+ChainConfig | null getChainConfig(const std::string& network);
 
 /**
  * Helper: Get viem chain object by network name
  */
-
+Chain | null getViemChain(const std::string& network);
 
 /**
  * Helper: Get RPC URL for a network
  */
-
+string | null getRpcUrl(const std::string& network, const std::string& alchemyKey);
 
 /**
  * Helper: Get explorer URL for a network
  */
-
+string | null getExplorerUrl(const std::string& network);
 
 /**
  * Helper: Get transaction explorer URL
  */
-/tx/${txHash}` : null;
-}
+string | null getTxExplorerUrl(const std::string& network, const std::string& txHash);
 
 /**
  * Helper: Get address explorer URL
  */
-/address/${address}` : null;
-}
+string | null getAddressExplorerUrl(const std::string& network, const std::string& address);
 
 /**
  * Helper: Get native token info for a network
  */
-
+void getNativeTokenInfo(const std::string& network);
 
 /**
  * Helper: Get CoinGecko platform ID for a network
  */
-
+string | null getCoingeckoPlatform(const std::string& network);
 
 /**
  * Helper: Check if a network is supported
  */
-
+network is SupportedNetwork isSupportedNetwork(const std::string& network);
 
 /**
  * Helper: Check if a network is a mainnet
  */
-
+bool isMainnet(const std::string& network);
 
 /**
  * Helper: Check if a network is a testnet
  */
-
+bool isTestnet(const std::string& network);
 
 /**
  * Helper: Check if CDP SDK supports swaps on a network
  */
-
+bool isCdpSwapSupported(const std::string& network);
 
 /**
  * Helper: Get networks that support CDP swaps
  */
-
+std::vector<SupportedNetwork> getCdpSwapSupportedNetworks();
 
 // ============================================================================
 // Swap Protocol Constants
@@ -269,12 +265,7 @@ const NATIVE_TOKEN_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
  * Normalize token address for swap protocols
  * If the token address is not a valid contract address (0x...), treat it as native token
  */
-$/.test(token)) {
-    return token;
-  }
-  // Otherwise, treat it as native token
-  return NATIVE_TOKEN_ADDRESS;
-}
+std::string normalizeTokenAddress(const std::string& token);
 
 /**
  * Uniswap V3 SwapRouter addresses per network

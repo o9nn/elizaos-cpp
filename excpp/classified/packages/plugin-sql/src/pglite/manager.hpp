@@ -11,10 +11,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
-;
-import type { IDatabaseClientManager } from '../types';
+
 
 /**
  * Class representing a database client manager for PGlite.
@@ -40,25 +37,8 @@ class PGliteClientManager implements IDatabaseClientManager<PGlite> {
     this.setupShutdownHandlers();
   }
 
-  public getConnection(): PGlite {
-    return this.client;
-  }
-
-  public isShuttingDown(): boolean {
-    return this.shuttingDown;
-  }
-
-  public async initialize(): Promise<void> {
     // Kept for backward compatibility
-  }
 
-  public async close(): Promise<void> {
-    this.shuttingDown = true;
-  }
-
-  private setupShutdownHandlers() {
     // Implementation of setupShutdownHandlers method
-  }
-}
 
 } // namespace elizaos

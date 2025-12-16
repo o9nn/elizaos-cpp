@@ -12,28 +12,18 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
 
-import type { IAgentRuntime, Actor, Content, Memory, UUID } from "./types.ts";
 
 /**
  * Get details for a list of actors.
  */
-async : {
-  runtime: IAgentRuntime;
-  roomId: UUID;
-}) {
-  // WRITE ME
-}
 
 /**
  * Format actors into a string
  * @param actors - list of actors
  * @returns string
  */
-: { actors: Actor[] }) {
-  // WRITE ME
-}
+void formatActors({ actors: Actor[] } { actors });
 
 /**
  * Format messages into a string
@@ -41,18 +31,8 @@ async : {
  * @param actors - list of actors
  * @returns string
  */
-const formatMessages = ({
-  messages,
-  actors,
-}: {
-  messages: Memory[];
-  actors: Actor[];
-}) => {
   return coreFormatMessages(messages as any);
-};
 
-const formatTimestamp = (messageDate: number) => {
   return coreFormatTimestamp(messageDate);
-};
 
 } // namespace elizaos

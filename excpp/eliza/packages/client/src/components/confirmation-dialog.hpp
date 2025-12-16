@@ -11,7 +11,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
+
 
 struct ConfirmationDialogProps {
     bool open;
@@ -24,34 +24,5 @@ struct ConfirmationDialogProps {
     std::optional<'default' | 'destructive'> variant;
 };
 
-
-default : ConfirmationDialogProps) {
-  const handleConfirm = () => {
-    onConfirm();
-    onOpenChange(false);
-  };
-
-  return (
-    <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>{title}</AlertDialogTitle>
-          <AlertDialogDescription>{description}</AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>{cancelText}</AlertDialogCancel>
-          <AlertDialogAction
-            onClick={handleConfirm}
-            className={
-              variant === 'destructive' ? 'bg-destructive text-destructive-foreground' : undefined
-            }
-          >
-            {confirmText}
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
-  );
-}
 
 } // namespace elizaos

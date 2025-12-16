@@ -12,16 +12,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { Plugin } from '@elizaos/core';
-;
-const heliusPlugin: Plugin = {
-  name: 'helius',
-  description: 'Helius data plugin',
-  actions: [],
-  evaluators: [],
-  providers: [heliusProvider],
-};
 
-default heliusPlugin;
+
 
 } // namespace elizaos

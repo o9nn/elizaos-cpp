@@ -13,7 +13,6 @@ namespace elizaos {
 // Manual refinement required for production use
 
 
-;
 
-
+void initializeDbCache(Character character, IDatabaseCacheAdapter db);
 } // namespace elizaos

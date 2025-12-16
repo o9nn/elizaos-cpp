@@ -11,17 +11,9 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
+
 
 // Socket message types (must match server's SOCKET_MESSAGE_TYPE enum)
-const SOCKET_MESSAGE_TYPE = {
-  ROOM_JOINING: 1,
-  SEND_MESSAGE: 2,
-  MESSAGE: 3,
-  ACK: 4,
-  THINKING: 5,
-  CONTROL: 6,
-} as const;
 
 class SocketManager {
   private socket: Socket | null = null;
@@ -56,76 +48,6 @@ class SocketManager {
 
     return this.socket;
   }
-
-  joinChannel(channelId: string, serverId: string, metadata?: Record<string, any>) {
-    if (!this.socket) {
-      throw new Error('Socket not connected. Call connect() first.');
-    }
-    
-    this.activeChannels.add(channelId);
-    
-    this.socket.emit('message', {
-      type: SOCKET_MESSAGE_TYPE.ROOM_JOINING,
-      payload: {
-        channelId,
-        entityId: this.userId,
-        serverId, // Pass userId as serverId for user-specific world isolation
-        metadata,
-      },
-    });
-    
-  }
-
-  leaveChannel(channelId: string) {
-    this.activeChannels.delete(channelId);
-    console.log(`Left channel: ${channelId}`);
-  }
-
-  sendMessage(channelId: string, message: string, serverId: string, metadata?: Record<string, any>) {
-    if (!this.socket) {
-      throw new Error('Socket not connected');
-    }
-    
-    const payload = {
-      senderId: this.userId,
-      senderName: 'User',
-      message,
-      channelId,
-      serverId,
-      source: 'custom_ui',
-      metadata,
-    };
-    
-    console.log(' [SocketManager] Emitting SEND_MESSAGE:', payload);
-    
-    this.socket.emit('message', {
-      type: SOCKET_MESSAGE_TYPE.SEND_MESSAGE,
-      payload,
-    });
-  }
-
-  onMessage(callback: (data: any) => void) {
-    if (!this.socket) {
-      throw new Error('Socket not connected');
-    }
-    this.socket.on('messageBroadcast', callback);
-    return () => this.socket?.off('messageBroadcast', callback);
-  }
-
-  disconnect() {
-    if (this.socket) {
-      this.socket.disconnect();
-      this.socket = null;
-      this.activeChannels.clear();
-    }
-  }
-
-  isConnected(): boolean {
-    return this.socket?.connected || false;
-  }
-}
-
-const socketManager = new SocketManager();
 
 
 } // namespace elizaos

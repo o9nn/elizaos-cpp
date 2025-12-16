@@ -13,8 +13,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
+
 
 /**
  * Interface representing the ownership state of servers.
@@ -23,7 +22,6 @@ namespace elizaos {
 struct ServerOwnershipState {
     { servers;
 };
-
 
 /**
  * Retrieve the server role of a specified user entity within a given server.

@@ -12,7 +12,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
+
 
 /**
  * Example Hello World Provider
@@ -35,10 +35,7 @@ namespace elizaos {
 //     },
 //   };
 
-const Providers = [
   // add providers here
-];
 
-default Providers;
 
 } // namespace elizaos

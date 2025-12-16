@@ -12,49 +12,19 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
 
-`;
-  const apiKey = localStorage.getItem(getLocalStorageApiKey());
 
-  const config: ApiClientConfig = {
-    baseUrl: window.location.origin,
-    timeout: 30000,
-    headers: {
-      Accept: 'application/json',
-    },
-  };
-
-  // Only include apiKey if it exists (don't pass undefined)
-  if (apiKey) {
-    config.apiKey = apiKey;
-  }
-
-  return config;
-}
+ApiClientConfig createApiClientConfig();
 
 // Singleton instance
-let elizaClientInstance: ElizaClient | null = null;
 
+ElizaClient createElizaClient();
 
-  return elizaClientInstance;
-}
-
-
+ElizaClient getElizaClient();
 
 // Function to reset the singleton (useful for API key changes)
+void resetElizaClient();
 
-
-`;
-
-  if (newApiKey) {
-    localStorage.setItem(getLocalStorageApiKey(), newApiKey);
-  } else {
-    localStorage.removeItem(getLocalStorageApiKey());
-  }
-
-  // Reset the singleton so it uses the new API key
-  resetElizaClient();
-}
+void updateApiClientApiKey(string | null newApiKey);
 
 } // namespace elizaos

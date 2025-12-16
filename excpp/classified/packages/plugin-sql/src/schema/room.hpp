@@ -12,9 +12,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
-;
+
 
 /**
  * Defines a table schema for 'rooms' in the database.
@@ -31,27 +29,8 @@ namespace elizaos {
  * @property {string} channelId - The channel ID of the room.
  * @property {number} createdAt - The timestamp of when the room was created.
  */
-const roomTable = pgTable('rooms', {
-  id: uuid('id')
-    .notNull()
-    .primaryKey()
-    .default(sql`gen_random_uuid()`),
-  agentId: uuid('agent_id').references(() => agentTable.id, {
-    onDelete: 'cascade',
-  }),
-  source: text('source').notNull(),
-  type: text('type').notNull(),
-  serverId: text('server_id'),
-  worldId: uuid('world_id'), // no guarantee that world exists, it is optional for now
   // .references(() => worldTable.id, {
   //   onDelete: 'cascade',
   // }),
-  name: text('name'),
-  metadata: jsonb('metadata'),
-  channelId: text('channel_id'),
-  createdAt: timestamp('created_at')
-    .default(sql`now()`)
-    .notNull(),
-});
 
 } // namespace elizaos

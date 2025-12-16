@@ -23,7 +23,6 @@ using _Int32List = std::variant<Int32Array, ArrayLike<number>>;
 using _Uint32List = std::variant<Uint32Array, ArrayLike<number>>;
 
 // Fix pg-protocol
-declare module 'pg-protocol/dist/messages' {
   struct NoticeMessage {
     double length;
     std::string name;
@@ -46,17 +45,7 @@ declare module 'pg-protocol/dist/messages' {
     std::optional<std::string> routine;
 };
 
-}
-
 // React types for React Router
-declare module 'react' {
-  interface FC<P = {}> {
-    (props: P): ReactElement | null;
-  }
-
-  interface ComponentType<P = {}> {
-    (props: P): ReactElement | null;
-  }
 
   struct ReactElement {
     std::any type;
@@ -64,36 +53,19 @@ declare module 'react' {
     std::any key;
 };
 
-
   using ReactNode = std::variant<ReactElement, std::string, double, bool, nullptr, std::nullopt>;
-}
 
 // Fix React Router types
-declare module 'react-router' {
-  interface match<Params = {}> {
-    params: Params;
-    isExact: boolean;
-    path: string;
-    url: string;
-  }
-
-  interface RouteComponentProps<Params = {}> {
-    match: match<Params>;
-    location: Location;
-    history: History;
-  }
 
   struct SwitchProps {
     std::optional<std::any> children;
     std::optional<Location> location;
 };
 
-
   struct PromptProps {
     string | ((location: Location) => string | boolean) message;
     std::optional<bool> when;
 };
-
 
   struct RedirectProps {
     string | Location to;
@@ -104,24 +76,6 @@ declare module 'react-router' {
     std::optional<bool> strict;
 };
 
-
-  interface RouteChildrenProps<Params = {}> {
-    match: match<Params> | null;
-    location: Location;
-    history: History;
-  }
-
-  const Prompt: any;
-  const Switch: any;
-  const Redirect: any;
-  const Route: any;
-  const Router: any;
-  const withRouter: <_P extends RouteComponentProps>(component: any) => any;
-  const useHistory: () => History;
-  const useLocation: () => Location;
-  const useParams: <Params = {}>() => Params;
-  const useRouteMatch: <Params = {}>() => match<Params>;
-
   struct Location {
     std::string pathname;
     std::string search;
@@ -129,24 +83,14 @@ declare module 'react-router' {
     std::optional<std::any> state;
 };
 
-
   struct History {
     double length;
     std::string action;
     Location location;
 };
 
-
-  const RouterChildContext: any;
-}
-
 // Fix MDX types
-declare module 'mdx' {
   using MDXComponents = {
-    [key: string]: any;
-  };
-}
 
-{};
 
 } // namespace elizaos

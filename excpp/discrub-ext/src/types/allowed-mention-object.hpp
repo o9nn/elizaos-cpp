@@ -13,10 +13,5 @@ namespace elizaos {
 
 // https://discord.com/developers/docs/resources/channel#allowed-mentions-object
 using AllowedMentionObject = std::vector<{
-  parse: string>;
-  roles: Snowflake[];
-  users: Snowflake[];
-  replied_user: boolean;
-};
 
 } // namespace elizaos

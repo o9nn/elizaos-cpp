@@ -29,7 +29,6 @@ struct ModelOutput {
     double totalTokens;
 };
 
-
 /**
  * Tool call structure
  */
@@ -41,7 +40,6 @@ struct ToolCall {
     std::string arguments;
 };
 
-
 /**
  * Thinking block structure
  */
@@ -49,7 +47,6 @@ struct ThinkingBlock {
     std::string type;
     std::string content;
 };
-
 
 /**
  * Command definition
@@ -60,20 +57,17 @@ struct Command {
     std::optional<std::string> installScript;
 };
 
-
 /**
  * Format dictionary for template rendering
  */
 struct FormatDict {
 };
 
-
 /**
  * Extra fields for problem statements and other configs
  */
 struct ExtraFields {
 };
-
 
 /**
  * Stats data structure
@@ -84,7 +78,6 @@ struct StatsData {
     double tokensReceived;
     double apiCalls;
 };
-
 
 /**
  * API response structure
@@ -100,7 +93,6 @@ struct APIResponse {
     std::optional<double> completion_tokens;
     std::optional<double> total_tokens;
 };
-
 
 /**
  * History message content type

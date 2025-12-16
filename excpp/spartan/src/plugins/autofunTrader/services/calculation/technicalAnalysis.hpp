@@ -13,8 +13,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
+
 
 class TechnicalAnalysisService extends BaseTradeService {
   async calculateTechnicalSignals(marketData: any) {
@@ -42,6 +41,5 @@ class TechnicalAnalysisService extends BaseTradeService {
       volatility,
     };
   }
-}
 
 } // namespace elizaos

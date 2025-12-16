@@ -13,13 +13,7 @@ namespace elizaos {
 // Manual refinement required for production use
 
 // https://discord.com/developers/docs/topics/teams#data-models-team-member-object
-;
 
 using TeamMemberObject = {
-  membership_state: number;
-  team_id: Snowflake;
-  user: User;
-  role: string;
-};
 
 } // namespace elizaos

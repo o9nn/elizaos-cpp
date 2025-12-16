@@ -13,9 +13,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { Action, IAgentRuntime, Memory, Provider, State } from '@elizaos/core';
-;
-;
+
 
 /**
  * A provider object that fetches possible response actions based on the provided runtime, message, and state.
@@ -23,7 +21,8 @@ import type { Action, IAgentRuntime, Memory, Provider, State } from '@elizaos/co
  * @property {string} name - The name of the provider ("ACTIONS").
  * @property {string} description - The description of the provider ("Possible response actions").
  * @property {number} position - The position of the provider (-1).
- * @property {Function} get - Asynchronous  runtime - The runtime object.
+ * @property {Function} get - Asynchronous function that retrieves actions that validate for the given message.
+ * @param {IAgentRuntime} runtime - The runtime object.
  * @param {Memory} message - The message memory.
  * @param {State} state - The state object.
  * @returns {Object} An object containing the actions data, values, and combined text sections.
@@ -41,32 +40,13 @@ import type { Action, IAgentRuntime, Memory, Provider, State } from '@elizaos/co
  * @property {string} name - The name of the provider
  * @property {string} description - Description of the provider
  * @property {number} position - The position of the provider
- * @property {Function} get - Asynchronous  runtime - The agent runtime
+ * @property {Function} get - Asynchronous function to get actions that validate for a given message
+ *
+ * @param {IAgentRuntime} runtime - The agent runtime
  * @param {Memory} message - The message memory
  * @param {State} state - The state of the agent
  * @returns {Object} Object containing data, values, and text related to actions
  */
-const hyperfyActionsProvider: Provider = {
-  name: 'ACTIONS',
-  description: 'Possible response actions',
-  position: -1,
-  get: async (runtime: IAgentRuntime, message: Memory, state: State) => {
-    const actionsData = await getHyperfyActions(runtime, message, state); // ← no includeList passed here
 
-    const actionNames = `Possible response actions: ${formatActionNames(actionsData)}`;
-    const actions =
-      actionsData.length > 0 ? addHeader('# Available Actions', formatActions(actionsData)) : '';
-    const actionExamples =
-      actionsData.length > 0
-        ? addHeader('# Action Examples', composeActionExamples(actionsData, 10))
-        : '';
-
-    const data = { actionsData };
-    const values = { actions, actionNames, actionExamples };
-    const text = [actionNames, actionExamples, actions].filter(Boolean).join('\n\n');
-
-    return { data, values, text };
-  },
-};
 
 } // namespace elizaos

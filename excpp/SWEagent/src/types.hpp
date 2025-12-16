@@ -21,8 +21,15 @@ namespace elizaos {
 // ============================================================================
 
 /**
- * Tool call structure for LLM ;
-
+ * Tool call structure for LLM function calling
+ */
+struct ToolCall {
+    std::optional<std::string> id;
+    std::optional<'function'> type;
+    { function;
+    std::string name;
+    string | Record<string, unknown> arguments;
+};
 
 /**
  * Query object in step output
@@ -31,7 +38,6 @@ struct QueryObject {
     std::optional<std::string> type;
     std::optional<std::string> content;
 };
-
 
 /**
  * Thinking block structure
@@ -43,7 +49,6 @@ struct ThinkingBlock {
     std::optional<double> endTime;
 };
 
-
 /**
  * Cache control configuration
  */
@@ -52,7 +57,6 @@ struct CacheControl {
     std::optional<double> maxAge;
     std::optional<'user' | 'global'> scope;
 };
-
 
 /**
  * Output from a single agent step
@@ -74,39 +78,11 @@ struct StepOutput {
     std::unordered_map<std::string, unknown> extraInfo;
 };
 
-
 /**
  * Implementation of StepOutput
  */
 class StepOutputImpl implements StepOutput {
   query: QueryObject[] = [{}];
-  thought: string = '';
-  action: string = '';
-  output: string = '';
-  observation: string = '';
-  executionTime: number = 0.0;
-  done: boolean = false;
-  exitStatus?: number | string | null = null;
-  submission?: string | null = null;
-  state: Record<string, string> = {};
-  toolCalls?: ToolCall[] | null = null;
-  toolCallIds?: string[] | null = null;
-  thinkingBlocks?: ThinkingBlock[] | null = null;
-  extraInfo: Record<string, unknown> = {};
-
-  toTemplateFormatDict(): Record<string, string | number | boolean | null | undefined> {
-    return {
-      thought: this.thought,
-      action: this.action,
-      output: this.output,
-      observation: this.observation,
-      executionTime: this.executionTime,
-      done: this.done,
-      exitStatus: this.exitStatus,
-      submission: this.submission,
-    };
-  }
-}
 
 /**
  * A single step in the agent's trajectory
@@ -122,7 +98,6 @@ struct TrajectoryStep {
     std::unordered_map<std::string, unknown> extraInfo;
 };
 
-
 /**
  * Complete trajectory (array of steps)
  */
@@ -134,24 +109,10 @@ using Trajectory = std::vector<TrajectoryStep>;
 struct BaseHistoryItem {
     std::string role;
     string | Array<{ type: string; text?: string; [key: string]: unknown }> content;
-    std::optional<'thought' | 'action' | 'observation' | 'system' | 'user' | 'assistant' | 'demonstration'> messageType;
-};
-
 
 /**
  * Extended history item with optional fields
  */
-interface HistoryItem extends BaseHistoryItem {
-  agent?: string;
-  isDemo?: boolean;
-  thought?: string;
-  action?: string | null;
-  toolCalls?: ToolCall[] | null;
-  toolCallIds?: string[] | null;
-  tags?: string[];
-  cacheControl?: CacheControl | null;
-  thinkingBlocks?: ThinkingBlock[] | null;
-}
 
 /**
  * History is an array of history items
@@ -176,7 +137,6 @@ struct AgentInfo {
     std::optional<std::string> sweRexHash;
 };
 
-
 /**
  * Result from an agent run
  */
@@ -184,7 +144,6 @@ struct AgentRunResult {
     AgentInfo info;
     Trajectory trajectory;
 };
-
 
 // ============================================================================
 // ADDITIONAL TYPE DEFINITIONS TO REPLACE 'any' TYPES
@@ -199,8 +158,6 @@ struct ModelResponse {
     std::optional<std::vector<ToolCall>> tool_calls;
     std::optional<std::string> role;
     std::optional<string | Array<{ type: string; text?: string; [key: string]: unknown }>> content;
-};
-
 
 /**
  * Environment variable configuration
@@ -218,7 +175,6 @@ using RegistryVariables = std::variant<Record<string, string, double, boolean>>;
 struct ParsedArguments {
 };
 
-
 /**
  * Trajectory data for inspector
  */
@@ -235,7 +191,6 @@ struct TrajectoryData {
     std::optional<ReplayConfig> replay_config;
 };
 
-
 /**
  * Replay configuration
  */
@@ -244,7 +199,6 @@ struct ReplayConfig {
     std::optional<std::unordered_map<std::string, unknown>> agent;
     std::optional<std::unordered_map<std::string, unknown>> tools;
 };
-
 
 /**
  * Spinner task state
@@ -256,7 +210,6 @@ struct SpinnerTask {
     std::optional<std::string> message;
 };
 
-
 /**
  * Instance statistics
  */
@@ -267,10 +220,15 @@ struct InstanceStats {
     std::optional<double> apiCalls;
 };
 
-
 /**
- * Command property for ;
-
+ * Command property for function calling tools
+ */
+struct CommandProperty {
+    std::string type;
+    std::string description;
+    std::optional<std::vector<std::string>> enum;
+    std::optional<std::unordered_map<std::string, std::string>> items;
+};
 
 /**
  * Run hook context
@@ -280,7 +238,6 @@ struct RunContext {
     std::optional<std::unordered_map<std::string, unknown>> config;
     std::optional<double> instanceCount;
 };
-
 
 /**
  * Patch file info
@@ -295,7 +252,6 @@ struct PatchInfo {
     double targetLines;
     std::vector<std::string> lines;
 };
-
 
 /**
  * File data type that can be JSON, YAML, or raw text
@@ -320,7 +276,6 @@ struct GithubIssue {
     std::string color;
 };
 
-
 /**
  * GitHub API event response
  */
@@ -330,14 +285,10 @@ struct GithubEvent {
     std::string created_at;
 };
 
-
 /**
  * Template context for rendering
  */
 using TemplateContext = std::variant<Record<
-  string,
-  string, double, bool, std::vector<unknown>, std::unordered_map<std::string, unknown>, nullptr, undefined
->>;
 
 /**
  * Serializable data structure
@@ -355,15 +306,8 @@ using ArgValue = std::variant<std::string, double, bool, std::vector<std::string
 struct ParsedArgs {
 };
 
-
 /**
  * Error with code property
  */
-interface CodedError extends Error {
-  code?: string;
-  status?: number;
-  stdout?: string;
-  stderr?: string;
-}
 
 } // namespace elizaos

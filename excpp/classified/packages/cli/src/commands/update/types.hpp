@@ -24,7 +24,6 @@ struct UpdateOptions {
     std::optional<bool> skipBunMigration;
 };
 
-
 /**
  * Global CLI update options
  */
@@ -32,7 +31,6 @@ struct GlobalUpdateOptions {
     std::optional<std::string> version;
     std::optional<bool> skipBunMigration;
 };
-
 
 /**
  * Version comparison result
@@ -42,7 +40,6 @@ struct VersionCheckResult {
     std::optional<std::string> error;
 };
 
-
 /**
  * Package update information
  */
@@ -51,7 +48,6 @@ struct PackageUpdate {
     std::string latest;
 };
 
-
 /**
  * Update check result
  */
@@ -59,7 +55,6 @@ struct UpdateCheckResult {
     bool hasUpdates;
     std::unordered_map<std::string, PackageUpdate> updates;
 };
-
 
 /**
  * CLI environment information
@@ -71,7 +66,6 @@ struct CliEnvironment {
     bool isNpmInstalled;
     std::string packageManager;
 };
-
 
 /**
  * Update context information

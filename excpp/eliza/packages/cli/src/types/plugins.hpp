@@ -32,7 +32,6 @@ struct VersionInfo {
     bool v1;
 };
 
-
 struct CachedRegistry {
     std::string lastUpdatedAt;
     std::unordered_map<std::string, VersionInfo> registry;

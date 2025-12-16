@@ -15,37 +15,11 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
-;
-;
+
 
 using HasTypeProps = {
-  disabled: boolean;
-};
 
-: HasTypeProps) {
-  const { state: messageState, setSelectedHasTypes } = useMessageSlice();
-  const selectedHasTypes = messageState.selectedHasTypes();
+void HasType(HasTypeProps { disabled });
 
-  return (
-    <Tooltip
-      arrow
-      title="Messages Containing"
-      description="Search messages that contain the following type(s)"
-      placement="left"
-    >
-      <MultiValueSelect
-        disabled={disabled}
-        label="Messages Containing"
-        onChange={(values) => setSelectedHasTypes(values as HasTypeEnum[])}
-        value={selectedHasTypes}
-        values={Object.values(HasTypeEnum)}
-      />
-    </Tooltip>
-  );
-}
-
-default HasType;
 
 } // namespace elizaos

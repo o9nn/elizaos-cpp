@@ -16,38 +16,19 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
-;
-;
-;
-;
-;
+
 
 /**
  * Estimates token count for a text string (rough approximation)
  * Uses the common 4 characters per token rule
  */
-
+double estimateTokens(const std::string& text);
 
 /**
  * Gets CTX_KNOWLEDGE_ENABLED setting from runtime or environment
  * Ensures consistency with config.ts validation
  */
- else {
-    rawValue = process.env.CTX_KNOWLEDGE_ENABLED;
-    const cleanValue = rawValue?.toString().trim().toLowerCase();
-    result = cleanValue === 'true';
-    source = 'process.env';
-  }
-
-  // Only log when there's a mismatch or for initial debugging
-  if (process.env.NODE_ENV === 'development' && rawValue && !result) {
-    logger.debug(`[Document Processor] CTX config mismatch - ${source}: '${rawValue}' → ${result}`);
-  }
-
-  return result;
-}
+bool getCtxKnowledgeEnabled(std::optional<IAgentRuntime> runtime);
 
 /**
  * Check if custom LLM should be used based on environment variables
@@ -56,24 +37,7 @@ namespace elizaos {
  * - TEXT_MODEL
  * - OPENROUTER_API_KEY (or provider-specific API key)
  */
-
-
-  // Check for provider-specific API keys
-  switch (textProvider.toLowerCase()) {
-    case 'openrouter':
-      return !!process.env.OPENROUTER_API_KEY;
-    case 'openai':
-      return !!process.env.OPENAI_API_KEY;
-    case 'anthropic':
-      return !!process.env.ANTHROPIC_API_KEY;
-    case 'google':
-      return !!process.env.GOOGLE_API_KEY;
-    default:
-      return false;
-  }
-}
-
-const useCustomLLM = shouldUseCustomLLM();
+bool shouldUseCustomLLM();
 
 // =============================================================================
 // MAIN DOCUMENT PROCESSING FUNCTIONS
@@ -90,86 +54,6 @@ const useCustomLLM = shouldUseCustomLLM();
  * @param params Fragment parameters
  * @returns Number of fragments processed
  */
-std::future<double> processFragmentsSynchronously(auto {
-  runtime, auto documentId, auto fullDocumentText, auto agentId, auto contentType, auto roomId, auto entityId, auto worldId, auto documentTitle, std::optional<{
-  runtime: IAgentRuntime;
-  documentId: UUID;
-  fullDocumentText: string;
-  agentId: UUID;
-  contentType: string;
-  roomId: UUID;
-  entityId: UUID;
-  worldId: UUID;
-  documentTitle: string;
-}> });.`);
-    return 0;
-  }
-
-  // Split the text into chunks using standard parameters
-  const chunks = await splitDocumentIntoChunks(fullDocumentText);
-
-  if (chunks.length === 0) {
-    logger.warn(`No chunks generated from text for ${documentId}. No fragments to save.`);
-    return 0;
-  }
-
-  const docName = documentTitle || documentId.substring(0, 8);
-  logger.info(`[Document Processor] "${docName}": Split into ${chunks.length} chunks`);
-
-  // Get provider limits for rate limiting
-  const providerLimits = await getProviderRateLimits();
-  const CONCURRENCY_LIMIT = Math.min(30, providerLimits.maxConcurrentRequests || 30);
-  const rateLimiter = createRateLimiter(
-    providerLimits.requestsPerMinute || 60,
-    providerLimits.tokensPerMinute
-  );
-
-  logger.debug(
-    `[Document Processor] Rate limits: ${providerLimits.requestsPerMinute} RPM, ${providerLimits.tokensPerMinute} TPM (${providerLimits.provider}, concurrency: ${CONCURRENCY_LIMIT})`
-  );
-
-  // Process and save fragments
-  const { savedCount, failedCount } = await processAndSaveFragments({
-    runtime,
-    documentId,
-    chunks,
-    fullDocumentText,
-    contentType,
-    agentId,
-    roomId: roomId || agentId,
-    entityId: entityId || agentId,
-    worldId: worldId || agentId,
-    concurrencyLimit: CONCURRENCY_LIMIT,
-    rateLimiter,
-    documentTitle,
-  });
-
-  // Report results with summary
-  const successRate = ((savedCount / chunks.length) * 100).toFixed(1);
-
-  if (failedCount > 0) {
-    logger.warn(
-      `[Document Processor] "${docName}": ${failedCount}/${chunks.length} chunks failed processing`
-    );
-  }
-
-  logger.info(
-    `[Document Processor] "${docName}" complete: ${savedCount}/${chunks.length} fragments saved (${successRate}% success)`
-  );
-
-  // Provide comprehensive end summary
-  logKnowledgeGenerationSummary({
-    documentId,
-    totalChunks: chunks.length,
-    savedCount,
-    failedCount,
-    successRate: parseFloat(successRate),
-    ctxEnabled: getCtxKnowledgeEnabled(runtime),
-    providerLimits,
-  });
-
-  return savedCount;
-}
 
 // =============================================================================
 // DOCUMENT EXTRACTION & MEMORY FUNCTIONS
@@ -182,84 +66,13 @@ std::future<double> processFragmentsSynchronously(auto {
  * @param originalFilename Original filename
  * @returns Extracted text
  */
-std::future<std::string> extractTextFromDocument(Buffer fileBuffer, const std::string& contentType, const std::string& originalFilename);. Cannot extract text.`);
-  }
-
-  try {
-    if (contentType === 'application/pdf') {
-      logger.debug(`Extracting text from PDF: ${originalFilename}`);
-      return await convertPdfToTextFromBuffer(fileBuffer, originalFilename);
-    } else {
-      logger.debug(`Extracting text from non-PDF: ${originalFilename} (Type: ${contentType})`);
-
-      // For plain text files, try UTF-8 decoding first
-      if (
-        contentType.includes('text/') ||
-        contentType.includes('application/json') ||
-        contentType.includes('application/xml')
-      ) {
-        try {
-          return fileBuffer.toString('utf8');
-        } catch (textError) {
-          logger.warn(
-            `Failed to decode ${originalFilename} as UTF-8, falling back to binary extraction`
-          );
-        }
-      }
-
-      // For other files, use general extraction
-      return await extractTextFromFileBuffer(fileBuffer, contentType, originalFilename);
-    }
-  } catch (error: any) {
-    logger.error(`Error extracting text from ${originalFilename}: ${error.message}`);
-    throw new Error(`Failed to extract text from ${originalFilename}: ${error.message}`);
-  }
-}
+std::future<std::string> extractTextFromDocument(Buffer fileBuffer, const std::string& contentType, const std::string& originalFilename);
 
 /**
  * Create a memory object for the main document
  * @param params Document parameters
  * @returns Memory object for the main document
  */
-: {
-  text: string;
-  agentId: UUID;
-  clientDocumentId: UUID;
-  originalFilename: string;
-  contentType: string;
-  worldId: UUID;
-  fileSize: number;
-  documentId?: UUID;
-  customMetadata?: Record<string, unknown>;
-}): Memory {
-  const fileExt = originalFilename.split('.').pop()?.toLowerCase() || '';
-  const title = originalFilename.replace(`.${fileExt}`, '');
-
-  // Use the provided documentId or generate a new one
-  const docId = documentId || (uuidv4() as UUID);
-
-  return {
-    id: docId,
-    agentId,
-    roomId: agentId,
-    worldId,
-    entityId: agentId,
-    content: { text },
-    metadata: {
-      type: MemoryType.CUSTOM,
-      documentId: clientDocumentId,
-      originalFilename,
-      contentType,
-      title,
-      fileExt,
-      fileSize,
-      source: 'rag-service-main-upload',
-      timestamp: Date.now(),
-      // Merge custom metadata if provided
-      ...(customMetadata || {}),
-    },
-  };
-}
 
 // =============================================================================
 // CHUNKING AND FRAGMENT PROCESSING
@@ -270,135 +83,24 @@ std::future<std::string> extractTextFromDocument(Buffer fileBuffer, const std::s
  * @param documentText The full document text to split
  * @returns Array of text chunks
  */
-std::future<std::vector<std::string>> splitDocumentIntoChunks(const std::string& documentText);, tokenChunkOverlap=${tokenChunkOverlap}, ` +
-      `charChunkSize=${targetCharChunkSize}, charChunkOverlap=${targetCharChunkOverlap}`
-  );
-
-  // Split the text into chunks
-  return await splitChunks(documentText, tokenChunkSize, tokenChunkOverlap);
-}
 
 /**
  * Process and save document fragments
  * @param params Processing parameters
  * @returns Object with counts of saved and failed fragments
  */
-async : {
-  runtime: IAgentRuntime;
-  documentId: UUID;
-  chunks: string[];
-  fullDocumentText: string;
-  contentType?: string;
-  agentId: UUID;
-  roomId?: UUID;
-  entityId?: UUID;
-  worldId?: UUID;
-  concurrencyLimit: number;
-  rateLimiter: (estimatedTokens?: number) => Promise<void>;
-  documentTitle?: string;
-}): Promise<{
-  savedCount: number;
-  failedCount: number;
-  failedChunks: number[];
-}> {
-  let savedCount = 0;
-  let failedCount = 0;
-  const failedChunks: number[] = [];
 
   // Process chunks in batches to respect concurrency limits
-  for (let i = 0; i < chunks.length; i += concurrencyLimit) {
-    const batchChunks = chunks.slice(i, i + concurrencyLimit);
-    const batchOriginalIndices = Array.from({ length: batchChunks.length }, (_, k) => i + k);
-
-    logger.debug(
-      `[Document Processor] Batch ${Math.floor(i / concurrencyLimit) + 1}/${Math.ceil(chunks.length / concurrencyLimit)}: processing ${batchChunks.length} chunks (${batchOriginalIndices[0]}-${batchOriginalIndices[batchOriginalIndices.length - 1]})`
-    );
 
     // Process context generation in an optimized batch
-    const contextualizedChunks = await getContextualizedChunks(
-      runtime,
-      fullDocumentText,
-      batchChunks,
-      contentType,
-      batchOriginalIndices,
-      documentTitle
-    );
 
     // Generate embeddings with rate limiting
-    const embeddingResults = await generateEmbeddingsForChunks(
-      runtime,
-      contextualizedChunks,
-      rateLimiter
-    );
 
     // Save fragments with embeddings
-    for (const result of embeddingResults) {
-      const originalChunkIndex = result.index;
 
-      if (!result.success) {
-        failedCount++;
-        failedChunks.push(originalChunkIndex);
-        logger.warn(`Failed to process chunk ${originalChunkIndex} for document ${documentId}`);
-        continue;
-      }
-
-      const contextualizedChunkText = result.text;
-      const embedding = result.embedding;
-
-      if (!embedding || embedding.length === 0) {
-        logger.warn(
-          `Zero vector detected for chunk ${originalChunkIndex} (document ${documentId}). Embedding: ${JSON.stringify(result.embedding)}`
-        );
-        failedCount++;
-        failedChunks.push(originalChunkIndex);
-        continue;
-      }
-
-      try {
-        const fragmentMemory: Memory = {
-          id: uuidv4() as UUID,
-          agentId,
-          roomId: roomId || agentId,
-          worldId: worldId || agentId,
-          entityId: entityId || agentId,
-          embedding,
-          content: { text: contextualizedChunkText },
-          metadata: {
-            type: MemoryType.FRAGMENT,
-            documentId,
-            position: originalChunkIndex,
-            timestamp: Date.now(),
-            source: 'rag-service-fragment-sync',
-          },
-        };
-
-        await runtime.createMemory(fragmentMemory, 'knowledge');
         // Log when all chunks for this document are processed
-        if (originalChunkIndex === chunks.length - 1) {
-          const docName = documentTitle || documentId.substring(0, 8);
-          logger.info(
-            `[Document Processor] "${docName}": All ${chunks.length} chunks processed successfully`
-          );
-        }
-        savedCount++;
-      } catch (saveError: any) {
-        logger.error(
-          `Error saving chunk ${originalChunkIndex} to database: ${saveError.message}`,
-          saveError.stack
-        );
-        failedCount++;
-        failedChunks.push(originalChunkIndex);
-      }
-    }
 
     // Add a small delay between batches to prevent overwhelming the API
-    if (i + concurrencyLimit < chunks.length) {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-    }
-  }
-
-  return { savedCount, failedCount, failedChunks };
-}
 
 /**
  * Generate embeddings for contextualized chunks
@@ -407,80 +109,12 @@ async : {
  * @param rateLimiter Rate limiter function
  * @returns Array of embedding results
  */
-async >,
-  rateLimiter: (estimatedTokens?: number) => Promise<void>
-): Promise<Array<any>> {
   // Filter out failed chunks
-  const validChunks = contextualizedChunks.filter((chunk) => chunk.success);
-  const failedChunks = contextualizedChunks.filter((chunk) => !chunk.success);
-
-  if (validChunks.length === 0) {
-    return failedChunks.map((chunk) => ({
-      success: false,
-      index: chunk.index,
-      error: new Error('Chunk processing failed'),
-      text: chunk.contextualizedText,
-    }));
-  }
 
   // Always use individual processing with ElizaOS runtime (keeping embeddings simple)
-  return await Promise.all(
-    contextualizedChunks.map(async (contextualizedChunk) => {
-      if (!contextualizedChunk.success) {
-        return {
-          success: false,
-          index: contextualizedChunk.index,
-          error: new Error('Chunk processing failed'),
-          text: contextualizedChunk.contextualizedText,
-        };
-      }
 
       // Apply rate limiting before embedding generation
-      const embeddingTokens = estimateTokens(contextualizedChunk.contextualizedText);
       await rateLimiter(embeddingTokens);
-
-      try {
-        const generateEmbeddingOperation = async () => {
-          return await generateEmbeddingWithValidation(
-            runtime,
-            contextualizedChunk.contextualizedText
-          );
-        };
-
-        const { embedding, success, error } = await withRateLimitRetry(
-          generateEmbeddingOperation,
-          `embedding generation for chunk ${contextualizedChunk.index}`
-        );
-
-        if (!success) {
-          return {
-            success: false,
-            index: contextualizedChunk.index,
-            error,
-            text: contextualizedChunk.contextualizedText,
-          };
-        }
-
-        return {
-          embedding,
-          success: true,
-          index: contextualizedChunk.index,
-          text: contextualizedChunk.contextualizedText,
-        };
-      } catch (error: any) {
-        logger.error(
-          `Error generating embedding for chunk ${contextualizedChunk.index}: ${error.message}`
-        );
-        return {
-          success: false,
-          index: contextualizedChunk.index,
-          error,
-          text: contextualizedChunk.contextualizedText,
-        };
-      }
-    })
-  );
-}
 
 // =============================================================================
 // CONTEXTUAL ENRICHMENT FUNCTIONS
@@ -489,231 +123,42 @@ async >,
 /**
  * Generate contextual chunks if contextual Knowledge is enabled
  */
-async >> {
-  const ctxEnabled = getCtxKnowledgeEnabled(runtime);
+std::future<std::vector> getContextualizedChunks(IAgentRuntime runtime, string | undefined fullDocumentText, const std::vector<std::string>& chunks, string | undefined contentType, const std::vector<double>& batchOriginalIndices, std::optional<std::string> documentTitle);>> {
 
   // Log configuration state once per document (not per batch)
-  if (batchOriginalIndices[0] === 0) {
-    const docName = documentTitle || 'Document';
-    const provider = runtime?.getSetting('TEXT_PROVIDER') || process.env.TEXT_PROVIDER;
-    const model = runtime?.getSetting('TEXT_MODEL') || process.env.TEXT_MODEL;
-    logger.info(
-      `[Document Processor] "${docName}": CTX enrichment ${ctxEnabled ? 'ENABLED' : 'DISABLED'}${ctxEnabled ? ` (${provider}/${model})` : ''}`
-    );
-  }
 
   // Enhanced logging for contextual processing
-  if (ctxEnabled && fullDocumentText) {
-    return await generateContextsInBatch(
-      runtime,
-      fullDocumentText,
-      chunks,
-      contentType,
-      batchOriginalIndices,
-      documentTitle
-    );
-  } else if (!ctxEnabled && batchOriginalIndices[0] === 0) {
-    logger.debug(
-      `[Document Processor] To enable CTX: Set CTX_KNOWLEDGE_ENABLED=true and configure TEXT_PROVIDER/TEXT_MODEL`
-    );
-  }
 
   // If contextual Knowledge is disabled, prepare the chunks without modification
-  return chunks.map((chunkText, idx) => ({
-    contextualizedText: chunkText,
-    index: batchOriginalIndices[idx],
-    success: true,
-  }));
-}
 
 /**
  * Generate contexts for multiple chunks in a single batch
  */
-async >> {
-  if (!chunks || chunks.length === 0) {
-    return [];
-  }
-
-  const providerLimits = await getProviderRateLimits();
-  const rateLimiter = createRateLimiter(
-    providerLimits.requestsPerMinute || 60,
-    providerLimits.tokensPerMinute
-  );
+std::future<std::vector> generateContextsInBatch(IAgentRuntime runtime, const std::string& fullDocumentText, const std::vector<std::string>& chunks, std::optional<std::string> contentType, std::optional<std::vector<double>> batchIndices, std::optional<std::string> documentTitle);>> {
 
   // Get active provider from validateModelConfig
-  const config = validateModelConfig(runtime);
-  const isUsingOpenRouter = config.TEXT_PROVIDER === 'openrouter';
-  const isUsingCacheCapableModel =
-    isUsingOpenRouter &&
-    (config.TEXT_MODEL?.toLowerCase().includes('claude') ||
-      config.TEXT_MODEL?.toLowerCase().includes('gemini'));
-
-  logger.debug(
-    `[Document Processor] Contextualizing ${chunks.length} chunks with ${config.TEXT_PROVIDER}/${config.TEXT_MODEL} (cache: ${isUsingCacheCapableModel})`
-  );
 
   // Prepare prompts or system messages in parallel
-  const promptConfigs = prepareContextPrompts(
-    chunks,
-    fullDocumentText,
-    contentType,
-    batchIndices,
-    isUsingCacheCapableModel
-  );
 
   // Process valid prompts with rate limiting
-  const contextualizedChunks = await Promise.all(
-    promptConfigs.map(async (item) => {
-      if (!item.valid) {
-        return {
-          contextualizedText: item.chunkText,
-          success: false,
-          index: item.originalIndex,
-        };
-      }
 
       // Apply rate limiting before making API call
-      const llmTokens = estimateTokens(item.chunkText + (item.prompt || ''));
       await rateLimiter(llmTokens);
 
-      try {
-        let llmResponse;
-
-        const generateTextOperation = async () => {
-          if (useCustomLLM) {
             // Use custom LLM with caching support
-            if (item.usesCaching) {
               // Use the newer caching approach with separate document
-              return await generateText(runtime, item.promptText!, item.systemPrompt, {
-                cacheDocument: item.fullDocumentTextForContext,
-                cacheOptions: { type: 'ephemeral' },
-                autoCacheContextualRetrieval: true,
-              });
-            } else {
               // Original approach - document embedded in prompt
-              return await generateText(runtime, item.prompt!);
-            }
-          } else {
             // Fall back to runtime.useModel (original behavior)
-            if (item.usesCaching) {
               // Use the newer caching approach with separate document
               // Note: runtime.useModel doesn't support cacheDocument/cacheOptions
-              return await runtime.useModel(ModelType.TEXT_LARGE, {
-                prompt: item.promptText!,
-                system: item.systemPrompt,
-              });
-            } else {
               // Original approach - document embedded in prompt
-              return await runtime.useModel(ModelType.TEXT_LARGE, {
-                prompt: item.prompt!,
-              });
-            }
-          }
-        };
-
-        llmResponse = await withRateLimitRetry(
-          generateTextOperation,
-          `context generation for chunk ${item.originalIndex}`
-        );
-
-        const generatedContext = typeof llmResponse === 'string' ? llmResponse : llmResponse.text;
-        const contextualizedText = getChunkWithContext(item.chunkText, generatedContext);
 
         // Track context generation progress without spam
-        if (
-          (item.originalIndex + 1) % Math.max(1, Math.floor(chunks.length / 3)) === 0 ||
-          item.originalIndex === chunks.length - 1
-        ) {
-          const docName = documentTitle || 'Document';
-          logger.debug(
-            `[Document Processor] "${docName}": Context added for ${item.originalIndex + 1}/${chunks.length} chunks`
-          );
-        }
-
-        return {
-          contextualizedText,
-          success: true,
-          index: item.originalIndex,
-        };
-      } catch (error: any) {
-        logger.error(
-          `Error generating context for chunk ${item.originalIndex}: ${error.message}`,
-          error.stack
-        );
-        return {
-          contextualizedText: item.chunkText,
-          success: false,
-          index: item.originalIndex,
-        };
-      }
-    })
-  );
-
-  return contextualizedChunks;
-}
 
 /**
  * Prepare prompts for contextualization
  */
- due to: ${cachingPromptInfo.prompt}`
-          );
-          return {
-            originalIndex,
-            chunkText,
-            valid: false,
-            usesCaching: false,
-          };
-        }
-
-        return {
-          valid: true,
-          originalIndex,
-          chunkText,
-          usesCaching: true,
-          systemPrompt: cachingPromptInfo.systemPrompt,
-          promptText: cachingPromptInfo.prompt,
-          fullDocumentTextForContext: fullDocumentText,
-        };
-      } else {
-        // Original approach - embed document in the prompt
-        const prompt = contentType
-          ? getPromptForMimeType(contentType, fullDocumentText, chunkText)
-          : getContextualizationPrompt(fullDocumentText, chunkText);
-
-        if (prompt.startsWith('Error:')) {
-          logger.warn(`Skipping contextualization for chunk ${originalIndex} due to: ${prompt}`);
-          return {
-            prompt: null,
-            originalIndex,
-            chunkText,
-            valid: false,
-            usesCaching: false,
-          };
-        }
-
-        return {
-          prompt,
-          originalIndex,
-          chunkText,
-          valid: true,
-          usesCaching: false,
-        };
-      }
-    } catch (error: any) {
-      logger.error(
-        `Error preparing prompt for chunk ${originalIndex}: ${error.message}`,
-        error.stack
-      );
-      return {
-        prompt: null,
-        originalIndex,
-        chunkText,
-        valid: false,
-        usesCaching: false,
-      };
-    }
-  });
-}
+std::vector<std::any> prepareContextPrompts(const std::vector<std::string>& chunks, const std::string& fullDocumentText, std::optional<std::string> contentType, std::optional<std::vector<double>> batchIndices, auto isUsingCacheCapableModel = false);
 
 // =============================================================================
 // UTILITY FUNCTIONS
@@ -722,135 +167,26 @@ async >> {
 /**
  * Helper to generate embedding with proper error handling and validation
  */
-std::future<{
-  embedding: number[] | null;
-  success: boolean;
-  error?: any;
-}> generateEmbeddingWithValidation(IAgentRuntime runtime, const std::string& text););
+    // Always use ElizaOS runtime for embeddings (keep it simple as requested)
 
     // Handle different embedding result formats consistently
-    const embedding = Array.isArray(embeddingResult)
-      ? embeddingResult
-      : (embeddingResult as { embedding: number[] })?.embedding;
 
     // Validate embedding
-    if (!embedding || embedding.length === 0) {
-      logger.warn(`Zero vector detected. Embedding result: ${JSON.stringify(embedding)}`);
-      return {
-        embedding: null,
-        success: false,
-        error: new Error('Zero vector detected'),
-      };
-    }
-
-    return { embedding, success: true };
-  } catch (error: any) {
-    return { embedding: null, success: false, error };
-  }
-}
 
 /**
  * Handle rate-limited API calls with automatic retry
  */
-async  catch (error: any) {
-    if (error.status === 429) {
       // Handle rate limiting with exponential backoff
-      const delay = retryDelay || error.headers?.['retry-after'] || 5;
-      logger.warn(`Rate limit hit for ${errorContext}. Retrying after ${delay}s`);
-      await new Promise((resolve) => setTimeout(resolve, delay * 1000));
 
       // Try one more time
-      try {
-        return await operation();
-      } catch (retryError: any) {
-        logger.error(`Failed after retry for ${errorContext}: ${retryError.message}`);
-        throw retryError;
-      }
-    }
-    throw error;
-  }
-}
 
 /**
  * Creates a comprehensive rate limiter that tracks both requests and tokens
  */
-> = [];
-  const intervalMs = 60 * 1000; // 1 minute in milliseconds
-
-  return async 
-
-    // Remove old token usage
-    while (tokenUsage.length > 0 && now - tokenUsage[0].timestamp > intervalMs) {
-      tokenUsage.shift();
-    }
-
-    // Calculate current token usage
-    const currentTokens = tokenUsage.reduce((sum, usage) => sum + usage.tokens, 0);
-
-    // Check both request and token limits
-    const requestLimitExceeded = requestTimes.length >= requestsPerMinute;
-    const tokenLimitExceeded = tokensPerMinute && currentTokens + estimatedTokens > tokensPerMinute;
-
-    if (requestLimitExceeded || tokenLimitExceeded) {
-      let timeToWait = 0;
-
-      if (requestLimitExceeded) {
-        const oldestRequest = requestTimes[0];
-        timeToWait = Math.max(timeToWait, oldestRequest + intervalMs - now);
-      }
-
-      if (tokenLimitExceeded && tokenUsage.length > 0) {
-        const oldestTokenUsage = tokenUsage[0];
-        timeToWait = Math.max(timeToWait, oldestTokenUsage.timestamp + intervalMs - now);
-      }
-
-      if (timeToWait > 0) {
-        const reason = requestLimitExceeded ? 'request' : 'token';
-        // Only log significant waits to reduce spam
-        if (timeToWait > 5000) {
-          logger.info(
-            `[Document Processor] Rate limiting: waiting ${Math.round(timeToWait / 1000)}s due to ${reason} limit`
-          );
-        } else {
-          logger.debug(
-            `[Document Processor] Rate limiting: ${timeToWait}ms wait (${reason} limit)`
-          );
-        }
-        await new Promise((resolve) => setTimeout(resolve, timeToWait));
-      }
-    }
-
-    // Record this request
-    requestTimes.push(now);
-    if (tokensPerMinute) {
-      tokenUsage.push({ timestamp: now, tokens: estimatedTokens });
-    }
-  };
-}
+void createRateLimiter(double requestsPerMinute, std::optional<double> tokensPerMinute);
 
 /**
  * Logs a comprehensive summary of the knowledge generation process
  */
-: {
-  documentId: UUID;
-  totalChunks: number;
-  savedCount: number;
-  failedCount: number;
-  successRate: number;
-  ctxEnabled: boolean;
-  providerLimits: any;
-}) {
-  // Only show summary for failed processing or debug mode
-  if (failedCount > 0 || process.env.NODE_ENV === 'development') {
-    const status = failedCount > 0 ? 'PARTIAL' : 'SUCCESS';
-    logger.info(
-      `[Document Processor] ${status}: ${savedCount}/${totalChunks} chunks, CTX: ${ctxEnabled ? 'ON' : 'OFF'}, Provider: ${providerLimits.provider}`
-    );
-  }
-
-  if (failedCount > 0) {
-    logger.warn(`[Document Processor] ${failedCount} chunks failed processing`);
-  }
-}
 
 } // namespace elizaos

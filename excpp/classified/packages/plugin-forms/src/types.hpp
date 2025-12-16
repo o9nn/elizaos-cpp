@@ -11,7 +11,6 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-import type { UUID } from '@elizaos/core';
 
 /**
  * Possible types for form fields
@@ -34,7 +33,6 @@ struct FormField {
     std::optional<std::unordered_map<std::string, unknown>> metadata;
 };
 
-
 /**
  * Represents a step in a multi-step form
  */
@@ -45,7 +43,6 @@ struct FormStep {
     std::optional<bool> completed;
     std::optional<(form: Form, stepId: string) => Promise<void>> onComplete;
 };
-
 
 /**
  * Possible statuses for a form
@@ -70,7 +67,6 @@ struct Form {
     std::optional<std::unordered_map<std::string, unknown>> metadata;
 };
 
-
 /**
  * Template for creating forms
  */
@@ -81,7 +77,6 @@ struct FormTemplate {
     std::optional<std::unordered_map<std::string, unknown>> metadata;
 };
 
-
 /**
  * Result of a form update operation
  */
@@ -90,24 +85,12 @@ struct FormUpdateResult {
     std::optional<Form> form;
     std::optional<std::vector<std::string>> updatedFields;
     std::optional<std::vector<{ fieldId: string; message: string }>> errors;
-    std::optional<bool> stepCompleted;
-    std::optional<bool> formCompleted;
-    std::optional<std::string> currentStep;
-    std::optional<std::string> message;
-};
-
 
 // Extend the core service types with forms service
-declare module '@elizaos/core' {
   struct ServiceTypeRegistry {
     'FORMS' FORMS;
 };
 
-}
-
 // Export service type constant
-const FormsServiceType = {
-  FORMS: 'FORMS' as const,
-} satisfies Partial<import('@elizaos/core').ServiceTypeRegistry>;
 
 } // namespace elizaos

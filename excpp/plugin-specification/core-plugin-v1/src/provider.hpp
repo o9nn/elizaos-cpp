@@ -14,9 +14,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
-;
+
 
 /**
  * Provider for external data/services
@@ -28,36 +26,12 @@ using Provider = ProviderFromTypes;
  * Converts v2 Provider to v1 compatible Provider
  * Uses the V2 Provider interface to ensure proper optional field handling
  */
- catch (error) {
-        console.error(`Error in v2 provider ${providerV2.name}:`, error);
-        throw error;
-      }
-    },
-  };
-}
+Provider fromV2Provider(ProviderV2 providerV2);
 
 /**
  * Converts v1 Provider to v2 Provider
  * Creates a Provider object conforming to V2 Provider interface
  */
-,
-            data: result.data || {},
-            text: result.text || '',
-          };
-        }
-
-        // For primitive results, return as text
-        return {
-          values: {},
-          data: {},
-          text: String(result || ''),
-        };
-      } catch (error) {
-        console.error(`Error in v1 provider ${provider.name || 'unnamed'}:`, error);
-        throw error;
-      }
-    },
-  };
-}
+ProviderV2 toV2Provider(Provider provider);
 
 } // namespace elizaos

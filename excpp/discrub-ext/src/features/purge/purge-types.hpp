@@ -12,11 +12,8 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
+
 
 using PurgeState = std::variant<{
-  isLoading: boolean, nullptr>;
-  purgeChannel: Channel | null;
-};
 
 } // namespace elizaos

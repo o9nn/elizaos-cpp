@@ -18,22 +18,9 @@ namespace elizaos {
  * Converted from sweagent/tools/parsing.py
  */
 
-;
-;
-
 /**
  * Abstract base class for parse functions
  */
-abstract class AbstractParseFunction {
-  abstract type: string;
-  formatErrorTemplate?: string;
-
-  abstract call(modelResponse: ModelOutput | string, _commands?: Command[], strict?: boolean): [string, string];
-
-  parse(modelResponse: ModelOutput | string, commands?: Command[], strict: boolean = true): [string, string] {
-    return this.call(modelResponse, commands, strict);
-  }
-}
 
 /**
  * Thought-Action parser for parsing both thought and action
@@ -98,7 +85,6 @@ class ThoughtActionParser extends AbstractParseFunction {
 
     return [thought, action];
   }
-}
 
 /**
  * Action-only parser (no thought parsing)
@@ -130,7 +116,6 @@ class ActionOnlyParser extends AbstractParseFunction {
 
     return ['', action];
   }
-}
 
 /**
  * XML-based thought-action parser
@@ -163,7 +148,6 @@ class XMLThoughtActionParser extends AbstractParseFunction {
 
     return [thought, action];
   }
-}
 
 /**
  * Edit format parser for special edit commands
@@ -185,56 +169,28 @@ class EditFormatParser extends ThoughtActionParser {
 
     return [thought, action];
   }
-}
 
 /**
- * Function calling parser for OpenAI-style ): string {
+ * Function calling parser for OpenAI-style function calls
+ */
+class FunctionCallingParser extends AbstractParseFunction {
+  type = 'function_calling' as const;
+
+  formatErrorMessage(error: { errorCode?: string; message?: string }): string {
     if (error.errorCode === 'missing') {
       return 'The model did not use any tool calls';
     }
     return error.message || 'Unknown error';
   }
 
-  call(modelResponse: ModelOutput | string, _commands?: Command[], strict: boolean = false): [string, string] {
-    // Handle 
-
-      const toolCall = toolCalls[0];
-      const functionName = toolCall.function.name;
-      const args = toolCall.function.arguments;
+    // Handle function calling format - support both toolCalls and tool_calls
 
       // Validate against allowed commands
-      if (_commands && _commands.length > 0 && strict) {
-        const validCommand = _commands.find((cmd) => cmd.name === functionName);
-        if (!validCommand) {
-          throw new FormatError(`Invalid command: ${functionName}`);
-        }
-      }
 
       // Convert to command format
-      let action = functionName;
-      if (args) {
-        try {
-          const argsObj = typeof args === 'string' ? JSON.parse(args) : args;
-          if (argsObj && typeof argsObj === 'object' && Object.keys(argsObj).length > 0) {
-            if (argsObj.command) {
-              action = String(argsObj.command);
-            } else {
               // Don't append empty object
-              const values = Object.values(argsObj).filter((v) => v !== undefined && v !== null && v !== '');
-              if (values.length > 0) {
-                action = `${functionName} ${values.map((v) => String(v)).join(' ')}`;
-              }
-            }
-          }
-        } catch (e) {
-          if (strict) {
-            throw new FormatError('Invalid JSON in 
 
     // Fallback to regular parsing
-    const message = typeof modelResponse === 'string' ? modelResponse : modelResponse.message || '';
-    return ['', message];
-  }
-}
 
 /**
  * Single bash code block parser
@@ -260,7 +216,6 @@ class SingleBashCodeBlockParser extends AbstractParseFunction {
     // Return the whole message as action if no code block found
     return ['', message.trim()];
   }
-}
 
 /**
  * Multiple bash code blocks parser
@@ -292,7 +247,6 @@ class MultipleBashCodeBlocksParser extends AbstractParseFunction {
 
     return ['', message.trim()];
   }
-}
 
 /**
  * Identity parser - returns input as both thought and action
@@ -313,7 +267,6 @@ class Identity extends AbstractParseFunction {
 
     return [message, message];
   }
-}
 
 /**
  * Last line parser - uses only the last line as action
@@ -337,20 +290,15 @@ class LastLineParser extends AbstractParseFunction {
 
     return [thought, lastLine];
   }
-}
 
 /**
- * Factory `);
-  }
-}
+ * Factory function to get parser by name
+ */
+AbstractParseFunction getParser(const std::string& parserName);
 
 /**
- * Main parse  else {
-    parser = parseFunction;
-  }
-
-  return parser.call(modelResponse, commands, strict);
-}
+ * Main parse function used by tools
+ */
 
 // Export types
 using ParseFunction = AbstractParseFunction;
@@ -364,7 +312,6 @@ class IdentityParser extends AbstractParseFunction {
     // For identity parser, just return the content directly as the action
     return ['', content.trim()];
   }
-}
 
 // Additional exports for compatibility
 class JsonParser extends AbstractParseFunction {
@@ -408,13 +355,12 @@ class JsonParser extends AbstractParseFunction {
       return ['', message];
     }
   }
-}
 
 /**
  * Create a parser instance based on the specified type
  * @param type - The parser type to create
  * @returns An instance of the appropriate parser
  */
-
+AbstractParseFunction createParser(const std::string& type);
 
 } // namespace elizaos

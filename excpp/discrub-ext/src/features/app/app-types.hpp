@@ -21,44 +21,13 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-;
-;
-;
-;
-;
-;
-;
-;
-;
-;
+
 
 using AppState = {
-  discrubPaused: boolean;
-  discrubCancelled: boolean;
-  task: AppTask;
-  settings: AppSettings;
-};
 
 using AppTask = {
-  active: boolean;
-  entity:
-    | (Message & { _index?: number; _total?: number })
-    | Channel
-    | User
-    | Guild
-    | Reaction
-    | Emoji
-    | Role
-    | Attachment
-    | Embed
-    | Maybe;
-  statusText: string | Maybe;
-};
 
 using Timeout = {
-  message: string;
-  timeout: number;
-};
 
 using AppSettings = std::unordered_map<DiscrubSetting, std::string>;
 

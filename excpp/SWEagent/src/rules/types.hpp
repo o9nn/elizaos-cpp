@@ -26,7 +26,6 @@ struct Rule {
     string | RuleContent content;
 };
 
-
 /**
  * Structured rule content
  */
@@ -36,7 +35,6 @@ struct RuleContent {
     std::optional<std::string> overview;
     std::optional<ProjectStructure> projectStructure;
 };
-
 
 /**
  * Project structure information
@@ -49,20 +47,17 @@ struct ProjectStructure {
     std::vector<Inspector> inspectors;
 };
 
-
 struct EntryPoint {
     std::string path;
     std::string description;
     'single' | 'batch' | 'other' type;
 };
 
-
 struct ClassInfo {
     std::string name;
     std::string path;
     std::string description;
 };
-
 
 struct ExecutionEnvironment {
     std::string type;
@@ -71,13 +66,11 @@ struct ExecutionEnvironment {
     std::optional<std::string> interfaceProject;
 };
 
-
 struct ToolsInfo {
     std::string location;
     std::string organization;
     std::string deployment;
 };
-
 
 struct Inspector {
     std::string name;
@@ -85,7 +78,6 @@ struct Inspector {
     'cli' | 'web' type;
     std::string description;
 };
-
 
 /**
  * Coding guidelines configuration
@@ -96,7 +88,6 @@ struct CodingGuidelines {
     std::vector<CodingRule> rules;
 };
 
-
 struct CodingRule {
     std::string id;
     'style' | 'imports' | 'api' | 'documentation' | 'filesystem' category;
@@ -104,7 +95,6 @@ struct CodingRule {
     std::optional<'required' | 'recommended' | 'optional'> enforcement;
     std::optional<std::vector<std::string>> alternatives;
 };
-
 
 /**
  * Complete rules configuration
