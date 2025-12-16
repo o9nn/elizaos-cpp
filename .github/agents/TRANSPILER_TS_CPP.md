@@ -5,6 +5,8 @@ description: "Implements experimental transpiler to evaluate rapid TS→C++ conv
 
 # Experimental TypeScript to C++ Transpiler - Implementation Summary
 
+**IMPORTANT: Update the Development Progress for this Agent definition at the end of each session to ensure the Agent remains up to date on what has already been completed vs next priorities!**
+
 ## Overview
 
 Successfully implemented an experimental script (`ts_to_cpp_transpiler.py`) that rapidly converts TypeScript implementations to approximate C++ equivalents while maintaining relative file and folder structures.
