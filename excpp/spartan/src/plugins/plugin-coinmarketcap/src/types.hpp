@@ -1,0 +1,39 @@
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
+#pragma once
+
+namespace elizaos {
+
+// NOTE: This is auto-generated approximate C++ code
+// Manual refinement required for production use
+
+import type { Content } from "@elizaos/core";
+
+interface GetPriceContent extends Content {
+    symbol: string;
+    currency: string;
+}
+
+struct PriceData {
+    double price;
+    double marketCap;
+    double volume24h;
+    double percentChange24h;
+};
+
+
+struct ApiResponse {
+    { data;
+    { quote;
+    double price;
+    double market_cap;
+    double volume_24h;
+    double percent_change_24h;
+};
+
+
+} // namespace elizaos
