@@ -71,6 +71,10 @@ class TypeScriptToCppTranspiler:
         # Clean up the type string
         ts_type = ts_type.strip()
         
+        # Handle React-specific types FIRST (before union splitting)
+        if ts_type.startswith('React.'):
+            return self.convert_react_type(ts_type)
+        
         # Handle object literal types like { path: string; hiddenTools?: string[] }
         if ts_type.startswith('{') and ts_type.endswith('}'):
             return 'std::any'  # Simplified - could be a struct
@@ -79,10 +83,18 @@ class TypeScriptToCppTranspiler:
         if '|' in ts_type and not '=>' in ts_type:
             types = [self.convert_type(t.strip()) for t in ts_type.split('|')]
             # Simplify null unions to optional
-            if 'null' in ts_type or 'nullptr' in types:
-                non_null_types = [t for t in types if t not in ['null', 'nullptr']]
+            if 'null' in ts_type.lower():
+                non_null_types = [t for t in types if t not in ['null', 'nullptr', 'std::nullopt']]
                 if len(non_null_types) == 1:
-                    return f'std::optional<{non_null_types[0]}>'
+                    base_type = non_null_types[0]
+                    # Don't double-wrap optionals
+                    if not base_type.startswith('std::optional<'):
+                        return f'std::optional<{base_type}>'
+                    return base_type
+            # Remove redundant nullptr and nullopt from variant
+            types = [t for t in types if t not in ['nullptr', 'std::nullopt']]
+            if len(types) == 1:
+                return types[0]
             return f'std::variant<{", ".join(types)}>'
         
         # Handle function types like (value: string) => void
@@ -107,9 +119,12 @@ class TypeScriptToCppTranspiler:
                 cpp_params = ', '.join([self.convert_type(p.strip()) for p in param_parts])
                 return f'{cpp_base}<{cpp_params}>'
         
-        # Handle React-specific types
-        if ts_type.startswith('React.'):
-            return self.convert_react_type(ts_type)
+        # Handle enum member access like ChannelType.DM
+        if '.' in ts_type:
+            parts = ts_type.split('.')
+            if len(parts) == 2:
+                # Convert EnumType.Member to EnumType::Member
+                return f'{parts[0]}::{parts[1]}'
         
         # Direct type mapping
         if ts_type in self.type_mappings:
@@ -149,18 +164,35 @@ class TypeScriptToCppTranspiler:
     
     def convert_react_type(self, ts_type: str) -> str:
         """Convert React-specific types to C++ equivalents"""
-        # React.RefObject<T> -> std::shared_ptr<T>
+        # React.RefObject<T> -> std::shared_ptr<T> or std::optional<std::shared_ptr<T>>
         if ts_type.startswith('React.RefObject<'):
             inner = ts_type[16:-1]  # Extract T from React.RefObject<T>
-            return f'std::shared_ptr<{self.convert_type(inner)}>'
+            # Check if inner is a union with null
+            if '| null' in inner or 'null |' in inner:
+                # Remove null from the type
+                base_type = inner.replace('| null', '').replace('null |', '').strip()
+                return f'std::optional<std::shared_ptr<{base_type}>>'
+            inner_cpp = self.convert_type(inner)
+            return f'std::shared_ptr<{inner_cpp}>'
         
         # React.FC or React.FunctionComponent -> void (function pointer)
         if 'React.FC' in ts_type or 'React.FunctionComponent' in ts_type:
             return 'void'
         
-        # React.ChangeEvent, FormEvent, etc. -> EventType
-        if 'React.' in ts_type and 'Event' in ts_type:
+        # React.ChangeEvent<T>, FormEvent<T>, etc. -> EventType<T>
+        if 'Event<' in ts_type:
+            # Extract the generic parameter
+            match = re.search(r'React\.(\w+Event)<([^>]+)>', ts_type)
+            if match:
+                event_type = match.group(1)
+                param = match.group(2)
+                return f'{event_type}<{param}>'
             return 'EventType'
+        
+        # React.ChangeEvent, FormEvent, etc. (without generics)
+        if 'React.' in ts_type and 'Event' in ts_type:
+            event_type = ts_type.replace('React.', '')
+            return event_type
         
         # React.KeyboardEvent, MouseEvent, etc.
         if 'React.' in ts_type:
