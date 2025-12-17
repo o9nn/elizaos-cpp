@@ -1,9 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
 #include "elizaos/core.hpp"
@@ -18,11 +21,11 @@ namespace elizaos {
  */
 
 // Team member enums
-using WeekDay = std::variant<, std::string, std::string, std::string, std::string, std::string, std::string, std::string>;
+using WeekDay = std::variant<, std::string>;
 
-using EmploymentStatus = std::variant<std::string, std::string, std::string, std::string>;
+using EmploymentStatus = std::string;
 
-using PlatformType = std::variant<std::string, std::string, std::string, std::string>;
+using PlatformType = std::string;
 
 using Skill = std::string;
 
@@ -54,11 +57,11 @@ struct TeamMember {
 };
 
 // Project status types
-using ProjectStatus = std::variant<std::string, std::string, std::string, std::string, std::string>;
+using ProjectStatus = std::string;
 
-using TaskStatus = std::variant<std::string, std::string, std::string, std::string, std::string>;
+using TaskStatus = std::string;
 
-using TaskPriority = std::variant<std::string, std::string, std::string, std::string>;
+using TaskPriority = std::string;
 
 // Task interface
 struct Task {
@@ -114,7 +117,7 @@ struct Project {
 };
 
 // Daily update types
-using UpdateType = std::variant<std::string, std::string, std::string>;
+using UpdateType = std::string;
 
 // Daily update interface
 struct DailyUpdate {

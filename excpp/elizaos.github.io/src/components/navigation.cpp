@@ -100,7 +100,7 @@ void Navigation() {
     className="py-3 text-base focus:bg-accent focus:text-accent-foreground"
     >;
     <Link;
-    "/profile/" + std::to_string(user.login);
+    "href={" + "/profile/" + user.login;
     className="flex items-center gap-2";
     >;
     <Avatar className="h-7 w-7">;

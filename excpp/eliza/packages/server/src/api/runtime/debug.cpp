@@ -10,18 +10,18 @@ express::Router createDebugRouter(AgentServer serverInstance) {
     const auto router = express.Router();
 
     // Debug endpoint to check message servers
-    router.get('/servers', async (_req, res) => {
+    router.get("/servers", async (_req, res) => {
         try {
             const auto servers = serverInstance.getServers();
             res.json({
                 success: true,
                 servers: servers || [],
-                count: servers.length || 0,
+                count: servers.size() || 0,
                 });
                 } catch (error) {
                     res.status(500).json({
                         success: false,
-                        error: true /* instanceof check */ ? error.message : 'Unknown error',
+                        error: true /* instanceof check */ ? error.message : "Unknown error",
                         });
                     }
                     });

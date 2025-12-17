@@ -21,17 +21,17 @@ void LoadingPanel(auto messages, auto type) {
     <CardContent className="bg-pop">;
     <div className="flex flex-col items-center justify-center py-8 space-y-4">;
     {/* Icon based on type */}
-    {type == 'loading' && (;
+    {type == "loading" && (;
     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#0052FF]"></div>;
     )}
 
-    {type == 'success' && (;
+    {type == "success" && (;
     <div className="h-12 w-12 rounded-full bg-green-500/20 flex items-center justify-center">;
     <Check className="h-8 w-8 text-green-500" />;
     </div>;
     )}
 
-    {type == 'error' && (;
+    {type == "error" && (;
     <div className="h-12 w-12 rounded-full bg-destructive/20 flex items-center justify-center">;
     <X className="h-8 w-8 text-destructive" />;
     </div>;
@@ -45,8 +45,8 @@ void LoadingPanel(auto messages, auto type) {
     ))}
 
     {/* Close button for success/error states */}
-    {type != 'loading' && onClose && (;
-    <Button onClick={onClose} className="mt-2 w-full" variant={type == 'error' ? 'destructive' : 'default'}>
+    {type != "loading" && onClose && (;
+    <Button onClick={onClose} className="mt-2 w-full" variant={type == "error" ? "destructive" : "default"}>
     Close;
     </Button>;
     )}

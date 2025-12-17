@@ -1,9 +1,13 @@
 #pragma once
+#include <algorithm>
+#include <chrono>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -53,8 +57,8 @@ struct Session {
     UUID channelId;
     UUID userId;
     SessionMetadata metadata;
-    Date createdAt;
-    Date lastActivity;
+    std::chrono::system_clock::time_point createdAt;
+    std::chrono::system_clock::time_point lastActivity;
 };
 
 /**
@@ -73,7 +77,7 @@ struct CreateSessionResponse {
     std::string sessionId;
     UUID agentId;
     UUID userId;
-    Date createdAt;
+    std::chrono::system_clock::time_point createdAt;
     SessionMetadata metadata;
 };
 
@@ -98,7 +102,7 @@ struct SimplifiedMessage {
     std::string content;
     std::string authorId;
     bool isAgent;
-    Date createdAt;
+    std::chrono::system_clock::time_point createdAt;
     SessionMessageMetadata metadata;
 };
 
@@ -117,8 +121,8 @@ struct SessionInfoResponse {
     std::string sessionId;
     UUID agentId;
     UUID userId;
-    Date createdAt;
-    Date lastActivity;
+    std::chrono::system_clock::time_point createdAt;
+    std::chrono::system_clock::time_point lastActivity;
     SessionMetadata metadata;
 };
 
@@ -146,7 +150,7 @@ struct MessageResponse {
     std::string id;
     std::string content;
     std::string authorId;
-    Date createdAt;
+    std::chrono::system_clock::time_point createdAt;
     std::optional<SessionMessageMetadata> metadata;
 };
 

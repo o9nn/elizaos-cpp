@@ -1,15 +1,18 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".constants.js.hpp"
-#include ".hyperfy/src/core/extras/playerEmotes.js.hpp"
-#include ".service.js.hpp"
-#include ".utils.hpp"
+#include "constants.js.hpp"
 #include "elizaos/core.hpp"
+#include "hyperfy/src/core/extras/playerEmotes.js.hpp"
+#include "service.js.hpp"
+#include "utils.hpp"
 
 namespace elizaos {
 

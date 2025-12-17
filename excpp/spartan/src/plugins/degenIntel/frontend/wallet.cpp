@@ -8,10 +8,10 @@ void Wallet() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto query = useQuery({;
-        queryKey: ['wallet'],
+        queryKey: ["wallet"],
         queryFn: async () => {
-            const auto response = std::to_string(import.meta.env.VITE_API_URL) + "/wallet";
-                method: 'POST',
+            const auto response = "fetch(" + import.meta.env.VITE_API_URL + "/wallet";
+                method: "POST",
                 });
                 const auto data = response.json();
                 return data;

@@ -1,15 +1,18 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include "...classes/channel.hpp"
-#include "...enum/discrub-setting.hpp"
-#include "...features/app/app-types.hpp"
-#include "..discrub-dialog/components/config.hpp"
 #include "channel-selection.hpp"
+#include "classes/channel.hpp"
+#include "discrub-dialog/components/config.hpp"
+#include "enum/discrub-setting.hpp"
+#include "features/app/app-types.hpp"
 #include "progress.hpp"
 
 namespace elizaos {

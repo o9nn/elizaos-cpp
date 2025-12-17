@@ -1,12 +1,15 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".florence2-model.hpp"
+#include "florence2-model.hpp"
 #include "worker-logger.hpp"
 
 namespace elizaos {
@@ -36,7 +39,7 @@ public:
     std::future<void> run();
     std::future<void> processFrame();
     std::vector<ScreenTile> calculateTiles(double width, double height);
-    std::future<Buffer> extractTileFromSharedBuffer(ScreenTile tile, SharedMetadata metadata);
+    std::future<std::vector<uint8_t>> extractTileFromSharedBuffer(ScreenTile tile, SharedMetadata metadata);
     std::future<void> writeResultToBuffer(const std::string& tileId, Florence2Result result, double frameId);
     void stop();
     std::future<void> dispose();
@@ -45,7 +48,7 @@ private:
     WorkerConfig config_;
     SharedArrayBuffer sharedBuffer_;
     DataView dataView_;
-    Int32Array atomicState_;
+    std::vector<int32_t> atomicState_;
     SharedArrayBuffer resultsBuffer_;
     DataView resultsView_;
     Florence2Model florence2_;

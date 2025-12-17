@@ -96,8 +96,8 @@ void SwapsTable() {
         </TableRow>;
         </TableHeader>;
         <TableBody>;
-        {(items || []).length > 0;
-        ? ((items || []).length > 100 ? items.splice(0, 50) : items).map(
+        {(items || []).size() > 0;
+        ? ((items || []).size() > 100 ? items.splice(0, 50) : items).map(
         [&](swap, _) {
             const auto {;
                 account,
@@ -111,7 +111,7 @@ void SwapsTable() {
                 return (;
                 <TableRow;
                 className="hover:bg-white/5"
-            std::to_string(transactionHash) + "_" + std::to_string(_);
+            "key={" + transactionHash + "_" + _;
             >;
             <TableCell className="text-left text-sm">;
             <Link;
@@ -190,7 +190,7 @@ void SwapsTable() {
     {showMoreTrades ? (;
     <div className="flex place-content-center">;
     <a;
-    "https://dexscreener.com/solana/" + std::to_string(token.mint)
+    "href={" + "https://dexscreener.com/solana/" + token.mint
     target="_blank";
     rel="noopener noreferrer";
     >;

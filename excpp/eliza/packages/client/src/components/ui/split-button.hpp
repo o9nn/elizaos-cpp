@@ -1,9 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -28,6 +31,20 @@ struct SplitButtonProps {
     std::optional<bool> disabled;
     std::optional<std::string> className;
 };
+
+
+} // namespace elizaos
+ction works
+
+    // Click enabled item
+
+    // Open dropdown
+
+    // Select item
+
+    // Dropdown should close
+
+    // Both parts should have consistent styling
 
 
 } // namespace elizaos

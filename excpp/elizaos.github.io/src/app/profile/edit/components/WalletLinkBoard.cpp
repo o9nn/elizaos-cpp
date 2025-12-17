@@ -17,8 +17,8 @@ void WalletLinkBoard(auto walletSection, auto readmeContent, auto defaultBranch)
             // Always open GitHub regardless of copy success
             const auto githubUrl =;
             readmeContent == nullptr;
-            "https://github.com/" + std::to_string(userLogin) + "/" + std::to_string(userLogin) + "/new/" + std::to_string(defaultBranch) + "?filename=README.md"
-            "https://github.com/" + std::to_string(userLogin) + "/" + std::to_string(userLogin) + "/edit/" + std::to_string(defaultBranch) + "/README.md"
+            "? " + "https://github.com/" + userLogin + "/" + userLogin + "/new/" + defaultBranch + "?filename=README.md"
+            ": " + "https://github.com/" + userLogin + "/" + userLogin + "/edit/" + defaultBranch + "/README.md"
 
             // Attempt to copy, but don't block GitHub opening
             copyToClipboard(walletSection);

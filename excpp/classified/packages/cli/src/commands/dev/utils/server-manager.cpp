@@ -9,15 +9,15 @@ std::future<std::string> getLocalCliPath() {
 
     const auto localCliPath = path.join(;
     process.cwd(),
-    'node_modules',
-    '@elizaos',
-    'cli',
-    'dist',
-    'index.js';
+    "node_modules",
+    "@elizaos",
+    "cli",
+    "dist",
+    "index.js";
     );
 
     try {
-        const auto fs = import('fs');
+        const auto fs = import("fs");
         return fs.existsSync(localCliPath) ? localCliPath : nullptr;
         } catch {
             return nullptr;
@@ -31,23 +31,23 @@ std::unordered_map<std::string, std::string> setupEnvironment() {
     const auto env = { ...process.env };
 
     // Add local node_modules to NODE_PATH for proper module resolution
-    const auto localModulesPath = path.join(process.cwd(), 'node_modules');
+    const auto localModulesPath = path.join(process.cwd(), "node_modules");
     if (env.NODE_PATH) {
-        std::to_string(localModulesPath) + std::to_string(path.delimiter) + std::to_string(env.NODE_PATH);
+        "env.NODE_PATH = " + localModulesPath + path.delimiter + env.NODE_PATH;
         } else {
             env.NODE_PATH = localModulesPath;
         }
 
         // Add local .bin to PATH to prioritize local executables
-        const auto localBinPath = path.join(process.cwd(), 'node_modules', '.bin');
+        const auto localBinPath = path.join(process.cwd(), "node_modules", ".bin");
         if (env.PATH) {
-            std::to_string(localBinPath) + std::to_string(path.delimiter) + std::to_string(env.PATH);
+            "env.PATH = " + localBinPath + path.delimiter + env.PATH;
             } else {
                 env.PATH = localBinPath;
             }
 
             // Ensure color output
-            env.FORCE_COLOR = '1';
+            env.FORCE_COLOR = "1";
 
             // Preserve ELIZA_TEST_MODE for test environments
             if (process.env.ELIZA_TEST_MODE) {
@@ -63,14 +63,14 @@ std::future<void> startServerProcess(std::vector<std::string> args = {}) {
 
     stopServerProcess();
 
-    std::cout << 'Starting server...' << std::endl;
+    std::cout << "Starting server..." << std::endl;
 
     const auto nodeExecutable = process.execPath;
     const auto localCliPath = getLocalCliPath();
 
     auto scriptPath: string;
     if (localCliPath) {
-        std::cout << 'Using local @elizaos/cli installation' << std::endl;
+        std::cout << "Using local @elizaos/cli installation" << std::endl;
         scriptPath = localCliPath;
         } else {
             // Fallback to current script path (global CLI)
@@ -81,16 +81,16 @@ std::future<void> startServerProcess(std::vector<std::string> args = {}) {
 
         // Use Bun.spawn directly for better control
         // In test mode, use pipes to allow output capture
-        const auto isTestMode = process.env.ELIZA_TEST_MODE == 'true';
-        const auto commandArgs = [nodeExecutable, scriptPath, 'start', ...args];
+        const auto isTestMode = process.env.ELIZA_TEST_MODE == "true";
+        const auto commandArgs = [nodeExecutable, scriptPath, "start", ...args];
 
         // In test mode, log the command being executed
         if (isTestMode) {
-            std::cout << "Executing command: " + std::to_string(commandArgs.join(' ')) << std::endl;
+            std::cout << "Executing command: " + std::to_string(commandArgs.join(" ")) << std::endl;
         }
 
         const auto childProcess = Bun.spawn(commandArgs, {;
-            stdio: isTestMode ? ['inherit', 'pipe', 'pipe'] : ['inherit', 'inherit', 'inherit'],
+            stdio: isTestMode ? ["inherit", "pipe", "pipe"] : ["inherit", "inherit", "inherit"],
             env,
             cwd: process.cwd(),
             });
@@ -112,7 +112,7 @@ std::future<void> startServerProcess(std::vector<std::string> args = {}) {
                         });
                         );
                         .catch((error) => {
-                            std::cerr << 'Error piping stdout:' << error << std::endl;
+                            std::cerr << "Error piping stdout:" << error << std::endl;
                             });
 
                             // Handle stderr piping
@@ -126,7 +126,7 @@ std::future<void> startServerProcess(std::vector<std::string> args = {}) {
                                     });
                                     );
                                     .catch((error) => {
-                                        std::cerr << 'Error piping stderr:' << error << std::endl;
+                                        std::cerr << "Error piping stderr:" << error << std::endl;
                                         });
                                     }
 
@@ -134,9 +134,9 @@ std::future<void> startServerProcess(std::vector<std::string> args = {}) {
                                     childProcess.exited;
                                     .then((exitCode) => {
                                         if (exitCode != 0) {
-                                            std::cout << "Server process exited with code " + std::to_string(exitCode) << std::endl;
+                                            std::cout << "Server process exited with code " + exitCode << std::endl;
                                             } else {
-                                                std::cout << 'Server process exited normally' << std::endl;
+                                                std::cout << "Server process exited normally" << std::endl;
                                             }
 
                                             // Reset state
@@ -144,7 +144,7 @@ std::future<void> startServerProcess(std::vector<std::string> args = {}) {
                                             serverState.isRunning = false;
                                             });
                                             .catch((error) => {
-                                                std::cerr << "Server process error: " + std::to_string(error.message) << std::endl;
+                                                std::cerr << "Server process error: " + error.message << std::endl;
                                                 serverState.process = nullptr;
                                                 serverState.isRunning = false;
                                                 });
@@ -158,15 +158,15 @@ std::future<bool> stopServerProcess() {
         return false;
     }
 
-    std::cout << 'Stopping current server process...' << std::endl;
+    std::cout << "Stopping current server process..." << std::endl;
 
     try {
         // Send SIGTERM to the process
-        const auto killed = serverState.process.kill('SIGTERM');
+        const auto killed = serverState.process.kill("SIGTERM");
 
         if (!killed) {
             std::cout << 'Failed to kill server process << trying force kill...' << std::endl;
-            serverState.process.kill('SIGKILL');
+            serverState.process.kill("SIGKILL");
         }
 
         // Reset state
@@ -178,7 +178,7 @@ std::future<bool> stopServerProcess() {
 
         return true;
         } catch (error) {
-            std::cerr << "Error stopping server process: " + std::to_string(error) << std::endl;
+            std::cerr << "Error stopping server process: " + error << std::endl;
 
             // Reset state even on error
             serverState.process = nullptr;
@@ -192,7 +192,7 @@ std::future<bool> stopServerProcess() {
 std::future<void> restartServerProcess(std::vector<std::string> args = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    std::cout << 'Restarting server...' << std::endl;
+    std::cout << "Restarting server..." << std::endl;
     startServerProcess(args);
 
 }

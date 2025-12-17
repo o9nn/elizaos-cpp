@@ -1,10 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -12,6 +14,6 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-using ProfileToken = std::variant<{
+using ProfileToken = std::optional<{
 
 } // namespace elizaos

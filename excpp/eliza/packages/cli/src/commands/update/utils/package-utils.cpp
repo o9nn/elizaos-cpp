@@ -31,11 +31,11 @@ std::future<UpdateCheckResult> checkForUpdates(const std::unordered_map<std::str
 void displayUpdateSummary(const std::unordered_map<std::string, PackageUpdate>& updates) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    std::cout << '\nAvailable updates:' << std::endl;
+    std::cout << "\nAvailable updates:" << std::endl;
     Object.entries(updates).forEach(([pkg, { current, latest }]) => {
         const auto majorUpdate = isMajorUpdate(current, latest);
-        const auto updateType = majorUpdate ? ' (MAJOR)' : '';
-        std::cout << "  " + std::to_string(pkg) + ": " + std::to_string(current) + " → " + std::to_string(latest) + std::to_string(updateType) << std::endl;
+        const auto updateType = majorUpdate ? " (MAJOR)" : "";
+        std::cout << "  " + pkg + ": " + current + " → " + latest + updateType << std::endl;
         });
 
 }
@@ -43,24 +43,24 @@ void displayUpdateSummary(const std::unordered_map<std::string, PackageUpdate>& 
 std::future<void> updatePackageJson(const std::string& packageJsonPath, const std::unordered_map<std::string, PackageUpdate>& updates) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto content = fs.readFile(packageJsonPath, 'utf8');
-    const auto packageJson = JSON.parse(content);
+    const auto content = fs.readFile(packageJsonPath, "utf8");
+    const auto packageJson = /* JSON.parse */ content;
 
     auto modified = false;
     for (const int [pkg, { latest }] of Object.entries(updates)) {
         if (packageJson.dependencies.[pkg]) {
-            "^" + std::to_string(latest);
+            "packageJson.dependencies[pkg] = " + "^" + latest;
             modified = true;
         }
         if (packageJson.devDependencies.[pkg]) {
-            "^" + std::to_string(latest);
+            "packageJson.devDependencies[pkg] = " + "^" + latest;
             modified = true;
         }
     }
 
     if (modified) {
-        fs.writeFile(packageJsonPath, JSON.stringify(packageJson, nullptr, 2) + '\n');
-        std::cout << 'Updated package.json with new versions' << std::endl;
+        fs.writeFile(packageJsonPath, /* JSON.stringify */ std::string(packageJson, nullptr, 2) + "\n");
+        std::cout << "Updated package.json with new versions" << std::endl;
     }
 
 }
@@ -69,11 +69,11 @@ std::future<void> installDependencies(const std::string& cwd) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        std::cout << '\nInstalling updated packages...' << std::endl;
+        std::cout << "\nInstalling updated packages..." << std::endl;
         try {
             const auto packageManager = getPackageManager();
-            execa(packageManager, ['install'], { cwd, stdio: 'inherit' });
-            std::cout << 'Dependencies installed successfully [✓]' << std::endl;
+            execa(packageManager, ["install"], { cwd, stdio: "inherit" });
+            std::cout << "Dependencies installed successfully [✓]" << std::endl;
             } catch (error) {
                 throw new Error(
                 "Failed to install dependencies: " + std::to_string(true /* instanceof check */ ? error.message : std::to_string(error))

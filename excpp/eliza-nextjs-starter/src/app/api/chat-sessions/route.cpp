@@ -27,8 +27,8 @@ std::future<void> GET(NextRequest request) {
             }
 
             // Fetch DM channels from ElizaOS server using the correct endpoint
-            const auto channelsUrl = std::to_string(API_BASE_URL) + "/api/messaging/central-servers/00000000-0000-0000-0000-000000000000/channels";
-            std::cout << "[API] Fetching channels from: " + std::to_string(channelsUrl) << std::endl;
+            const auto channelsUrl = API_BASE_URL + "/api/messaging/central-servers/00000000-0000-0000-0000-000000000000/channels";
+            std::cout << "[API] Fetching channels from: " + channelsUrl << std::endl;
 
             const auto response = fetch(channelsUrl, {;
                 method: "GET",
@@ -39,9 +39,9 @@ std::future<void> GET(NextRequest request) {
 
                     if (!response.ok) {
                         const auto errorText = response.text();
-                        std::cerr << "[API] ElizaOS API error (" + std::to_string(response.status) + "):" << errorText << std::endl;
+                        std::cerr << "[API] ElizaOS API error (" + response.status + "):" << errorText << std::endl;
                         throw new Error(
-                        "ElizaOS API responded with status: " + std::to_string(response.status) + " - " + std::to_string(errorText)
+                        "ElizaOS API responded with status: " + response.status + " - " + errorText
                         );
                     }
 
@@ -49,7 +49,7 @@ std::future<void> GET(NextRequest request) {
                     std::cout << "[API] Received channels response:" << Object.keys(data) << std::endl;
 
                     const auto channels = data.data.channels || data.channels || [];
-                    std::cout << "[API] Found " + std::to_string(channels.length) + " total channels" << std::endl;
+                    std::cout << "[API] Found " + channels.size() + " total channels" << std::endl;
 
                     // Filter for DM channels involving the user and agent (following ElizaOS client pattern)
                     // Only include channels that have sessionId (new UUID-based sessions)
@@ -73,7 +73,7 @@ std::future<void> GET(NextRequest request) {
                         });
 
                         console.log(
-                        "[API] Found " + std::to_string(dmChannels.length) + " DM channels for user " + std::to_string(userId) + " and agent " + std::to_string(AGENT_ID)
+                        "[API] Found " + dmChannels.size() + " DM channels for user " + userId + " and agent " + AGENT_ID
                         );
 
                         std::vector<std::any> chatSessions = [];
@@ -84,7 +84,7 @@ std::future<void> GET(NextRequest request) {
                             dmChannels.map(async (channel: any) => {
                                 try {
                                     const auto messagesResponse = fetch(;
-                                    std::to_string(API_BASE_URL) + "/api/messaging/central-channels/" + std::to_string(channel.id) + "/messages?limit=50"
+                                    API_BASE_URL + "/api/messaging/central-channels/" + channel.id + "/messages?limit=50"
                                     {
                                         method: "GET",
                                         headers: { "Content-Type": "application/json" },
@@ -98,7 +98,7 @@ std::future<void> GET(NextRequest request) {
                                             const auto messagesData = messagesResponse.json();
                                             messages =;
                                             messagesData.data.messages || messagesData.messages || [];
-                                            messageCount = messages.length;
+                                            messageCount = messages.size();
                                         }
 
                                         // Find the first user message as the query
@@ -114,7 +114,7 @@ std::future<void> GET(NextRequest request) {
                                         msg.rawMessage.senderId == userId,
                                         );
 
-                                        const auto lastMessage = messages[messages.length - 1];
+                                        const auto lastMessage = messages[messages.size() - 1];
 
                                         return {
                                             id: channel.metadata.sessionId || channel.id, // Use sessionId ID
@@ -136,7 +136,7 @@ std::future<void> GET(NextRequest request) {
                                             };
                                             } catch (error) {
                                                 console.error(
-                                                "[API] Error fetching messages for channel " + std::to_string(channel.id) + ":"
+                                                "[API] Error fetching messages for channel " + channel.id + ":"
                                                 error,
                                                 );
                                                 return {
@@ -155,7 +155,7 @@ std::future<void> GET(NextRequest request) {
                                                 );
                                                 } else {
                                                     // No UUID-based sessions found
-                                                    std::cout << "[API] No UUID-based DM channels found for user " + std::to_string(userId) << std::endl;
+                                                    std::cout << "[API] No UUID-based DM channels found for user " + userId << std::endl;
                                                     chatSessions = [];
                                                 }
 
@@ -170,7 +170,7 @@ std::future<void> GET(NextRequest request) {
                                                     data: {
                                                         userId,
                                                         sessions: chatSessions,
-                                                        totalSessions: chatSessions.length,
+                                                        totalSessions: chatSessions.size(),
                                                         },
                                                         });
                                                         } catch (error) {

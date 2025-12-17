@@ -11,26 +11,26 @@ std::future<void> runBunCommand(const std::vector<std::string>& args, const std:
         const auto finalArgs = [...args];
 
         // In CI environments, optimize bun install with appropriate flags
-        const auto isInstallCommand = args[0] == 'install';
-        const auto isCI = process.env.CI || process.env.ELIZA_TEST_MODE == 'true';
+        const auto isInstallCommand = args[0] == "install";
+        const auto isCI = process.env.CI || process.env.ELIZA_TEST_MODE == "true";
 
         if (isCI && isInstallCommand) {
             // Use flags that actually exist in Bun to optimize CI installations
             if (!finalArgs.includes('--frozen-lockfile')) {
-                finalArgs.push('--frozen-lockfile'); // Prevent lockfile changes in CI;
+                finalArgs.push_back("--frozen-lockfile"); // Prevent lockfile changes in CI;
             }
-            std::cout << '✅ Using CI-optimized flags for faster installation...' << std::endl;
+            std::cout << "✅ Using CI-optimized flags for faster installation..." << std::endl;
         }
 
         try {
             const auto result = silent;
-            ? bunExec('bun', finalArgs, { cwd });
-            : bunExecInherit('bun', finalArgs, { cwd });
+            ? bunExec("bun", finalArgs, { cwd });
+            : bunExecInherit("bun", finalArgs, { cwd });
 
             // Using result.success for clarity - it's a boolean that indicates exitCode === 0
             if (silent && !result.success) {
                 throw new Error(
-                "Bun command failed with exit code " + std::to_string(result.exitCode) + ": " + std::to_string(result.stderr || result.stdout)
+                "Bun command failed with exit code " + result.exitCode + ": " + std::to_string(result.stderr || result.stdout)
                 );
             }
             } catch (error: any) {
@@ -42,17 +42,17 @@ std::future<void> runBunCommand(const std::vector<std::string>& args, const std:
                 if (
                 isCI &&;
                 isInstallCommand &&;
-                (error.message.includes('frozen-lockfile') || error.message.includes('install'));
+                (error.(std::find(message.begin(), message.end(), "frozen-lockfile") != message.end()) || error.(std::find(message.begin(), message.end(), "install") != message.end()));
                 ) {
                     std::cout << 'CI-optimized install failed << retrying with basic args...' << std::endl;
                     const auto retryResult = silent;
-                    ? bunExec('bun', args, { cwd });
-                    : bunExecInherit('bun', args, { cwd });
+                    ? bunExec("bun", args, { cwd });
+                    : bunExecInherit("bun", args, { cwd });
 
                     // Using result.success for clarity - it's a boolean that indicates exitCode === 0
                     if (silent && !retryResult.success) {
                         throw new Error(
-                        "Bun command failed with exit code " + std::to_string(retryResult.exitCode) + ": " + std::to_string(retryResult.stderr || retryResult.stdout)
+                        "Bun command failed with exit code " + retryResult.exitCode + ": " + std::to_string(retryResult.stderr || retryResult.stdout)
                         );
                     }
                     } else {

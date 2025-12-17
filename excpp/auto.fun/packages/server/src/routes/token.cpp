@@ -14,14 +14,14 @@ std::future<void> validateQueryResults(std::optional<std::any> params, const std
         if (!results || results.length == 0) {
             /* ... */ return;
         }
-        std::cout << "[Validation] Validating " + std::to_string(results.length) + " results..." << std::endl;
+        std::cout << "[Validation] Validating " + results.size() + " results..." << std::endl;
 
         if (hideImported == 1) {
             const auto importedTokensFound = results.filter((token) => token.imported == 1);
             if (importedTokensFound.length > 0) {
                 const auto mints = importedTokensFound.map((t) => t.mint).join(", ");
-                const auto errorMsg = "Integrity check failed: Filter hideImported=1 active, but found imported=1. Mints: " + std::to_string(mints) + ". SQL: " + std::to_string(mainSql);
-                std::cerr << "[CRITICAL] " + std::to_string(errorMsg) << std::endl;
+                const auto errorMsg = "Integrity check failed: Filter hideImported=1 active, but found imported=1. Mints: " + mints + ". SQL: " + mainSql;
+                std::cerr << "[CRITICAL] " + errorMsg << std::endl;
                 throw std::runtime_error(errorMsg);
                 } else {
                     std::cout << "[Validation] Passed: hideImported=1 check." << std::endl;
@@ -33,13 +33,13 @@ std::future<void> validateQueryResults(std::optional<std::any> params, const std
                 );
                 if (nonActiveTokensFound.length > 0) {
                     const auto details = nonActiveTokensFound;
-                    std::to_string(t.mint) + "(" + std::to_string(t.status) + ")";
+                    ".map((t) => " + t.mint + "(" + t.status + ")";
                     .join(", ");
-                    const auto errorMsg = "Integrity check failed: Filter status='active' active, but found others. Mints/Statuses: " + std::to_string(details) + ". SQL: " + std::to_string(mainSql);
-                    std::cerr << "[CRITICAL] " + std::to_string(errorMsg) << std::endl;
+                    const auto errorMsg = "Integrity check failed: Filter status="active" active, but found others. Mints/Statuses: " + details + ". SQL: " + mainSql;
+                    std::cerr << "[CRITICAL] " + errorMsg << std::endl;
                     throw std::runtime_error(errorMsg);
                     } else {
-                        std::cout << "[Validation] Passed: status='active' check." << std::endl;
+                        std::cout << "[Validation] Passed: status="active" check." << std::endl;
                     }
                 }
                 if (status == "locked") {
@@ -48,13 +48,13 @@ std::future<void> validateQueryResults(std::optional<std::any> params, const std
                     );
                     if (nonLockedTokensFound.length > 0) {
                         const auto details = nonLockedTokensFound;
-                        std::to_string(t.mint) + "(" + std::to_string(t.status) + ")";
+                        ".map((t) => " + t.mint + "(" + t.status + ")";
                         .join(", ");
-                        const auto errorMsg = "Integrity check failed: Filter status='locked' active, but found others. Mints/Statuses: " + std::to_string(details) + ". SQL: " + std::to_string(mainSql);
-                        std::cerr << "[CRITICAL] " + std::to_string(errorMsg) << std::endl;
+                        const auto errorMsg = "Integrity check failed: Filter status="locked" active, but found others. Mints/Statuses: " + details + ". SQL: " + mainSql;
+                        std::cerr << "[CRITICAL] " + errorMsg << std::endl;
                         throw std::runtime_error(errorMsg);
                         } else {
-                            std::cout << "[Validation] Passed: status='locked' check." << std::endl;
+                            std::cout << "[Validation] Passed: status="locked" check." << std::endl;
                         }
                     }
                     std::cout << "[Validation] All checks passed." << std::endl;
@@ -112,77 +112,77 @@ PgSelect buildTokensBaseQuery(const std::any& db, std::optional<std::any> params
             const auto partnerCreators = process.env.PARTNER_CREATORS.split(",") || [];
 
             if (hideImported == 1) {
-                std::to_string(tokens.imported) + " = 0";
+                "conditions.push_back(sql" + tokens.imported + " = 0";
                 std::cout << "[Query Build] Adding condition: imported = 0" << std::endl;
             }
             auto specificStatusApplied = false;
             if (status == "active") {
-                std::to_string(tokens.status) + " = 'active'";
-                std::to_string(tokens.curveProgress) + " >= " + std::to_string(0);
-                std::to_string(tokens.tokenSupplyUiAmount) + " = " + std::to_string(1000000000);
-                std::cout << "[Query Build] Adding condition: status = 'active'" << std::endl;
+                "conditions.push_back(sql" + tokens.status + " = "active"";
+                "conditions.push_back(sql" + tokens.curveProgress + " >= " + 0;
+                "conditions.push_back(sql" + tokens.tokenSupplyUiAmount + " = " + 1000000000;
+                std::cout << "[Query Build] Adding condition: status = "active"" << std::endl;
 
                 specificStatusApplied = true;
                 } else if (status == "locked") {
-                    std::to_string(tokens.status) + " = 'locked'";
-                    std::cout << "[Query Build] Adding condition: status = 'locked'" << std::endl;
+                    "conditions.push_back(sql" + tokens.status + " = "locked"";
+                    std::cout << "[Query Build] Adding condition: status = "locked"" << std::endl;
                     specificStatusApplied = true;
                 }
 
                 if (sortBy == "verified") {
-                    std::to_string(tokens.verified) + " = 1";
+                    "conditions.push_back(sql" + tokens.verified + " = 1";
                     std::cout << "[Query Build] Adding condition: verified = 1" << std::endl;
                 }
 
                 if (!specificStatusApplied) {
-                    std::to_string(tokens.status) + " != 'pending'";
-                    std::cout << "[Query Build] Adding condition: status != 'pending'" << std::endl;
+                    "conditions.push_back(sql" + tokens.status + " != "pending"";
+                    std::cout << "[Query Build] Adding condition: status != "pending"" << std::endl;
                 }
-                "(" + std::to_string(tokens.hidden) + " != 1 OR " + std::to_string(tokens.hidden) + " IS NULL)";
+                "conditions.push_back(sql" + "(" + tokens.hidden + " != 1 OR " + tokens.hidden + " IS NULL)";
                 std::cout << "[Query Build] Adding condition: hidden != 1 OR hidden IS NULL" << std::endl;
                 if (creator) {
-                    conditions.push(eq(tokens.creator, creator));
-                    std::cout << "[Query Build] Adding condition: creator = " + std::to_string(creator) << std::endl;
+                    conditions.push_back(eq(tokens.creator, creator));
+                    std::cout << "[Query Build] Adding condition: creator = " + creator << std::endl;
                 }
                 if (search) {
-                    conditions.push(;
+                    conditions.push_back(;
                     or(;
-                    std::to_string(tokens.name) + " ILIKE " + std::to_string("%" + search + "%");
-                    std::to_string(tokens.ticker) + " ILIKE " + std::to_string("%" + search + "%");
-                    std::to_string(tokens.mint) + " ILIKE " + std::to_string("%" + search + "%");
+                    "sql" + tokens.name + " ILIKE " + std::to_string("%" + search + "%");
+                    "sql" + tokens.ticker + " ILIKE " + std::to_string("%" + search + "%");
+                    "sql" + tokens.mint + " ILIKE " + std::to_string("%" + search + "%");
                     );
                     );
-                    std::cout << "[Query Build] Adding condition: search LIKE " + std::to_string(search) << std::endl;
+                    std::cout << "[Query Build] Adding condition: search LIKE " + search << std::endl;
                 }
 
                 if (partnerLaunches.length > 0 && partnerCreators.length > 0) {
-                    conditions.push(;
-                    sql`(;
+                    conditions.push_back(;
+                    "sql";
                     NOT (;
                     lower(${tokens.ticker}) ~ ANY(ARRAY[;
                     ${sql.join(;
                     partnerLaunches.map(;
-                    std::to_string("^" + t.toLowerCase() + "([^A-Za-z0-9_]|$)");
+                    "(t) => sql" + std::to_string("^" + t.toLowerCase() + "([^A-Za-z0-9_]|$)");
                     ),
-                    ", ";
+                    "sql" + ", ";
                 )}
                 ]);
                 AND;
                 lower(${tokens.creator}) NOT IN (;
                 ${sql.join(;
-                std::to_string(c.toLowerCase())
-                ", ";
+                "partnerCreators.map((c) => sql" + std::to_string(c.toLowerCase())
+                "sql" + ", ";
             )}
             );
             );
-            )`;
+            ")";
             );
             logger.log(
             "[Query Build] Adding condition: restrict partner launch tickers to partnerCreators (case-insensitive)"
             );
         }
 
-        std::to_string(tokens.ticker) + " NOT LIKE " + std::to_string(sql`${"%✅"}`);
+        "conditions.push_back(sql" + tokens.ticker + " NOT LIKE " + std::to_string(sql`${"%✅"}`);
 
         if (conditions.length > 0) {
             query = query.where(and(...conditions.filter((c): c is SQL => !!c)));
@@ -199,37 +199,37 @@ PgSelect buildTokensCountBaseQuery(const std::any& db, std::optional<std::any> p
     const std::variant<(SQL, std::vector<undefined)>> conditions = [];
 
     if (hideImported == 1) {
-        std::to_string(tokens.imported) + " = 0";
+        "conditions.push_back(sql" + tokens.imported + " = 0";
     }
 
     if (sortBy == "verified") {
-        std::to_string(tokens.verified) + " = 1";
+        "conditions.push_back(sql" + tokens.verified + " = 1";
     }
 
     auto specificStatusApplied = false;
     if (status == "active") {
-        std::to_string(tokens.status) + " = 'active'";
+        "conditions.push_back(sql" + tokens.status + " = "active"";
         specificStatusApplied = true;
         } else if (status == "locked") {
-            std::to_string(tokens.status) + " = 'locked'";
+            "conditions.push_back(sql" + tokens.status + " = "locked"";
             specificStatusApplied = true;
         }
         if (!specificStatusApplied) {
-            std::to_string(tokens.status) + " != 'pending'";
+            "conditions.push_back(sql" + tokens.status + " != "pending"";
         }
-        "(" + std::to_string(tokens.hidden) + " != 1 OR " + std::to_string(tokens.hidden) + " IS NULL)";
+        "conditions.push_back(sql" + "(" + tokens.hidden + " != 1 OR " + tokens.hidden + " IS NULL)";
         if (creator) {
-            conditions.push(eq(tokens.creator, creator));
+            conditions.push_back(eq(tokens.creator, creator));
         }
         if (search) {
-            conditions.push(;
+            conditions.push_back(;
             or(;
-            std::to_string(tokens.name) + " ILIKE " + std::to_string("%" + search + "%");
-            std::to_string(tokens.ticker) + " ILIKE " + std::to_string("%" + search + "%");
-            std::to_string(tokens.mint) + " ILIKE " + std::to_string("%" + search + "%");
+            "sql" + tokens.name + " ILIKE " + std::to_string("%" + search + "%");
+            "sql" + tokens.ticker + " ILIKE " + std::to_string("%" + search + "%");
+            "sql" + tokens.mint + " ILIKE " + std::to_string("%" + search + "%");
             );
             );
-            std::cout << "[Count Build] Adding condition: search LIKE " + std::to_string(search) << std::endl;
+            std::cout << "[Count Build] Adding condition: search LIKE " + search << std::endl;
         }
 
         if (conditions.length > 0) {
@@ -280,18 +280,18 @@ std::future<void> processSwapEvent(const std::any& swap, bool shouldEmitGlobal =
                 }
 
                 // Emit to token-specific room
-                "token-" + std::to_string(swap.tokenMint);
+                "wsClient.emit(" + "token-" + swap.tokenMint;
 
                 // Only log in debug mode or for significant events
                 // Check for process is not ideal in Cloudflare Workers, use env var instead
                 const auto debugWs = process.env.DEBUG_WEBSOCKET == "true";
                 if (debugWs) {
-                    std::cout << "Emitted swap event for token " + std::to_string(swap.tokenMint) << std::endl;
+                    std::cout << "Emitted swap event for token " + swap.tokenMint << std::endl;
                 }
 
                 // Optionally emit to global room for activity feed
                 if (shouldEmitGlobal) {
-                    "token-" + std::to_string(swap.tokenMint);
+                    "wsClient.emit(" + "token-" + swap.tokenMint;
 
                     if (debugWs) {
                         std::cout << "Emitted swap event to global feed" << std::endl;
@@ -327,17 +327,17 @@ std::future<void> processTokenInfo(PublicKey mintPublicKey, AccountInfo<Buffer> 
 
         if (!isSplToken && !isSPL2022) {
             throw new Error(
-            "Not a valid SPL token. Owner: " + tokenInfo.owner.toString()
+            "Not a valid SPL token. Owner: " + tokenInfo.std::to_string(owner)
             );
         }
 
-        std::cout << "[search-token] Token owner: " + std::to_string(tokenInfo.owner.toString()) << std::endl;
-        std::cout << "[search-token] Token is SPL-2022: " + std::to_string(isSPL2022) << std::endl;
+        std::cout << "[search-token] Token owner: " + std::to_string(tokenInfo.std::to_string(owner)) << std::endl;
+        std::cout << "[search-token] Token is SPL-2022: " + isSPL2022 << std::endl;
 
         // Get mint info - decimals and authorities
         const auto mintInfo = connection.getParsedAccountInfo(mintPublicKey);
         logger.log(
-        "[search-token] Mint info: " + std::to_string(JSON.stringify(mintInfo.value.data))
+        "[search-token] Mint info: " + std::to_string(/* JSON.stringify */ std::string(mintInfo.value.data))
         );
 
         // Extract basic token info
@@ -345,8 +345,8 @@ std::future<void> processTokenInfo(PublicKey mintPublicKey, AccountInfo<Buffer> 
         const auto decimals = parsedData.info.decimals || 9;
         const auto mintAuthority = parsedData.info.mintAuthority || nullptr;
 
-        std::cout << "[search-token] Decimals: " + std::to_string(decimals) << std::endl;
-        std::cout << "[search-token] Mint authority: " + std::to_string(mintAuthority) << std::endl;
+        std::cout << "[search-token] Decimals: " + decimals << std::endl;
+        std::cout << "[search-token] Mint authority: " + mintAuthority << std::endl;
 
         // Initialize variables for token data
         auto tokenName = "";
@@ -368,7 +368,7 @@ std::future<void> processTokenInfo(PublicKey mintPublicKey, AccountInfo<Buffer> 
 
             if (metadataExt && metadataExt.state) {
                 logger.log(
-                "[search-token] Found tokenMetadata extension: " + std::to_string(JSON.stringify(metadataExt.state))
+                "[search-token] Found tokenMetadata extension: " + std::to_string(/* JSON.stringify */ std::string(metadataExt.state))
                 );
 
                 // Extract metadata directly from the extension
@@ -378,58 +378,58 @@ std::future<void> processTokenInfo(PublicKey mintPublicKey, AccountInfo<Buffer> 
                 updateAuthority = metadataExt.state.updateAuthority || nullptr;
 
                 logger.log(
-                "[search-token] SPL-2022 metadata - Name: " + std::to_string(tokenName) + ", Symbol: " + std::to_string(tokenSymbol)
+                "[search-token] SPL-2022 metadata - Name: " + tokenName + ", Symbol: " + tokenSymbol
                 );
-                std::cout << "[search-token] SPL-2022 metadata - URI: " + std::to_string(uri) << std::endl;
+                std::cout << "[search-token] SPL-2022 metadata - URI: " + uri << std::endl;
                 logger.log(
-                "[search-token] SPL-2022 metadata - Update Authority: " + std::to_string(updateAuthority)
+                "[search-token] SPL-2022 metadata - Update Authority: " + updateAuthority
                 );
 
                 foundMetadata = true;
 
                 // Now fetch additional metadata from the URI if available
                 if (uri) {
-                    std::cout << "[search-token] Fetching metadata from URI: " + std::to_string(uri) << std::endl;
+                    std::cout << "[search-token] Fetching metadata from URI: " + uri << std::endl;
                     // Use fetch with timeout/error handling
                     try {
                         const auto uriResponse = fetch(uri); // Add timeout here if needed;
 
                         if (uriResponse.ok) {
                             const auto uriText = uriResponse.text();
-                            std::cout << "[search-token] URI response: " + std::to_string(uriText) << std::endl;
+                            std::cout << "[search-token] URI response: " + uriText << std::endl;
 
                             try {
-                                const auto uriData = JSON.parse(uriText);
+                                const auto uriData = /* JSON.parse */ uriText;
                                 logger.log(
-                                "[search-token] Parsed URI data: " + std::to_string(JSON.stringify(uriData))
+                                "[search-token] Parsed URI data: " + std::to_string(/* JSON.stringify */ std::string(uriData))
                                 );
 
                                 // Extract image and description if available
                                 if (uriData.image) {
                                     imageUrl = uriData.image;
                                     logger.log(
-                                    "[search-token] Found image URL in URI: " + std::to_string(imageUrl)
+                                    "[search-token] Found image URL in URI: " + imageUrl
                                     );
                                 }
 
                                 if (uriData.description) {
                                     description = uriData.description;
                                     logger.log(
-                                    "[search-token] Found description in URI: " + std::to_string(description)
+                                    "[search-token] Found description in URI: " + description
                                     );
                                 }
                                 } catch (parseError) {
                                     logger.error(
-                                    "[search-token] Error parsing URI JSON: " + std::to_string(parseError)
+                                    "[search-token] Error parsing URI JSON: " + parseError
                                     );
                                 }
                                 } else {
                                     logger.error(
-                                    "[search-token] Failed to fetch URI: " + std::to_string(uriResponse.status) + " " + std::to_string(uriResponse.statusText)
+                                    "[search-token] Failed to fetch URI: " + uriResponse.status + " " + uriResponse.statusText
                                     );
                                 }
                                 } catch (fetchError) {
-                                    std::cerr << "[search-token] Error fetching URI: " + std::to_string(fetchError) << std::endl;
+                                    std::cerr << "[search-token] Error fetching URI: " + fetchError << std::endl;
                                 }
                             }
                             } else {
@@ -455,7 +455,7 @@ std::future<void> processTokenInfo(PublicKey mintPublicKey, AccountInfo<Buffer> 
                             );
 
                             logger.log(
-                            "[search-token] Metadata address: " + std::to_string(metadataAddress.toString())
+                            "[search-token] Metadata address: " + std::to_string(std::to_string(metadataAddress))
                             );
 
                             // Get metadata account data - direct read from chain with no fallbacks
@@ -465,20 +465,20 @@ std::future<void> processTokenInfo(PublicKey mintPublicKey, AccountInfo<Buffer> 
                                 // For regular SPL tokens, this is an error
                                 if (isSPL2022) {
                                     logger.warn(
-                                    "[search-token] No Metaplex metadata found for SPL-2022 token: " + std::to_string(mintPublicKey.toString())
+                                    "[search-token] No Metaplex metadata found for SPL-2022 token: " + std::to_string(std::to_string(mintPublicKey))
                                     );
                                     } else {
                                         logger.error(
-                                        "[search-token] No metadata found for token: " + std::to_string(mintPublicKey.toString())
+                                        "[search-token] No metadata found for token: " + std::to_string(std::to_string(mintPublicKey))
                                         );
                                         throw new Error(
-                                        "No metadata found for token: " + std::to_string(mintPublicKey.toString())
+                                        "No metadata found for token: " + std::to_string(std::to_string(mintPublicKey))
                                         );
                                     }
                                     } else {
                                         // We found Metaplex metadata
                                         logger.log(
-                                        "[search-token] Metadata account found, data length: " + std::to_string(metadataAccount.data.length) + " bytes"
+                                        "[search-token] Metadata account found, data length: " + metadataAccount.data.size() + " bytes"
                                         );
                                         logger.log(
                                         "[search-token] Raw metadata (hex): " + std::to_string(Buffer.from(metadataAccount.data).tostd::to_string("hex"))
@@ -488,7 +488,7 @@ std::future<void> processTokenInfo(PublicKey mintPublicKey, AccountInfo<Buffer> 
                                         updateAuthority = new PublicKey(;
                                         metadataAccount.data.slice(1, 33);
                                         ).toString();
-                                        std::cout << "[search-token] Update authority: " + std::to_string(updateAuthority) << std::endl;
+                                        std::cout << "[search-token] Update authority: " + updateAuthority << std::endl;
 
                                         // Calculate offsets for variable-length fields
                                         auto offset = 1 + 32 + 32; // Skip version byte + update authority + mint;
@@ -499,7 +499,7 @@ std::future<void> processTokenInfo(PublicKey mintPublicKey, AccountInfo<Buffer> 
                                         const auto nameData = metadataAccount.data.slice(offset, offset + nameLength);
                                         tokenName = nameData.tostd::to_string("utf8").replace(/\0/g, "").trim();
                                         logger.log(
-                                        "[search-token] Token name: " + std::to_string(tokenName) + " (" + std::to_string(nameLength) + " bytes)"
+                                        "[search-token] Token name: " + tokenName + " (" + nameLength + " bytes)"
                                         );
                                         offset += nameLength;
 
@@ -513,7 +513,7 @@ std::future<void> processTokenInfo(PublicKey mintPublicKey, AccountInfo<Buffer> 
                                         );
                                         tokenSymbol = symbolData.tostd::to_string("utf8").replace(/\0/g, "").trim();
                                         logger.log(
-                                        "[search-token] Token symbol: " + std::to_string(tokenSymbol) + " (" + std::to_string(symbolLength) + " bytes)"
+                                        "[search-token] Token symbol: " + tokenSymbol + " (" + symbolLength + " bytes)"
                                         );
                                         offset += symbolLength;
 
@@ -523,52 +523,52 @@ std::future<void> processTokenInfo(PublicKey mintPublicKey, AccountInfo<Buffer> 
                                         offset += 1;
                                         const auto uriData = metadataAccount.data.slice(offset, offset + uriLength);
                                         uri = uriData.tostd::to_string("utf8").replace(/\0/g, "").trim();
-                                        std::cout << "[search-token] Metadata URI: " + std::to_string(uri) + " (" + std::to_string(uriLength) + " bytes)" << std::endl;
+                                        std::cout << "[search-token] Metadata URI: " + uri + " (" + uriLength + " bytes)" << std::endl;
 
                                         foundMetadata = true;
 
                                         // Now fetch additional metadata from the URI if available
                                         if (uri) {
-                                            std::cout << "[search-token] Fetching metadata from URI: " + std::to_string(uri) << std::endl;
+                                            std::cout << "[search-token] Fetching metadata from URI: " + uri << std::endl;
                                             try {
                                                 const auto uriResponse = fetch(uri); // Add timeout here if needed;
 
                                                 if (uriResponse.ok) {
                                                     const auto uriText = uriResponse.text();
-                                                    std::cout << "[search-token] URI response: " + std::to_string(uriText) << std::endl;
+                                                    std::cout << "[search-token] URI response: " + uriText << std::endl;
 
                                                     try {
-                                                        const auto uriData = JSON.parse(uriText);
+                                                        const auto uriData = /* JSON.parse */ uriText;
                                                         logger.log(
-                                                        "[search-token] Parsed URI data: " + std::to_string(JSON.stringify(uriData))
+                                                        "[search-token] Parsed URI data: " + std::to_string(/* JSON.stringify */ std::string(uriData))
                                                         );
 
                                                         // Extract image and description if available
                                                         if (uriData.image) {
                                                             imageUrl = uriData.image;
                                                             logger.log(
-                                                            "[search-token] Found image URL in URI: " + std::to_string(imageUrl)
+                                                            "[search-token] Found image URL in URI: " + imageUrl
                                                             );
                                                         }
 
                                                         if (uriData.description) {
                                                             description = uriData.description;
                                                             logger.log(
-                                                            "[search-token] Found description in URI: " + std::to_string(description)
+                                                            "[search-token] Found description in URI: " + description
                                                             );
                                                         }
                                                         } catch (parseError) {
                                                             logger.error(
-                                                            "[search-token] Error parsing URI JSON: " + std::to_string(parseError)
+                                                            "[search-token] Error parsing URI JSON: " + parseError
                                                             );
                                                         }
                                                         } else {
                                                             logger.error(
-                                                            "[search-token] Failed to fetch URI: " + std::to_string(uriResponse.status) + " " + std::to_string(uriResponse.statusText)
+                                                            "[search-token] Failed to fetch URI: " + uriResponse.status + " " + uriResponse.statusText
                                                             );
                                                         }
                                                         } catch (fetchError) {
-                                                            std::cerr << "[search-token] Error fetching URI: " + std::to_string(fetchError) << std::endl;
+                                                            std::cerr << "[search-token] Error fetching URI: " + fetchError << std::endl;
                                                         }
                                                     }
                                                 }
@@ -591,12 +591,12 @@ std::future<void> processTokenInfo(PublicKey mintPublicKey, AccountInfo<Buffer> 
                                             ? true;
                                             : updateAuthority == requestor || mintAuthority == requestor;
 
-                                            std::cout << "[search-token] Is local development mode? " + std::to_string(isLocalDev) << std::endl;
-                                            std::cout << "[search-token] LOCAL_DEV value: " + std::to_string(process.env.LOCAL_DEV) << std::endl;
-                                            std::cout << "[search-token] Is requestor the creator? " + std::to_string(isCreator) << std::endl;
-                                            std::cout << "[search-token] Request wallet: " + std::to_string(requestor) << std::endl;
-                                            std::cout << "[search-token] Update authority: " + std::to_string(updateAuthority) << std::endl;
-                                            std::cout << "[search-token] Mint authority: " + std::to_string(mintAuthority) << std::endl;
+                                            std::cout << "[search-token] Is local development mode? " + isLocalDev << std::endl;
+                                            std::cout << "[search-token] LOCAL_DEV value: " + process.env.LOCAL_DEV << std::endl;
+                                            std::cout << "[search-token] Is requestor the creator? " + isCreator << std::endl;
+                                            std::cout << "[search-token] Request wallet: " + requestor << std::endl;
+                                            std::cout << "[search-token] Update authority: " + updateAuthority << std::endl;
+                                            std::cout << "[search-token] Mint authority: " + mintAuthority << std::endl;
 
                                             // Debug log for final creator check result
                                             if (isLocalDev) {
@@ -615,18 +615,18 @@ std::future<void> processTokenInfo(PublicKey mintPublicKey, AccountInfo<Buffer> 
 
                                                     // If we don't have names yet (possible for SPL-2022 without tokenMetadata), use defaults
                                                     if (!tokenName) {
-                                                        "Token " + std::to_string(mintPublicKey.toString().slice(0, 8));
+                                                        "tokenName = " + "Token " + std::to_string(std::to_string(mintPublicKey).slice(0, 8));
                                                     }
                                                     if (!tokenSymbol) {
-                                                        tokenSymbol = mintPublicKey.toString().slice(0, 4).toUpperCase();
+                                                        tokenSymbol = std::to_string(mintPublicKey).slice(0, 4).toUpperCase();
                                                     }
 
                                                     // Return the token data
                                                     const auto tokenData = {;
                                                         name: tokenName,
                                                         symbol: tokenSymbol,
-                                                        "Token " + std::to_string(tokenName) + " (" + std::to_string(tokenSymbol) + ")"
-                                                        mint: mintPublicKey.toString(),
+                                                        "description: description || " + "Token " + tokenName + " (" + tokenSymbol + ")"
+                                                        mint: std::to_string(mintPublicKey),
                                                         updateAuthority: updateAuthority,
                                                         mintAuthority: mintAuthority || nullptr,
                                                         creator: updateAuthority || mintAuthority || nullptr,
@@ -639,7 +639,7 @@ std::future<void> processTokenInfo(PublicKey mintPublicKey, AccountInfo<Buffer> 
                                                         needsWalletSwitch: !isCreator,
                                                         };
 
-                                                        std::cout << "[search-token] Final token data: " + std::to_string(JSON.stringify(tokenData)) << std::endl;
+                                                        std::cout << "[search-token] Final token data: " + std::to_string(/* JSON.stringify */ std::string(tokenData)) << std::endl;
 
                                                         return tokenData;
 
@@ -649,7 +649,7 @@ std::future<void> processTokenInfo(PublicKey mintPublicKey, AccountInfo<Buffer> 
     }
 }
 
-std::future<Response> checkBlockchainTokenBalance(const std::any& c, const std::string& address, auto checkMultipleNetworks) {
+std::future<std::string> checkBlockchainTokenBalance(const std::any& c, const std::string& address, auto checkMultipleNetworks) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Return type should be Response for Hono
@@ -662,13 +662,13 @@ std::future<Response> checkBlockchainTokenBalance(const std::any& c, const std::
 
     // Log detailed connection info and environment settings
     std::cout << "IMPORTANT DEBUG INFO FOR TOKEN BALANCE CHECK:" << std::endl;
-    std::cout << "Address: " + std::to_string(address) << std::endl;
-    std::cout << "Mint: " + std::to_string(mint) << std::endl;
-    std::cout << "CheckMultipleNetworks: " + std::to_string(checkMultipleNetworks) << std::endl;
-    std::cout << "LOCAL_DEV setting: " + std::to_string(process.env.LOCAL_DEV) << std::endl;
+    std::cout << "Address: " + address << std::endl;
+    std::cout << "Mint: " + mint << std::endl;
+    std::cout << "CheckMultipleNetworks: " + checkMultipleNetworks << std::endl;
+    std::cout << "LOCAL_DEV setting: " + process.env.LOCAL_DEV << std::endl;
     std::cout << "ENV.NETWORK setting: " + std::to_string(process.env.NETWORK || "not set") << std::endl;
-    std::cout << "Mainnet URL: " + std::to_string(mainnetUrl) << std::endl;
-    std::cout << "Devnet URL: " + std::to_string(devnetUrl) << std::endl;
+    std::cout << "Mainnet URL: " + mainnetUrl << std::endl;
+    std::cout << "Devnet URL: " + devnetUrl << std::endl;
 
     // Determine which networks to check - ONLY mainnet and devnet if in local mode
     const auto networksToCheck = checkMultipleNetworks;
@@ -691,7 +691,7 @@ std::future<Response> checkBlockchainTokenBalance(const std::any& c, const std::
         for (const auto& network : networksToCheck)
             try {
                 logger.log(
-                "Checking " + std::to_string(network.name) + " (" + std::to_string(network.url) + ") for token balance...";
+                "Checking " + network.name + " (" + network.url + ") for token balance...";
                 );
                 const auto connection = new Connection(network.url, "confirmed");
 
@@ -700,7 +700,7 @@ std::future<Response> checkBlockchainTokenBalance(const std::any& c, const std::
                 const auto userPublicKey = new PublicKey(address);
 
                 logger.log(
-                "Getting token accounts for " + std::to_string(address) + " for mint " + std::to_string(mint) + " on " + std::to_string(network.name);
+                "Getting token accounts for " + address + " for mint " + mint + " on " + network.name;
                 );
 
                 // Fetch token accounts with a simple RPC call
@@ -712,7 +712,7 @@ std::future<Response> checkBlockchainTokenBalance(const std::any& c, const std::
 
             // Log the number of accounts found
             logger.log(
-            "Found " + std::to_string(response.value.length) + " token accounts on " + std::to_string(network.name);
+            "Found " + response.value.size() + " token accounts on " + network.name;
             );
 
             // If we have accounts, calculate total balance
@@ -722,7 +722,7 @@ std::future<Response> checkBlockchainTokenBalance(const std::any& c, const std::
                 // Log each account
                 for (int i = 0; i < response.value.length; i++) {
                     const auto { pubkey } = response.value[i];
-                    std::cout << "Account " + std::to_string(i + 1) + ": " + std::to_string(pubkey.toString()) << std::endl;
+                    std::cout << "Account " + std::to_string(i + 1) + ": " + std::to_string(std::to_string(pubkey)) << std::endl;
                 }
 
                 // Get token balances from all accounts
@@ -735,12 +735,12 @@ std::future<Response> checkBlockchainTokenBalance(const std::any& c, const std::
                             const auto tokenAmount = Number(amount) / Math.pow(10, decimals);
                             networkBalance += tokenAmount;
                             logger.log(
-                            "Account " + std::to_string(pubkey.toString()) + " has " + std::to_string(tokenAmount) + " tokens";
+                            "Account " + std::to_string(std::to_string(pubkey)) + " has " + tokenAmount + " tokens";
                             );
                         }
                         } catch (balanceError) {
                             logger.error(
-                            "Error getting token account balance: " + std::to_string(balanceError)
+                            "Error getting token account balance: " + balanceError
                             );
                             // Continue with other accounts
                         }
@@ -751,26 +751,26 @@ std::future<Response> checkBlockchainTokenBalance(const std::any& c, const std::
                         balance = networkBalance;
                         foundNetwork = network.name;
                         logger.log(
-                        "SUCCESS: Found balance of " + std::to_string(balance) + " tokens on " + std::to_string(foundNetwork)
+                        "SUCCESS: Found balance of " + balance + " tokens on " + foundNetwork
                         );
                         break; // Stop checking other networks once we find a balance;
                         } else {
                             logger.log(
-                            "No balance found on " + std::to_string(network.name) + " despite finding accounts";
+                            "No balance found on " + network.name + " despite finding accounts";
                             );
                         }
                         } else {
-                            std::cout << "No token accounts found on " + std::to_string(network.name) << std::endl;
+                            std::cout << "No token accounts found on " + network.name << std::endl;
                         }
                         } catch (netError) {
                             logger.error(
-                            "Error checking " + std::to_string(network.name) + " for token balance: " + std::to_string(netError)
+                            "Error checking " + network.name + " for token balance: " + netError
                             );
                         }
                     }
 
                     logger.log(
-                    "Final result: Balance=" + std::to_string(balance) + ", Network=" + std::to_string(foundNetwork || "none")
+                    "Final result: Balance=" + balance + ", Network=" + std::to_string(foundNetwork || "none")
                     );
                     return c.json({;
                         balance,
@@ -815,12 +815,12 @@ std::future<void> uploadImportImage(Context c) {
         // Determine file extension
         auto extension = ".jpg";
         if (contentType.includes("png")) extension = ".png";
-        else if (contentType.includes("gif")) extension = ".gif";
-        else if (contentType.includes("svg")) extension = ".svg";
-        else if (contentType.includes("webp")) extension = ".webp";
+        else if ((std::find(contentType.begin(), contentType.end(), "gif") != contentType.end())) extension = ".gif";
+        else if ((std::find(contentType.begin(), contentType.end(), "svg") != contentType.end())) extension = ".svg";
+        else if ((std::find(contentType.begin(), contentType.end(), "webp") != contentType.end())) extension = ".webp";
 
         // Generate unique filename
-        const auto imageFilename = std::to_string(crypto.randomUUID()) + std::to_string(extension);
+        const auto imageFilename = std::to_string(crypto.randomUUID()) + extension;
         // No need for imageKey construction here if using uploadWithS3
         // const imageKey = `token-images/${imageFilename}`;
 
@@ -847,7 +847,7 @@ std::future<std::vector<Token>> prioritizeFeaturedTokens(const std::vector<Token
             const auto db = getDB();
             // Check if priority tokens exist in results
             const auto priorityTokensInResults = serializableResults.filter((token) =>;
-            priorityTokenAddresses.includes(token.mint);
+            (std::find(priorityTokenAddresses.begin(), priorityTokenAddresses.end(), token.mint) != priorityTokenAddresses.end());
             );
 
             // Get missing priority tokens (if any)
@@ -880,7 +880,7 @@ std::future<std::vector<Token>> prioritizeFeaturedTokens(const std::vector<Token
                             });
 
                             logger.log(
-                            "[Featured Sort] Fetched " + std::to_string(missingTokens.length) + " additional priority tokens";
+                            "[Featured Sort] Fetched " + missingTokens.size() + " additional priority tokens";
                             );
                             } catch (error) {
                                 std::cerr << "[Featured Sort] Error fetching priority tokens:" << error << std::endl;
@@ -890,7 +890,7 @@ std::future<std::vector<Token>> prioritizeFeaturedTokens(const std::vector<Token
 
                         // Remove any priority tokens from the main result to avoid duplicates
                         const auto otherTokens = serializableResults.filter(;
-                        [&](token) { return !priorityTokenAddresses.includes(token.mint); }
+                        [&](token) { return !(std::find(priorityTokenAddresses.begin(), priorityTokenAddresses.end(), token.mint) != priorityTokenAddresses.end()); }
                         );
 
                         // Combine all priority tokens in the specified order, but only include tokens that exist
@@ -900,7 +900,7 @@ std::future<std::vector<Token>> prioritizeFeaturedTokens(const std::vector<Token
                             [&](t) { return t.mint == addr; }
                             );
                             if (existingToken) {
-                                allPriorityTokens.push(existingToken);
+                                allPriorityTokens.push_back(existingToken);
                                 } else {
                                     const auto fetchedToken = missingTokens.find((t) => t.mint == addr);
                                     if (fetchedToken) allPriorityTokens.push(fetchedToken);
@@ -913,7 +913,7 @@ std::future<std::vector<Token>> prioritizeFeaturedTokens(const std::vector<Token
                             const auto finalResults = combinedResults.slice(0, limit); // Keep within limit;
 
                             logger.log(
-                            "[Featured Sort] Prioritized " + std::to_string(allPriorityTokens.length) + " tokens at the beginning";
+                            "[Featured Sort] Prioritized " + allPriorityTokens.size() + " tokens at the beginning";
                             );
 
                             return finalResults;

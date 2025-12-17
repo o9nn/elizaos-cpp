@@ -1,10 +1,13 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
 #include "elizaos/core.hpp"
@@ -28,7 +31,7 @@ struct StreamingAudioConfig {
 };
 
 struct AudioChunk {
-    Buffer data;
+    std::vector<uint8_t> data;
     double timestamp;
     double energy;
 };
@@ -38,14 +41,14 @@ public:
     StreamingAudioCaptureService(IAgentRuntime runtime, StreamingAudioConfig config);
     std::future<void> initialize();
     std::future<void> startContinuousCapture();
-    void processAudioChunk(Buffer chunk);
-    double calculateEnergy(Buffer chunk);
+    void processAudioChunk(const std::vector<uint8_t>& chunk);
+    double calculateEnergy(const std::vector<uint8_t>& chunk);
     std::future<void> startStreamingTranscription();
     void endSpeech();
     std::future<void> processFinalTranscription();
-    Buffer getRecentAudioData();
-    std::variant<Promise<string, null>> transcribeAudio(Buffer audioData);
-    Buffer rawToWav(Buffer rawData);
+    std::vector<uint8_t> getRecentAudioData();
+    std::variant<Promise<string, null>> transcribeAudio(const std::vector<uint8_t>& audioData);
+    std::vector<uint8_t> rawToWav(const std::vector<uint8_t>& rawData);
     std::future<void> generateResponse(const std::string& transcription);
     std::future<void> createAudioMemory(const std::string& transcription);
     std::future<void> stop();

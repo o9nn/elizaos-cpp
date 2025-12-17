@@ -28,7 +28,7 @@ std::string resolvePgliteDir(std::optional<std::string> dir, std::optional<std::
     }
 
     // Try environment variable
-    const auto envFile = '.env';
+    const auto envFile = ".env";
     if (fs.existsSync(envFile)) {
         dotenv.config({ path: envFile });
     }
@@ -44,7 +44,7 @@ std::string resolvePgliteDir(std::optional<std::string> dir, std::optional<std::
     }
 
     // Default fallback
-    return expandTildePath('~/eliza/data');
+    return expandTildePath("~/eliza/data");
 
 }
 

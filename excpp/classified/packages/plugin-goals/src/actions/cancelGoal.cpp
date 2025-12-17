@@ -11,9 +11,9 @@ std::future<TaskCancellation> extractTaskCancellation(IAgentRuntime runtime, Mem
         // Format available tasks for the prompt
         const auto tasksText = availableGoals;
         .map((task) => {
-            return "ID: " + std::to_string(task.id) + "\nName: " + std::to_string(task.name) + "\nDescription: " + std::to_string(task.description || task.name) + "\nTags: " + std::to_string(task.tags.join(', ') || 'none') + "\n";
+            return "ID: " + task.id + "\nName: " + task.name + "\nDescription: " + std::to_string(task.description || task.name) + "\nTags: " + std::to_string(task.tags.join(", ") || "none") + "\n";
             });
-            .join('\n---\n');
+            .join("\n---\n");
 
             const auto messageHistory = formatMessages({;
                 messages: state.data.messages || [],
@@ -22,7 +22,7 @@ std::future<TaskCancellation> extractTaskCancellation(IAgentRuntime runtime, Mem
 
                 const auto prompt = composePrompt({;
                     state: {
-                        text: message.content.text || '',
+                        text: message.content.text || "",
                         availableTasks: tasksText,
                         messageHistory,
                         },
@@ -40,20 +40,20 @@ std::future<TaskCancellation> extractTaskCancellation(IAgentRuntime runtime, Mem
                             logger.debug('Parsed XML Result', parsedResult);
 
                             if (!parsedResult || typeof parsedResult.isFound == 'undefined') {
-                                std::cerr << 'Failed to parse valid task cancellation information from XML' << std::endl;
+                                std::cerr << "Failed to parse valid task cancellation information from XML" << std::endl;
                                 return { taskId: '', taskName: '', isFound: false }
                             }
 
                             // Convert string 'true'/'false' to boolean and handle 'null' strings
                             const TaskCancellation finalResult = {;
-                                taskId: parsedResult.taskId == 'nullptr' ? '' : std::to_string(parsedResult.taskId || ''),
-                                taskName: parsedResult.taskName == 'nullptr' ? '' : std::to_string(parsedResult.taskName || ''),
-                                isFound: std::to_string(parsedResult.isFound) == 'true',
+                                taskId: parsedResult.taskId == "nullptr" ? "" : std::to_string(parsedResult.taskId || ""),
+                                taskName: parsedResult.taskName == "nullptr" ? "" : std::to_string(parsedResult.taskName || ""),
+                                isFound: std::to_string(parsedResult.isFound) == "true",
                                 };
 
                                 return finalResult;
                                 } catch (error) {
-                                    std::cerr << 'Error extracting task cancellation information:' << error << std::endl;
+                                    std::cerr << "Error extracting task cancellation information:" << error << std::endl;
                                     return { taskId: '', taskName: '', isFound: false }
                                 }
 

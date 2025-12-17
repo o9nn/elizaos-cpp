@@ -72,14 +72,14 @@ void WalletLinkForm(auto onSubmit, auto isProcessing) {
                                         const std::vector<LinkedWallet> updatedWallets = [];
 
                                         if (ethAddress) {
-                                            updatedWallets.push({
+                                            updatedWallets.push_back({
                                                 chain: "ethereum",
                                                 address: ethAddress,
                                                 });
                                             }
 
                                             if (solAddress) {
-                                                updatedWallets.push({
+                                                updatedWallets.push_back({
                                                     chain: "solana",
                                                     address: solAddress,
                                                     });
@@ -95,11 +95,11 @@ void WalletLinkForm(auto onSubmit, auto isProcessing) {
                                                 const auto canSubmit =;
                                                 isEthValid && isSolValid && !isProcessing && hasValuesChanged;
 
-                                                const auto isUpdateOperation = wallets.length > 0;
+                                                const auto isUpdateOperation = wallets.size() > 0;
                                                 const auto buttonTextBase = isUpdateOperation ? "Update" : "Save";
                                                 const auto buttonText = isProcessing;
-                                                std::to_string(buttonTextBase == "Update" ? "Updating" : "Saving") + "..."
-                                                std::to_string(buttonTextBase) + " Wallet Addresses"
+                                                "? " + std::to_string(buttonTextBase == "Update" ? "Updating" : "Saving") + "..."
+                                                ": " + buttonTextBase + " Wallet Addresses"
 
                                                 return (;
                                                 <form onSubmit={handleSubmit} className="space-y-6">;

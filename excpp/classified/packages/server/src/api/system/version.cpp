@@ -12,21 +12,21 @@ VersionInfo getVersionInfo() {
     try {
         return {
             version: packageJson.version,
-            source: 'server',
+            source: "server",
             timestamp,
-            environment: process.env.NODE_ENV || 'development',
+            environment: process.env.NODE_ENV || "development",
             uptime: process.uptime(),
             };
             } catch (error) {
-                std::cerr << 'Error getting version info:' << error << std::endl;
+                std::cerr << "Error getting version info:" << error << std::endl;
 
                 return {
-                    version: 'unknown',
-                    source: 'server',
+                    version: "unknown",
+                    source: "server",
                     timestamp,
-                    environment: process.env.NODE_ENV || 'development',
+                    environment: process.env.NODE_ENV || "development",
                     uptime: process.uptime(),
-                    error: 'Failed to retrieve version information',
+                    error: "Failed to retrieve version information",
                     };
                 }
 
@@ -38,7 +38,7 @@ express::Router createVersionRouter() {
     const auto router = express.Router();
 
     // GET /api/system/version - Returns version information
-    router.get('/', (_, res) => {
+    router.get("/", (_, res) => {
         const auto versionInfo = getVersionInfo();
         const auto statusCode = versionInfo.error ? 500 : 200;
 

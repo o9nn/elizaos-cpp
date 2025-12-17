@@ -1,11 +1,14 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <chrono>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 #include "elizaos/core.hpp"
 
@@ -22,9 +25,9 @@ struct CharacterModification {
     double versionNumber;
     std::string diffXml;
     std::string reasoning;
-    Date appliedAt;
-    std::optional<Date> rolledBackAt;
-    Date createdAt;
+    std::chrono::system_clock::time_point appliedAt;
+    std::optional<std::chrono::system_clock::time_point> rolledBackAt;
+    std::chrono::system_clock::time_point createdAt;
 };
 
 struct CharacterSnapshot {
@@ -32,11 +35,11 @@ struct CharacterSnapshot {
     UUID agentId;
     double versionNumber;
     std::any characterData;
-    Date createdAt;
+    std::chrono::system_clock::time_point createdAt;
 };
 
 struct ModificationOperation {
-    std::variant<"add", "modify", "delete"> type;
+    std::string type;
     std::string path;
     std::optional<std::any> value;
     std::optional<std::string> dataType;

@@ -1,10 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 #include "elizaos/core.hpp"
 
@@ -149,10 +151,10 @@ namespace elizaos {
 struct TaskUpdate {
     std::optional<std::string> name;
     std::optional<std::string> description;
-    std::optional<std::variant<1, 2, 3, 4>> priority;
+    std::optional<int> priority;
     std::optional<bool> urgent;
     std::optional<std::string> dueDate;
-    std::optional<std::variant<"daily", "weekly", "monthly">> recurring;
+    std::optional<std::string> recurring;
 };
 
 

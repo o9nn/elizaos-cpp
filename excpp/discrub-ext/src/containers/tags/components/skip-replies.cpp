@@ -21,10 +21,10 @@ void SkipReplies(auto messagesLoading, auto setSkipReplies) {
     <Tooltip;
     arrow;
     placement="left";
-    std::to_string(skipReplies ? "Skipping" : "Including") + " Reply Tags"
-    "Tags from message replies will " + std::to_string();
+    "title={" + std::to_string(skipReplies ? "Skipping" : "Including") + " Reply Tags"
+    "description={" + "Tags from message replies will " + std::to_string();
         skipReplies ? "not" : ""
-    } be included in the generated spreadsheet`}
+    "} be included in the generated spreadsheet";
     >;
     <IconButton;
     sx={{ maxWidth: "fit-content" }}

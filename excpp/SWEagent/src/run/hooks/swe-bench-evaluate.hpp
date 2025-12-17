@@ -1,15 +1,17 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include "..types.hpp"
-#include "..utils/log.hpp"
-#include ".merge-predictions.hpp"
+#include "merge-predictions.hpp"
 #include "types.hpp"
+#include "utils/log.hpp"
 
 namespace elizaos {
 

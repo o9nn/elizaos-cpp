@@ -22,7 +22,7 @@ std::future<void> POST(NextRequest request) {
         if (sessionId) {
             try {
                 const auto channelsResponse = fetch(;
-                std::to_string(ELIZA_SERVER_URL) + "/api/messaging/central-channels"
+                ELIZA_SERVER_URL + "/api/messaging/central-channels"
                 {
                     method: "GET",
                     headers: {
@@ -62,7 +62,7 @@ std::future<void> POST(NextRequest request) {
                             }
 
                             // Create new DM channel
-                            const auto finalChannelId = "dm-" + std::to_string(userId) + "-" + std::to_string(agentId) + "-" + std::to_string(Date.now());
+                            const auto finalChannelId = "sessionId || " + "dm-" + userId + "-" + agentId + "-" + std::to_string(Date.now());
                             const auto channelName = "Chat - " + std::to_string(new Date().toLocaleString());
 
                             // Create DM channel metadata following official client pattern
@@ -84,7 +84,7 @@ std::future<void> POST(NextRequest request) {
 
                                 // Create the DM channel via ElizaOS API
                                 const auto createChannelResponse = fetch(;
-                                std::to_string(ELIZA_SERVER_URL) + "/api/messaging/central-channels"
+                                ELIZA_SERVER_URL + "/api/messaging/central-channels"
                                 {
                                     method: "POST",
                                     headers: {
@@ -115,7 +115,7 @@ std::future<void> POST(NextRequest request) {
                                             // Add agent to the channel as a participant
                                             try {
                                                 const auto addAgentResponse = fetch(;
-                                                std::to_string(ELIZA_SERVER_URL) + "/api/messaging/central-channels/" + std::to_string(finalChannelId) + "/agents"
+                                                ELIZA_SERVER_URL + "/api/messaging/central-channels/" + finalChannelId + "/agents"
                                                 {
                                                     method: "POST",
                                                     headers: {

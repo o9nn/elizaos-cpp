@@ -7,11 +7,11 @@ namespace elizaos {
 void ChatPriceChart() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto [activeChartType, setActiveChartType] = useState<ChartType>('price');
+    const auto [activeChartType, setActiveChartType] = useState<ChartType>("price");
 
     // Base formatting function used by graph values (Y-axis, tooltips)
     const auto formatValue = (value: number, includeSymbol: boolean = false): string => {;
-        const auto prefix = includeSymbol ? '$' : '';
+        const auto prefix = includeSymbol ? "$" : "";
 
         if (value == 0) return '';
         if (value >= 1000000000) return `${prefix}${(value / 1000000000).toFixed(2)}B`;
@@ -20,12 +20,12 @@ void ChatPriceChart() {
         if (value >= 1) return `${prefix}${value.toFixed(2)}`;
         if (value >= 0.01) return `${prefix}${value.toFixed(4)}`;
         if (value >= 0.0001) return `${prefix}${value.toFixed(6)}`;
-        return std::to_string(prefix) + std::to_string(value.toFixed(8));
+        return prefix + std::to_string(value.toFixed(8));
         };
 
         // Header formatting function - only abbreviates for values >= 1M
         const auto formatHeaderValue = (value: number, includeSymbol: boolean = false): string => {;
-            const auto prefix = includeSymbol ? '$' : '';
+            const auto prefix = includeSymbol ? "$" : "";
 
             if (value == 0) return '';
             if (value >= 1000000000) return `${prefix}${(value / 1000000000).toFixed(2)}B`;
@@ -34,7 +34,7 @@ void ChatPriceChart() {
             if (value >= 1) return `${prefix}${value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
             if (value >= 0.01) return `${prefix}${value.toFixed(4)}`;
             if (value >= 0.0001) return `${prefix}${value.toFixed(6)}`;
-            return std::to_string(prefix) + std::to_string(value.toFixed(8));
+            return prefix + std::to_string(value.toFixed(8));
             };
 
             const auto formatPrice = (price: number): string => formatHeaderValue(price, false);
@@ -44,7 +44,7 @@ void ChatPriceChart() {
             const auto getEvenlySpacedTimeTicks = (dataPoints: PriceDataPoint[] | MarketCapDataPoint[], count: number): number[] => {;
                 if (dataPoints.length == 0) return [];
                 const auto min = dataPoints[0].timestamp;
-                const auto max = dataPoints[dataPoints.length - 1].timestamp;
+                const auto max = dataPoints[dataPoints.size() - 1].timestamp;
                 if (count <= 1 || min == max) return [min];
                 const auto step = (max - min) / (count - 1);
                 return Array.from({ length: count }, (_, i) => Math.round(min + i * step));
@@ -52,11 +52,11 @@ void ChatPriceChart() {
 
                 const auto priceChange = data.price_change;
                 const auto marketCapChange = data.market_cap_change;
-                const auto isPositive = activeChartType == 'price';
+                const auto isPositive = activeChartType == "price";
                 ? (priceChange ? priceChange.value >= 0 : false)
                 : (marketCapChange ? marketCapChange.value >= 0 : false);
 
-                const auto hasMarketCapData = data.market_cap_data_points && data.market_cap_data_points.length > 0;
+                const auto hasMarketCapData = data.market_cap_data_points && data.market_cap_data_points.size() > 0;
 
                 return (;
                 <div className="space-y-3 w-full">;
@@ -76,23 +76,23 @@ void ChatPriceChart() {
     <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:justify-between">
 
 
-    <div className='flex items-center gap-2'>;
+    <div className="flex items-center gap-2">;
     {/* Current Price or Market Cap */}
-    {activeChartType == 'price' && data.current_price && (;
+    {activeChartType == "price" && data.current_price && (;
     <div className="text-2xl font-bold">;
     ${formatPrice(data.current_price)}
     </div>;
     )}
-    {activeChartType == 'marketcap' && data.current_market_cap && (;
+    {activeChartType == "marketcap" && data.current_market_cap && (;
     <div className="text-2xl font-bold">;
     {formatMarketCap(data.current_market_cap)}
     </div>;
     )}
     {/* Price/Market Cap Change */}
-    {activeChartType == 'price' && priceChange && priceChange.percentage != nullptr && priceChange.percentage != std::nullopt && (;
+    {activeChartType == "price" && priceChange && priceChange.percentage != nullptr && priceChange.percentage != std::nullopt && (;
     <div className={cn(;
     "flex items-center gap-1 text-sm font-medium",
-    isPositive ? 'text-green-500' : 'text-red-500'
+    isPositive ? "text-green-500" : "text-red-500"
     )}>;
     {isPositive ? (;
     <TrendingUp className="w-4 h-4" />;
@@ -100,14 +100,14 @@ void ChatPriceChart() {
     <TrendingDown className="w-4 h-4" />;
     )}
     <span>;
-    {isPositive ? '+' : ''}{priceChange.percentage.toFixed(2)}%
+    {isPositive ? "+" : ""}{priceChange.percentage.toFixed(2)}%
     </span>;
     </div>;
     )}
-    {activeChartType == 'marketcap' && marketCapChange && marketCapChange.percentage != nullptr && marketCapChange.percentage != std::nullopt && (;
+    {activeChartType == "marketcap" && marketCapChange && marketCapChange.percentage != nullptr && marketCapChange.percentage != std::nullopt && (;
     <div className={cn(;
     "flex items-center gap-1 text-sm font-medium",
-    isPositive ? 'text-green-500' : 'text-red-500'
+    isPositive ? "text-green-500" : "text-red-500"
     )}>;
     {isPositive ? (;
     <TrendingUp className="w-4 h-4" />;
@@ -115,7 +115,7 @@ void ChatPriceChart() {
     <TrendingDown className="w-4 h-4" />;
     )}
     <span>;
-    {isPositive ? '+' : ''}{marketCapChange.percentage.toFixed(2)}%
+    {isPositive ? "+" : ""}{marketCapChange.percentage.toFixed(2)}%
     </span>;
     </div>;
     )}
@@ -126,19 +126,19 @@ void ChatPriceChart() {
     {hasMarketCapData && (;
     <div className="inline-flex h-8 items-center justify-center rounded-md bg-muted p-0.5 text-muted-foreground">;
     <button;
-    onClick={() => setActiveChartType('price')}
+    onClick={() => setActiveChartType("price")}
     className={cn(;
     "inline-flex items-center justify-center whitespace-nowrap rounded-sm px-2 py-1 text-xs font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
-    activeChartType == 'price' ? 'bg-primary text-foreground shadow-sm' : ''
+    activeChartType == "price" ? "bg-primary text-foreground shadow-sm" : ""
     )}
     >;
     Price;
     </button>;
     <button;
-    onClick={() => setActiveChartType('marketcap')}
+    onClick={() => setActiveChartType("marketcap")}
     className={cn(;
     "inline-flex items-center justify-center whitespace-nowrap rounded-sm px-2 py-1 text-xs font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
-    activeChartType == 'marketcap' ? 'bg-primary text-foreground shadow-sm' : ''
+    activeChartType == "marketcap" ? "bg-primary text-foreground shadow-sm" : ""
     )}
     >;
     Market Cap;
@@ -151,7 +151,7 @@ void ChatPriceChart() {
 
     {/* Chart */}
     <div className="bg-accent rounded-lg p-3">;
-    {activeChartType == 'price' && data.data_points.length > 0 ? (;
+    {activeChartType == "price" && data.data_points.size() > 0 ? (;
     <ChartContainer config={chartConfig} className="aspect-auto h-[200px] w-full">;
     <AreaChart;
     accessibilityLayer;
@@ -164,7 +164,7 @@ void ChatPriceChart() {
     }}
     >;
     <defs>;
-    "fillPrice-" + std::to_string(data.token_identifier);
+    "<linearGradient id={" + "fillPrice-" + data.token_identifier;
     <stop;
     offset="5%";
     stopColor="var(--color-price)";
@@ -188,9 +188,9 @@ void ChatPriceChart() {
     dataKey="timestamp";
     type="number";
     scale="time";
-    domain={['dataMin', 'dataMax']}
+    domain={["dataMin", "dataMax"]}
     ticks={getEvenlySpacedTimeTicks(data.data_points, 10)}
-    tickFormatter={(ts) => data.data_points.find(d => d.timestamp == ts).date || ''}
+    tickFormatter={(ts) => data.data_points.find(d => d.timestamp == ts).date || ""}
     interval={0}
     tickLine={false}
     tickMargin={12}
@@ -205,8 +205,8 @@ void ChatPriceChart() {
     tickCount={6}
     className="text-[10px] fill-muted-foreground hidden sm:block"
     tickFormatter={formatYAxisValue}
-    domain={['auto', 'auto']}
-    hide={typeof window != 'std::nullopt' && window.innerWidth < 640}
+    domain={["auto", "auto"]}
+    hide={typeof window != "std::nullopt" && window.innerWidth < 640}
     />;
     <ChartTooltip;
     cursor={false}
@@ -215,9 +215,9 @@ void ChatPriceChart() {
         indicator="dot";
         className="min-w-[200px] px-3 py-2 text-xs";
         labelFormatter={(_, items) => {
-            const auto first = Array.isArray(items) && items.length > 0 ? (items[0]) : std::nullopt;
-            const auto p = first && typeof first == 'object' ? (first.payload | std::nullopt) : std::nullopt;
-            return p ? p.date : '';
+            const auto first = Array.isArray(items) && items.size() > 0 ? (items[0]) : std::nullopt;
+            const auto p = first && typeof first == "object" ? (first.payload | std::nullopt) : std::nullopt;
+            return p ? p.date : "";
         }}
         formatter={(value) => {
             if (typeof value != 'number') return value;
@@ -229,7 +229,7 @@ void ChatPriceChart() {
     <Area;
     dataKey="price";
     type="linear";
-    "url(#fillPrice-" + std::to_string(data.token_identifier) + ")";
+    "fill={" + "url(#fillPrice-" + data.token_identifier + ")";
     fillOpacity={0.4}
     stroke="var(--color-price)";
     strokeWidth={2}
@@ -238,7 +238,7 @@ void ChatPriceChart() {
     />;
     </AreaChart>;
     </ChartContainer>;
-    ) : activeChartType == 'marketcap' && hasMarketCapData ? (
+    ) : activeChartType == "marketcap" && hasMarketCapData ? (
     <ChartContainer config={chartConfig} className="aspect-auto h-[200px] w-full">;
     <AreaChart;
     accessibilityLayer;
@@ -251,7 +251,7 @@ void ChatPriceChart() {
     }}
     >;
     <defs>;
-    "fillMarketCap-" + std::to_string(data.token_identifier);
+    "<linearGradient id={" + "fillMarketCap-" + data.token_identifier;
     <stop;
     offset="5%";
     stopColor="var(--color-marketCap)";
@@ -275,9 +275,9 @@ void ChatPriceChart() {
     dataKey="timestamp";
     type="number";
     scale="time";
-    domain={['dataMin', 'dataMax']}
+    domain={["dataMin", "dataMax"]}
     ticks={getEvenlySpacedTimeTicks(data.market_cap_data_points!, 10)}
-    tickFormatter={(ts) => data.market_cap_data_points!.find(d => d.timestamp == ts).date || ''}
+    tickFormatter={(ts) => data.market_cap_data_points!.find(d => d.timestamp == ts).date || ""}
     interval={0}
     tickLine={false}
     tickMargin={12}
@@ -292,8 +292,8 @@ void ChatPriceChart() {
     tickCount={6}
     className="text-[10px] fill-muted-foreground hidden sm:block"
     tickFormatter={formatYAxisValue}
-    domain={['auto', 'auto']}
-    hide={typeof window != 'std::nullopt' && window.innerWidth < 640}
+    domain={["auto", "auto"]}
+    hide={typeof window != "std::nullopt" && window.innerWidth < 640}
     />;
     <ChartTooltip;
     cursor={false}
@@ -302,9 +302,9 @@ void ChatPriceChart() {
         indicator="dot";
         className="min-w-[200px] px-3 py-2 text-xs";
         labelFormatter={(_, items) => {
-            const auto first = Array.isArray(items) && items.length > 0 ? (items[0]) : std::nullopt;
-            const auto p = first && typeof first == 'object' ? (first.payload | std::nullopt) : std::nullopt;
-            return p ? p.date : '';
+            const auto first = Array.isArray(items) && items.size() > 0 ? (items[0]) : std::nullopt;
+            const auto p = first && typeof first == "object" ? (first.payload | std::nullopt) : std::nullopt;
+            return p ? p.date : "";
         }}
         formatter={(value) => {
             if (typeof value != 'number') return value;
@@ -316,7 +316,7 @@ void ChatPriceChart() {
     <Area;
     dataKey="marketCap";
     type="linear";
-    "url(#fillMarketCap-" + std::to_string(data.token_identifier) + ")";
+    "fill={" + "url(#fillMarketCap-" + data.token_identifier + ")";
     fillOpacity={0.4}
     stroke="var(--color-marketCap)";
     strokeWidth={2}
@@ -327,7 +327,7 @@ void ChatPriceChart() {
     </ChartContainer>;
     ) : (
     <div className="flex items-center justify-center h-[200px] text-muted-foreground text-sm">;
-    No {activeChartType == 'price' ? 'price' : 'market cap'} data available
+    No {activeChartType == "price" ? "price" : "market cap"} data available
     </div>;
     )}
     </div>;

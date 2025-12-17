@@ -1,12 +1,15 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include "..enum/sort-direction.hpp"
 #include "components/table-head.hpp"
+#include "enum/sort-direction.hpp"
 
 namespace elizaos {
 

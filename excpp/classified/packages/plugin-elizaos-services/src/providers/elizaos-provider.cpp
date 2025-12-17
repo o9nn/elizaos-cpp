@@ -9,8 +9,8 @@ ElizaOSAPIError createElizaOSError(const std::string& message, double status, st
     try {
 
         const auto error = std::runtime_error(message);
-        error.name = 'ElizaOSAPIError';
-        "HTTP_" + std::to_string(status);
+        error.name = "ElizaOSAPIError";
+        "error.code = code || " + "HTTP_" + status;
         error.status = status;
         error.details = details;
         error.retryable = retryable;
@@ -26,7 +26,7 @@ std::string getAPIUrl(IAgentRuntime runtime) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
-    runtime.getSetting('ELIZAOS_API_URL') || process.env.ELIZAOS_API_URL || 'https://api.elizaos.ai'
+    runtime.getSetting("ELIZAOS_API_URL") || process.env.ELIZAOS_API_URL || "https://api.elizaos.ai"
     );
 
 }
@@ -34,7 +34,7 @@ std::string getAPIUrl(IAgentRuntime runtime) {
 std::string getAPIKey(IAgentRuntime runtime) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return runtime.getSetting('ELIZAOS_API_KEY') || process.env.ELIZAOS_API_KEY;
+    return runtime.getSetting("ELIZAOS_API_KEY") || process.env.ELIZAOS_API_KEY;
 
 }
 
@@ -47,13 +47,13 @@ std::future<ElizaOSAPIResponse> makeElizaOSRequest(IAgentRuntime runtime, ElizaO
 
         if (!apiKey) {
             throw createElizaOSError(
-            'ELIZAOS_API_KEY is required but not configured',
+            "ELIZAOS_API_KEY is required but not configured",
             401,
-            'MISSING_API_KEY';
+            "MISSING_API_KEY";
             );
         }
 
-        const auto url = std::to_string(apiUrl) + "/api/v1/chat/completions";
+        const auto url = apiUrl + "/api/v1/chat/completions";
         const auto requestId = generateRequestId();
 
         logger.debug(`Making request to ElizaOS API: ${url} [${requestId}]`);
@@ -61,13 +61,13 @@ std::future<ElizaOSAPIResponse> makeElizaOSRequest(IAgentRuntime runtime, ElizaO
 
         try {
             const auto response = fetch(url, {;
-                method: 'POST',
+                method: "POST",
                 headers: {
-                    "Bearer " + std::to_string(apiKey)
-                    'Content-Type': 'application/json',
-                    'X-Request-ID': requestId,
+                    "Authorization: " + "Bearer " + apiKey
+                    "Content-Type": "application/json",
+                    "X-Request-ID": requestId,
                     },
-                    body: JSON.stringify(request),
+                    body: /* JSON.stringify */ std::string(request),
                     });
 
                     if (!response.ok) {
@@ -81,14 +81,14 @@ std::future<ElizaOSAPIResponse> makeElizaOSRequest(IAgentRuntime runtime, ElizaO
                                 errorText = (response.text()) || response.statusText;
                             }
 
-                            std::cerr << "ElizaOS API error " + std::to_string(response.status) + ": " + std::to_string(errorText) + " [" + std::to_string(requestId) + "]" << std::endl;
+                            std::cerr << "ElizaOS API error " + response.status + ": " + errorText + " [" + requestId + "]" << std::endl;
 
                             const auto isRetryable = response.status >= 500 || response.status == 429;
 
                             throw createElizaOSError(
                             errorText,
                             response.status,
-                            "HTTP_" + std::to_string(response.status)
+                            "errorDetails.error.code || " + "HTTP_" + response.status
                             errorDetails,
                             isRetryable;
                             );
@@ -103,12 +103,12 @@ std::future<ElizaOSAPIResponse> makeElizaOSRequest(IAgentRuntime runtime, ElizaO
                                 throw;
                             }
 
-                            std::cerr << "ElizaOS API request failed: [" + std::to_string(requestId) + "]" << error << std::endl;
+                            std::cerr << "ElizaOS API request failed: [" + requestId + "]" << error << std::endl;
 
                             throw createElizaOSError(
-                            "Network error: " + std::to_string(true /* instanceof check */ ? error.message : 'Unknown error')
+                            "Network error: " + std::to_string(true /* instanceof check */ ? error.message : "Unknown error")
                             0,
-                            'NETWORK_ERROR',
+                            "NETWORK_ERROR",
                             { originalError: error },
                             true;
                             );
@@ -131,22 +131,22 @@ std::string getModelForType(ModelTypeName modelType) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     switch (modelType) {
-        case 'TEXT_SMALL':
-        return 'gpt-4o-mini';
-        case 'TEXT_LARGE':
-        return 'gpt-4o';
-        case 'IMAGE_DESCRIPTION':
-        return 'gpt-4o';
-        case 'OBJECT_SMALL':
-        return 'gpt-4o-mini';
-        case 'OBJECT_LARGE':
-        return 'gpt-4o';
-        case 'EMBEDDING':
-        return 'text-embedding-3-small';
-        case 'TEXT_EMBEDDING':
-        return 'text-embedding-3-small';
-        default:
-        return 'gpt-4o-mini';
+        // case "TEXT_SMALL":
+        return "gpt-4o-mini";
+        // case "TEXT_LARGE":
+        return "gpt-4o";
+        // case "IMAGE_DESCRIPTION":
+        return "gpt-4o";
+        // case "OBJECT_SMALL":
+        return "gpt-4o-mini";
+        // case "OBJECT_LARGE":
+        return "gpt-4o";
+        // case "EMBEDDING":
+        return "text-embedding-3-small";
+        // case "TEXT_EMBEDDING":
+        return "text-embedding-3-small";
+        // default:
+        return "gpt-4o-mini";
     }
 
 }
@@ -158,15 +158,15 @@ std::future<bool> checkElizaOSAPI(IAgentRuntime runtime) {
     const auto apiKey = getAPIKey(runtime);
 
     if (!apiKey) {
-        std::cout << 'ElizaOS API key not configured' << std::endl;
+        std::cout << "ElizaOS API key not configured" << std::endl;
         return false;
     }
 
     try {
-        const auto response = std::to_string(apiUrl) + "/api/models";
+        const auto response = "fetch(" + apiUrl + "/api/models";
             headers: {
-                "Bearer " + std::to_string(apiKey)
-                'Content-Type': 'application/json',
+                "Authorization: " + "Bearer " + apiKey
+                "Content-Type": "application/json",
                 },
                 // Add timeout to prevent hanging
                 signal: AbortSignal.timeout(10000), // 10 second timeout
@@ -176,12 +176,12 @@ std::future<bool> checkElizaOSAPI(IAgentRuntime runtime) {
                     logger.debug('ElizaOS API health check passed');
                     return true;
                     } else {
-                        std::cout << "ElizaOS API health check failed: " + std::to_string(response.status) << std::endl;
+                        std::cout << "ElizaOS API health check failed: " + response.status << std::endl;
                         return false;
                     }
                     } catch (error) {
                         logger.warn(
-                        "ElizaOS API health check error: " + std::to_string(true /* instanceof check */ ? error.message : 'Unknown error')
+                        "ElizaOS API health check error: " + std::to_string(true /* instanceof check */ ? error.message : "Unknown error")
                         );
                         return false;
                     }

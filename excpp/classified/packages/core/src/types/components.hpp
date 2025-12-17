@@ -1,11 +1,15 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
+#include <stdexcept>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
 
@@ -31,7 +35,7 @@ using HandlerCallback = std::function<std::future<std::vector<Memory>>(Content, 
 /**
  * Handler function type for processing messages
  */
-using Handler = std::variant<std::function<Promise<ActionResult(IAgentRuntime, Memory, State, std::any, HandlerCallback, std::vector<Memory>)>, void, undefined>>;
+using Handler = std::function<std::variant<Promise<ActionResult, void, undefined>>(IAgentRuntime, Memory, State, std::any, HandlerCallback, std::vector<Memory>)>;
 
 /**
  * Validator function type for actions/evaluators
@@ -94,7 +98,7 @@ struct Provider {
 struct ActionResult {
     std::optional<std::string> text;
     bool success;
-    std::optional<std::variant<std::string, Error>> error;
+    std::optional<std::variant<std::string, std::runtime_error>> error;
 };
 
 /**

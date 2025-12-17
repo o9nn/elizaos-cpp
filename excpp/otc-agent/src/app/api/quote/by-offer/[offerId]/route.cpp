@@ -37,7 +37,7 @@ std::future<void> GET(NextRequest request) {
 
     // Redirect to the deal page
     return NextResponse.redirect(;
-    "/deal/" + std::to_string(matchingQuote.quoteId)
+    "new URL(" + "/deal/" + matchingQuote.quoteId
     );
 
 }

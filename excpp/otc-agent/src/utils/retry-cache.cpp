@@ -16,7 +16,7 @@ double calculateDelay(double attempt) {
 
 }
 
-bool isRetryableError(unknown error) {
+bool isRetryableError(const std::any& error) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (error instanceof Error) {
@@ -35,11 +35,11 @@ bool isRetryableError(unknown error) {
 
 }
 
-std::future<Response> fetchWithRetry(const std::string& url, std::optional<RequestInit> options, std::optional<std::any> retryOptions) {
+std::future<std::string> fetchWithRetry(const std::string& url, std::optional<RequestInit> options, std::optional<std::any> retryOptions) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        const auto cacheKey = "fetch:" + std::to_string(url);
+        const auto cacheKey = "retryOptions.cacheKey || " + "fetch:" + url;
 
         return withRetryAndCache(;
         cacheKey,

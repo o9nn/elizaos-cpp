@@ -41,11 +41,11 @@ std::vector<TokenGroup> groupConsignmentsByToken(const std::vector<OTCConsignmen
                 };
                 grouped.set(consignment.tokenId, group);
             }
-            group.consignments.push(consignment);
+            group.consignments.push_back(consignment);
         }
 
         // Only return groups that have at least one valid consignment
-        return Array.from(grouped.values()).filter((g) => g.consignments.length > 0);
+        return Array.from(grouped.values()).filter((g) => g.consignments.size() > 0);
 
 }
 
@@ -96,7 +96,7 @@ void DealsGrid(auto searchQuery) {
 
     useRenderTracker("DealsGrid", {
         searchQuery,
-        chainsCount: filters.chains.length,
+        chainsCount: filters.chains.size(),
         });
         const auto [tokenGroups, setTokenGroups] = useState<TokenGroup[]>([]);
         const auto [isLoading, setIsLoading] = useState(true);
@@ -112,7 +112,7 @@ void DealsGrid(auto searchQuery) {
                     params.append("negotiableTypes", type),
                     );
 
-                    const auto response = "/api/consignments?" + std::to_string(params.toString());
+                    const auto response = "fetch(" + "/api/consignments?" + std::to_string(std::to_string(params));
                     const auto data = response.json();
 
                     if (data.success) {
@@ -143,7 +143,7 @@ void DealsGrid(auto searchQuery) {
                         }, [tokenGroups, searchQuery]);
 
                         // Pagination
-                        const auto totalPages = Math.ceil(filteredGroups.length / PAGE_SIZE);
+                        const auto totalPages = Math.ceil(filteredGroups.size() / PAGE_SIZE);
                         const auto paginatedGroups = useMemo(() => {;
                             const auto startIndex = (currentPage - 1) * PAGE_SIZE;
                             return filteredGroups.slice(startIndex, startIndex + PAGE_SIZE);
@@ -289,11 +289,11 @@ void DealsGrid(auto searchQuery) {
                     <button;
                 key={pageNum}
             onClick={() => goToPage(pageNum)}
-            "w-8 h-8 rounded-lg text-sm font-medium transition-colors " + std::to_string();
+            "className={" + "w-8 h-8 rounded-lg text-sm font-medium transition-colors " + std::to_string();
                 currentPage == pageNum;
                 ? "bg-brand-500 text-white";
                 : "hover:bg-zinc-100 dark:hover:bg-zinc-800"
-            }`}
+            "}";
             >;
         {pageNum}
         </button>;

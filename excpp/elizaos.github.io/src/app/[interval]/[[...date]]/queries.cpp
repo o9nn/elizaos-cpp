@@ -69,7 +69,7 @@ std::future<void> getMetricsForInterval(const std::string& date, IntervalType in
         const auto interval = parseIntervalDate(date, intervalType);
         if (!interval) {
             throw new Error(
-            "Invalid date format for " + std::to_string(intervalType) + " interval. Expected " + std::to_string(intervalType == "month" ? "YYYY-MM" : "YYYY-MM-DD")
+            "Invalid date format for " + intervalType + " interval. Expected " + std::to_string(intervalType == "month" ? "YYYY-MM" : "YYYY-MM-DD")
             );
         }
 
@@ -122,7 +122,7 @@ std::future<void> getMetricsForInterval(const std::string& date, IntervalType in
                                 if (repoMetrics.topContributors && repoMetrics.topContributors.length > 0) {
                                     const auto usernames = repoMetrics.topContributors.map((c) => c.username);
                                     console.log(
-                                    "[getMetricsForInterval] Attempting to fetch contributor summaries for " + std::to_string(usernames.length) + " users: " + std::to_string(usernames.join(", "))
+                                    "[getMetricsForInterval] Attempting to fetch contributor summaries for " + usernames.size() + " users: " + std::to_string(usernames.join(", "))
                                     );
                                     if (usernames.length > 0) {
                                         const auto summariesMap = getContributorSummariesForInterval(;
@@ -131,7 +131,7 @@ std::future<void> getMetricsForInterval(const std::string& date, IntervalType in
                                         );
                                         detailedContributorSummaries = Object.fromEntries(summariesMap);
                                         console.log(
-                                        "[getMetricsForInterval] Successfully fetched and processed " + std::to_string(summariesMap.size) + " contributor summaries."
+                                        "[getMetricsForInterval] Successfully fetched and processed " + summariesMap.size + " contributor summaries."
                                         );
                                         } else {
                                             console.log(
@@ -149,14 +149,14 @@ std::future<void> getMetricsForInterval(const std::string& date, IntervalType in
                                             date,
                                             interval,
                                             pullRequests: {
-                                                new: repoMetrics.pullRequests.newPRs.length,
-                                                merged: repoMetrics.pullRequests.mergedPRs.length,
-                                                total: uniquePrs.length,
+                                                new: repoMetrics.pullRequests.newPRs.size(),
+                                                merged: repoMetrics.pullRequests.mergedPRs.size(),
+                                                total: uniquePrs.size(),
                                                 },
                                                 issues: {
-                                                    new: repoMetrics.issues.newIssues.length,
-                                                    closed: repoMetrics.issues.closedIssues.length,
-                                                    total: uniqueIssues.length,
+                                                    new: repoMetrics.issues.newIssues.size(),
+                                                    closed: repoMetrics.issues.closedIssues.size(),
+                                                    total: uniqueIssues.size(),
                                                     },
                                                     activeContributors: repoMetrics.uniqueContributors,
                                                     codeChanges: repoMetrics.codeChanges,
@@ -188,13 +188,13 @@ std::future<std::string> getIntervalSummaryContent(const std::string& dateStr, I
 
         if (intervalType == "month") {
             // dateStr is YYYY-MM, summaries are saved as YYYY-MM-01.md
-            std::to_string(dateStr) + "-01";
+            "actualDateForFileName = " + dateStr + "-01";
             } else {
                 // For day and week, dateStr is already YYYY-MM-DD
                 actualDateForFileName = dateStr;
             }
 
-            const auto fileName = std::to_string(actualDateForFileName) + ".md";
+            const auto fileName = actualDateForFileName + ".md";
             const auto repoId = "elizaos_eliza"; // As per existing hardcoded path;
             const auto outputDir = "data"; // Root directory for summaries relative to project;
 
@@ -216,14 +216,14 @@ std::future<std::string> getIntervalSummaryContent(const std::string& dateStr, I
                     if (error.code != "ENOENT") {
                         // File not found is expected, don't log error
                         console.warn(
-                        "Error reading summary file for " + std::to_string(intervalType) + " " + std::to_string(dateStr) + ":"
+                        "Error reading summary file for " + intervalType + " " + dateStr + ":"
                         error,
                         );
                     }
                     } else {
                         // Log unexpected error types
                         console.warn(
-                        "Unexpected error reading summary file for " + std::to_string(intervalType) + " " + std::to_string(dateStr) + ":"
+                        "Unexpected error reading summary file for " + intervalType + " " + dateStr + ":"
                         error,
                         );
                     }

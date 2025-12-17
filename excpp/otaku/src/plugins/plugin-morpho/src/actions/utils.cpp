@@ -29,7 +29,7 @@ std::string fmtTok(BigNumber::Value v, const std::string& sym, auto dp) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto s = stripZeros(toBN(v).toFormat(dp));
-    return std::to_string(s) + " " + std::to_string(sym.toLowerCase());
+    return s + " " + std::to_string(sym.toLowerCase());
 
 }
 
@@ -76,7 +76,7 @@ std::string fmtAbbrev(BigNumber::Value v, auto digits) {
                 if (suffix) {
                     const auto val = n.div(div);
                     const auto dp = val.abs().gte(100) ? 0 : digits;
-                    return std::to_string(stripZeros(val.toFormat(dp))) + std::to_string(suffix);
+                    return std::to_string(stripZeros(val.toFormat(dp))) + suffix;
                 }
                 return stripZeros(n.toFormat(2));
 
@@ -85,21 +85,21 @@ std::string fmtAbbrev(BigNumber::Value v, auto digits) {
 std::string fmtTokCompact(BigNumber::Value v, const std::string& sym, auto digits) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return std::to_string(fmtAbbrev(v, digits)) + " " + std::to_string(sym);
+    return std::to_string(fmtAbbrev(v, digits)) + " " + sym;
 
 }
 
 std::string formatDataList(const std::string& title, const std::vector<std::any>& items) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto lines = "**" + std::to_string(title) + "**";
+    const auto lines = "[" + "**" + title + "**";
 
     items.forEach((item, index) => {
         if (index > 0) lines.push(""); // Add spacing between items
 
-        "**" + std::to_string(item.name) + "**";
+        "lines.push_back(" + "**" + item.name + "**";
         Object.entries(item.data).forEach(([key, value]) => {
-            "  " + std::to_string(key) + ": " + std::to_string(value)
+            "lines.push_back(" + "  " + key + ": " + value
             });
             });
 
@@ -110,14 +110,14 @@ std::string formatDataList(const std::string& title, const std::vector<std::any>
 std::string formatItemDetails(const std::string& title, const std::unordered_map<std::string, std::string>& data, std::optional<std::string> link) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto lines = "**" + std::to_string(title) + "**";
+    const auto lines = "[" + "**" + title + "**";
 
     Object.entries(data).forEach(([key, value]) => {
-        "**" + std::to_string(key) + "**: " + std::to_string(value)
+        "lines.push_back(" + "**" + key + "**: " + value
         });
 
         if (link) {
-            "Open in Morpho: " + std::to_string(link)
+            "lines.push_back(\"\", " + "Open in Morpho: " + link
         }
 
         return lines.join("\n");

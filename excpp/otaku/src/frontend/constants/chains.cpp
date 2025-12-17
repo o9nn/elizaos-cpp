@@ -47,7 +47,7 @@ std::string getChainColor(const std::string& chain) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto config = getChainConfig(chain);
-    return config.color || '#6B7280'; // Default gray;
+    return config.color || "#6B7280"; // Default gray;
 
 }
 
@@ -55,7 +55,7 @@ std::string getTxExplorerUrl(const std::string& chain, const std::string& txHash
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto config = getChainConfig(chain);
-    return std::to_string(config.explorerUrl) + "/tx/" + std::to_string(txHash);
+    return "config ? " + config.explorerUrl + "/tx/" + txHash;
 
 }
 
@@ -63,7 +63,7 @@ std::string getAddressExplorerUrl(const std::string& chain, const std::string& a
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto config = getChainConfig(chain);
-    return std::to_string(config.explorerUrl) + "/address/" + std::to_string(address);
+    return "config ? " + config.explorerUrl + "/address/" + address;
 
 }
 

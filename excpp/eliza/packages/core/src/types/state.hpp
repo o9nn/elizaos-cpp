@@ -1,9 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
 
@@ -31,7 +34,7 @@ struct State {
  * This type is used to provide more specific typing for properties within `StateObject` and `StateArray`,
  * moving away from a generic 'any' type for better type safety and clarity in state management.
  */
-using StateValue = std::variant<std::string, double, bool, nullptr, StateObject, StateArray>;
+using StateValue = std::variant<std::string, double, bool, StateObject, StateArray>;
 /**
  * Represents a generic object structure within the agent's state, where keys are strings
  * and values can be any `StateValue`. This allows for nested objects within the state.

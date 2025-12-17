@@ -1,13 +1,16 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".types.hpp"
 #include "elizaos/core.hpp"
+#include "types.hpp"
 
 namespace elizaos {
 
@@ -28,7 +31,7 @@ public:
     std::future<PluginConfigurationRequest> generateConfigurationRequest(const std::string& pluginName, const std::string& pluginPath);
     std::future<std::unordered_map<std::string, std::string>> applyConfigurationToEnvironment(const std::string& pluginName);
     std::future<bool> hasValidConfiguration(const std::string& pluginName, const std::string& pluginPath);
-    std::future<Buffer> getOrCreateEncryptionKey();
+    std::future<std::vector<uint8_t>> getOrCreateEncryptionKey();
     std::future<std::string> encrypt(const std::string& text);
     std::future<std::string> decrypt(const std::string& text);
     bool isSensitiveKey(const std::string& key);

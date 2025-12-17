@@ -1,5 +1,7 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
@@ -7,18 +9,18 @@
 #include <string>
 #include <tuple>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
-#include ".exceptions.hpp"
-#include ".types.hpp"
-#include ".utils/log.hpp"
 #include "action-sampler.hpp"
+#include "exceptions.hpp"
 #include "history-processors.hpp"
 #include "hooks.hpp"
 #include "models.hpp"
 #include "problem-statement.hpp"
 #include "tools/parsing.hpp"
 #include "types.hpp"
+#include "utils/log.hpp"
 #include "utils/template.hpp"
 #include "utils/yaml.hpp"
 
@@ -188,7 +190,7 @@ public:
     void addHook(AbstractAgentHook hook);
     History messages() const;
     void appendHistory(HistoryItem item);
-    std::unordered_map<std::string, unknown> getFormatDict(std::optional<std::unordered_map<std::string, unknown>> kwargs);
+    std::unordered_map<std::string, std::any> getFormatDict(std::optional<std::unordered_map<std::string, std::any>> kwargs);
     void addSystemMessageToHistory();
     void addDemonstrationsToHistory();
     void addDemonstrationToHistory(const std::string& demonstrationPath);
@@ -199,7 +201,7 @@ public:
     std::future<StepOutput> handleAction(StepOutput step);
     void addStepToTrajectory(StepOutput step);
     std::future<StepOutput> forwardWithHandling(History history);
-    History getModelRequeryHistory(const std::string& errorTemplate, StepOutput step, const std::unordered_map<std::string, unknown>& kwargs);
+    History getModelRequeryHistory(const std::string& errorTemplate, StepOutput step, const std::unordered_map<std::string, std::any>& kwargs);
     std::future<StepOutput> attemptAutosubmissionAfterError(StepOutput step);
     std::future<StepOutput> step();
 

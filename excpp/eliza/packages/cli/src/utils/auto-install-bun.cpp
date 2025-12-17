@@ -11,63 +11,63 @@ std::future<bool> autoInstallBun() {
 
     try {
         // First check if bun is already available
-        execa('bun', ['--version'], { stdio: 'ignore' });
+        execa("bun", ["--version"], { stdio: "ignore" });
         return true;
         } catch {
             // Bun is not available, attempt auto-installation
         }
 
-        std::cout << std::to_string(emoji.rocket('Bun is required for ElizaOS CLI. Installing automatically...')) << std::endl;
+        std::cout << std::to_string(emoji.rocket("Bun is required for ElizaOS CLI. Installing automatically...")) << std::endl;
 
         try {
             if (platform == 'win32') {
                 // Windows installation
-                std::cout << 'Installing Bun on Windows...' << std::endl;
-                execa('powershell', ['-c', 'irm bun.sh/install.ps1 | iex'], {
-                    stdio: 'inherit',
+                std::cout << "Installing Bun on Windows..." << std::endl;
+                execa("powershell", ["-c", "irm bun.sh/install.ps1 | iex"], {
+                    stdio: "inherit",
                     });
                     } else {
                         // Linux/macOS installation
-                        std::cout << 'Installing Bun on Linux/macOS...' << std::endl;
+                        std::cout << "Installing Bun on Linux/macOS..." << std::endl;
 
                         // Use shell to execute the curl | bash command directly
-                        execa('sh', ['-c', 'curl -fsSL https://bun.sh/install | bash'], {
-                            stdio: 'inherit',
+                        execa("sh", ["-c", "curl -fsSL https://bun.sh/install | bash"], {
+                            stdio: "inherit",
                             });
                         }
 
                         // Add bun to PATH for current session
                         const auto bunPath =;
-                        platform == 'win32';
-                        std::to_string(process.env.USERPROFILE) + "\\.bun\\bin";
-                        std::to_string(process.env.HOME) + "/.bun/bin"
+                        platform == "win32";
+                        "? " + process.env.USERPROFILE + "\\.bun\\bin";
+                        ": " + process.env.HOME + "/.bun/bin"
 
                         if (bunPath && !process.env.PATH.includes(bunPath)) {
-                            std::to_string(bunPath) + std::to_string(platform == 'win32' ? ';' : ':') + std::to_string(process.env.PATH)
+                            "process.env.PATH = " + bunPath + std::to_string(platform == "win32" ? ";" : ":") + process.env.PATH
                         }
 
                         // Verify installation worked
-                        execa('bun', ['--version'], { stdio: 'ignore' });
+                        execa("bun", ["--version"], { stdio: "ignore" });
                         logger.success(`${emoji.success('Bun installed successfully!')}`);
 
                         return true;
                         } catch (error) {
-                            std::cerr << std::to_string(emoji.error('Failed to automatically install Bun:')) << std::endl;
+                            std::cerr << std::to_string(emoji.error("Failed to automatically install Bun:")) << std::endl;
                             std::cerr << "Error: " + std::to_string(true /* instanceof check */ ? error.message : std::to_string(error)) << std::endl;
 
                             // Fall back to manual installation instructions
-                            std::cout << "\n" + std::to_string(emoji.info('Please install Bun manually:')) << std::endl;
+                            std::cout << "\n" + std::to_string(emoji.info("Please install Bun manually:")) << std::endl;
                             if (platform == 'win32') {
-                                std::cout << '   Windows: powershell -c "irm bun.sh/install.ps1 | iex"' << std::endl;
+                                std::cout << "   Windows: powershell -c "irm bun.sh/install.ps1 | iex"" << std::endl;
                                 } else {
-                                    std::cout << '   Linux/macOS: curl -fsSL https://bun.sh/install | bash' << std::endl;
+                                    std::cout << "   Linux/macOS: curl -fsSL https://bun.sh/install | bash" << std::endl;
                                     if (platform == 'darwin') {
-                                        std::cout << '   macOS (Homebrew): brew install bun' << std::endl;
+                                        std::cout << "   macOS (Homebrew): brew install bun" << std::endl;
                                     }
                                 }
-                                std::cout << "\n" + std::to_string(emoji.link('More options: https://bun.sh/docs/installation')) << std::endl;
+                                std::cout << "\n" + std::to_string(emoji.link("More options: https://bun.sh/docs/installation")) << std::endl;
                                 logger.info(
-                                "\n" + std::to_string(emoji.tip('After installation, restart your terminal or source your shell profile'));
+                                "\n" + std::to_string(emoji.tip("After installation, restart your terminal or source your shell profile"));
                                 );
 
                                 return false;

@@ -21,8 +21,8 @@ std::future<RegistrySettings> getRegistrySettings() {
     ensureElizaDir();
 
     try {
-        const auto content = fs.readFile(REGISTRY_SETTINGS_FILE, 'utf-8');
-        return JSON.parse(content);
+        const auto content = fs.readFile(REGISTRY_SETTINGS_FILE, "utf-8");
+        return /* JSON.parse */ content;
         } catch (error) {
             // Return default settings if file doesn't exist
             return {
@@ -36,7 +36,7 @@ std::future<void> saveRegistrySettings(RegistrySettings settings) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     ensureElizaDir();
-    fs.writeFile(REGISTRY_SETTINGS_FILE, JSON.stringify(settings, nullptr, 2));
+    fs.writeFile(REGISTRY_SETTINGS_FILE, /* JSON.stringify */ std::string(settings, nullptr, 2));
 
 }
 
@@ -44,7 +44,7 @@ std::future<std::string> getEnvVar(const std::string& key) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
-        const auto envContent = fs.readFile(ENV_FILE, 'utf-8');
+        const auto envContent = fs.readFile(ENV_FILE, "utf-8");
         const auto env = dotenv.parse(envContent);
         return env[key];
         } catch (error) {
@@ -58,9 +58,9 @@ std::future<void> setEnvVar(const std::string& key, const std::string& value) {
 
     ensureElizaDir();
 
-    auto envContent = '';
+    auto envContent = "";
     try {
-        envContent = fs.readFile(ENV_FILE, 'utf-8');
+        envContent = fs.readFile(ENV_FILE, "utf-8");
         } catch (error) {
             // File doesn't exist yet
         }
@@ -69,8 +69,8 @@ std::future<void> setEnvVar(const std::string& key, const std::string& value) {
         env[key] = value;
 
         const auto newContent = Object.entries(env);
-        std::to_string(k) + "=" + std::to_string(v);
-        .join('\n');
+        ".map(([k, v]) => " + k + "=" + v;
+        .join("\n");
 
         fs.writeFile(ENV_FILE, newContent);
 
@@ -83,15 +83,15 @@ std::future<std::string> getGitHubToken() {
         // Try to find the nearest .env file using the same function used for saving credentials
         const auto envPath = resolveEnvFile();
         if (envPath && existsSync(envPath)) {
-            const auto envContent = fs.readFile(envPath, 'utf-8');
+            const auto envContent = fs.readFile(envPath, "utf-8");
             const auto env = dotenv.parse(envContent);
             return env.GITHUB_TOKEN;
         }
 
         // Fall back to global .env if local one doesn't exist or doesn't have token
-        const auto globalEnvPath = path.join(ELIZA_DIR, '.env');
+        const auto globalEnvPath = path.join(ELIZA_DIR, ".env");
         if (existsSync(globalEnvPath) && globalEnvPath != envPath) {
-            const auto envContent = fs.readFile(globalEnvPath, 'utf-8');
+            const auto envContent = fs.readFile(globalEnvPath, "utf-8");
             const auto env = dotenv.parse(envContent);
             return env.GITHUB_TOKEN;
         }
@@ -111,14 +111,14 @@ std::future<void> setGitHubToken(const std::string& token) {
 
     try {
         // Read existing .env file or create a new one
-        auto envContent = '';
+        auto envContent = "";
         try {
             if (existsSync(ENV_FILE)) {
-                envContent = fs.readFile(ENV_FILE, 'utf-8');
+                envContent = fs.readFile(ENV_FILE, "utf-8");
             }
             } catch (error) {
                 // File doesn't exist, create it with empty content
-                envContent = '# Eliza environment variables\n\n';
+                envContent = "# Eliza environment variables\n\n";
             }
 
             // Parse the existing content
@@ -128,9 +128,9 @@ std::future<void> setGitHubToken(const std::string& token) {
             env.GITHUB_TOKEN = token;
 
             // Convert back to string format
-            auto newContent = '';
+            auto newContent = "";
             for (const int [key, value] of Object.entries(env)) {
-                std::to_string(key) + "=" + std::to_string(value) + "\n";
+                "newContent += " + key + "=" + value + "\n";
             }
 
             // Write back to file
@@ -152,9 +152,9 @@ std::string normalizePackageName(const std::string& packageName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (packageName.startsWith(`@${REGISTRY_ORG}/`)) {
-        return "@" + std::to_string(REGISTRY_ORG) + "/";
-        } else if (packageName.startsWith('@elizaos/')) {
-            return packageName.replace(/^@elizaos\//, '');
+        return "packageName.replace(" + "@" + REGISTRY_ORG + "/";
+        } else if (packageName.startsWith("@elizaos/")) {
+            return packageName.replace(/^@elizaos\//, "");
         }
         return packageName;
 
@@ -165,7 +165,7 @@ std::future<void> saveRegistryCache(const std::unordered_map<std::string, std::s
 
     try {
         ensureElizaDir();
-        fs.writeFile(REGISTRY_CACHE_FILE, JSON.stringify(registry, nullptr, 2));
+        fs.writeFile(REGISTRY_CACHE_FILE, /* JSON.stringify */ std::string(registry, nullptr, 2));
         logger.debug('Registry cache saved successfully');
         } catch (error) {
             logger.debug(
@@ -212,8 +212,8 @@ std::future<std::unordered_map<std::string, std::string>> getLocalRegistryIndex(
         // If fetching fails, try to read from cache
         try {
             if (existsSync(REGISTRY_CACHE_FILE)) {
-                const auto cacheContent = fs.readFile(REGISTRY_CACHE_FILE, 'utf-8');
-                const auto cachedRegistry = JSON.parse(cacheContent);
+                const auto cacheContent = fs.readFile(REGISTRY_CACHE_FILE, "utf-8");
+                const auto cachedRegistry = /* JSON.parse */ cacheContent;
                 logger.debug('Using cached registry index');
                 return cachedRegistry;
             }
@@ -236,7 +236,7 @@ std::future<std::unordered_map<std::string, std::string>> getLocalRegistryIndex(
                             // Use the package name as both key and value
                             // Format as expected by the registry: orgrepo/packagename
                             const auto repoName = normalizePackageName(pkgName);
-                            std::to_string(REGISTRY_ORG) + "/" + std::to_string(repoName);
+                            "localRegistry[pkgName] = " + REGISTRY_ORG + "/" + repoName;
                         }
                     }
 
@@ -262,17 +262,17 @@ std::future<std::unordered_map<std::string, std::string>> getRegistryIndex() {
         const auto credentials = getGitHubCredentials();
 
         if (!credentials) {
-            std::cerr << 'GitHub credentials not found. Please run login first.' << std::endl;
+            std::cerr << "GitHub credentials not found. Please run login first." << std::endl;
             process.exit(1);
         }
 
-        const auto [owner, repo] = settings.defaultRegistry.split('/');
-        const auto url = "https://api.github.com/repos/" + std::to_string(owner) + "/" + std::to_string(repo) + "/contents/index.json";
+        const auto [owner, repo] = settings.defaultRegistry.split("/");
+        const auto url = "https://api.github.com/repos/" + owner + "/" + repo + "/contents/index.json";
 
         const auto response = fetch(url, {;
             headers: {
-                "token " + std::to_string(credentials.token)
-                Accept: 'application/vnd.github.v3.raw',
+                "Authorization: " + "token " + credentials.token
+                Accept: "application/vnd.github.v3.raw",
                 },
                 });
 
@@ -309,26 +309,26 @@ std::vector<std::string> normalizePluginName(const std::string& pluginName) {
     // Handle various input formats
     if (pluginName.includes('/')) {
         // Handle formats like "elizaos/plugin-ton" or "elizaos-plugins/plugin-ton"
-        const auto parts = pluginName.split('/');
-        baseName = parts[parts.length - 1];
-        } else if (pluginName.startsWith('@')) {
+        const auto parts = pluginName.split("/");
+        baseName = parts[parts.size() - 1];
+        } else if (pluginName.startsWith("@")) {
             // Handle scoped package format like "@elizaos/plugin-ton"
-            const auto parts = pluginName.split('/');
+            const auto parts = pluginName.split("/");
             if (parts.length > 1) {
                 baseName = parts[1];
             }
         }
 
         // Remove any existing prefixes
-        baseName = baseName.replace(/^plugin-/, '');
+        baseName = baseName.replace(/^plugin-/, "");
 
         // Generate all possible formats to try (removed duplicates and incorrect namespace)
         return [;
         pluginName, // Original input;
         baseName, // Just the base name;
-        "plugin-" + std::to_string(baseName);
-        "@elizaos/" + std::to_string(baseName);
-        "@elizaos/plugin-" + std::to_string(baseName);
+        "plugin-" + baseName;
+        "@elizaos/" + baseName;
+        "@elizaos/plugin-" + baseName;
         ];
 
 }
@@ -358,8 +358,8 @@ std::future<std::string> getPluginRepository(const std::string& pluginName) {
 
         // Direct GitHub shorthand (github:org/repo) - NO AUTH REQUIRED
         if (!pluginName.includes(':') && !pluginName.startsWith('@')) {
-            const auto baseName = pluginName.replace(/^plugin-/, '');
-            return "@" + std::to_string(REGISTRY_ORG) + "/plugin-" + std::to_string(baseName);
+            const auto baseName = pluginName.replace(/^plugin-/, "");
+            return "@" + REGISTRY_ORG + "/plugin-" + baseName;
         }
 
         return nullptr;
@@ -376,11 +376,11 @@ std::future<bool> repoHasBranch(const std::string& repoUrl, const std::string& b
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
-        const auto { stdout } = bunExecSimple('git', ['ls-remote', '--heads', repoUrl, branchName]);
-        return stdout.includes(branchName);
+        const auto { stdout } = bunExecSimple("git", ["ls-remote", "--heads", repoUrl, branchName]);
+        return (std::find(stdout.begin(), stdout.end(), branchName) != stdout.end());
         } catch (error) {
             logger.warn(
-            "Failed to check for branch " + std::to_string(branchName) + " in " + std::to_string(repoUrl) + ": " + std::to_string(true /* instanceof check */ ? error.message : std::to_string(error))
+            "Failed to check for branch " + branchName + " in " + repoUrl + ": " + std::to_string(true /* instanceof check */ ? error.message : std::to_string(error))
             );
             return false;
         }
@@ -392,13 +392,13 @@ std::future<std::string> getBestBranch(const std::string& repoUrl) {
 
     // Check for v2 or v2-develop branches
     if (await repoHasBranch(repoUrl, 'v2')) {
-        return 'v2';
+        return "v2";
     }
     if (await repoHasBranch(repoUrl, 'v2-develop')) {
-        return 'v2-develop';
+        return "v2-develop";
     }
     // Default to main branch
-    return 'main';
+    return "main";
 
 }
 
@@ -407,7 +407,7 @@ std::future<std::vector<std::string>> listPluginsByType(std::optional<std::strin
 
     const auto registry = getRegistryIndex();
     return Object.keys(registry);
-    .filter((name) => !type || name.includes(type));
+    .filter((name) => !type || (std::find(name.begin(), name.end(), type) != name.end()));
     .sort();
 
 }
@@ -420,19 +420,19 @@ std::future<std::optional<PluginMetadata>> getPluginMetadata(const std::string& 
         const auto credentials = getGitHubCredentials();
 
         if (!credentials) {
-            std::cerr << 'GitHub credentials not found. Please run login first.' << std::endl;
+            std::cerr << "GitHub credentials not found. Please run login first." << std::endl;
             process.exit(1);
         }
 
-        const auto [owner, repo] = settings.defaultRegistry.split('/');
+        const auto [owner, repo] = settings.defaultRegistry.split("/");
         const auto normalizedName = normalizePackageName(pluginName);
-        const auto url = "https://api.github.com/repos/" + std::to_string(owner) + "/" + std::to_string(repo) + "/contents/packages/" + std::to_string(normalizedName) + ".json";
+        const auto url = "https://api.github.com/repos/" + owner + "/" + repo + "/contents/packages/" + normalizedName + ".json";
 
         try {
             const auto response = fetch(url, {;
                 headers: {
-                    "token " + std::to_string(credentials.token)
-                    Accept: 'application/vnd.github.v3.raw',
+                    "Authorization: " + "token " + credentials.token
+                    Accept: "application/vnd.github.v3.raw",
                     },
                     });
 
@@ -464,7 +464,7 @@ std::future<std::optional<PluginMetadata>> getPluginMetadata(const std::string& 
 
                     return metadata;
                     } catch (error) {
-                        std::cerr << 'Failed to fetch plugin metadata:' << error << std::endl;
+                        std::cerr << "Failed to fetch plugin metadata:" << error << std::endl;
                         return nullptr;
                     }
 
@@ -496,7 +496,7 @@ std::future<std::string> getPluginVersion(const std::string& pluginName, std::op
         }
 
         // Fallback to a reasonable default version
-        return 'latest';
+        return "latest";
 
 }
 
@@ -521,7 +521,7 @@ std::future<std::vector<std::string>> getAvailableDatabases() {
 
     const auto registry = getRegistryIndex();
     return Object.keys(registry);
-    .filter((name) => name.includes('database-'));
+    .filter((name) => (std::find(name.begin(), name.end(), "database-") != name.end()));
     .sort();
 
 }
@@ -554,22 +554,22 @@ std::future<std::string> getBestPluginVersion(const std::string& packageName, co
     }
 
     // Parse the runtime version for semver matching
-    const auto [runtimeMajor, runtimeMinor] = runtimeVersion.split('.').map(Number);
-    const auto [packageMajor, packageMinor] = packageDetails.runtimeVersion.split('.').map(Number);
+    const auto [runtimeMajor, runtimeMinor] = runtimeVersion.split(".").map(Number);
+    const auto [packageMajor, packageMinor] = packageDetails.runtimeVersion.split(".").map(Number);
 
     // If major version is different, warn but still return the latest
     if (runtimeMajor != packageMajor) {
         logger.warn(
-        "Plugin " + std::to_string(packageName) + " was built for runtime v" + std::to_string(packageDetails.runtimeVersion) + ", but you're using v" + std::to_string(runtimeVersion);
+        "Plugin " + packageName + " was built for runtime v" + packageDetails.runtimeVersion + ", but you're using v" + runtimeVersion;
         );
-        std::cout << 'This may cause compatibility issues.' << std::endl;
+        std::cout << "This may cause compatibility issues." << std::endl;
         return packageDetails.latestVersion;
     }
 
     // If minor version is different, warn but with less severity
     if (runtimeMinor != packageMinor) {
         logger.warn(
-        "Plugin " + std::to_string(packageName) + " was built for runtime v" + std::to_string(packageDetails.runtimeVersion) + ", you're using v" + std::to_string(runtimeVersion);
+        "Plugin " + packageName + " was built for runtime v" + packageDetails.runtimeVersion + ", you're using v" + runtimeVersion;
         );
     }
 
@@ -604,22 +604,22 @@ std::future<DataDirStatus> checkDataDir() {
 
                     // Check .env file
                     try {
-                        const auto envContent = fs.readFile(ENV_FILE, 'utf-8');
+                        const auto envContent = fs.readFile(ENV_FILE, "utf-8");
                         const auto env = dotenv.parse(envContent);
                         status.env.exists = true;
                         status.env.missingKeys = REQUIRED_ENV_VARS.filter((key) => !env[key]);
-                        status.env.hasAllKeys = status.env.missingKeys.length == 0;
+                        status.env.hasAllKeys = status.env.missingKeys.size() == 0;
                         } catch {
                             // .env file doesn't exist or can't be read
                         }
 
                         // Check settings file
                         try {
-                            const auto settingsContent = fs.readFile(REGISTRY_SETTINGS_FILE, 'utf-8');
-                            const auto settings = JSON.parse(settingsContent);
+                            const auto settingsContent = fs.readFile(REGISTRY_SETTINGS_FILE, "utf-8");
+                            const auto settings = /* JSON.parse */ settingsContent;
                             status.settings.exists = true;
                             status.settings.missingKeys = REQUIRED_SETTINGS.filter((key) => !(key in settings));
-                            status.settings.hasAllKeys = status.settings.missingKeys.length == 0;
+                            status.settings.hasAllKeys = status.settings.missingKeys.size() == 0;
                             } catch {
                                 // settings file doesn't exist or can't be read
                             }
@@ -637,7 +637,7 @@ std::future<void> initializeDataDir() {
     try {
         fs.access(ENV_FILE);
         } catch {
-            fs.writeFile(ENV_FILE, '');
+            fs.writeFile(ENV_FILE, "");
         }
 
         // Initialize settings if they don't exist
@@ -657,7 +657,7 @@ std::future<bool> validateDataDir() {
     const auto status = checkDataDir();
 
     if (!status.exists) {
-        std::cout << 'ElizaOS data directory not found. Initializing...' << std::endl;
+        std::cout << "ElizaOS data directory not found. Initializing..." << std::endl;
         initializeDataDir();
         return false;
     }
@@ -668,27 +668,27 @@ std::future<bool> validateDataDir() {
     // This ensures we're checking the same place where credentials are stored
     const auto envPath = resolveEnvFile();
     if (envPath) {
-        const auto envContent = fs.readFile(envPath, 'utf-8');
+        const auto envContent = fs.readFile(envPath, "utf-8");
         const auto parsedEnv = dotenv.parse(envContent);
         if (!parsedEnv.GITHUB_TOKEN) {
-            std::cout << 'GitHub token not found in environment' << std::endl;
+            std::cout << "GitHub token not found in environment" << std::endl;
             isValid = false;
         }
         } else {
-            std::cout << '.env file not found' << std::endl;
+            std::cout << ".env file not found" << std::endl;
             isValid = false;
         }
 
         if (!status.env.hasAllKeys) {
-            std::cout << "Missing environment variables: " + std::to_string(status.env.missingKeys.join(', ')) << std::endl;
+            std::cout << "Missing environment variables: " + std::to_string(status.env.missingKeys.join(", ")) << std::endl;
             isValid = false;
         }
 
         if (!status.settings.exists) {
-            std::cout << 'Registry settings file not found' << std::endl;
+            std::cout << "Registry settings file not found" << std::endl;
             isValid = false;
             } else if (!status.settings.hasAllKeys) {
-                std::cout << "Missing settings: " + std::to_string(status.settings.missingKeys.join(', ')) << std::endl;
+                std::cout << "Missing settings: " + std::to_string(status.settings.missingKeys.join(", ")) << std::endl;
                 isValid = false;
             }
 

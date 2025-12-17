@@ -1,12 +1,15 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include "..classes/guild.hpp"
-#include ".dm/dm-types.hpp"
+#include "classes/guild.hpp"
+#include "dm/dm-types.hpp"
 
 namespace elizaos {
 

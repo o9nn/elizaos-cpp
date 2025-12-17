@@ -26,13 +26,13 @@ std::string resolvePgliteDir(std::optional<std::string> dir, std::optional<std::
     dir ||;
     process.env.PGLITE_DATA_DIR ||;
     fallbackDir ||;
-    path.join(process.cwd(), '.eliza', '.elizadb');
+    path.join(process.cwd(), ".eliza", ".elizadb");
 
     // Automatically migrate legacy path (<cwd>/.elizadb) to new location (<cwd>/.eliza/.elizadb)
     const auto resolved = expandTildePath(base);
-    const auto legacyPath = path.join(process.cwd(), '.elizadb');
+    const auto legacyPath = path.join(process.cwd(), ".elizadb");
     if (resolved == legacyPath) {
-        const auto newPath = path.join(process.cwd(), '.eliza', '.elizadb');
+        const auto newPath = path.join(process.cwd(), ".eliza", ".elizadb");
         process.env.PGLITE_DATA_DIR = newPath;
         return newPath;
     }

@@ -1,11 +1,15 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <chrono>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
 #include "api/index.hpp"
@@ -88,7 +92,7 @@ public:
     void setupMessageBusListener();
     void setupWebSocketServer(const std::variant<http::Server, https::Server>& server);
     std::future<void> processWebSocketMessage(WebSocketMessageData messageData, WebSocket ws);
-    void broadcastToWebSocketClients(const std::unordered_map<std::string, unknown>& message, std::optional<std::string> _channelId, std::optional<std::string> _excludeClientId);
+    void broadcastToWebSocketClients(const std::unordered_map<std::string, std::any>& message, std::optional<std::string> _channelId, std::optional<std::string> _excludeClientId);
     void setupLogStreaming();
     void broadcastLogToSubscribers(LogEntry logEntry);
     void registerAgent(IAgentRuntime runtime);
@@ -111,7 +115,7 @@ public:
     std::future<void> clearChannelMessages(UUID channelId);
     std::future<MessageChannel> findOrCreateCentralDmChannel(UUID user1Id, UUID user2Id, UUID serverId);
     std::future<CentralRootMessage> createMessage();
-    std::future<std::vector<CentralRootMessage>> getMessagesForChannel(UUID channelId, double limit = 50, std::optional<Date> beforeTimestamp);
+    std::future<std::vector<CentralRootMessage>> getMessagesForChannel(UUID channelId, double limit = 50, std::optional<std::chrono::system_clock::time_point> beforeTimestamp);
     std::future<void> removeParticipantFromChannel();
     std::future<void> addAgentToServer(UUID serverId, UUID agentId);
     std::future<void> removeAgentFromServer(UUID serverId, UUID agentId);

@@ -1,11 +1,15 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <chrono>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "codex.hpp"
 #include "db.hpp"
@@ -48,7 +52,7 @@ struct ChartResponse {
 
 struct PriceFeedInfo {
     double price;
-    Date timestamp;
+    std::chrono::system_clock::time_point timestamp;
     double volume;
     std::optional<double> priceUsd;
 };

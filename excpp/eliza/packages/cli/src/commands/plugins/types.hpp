@@ -1,9 +1,13 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
+#include <stdexcept>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -77,7 +81,7 @@ struct MigrationResult {
     bool success;
     std::optional<std::string> branchName;
     std::optional<std::string> repoPath;
-    std::optional<Error> error;
+    std::optional<std::runtime_error> error;
 };
 
 /**
@@ -87,7 +91,7 @@ struct GenerationResult {
     bool success;
     std::optional<std::string> pluginName;
     std::optional<std::string> pluginPath;
-    std::optional<Error> error;
+    std::optional<std::runtime_error> error;
 };
 
 /**

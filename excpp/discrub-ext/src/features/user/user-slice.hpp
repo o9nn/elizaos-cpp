@@ -1,14 +1,17 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include "..app/store.hpp"
-#include "..classes/user.hpp"
-#include "..services/chrome-service.hpp"
-#include "..services/discord-service.hpp"
+#include "app/store.hpp"
+#include "classes/user.hpp"
+#include "services/chrome-service.hpp"
+#include "services/discord-service.hpp"
 #include "user-types.hpp"
 
 namespace elizaos {

@@ -18,7 +18,7 @@ void PullRequestsListModalContent() {
     author={pr.author}
     className="px-4";
     number={pr.number}
-    "https://github.com/" + std::to_string(pr.repository) + "/pull/" + std::to_string(pr.number)
+    "href={" + "https://github.com/" + pr.repository + "/pull/" + pr.number
     icon={
         pr.mergedAt ? (;
         <GitMerge className="h-4 w-4 text-purple-500" />;
@@ -28,7 +28,7 @@ void PullRequestsListModalContent() {
     }
     />;
     ))}
-    {pullRequests.length == 0 && (;
+    {pullRequests.size() == 0 && (;
     <p className="p-4 text-center text-sm text-muted-foreground">;
     No pull requests to display.;
     </p>;

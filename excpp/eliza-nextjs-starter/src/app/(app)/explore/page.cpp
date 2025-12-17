@@ -34,7 +34,7 @@ void Page() {
 
                     try {
                         console.log(
-                        "[Explore] Creating new session with message: "" + std::to_string(initialMessage) + """
+                        "[Explore] Creating new session with message: \"" + initialMessage + "\""
                         );
 
                         const auto response = fetch("/api/chat-session/create", {;
@@ -55,10 +55,10 @@ void Page() {
                                     const auto result = response.json();
                                     const auto sessionId = result.data.sessionId;
 
-                                    std::cout << "[Explore] Created new session: " + std::to_string(sessionId) << std::endl;
+                                    std::cout << "[Explore] Created new session: " + sessionId << std::endl;
 
                                     // Navigate to the new session
-                                    "/chat/" + std::to_string(sessionId);
+                                    "router.push_back(" + "/chat/" + sessionId;
                                     } catch (error) {
                                         std::cerr << "[Explore] Failed to create new session:" << error << std::endl;
                                     }

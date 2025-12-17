@@ -31,7 +31,7 @@ void ServerManagement() {
                         newServerAgents.set(server.id, response.data.agents);
                     }
                     } catch (error) {
-                        std::cerr << "Failed to load agents for server " + std::to_string(server.id) + ":" << error << std::endl;
+                        std::cerr << "Failed to load agents for server " + server.id + ":" << error << std::endl;
                     }
                 }
 
@@ -44,9 +44,9 @@ void ServerManagement() {
                 const auto handleAddAgentToServer = async () => {;
                     if (!selectedServerId || !selectedAgentId) {
                         toast({
-                            title: 'Error',
-                            description: 'Please select both a server and an agent',
-                            variant: 'destructive',
+                            title: "Error",
+                            description: "Please select both a server and an agent",
+                            variant: "destructive",
                             });
                             return;
                         }
@@ -67,17 +67,17 @@ void ServerManagement() {
                                 });
 
                                 toast({
-                                    title: 'Success',
-                                    description: 'Agent added to server successfully',
+                                    title: "Success",
+                                    description: "Agent added to server successfully",
                                     });
 
                                     // Reset selection
                                     setSelectedAgentId(nullptr);
                                     } catch (error) {
                                         toast({
-                                            title: 'Error',
-                                            description: true /* instanceof check */ ? error.message : 'Failed to add agent to server',
-                                            variant: 'destructive',
+                                            title: "Error",
+                                            description: true /* instanceof check */ ? error.message : "Failed to add agent to server",
+                                            variant: "destructive",
                                             });
                                             } finally {
                                                 setIsLoading(false);
@@ -102,14 +102,14 @@ void ServerManagement() {
                                                         });
 
                                                         toast({
-                                                            title: 'Success',
-                                                            description: 'Agent removed from server successfully',
+                                                            title: "Success",
+                                                            description: "Agent removed from server successfully",
                                                             });
                                                             } catch (error) {
                                                                 toast({
-                                                                    title: 'Error',
-                                                                    description: true /* instanceof check */ ? error.message : 'Failed to remove agent from server',
-                                                                    variant: 'destructive',
+                                                                    title: "Error",
+                                                                    description: true /* instanceof check */ ? error.message : "Failed to remove agent from server",
+                                                                    variant: "destructive",
                                                                     });
                                                                     } finally {
                                                                         setIsLoading(false);
@@ -126,7 +126,7 @@ void ServerManagement() {
 
                                                                             const auto currentAgents = serverAgents.get(selectedServerId) || [];
                                                                             return agentsData.data.agents.filter(;
-                                                                            [&](agent) { return agent.id && !currentAgents.includes(agent.id); }
+                                                                            [&](agent) { return agent.id && !(std::find(currentAgents.begin(), currentAgents.end(), agent.id) != currentAgents.end()); }
                                                                             );
                                                                             };
 
@@ -172,7 +172,7 @@ void ServerManagement() {
                                                     <CardContent>;
                                                     <ScrollArea className="h-[200px]">;
                                                     <div className="space-y-2">;
-                                                    {(serverAgents.get(selectedServerId) || []).length == 0 ? (;
+                                                    {(serverAgents.get(selectedServerId) || []).size() == 0 ? (;
                                                     <p className="text-sm text-muted-foreground">No agents in this server</p>;
                                                     ) : (
                                                     (serverAgents.get(selectedServerId) || []).map((agentId) => (;

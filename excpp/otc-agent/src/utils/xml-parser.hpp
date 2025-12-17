@@ -1,10 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -22,7 +24,7 @@ struct OTCQuote {
     std::string tokenAmount;
     std::optional<std::string> tokenAmountFormatted;
     std::string tokenSymbol;
-    std::optional<std::variant<"ethereum", "base", "bsc", "solana">> tokenChain;
+    std::optional<std::string> tokenChain;
     std::optional<double> apr;
     double lockupMonths;
     double lockupDays;

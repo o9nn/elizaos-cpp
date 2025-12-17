@@ -1,10 +1,14 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
+#include <stdexcept>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "elizaos/core.hpp"
 
@@ -35,12 +39,12 @@ public:
 
 class BrowserNavigationError {
 public:
-    BrowserNavigationError(const std::string& url, std::optional<Error> originalError);
+    BrowserNavigationError(const std::string& url, std::optional<std::runtime_error> originalError);
 };
 
 class BrowserActionError {
 public:
-    BrowserActionError(const std::string& action, const std::string& target, std::optional<Error> originalError);
+    BrowserActionError(const std::string& action, const std::string& target, std::optional<std::runtime_error> originalError);
 };
 
 class BrowserSecurityError {

@@ -22,12 +22,12 @@ std::future<void> runReconciliationTask() {
     const auto service = getReconciliationService();
     const auto health = service.healthCheck();
     console.log(
-    "[Reconciliation] Block: " + std::to_string(health.blockNumber) + ", Contract: " + std::to_string(health.contractAddress) + "\n"
+    "[Reconciliation] Block: " + health.blockNumber + ", Contract: " + health.contractAddress + "\n"
     );
 
     const auto result = service.reconcileAllActive();
     console.log(
-    "\n✅ [Reconciliation] Complete: " + std::to_string(result.updated) + "/" + std::to_string(result.total) + " updated\n"
+    "\n✅ [Reconciliation] Complete: " + result.updated + "/" + result.total + " updated\n"
     );
 
 }

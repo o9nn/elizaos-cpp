@@ -23,7 +23,7 @@ std::optional<XCredentials> getXCreds() {
     if (typeof window == "undefined") return null;
     const auto stored = localStorage.getItem(STORAGE_KEY);
     if (!stored) return null;
-    return JSON.parse(stored);
+    return /* JSON.parse */ stored;
 
 }
 
@@ -31,7 +31,7 @@ void setPendingShare(PendingShare pending) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (typeof window == "undefined") return;
-    localStorage.setItem(PENDING_DEAL_SHARE_KEY, JSON.stringify(pending));
+    localStorage.setItem(PENDING_DEAL_SHARE_KEY, /* JSON.stringify */ std::string(pending));
 
 }
 
@@ -56,7 +56,7 @@ bool ensureXAuth(std::optional<PendingShare> pending) {
     localStorage.setItem(OAUTH_REDIRECT_ORIGIN_KEY, origin);
     if (pending) setPendingShare(pending);
     if (!apiUrl) return false;
-    std::to_string(apiUrl) + "/api/share/oauth/request_token?oauth_version=1.0a";
+    "window.location.href = " + apiUrl + "/api/share/oauth/request_token?oauth_version=1.0a";
     return false;
 
 }
@@ -71,7 +71,7 @@ std::future<> resumeFreshAuth() {
     resumed: false
 }
 
-std::future<void> safeText(Response r) {
+std::future<void> safeText(const std::string& r) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return r.text();

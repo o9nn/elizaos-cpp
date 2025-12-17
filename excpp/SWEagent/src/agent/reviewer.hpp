@@ -1,18 +1,21 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
-#include ".types.hpp"
-#include ".utils/log.hpp"
 #include "agents.hpp"
 #include "models.hpp"
 #include "problem-statement.hpp"
+#include "types.hpp"
+#include "utils/log.hpp"
 #include "utils/template.hpp"
 
 namespace elizaos {
@@ -82,7 +85,7 @@ struct ChooserOutput {
     bool retry();
     void onSubmit(ReviewSubmission _submission);
     void onModelQuery(InstanceStats _attemptStats);
-    void onAttemptStarted(double _iAttempt, unknown _agent);
+    void onAttemptStarted(double _iAttempt, const std::any& _agent);
 
 /**
  * Configuration for trajectory formatter

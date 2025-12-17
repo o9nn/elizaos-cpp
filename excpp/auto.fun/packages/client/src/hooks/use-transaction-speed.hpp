@@ -1,10 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -14,7 +16,7 @@ namespace elizaos {
 
 
 
-using TTransactionSpeed = std::variant<"fast", "turbo", "ultra">;
+using TTransactionSpeed = std::string;
 
 
 } // namespace elizaos

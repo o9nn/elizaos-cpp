@@ -1,11 +1,13 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -60,7 +62,7 @@ struct DefiMultiPriceParamsPOST {
 // History Price Types
 struct DefiHistoryPriceParams {
     std::string address;
-    std::variant<"token", "pair"> address_type;
+    std::string address_type;
     TimeInterval type;
     std::optional<double> time_from;
     std::optional<double> time_to;
@@ -162,8 +164,8 @@ struct DefiTradesTokenParams {
     std::string address;
     std::optional<double> limit;
     std::optional<double> offset;
-    std::optional<std::variant<"swap", "add", "remove", "all">> tx_type;
-    std::optional<std::variant<"asc", "desc">> sort_type;
+    std::optional<std::string> tx_type;
+    std::optional<std::string> sort_type;
     std::optional<double> before_time;
     std::optional<double> after_time;
 };

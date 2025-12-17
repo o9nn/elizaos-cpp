@@ -203,7 +203,7 @@ void ReviewStep(auto onBack, auto onNext, auto requiredChain, auto isConnectedTo
         className="flex-1 py-3";
         >;
         {privyReady;
-        "Connect " + std::to_string(requiredChain == "solana" ? "Solana" : "EVM") + " Wallet"
+        "? " + "Connect " + std::to_string(requiredChain == "solana" ? "Solana" : "EVM") + " Wallet"
         : "Loading..."}
         </Button>;
         ) : (

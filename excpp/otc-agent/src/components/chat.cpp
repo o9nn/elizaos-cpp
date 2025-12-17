@@ -8,33 +8,33 @@ ChatState chatReducer(ChatState state, ChatAction action) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     switch (action.type) {
-        case "SET_MESSAGES":
+        // case "SET_MESSAGES":
         return { ...state, messages: action.payload }
-        case "ADD_MESSAGE":
+        // case "ADD_MESSAGE":
         return { ...state, messages: [...state.messages, action.payload] }
-        case "SET_INPUT":
+        // case "SET_INPUT":
         return { ...state, input: action.payload }
-        case "SET_INPUT_DISABLED":
+        // case "SET_INPUT_DISABLED":
         return { ...state, inputDisabled: action.payload }
-        case "SET_ROOM_ID":
+        // case "SET_ROOM_ID":
         return { ...state, roomId: action.payload }
-        case "SET_LOADING_HISTORY":
+        // case "SET_LOADING_HISTORY":
         return { ...state, isLoadingHistory: action.payload }
-        case "SET_AGENT_THINKING":
+        // case "SET_AGENT_THINKING":
         return { ...state, isAgentThinking: action.payload }
-        case "SET_ENTITY_ID":
+        // case "SET_ENTITY_ID":
         return { ...state, entityId: action.payload }
-        case "SET_CONNECT_OVERLAY":
+        // case "SET_CONNECT_OVERLAY":
         return { ...state, showConnectOverlay: action.payload }
-        case "SET_CURRENT_QUOTE":
+        // case "SET_CURRENT_QUOTE":
         return { ...state, currentQuote: action.payload }
-        case "SET_ACCEPT_MODAL":
+        // case "SET_ACCEPT_MODAL":
         return { ...state, showAcceptModal: action.payload }
-        case "SET_OFFER_GLOWING":
+        // case "SET_OFFER_GLOWING":
         return { ...state, isOfferGlowing: action.payload }
-        case "SET_CLEAR_CHAT_MODAL":
+        // case "SET_CLEAR_CHAT_MODAL":
         return { ...state, showClearChatModal: action.payload }
-        case "RESET_CHAT":
+        // case "RESET_CHAT":
         return {
             ...state,
             messages: [],
@@ -42,7 +42,7 @@ ChatState chatReducer(ChatState state, ChatAction action) {
             roomId: action.payload.roomId,
             showClearChatModal: false,
             };
-            case "USER_CONNECTED":
+            // case "USER_CONNECTED":
             return {
                 ...state,
                 entityId: action.payload.entityId,
@@ -50,14 +50,14 @@ ChatState chatReducer(ChatState state, ChatAction action) {
                 showConnectOverlay: false,
                 inputDisabled: false,
                 };
-                case "USER_DISCONNECTED":
+                // case "USER_DISCONNECTED":
                 return {
                     ...state,
                     entityId: nullptr,
                     inputDisabled: true,
                     showConnectOverlay: true,
                     };
-                    default:
+                    // default:
                     return state;
                 }
 
@@ -76,7 +76,7 @@ std::optional<ChatMessage> parseRoomMessage(RawRoomMessage msg, const std::strin
             } else if (typeof content == "string") {
                 messageText = content;
                 } else if (content) {
-                    messageText = JSON.stringify(content);
+                    messageText = /* JSON.stringify */ std::string(content);
                 }
 
                 // Filter out system messages
@@ -85,7 +85,7 @@ std::optional<ChatMessage> parseRoomMessage(RawRoomMessage msg, const std::strin
                 }
 
                 return {
-                    "msg-" + std::to_string(msg.createdAt)
+                    "id: msg.id || " + "msg-" + msg.createdAt
                     name: msg.entityId == msg.agentId ? "Eliza" : USER_NAME,
                     text: messageText,
                     senderId: msg.entityId,

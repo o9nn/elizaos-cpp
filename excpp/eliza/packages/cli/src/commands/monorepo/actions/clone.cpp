@@ -9,16 +9,16 @@ std::future<void> cloneRepository(const std::string& repo, const std::string& br
     try {
 
         try {
-            const auto repoUrl = "https://github.com/" + std::to_string(repo);
+            const auto repoUrl = "https://github.com/" + repo;
 
             // Clone specific branch using execa
-            execa('git', ['clone', '-b', branch, repoUrl, destination], {
-                stdio: 'inherit',
+            execa("git", ["clone", "-b", branch, repoUrl, destination], {
+                stdio: "inherit",
                 });
                 } catch (error) {
                     // Special handling for likely branch errors
                     if (error instanceof Error && error.message.includes('exit code 128')) {
-                        std::cerr << "\n[X] Branch '" + std::to_string(branch) + "' doesn't exist in the ElizaOS repository." << std::endl;
+                        std::cerr << "\n[X] Branch "" + branch + "" doesn't exist in the ElizaOS repository." << std::endl;
                         std::cerr << "Please specify a valid branch name. Common branches include:" << std::endl;
                         std::cerr << "  • main - The main branch" << std::endl;
                         std::cerr << "  • develop - The development branch (default)" << std::endl;

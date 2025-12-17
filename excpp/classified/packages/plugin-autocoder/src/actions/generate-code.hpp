@@ -1,15 +1,18 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".services/CodeGenerationService.hpp"
 #include "elizaos/core.hpp"
 #include "elizaos/plugin-forms.hpp"
+#include "services/CodeGenerationService.hpp"
 
 namespace elizaos {
 

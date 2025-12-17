@@ -7,7 +7,7 @@ namespace elizaos {
 void useColorScheme() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return 'light';
+    return "light";
 
 }
 

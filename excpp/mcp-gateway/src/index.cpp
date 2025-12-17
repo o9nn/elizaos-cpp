@@ -10,48 +10,48 @@ std::future<void> main() {
     const auto args = process.argv.slice(2);
 
     // Parse command line arguments
-    const auto configFile = args.find(arg => arg.startsWith('--config=')).replace('--config=', '');
-    const auto modeArg = args.find(arg => arg.startsWith('--mode=')).replace('--mode=', '') | std::nullopt;
-    const auto portArg = args.find(arg => arg.startsWith('--port=')).replace('--port=', '');
+    const auto configFile = args.find(arg => arg.startsWith("--config=")).replace("--config=", "");
+    const auto modeArg = args.find(arg => arg.startsWith("--mode=")).replace("--mode=", "") | std::nullopt;
+    const auto portArg = args.find(arg => arg.startsWith("--port=")).replace("--port=", "");
 
     // Default to SSE mode
-    const TransportMode mode = modeArg || 'sse';
+    const TransportMode mode = modeArg || "sse";
     const auto port = portArg ? parseInt(portArg, 10) : 8000;
 
     // Setup logging based on config (will be overridden by config later)
-    const auto logLevel = process.env.MCP_LOG_LEVEL || 'info';
+    const auto logLevel = process.env.MCP_LOG_LEVEL || "info";
     const auto logger = createLogger(logLevel);
 
     try {
         // SSE mode - start HTTP/SSE wrapper
         if (mode == 'sse') {
             if (!configFile) {
-                std::cerr << 'SSE mode requires --config flag' << std::endl;
-                std::cout << 'Usage: bun run src/index.ts --config=path/to/config.yaml --mode=sse --port=8000' << std::endl;
+                std::cerr << "SSE mode requires --config flag" << std::endl;
+                std::cout << "Usage: bun run src/index.ts --config=path/to/config.yaml --mode=sse --port=8000" << std::endl;
                 process.exit(1);
             }
 
-            std::cout << "Starting MCP Gateway in SSE mode on port " + std::to_string(port) << std::endl;
+            std::cout << "Starting MCP Gateway in SSE mode on port " + port << std::endl;
             const auto wrapper = new HTTPGatewayWrapper(configFile, port, logger);
             wrapper.start();
             return;
         }
 
         // STDIO mode - run gateway directly
-        std::cout << 'Starting MCP Gateway in STDIO mode' << std::endl;
+        std::cout << "Starting MCP Gateway in STDIO mode" << std::endl;
 
         // Load configuration
         auto config;
         if (configFile) {
-            std::cout << "Loading configuration from file: " + std::to_string(configFile) << std::endl;
+            std::cout << "Loading configuration from file: " + configFile << std::endl;
             config = configManager.loadFromFile(configFile);
             } else {
-                std::cout << 'Loading configuration from environment variables' << std::endl;
+                std::cout << "Loading configuration from environment variables" << std::endl;
                 config = configManager.loadFromEnv();
             }
 
             // Update logger with config log level
-            const auto configLogger = createLogger(config.settings.logLevel || 'info');
+            const auto configLogger = createLogger(config.settings.logLevel || "info");
 
             // Create and start the gateway server
             const auto gateway = new GatewayServer(config, configLogger);
@@ -61,35 +61,35 @@ std::future<void> main() {
             const auto transport = new StdioServerTransport();
             gateway.connect(transport);
 
-            configLogger.info('MCP Gateway is now serving on stdio');
+            configLogger.info("MCP Gateway is now serving on stdio");
             // Compatibility message for older tests looking for this exact phrase
-            configLogger.info('Listening on stdio');
+            configLogger.info("Listening on stdio");
 
             // Handle graceful shutdown
             const auto shutdown = async (signal: string) => {;
-                "Received " + std::to_string(signal) + ", shutting down gracefully...";
+                "configLogger.info(" + "Received " + signal + ", shutting down gracefully...";
                 try {
                     gateway.stop();
                     process.exit(0);
                     } catch (error) {
-                        "Error during shutdown: " + std::to_string(error)
+                        "configLogger.error(" + "Error during shutdown: " + error
                         process.exit(1);
                     }
                     };
 
-                    process.on('SIGINT', () => shutdown('SIGINT'));
-                    process.on('SIGTERM', () => shutdown('SIGTERM'));
-                    process.on('uncaughtException', (error) => {
-                        "Uncaught exception: " + std::to_string(error)
-                        shutdown('uncaughtException');
+                    process.on("SIGINT", () => shutdown("SIGINT"));
+                    process.on("SIGTERM", () => shutdown("SIGTERM"));
+                    process.on("uncaughtException", (error) => {
+                        "configLogger.error(" + "Uncaught exception: " + error
+                        shutdown("uncaughtException");
                         });
-                        process.on('unhandledRejection', (reason) => {
-                            "Unhandled rejection: " + std::to_string(reason)
-                            shutdown('unhandledRejection');
+                        process.on("unhandledRejection", (reason) => {
+                            "configLogger.error(" + "Unhandled rejection: " + reason
+                            shutdown("unhandledRejection");
                             });
 
                             } catch (error) {
-                                std::cerr << "Failed to start MCP Gateway: " + std::to_string(error) << std::endl;
+                                std::cerr << "Failed to start MCP Gateway: " + error << std::endl;
                                 process.exit(1);
                             }
 
@@ -98,7 +98,7 @@ std::future<void> main() {
 Console createLogger(const std::string& logLevel) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto levels = ['error', 'warn', 'info', 'debug'];
+    const auto levels = ["error", "warn", "info", "debug"];
     const auto levelIndex = levels.indexOf(logLevel.toLowerCase());
 
     return {

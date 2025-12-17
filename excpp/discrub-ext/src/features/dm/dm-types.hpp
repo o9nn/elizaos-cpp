@@ -1,12 +1,15 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
-#include "..classes/channel.hpp"
+#include "classes/channel.hpp"
 
 namespace elizaos {
 

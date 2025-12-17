@@ -16,7 +16,7 @@ std::future<void> initializeClients(Character character, IAgentRuntime runtime) 
     }
 
     if (clientTypes.includes("discord")) {
-        clients.push(DiscordClientInterface.start(runtime));
+        clients.push_back(DiscordClientInterface.start(runtime));
     }
 
     if (clientTypes.includes("telegram")) {
@@ -26,14 +26,14 @@ std::future<void> initializeClients(Character character, IAgentRuntime runtime) 
 
     if (clientTypes.includes("twitter")) {
         const auto twitterClients = TwitterClientInterface.start(runtime);
-        clients.push(twitterClients);
+        clients.push_back(twitterClients);
     }
 
     if (character.plugins.length > 0) {
         for (const auto& plugin : character.plugins)
             if (plugin.clients) {
                 for (const auto& client : plugin.clients)
-                    clients.push(client.start(runtime));
+                    clients.push_back(client.start(runtime));
                 }
             }
         }

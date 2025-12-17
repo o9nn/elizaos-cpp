@@ -17,7 +17,7 @@ std::string getCliDirectory() {
         if (cliPath.includes('node_modules/@elizaos/cli')) {
             // Go up to the CLI package root
             const auto cliDir = path.dirname(;
-            cliPath.split('node_modules/@elizaos/cli')[0] + 'node_modules/@elizaos/cli';
+            cliPath.split("node_modules/@elizaos/cli")[0] + "node_modules/@elizaos/cli";
             );
 
             // Verify this is actually the CLI directory
@@ -28,7 +28,7 @@ std::string getCliDirectory() {
 
         return nullptr;
         } catch (error) {
-            std::cerr << 'Failed to determine CLI directory:' << error << std::endl;
+            std::cerr << "Failed to determine CLI directory:" << error << std::endl;
             return nullptr;
         }
 
@@ -45,7 +45,7 @@ std::future<bool> verifyPluginImport(const std::string& repository, const std::s
         return true;
         } else {
             // The loadPluginModule function already logs detailed errors
-            std::cout << "Plugin " + std::to_string(repository) + " installed " + std::to_string(context) + " but could not be loaded/verified." << std::endl;
+            std::cout << "Plugin " + repository + " installed " + context + " but could not be loaded/verified." << std::endl;
             return false;
         }
 
@@ -62,7 +62,7 @@ std::future<bool> attemptInstallation(const std::string& packageName, const std:
 
         // If installation failed, return false immediately
         if (!installResult.success || !installResult.installedIdentifier) {
-            std::cout << "Installation failed for plugin " + std::to_string(context) << std::endl;
+            std::cout << "Installation failed for plugin " + context << std::endl;
             return false;
         }
 
@@ -72,18 +72,18 @@ std::future<bool> attemptInstallation(const std::string& packageName, const std:
         }
         if (skipVerification || process.env.ELIZA_SKIP_PLUGIN_VERIFY) {
             logger.info(
-            "Installation successful for " + std::to_string(installResult.installedIdentifier) + ", skipping verification";
+            "Installation successful for " + installResult.installedIdentifier + ", skipping verification";
             );
             return true;
         }
         logger.debug(
-        "Installation successful for " + std::to_string(installResult.installedIdentifier) + ", verifying import...";
+        "Installation successful for " + installResult.installedIdentifier + ", verifying import...";
         );
         return verifyPluginImport(installResult.installedIdentifier, context);
         } catch (installError) {
             // Catch any unexpected errors during the process
             logger.warn(
-            "Error during installation attempt " + std::to_string(context) + ": " + std::to_string(true /* instanceof check */ ? installError.message : std::to_string(installError))
+            "Error during installation attempt " + context + ": " + std::to_string(true /* instanceof check */ ? installError.message : std::to_string(installError))
             );
             return false;
         }
@@ -98,9 +98,9 @@ std::future<bool> installPlugin(const std::string& packageName, const std::strin
     // Check if we're trying to install a plugin into its own directory
     const auto context = detectPluginContext(packageName);
     if (context.isLocalDevelopment) {
-        std::cout << "Prevented self-installation of plugin " + std::to_string(packageName) << std::endl;
+        std::cout << "Prevented self-installation of plugin " + packageName << std::endl;
         logger.info(
-        "You're developing this plugin locally. Use 'bun run build' to build it instead of installing.";
+        "You"re developing this plugin locally. Use "bun run build' to build it instead of installing.";
         );
         return false;
     }
@@ -109,7 +109,7 @@ std::future<bool> installPlugin(const std::string& packageName, const std::strin
 
     // Direct GitHub installation
     if (packageName.startsWith('github:')) {
-        return attemptInstallation(packageName, '', cwd, '', skipVerification);
+        return attemptInstallation(packageName, "", cwd, "", skipVerification);
     }
 
     // Handle full GitHub URLs as well
@@ -118,8 +118,8 @@ std::future<bool> installPlugin(const std::string& packageName, const std::strin
     const auto httpsMatch = packageName.match(httpsGitHubUrlRegex);
     if (httpsMatch) {
         const auto [, owner, repo, ref] = httpsMatch;
-        const auto spec = "github:" + std::to_string(owner) + "/" + std::to_string(repo) + std::to_string(ref ? `#${ref}` : '');
-        return attemptInstallation(spec, '', cwd, '', skipVerification);
+        const auto spec = "github:" + owner + "/" + repo + std::to_string(ref ? `#${ref}` : "");
+        return attemptInstallation(spec, "", cwd, "", skipVerification);
     }
 
     const auto cache = fetchPluginRegistry();
@@ -137,31 +137,31 @@ std::future<bool> installPlugin(const std::string& packageName, const std::strin
         // Fuzzy search by stripped base name
         auto base = packageName;
         if (base.includes('/')) {
-            const auto parts = base.split('/');
-            base = parts[parts.length - 1];
+            const auto parts = base.split("/");
+            base = parts[parts.size() - 1];
         }
-        base = base.replace(/^@/, '').replace(/^(plugin|client)-/, '');
+        base = base.replace(/^@/, "").replace(/^(plugin|client)-/, "");
         const auto lower = base.toLowerCase();
 
         const auto matches = Object.keys(cache.registry).filter(;
-        [&](cand) { return cand.toLowerCase().includes(lower) && !cand.includes('client-'); }
+        [&](cand) { return cand.toLowerCase().includes(lower) && !(std::find(cand.begin(), cand.end(), "client-") != cand.end()); }
         );
 
         if (matches.length > 0) {
-            const auto pluginMatch = matches.find((c) => c.includes('plugin-'));
+            const auto pluginMatch = matches.find((c) => (std::find(c.begin(), c.end(), "plugin-") != c.end()));
             key = pluginMatch || matches[0];
         }
     }
 
     if (!key) {
         logger.warn(
-        "Plugin " + std::to_string(packageName) + " not found in registry cache, attempting direct installation";
+        "Plugin " + packageName + " not found in registry cache, attempting direct installation";
         );
         return attemptInstallation(;
         packageName,
-        versionSpecifier || '',
+        versionSpecifier || "",
         cwd,
-        '',
+        "",
         skipVerification;
         );
     }
@@ -170,23 +170,23 @@ std::future<bool> installPlugin(const std::string& packageName, const std::strin
 
     // Extract GitHub fallback information if available
     const auto githubFallback = info.git.repo;
-    const auto githubVersion = info.git.v1.branch || info.git.v1.version || '';
+    const auto githubVersion = info.git.v1.branch || info.git.v1.version || "";
 
     // Prefer npm installation with GitHub fallback if repository is available
     if (info.npm.repo) {
-        const auto ver = versionSpecifier || info.npm.v1 || '';
+        const auto ver = versionSpecifier || info.npm.v1 || "";
         const auto result = executeInstallationWithFallback(info.npm.repo, ver, cwd, githubFallback);
 
         if (result.success) {
             // Verify import if not a GitHub install
             if (
-            !info.npm.repo.startsWith('github:') &&
+            !info.npm.repo.startsWith("github:") &&
             !skipVerification &&;
             !process.env.ELIZA_SKIP_PLUGIN_VERIFY;
             ) {
                 const auto importSuccess = verifyPluginImport(;
                 result.installedIdentifier || info.npm.repo,
-                'from npm with potential GitHub fallback';
+                "from npm with potential GitHub fallback";
                 );
                 return importSuccess;
             }
@@ -200,7 +200,7 @@ std::future<bool> installPlugin(const std::string& packageName, const std::strin
                 if (!skipVerification && !process.env.ELIZA_SKIP_PLUGIN_VERIFY) {
                     const auto importSuccess = verifyPluginImport(;
                     result.installedIdentifier || key,
-                    'from npm registry with potential GitHub fallback';
+                    "from npm registry with potential GitHub fallback";
                     );
                     return importSuccess;
                 }
@@ -210,11 +210,11 @@ std::future<bool> installPlugin(const std::string& packageName, const std::strin
 
         // If both npm approaches failed, try direct GitHub installation as final fallback
         if (info.git.repo && cliDir) {
-            const auto spec = "github:" + std::to_string(info.git.repo) + std::to_string(githubVersion ? `#${githubVersion}` : '');
-            return attemptInstallation(spec, '', cliDir, 'in CLI directory', skipVerification);
+            const auto spec = "github:" + info.git.repo + std::to_string(githubVersion ? `#${githubVersion}` : "");
+            return attemptInstallation(spec, "", cliDir, "in CLI directory", skipVerification);
         }
 
-        std::cerr << "Failed to install plugin " + std::to_string(packageName) << std::endl;
+        std::cerr << "Failed to install plugin " + packageName << std::endl;
         return false;
 
 }

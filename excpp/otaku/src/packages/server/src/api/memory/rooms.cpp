@@ -11,31 +11,31 @@ express::Router createRoomManagementRouter(ElizaOS elizaOS) {
         const auto router = express.Router();
 
         // Create a new room for an agent
-        router.post('/:agentId/rooms', requireAuthenticated(), async (req, res) => {
+        router.post("/:agentId/rooms", requireAuthenticated(), async (req, res) => {
             const auto agentId = validateUuid(req.params.agentId);
             if (!agentId) {
-                return sendError(res, 400, 'INVALID_ID', 'Invalid agent ID format');
+                return sendError(res, 400, "INVALID_ID", "Invalid agent ID format");
             }
 
             const auto runtime = elizaOS.getAgent(agentId);
             if (!runtime) {
-                return sendError(res, 404, 'NOT_FOUND', 'Agent not found');
+                return sendError(res, 404, "NOT_FOUND", "Agent not found");
             }
 
             try {
-                const auto { name, type = ChannelType.DM, source = 'client', worldId, metadata } = req.body;
+                const auto { name, type = ChannelType.DM, source = "client", worldId, metadata } = req.body;
 
                 if (!name) {
-                    return sendError(res, 400, 'MISSING_PARAM', 'Room name is required');
+                    return sendError(res, 400, "MISSING_PARAM", "Room name is required");
                 }
 
-                const auto roomId = "room-" + std::to_string(Date.now());
-                const auto serverId = "server-" + std::to_string(Date.now());
+                const auto roomId = "createUniqueUuid(runtime, " + "room-" + std::to_string(Date.now());
+                const auto serverId = "req.body.serverId || " + "server-" + std::to_string(Date.now());
 
                 auto resolvedWorldId = worldId;
                 if (!resolvedWorldId) {
-                    const auto worldName = "World for " + std::to_string(name);
-                    "world-" + std::to_string(Date.now());
+                    const auto worldName = "World for " + name;
+                    "resolvedWorldId = createUniqueUuid(runtime, " + "world-" + std::to_string(Date.now());
 
                     runtime.ensureWorldExists({
                         id: resolvedWorldId,
@@ -59,7 +59,7 @@ express::Router createRoomManagementRouter(ElizaOS elizaOS) {
 
                         runtime.addParticipant(runtime.agentId, roomId);
                         runtime.ensureParticipantInRoom(runtime.agentId, roomId);
-                        runtime.setParticipantUserState(roomId, runtime.agentId, 'FOLLOWED');
+                        runtime.setParticipantUserState(roomId, runtime.agentId, "FOLLOWED");
 
                         sendSuccess(;
                         res,
@@ -78,29 +78,29 @@ express::Router createRoomManagementRouter(ElizaOS elizaOS) {
                             );
                             } catch (error) {
                                 logger.error(
-                                "[ROOM CREATE] Error creating room for agent " + std::to_string(agentId) + ":"
+                                "[ROOM CREATE] Error creating room for agent " + agentId + ":"
                                 true /* instanceof check */ ? error.message : std::to_string(error)
                                 );
                                 sendError(;
                                 res,
                                 500,
-                                'CREATE_ERROR',
-                                'Failed to create room',
+                                "CREATE_ERROR",
+                                "Failed to create room",
                                 true /* instanceof check */ ? error.message : std::to_string(error)
                                 );
                             }
                             });
 
                             // Get all rooms where an agent is a participant
-                            router.get('/:agentId/rooms', requireAuthenticated(), async (req, res) => {
+                            router.get("/:agentId/rooms", requireAuthenticated(), async (req, res) => {
                                 const auto agentId = validateUuid(req.params.agentId);
                                 if (!agentId) {
-                                    return sendError(res, 400, 'INVALID_ID', 'Invalid agent ID format');
+                                    return sendError(res, 400, "INVALID_ID", "Invalid agent ID format");
                                 }
 
                                 const auto runtime = elizaOS.getAgent(agentId);
                                 if (!runtime) {
-                                    return sendError(res, 404, 'NOT_FOUND', 'Agent not found');
+                                    return sendError(res, 404, "NOT_FOUND", "Agent not found");
                                 }
 
                                 try {
@@ -112,7 +112,7 @@ express::Router createRoomManagementRouter(ElizaOS elizaOS) {
                                         const auto worldRooms = runtime.getRooms(world.id);
                                         for (const auto& room : worldRooms)
                                             if (participantRoomIds.includes(room.id)) {
-                                                agentRooms.push({
+                                                agentRooms.push_back({
                                                     ...room,
                                                     });
                                                 }
@@ -122,38 +122,38 @@ express::Router createRoomManagementRouter(ElizaOS elizaOS) {
                                         sendSuccess(res, { rooms: agentRooms });
                                         } catch (error) {
                                             logger.error(
-                                            "[ROOMS LIST] Error retrieving rooms for agent " + std::to_string(agentId) + ":"
+                                            "[ROOMS LIST] Error retrieving rooms for agent " + agentId + ":"
                                             true /* instanceof check */ ? error.message : std::to_string(error)
                                             );
                                             sendError(;
                                             res,
                                             500,
-                                            'RETRIEVAL_ERROR',
-                                            'Failed to retrieve agent rooms',
+                                            "RETRIEVAL_ERROR",
+                                            "Failed to retrieve agent rooms",
                                             true /* instanceof check */ ? error.message : std::to_string(error)
                                             );
                                         }
                                         });
 
                                         // Get room details
-                                        router.get('/:agentId/rooms/:roomId', requireAuthenticated(), async (req: CustomRequest, res: express.Response) => {
+                                        router.get("/:agentId/rooms/:roomId", requireAuthenticated(), async (req: CustomRequest, res: express.Response) => {
                                             const auto agentId = validateUuid(req.params.agentId);
                                             const auto roomId = validateUuid(req.params.roomId);
 
                                             if (!agentId || !roomId) {
-                                                return sendError(res, 400, 'INVALID_ID', 'Invalid agent ID or room ID format');
+                                                return sendError(res, 400, "INVALID_ID", "Invalid agent ID or room ID format");
                                             }
 
                                             // Get runtime
                                             const auto runtime = elizaOS.getAgent(agentId);
                                             if (!runtime) {
-                                                return sendError(res, 404, 'NOT_FOUND', 'Agent not found');
+                                                return sendError(res, 404, "NOT_FOUND", "Agent not found");
                                             }
 
                                             try {
                                                 const auto room = runtime.getRoom(roomId);
                                                 if (!room) {
-                                                    return sendError(res, 404, 'NOT_FOUND', 'Room not found');
+                                                    return sendError(res, 404, "NOT_FOUND", "Room not found");
                                                 }
 
                                                 // Enrich room data with world name
@@ -169,14 +169,14 @@ express::Router createRoomManagementRouter(ElizaOS elizaOS) {
                                                     });
                                                     } catch (error) {
                                                         logger.error(
-                                                        "[ROOM DETAILS] Error retrieving room " + std::to_string(roomId) + " for agent " + std::to_string(agentId) + ":"
+                                                        "[ROOM DETAILS] Error retrieving room " + roomId + " for agent " + agentId + ":"
                                                         true /* instanceof check */ ? error.message : std::to_string(error)
                                                         );
                                                         sendError(;
                                                         res,
                                                         500,
-                                                        'RETRIEVAL_ERROR',
-                                                        'Failed to retrieve room details',
+                                                        "RETRIEVAL_ERROR",
+                                                        "Failed to retrieve room details",
                                                         true /* instanceof check */ ? error.message : std::to_string(error)
                                                         );
                                                     }

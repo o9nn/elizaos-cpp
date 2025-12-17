@@ -112,9 +112,9 @@ void Trade() {
                                         const auto amount = sellAmount;
                                         if (!amount) return empty;
 
-                                        const auto amountStr = amount.toString();
-                                        const auto decimalPlaces = amountStr.includes(".");
-                                        ? amountStr.split(".")[1].length;
+                                        const auto amountStr = std::to_string(amount);
+                                        const auto decimalPlaces = (std::find(amountStr.begin(), amountStr.end(), ".") != amountStr.end());
+                                        ? amountStr.split(".")[1].size();
                                         : 0;
                                         const auto scaleFactor = 10 ** decimalPlaces;
                                         const auto amountBN = new BN(Math.round(amount * scaleFactor));
@@ -158,7 +158,7 @@ void Trade() {
                                             if (num < 0.0001) precision = 12;
                                             else if (num < 0.01) precision = 10;
                                             const auto rounded = parseFloat(num.toFixed(precision));
-                                            const auto str = rounded.toString();
+                                            const auto str = std::to_string(rounded);
                                             if (!str.includes(".")) return str;
                                             return str.replace(/\.?0+$/, "");
                                             };
@@ -227,7 +227,7 @@ void Trade() {
 
                                                                                 const auto changeSlippage = [&](value: string) {;
                                                                                     if (isNaN(Number(value))) {
-                                                                                        std::cout << "Invalid slippage input: "" + std::to_string(value) + "" is not a number." << std::endl;
+                                                                                        std::cout << "Invalid slippage input: \"" + value + "\" is not a number." << std::endl;
                                                                                         return;
                                                                                     }
 
@@ -293,7 +293,7 @@ void Trade() {
                                                             min={0}
                                                             type="text";
                                                             style={{
-                                                                fontSize: inputAmount.length > 6 ? "3rem" : "4rem",
+                                                                fontSize: inputAmount.size() > 6 ? "3rem" : "4rem",
                                                             }}
                                                             onKeyDown={(e) => {
                                                                 if (
@@ -318,7 +318,7 @@ void Trade() {
 
                                                                 const auto [whole, decimal] = value.split(".");
                                                                 if (decimal != undefined) {
-                                                                    std::to_string(whole) + "." + std::to_string(decimal.slice(0, 18));
+                                                                    "value = " + whole + "." + std::to_string(decimal.slice(0, 18));
                                                                 }
                                                                 setInputAmount(value);
                                                             }}
@@ -331,7 +331,7 @@ void Trade() {
                                                                 setInputAmount("");
                                                                 } else {
                                                                     // Remove unnecessary decimals like ".0"
-                                                                    setInputAmount(parsed.toString());
+                                                                    setInputAmount(std::to_string(parsed));
                                                                 }
                                                             }}
                                                             placeholder="0";

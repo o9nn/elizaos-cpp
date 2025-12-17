@@ -1,10 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 #include "retry-cache.hpp"
 
@@ -48,7 +50,7 @@ struct PoolInfo {
     bigint liquidity;
     double tvlUsd;
     std::optional<double> priceUsd;
-    std::variant<"USDC", "WETH"> baseToken;
+    std::string baseToken;
 };
 
 /**

@@ -90,7 +90,7 @@ std::future<void> POST(NextRequest request) {
             const auto isLocalTestnet =;
             contractAddress.startsWith("0x5FbDB") ||;
             contractAddress.startsWith("0x5fbdb") ||;
-            (chain == "ethereum" && contractAddress.length == 42);
+            (chain == "ethereum" && contractAddress.size() == 42);
 
             const auto isSolanaWithoutKey = chain == "solana" && !process.env.BIRDEYE_API_KEY;
 
@@ -159,13 +159,13 @@ std::future<void> DELETE(NextRequest request) {
 
     if (tokenId) {
         // Delete a specific token
-        const auto token = "token:" + std::to_string(tokenId);
+        const auto token = "runtime.getCache(" + "token:" + tokenId;
         if (!token) {
             return NextResponse.json({ error: "Token not found" }, { status: 404 });
         }
 
-        "token:" + std::to_string(tokenId)
-        "market_data:" + std::to_string(tokenId)
+        "runtime.deleteCache(" + "token:" + tokenId
+        "runtime.deleteCache(" + "market_data:" + tokenId
 
         // Remove from all_tokens index
         const auto allTokens = (runtime.getCache<string[]>("all_tokens")) || [];
@@ -174,7 +174,7 @@ std::future<void> DELETE(NextRequest request) {
 
         return NextResponse.json({;
             success: true,
-            "Deleted token: " + std::to_string(tokenId)
+            "message: " + "Deleted token: " + tokenId
             });
         }
 
@@ -183,9 +183,9 @@ std::future<void> DELETE(NextRequest request) {
         const std::vector<std::string> deleted = [];
 
         for (const auto& id : allTokens)
-            "token:" + std::to_string(id)
-            "market_data:" + std::to_string(id)
-            deleted.push(id);
+            "runtime.deleteCache(" + "token:" + id
+            "runtime.deleteCache(" + "market_data:" + id
+            deleted.push_back(id);
         }
 
         // Clear the index
@@ -195,13 +195,13 @@ std::future<void> DELETE(NextRequest request) {
         const auto allConsignments =;
         (runtime.getCache<string[]>("all_consignments")) || [];
         for (const auto& id : allConsignments)
-            "consignment:" + std::to_string(id)
+            "runtime.deleteCache(" + "consignment:" + id
         }
         runtime.setCache("all_consignments", []);
 
         return NextResponse.json({;
             success: true,
-            "Deleted " + std::to_string(deleted.length) + " tokens and all consignments"
+            "message: " + "Deleted " + deleted.size() + " tokens and all consignments"
             deletedTokens: deleted,
             });
 

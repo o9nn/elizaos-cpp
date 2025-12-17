@@ -13,8 +13,8 @@ std::string generateAuthToken(const std::string& userId, const std::string& emai
         }
 
         // Check if user is admin based on environment variable
-        const auto adminEmails = process.env.ADMIN_EMAILS.split(',').map(e => e.trim().toLowerCase()) || [];
-        const auto computedIsAdmin = isAdmin || adminEmails.includes(email.toLowerCase());
+        const auto adminEmails = process.env.ADMIN_EMAILS.split(",").map(e => e.trim().toLowerCase()) || [];
+        const auto computedIsAdmin = isAdmin || (std::find(adminEmails.begin(), adminEmails.end(), email.toLowerCase() != adminEmails.end()));
 
         const std::variant<Omit<AuthTokenPayload, 'iat', 'exp'>> payload = {;
             userId,
@@ -26,7 +26,7 @@ std::string generateAuthToken(const std::string& userId, const std::string& emai
             return jwt.sign(;
             payload,
             JWT_SECRET,
-            { expiresIn: '7d' } // Token expires in 7 days
+            { expiresIn: "7d" } // Token expires in 7 days
             );
 
     } catch (const std::exception& e) {
@@ -35,16 +35,16 @@ std::string generateAuthToken(const std::string& userId, const std::string& emai
     }
 }
 
-void requireAuth(AuthenticatedRequest req, Response res, NextFunction next) {
+void requireAuth(AuthenticatedRequest req, const std::string& res, NextFunction next) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!JWT_SECRET) {
-        std::cerr << '[Auth] JWT_SECRET not configured - cannot verify tokens' << std::endl;
+        std::cerr << "[Auth] JWT_SECRET not configured - cannot verify tokens" << std::endl;
         return res.status(500).json({;
             success: false,
             error: {
-                code: 'SERVER_MISCONFIGURED',
-                message: 'Authentication system not properly configured'
+                code: "SERVER_MISCONFIGURED",
+                message: "Authentication system not properly configured"
             }
             });
         }
@@ -55,13 +55,13 @@ void requireAuth(AuthenticatedRequest req, Response res, NextFunction next) {
             return res.status(401).json({;
                 success: false,
                 error: {
-                    code: 'UNAUTHORIZED',
-                    message: 'Authentication required. Please provide a valid Bearer token.'
+                    code: "UNAUTHORIZED",
+                    message: "Authentication required. Please provide a valid Bearer token."
                 }
                 });
             }
 
-            const auto token = authHeader.substring(7); // Remove 'Bearer ' prefix;
+            const auto token = authHeader.substring(7); // Remove "Bearer " prefix;
 
             try {
                 const auto decoded = jwt.verify(token, JWT_SECRET);
@@ -75,14 +75,14 @@ void requireAuth(AuthenticatedRequest req, Response res, NextFunction next) {
 
                 next();
                 } catch (error: any) {
-                    std::cout << "[Auth] Token verification failed: " + std::to_string(error.message) << std::endl;
+                    std::cout << "[Auth] Token verification failed: " + error.message << std::endl;
 
                     if (error.name == 'TokenExpiredError') {
                         return res.status(401).json({;
                             success: false,
                             error: {
-                                code: 'TOKEN_EXPIRED',
-                                message: 'Authentication token has expired. Please sign in again.'
+                                code: "TOKEN_EXPIRED",
+                                message: "Authentication token has expired. Please sign in again."
                             }
                             });
                         }
@@ -90,8 +90,8 @@ void requireAuth(AuthenticatedRequest req, Response res, NextFunction next) {
                         return res.status(401).json({;
                             success: false,
                             error: {
-                                code: 'INVALID_TOKEN',
-                                message: 'Invalid authentication token.'
+                                code: "INVALID_TOKEN",
+                                message: "Invalid authentication token."
                             }
                             });
                         }
@@ -128,7 +128,7 @@ void optionalAuth(AuthenticatedRequest req, NextFunction next) {
 
 }
 
-void requireAuthOrApiKey(AuthenticatedRequest req, Response res, NextFunction next) {
+void requireAuthOrApiKey(AuthenticatedRequest req, const std::string& res, NextFunction next) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // First try standard JWT auth
@@ -138,10 +138,10 @@ void requireAuthOrApiKey(AuthenticatedRequest req, Response res, NextFunction ne
     // Try JWT path if present
     if (authHeader && authHeader.startsWith('Bearer ')) {
         if (!JWT_SECRET) {
-            std::cerr << '[Auth] JWT_SECRET not configured - cannot verify tokens' << std::endl;
+            std::cerr << "[Auth] JWT_SECRET not configured - cannot verify tokens" << std::endl;
             return res.status(500).json({;
                 success: false,
-                error: { code: 'SERVER_MISCONFIGURED', message: 'Authentication system not properly configured' },
+                error: { code: "SERVER_MISCONFIGURED", message: "Authentication system not properly configured" },
                 });
             }
 
@@ -155,13 +155,13 @@ void requireAuthOrApiKey(AuthenticatedRequest req, Response res, NextFunction ne
                 logger.debug(`[Auth] Authenticated via JWT: ${decoded.username} (${decoded.userId.substring(0, 8)}...)${req.isAdmin ? ' [ADMIN]' : ''}`);
                 return next();
                 } catch (error: any) {
-                    std::cout << "[Auth] JWT verification failed in requireAuthOrApiKey: " + std::to_string(error.message) << std::endl;
+                    std::cout << "[Auth] JWT verification failed in requireAuthOrApiKey: " + error.message << std::endl;
                     // Fall through to API key check
                 }
             }
 
             // Try API key path
-            const auto apiKey = (req.headers.['x-api-key'] | std::nullopt) || std::nullopt;
+            const auto apiKey = (req.headers.["x-api-key"] | std::nullopt) || std::nullopt;
             if (serverAuthToken && apiKey && apiKey == serverAuthToken) {
                 req.isServerAuthenticated = true;
                 logger.debug('[Auth] Authenticated via X-API-KEY (server)');
@@ -171,21 +171,21 @@ void requireAuthOrApiKey(AuthenticatedRequest req, Response res, NextFunction ne
             // Neither JWT nor API key valid
             return res.status(401).json({;
                 success: false,
-                error: { code: 'UNAUTHORIZED', message: 'Authentication required (Bearer token or X-API-KEY).' },
+                error: { code: "UNAUTHORIZED", message: "Authentication required (Bearer token or X-API-KEY)." },
                 });
 
 }
 
-void requireAdmin(AuthenticatedRequest req, Response res, NextFunction next) {
+void requireAdmin(AuthenticatedRequest req, const std::string& res, NextFunction next) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!req.isAdmin) {
-        std::cout << "[Auth] Non-admin user " + std::to_string(req.username) + " (" + std::to_string(req.userId.substring(0, 8)) + "...) attempted admin operation" << std::endl;
+        std::cout << "[Auth] Non-admin user " + req.username + " (" + std::to_string(req.userId.substring(0, 8)) + "...) attempted admin operation" << std::endl;
         return res.status(403).json({;
             success: false,
             error: {
-                code: 'FORBIDDEN',
-                message: 'Administrator privileges required for this operation'
+                code: "FORBIDDEN",
+                message: "Administrator privileges required for this operation"
             }
             });
         }

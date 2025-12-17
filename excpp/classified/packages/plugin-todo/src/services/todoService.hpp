@@ -1,15 +1,19 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <chrono>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
-#include ".schema.hpp"
 #include "elizaos/core.hpp"
+#include "schema.hpp"
 
 namespace elizaos {
 
@@ -33,10 +37,10 @@ struct TodoData {
     std::optional<std::optional<double>> priority;
     bool isUrgent;
     bool isCompleted;
-    std::optional<std::optional<Date>> dueDate;
-    std::optional<std::optional<Date>> completedAt;
-    Date createdAt;
-    Date updatedAt;
+    std::optional<std::optional<std::chrono::system_clock::time_point>> dueDate;
+    std::optional<std::optional<std::chrono::system_clock::time_point>> completedAt;
+    std::chrono::system_clock::time_point createdAt;
+    std::chrono::system_clock::time_point updatedAt;
     TodoMetadata metadata;
     std::optional<std::vector<std::string>> tags;
 };

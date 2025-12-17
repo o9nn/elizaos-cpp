@@ -1,4 +1,6 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
@@ -6,15 +8,16 @@
 #include <string>
 #include <tuple>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
-#include ".environment/swe-env.hpp"
-#include ".types.hpp"
-#include ".utils/log.hpp"
 #include "bundle.hpp"
 #include "commands.hpp"
+#include "environment/swe-env.hpp"
 #include "parsing.hpp"
+#include "types.hpp"
 #include "utils.hpp"
+#include "utils/log.hpp"
 
 namespace elizaos {
 

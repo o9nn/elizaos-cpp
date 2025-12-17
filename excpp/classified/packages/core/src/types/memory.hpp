@@ -1,9 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
 
@@ -31,7 +34,7 @@ enum MemoryType {
  * - `room`: The memory is scoped to a specific room or channel.
  * This is used in `MemoryMetadata` to control how memories are stored and retrieved based on context.
  */
-using MemoryScope = std::variant<std::string, std::string, std::string>;
+using MemoryScope = std::string;
 
 /**
  * Base interface for all memory metadata types.

@@ -254,7 +254,7 @@ std::future<void> calculateRaydiumTokenMarketData(const std::any& token) {
                         };
                         } catch (error) {
                             logger.error(
-                            "Error calculating Raydium token market data for " + std::to_string(token.mint) + ":"
+                            "Error calculating Raydium token market data for " + token.mint + ":"
                             error,
                             );
                             logger.error(

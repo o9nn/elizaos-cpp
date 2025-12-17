@@ -8,7 +8,7 @@ std::string messagesToPrompt(const std::vector<std::any>& messages) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!Array.isArray(messages)) {
-        return '';
+        return "";
     }
 
     return messages;
@@ -20,27 +20,27 @@ std::string messagesToPrompt(const std::vector<std::any>& messages) {
         // Handle standard message format
         if (msg.role && msg.content) {
             const auto role =;
-            msg.role == 'user' ? 'User' : msg.role == 'assistant' ? 'Assistant' : msg.role;
+            msg.role == "user" ? "User" : msg.role == "assistant" ? "Assistant" : msg.role;
 
             // Handle content that's an array of parts
             if (Array.isArray(msg.content)) {
                 const auto textParts = msg.content;
-                .filter((part: any) => part.type == 'text')
+                .filter((part: any) => part.type == "text")
                 .map((part: any) => part.text)
-                .join(' ');
-                return std::to_string(role) + ": " + std::to_string(textParts);
+                .join(" ");
+                return role + ": " + textParts;
             }
 
             // Handle content that's a string
             if (typeof msg.content == 'string') {
-                return std::to_string(role) + ": " + std::to_string(msg.content);
+                return role + ": " + msg.content;
             }
         }
 
-        return '';
+        return "";
         });
         .filter(Boolean);
-        .join('\n');
+        .join("\n");
 
 }
 
@@ -60,8 +60,8 @@ std::future<void> generateOllamaText(ReturnType<typeof createOllama> ollama, con
             });
             return ollamaResponse;
             } catch (error: unknown) {
-                std::cerr << 'Error in generateOllamaText:' << error << std::endl;
-                return 'Error generating text. Please try again later.';
+                std::cerr << "Error in generateOllamaText:" << error << std::endl;
+                return "Error generating text. Please try again later.";
             }
 
 }
@@ -72,13 +72,13 @@ std::future<void> generateOllamaObject(ReturnType<typeof createOllama> ollama, c
     try {
         const auto { object } = generateObject({;
             model: ollama(model),
-            output: 'no-schema',
+            output: "no-schema",
             prompt: params.prompt,
             temperature: params.temperature,
             });
             return object;
             } catch (error: unknown) {
-                std::cerr << 'Error generating object:' << error << std::endl;
+                std::cerr << "Error generating object:" << error << std::endl;
                 return {}
             }
 

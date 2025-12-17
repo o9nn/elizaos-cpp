@@ -8,7 +8,7 @@ std::future<void> resolveImport(const std::string& importPath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return createMatchPath(config.absoluteBaseUrl, config.paths)(importPath, std::nullopt, () => true, [;
-    '.ts',
+    ".ts",
     ]);
 
 }

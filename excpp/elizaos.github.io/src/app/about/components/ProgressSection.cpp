@@ -17,7 +17,7 @@ void ProgressSection() {
     <div className="flex items-center">;
     <span className="mr-3 text-2xl">{phase.icon}</span>;
     <h3 className="text-xl font-semibold">;
-    "Phase " + std::to_string(index + 1) + " = " + std::to_string(phase.name)
+    "{" + "Phase " + std::to_string(index + 1) + ": " + phase.name
     </h3>;
     </div>;
     <div className="flex items-center space-x-2">;

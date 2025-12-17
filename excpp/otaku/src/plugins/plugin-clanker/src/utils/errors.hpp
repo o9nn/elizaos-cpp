@@ -1,13 +1,16 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".types.hpp"
 #include "elizaos/core.hpp"
+#include "types.hpp"
 
 namespace elizaos {
 
@@ -25,7 +28,7 @@ private:
     ErrorCode code_;
 };
 
-ErrorResponse handleError(unknown error);
+ErrorResponse handleError(const std::any& error);
 
 bool validateAddress(const std::string& address);
 

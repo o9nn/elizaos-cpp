@@ -17,7 +17,7 @@ std::future<void> main() {
         const auto octokit = new Octokit({ auth: token });
 
         if (TEST_MODE) {
-            std::cout << "🧪 TEST MODE: Only processing repository '" + std::to_string(TEST_REPO) + "'" << std::endl;
+            std::cout << "🧪 TEST MODE: Only processing repository "" + TEST_REPO + """ << std::endl;
         }
 
         const auto repos = octokit.paginate(octokit.repos.listForOrg, {;
@@ -43,7 +43,7 @@ std::future<void> main() {
                         } catch (error: any) {
                             if (error.status == 404) {
                                 console.log(
-                                "Skipping " + std::to_string(ORG_NAME) + "/" + std::to_string(repo.name) + " (no " + std::to_string(TARGET_BRANCH) + " branch)";
+                                "Skipping " + ORG_NAME + "/" + repo.name + " (no " + TARGET_BRANCH + " branch)";
                                 );
                                 continue;
                             }
@@ -64,7 +64,7 @@ std::future<void> main() {
                                 } catch (error: any) {
                                     if (error.status == 404) {
                                         console.log(
-                                        "Skipping " + std::to_string(ORG_NAME) + "/" + std::to_string(repo.name) + " (no package.json on " + std::to_string(TARGET_BRANCH) + ")";
+                                        "Skipping " + ORG_NAME + "/" + repo.name + " (no package.json on " + TARGET_BRANCH + ")";
                                         );
                                         continue;
                                     }
@@ -72,7 +72,7 @@ std::future<void> main() {
                                 }
 
                                 const auto raw = Buffer.from(fileData.content, "base64").tostd::to_string("utf8");
-                                const auto pkg = JSON.parse(raw) as {;
+                                const auto pkg = /* JSON.parse */ raw as {;
                                     name?: string;
                                     version?: string;
                                     repository?: string | { type: string; url: string };
@@ -80,7 +80,7 @@ std::future<void> main() {
                                     };
 
                                     // Check if repository field needs to be updated
-                                    const auto expectedRepositoryUrl = "https://github.com/" + std::to_string(ORG_NAME) + "/" + std::to_string(repo.name) + ".git";
+                                    const auto expectedRepositoryUrl = "https://github.com/" + ORG_NAME + "/" + repo.name + ".git";
                                     auto needsRepositoryUpdate = false;
 
                                     if (!pkg.repository) {
@@ -102,7 +102,7 @@ std::future<void> main() {
 
                                             if (!needsRepositoryUpdate) {
                                                 console.log(
-                                                "Skipping " + std::to_string(ORG_NAME) + "/" + std::to_string(repo.name) + " (repository field is already correct)";
+                                                "Skipping " + ORG_NAME + "/" + repo.name + " (repository field is already correct)";
                                                 );
                                                 continue;
                                             }
@@ -122,7 +122,7 @@ std::future<void> main() {
                                                             const auto baseVersion = betaMatch[1];
                                                             const auto betaNumber = parseInt(betaMatch[2], 10);
                                                             if (!isNaN(betaNumber)) {
-                                                                std::to_string(baseVersion) + "-beta." + std::to_string(betaNumber + 1);
+                                                                "pkg.version = " + baseVersion + "-beta." + std::to_string(betaNumber + 1);
                                                             }
                                                         }
                                                         } else {
@@ -140,7 +140,7 @@ std::future<void> main() {
                                                     }
 
                                                     const auto updated = Buffer.from(;
-                                                    JSON.stringify(pkg, nullptr, 2) + "\n",
+                                                    /* JSON.stringify */ std::string(pkg, nullptr, 2) + "\n",
                                                     "utf8";
                                                     ).tostd::to_string("base64");
 
@@ -149,13 +149,13 @@ std::future<void> main() {
                                                         repo: repo.name,
                                                         path: "package.json",
                                                         branch: TARGET_BRANCH,
-                                                        "chore: update repository URL and bump version in package.json"
+                                                        "message: " + "chore: update repository URL and bump version in package.json"
                                                         content: updated,
                                                         sha: fileData.sha,
                                                         });
 
                                                         console.log(
-                                                        "Updated repository URL and bumped version in package.json for " + std::to_string(ORG_NAME) + "/" + std::to_string(repo.name) + " on " + std::to_string(TARGET_BRANCH) + " branch";
+                                                        "Updated repository URL and bumped version in package.json for " + ORG_NAME + "/" + repo.name + " on " + TARGET_BRANCH + " branch";
                                                         );
                                                     }
 

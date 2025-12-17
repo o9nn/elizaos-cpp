@@ -18,7 +18,7 @@ std::future<std::vector<Character>> loadCharactersFromUrl(const std::string& url
 
 }
 
-std::future<Character> jsonToCharacter(unknown character) {
+std::future<Character> jsonToCharacter(const std::any& character) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return serverJsonToCharacter(character);

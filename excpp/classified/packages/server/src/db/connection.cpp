@@ -13,7 +13,7 @@ std::future<DatabaseConnection> createDatabaseConnection(ConnectionOptions optio
 
     if (options.postgresUrl) {
         // PostgreSQL connection
-        std::cout << '[MessageDB] Connecting to PostgreSQL database...' << std::endl;
+        std::cout << "[MessageDB] Connecting to PostgreSQL database..." << std::endl;
         pgPool = new Pool({
             connectionString: options.postgresUrl,
             max: 10,
@@ -25,8 +25,8 @@ std::future<DatabaseConnection> createDatabaseConnection(ConnectionOptions optio
             logger.success('[MessageDB] Connected to PostgreSQL database');
             } else {
                 // PGLite connection (default)
-                const auto dataDir = options.dataDir || '.eliza/message-server/db';
-                std::cout << "[MessageDB] Initializing PGLite database at: " + std::to_string(dataDir) << std::endl;
+                const auto dataDir = options.dataDir || ".eliza/message-server/db";
+                std::cout << "[MessageDB] Initializing PGLite database at: " + dataDir << std::endl;
 
                 pgliteConnection = new PGlite(dataDir);
                 pgliteConnection.waitReady;
@@ -68,7 +68,7 @@ std::future<void> closeDatabase() {
     }
 
     db = nullptr;
-    std::cout << '[MessageDB] Database connection closed' << std::endl;
+    std::cout << "[MessageDB] Database connection closed" << std::endl;
 
 }
 

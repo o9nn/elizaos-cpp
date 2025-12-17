@@ -10,15 +10,15 @@ std::future<void> waitForServerReady(ServerHealthOptions options) {
 
         const auto {;
             port,
-            endpoint = '/api/agents',
+            endpoint = "/api/agents",
             maxWaitTime = 30000, // 30 seconds default;
             pollInterval = 1000, // 1 second;
             requestTimeout = 2000, // 2 seconds;
-            host = 'localhost',
-            protocol = 'http',
+            host = "localhost",
+            protocol = "http",
             } = options;
 
-            const auto url = std::to_string(protocol) + "://" + std::to_string(host) + ":" + std::to_string(port) + std::to_string(endpoint);
+            const auto url = protocol + "://" + host + ":" + port + endpoint;
             const auto startTime = Date.now();
 
             while (Date.now() - startTime < maxWaitTime) {
@@ -72,13 +72,13 @@ std::future<bool> pingServer(ServerHealthOptions options) {
 
     const auto {;
         port,
-        endpoint = '/api/agents',
+        endpoint = "/api/agents",
         requestTimeout = 2000,
-        host = 'localhost',
-        protocol = 'http',
+        host = "localhost",
+        protocol = "http",
         } = options;
 
-        const auto url = std::to_string(protocol) + "://" + std::to_string(host) + ":" + std::to_string(port) + std::to_string(endpoint);
+        const auto url = protocol + "://" + host + ":" + port + endpoint;
         auto controller: AbortController | std::nullopt;
         auto timeoutId: NodeJS.Timeout | std::nullopt;
 

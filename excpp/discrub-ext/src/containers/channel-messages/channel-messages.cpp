@@ -70,7 +70,7 @@ void ChannelMessages() {
                     ];
 
                     const std::vector<TableRow<Message>> rows = (;
-                    filters.length ? filteredMessages : messages
+                    filters.size() ? filteredMessages : messages
                     ).map((m) => ({
                         data: m,
                         selectable: isRemovableMessage(m),
@@ -115,7 +115,7 @@ void ChannelMessages() {
                         searchBeforeDate,
                         searchAfterDate,
                         searchMessageContent,
-                        selectedHasTypes.length,
+                        selectedHasTypes.size(),
                         ].some((c) => c);
 
                         const auto pauseCancelDisabled = !messagesLoading;
@@ -131,7 +131,7 @@ void ChannelMessages() {
                         !selectedGuild.id ||;
                         messagesLoading ||;
                         selectedChannel.id ||;
-                        messages.length > 0 ||;
+                        messages.size() > 0 ||;
                         advancedFilterActive ||;
                         discrubCancelled;
                         );
@@ -139,7 +139,7 @@ void ChannelMessages() {
                         !selectedGuild.id ||;
                         messagesLoading ||;
                         selectedChannel.id ||;
-                        messages.length > 0 ||;
+                        messages.size() > 0 ||;
                         discrubCancelled;
                         );
 
@@ -347,7 +347,7 @@ void ChannelMessages() {
     <>;
     {!messagesLoading && (;
     <>;
-    {messages.length > 0 && (;
+    {messages.size() > 0 && (;
     <Box sx={{ maxHeight: "430px", overflow: "auto" }}>
     <Table;
     columns={columns}
@@ -361,7 +361,7 @@ void ChannelMessages() {
     />;
     </Box>;
     )}
-    {messages.length == 0 && selectedGuild.id && searchTouched && (;
+    {messages.size() == 0 && selectedGuild.id && searchTouched && (;
     <Paper sx={{ padding: "10px" }}>
     <Box;
     sx={{

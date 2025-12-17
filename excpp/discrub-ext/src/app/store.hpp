@@ -1,20 +1,23 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".features/app/app-slice.hpp"
-#include ".features/channel/channel-slice.hpp"
-#include ".features/dm/dm-slice.hpp"
-#include ".features/export/export-slice.hpp"
-#include ".features/guild/guild-slice.hpp"
-#include ".features/message/message-slice.hpp"
-#include ".features/purge/purge-slice.hpp"
-#include ".features/relationship/relationship-slice.hpp"
-#include ".features/thread/thread-slice.hpp"
-#include ".features/user/user-slice.hpp"
+#include "features/app/app-slice.hpp"
+#include "features/channel/channel-slice.hpp"
+#include "features/dm/dm-slice.hpp"
+#include "features/export/export-slice.hpp"
+#include "features/guild/guild-slice.hpp"
+#include "features/message/message-slice.hpp"
+#include "features/purge/purge-slice.hpp"
+#include "features/relationship/relationship-slice.hpp"
+#include "features/thread/thread-slice.hpp"
+#include "features/user/user-slice.hpp"
 
 namespace elizaos {
 

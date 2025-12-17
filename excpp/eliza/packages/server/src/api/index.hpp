@@ -1,11 +1,13 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".socketio.hpp"
 #include "agents.hpp"
 #include "audio.hpp"
 #include "elizaos/core.hpp"
@@ -14,6 +16,7 @@
 #include "messaging.hpp"
 #include "runtime.hpp"
 #include "shared/middleware.hpp"
+#include "socketio.hpp"
 #include "system.hpp"
 #include "tee.hpp"
 

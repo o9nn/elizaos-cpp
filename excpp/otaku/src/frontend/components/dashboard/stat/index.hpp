@@ -1,10 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -20,12 +22,12 @@ struct DashboardStatProps {
     std::optional<std::string> description;
     std::optional<std::string> tag;
     ElementType icon;
-    std::optional<std::variant<"positive", "negative", "neutral">> intent;
-    std::optional<std::variant<"up", "down">> direction;
+    std::optional<std::string> intent;
+    std::optional<std::string> direction;
 };
 
 struct ArrowProps {
-    std::variant<"up", "down"> direction;
+    std::string direction;
     double index;
 };
 

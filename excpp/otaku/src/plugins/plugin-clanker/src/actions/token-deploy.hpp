@@ -1,17 +1,20 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include "....utils/entity.hpp"
-#include ".services/clanker.service.hpp"
-#include ".types.hpp"
-#include ".utils/errors.hpp"
-#include ".utils/format.hpp"
 #include "elizaos/core.hpp"
+#include "services/clanker.service.hpp"
+#include "types.hpp"
+#include "utils/entity.hpp"
+#include "utils/errors.hpp"
+#include "utils/format.hpp"
 
 namespace elizaos {
 

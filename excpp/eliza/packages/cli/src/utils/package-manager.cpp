@@ -8,7 +8,7 @@ std::future<std::string> getPackageManager() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     logger.debug('[PackageManager] Using bun as the package manager for ElizaOS CLI');
-    return 'bun';
+    return "bun";
 
 }
 
@@ -39,14 +39,14 @@ std::future<bool> isRunningViaBunx() {
 std::vector<std::string> getInstallCommand(bool isGlobal) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return ['add', ...(isGlobal ? ['-g'] : [])];
+    return ["add", ...(isGlobal ? ["-g"] : [])];
 
 }
 
 std::future<void> removeFromBunLock(const std::string& packageName, const std::string& directory) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto lockFilePath = path.join(directory, 'bun.lock');
+    const auto lockFilePath = path.join(directory, "bun.lock");
 
     if (!existsSync(lockFilePath)) {
         logger.debug(`No bun.lock file found at ${lockFilePath}, skipping removal`);
@@ -55,9 +55,9 @@ std::future<void> removeFromBunLock(const std::string& packageName, const std::s
 
     try {
         // Use bun remove to cleanly remove the package from lockfile
-        execa('bun', ['remove', packageName], {
+        execa("bun", ["remove", packageName], {
             cwd: directory,
-            stdio: 'pipe', // Don't show output for cleanup operation
+            stdio: "pipe", // Don't show output for cleanup operation
             });
             logger.debug(`Successfully removed ${packageName} from bun.lock`);
             } catch (error: any) {
@@ -65,7 +65,7 @@ std::future<void> removeFromBunLock(const std::string& packageName, const std::s
                 if (error.message.includes('not found') || error.message.includes('No such package')) {
                     logger.debug(`Package ${packageName} not found in lockfile (expected for cleanup)`);
                     } else {
-                        std::cout << "Failed to remove " + std::to_string(packageName) + " from bun.lock: " + std::to_string(error.message) << std::endl;
+                        std::cout << "Failed to remove " + packageName + " from bun.lock: " + error.message << std::endl;
                     }
                 }
 
@@ -79,8 +79,8 @@ std::string buildGitHubSpecifier(const std::string& githubSpec, std::optional<st
     }
 
     // If the spec already has a fragment (#), replace it
-    const auto baseSpec = githubSpec.split('#')[0];
-    return std::to_string(baseSpec) + "#" + std::to_string(versionOrTag);
+    const auto baseSpec = githubSpec.split("#")[0];
+    return baseSpec + "#" + versionOrTag;
 
 }
 

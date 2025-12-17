@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::future<std::optional<std::any>> safeReadJson(Response res) {
+std::future<std::optional<std::any>> safeReadJson(const std::string& res) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -27,12 +27,12 @@ std::future<std::vector<std::string>> rankIdsByMarkets(const std::vector<std::st
     const auto params = new URLSearchParams({;
         vs_currency: "usd",
         ids: ids.join(","),
-        per_page: std::to_string(Math.max(1, ids.length)),
+        per_page: std::to_string(Math.max(1, ids.size())),
         page: "1",
         price_change_percentage: "24h",
         locale: "en",
         });
-        const auto url = "https://api.coingecko.com/api/v3/coins/markets?" + std::to_string(params.toString());
+        const auto url = "https://api.coingecko.com/api/v3/coins/markets?" + std::to_string(std::to_string(params));
         const auto controller = new AbortController();
         const auto timeout = setTimeout(() => controller.abort(), 10000);
         try {
@@ -99,19 +99,19 @@ std::string platformToNet(std::optional<std::string> p) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     switch (p) {
-        case "ethereum":
+        // case "ethereum":
         return "eth";
-        case "base":
+        // case "base":
         return "base";
-        case "arbitrum-one":
+        // case "arbitrum-one":
         return "arb";
-        case "optimistic-ethereum":
+        // case "optimistic-ethereum":
         return "op";
-        case "polygon-pos":
+        // case "polygon-pos":
         return "matic";
-        case "bsc":
+        // case "bsc":
         return "bsc";
-        default:
+        // default:
         return (p || "unknown").toLowerCase();
     }
 
@@ -125,7 +125,7 @@ std::any formatCoinMetadata(const std::string& requestId, const std::any& data, 
     const auto { platformKey, address, decimals } = choosePlatform(data, preferredPlatform);
     const auto netCode = platformToNet(platformKey);
     const auto addrLower = address ? address.toLowerCase() : nullptr;
-    const auto objId = std::to_string(netCode) + "_" + std::to_string(addrLower);
+    const auto objId = "addrLower ? " + netCode + "_" + addrLower;
 
     return {
         id: objId,

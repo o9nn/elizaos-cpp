@@ -9,15 +9,15 @@ ProblemStatement problemStatementFromSimplifiedInput(const std::string& input, c
     try {
 
         switch (type) {
-            case 'text':
+            // case "text":
             return new TextProblemStatement({ text: input });
-            case 'text_file':
+            // case "text_file":
             return new FileProblemStatement({ path: input });
-            case 'github_issue':
+            // case "github_issue":
             return new GithubIssue({ githubUrl: input });
-            case 'swe_bench_multimodal':
+            // case "swe_bench_multimodal":
             return new SWEBenchMultimodalProblemStatement({ text: input });
-            default:
+            // default:
             throw std::runtime_error(`Unknown problem statement type: ${type}`);
         }
 

@@ -1,11 +1,13 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -19,7 +21,7 @@ struct TokenTradesParams {
     std::string address;
     std::optional<double> limit;
     std::optional<double> offset;
-    std::optional<std::variant<"buy", "sell", "all">> type;
+    std::optional<std::string> type;
 };
 
 struct TokenTradesResponse {
@@ -27,7 +29,7 @@ struct TokenTradesResponse {
     std::optional<std::string> signature;
     std::optional<double> blockNumber;
     std::optional<double> unixTime;
-    std::optional<std::variant<"buy", "sell">> type;
+    std::optional<std::string> type;
     std::optional<std::string> tokenAddress;
     std::optional<double> tokenAmount;
     std::optional<double> tokenAmountUI;
@@ -44,8 +46,8 @@ struct TokenTradesResponse {
 };
 
 struct TokenListParams {
-    std::optional<std::variant<"mc", "v24hUSD", "v24hChangePercent">> sort_by;
-    std::optional<std::variant<"asc", "desc">> sort_type;
+    std::optional<std::string> sort_by;
+    std::optional<std::string> sort_type;
     std::optional<double> offset;
     std::optional<double> limit;
     std::optional<double> min_liquidity;
@@ -329,8 +331,8 @@ struct TokenCreationInfoResponse {
 };
 
 struct TokenTrendingParams {
-    std::optional<std::variant<"rank", "volume24hUSD", "liquidity">> sort_by;
-    std::optional<std::variant<"asc", "desc">> sort_type;
+    std::optional<std::string> sort_by;
+    std::optional<std::string> sort_type;
     std::optional<double> offset;
     std::optional<double> limit;
 };
@@ -357,7 +359,7 @@ struct TokenListV2Params {
     std::optional<double> offset;
     std::optional<double> limit;
     std::optional<std::string> sortBy;
-    std::optional<std::variant<"asc", "desc">> sortOrder;
+    std::optional<std::string> sortOrder;
 };
 
 // this endpoint is for enterprise only and the response is not documented
@@ -470,8 +472,8 @@ struct TokenHoldersResponse {
 struct MintBurnParams {
     std::string address;
     "block_time" sort_by;
-    std::variant<"asc", "desc"> sort_type;
-    std::variant<"mint", "burn", "all"> type;
+    std::string sort_type;
+    std::string type;
     std::optional<double> after_time;
     std::optional<double> before_time;
     std::optional<double> offset;
@@ -483,7 +485,7 @@ struct MintBurnResponse {
     std::optional<std::string> amount;
     std::optional<std::string> block_human_time;
     std::optional<double> block_time;
-    std::optional<std::variant<"mint", "burn">> common_type;
+    std::optional<std::string> common_type;
     std::optional<double> decimals;
     std::optional<std::string> mint;
     std::optional<std::string> program_id;
@@ -516,8 +518,8 @@ struct NewListingResponse {
 struct TopTradersParams {
     std::string address;
     std::optional<TimeInterval> time_frame;
-    std::optional<std::variant<"asc", "desc">> sort_type;
-    std::optional<std::variant<"volume", "trade">> sort_by;
+    std::optional<std::string> sort_type;
+    std::optional<std::string> sort_by;
     std::optional<double> offset;
     std::optional<double> limit;
 };
@@ -535,8 +537,8 @@ struct TopTradersResponse {
 struct AllMarketsParams {
     std::string address;
     TimeInterval time_frame;
-    std::variant<"asc", "desc"> sort_type;
-    std::variant<"volume24h", "liquidity"> sort_by;
+    std::string sort_type;
+    std::string sort_by;
     std::optional<double> offset;
     std::optional<double> limit;
 };

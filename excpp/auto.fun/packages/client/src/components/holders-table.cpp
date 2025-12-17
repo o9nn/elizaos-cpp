@@ -64,7 +64,7 @@ void HoldersTable() {
         </TableRow>;
         </TableHeader>;
         <TableBody>;
-        {data.length > 0;
+        {data.size() > 0;
         ? data.map((holder) => {
             const auto formattedAmount: number =;
             (Number(holder.balance) ? Number(holder.balance) : 0) /

@@ -1,11 +1,14 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".src/lib/pipelines/pipelineConfig.hpp"
+#include "src/lib/pipelines/pipelineConfig.hpp"
 
 namespace elizaos {
 

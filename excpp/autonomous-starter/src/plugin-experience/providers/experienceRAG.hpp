@@ -1,14 +1,17 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".service.js.hpp"
-#include ".types.hpp"
-#include ".utils/experienceFormatter.js.hpp"
 #include "elizaos/core.hpp"
+#include "service.js.hpp"
+#include "types.hpp"
+#include "utils/experienceFormatter.js.hpp"
 
 namespace elizaos {
 

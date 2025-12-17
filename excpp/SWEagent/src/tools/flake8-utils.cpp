@@ -8,7 +8,7 @@ std::string formatFlake8Output(const std::string& currentErrors, const std::stri
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!currentErrors.trim()) {
-        return '';
+        return "";
     }
 
     // Parse current errors
@@ -23,7 +23,7 @@ std::string formatFlake8Output(const std::string& currentErrors, const std::stri
 
     // Format output
     if (newErrors.length == 0) {
-        return '';
+        return "";
     }
 
     return formatErrorsForDisplay(newErrors, showLineNumbers);
@@ -37,13 +37,13 @@ std::vector<Flake8ErrorClass> parseFlake8Output(const std::string& output) {
         return [];
     }
 
-    const auto lines = output.trim().split('\n');
+    const auto lines = output.trim().split("\n");
     const std::vector<Flake8ErrorClass> errors = [];
 
     for (const auto& line : lines)
         if (line.trim()) {
             try {
-                errors.push(Flake8ErrorClass.fromLine(line));
+                errors.push_back(Flake8ErrorClass.fromLine(line));
                 } catch {
                     // Skip invalid lines
                 }
@@ -71,9 +71,9 @@ std::vector<Flake8ErrorClass> updatePreviousErrors(const std::vector<Flake8Error
 
         // Adjust line numbers for errors after the replacement
         if (error.line > endLine) {
-            updated.push(new Flake8ErrorClass(error.file, error.line + linesDelta, error.column, error.message));
+            updated.push_back(new Flake8ErrorClass(error.file, error.line + linesDelta, error.column, error.message));
             } else {
-                updated.push(error);
+                updated.push_back(error);
             }
         }
 
@@ -84,9 +84,9 @@ std::vector<Flake8ErrorClass> updatePreviousErrors(const std::vector<Flake8Error
 std::vector<Flake8ErrorClass> findNewErrors(const std::vector<Flake8ErrorClass>& currentErrors, const std::vector<Flake8ErrorClass>& previousErrors) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto previousSet = new Set(previousErrors.map((e) => e.toString()));
+    const auto previousSet = new Set(previousErrors.map((e) => std::to_string(e)));
 
-    return currentErrors.filter((error) => !previousSet.has(error.toString()));
+    return currentErrors.filter((error) => !previousSet.has(std::to_string(error)));
 
 }
 
@@ -94,17 +94,17 @@ std::string formatErrorsForDisplay(const std::vector<Flake8ErrorClass>& errors, 
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (errors.length == 0) {
-        return '';
+        return "";
     }
 
     return errors;
     .map((error) => {
         if (showLineNumbers) {
-            return "- line " + std::to_string(error.line) + " col " + std::to_string(error.column) + ": " + std::to_string(error.message);
+            return "- line " + error.line + " col " + error.column + ": " + error.message;
         }
-        return "- " + std::to_string(error.message);
+        return "- " + error.message;
         });
-        .join('\n');
+        .join("\n");
 
 }
 

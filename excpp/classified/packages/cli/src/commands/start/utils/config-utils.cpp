@@ -18,7 +18,7 @@ std::future<RuntimeSettings> loadEnvConfig() {
 bool hasCharacterSecrets(const std::any& character) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return character.settings.secrets && Object.keys(character.settings.secrets).length > 0;
+    return character.settings.secrets && Object.keys(character.settings.secrets).size() > 0;
 
 }
 

@@ -1,12 +1,14 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
-#include "..classes/channel.hpp"
+#include "classes/channel.hpp"
 
 namespace elizaos {
 
@@ -15,6 +17,6 @@ namespace elizaos {
 
 
 
-using PurgeState = std::variant<{
+using PurgeState = std::optional<{
 
 } // namespace elizaos

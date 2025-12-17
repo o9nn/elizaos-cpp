@@ -9,7 +9,7 @@ PluginType getPluginType(const std::string& name) {
 
     if (/sql/.test(name)) return 'adapter';
     if (/discord|twitter|telegram/.test(name)) return 'client';
-    return 'plugin';
+    return "plugin";
 
 }
 

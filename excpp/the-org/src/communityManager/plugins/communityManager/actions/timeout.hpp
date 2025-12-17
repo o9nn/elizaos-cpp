@@ -1,12 +1,15 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include "....utils/discordHelper.hpp"
 #include "elizaos/core.hpp"
+#include "utils/discordHelper.hpp"
 
 namespace elizaos {
 

@@ -35,7 +35,7 @@ std::future<void> startBaseListener() {
 
         // Watch for TokenRegistered events
         const auto unwatch = client.watchEvent({;
-            "0x" + std::to_string(string)
+            "address: registrationHelperAddress as " + "0x" + string
             event: {
                 type: "event",
                 name: "TokenRegistered",
@@ -95,17 +95,17 @@ std::future<void> handleTokenRegistered(const std::any& client, const std::any& 
         // Fetch token metadata from blockchain
         const auto [symbol, name, decimals] = Promise.all([;
         client.readContract({
-            "0x" + std::to_string(string)
+            "address: tokenAddress as " + "0x" + string
             abi: ERC20_ABI,
             functionName: "symbol",
             }),
             client.readContract({
-                "0x" + std::to_string(string)
+                "address: tokenAddress as " + "0x" + string
                 abi: ERC20_ABI,
                 functionName: "name",
                 }),
                 client.readContract({
-                    "0x" + std::to_string(string)
+                    "address: tokenAddress as " + "0x" + string
                     abi: ERC20_ABI,
                     functionName: "decimals",
                     }),
@@ -120,11 +120,11 @@ std::future<void> handleTokenRegistered(const std::any& client, const std::any& 
                         chain: "base",
                         decimals: Number(decimals),
                         logoUrl: std::nullopt, // Could fetch from a token list
-                        "Registered via RegistrationHelper by " + std::to_string(registeredBy)
+                        "description: " + "Registered via RegistrationHelper by " + registeredBy
                         });
 
                         console.log(
-                        "[Base Listener] ✅ Successfully registered " + std::to_string(symbol) + " (" + std::to_string(tokenAddress) + ") to database"
+                        "[Base Listener] ✅ Successfully registered " + symbol + " (" + tokenAddress + ") to database"
                         );
 
 }
@@ -151,11 +151,11 @@ std::future<void> backfillBaseEvents(std::optional<bigint> fromBlock) {
             const auto startBlock = fromBlock || latestBlock - BigInt(10000); // Last ~10k blocks;
 
             console.log(
-            "[Base Backfill] Fetching events from block " + std::to_string(startBlock) + " to " + std::to_string(latestBlock)
+            "[Base Backfill] Fetching events from block " + startBlock + " to " + latestBlock
             );
 
             const auto logs = client.getLogs({;
-                "0x" + std::to_string(string)
+                "address: registrationHelperAddress as " + "0x" + string
                 event: {
                     type: "event",
                     name: "TokenRegistered",
@@ -171,7 +171,7 @@ std::future<void> backfillBaseEvents(std::optional<bigint> fromBlock) {
                     toBlock: latestBlock,
                     });
 
-                    std::cout << "[Base Backfill] Found " + std::to_string(logs.length) + " TokenRegistered events" << std::endl;
+                    std::cout << "[Base Backfill] Found " + logs.size() + " TokenRegistered events" << std::endl;
 
                     for (const auto& log : logs)
                         handleTokenRegistered(client, log);

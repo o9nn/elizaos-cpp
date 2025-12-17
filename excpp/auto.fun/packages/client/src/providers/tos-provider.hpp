@@ -1,10 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -15,7 +17,7 @@ namespace elizaos {
 
 
 // Define cookie types locally as CookieProvider will be removed
-using CookieType = std::variant<"necessary", "analytics", "preferences">;
+using CookieType = std::string;
 
 
 } // namespace elizaos

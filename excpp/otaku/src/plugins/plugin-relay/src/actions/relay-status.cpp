@@ -11,18 +11,18 @@ std::string formatStatusResponse(const std::vector<RelayStatus>& statuses) {
         return formatSingleStatus(statuses[0]);
     }
 
-    auto response = " **Found " + std::to_string(statuses.length) + " Transactions**\n\n";
+    auto response = " **Found " + statuses.size() + " Transactions**\n\n";
 
     statuses.forEach((status, index) => {
-        "**" + std::to_string(index + 1) + ". " + std::to_string(status.id.slice(0, 10)) + "...**\n";
-        "- Status: " + std::to_string(getStatusIndicator(status.status)) + " " + std::to_string(status.status) + "\n"
-        "- Created: " + std::to_string(new Date(status.createdAt).toLocaleString()) + "\n"
+        "response += " + "**" + std::to_string(index + 1) + ". " + std::to_string(status.id.slice(0, 10)) + "...**\n";
+        "response += " + "- Status: " + std::to_string(getStatusIndicator(status.status)) + " " + status.status + "\n"
+        "response += " + "- Created: " + std::to_string(new Date(status.createdAt).toLocaleString()) + "\n"
 
         if (status.data.inTxs.[0]) {
-            "- Origin: Chain " + std::to_string(status.data.inTxs[0].chainId) + "\n"
+            "response += " + "- Origin: Chain " + std::to_string(status.data.inTxs[0].chainId) + "\n"
         }
         if (status.data.outTxs.[0]) {
-            "- Destination: Chain " + std::to_string(status.data.outTxs[0].chainId) + "\n"
+            "response += " + "- Destination: Chain " + std::to_string(status.data.outTxs[0].chainId) + "\n"
         }
 
         response += "\n";
@@ -49,18 +49,18 @@ std::string formatSingleStatus(RelayStatus status) {
 
     if (status.data.inTxs.[0]) {
         const auto inTx = status.data.inTxs[0];
-        "\n\n**Origin Transaction:**"
-        "\n- Chain: " + std::to_string(getChainName(inTx.chainId))
-        "\n- Hash: \"
-        "\n- Time: " + std::to_string(new Date(inTx.timestamp * 1000).toLocaleString())
+        "response += " + "\n\n**Origin Transaction:**"
+        "response += " + "\n- Chain: " + std::to_string(getChainName(inTx.chainId))
+        "response += " + "\n- Hash: \" + "${inTx.hash}\"
+        "response += " + "\n- Time: " + std::to_string(new Date(inTx.timestamp * 1000).toLocaleString())
     }
 
     if (status.data.outTxs.[0]) {
         const auto outTx = status.data.outTxs[0];
-        "\n\n**Destination Transaction:**"
-        "\n- Chain: " + std::to_string(getChainName(outTx.chainId))
-        "\n- Hash: \"
-        "\n- Time: " + std::to_string(new Date(outTx.timestamp * 1000).toLocaleString())
+        "response += " + "\n\n**Destination Transaction:**"
+        "response += " + "\n- Chain: " + std::to_string(getChainName(outTx.chainId))
+        "response += " + "\n- Hash: \" + "${outTx.hash}\"
+        "response += " + "\n- Time: " + std::to_string(new Date(outTx.timestamp * 1000).toLocaleString())
     }
 
     if (status.data.fees) {
@@ -71,10 +71,10 @@ std::string formatSingleStatus(RelayStatus status) {
         ? status.data.fees.relayer;
         : status.data.fees.relayer || "0";
         const auto totalFees = BigInt(gasFeeWei) + BigInt(relayerFeeWei);
-        "\n\n**Fees:**"
-        "\n- Gas: " + std::to_string((Number(gasFeeWei) / 1e18).toFixed(6)) + " ETH"
-        "\n- Relayer: " + std::to_string((Number(relayerFeeWei) / 1e18).toFixed(6)) + " ETH"
-        "\n- Total: " + std::to_string((Number(totalFees) / 1e18).toFixed(6)) + " ETH"
+        "response += " + "\n\n**Fees:**"
+        "response += " + "\n- Gas: " + std::to_string((Number(gasFeeWei) / 1e18).toFixed(6)) + " ETH"
+        "response += " + "\n- Relayer: " + std::to_string((Number(relayerFeeWei) / 1e18).toFixed(6)) + " ETH"
+        "response += " + "\n- Total: " + std::to_string((Number(totalFees) / 1e18).toFixed(6)) + " ETH"
     }
 
     return response;
@@ -108,7 +108,7 @@ std::string getChainName(double chainId) {
         534352: "Scroll",
         59144: "Linea",
         };
-        return "Chain " + std::to_string(chainId);
+        return "chains[chainId] || " + "Chain " + chainId;
 
 }
 

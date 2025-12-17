@@ -1,13 +1,16 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".hyperfy/src/core/systems/System.hpp"
+#include "hyperfy/src/core/systems/System.hpp"
 
 namespace elizaos {
 
@@ -40,9 +43,9 @@ public:
     void commit();
     void postTick();
     void start();
-    std::future<void> publishAudioStream(Buffer audioBuffer);
-    std::future<Int16Array> convertToPcm(Buffer buffer, auto sampleRate);
-    std::string detectAudioFormat(Buffer buffer);
+    std::future<void> publishAudioStream(const std::vector<uint8_t>& audioBuffer);
+    std::future<std::vector<int16_t>> convertToPcm(const std::vector<uint8_t>& buffer, auto sampleRate);
+    std::string detectAudioFormat(const std::vector<uint8_t>& buffer);
 };
 
 } // namespace elizaos

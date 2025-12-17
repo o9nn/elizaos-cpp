@@ -1,11 +1,15 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
+#include <regex>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
 
@@ -227,7 +231,7 @@ struct TokenizationResult {
  * Interface for stemming rules.
  */
 struct StemmingRule {
-    std::variant<RegExp, std::string> pattern;
+    std::variant<std::regex, std::string> pattern;
     std::optional<double> minMeasure;
 };
 

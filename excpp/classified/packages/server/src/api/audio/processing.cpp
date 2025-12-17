@@ -23,7 +23,7 @@ std::string validateSecureFilePath(const std::string& filePath) {
 
         // Ensure the file is within system temp directory or upload directory
         const auto systemTemp = path.resolve(os.tmpdir());
-        const auto projectUpload = path.resolve(process.cwd(), '.eliza', 'data', 'uploads');
+        const auto projectUpload = path.resolve(process.cwd(), ".eliza", "data", "uploads");
 
         if (!resolvedPath.startsWith(systemTemp) && !resolvedPath.startsWith(projectUpload)) {
             throw std::runtime_error('File path outside allowed directories');
@@ -58,31 +58,31 @@ express::Router createAudioProcessingRouter(const std::unordered_map<UUID, IAgen
         router.use(createFileSystemRateLimit());
 
         // Audio messages endpoints
-        router.post('/:agentId/audio-messages', agentAudioUpload().single('file'), async (req, res) => {
+        router.post("/:agentId/audio-messages", agentAudioUpload().single("file"), async (req, res) => {
             const auto audioReq = req;
             logger.debug('[AUDIO MESSAGE] Processing audio message');
             const auto agentId = validateUuid(req.params.agentId);
             if (!agentId) {
-                return sendError(res, 400, 'INVALID_ID', 'Invalid agent ID format');
+                return sendError(res, 400, "INVALID_ID", "Invalid agent ID format");
             }
 
             const auto audioFile = audioReq.file;
             if (!audioFile) {
-                return sendError(res, 400, 'INVALID_REQUEST', 'No audio file provided');
+                return sendError(res, 400, "INVALID_REQUEST", "No audio file provided");
             }
 
             const auto runtime = agents.get(agentId);
 
             if (!runtime) {
                 cleanupUploadedFile(audioFile);
-                return sendError(res, 404, 'NOT_FOUND', 'Agent not found');
+                return sendError(res, 404, "NOT_FOUND", "Agent not found");
             }
 
             try {
                 // Validate file type
                 if (!validateAudioFile(audioFile)) {
                     cleanupUploadedFile(audioFile);
-                    return sendError(res, 400, 'INVALID_FILE_TYPE', 'Invalid audio file type');
+                    return sendError(res, 400, "INVALID_FILE_TYPE", "Invalid audio file type");
                 }
 
                 // Validate file size
@@ -91,8 +91,8 @@ express::Router createAudioProcessingRouter(const std::unordered_map<UUID, IAgen
                     return sendError(;
                     res,
                     413,
-                    'FILE_TOO_LARGE',
-                    "Audio file too large (max " + std::to_string(MAX_FILE_SIZE_DISPLAY) + ")";
+                    "FILE_TOO_LARGE",
+                    "Audio file too large (max " + MAX_FILE_SIZE_DISPLAY + ")";
                     );
                 }
 
@@ -100,41 +100,41 @@ express::Router createAudioProcessingRouter(const std::unordered_map<UUID, IAgen
                 const auto transcription = runtime.useModel(ModelType.TRANSCRIPTION, audioFile.buffer);
 
                 // Placeholder: This part needs to be updated to align with message creation.
-                std::cout << "[AUDIO MESSAGE] Transcription for agent " + std::to_string(agentId) + ": " + std::to_string(transcription) << std::endl;
+                std::cout << "[AUDIO MESSAGE] Transcription for agent " + agentId + ": " + transcription << std::endl;
                 cleanupUploadedFile(audioFile);
-                sendSuccess(res, { transcription, message: 'Audio transcribed, further processing TBD.' });
+                sendSuccess(res, { transcription, message: "Audio transcribed, further processing TBD." });
                 } catch (error) {
-                    std::cerr << '[AUDIO MESSAGE] Error processing audio:' << error << std::endl;
+                    std::cerr << "[AUDIO MESSAGE] Error processing audio:" << error << std::endl;
                     cleanupUploadedFile(audioFile);
                     sendError(;
                     res,
                     500,
-                    'PROCESSING_ERROR',
-                    'Error processing audio message',
+                    "PROCESSING_ERROR",
+                    "Error processing audio message",
                     true /* instanceof check */ ? error.message : std::to_string(error)
                     );
                 }
                 });
 
                 // Transcription endpoint
-                router.post('/:agentId/transcriptions', agentAudioUpload().single('file'), async (req, res) => {
+                router.post("/:agentId/transcriptions", agentAudioUpload().single("file"), async (req, res) => {
                     const auto audioReq = req;
                     logger.debug('[TRANSCRIPTION] Request to transcribe audio');
                     const auto agentId = validateUuid(req.params.agentId);
                     if (!agentId) {
-                        return sendError(res, 400, 'INVALID_ID', 'Invalid agent ID format');
+                        return sendError(res, 400, "INVALID_ID", "Invalid agent ID format");
                     }
 
                     const auto audioFile = audioReq.file;
                     if (!audioFile) {
-                        return sendError(res, 400, 'INVALID_REQUEST', 'No audio file provided');
+                        return sendError(res, 400, "INVALID_REQUEST", "No audio file provided");
                     }
 
                     const auto runtime = agents.get(agentId);
 
                     if (!runtime) {
                         cleanupUploadedFile(audioFile);
-                        return sendError(res, 404, 'NOT_FOUND', 'Agent not found');
+                        return sendError(res, 404, "NOT_FOUND", "Agent not found");
                     }
 
                     try {
@@ -143,7 +143,7 @@ express::Router createAudioProcessingRouter(const std::unordered_map<UUID, IAgen
                         // Validate file type
                         if (!validateAudioFile(audioFile)) {
                             cleanupUploadedFile(audioFile);
-                            return sendError(res, 400, 'INVALID_FILE_TYPE', 'Invalid audio file type');
+                            return sendError(res, 400, "INVALID_FILE_TYPE", "Invalid audio file type");
                         }
 
                         // Validate file size
@@ -152,8 +152,8 @@ express::Router createAudioProcessingRouter(const std::unordered_map<UUID, IAgen
                             return sendError(;
                             res,
                             413,
-                            'FILE_TOO_LARGE',
-                            "Audio file too large (max " + std::to_string(MAX_FILE_SIZE_DISPLAY) + ")";
+                            "FILE_TOO_LARGE",
+                            "Audio file too large (max " + MAX_FILE_SIZE_DISPLAY + ")";
                             );
                         }
 
@@ -164,19 +164,19 @@ express::Router createAudioProcessingRouter(const std::unordered_map<UUID, IAgen
                         cleanupUploadedFile(audioFile);
 
                         if (!transcription) {
-                            return sendError(res, 500, 'PROCESSING_ERROR', 'Failed to transcribe audio');
+                            return sendError(res, 500, "PROCESSING_ERROR", "Failed to transcribe audio");
                         }
 
                         logger.success('[TRANSCRIPTION] Successfully transcribed audio');
                         sendSuccess(res, { text: transcription });
                         } catch (error) {
-                            std::cerr << '[TRANSCRIPTION] Error transcribing audio:' << error << std::endl;
+                            std::cerr << "[TRANSCRIPTION] Error transcribing audio:" << error << std::endl;
                             cleanupUploadedFile(audioFile);
                             sendError(;
                             res,
                             500,
-                            'PROCESSING_ERROR',
-                            'Error transcribing audio',
+                            "PROCESSING_ERROR",
+                            "Error transcribing audio",
                             true /* instanceof check */ ? error.message : std::to_string(error)
                             );
                         }

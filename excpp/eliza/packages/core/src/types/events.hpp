@@ -1,10 +1,13 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
 
@@ -109,6 +112,6 @@ struct EventPayloadMap {
  * for functions that respond to events emitted within the agent runtime (see `emitEvent` in `AgentRuntime`).
  * Handlers can be synchronous or asynchronous.
  */
-using TypedEventHandler = std::variant<std::function<std::future<void>(Metadata)>, void>;
+using TypedEventHandler = std::function<std::variant<std::future<void>, void>(Metadata)>;
 
 } // namespace elizaos

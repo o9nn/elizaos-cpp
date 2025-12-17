@@ -1,10 +1,13 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "elizaos/core.hpp"
 
@@ -30,12 +33,12 @@ DatabaseAdapter createMockDatabaseAdapter(std::optional<std::any> overrides);
 /**
  * Creates a mock Express Request
  */
-Request createMockRequest(std::optional<std::optional<Request>> overrides);
+std::string createMockRequest(std::optional<std::optional<std::string>> overrides);
 
 /**
  * Creates a mock Express Response
  */
-Response createMockResponse();
+std::string createMockResponse();
 
 /**
  * Creates a mock Express NextFunction

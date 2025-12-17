@@ -1,9 +1,13 @@
 #pragma once
+#include <algorithm>
+#include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -19,16 +23,16 @@ namespace elizaos {
 /**
  * Convert strings to YAML literal strings for better readability
  */
-unknown convertToYamlLiteralString(unknown data);
+std::any convertToYamlLiteralString(const std::any& data);
 
 /**
  * Serialize data to YAML with line breaks preserved
  */
-std::string yamlSerializationWithLinebreaks(unknown data);
+std::string yamlSerializationWithLinebreaks(const std::any& data);
 
 /**
  * Merge nested dictionaries/objects
  */
-unknown mergeNestedDicts(unknown d1, unknown d2);
+std::any mergeNestedDicts(const std::any& d1, const std::any& d2);
 
 } // namespace elizaos

@@ -4,11 +4,11 @@
 
 namespace elizaos {
 
-bool isLoudEnough(Buffer pcmBuffer, auto threshold) {
+bool isLoudEnough(const std::vector<uint8_t>& pcmBuffer, auto threshold) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     auto sum = 0;
-    const auto sampleCount = Math.floor(pcmBuffer.length / 2); // 16-bit samples;
+    const auto sampleCount = Math.floor(pcmBuffer.size() / 2); // 16-bit samples;
 
     for (int i = 0; i < pcmBuffer.length; i += 2) {
         const auto sample = pcmBuffer.readInt16LE(i);

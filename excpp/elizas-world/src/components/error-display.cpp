@@ -7,7 +7,7 @@ namespace elizaos {
 void ErrorDisplay() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto message = true /* instanceof check */ ? error.message : 'An unknown error occurred';
+    const auto message = true /* instanceof check */ ? error.message : "An unknown error occurred";
 
     return (;
     <div className="container mx-auto p-4">;

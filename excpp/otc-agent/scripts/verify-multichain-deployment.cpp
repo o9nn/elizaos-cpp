@@ -30,7 +30,7 @@ std::future<void> verifyBaseDeployment() {
                 std::cout << "Checking OTC contract at:" << OTC_ADDRESS << std::endl;
 
                 // Use getCode instead of getBytecode (getBytecode might not work on all RPCs)
-                const auto code = "0x" + std::to_string(string);
+                const auto code = "client.getCode({ address: OTC_ADDRESS as " + "0x" + string;
                 if (!code || code == "0x") {
                     std::cout << "⚠️  Could not verify contract code via RPC (may be indexing delay)" << std::endl;
                     std::cout << "   Contract was deployed successfully - checking via function call..." << std::endl;
@@ -38,7 +38,7 @@ std::future<void> verifyBaseDeployment() {
                     try {
                         const auto otcAbi = parseAbi(["function nextOfferId() view returns (uint256)"]);
                         client.readContract({
-                            "0x" + std::to_string(string)
+                            "address: OTC_ADDRESS as " + "0x" + string
                             abi: otcAbi,
                             functionName: "nextOfferId",
                             });
@@ -64,18 +64,18 @@ std::future<void> verifyBaseDeployment() {
 
                             try {
                                 const auto nextOfferId = client.readContract({;
-                                    "0x" + std::to_string(string)
+                                    "address: OTC_ADDRESS as " + "0x" + string
                                     abi: otcAbi,
                                     functionName: "nextOfferId",
                                     });
-                                    std::cout << "  Next Offer ID:" << nextOfferId.toString() << std::endl;
+                                    std::cout << "  Next Offer ID:" << std::to_string(nextOfferId) << std::endl;
                                     } catch (error) {
                                         std::cout << "⚠️  Could not read nextOfferId (contract deployed but may have ABI mismatch)" << std::endl;
                                     }
 
                                     try {
                                         const auto agent = client.readContract({;
-                                            "0x" + std::to_string(string)
+                                            "address: OTC_ADDRESS as " + "0x" + string
                                             abi: otcAbi,
                                             functionName: "agent",
                                             });
@@ -86,7 +86,7 @@ std::future<void> verifyBaseDeployment() {
 
                                             try {
                                                 const auto usdc = client.readContract({;
-                                                    "0x" + std::to_string(string)
+                                                    "address: OTC_ADDRESS as " + "0x" + string
                                                     abi: otcAbi,
                                                     functionName: "usdc",
                                                     });
@@ -97,7 +97,7 @@ std::future<void> verifyBaseDeployment() {
 
                                                     try {
                                                         const auto owner = client.readContract({;
-                                                            "0x" + std::to_string(string)
+                                                            "address: OTC_ADDRESS as " + "0x" + string
                                                             abi: otcAbi,
                                                             functionName: "owner",
                                                             });
@@ -109,14 +109,14 @@ std::future<void> verifyBaseDeployment() {
                                                             // Check RegistrationHelper
                                                             std::cout << "\nChecking RegistrationHelper at:" << REGISTRATION_HELPER_ADDRESS << std::endl;
 
-                                                            const auto helperCode = "0x" + std::to_string(string);
+                                                            const auto helperCode = "client.getCode({ address: REGISTRATION_HELPER_ADDRESS as " + "0x" + string;
                                                             if (!helperCode || helperCode == "0x") {
                                                                 std::cout << "⚠️  Could not verify RegistrationHelper code via RPC (may be indexing delay)" << std::endl;
                                                                 std::cout << "   Contract was deployed successfully - checking via function call..." << std::endl;
                                                                 try {
                                                                     const auto helperAbi = parseAbi(["function otc() view returns (address)"]);
                                                                     client.readContract({
-                                                                        "0x" + std::to_string(string)
+                                                                        "address: REGISTRATION_HELPER_ADDRESS as " + "0x" + string
                                                                         abi: helperAbi,
                                                                         functionName: "otc",
                                                                         });
@@ -141,7 +141,7 @@ std::future<void> verifyBaseDeployment() {
 
                                                                         try {
                                                                             const auto helperOtc = client.readContract({;
-                                                                                "0x" + std::to_string(string)
+                                                                                "address: REGISTRATION_HELPER_ADDRESS as " + "0x" + string
                                                                                 abi: helperAbi,
                                                                                 functionName: "otc",
                                                                                 });
@@ -158,7 +158,7 @@ std::future<void> verifyBaseDeployment() {
 
                                                                                 try {
                                                                                     const auto regFee = client.readContract({;
-                                                                                        "0x" + std::to_string(string)
+                                                                                        "address: REGISTRATION_HELPER_ADDRESS as " + "0x" + string
                                                                                         abi: helperAbi,
                                                                                         functionName: "registrationFee",
                                                                                         });
@@ -169,7 +169,7 @@ std::future<void> verifyBaseDeployment() {
 
                                                                                         try {
                                                                                             const auto feeRecipient = client.readContract({;
-                                                                                                "0x" + std::to_string(string)
+                                                                                                "address: REGISTRATION_HELPER_ADDRESS as " + "0x" + string
                                                                                                 abi: helperAbi,
                                                                                                 functionName: "feeRecipient",
                                                                                                 });
@@ -235,7 +235,7 @@ std::future<void> verifySolanaDeployment() {
         }
 
         std::cout << "✅ Desk account exists" << std::endl;
-        std::cout << "  Data Size:" << deskInfo.data.length << "bytes" << std::endl;
+        std::cout << "  Data Size:" << deskInfo.data.size() << "bytes" << std::endl;
         std::cout << "  Owner:" << deskInfo.owner.toBase58() << std::endl;
 
         std::cout << "\n✅ Solana deployment verified successfully" << std::endl;
@@ -308,7 +308,7 @@ std::future<void> main() {
             std::cout << "   - Run token registration listeners for both chains" << std::endl;
             std::cout << "2. Test token registration in UI:" << std::endl;
             std::cout << "   - Connect wallet" << std::endl;
-            std::cout << "   - Click 'Register Token from Wallet'" << std::endl;
+            std::cout << "   - Click "Register Token from Wallet"" << std::endl;
             std::cout << "   - Select a token and complete registration" << std::endl;
             std::cout << "3. Monitor backend logs for TokenRegistered events" << std::endl;
             process.exit(0);

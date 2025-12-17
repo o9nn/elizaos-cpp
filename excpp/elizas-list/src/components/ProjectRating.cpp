@@ -11,8 +11,8 @@ void ProjectRating() {
     const auto [ratings, setRatings] = useState<Rating[]>(initialRatings);
     const auto [hoveredStar, setHoveredStar] = useState<number | nullptr>(nullptr);
 
-    const auto averageRating = ratings.length;
-    ? ratings.reduce((acc, r) => acc + r.rating, 0) / ratings.length;
+    const auto averageRating = ratings.size();
+    ? ratings.reduce((acc, r) => acc + r.rating, 0) / ratings.size();
     : 0;
 
     const auto userRating = session;
@@ -22,9 +22,9 @@ void ProjectRating() {
     const auto handleRate = async (rating: number) => {;
         if (!session) return;
 
-        const auto response = fetch('/api/ratings', {;
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+        const auto response = fetch("/api/ratings", {;
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 projectId,
                 rating,
@@ -51,17 +51,17 @@ void ProjectRating() {
     onClick={() => handleRate(star)}
     onMouseEnter={() => setHoveredStar(star)}
     onMouseLeave={() => setHoveredStar(nullptr)}
-    "text-2xl " + std::to_string();
+    "className={" + "text-2xl " + std::to_string();
         (hoveredStar != nullptr ? star <= hoveredStar : star <= (userRating || averageRating))
-        ? 'text-yellow-400';
-        : 'text-gray-300'
-    }`}
+        ? "text-yellow-400";
+        : "text-gray-300"
+    "}";
     >;
     <FaStar />;
     </motion.button>;
     ))}
     <span className="ml-2 text-sm text-gray-500">;
-    ({ratings.length} ratings);
+    ({ratings.size()} ratings);
     </span>;
     </div>;
 

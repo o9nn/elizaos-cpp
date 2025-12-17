@@ -8,7 +8,7 @@ void AgentMemoryViewer(auto agentName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [selectedType, setSelectedType] = useState<MemoryType>(MemoryType.all);
-    const auto [searchQuery, setSearchQuery] = useState('');
+    const auto [searchQuery, setSearchQuery] = useState("");
     const auto [editingMemory, setEditingMemory] = useState<Memory | nullptr>(nullptr);
     const auto [visibleItems, setVisibleItems] = useState(ITEMS_PER_PAGE);
     const auto [loadingMore, setLoadingMore] = useState(false);
@@ -18,9 +18,9 @@ void AgentMemoryViewer(auto agentName) {
     const auto { data: agentsData } = useAgents();
 
     // Fetch from appropriate table(s) based on selected type
-    const auto messagesTableName = selectedType == MemoryType.facts ? std::nullopt : 'messages';
+    const auto messagesTableName = selectedType == MemoryType.facts ? std::nullopt : "messages";
     const auto factsTableName =;
-    selectedType == MemoryType.facts || selectedType == MemoryType.all ? 'facts' : std::nullopt;
+    selectedType == MemoryType.facts || selectedType == MemoryType.all ? "facts" : std::nullopt;
 
     // Only pass channelId when "Current Chat" is selected
     const auto channelIdToUse =;
@@ -64,10 +64,10 @@ void AgentMemoryViewer(auto agentName) {
                     const auto content = memory.content;
                     const auto searchableText = [content.text, content.thought, memory.id, memory.metadata];
                     .filter(Boolean);
-                    .join(' ');
+                    .join(" ");
                     .toLowerCase();
 
-                    return searchableText.includes(query);
+                    return (std::find(searchableText.begin(), searchableText.end(), query) != searchableText.end());
                 }
 
                 return true;
@@ -85,11 +85,11 @@ void AgentMemoryViewer(auto agentName) {
                     if (scrolledToBottom) {
                         setLoadingMore(true);
                         setTimeout(() => {
-                            setVisibleItems((prev) => Math.min(prev + ITEMS_PER_PAGE, filteredMemories.length));
+                            setVisibleItems((prev) => Math.min(prev + ITEMS_PER_PAGE, filteredMemories.size()));
                             setLoadingMore(false);
                             }, 500);
                         }
-                        }, [loadingMore, visibleItems, filteredMemories.length]);
+                        }, [loadingMore, visibleItems, filteredMemories.size()]);
 
                         // Reset visible items when filter changes
                         useEffect(() => {
@@ -100,8 +100,8 @@ void AgentMemoryViewer(auto agentName) {
                             useEffect(() => {
                                 const auto scrollContainer = scrollContainerRef.current;
                                 if (scrollContainer) {
-                                    scrollContainer.addEventListener('scroll', handleScroll);
-                                    return [&]() { return scrollContainer.removeEventListener('scroll', handleScroll); };
+                                    scrollContainer.addEventListener("scroll", handleScroll);
+                                    return [&]() { return scrollContainer.removeEventListener("scroll", handleScroll); };
                                 }
                                 }, [handleScroll]);
 
@@ -111,16 +111,16 @@ void AgentMemoryViewer(auto agentName) {
                                     const auto diffInHours = (now.getTime() - date.getTime()) / (1000 * 60 * 60);
 
                                     if (diffInHours < 24) {
-                                        return date.toLocaleTimestd::to_string([], { hour: '2-digit', minute: '2-digit' });
+                                        return date.toLocaleTimestd::to_string([], { hour: "2-digit", minute: "2-digit" });
                                         } else if (diffInHours < 168) {
                                             // 7 days
-                                            return date.toLocaleDatestd::to_string([], { weekday: 'short', hour: '2-digit', minute: '2-digit' });
+                                            return date.toLocaleDatestd::to_string([], { weekday: "short", hour: "2-digit", minute: "2-digit" });
                                             } else {
                                                 return date.toLocaleDateString([], {;
-                                                    month: 'short',
-                                                    day: 'numeric',
-                                                    hour: '2-digit',
-                                                    minute: '2-digit',
+                                                    month: "short",
+                                                    day: "numeric",
+                                                    hour: "2-digit",
+                                                    minute: "2-digit",
                                                     });
                                                 }
                                                 };
@@ -135,7 +135,7 @@ void AgentMemoryViewer(auto agentName) {
                                                         try {
                                                             navigator.clipboard.writeText(text);
                                                             } catch (error) {
-                                                                std::cerr << 'Failed to copy:' << error << std::endl;
+                                                                std::cerr << "Failed to copy:" << error << std::endl;
                                                             }
                                                             };
 
@@ -150,14 +150,14 @@ void AgentMemoryViewer(auto agentName) {
                                                                     if (!groups[dateKey]) {
                                                                         groups[dateKey] = [];
                                                                     }
-                                                                    groups[dateKey].push(memory);
+                                                                    groups[dateKey].push_back(memory);
                                                                 }
 
                                                                 return groups;
                                                                 };
 
                                                                 const auto visibleMemories = filteredMemories.slice(0, visibleItems);
-                                                                const auto hasMoreToLoad = visibleItems < filteredMemories.length;
+                                                                const auto hasMoreToLoad = visibleItems < filteredMemories.size();
                                                                 const auto messageGroups = groupMessagesByDate(visibleMemories);
 
                                                                 // Loading state
@@ -203,11 +203,11 @@ void AgentMemoryViewer(auto agentName) {
                                                                 <h3 className="text-lg font-medium mb-2">No Memories Found</h3>;
                                                                 <p className="text-muted-foreground max-w-md mb-4">;
                                                                 {searchQuery;
-                                                                "No memories match "" + std::to_string(searchQuery) + "". Try adjusting your search or filter.";
+                                                                "? " + "No memories match \"" + searchQuery + "\". Try adjusting your search or filter.";
                                                             : "This agent hasn't created any memories yet. Memories will appear here agent interacts."}
                                                             </p>;
                                                             {searchQuery && (;
-                                                            <Button variant="outline" onClick={() => setSearchQuery('')}>;
+                                                            <Button variant="outline" onClick={() => setSearchQuery("")}>;
                                                             Clear Search;
                                                             </Button>;
                                                         )}
@@ -228,7 +228,7 @@ void AgentMemoryViewer(auto agentName) {
                                                                     return agent.name || agentName;
                                                                     } else {
                                                                         // For users, use raw metadata or fallback
-                                                                        return (memory.metadata).raw.senderName || memory.metadata.source || 'User';
+                                                                        return (memory.metadata).raw.senderName || memory.metadata.source || "User";
                                                                     }
                                                                     };
 
@@ -246,7 +246,7 @@ void AgentMemoryViewer(auto agentName) {
                                                                 <div className="flex items-center gap-2">;
                                                                 <span className="font-medium text-sm">{entityName}</span>;
                                                                 <span className="text-xs px-2 py-0.5 rounded bg-muted text-muted-foreground">;
-                                                            {content.thought ? 'Thought'  = isAgent ? 'Agent'  = 'User'}
+                                                            {content.thought ? "Thought"  = isAgent ? "Agent"  = "User"}
                                                             </span>;
                                                             </div>;
                                                             <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">;
@@ -268,7 +268,7 @@ void AgentMemoryViewer(auto agentName) {
                                                     <Button;
                                                     variant="ghost";
                                                     size="sm";
-                                                onClick={() => copyToClipboard(content.text || '')}
+                                                onClick={() => copyToClipboard(content.text || "")}
                                                 className="h-8 w-8 p-0";
                                                 title="Copy text";
                                                 >;
@@ -341,13 +341,13 @@ void AgentMemoryViewer(auto agentName) {
     )}
 
     {/* Metadata (simplified) */}
-    {memory.metadata && Object.keys(memory.metadata).length > 0 && (;
+    {memory.metadata && Object.keys(memory.metadata).size() > 0 && (;
     <details className="text-xs">;
     <summary className="cursor-pointer text-muted-foreground hover:text-foreground">
     View metadata;
     </summary>;
     <div className="mt-2 p-2 bg-muted/30 rounded text-[10px] font-mono overflow-x-auto">;
-    <pre>{JSON.stringify(memory.metadata, nullptr, 2)}</pre>;
+    <pre>{/* JSON.stringify */ std::string(memory.metadata, nullptr, 2)}</pre>;
     </div>;
     </details>;
     )}
@@ -364,7 +364,7 @@ void AgentMemoryViewer(auto agentName) {
     <h3 className="text-lg font-medium">Memories</h3>;
     {!isLoading && (;
     <span className="ml-2 text-xs px-2 py-1 rounded bg-muted text-muted-foreground">;
-    {filteredMemories.length}
+    {filteredMemories.size()}
     </span>;
     )}
     </div>;
@@ -400,7 +400,7 @@ void AgentMemoryViewer(auto agentName) {
 
     {/* Content */}
     <div ref={scrollContainerRef} className="flex-1 overflow-y-auto px-4">;
-    {filteredMemories.length == 0 ? (;
+    {filteredMemories.size() == 0 ? (;
     <EmptyState />;
     ) : (
     <div className="space-y-4">;

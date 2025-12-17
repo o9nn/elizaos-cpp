@@ -24,7 +24,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
         const auto [chatState, setChatState] = useState<ChatUIState>({;
             showGroupEditPanel: false,
             showProfileOverlay: false,
-            input: '',
+            input: "",
             inputDisabled: false,
             selectedGroupAgentId: nullptr,
             currentDmChannelId: nullptr,
@@ -49,7 +49,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                 const auto fileInputRef = useRef<HTMLInputElement>(nullptr);
                 const auto formRef = useRef<HTMLFormElement>(nullptr);
                 const auto inputDisabledRef = useRef<boolean>(false);
-                const auto chatTitleRef = useRef<string>('');
+                const auto chatTitleRef = useRef<string>("");
 
                 // For DM, we need agent data. For GROUP, we need channel data
                 const auto { data: agentDataResponse, isLoading: isLoadingAgent } = useAgent(;
@@ -135,9 +135,9 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                     const auto handleNewDmChannel = useCallback(;
                                     async (agentIdForNewChannel: UUID | std::nullopt) => {
                                         if (!agentIdForNewChannel || chatType != 'DM') return;
-                                        const auto newChatName = "Chat - " + std::to_string(moment().format('MMM D, HH:mm:ss'));
+                                        const auto newChatName = "Chat - " + std::to_string(moment().format("MMM D, HH:mm:ss"));
                                         clientLogger.info(;
-                                        "[Chat] Creating new distinct DM channel with agent " + std::to_string(agentIdForNewChannel) + ", name: "" + std::to_string(newChatName) + """
+                                        "[Chat] Creating new distinct DM channel with agent " + agentIdForNewChannel + ", name: \"" + newChatName + "\""
                                         );
                                         updateChatState({ isCreatingDM: true });
                                         try {
@@ -148,10 +148,10 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                 agentId: agentIdForNewChannel,
                                                 channelName: newChatName, // Provide a unique name
                                                 });
-                                                updateChatState({ currentDmChannelId: newChannel.id, input: '' });
+                                                updateChatState({ currentDmChannelId: newChannel.id, input: "" });
                                                 setTimeout(() => safeScrollToBottom(), 150);
                                                 } catch (error) {
-                                                    clientLogger.error('[Chat] Error creating new distinct DM channel:', error);
+                                                    clientLogger.error("[Chat] Error creating new distinct DM channel:", error);
                                                     // Toast is handled by the mutation hook
                                                     } finally {
                                                         updateChatState({ isCreatingDM: false });
@@ -166,9 +166,9 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                         const auto selectedChannel = agentDmChannels.find((channel) => channel.id == channelIdToSelect);
                                                         if (selectedChannel) {
                                                             clientLogger.info(;
-                                                            "[Chat] DM Channel selected: " + std::to_string(selectedChannel.name) + " (Channel ID: " + std::to_string(selectedChannel.id) + ")"
+                                                            "[Chat] DM Channel selected: " + selectedChannel.name + " (Channel ID: " + selectedChannel.id + ")"
                                                             );
-                                                            updateChatState({ currentDmChannelId: selectedChannel.id, input: '' });
+                                                            updateChatState({ currentDmChannelId: selectedChannel.id, input: "" });
                                                             setTimeout(() => safeScrollToBottom(), 150);
                                                         }
                                                         },
@@ -184,43 +184,43 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
 
                                                             confirm(;
                                                             {
-                                                                title: 'Delete Chat',
-                                                                "Are you sure you want to delete the chat "" + std::to_string(channelToDelete.name) + "" with " + std::to_string(targetAgentData.name) + "? This action cannot be undone."
-                                                                confirmText: 'Delete',
-                                                                variant: 'destructive',
+                                                                title: "Delete Chat",
+                                                                "description: " + "Are you sure you want to delete the chat \"" + channelToDelete.name + "\" with " + targetAgentData.name + "? This action cannot be undone."
+                                                                confirmText: "Delete",
+                                                                variant: "destructive",
                                                                 },
                                                                 async () => {
-                                                                    "[Chat] Deleting DM channel " + std::to_string(channelToDelete.id);
+                                                                    "clientLogger.info(" + "[Chat] Deleting DM channel " + channelToDelete.id;
                                                                     try {
                                                                         const auto elizaClient = createElizaClient();
                                                                         elizaClient.messaging.deleteChannel(channelToDelete.id);
 
                                                                         // --- Optimistically update the React-Query cache so UI refreshes instantly ---
                                                                         queryClient.setQueryData<MessageChannel[] | std::nullopt>(;
-                                                                        ['dmChannels', targetAgentData.id, currentClientEntityId],
+                                                                        ["dmChannels", targetAgentData.id, currentClientEntityId],
                                                                         [&](old) { return old.filter((ch) => ch.id != channelToDelete.id); }
                                                                         );
 
                                                                         // Force a refetch to stay in sync with the server
                                                                         queryClient.invalidateQueries({
-                                                                            queryKey: ['dmChannels', targetAgentData.id, currentClientEntityId],
+                                                                            queryKey: ["dmChannels", targetAgentData.id, currentClientEntityId],
                                                                             });
                                                                             // Also keep the broader channels cache in sync
-                                                                            queryClient.invalidateQueries({ queryKey: ['channels'] });
+                                                                            queryClient.invalidateQueries({ queryKey: ["channels"] });
 
-                                                                            """ + std::to_string(channelToDelete.name) + "" was deleted."
+                                                                            "toast({ title: "Chat Deleted", description: " + "\"" + channelToDelete.name + "\" was deleted."
 
                                                                             const auto remainingChannels =;
-                                                                            (queryClient.getQueryData(['dmChannels', targetAgentData.id, currentClientEntityId]) as;
+                                                                            (queryClient.getQueryData(["dmChannels", targetAgentData.id, currentClientEntityId]) as;
                                                                             | MessageChannel[];
                                                                             | std::nullopt) || [];
 
                                                                             if (remainingChannels.length > 0) {
                                                                                 updateChatState({ currentDmChannelId: remainingChannels[0].id });
-                                                                                clientLogger.info('[Chat] Switched to DM channel:', remainingChannels[0].id);
+                                                                                clientLogger.info("[Chat] Switched to DM channel:", remainingChannels[0].id);
                                                                                 } else {
                                                                                     clientLogger.info(;
-                                                                                    '[Chat] No DM channels left after deletion. Will create a fresh chat once.';
+                                                                                    "[Chat] No DM channels left after deletion. Will create a fresh chat once.";
                                                                                     );
                                                                                     // Clear the current DM so the effect can handle creating exactly one new chat
                                                                                     updateChatState({ currentDmChannelId: nullptr });
@@ -229,11 +229,11 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                     handleNewDmChannel(targetAgentData.id);
                                                                                 }
                                                                                 } catch (error) {
-                                                                                    clientLogger.error('[Chat] Error deleting DM channel:', error);
+                                                                                    clientLogger.error("[Chat] Error deleting DM channel:", error);
                                                                                     toast({
-                                                                                        title: 'Error',
-                                                                                        description: 'Could not delete chat. The server might not support this action yet.',
-                                                                                        variant: 'destructive',
+                                                                                        title: "Error",
+                                                                                        description: "Could not delete chat. The server might not support this action yet.",
+                                                                                        variant: "destructive",
                                                                                         });
                                                                                     }
                                                                                 }
@@ -273,7 +273,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
 
                                                                                                 if (!currentChannelBelongsToAgent && !isLoadingAgentDmChannels) {
                                                                                                     clientLogger.info(;
-                                                                                                    "[Chat] Current DM channel " + std::to_string(chatState.currentDmChannelId) + " doesn't belong to agent " + std::to_string(targetAgentData.id) + ", clearing it";
+                                                                                                    "[Chat] Current DM channel " + chatState.currentDmChannelId + " doesn't belong to agent " + targetAgentData.id + ", clearing it";
                                                                                                     );
                                                                                                     updateChatState({ currentDmChannelId: nullptr });
                                                                                                     return; // Exit early, let the effect run again with cleared state;
@@ -285,7 +285,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                         const auto currentValid = agentDmChannels.some((c) => c.id == chatState.currentDmChannelId);
                                                                                                         if (!currentValid) {
                                                                                                             clientLogger.info(;
-                                                                                                            '[Chat] Selecting first available DM channel:',
+                                                                                                            "[Chat] Selecting first available DM channel:",
                                                                                                             agentDmChannels[0].id;
                                                                                                             );
                                                                                                             updateChatState({ currentDmChannelId: agentDmChannels[0].id });
@@ -293,14 +293,14 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                         }
                                                                                                         } else {
                                                                                                             if (
-                                                                                                            agentDmChannels.length == 0 &&;
+                                                                                                            agentDmChannels.size() == 0 &&;
                                                                                                             !initialDmChannelId &&;
                                                                                                             !autoCreatedDmRef.current &&;
                                                                                                             !chatState.isCreatingDM &&;
                                                                                                             !createDmChannelMutation.isPending;
                                                                                                             ) {
                                                                                                                 // No channels at all and none expected via URL -> create exactly one
-                                                                                                                clientLogger.info('[Chat] No existing DM channels found; auto-creating a fresh one.');
+                                                                                                                clientLogger.info("[Chat] No existing DM channels found; auto-creating a fresh one.");
                                                                                                                 autoCreatedDmRef.current = true;
                                                                                                                 handleNewDmChannel(targetAgentData.id);
                                                                                                             }
@@ -341,7 +341,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                             useEffect(() => {
                                                                                                                 if (
                                                                                                                 chatType == ChannelType.GROUP &&;
-                                                                                                                groupAgents.length == 1 &&;
+                                                                                                                groupAgents.size() == 1 &&;
                                                                                                                 !chatState.selectedGroupAgentId;
                                                                                                                 ) {
                                                                                                                     updateChatState({
@@ -384,24 +384,24 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
 
                                                                                                                             // Auto-scroll handling
                                                                                                                             useEffect(() => {
-                                                                                                                                const auto isInitialLoadWithMessages = prevMessageCountRef.current == 0 && messages.length > 0;
+                                                                                                                                const auto isInitialLoadWithMessages = prevMessageCountRef.current == 0 && messages.size() > 0;
                                                                                                                                 const auto hasNewMessages =;
-                                                                                                                                messages.length != prevMessageCountRef.current && prevMessageCountRef.current != 0;
+                                                                                                                                messages.size() != prevMessageCountRef.current && prevMessageCountRef.current != 0;
 
                                                                                                                                 if (isInitialLoadWithMessages) {
-                                                                                                                                    clientLogger.debug('[chat] Initial messages loaded, scrolling to bottom.', {
-                                                                                                                                        count: messages.length,
+                                                                                                                                    clientLogger.debug("[chat] Initial messages loaded, scrolling to bottom.", {
+                                                                                                                                        count: messages.size(),
                                                                                                                                         });
                                                                                                                                         safeScrollToBottom();
                                                                                                                                         } else if (hasNewMessages) {
                                                                                                                                             if (autoScrollEnabled) {
-                                                                                                                                                clientLogger.debug('[chat] New messages and autoScroll enabled, scrolling.');
+                                                                                                                                                clientLogger.debug("[chat] New messages and autoScroll enabled, scrolling.");
                                                                                                                                                 safeScrollToBottom();
                                                                                                                                                 } else {
-                                                                                                                                                    clientLogger.debug('[chat] New messages, but autoScroll is disabled (user scrolled up).');
+                                                                                                                                                    clientLogger.debug("[chat] New messages, but autoScroll is disabled (user scrolled up).");
                                                                                                                                                 }
                                                                                                                                             }
-                                                                                                                                            prevMessageCountRef.current = messages.length;
+                                                                                                                                            prevMessageCountRef.current = messages.size();
                                                                                                                                             }, [messages, autoScrollEnabled, safeScrollToBottom, finalChannelIdForHooks]);
 
                                                                                                                                             const auto updateChatTitle = async () => {;
@@ -441,7 +441,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
 
                                                                                                                                                             const auto currentUserId = getEntityId();
                                                                                                                                                             queryClient.invalidateQueries({
-                                                                                                                                                                queryKey: ['dmChannels', contextId, currentUserId],
+                                                                                                                                                                queryKey: ["dmChannels", contextId, currentUserId],
                                                                                                                                                                 });
                                                                                                                                                             }
                                                                                                                                                             };
@@ -503,31 +503,31 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                                                     // If a DM channel is already being (auto) created, abort to prevent duplicate creations.
                                                                                                                                                                                                     if (chatState.isCreatingDM || createDmChannelMutation.isPending) {
                                                                                                                                                                                                         clientLogger.info(;
-                                                                                                                                                                                                        '[Chat] DM channel creation already in progress; will wait for it to finish instead of creating another.';
+                                                                                                                                                                                                        "[Chat] DM channel creation already in progress; will wait for it to finish instead of creating another.";
                                                                                                                                                                                                         );
                                                                                                                                                                                                         // Early return so the user can try sending again once the channel is ready.
                                                                                                                                                                                                         return;
                                                                                                                                                                                                     }
 
-                                                                                                                                                                                                    clientLogger.info('[Chat] No DM channel selected, creating one before sending message');
+                                                                                                                                                                                                    clientLogger.info("[Chat] No DM channel selected, creating one before sending message");
                                                                                                                                                                                                     try {
                                                                                                                                                                                                         // Mark as auto-created so the effect doesn't attempt a duplicate.
                                                                                                                                                                                                         autoCreatedDmRef.current = true;
 
                                                                                                                                                                                                         const auto newChannel = createDmChannelMutation.mutateAsync({;
                                                                                                                                                                                                             agentId: targetAgentData.id,
-                                                                                                                                                                                                            "Chat - " + std::to_string(moment().format('MMM D, HH:mm'))
+                                                                                                                                                                                                            "channelName: " + "Chat - " + std::to_string(moment().format("MMM D, HH:mm"))
                                                                                                                                                                                                             });
                                                                                                                                                                                                             updateChatState({ currentDmChannelId: newChannel.id });
                                                                                                                                                                                                             channelIdToUse = newChannel.id;
                                                                                                                                                                                                             // Wait a moment for state to propagate
                                                                                                                                                                                                             new Promise((resolve) => setTimeout(resolve, 100));
                                                                                                                                                                                                             } catch (error) {
-                                                                                                                                                                                                                clientLogger.error('[Chat] Failed to create DM channel before sending message:', error);
+                                                                                                                                                                                                                clientLogger.error("[Chat] Failed to create DM channel before sending message:", error);
                                                                                                                                                                                                                 toast({
-                                                                                                                                                                                                                    title: 'Error',
-                                                                                                                                                                                                                    description: 'Failed to create chat channel. Please try again.',
-                                                                                                                                                                                                                    variant: 'destructive',
+                                                                                                                                                                                                                    title: "Error",
+                                                                                                                                                                                                                    description: "Failed to create chat channel. Please try again.",
+                                                                                                                                                                                                                    variant: "destructive",
                                                                                                                                                                                                                     });
                                                                                                                                                                                                                     updateChatState({ inputDisabled: false });
                                                                                                                                                                                                                     return;
@@ -535,7 +535,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                                                             }
 
                                                                                                                                                                                                             if (
-                                                                                                                                                                                                            (!chatState.input.trim() && selectedFiles.length == 0) ||;
+                                                                                                                                                                                                            (!chatState.input.trim() && selectedFiles.size() == 0) ||;
                                                                                                                                                                                                             inputDisabledRef.current ||;
                                                                                                                                                                                                             !channelIdToUse ||;
                                                                                                                                                                                                             !finalServerIdForHooks ||;
@@ -547,7 +547,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                                                             const auto tempMessageId = randomUUID();
                                                                                                                                                                                                             auto messageText = chatState.input.trim();
                                                                                                                                                                                                             const auto currentInputVal = chatState.input;
-                                                                                                                                                                                                            updateChatState({ input: '', inputDisabled: true });
+                                                                                                                                                                                                            updateChatState({ input: "", inputDisabled: true });
                                                                                                                                                                                                             const auto currentSelectedFiles = [...selectedFiles];
                                                                                                                                                                                                             clearFiles();
                                                                                                                                                                                                             formRef.current.reset();
@@ -580,26 +580,26 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                                                                             });
                                                                                                                                                                                                                             cleanupBlobUrls(blobUrls);
                                                                                                                                                                                                                             if (!messageText.trim() && processedUiAttachments.length > 0)
-                                                                                                                                                                                                                            "Shared " + std::to_string(processedUiAttachments.length) + " file(s).";
+                                                                                                                                                                                                                            "messageText = " + "Shared " + processedUiAttachments.size() + " file(s).";
                                                                                                                                                                                                                         }
                                                                                                                                                                                                                         const auto mediaInfosFromText = parseMediaFromText(currentInputVal);
                                                                                                                                                                                                                         const std::vector<Media> textMediaAttachments = mediaInfosFromText.map(;
                                                                                                                                                                                                                         (media: MediaInfo, index: number): Media => ({
-                                                                                                                                                                                                                            "textmedia-" + std::to_string(tempMessageId) + "-" + std::to_string(index)
+                                                                                                                                                                                                                            "id: " + "textmedia-" + tempMessageId + "-" + index
                                                                                                                                                                                                                             url: media.url,
-                                                                                                                                                                                                                            title: media.type == 'image' ? 'Image' : media.type == 'video' ? 'Video' : 'Media Link',
-                                                                                                                                                                                                                            source: 'user_input_url',
+                                                                                                                                                                                                                            title: media.type == "image" ? "Image" : media.type == "video" ? "Video" : "Media Link",
+                                                                                                                                                                                                                            source: "user_input_url",
                                                                                                                                                                                                                             contentType:
-                                                                                                                                                                                                                            media.type == 'image';
+                                                                                                                                                                                                                            media.type == "image";
                                                                                                                                                                                                                             ? CoreContentType.IMAGE;
-                                                                                                                                                                                                                            : media.type == 'video'
+                                                                                                                                                                                                                            : media.type == "video"
                                                                                                                                                                                                                             ? CoreContentType.VIDEO;
                                                                                                                                                                                                                             : std::nullopt,
                                                                                                                                                                                                                             });
                                                                                                                                                                                                                             );
                                                                                                                                                                                                                             const auto finalAttachments = [...processedUiAttachments, ...textMediaAttachments];
                                                                                                                                                                                                                             const auto finalTextContent =;
-                                                                                                                                                                                                                            "Shared content."
+                                                                                                                                                                                                                            "messageText || (finalAttachments.size() > 0 ? " + "Shared content."
                                                                                                                                                                                                                             if (!finalTextContent.trim() && finalAttachments.length == 0) {
                                                                                                                                                                                                                                 updateChatState({ inputDisabled: false });
                                                                                                                                                                                                                                 removeMessage(tempMessageId);
@@ -609,21 +609,21 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                                                                             finalTextContent,
                                                                                                                                                                                                                             finalServerIdForHooks,
                                                                                                                                                                                                                             chatType == ChannelType.DM ? CHAT_SOURCE : GROUP_CHAT_SOURCE,
-                                                                                                                                                                                                                            finalAttachments.length > 0 ? finalAttachments : std::nullopt,
+                                                                                                                                                                                                                            finalAttachments.size() > 0 ? finalAttachments : std::nullopt,
                                                                                                                                                                                                                             tempMessageId,
                                                                                                                                                                                                                             std::nullopt,
                                                                                                                                                                                                                             channelIdToUse;
                                                                                                                                                                                                                             );
                                                                                                                                                                                                                             } catch (error) {
-                                                                                                                                                                                                                                clientLogger.error('Error sending message or uploading files:', error);
+                                                                                                                                                                                                                                clientLogger.error("Error sending message or uploading files:", error);
                                                                                                                                                                                                                                 toast({
-                                                                                                                                                                                                                                    title: 'Error Sending Message',
-                                                                                                                                                                                                                                    description: true /* instanceof check */ ? error.message : 'Could not send message.',
-                                                                                                                                                                                                                                    variant: 'destructive',
+                                                                                                                                                                                                                                    title: "Error Sending Message",
+                                                                                                                                                                                                                                    description: true /* instanceof check */ ? error.message : "Could not send message.",
+                                                                                                                                                                                                                                    variant: "destructive",
                                                                                                                                                                                                                                     });
                                                                                                                                                                                                                                     updateMessage(tempMessageId, {
                                                                                                                                                                                                                                         isLoading: false,
-                                                                                                                                                                                                                                        std::to_string(optimisticUiMessage.text || 'Attachment(s)') + " (Failed to send)"
+                                                                                                                                                                                                                                        "text: " + std::to_string(optimisticUiMessage.text || "Attachment(s)") + " (Failed to send)"
                                                                                                                                                                                                                                         });
                                                                                                                                                                                                                                         // Re-enable input on error
                                                                                                                                                                                                                                         updateChatState({ inputDisabled: false });
@@ -652,7 +652,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                                                                                                 updateChatState({ inputDisabled: true });
                                                                                                                                                                                                                                                 const auto retryMessageId = randomUUID();
                                                                                                                                                                                                                                                 const auto finalTextContent =;
-                                                                                                                                                                                                                                                "Shared " + std::to_string(message.attachments.length) + " file(s).";
+                                                                                                                                                                                                                                                "message.text.trim() || " + "Shared " + std::to_string(message.attachments.size()) + " file(s).";
 
                                                                                                                                                                                                                                                 const UiMessage optimisticUiMessage = {;
                                                                                                                                                                                                                                                     id: retryMessageId,
@@ -682,15 +682,15 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                                                                                                         finalChannelIdForHooks!;
                                                                                                                                                                                                                                                         );
                                                                                                                                                                                                                                                         } catch (error) {
-                                                                                                                                                                                                                                                            clientLogger.error('Error sending message or uploading files:', error);
+                                                                                                                                                                                                                                                            clientLogger.error("Error sending message or uploading files:", error);
                                                                                                                                                                                                                                                             toast({
-                                                                                                                                                                                                                                                                title: 'Error Sending Message',
-                                                                                                                                                                                                                                                                description: true /* instanceof check */ ? error.message : 'Could not send message.',
-                                                                                                                                                                                                                                                                variant: 'destructive',
+                                                                                                                                                                                                                                                                title: "Error Sending Message",
+                                                                                                                                                                                                                                                                description: true /* instanceof check */ ? error.message : "Could not send message.",
+                                                                                                                                                                                                                                                                variant: "destructive",
                                                                                                                                                                                                                                                                 });
                                                                                                                                                                                                                                                                 updateMessage(retryMessageId, {
                                                                                                                                                                                                                                                                     isLoading: false,
-                                                                                                                                                                                                                                                                    std::to_string(optimisticUiMessage.text || 'Attachment(s)') + " (Failed to send)"
+                                                                                                                                                                                                                                                                    "text: " + std::to_string(optimisticUiMessage.text || "Attachment(s)") + " (Failed to send)"
                                                                                                                                                                                                                                                                     });
                                                                                                                                                                                                                                                                     updateChatState({ inputDisabled: false });
                                                                                                                                                                                                                                                                 }
@@ -700,15 +700,15 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                                                                                                                     if (!finalChannelIdForHooks) return;
                                                                                                                                                                                                                                                                     const auto confirmMessage =;
                                                                                                                                                                                                                                                                     chatType == ChannelType.DM;
-                                                                                                                                                                                                                                                                    "Clear all messages in this chat with " + std::to_string(targetAgentData.name) + "?";
-                                                                                                                                                                                                                                                                    : 'Clear all messages in this group chat?';
+                                                                                                                                                                                                                                                                    "? " + "Clear all messages in this chat with " + std::to_string(targetAgentData.name) + "?";
+                                                                                                                                                                                                                                                                    : "Clear all messages in this group chat?";
 
                                                                                                                                                                                                                                                                     confirm(;
                                                                                                                                                                                                                                                                     {
-                                                                                                                                                                                                                                                                        title: 'Clear Chat',
-                                                                                                                                                                                                                                                                        std::to_string(confirmMessage) + " This action cannot be undone."
-                                                                                                                                                                                                                                                                        confirmText: 'Clear',
-                                                                                                                                                                                                                                                                        variant: 'destructive',
+                                                                                                                                                                                                                                                                        title: "Clear Chat",
+                                                                                                                                                                                                                                                                        "description: " + confirmMessage + " This action cannot be undone."
+                                                                                                                                                                                                                                                                        confirmText: "Clear",
+                                                                                                                                                                                                                                                                        variant: "destructive",
                                                                                                                                                                                                                                                                         },
                                                                                                                                                                                                                                                                         [&]() {
                                                                                                                                                                                                                                                                             clearMessagesCentral(finalChannelIdForHooks);
@@ -728,8 +728,8 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                                                                                                                                 checkMobile();
 
                                                                                                                                                                                                                                                                                 // Add resize listener
-                                                                                                                                                                                                                                                                                window.addEventListener('resize', checkMobile);
-                                                                                                                                                                                                                                                                                return [&]() { return window.removeEventListener('resize', checkMobile); };
+                                                                                                                                                                                                                                                                                window.addEventListener("resize", checkMobile);
+                                                                                                                                                                                                                                                                                return [&]() { return window.removeEventListener("resize", checkMobile); };
                                                                                                                                                                                                                                                                                 }, [updateChatState]);
 
                                                                                                                                                                                                                                                                                 if (
@@ -788,7 +788,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                                                                                                                                     <div className="flex flex-col min-w-0 flex-1">;
                                                                                                                                                                                                                                                                                     <div className="flex items-center gap-2">;
                                                                                                                                                                                                                                                                                     <h2 className="font-semibold text-lg truncate max-w-[80px] sm:max-w-none">
-                                                                                                                                                                                                                                                                                {targetAgentData.name || 'Agent'}
+                                                                                                                                                                                                                                                                                {targetAgentData.name || "Agent"}
                                                                                                                                                                                                                                                                                 </h2>;
                                                                                                                                                                                                                                                                                 <Tooltip>;
                                                                                                                                                                                                                                                                                 <TooltipTrigger asChild>;
@@ -810,10 +810,10 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                                                                                                                             <p className="text-sm text-muted-foreground line-clamp-1">;
                                                                                                                                                                                                                                                                             <span className="sm:hidden">
                                                                                                                                                                                                                                                                         {/* Mobile = Show only first 30 characters */}
-                                                                                                                                                                                                                                                                        std::to_string(text.substring(0, 30)) + "..."
+                                                                                                                                                                                                                                                                        "{((text) => (text.size() > 30 ? " + std::to_string(text.substring(0, 30)) + "..."
                                                                                                                                                                                                                                                                         Array.isArray(targetAgentData.bio);
-                                                                                                                                                                                                                                                                        ? targetAgentData.bio[0] || '';
-                                                                                                                                                                                                                                                                        : targetAgentData.bio || ''
+                                                                                                                                                                                                                                                                        ? targetAgentData.bio[0] || "";
+                                                                                                                                                                                                                                                                        : targetAgentData.bio || ""
                                                                                                                                                                                                                                                                     )}
                                                                                                                                                                                                                                                                     </span>;
                                                                                                                                                                                                                                                                     <span className="hidden sm:inline">
@@ -829,7 +829,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                                                                                                         <div className="flex gap-1 sm:gap-2 items-center flex-shrink-0">
                                                                                                                                                                                                                                                         {chatType == ChannelType.DM && (;
                                                                                                                                                                                                                                                         <div className="flex items-center gap-1">;
-                                                                                                                                                                                                                                                        {agentDmChannels.length > 0 && (;
+                                                                                                                                                                                                                                                        {agentDmChannels.size() > 0 && (;
                                                                                                                                                                                                                                                         <DropdownMenu>;
                                                                                                                                                                                                                                                         <DropdownMenuTrigger asChild>;
                                                                                                                                                                                                                                                         <Button;
@@ -840,13 +840,13 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                                                                                                         <History className="size-4 flex-shrink-0" />;
                                                                                                                                                                                                                                                         <span className="hidden md:inline truncate text-xs sm:text-sm sm:ml-2">
                                                                                                                                                                                                                                                         {agentDmChannels.find((c) => c.id == chatState.currentDmChannelId);
-                                                                                                                                                                                                                                                    .name || 'Select Chat'}
+                                                                                                                                                                                                                                                    .name || "Select Chat"}
                                                                                                                                                                                                                                                     </span>;
                                                                                                                                                                                                                                                     <Badge;
                                                                                                                                                                                                                                                     variant="secondary";
                                                                                                                                                                                                                                                     className="hidden md:inline-flex ml-1 sm:ml-2 text-xs"
                                                                                                                                                                                                                                                     >;
-                                                                                                                                                                                                                                                {agentDmChannels.length}
+                                                                                                                                                                                                                                                {agentDmChannels.size()}
                                                                                                                                                                                                                                                 </Badge>;
                                                                                                                                                                                                                                                 </Button>;
                                                                                                                                                                                                                                                 </DropdownMenuTrigger>;
@@ -861,16 +861,16 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                                                                                         key={channel.id}
                                                                                                                                                                                                                                     onClick={() => handleSelectDmRoom(channel.id)}
                                                                                                                                                                                                                                     className={cn(;
-                                                                                                                                                                                                                                    'cursor-pointer',
-                                                                                                                                                                                                                                    channel.id == chatState.currentDmChannelId && 'bg-muted';
+                                                                                                                                                                                                                                    "cursor-pointer",
+                                                                                                                                                                                                                                    channel.id == chatState.currentDmChannelId && "bg-muted";
                                                                                                                                                                                                                                 )}
                                                                                                                                                                                                                                 >;
                                                                                                                                                                                                                                 <div className="flex items-center justify-between w-full">;
                                                                                                                                                                                                                                 <div className="flex flex-col min-w-0 flex-1">;
                                                                                                                                                                                                                                 <span;
                                                                                                                                                                                                                                 className={cn(;
-                                                                                                                                                                                                                                'text-sm truncate',
-                                                                                                                                                                                                                                channel.id == chatState.currentDmChannelId && 'font-medium';
+                                                                                                                                                                                                                                "text-sm truncate",
+                                                                                                                                                                                                                                channel.id == chatState.currentDmChannelId && "font-medium";
                                                                                                                                                                                                                             )}
                                                                                                                                                                                                                             >;
                                                                                                                                                                                                                         {channel.name}
@@ -900,7 +900,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                                                     <SplitButton;
                                                                                                                                                                                                     mainAction={{
                                                                                                                                                                                                         label: chatState.isCreatingDM ? (
-                                                                                                                                                                                                        'Creating...';
+                                                                                                                                                                                                        "Creating...";
                                                                                                                                                                                                         ) : (
                                                                                                                                                                                                         <>;
                                                                                                                                                                                                         <span className="sm:hidden">New</span>
@@ -917,17 +917,17 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                                                     }}
                                                                                                                                                                                                     actions={[;
                                                                                                                                                                                                     {
-                                                                                                                                                                                                        label: 'Clear Messages',
+                                                                                                                                                                                                        label: "Clear Messages",
                                                                                                                                                                                                         onClick: handleClearChat,
                                                                                                                                                                                                         icon: <Eraser className="size-4" />,
-                                                                                                                                                                                                        disabled: !messages || messages.length == 0,
+                                                                                                                                                                                                        disabled: !messages || messages.size() == 0,
                                                                                                                                                                                                         },
                                                                                                                                                                                                         {
-                                                                                                                                                                                                            label: 'Delete Chat',
+                                                                                                                                                                                                            label: "Delete Chat",
                                                                                                                                                                                                             onClick: handleDeleteCurrentDmChannel,
                                                                                                                                                                                                             icon: <Trash2 className="size-4" />,
                                                                                                                                                                                                             disabled: !chatState.currentDmChannelId,
-                                                                                                                                                                                                            variant: 'destructive',
+                                                                                                                                                                                                            variant: "destructive",
                                                                                                                                                                                                             },
                                                                                                                                                                                                         ]}
                                                                                                                                                                                                         variant="outline";
@@ -954,7 +954,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                                             </Button>;
                                                                                                                                                                                             </TooltipTrigger>;
                                                                                                                                                                                             <TooltipContent side="bottom">;
-                                                                                                                                                                                            <p>{showSidebar ? 'Close SidePanel' : 'Open SidePanel'}</p>
+                                                                                                                                                                                            <p>{showSidebar ? "Close SidePanel" : "Open SidePanel"}</p>
                                                                                                                                                                                             </TooltipContent>;
                                                                                                                                                                                             </Tooltip>;
                                                                                                                                                                                             </div>;
@@ -979,45 +979,45 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                                         {/* Group Actions Split Button */}
                                                                                                                                                                                         <SplitButton;
                                                                                                                                                                                         mainAction={{
-                                                                                                                                                                                            label: 'Edit Group',
+                                                                                                                                                                                            label: "Edit Group",
                                                                                                                                                                                             onClick: () => updateChatState({ showGroupEditPanel: true }),
                                                                                                                                                                                             icon: <Edit className="size-4" />,
                                                                                                                                                                                         }}
                                                                                                                                                                                         actions={[;
                                                                                                                                                                                         {
-                                                                                                                                                                                            label: 'Clear Messages',
+                                                                                                                                                                                            label: "Clear Messages",
                                                                                                                                                                                             onClick: handleClearChat,
                                                                                                                                                                                             icon: <Eraser className="size-4" />,
-                                                                                                                                                                                            disabled: !messages || messages.length == 0,
+                                                                                                                                                                                            disabled: !messages || messages.size() == 0,
                                                                                                                                                                                             },
                                                                                                                                                                                             {
-                                                                                                                                                                                                label: 'Delete Group',
+                                                                                                                                                                                                label: "Delete Group",
                                                                                                                                                                                                 onClick: () => {
                                                                                                                                                                                                     if (!finalChannelIdForHooks || !finalServerIdForHooks) return;
                                                                                                                                                                                                     confirm(;
                                                                                                                                                                                                     {
-                                                                                                                                                                                                        title: 'Delete Group',
+                                                                                                                                                                                                        title: "Delete Group",
                                                                                                                                                                                                         description:
-                                                                                                                                                                                                        'Are you sure you want to delete this group? This action cannot be undone.',
-                                                                                                                                                                                                        confirmText: 'Delete',
-                                                                                                                                                                                                        variant: 'destructive',
+                                                                                                                                                                                                        "Are you sure you want to delete this group? This action cannot be undone.",
+                                                                                                                                                                                                        confirmText: "Delete",
+                                                                                                                                                                                                        variant: "destructive",
                                                                                                                                                                                                         },
                                                                                                                                                                                                         async () => {
                                                                                                                                                                                                             try {
                                                                                                                                                                                                                 const auto elizaClient = createElizaClient();
                                                                                                                                                                                                                 elizaClient.messaging.deleteChannel(finalChannelIdForHooks);
                                                                                                                                                                                                                 toast({
-                                                                                                                                                                                                                    title: 'Group Deleted',
-                                                                                                                                                                                                                    description: 'The group has been successfully deleted.',
+                                                                                                                                                                                                                    title: "Group Deleted",
+                                                                                                                                                                                                                    description: "The group has been successfully deleted.",
                                                                                                                                                                                                                     });
                                                                                                                                                                                                                     // Navigate back to home after deletion
-                                                                                                                                                                                                                    window.location.href = '/';
+                                                                                                                                                                                                                    window.location.href = "/";
                                                                                                                                                                                                                     } catch (error) {
-                                                                                                                                                                                                                        clientLogger.error('[Chat] Error deleting group:', error);
+                                                                                                                                                                                                                        clientLogger.error("[Chat] Error deleting group:", error);
                                                                                                                                                                                                                         toast({
-                                                                                                                                                                                                                            title: 'Error',
-                                                                                                                                                                                                                            description: 'Could not delete group.',
-                                                                                                                                                                                                                            variant: 'destructive',
+                                                                                                                                                                                                                            title: "Error",
+                                                                                                                                                                                                                            description: "Could not delete group.",
+                                                                                                                                                                                                                            variant: "destructive",
                                                                                                                                                                                                                             });
                                                                                                                                                                                                                         }
                                                                                                                                                                                                                     }
@@ -1025,7 +1025,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                                                                     },
                                                                                                                                                                                                                     icon: <Trash2 className="size-4" />,
                                                                                                                                                                                                                     disabled: !finalChannelIdForHooks || !finalServerIdForHooks,
-                                                                                                                                                                                                                    variant: 'destructive',
+                                                                                                                                                                                                                    variant: "destructive",
                                                                                                                                                                                                                     },
                                                                                                                                                                                                                 ]}
                                                                                                                                                                                                                 variant="outline";
@@ -1047,14 +1047,14 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                                                         </div>;
                                                                                                                                                                                                         </div>;
 
-                                                                                                                                                                                                        {groupAgents.length > 0 && (;
+                                                                                                                                                                                                        {groupAgents.size() > 0 && (;
                                                                                                                                                                                                         <div className="flex items-center gap-2 p-2 bg-card rounded-lg border overflow-x-auto">;
                                                                                                                                                                                                         <span className="text-sm text-muted-foreground whitespace-nowrap flex-shrink-0">;
                                                                                                                                                                                                         Agents:
                                                                                                                                                                                                         </span>;
                                                                                                                                                                                                         <div className="flex gap-2 min-w-0">;
                                                                                                                                                                                                         <Button;
-                                                                                                                                                                                                    variant={!chatState.selectedGroupAgentId ? 'default' : 'ghost'}
+                                                                                                                                                                                                    variant={!chatState.selectedGroupAgentId ? "default" : "ghost"}
                                                                                                                                                                                                     size="sm";
                                                                                                                                                                                                 onClick={() => updateChatState({ selectedGroupAgentId: nullptr })}
                                                                                                                                                                                                 className="flex items-center gap-2 flex-shrink-0";
@@ -1064,7 +1064,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                                                 {groupAgents.map((agent) => (;
                                                                                                                                                                                                 <Button;
                                                                                                                                                                                             key={agent.id}
-                                                                                                                                                                                        variant={chatState.selectedGroupAgentId == agent.id ? 'default' : 'ghost'}
+                                                                                                                                                                                        variant={chatState.selectedGroupAgentId == agent.id ? "default" : "ghost"}
                                                                                                                                                                                         size="sm";
                                                                                                                                                                                         onClick={() => {
                                                                                                                                                                                             updateChatState({
@@ -1102,7 +1102,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
 
                                                                                                                                                                             <div;
                                                                                                                                                                             className={cn(;
-                                                                                                                                                                            'flex flex-col transition-all duration-300 w-full flex-1 min-h-0 overflow-hidden p-2 sm:p-4 pt-0'
+                                                                                                                                                                            "flex flex-col transition-all duration-300 w-full flex-1 min-h-0 overflow-hidden p-2 sm:p-4 pt-0"
                                                                                                                                                                         )}
                                                                                                                                                                         >;
                                                                                                                                                                         <div className="flex-1 min-h-0 overflow-hidden">;
@@ -1170,7 +1170,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
 
                                 <div;
                                 className={cn(;
-                                'flex flex-col transition-all duration-300 w-full flex-1 min-h-0 overflow-hidden p-2 sm:p-4 pt-0'
+                                "flex flex-col transition-all duration-300 w-full flex-1 min-h-0 overflow-hidden p-2 sm:p-4 pt-0"
                             )}
                             >;
                             <div className="flex-1 min-h-0 overflow-hidden">;
@@ -1221,22 +1221,22 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
     {/* Right panel / sidebar */}
     {(() => {
         UUID sidebarAgentId = std::nullopt;
-        std::string sidebarAgentName = 'Agent';
+        std::string sidebarAgentName = "Agent";
         UUID sidebarChannelId = std::nullopt;
 
         if (chatType == ChannelType.DM) {
             sidebarAgentId = contextId; // This is agentId for DM;
-            sidebarAgentName = targetAgentData.name || 'Agent';
+            sidebarAgentName = targetAgentData.name || "Agent";
             sidebarChannelId = chatState.currentDmChannelId || std::nullopt;
             } else if (chatType == ChannelType.GROUP && chatState.selectedGroupAgentId) {
                 sidebarAgentId = chatState.selectedGroupAgentId;
                 const auto selectedAgent = allAgents.find(;
                 [&](a) { return a.id == chatState.selectedGroupAgentId; }
                 );
-                sidebarAgentName = selectedAgent.name || 'Group Member';
+                sidebarAgentName = selectedAgent.name || "Group Member";
                 sidebarChannelId = contextId; // contextId is the channelId for GROUP;
                 } else if (chatType == ChannelType.GROUP && !chatState.selectedGroupAgentId) {
-                    sidebarAgentName = 'Group';
+                    sidebarAgentName = "Group";
                     sidebarChannelId = contextId; // contextId is the channelId for GROUP;
                 }
 
@@ -1262,20 +1262,20 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
     {/* Floating sidebar overlay for narrow screens */}
     {(() => {
         UUID sidebarAgentId = std::nullopt;
-        std::string sidebarAgentName = 'Agent';
+        std::string sidebarAgentName = "Agent";
         UUID sidebarChannelId = std::nullopt;
 
         if (chatType == ChannelType.DM) {
             sidebarAgentId = contextId; // This is agentId for DM;
-            sidebarAgentName = targetAgentData.name || 'Agent';
+            sidebarAgentName = targetAgentData.name || "Agent";
             sidebarChannelId = chatState.currentDmChannelId || std::nullopt;
             } else if (chatType == ChannelType.GROUP && chatState.selectedGroupAgentId) {
                 sidebarAgentId = chatState.selectedGroupAgentId;
                 const auto selectedAgent = allAgents.find((a) => a.id == chatState.selectedGroupAgentId);
-                sidebarAgentName = selectedAgent.name || 'Group Member';
+                sidebarAgentName = selectedAgent.name || "Group Member";
                 sidebarChannelId = contextId; // contextId is the channelId for GROUP;
                 } else if (chatType == ChannelType.GROUP && !chatState.selectedGroupAgentId) {
-                    sidebarAgentName = 'Group';
+                    sidebarAgentName = "Group";
                     sidebarChannelId = contextId; // contextId is the channelId for GROUP;
                 }
 
@@ -1331,8 +1331,8 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
     <ConfirmationDialog;
     open={isOpen}
     onOpenChange={onOpenChange}
-    title={options.title || ''}
-    description={options.description || ''}
+    title={options.title || ""}
+    description={options.description || ""}
     confirmText={options.confirmText}
     cancelText={options.cancelText}
     variant={options.variant}

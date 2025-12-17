@@ -1,10 +1,14 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <chrono>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -21,7 +25,7 @@ struct Log {
     UUID entityId;
     std::optional<UUID> roomId;
     std::string type;
-    Date createdAt;
+    std::chrono::system_clock::time_point createdAt;
 };
 
 /**
@@ -143,7 +147,7 @@ struct UnifiedMemoryOptions {
  * (e.g., a connection pool object for PostgreSQL, a client instance for a NoSQL database).
  * This `unknown` type serves as a placeholder in the abstract `IDatabaseAdapter`.
  */
-using DbConnection = unknown;
+using DbConnection = std::any;
 
 // Allowable vector dimensions
 

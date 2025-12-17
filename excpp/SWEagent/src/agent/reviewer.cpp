@@ -9,11 +9,11 @@ std::variant<ScoreRetryLoop, ChooserRetryLoop> getRetryLoopFromConfig(RetryLoopC
     try {
 
         switch (config.type) {
-            case 'score':
+            // case "score":
             return new ScoreRetryLoop(config, problemStatement);
-            case 'chooser':
+            // case "chooser":
             return new ChooserRetryLoop(config, problemStatement);
-            default:
+            // default:
             throw std::runtime_error(`Unknown retry loop type: ${(config as RetryLoopConfig).type}`);
         }
 

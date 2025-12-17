@@ -1,10 +1,13 @@
 #pragma once
+#include <algorithm>
+#include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -45,14 +48,14 @@ struct TokenQueryParams {
     double page;
     double limit;
     std::optional<TokenStatus> status;
-    std::optional<std::variant<0, 1>> hideImported;
+    std::optional<int> hideImported;
     std::optional<std::string> creator;
     std::optional<std::string> search;
     SortBy sortBy;
     SortOrder sortOrder;
 };
 
-std::string parseSolanaAddress(unknown raw, auto name);
+std::string parseSolanaAddress(const std::any& raw, auto name);
 
 
 } // namespace elizaos

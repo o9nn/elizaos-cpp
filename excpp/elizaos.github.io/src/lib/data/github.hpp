@@ -1,10 +1,14 @@
 #pragma once
+#include <algorithm>
+#include <chrono>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "types.hpp"
 
@@ -39,7 +43,7 @@ struct FetchOptions {
 struct RateLimitInfo {
     double limit;
     double remaining;
-    Date resetAt;
+    std::chrono::system_clock::time_point resetAt;
     std::optional<double> cost;
 };
 

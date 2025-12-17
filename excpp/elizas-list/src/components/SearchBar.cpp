@@ -35,7 +35,7 @@ void SearchBar() {
     <div;
     className="p-4 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
     onClick={() => {
-        "/projects/" + std::to_string(hit.objectID);
+        "router.push_back(" + "/projects/" + hit.objectID;
         setIsOpen(false);
     }}
     >;

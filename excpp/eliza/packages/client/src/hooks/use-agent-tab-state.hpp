@@ -1,10 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -16,7 +18,7 @@ namespace elizaos {
 
 // Key for storing agent tab states in localStorage
 
-using TabValue = std::variant<std::string, std::string, std::string, std::string, std::string>;
+using TabValue = std::string;
 
 struct AgentTabStates {
 };

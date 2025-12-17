@@ -7,7 +7,7 @@ namespace elizaos {
 void setupHttpPolyfill() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    std::cout << '[HTTP-POLYFILL] Setting up http module polyfills for ws compatibility' << std::endl;
+    std::cout << "[HTTP-POLYFILL] Setting up http module polyfills for ws compatibility" << std::endl;
 
     // Ensure http module is available globally
     if (typeof globalThis != 'undefined') {
@@ -20,74 +20,74 @@ void setupHttpPolyfill() {
     // Ensure STATUS_CODES exists
     if (!http.STATUS_CODES) {
         (http).STATUS_CODES = {
-            100: 'Continue',
-            101: 'Switching Protocols',
-            102: 'Processing',
-            103: 'Early Hints',
-            200: 'OK',
-            201: 'Created',
-            202: 'Accepted',
-            203: 'Non-Authoritative Information',
-            204: 'No Content',
-            205: 'Reset Content',
-            206: 'Partial Content',
-            207: 'Multi-Status',
-            208: 'Already Reported',
-            226: 'IM Used',
-            300: 'Multiple Choices',
-            301: 'Moved Permanently',
-            302: 'Found',
-            303: 'See Other',
-            304: 'Not Modified',
-            305: 'Use Proxy',
-            307: 'Temporary Redirect',
-            308: 'Permanent Redirect',
-            400: 'Bad Request',
-            401: 'Unauthorized',
-            402: 'Payment Required',
-            403: 'Forbidden',
-            404: 'Not Found',
-            405: 'Method Not Allowed',
-            406: 'Not Acceptable',
-            407: 'Proxy Authentication Required',
-            408: 'Request Timeout',
-            409: 'Conflict',
-            410: 'Gone',
-            411: 'Length Required',
-            412: 'Precondition Failed',
-            413: 'Payload Too Large',
-            414: 'URI Too Long',
-            415: 'Unsupported Media Type',
-            416: 'Range Not Satisfiable',
-            417: 'Expectation Failed',
+            100: "Continue",
+            101: "Switching Protocols",
+            102: "Processing",
+            103: "Early Hints",
+            200: "OK",
+            201: "Created",
+            202: "Accepted",
+            203: "Non-Authoritative Information",
+            204: "No Content",
+            205: "Reset Content",
+            206: "Partial Content",
+            207: "Multi-Status",
+            208: "Already Reported",
+            226: "IM Used",
+            300: "Multiple Choices",
+            301: "Moved Permanently",
+            302: "Found",
+            303: "See Other",
+            304: "Not Modified",
+            305: "Use Proxy",
+            307: "Temporary Redirect",
+            308: "Permanent Redirect",
+            400: "Bad Request",
+            401: "Unauthorized",
+            402: "Payment Required",
+            403: "Forbidden",
+            404: "Not Found",
+            405: "Method Not Allowed",
+            406: "Not Acceptable",
+            407: "Proxy Authentication Required",
+            408: "Request Timeout",
+            409: "Conflict",
+            410: "Gone",
+            411: "Length Required",
+            412: "Precondition Failed",
+            413: "Payload Too Large",
+            414: "URI Too Long",
+            415: "Unsupported Media Type",
+            416: "Range Not Satisfiable",
+            417: "Expectation Failed",
             418: "I'm a teapot",
-            421: 'Misdirected Request',
-            422: 'Unprocessable Entity',
-            423: 'Locked',
-            424: 'Failed Dependency',
-            425: 'Too Early',
-            426: 'Upgrade Required',
-            428: 'Precondition Required',
-            429: 'Too Many Requests',
-            431: 'Request Header Fields Too Large',
-            451: 'Unavailable For Legal Reasons',
-            500: 'Internal Server Error',
-            501: 'Not Implemented',
-            502: 'Bad Gateway',
-            503: 'Service Unavailable',
-            504: 'Gateway Timeout',
-            505: 'HTTP Version Not Supported',
-            506: 'Variant Also Negotiates',
-            507: 'Insufficient Storage',
-            508: 'Loop Detected',
-            510: 'Not Extended',
-            511: 'Network Authentication Required',
+            421: "Misdirected Request",
+            422: "Unprocessable Entity",
+            423: "Locked",
+            424: "Failed Dependency",
+            425: "Too Early",
+            426: "Upgrade Required",
+            428: "Precondition Required",
+            429: "Too Many Requests",
+            431: "Request Header Fields Too Large",
+            451: "Unavailable For Legal Reasons",
+            500: "Internal Server Error",
+            501: "Not Implemented",
+            502: "Bad Gateway",
+            503: "Service Unavailable",
+            504: "Gateway Timeout",
+            505: "HTTP Version Not Supported",
+            506: "Variant Also Negotiates",
+            507: "Insufficient Storage",
+            508: "Loop Detected",
+            510: "Not Extended",
+            511: "Network Authentication Required",
             };
         }
 
         // Patch require to ensure http module is returned
         try {
-            const auto Module = require('module');
+            const auto Module = require("module");
             const auto originalRequire = Module.prototype.require;
 
             Module.prototype.require = function (id: string) {
@@ -97,44 +97,44 @@ void setupHttpPolyfill() {
                 return originalRequire.apply(this, arguments);
                 };
                 } catch (e) {
-                    std::cout << '[HTTP-POLYFILL] Could not patch require:' << e << std::endl;
+                    std::cout << "[HTTP-POLYFILL] Could not patch require:" << e << std::endl;
                 }
 
-                std::cout << '[HTTP-POLYFILL] ✅ HTTP module polyfills loaded successfully' << std::endl;
+                std::cout << "[HTTP-POLYFILL] ✅ HTTP module polyfills loaded successfully" << std::endl;
 
 }
 
 void setupDOMPolyfills() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    std::cout << '[DOM-POLYFILL] Setting up comprehensive DOM polyfills with professional DOMMatrix' << std::endl;
+    std::cout << "[DOM-POLYFILL] Setting up comprehensive DOM polyfills with professional DOMMatrix" << std::endl;
 
     // Collect all available global contexts safely
     const std::any contexts = [];
     try {
         if (typeof globalThis != 'undefined') {
-            contexts.push(globalThis);
+            contexts.push_back(globalThis);
         }
         } catch (_e) {
             /* ignore */
         }
         try {
             if (typeof global != 'undefined') {
-                contexts.push(global);
+                contexts.push_back(global);
             }
             } catch (_e) {
                 /* ignore */
             }
             try {
                 if (typeof window != 'undefined') {
-                    contexts.push(window);
+                    contexts.push_back(window);
                 }
                 } catch (_e) {
                     /* ignore */
                 }
                 try {
                     if (typeof self != 'undefined') {
-                        contexts.push(self);
+                        contexts.push_back(self);
                     }
                     } catch (_e) {
                         /* ignore */
@@ -165,14 +165,14 @@ void setupDOMPolyfills() {
                                     this.height = height || 0;
                                     this.data = new Uint8ClampedArray((dataOrWidth || 0) * (height || 0) * 4);
                                 }
-                                this.colorSpace = 'srgb';
+                                this.colorSpace = "srgb";
                             }
                         }
 
                         class Path2DPolyfill {
                             path: any;
                             constructor(path) {
-                                this.path = path || '';
+                                this.path = path || "";
                             }
                         addPath() {}
                     arc() {}
@@ -217,18 +217,18 @@ void setupDOMPolyfills() {
                     transform: () => {},
                     setTransform: () => {},
                     canvas: this,
-                    fillStyle: '#000000',
-                    strokeStyle: '#000000',
+                    fillStyle: "#000000",
+                    strokeStyle: "#000000",
                     globalAlpha: 1.0,
                     lineWidth: 1.0,
-                    font: '10px sans-serif',
+                    font: "10px sans-serif",
                     };
                 }
                 return nullptr;
             }
 
             toDataURL() {
-                return 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
+                return "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==";
             }
         }
 
@@ -258,36 +258,36 @@ void setupDOMPolyfills() {
                             querySelectorAll: () => [],
                             addEventListener: () => {},
                             removeEventListener: () => {},
-                            visibilityState: 'visible',
+                            visibilityState: "visible",
                             };
                         }
                     }
                 }
 
-                std::cout << '[DOM-POLYFILL] ✅ All DOM polyfills loaded successfully' << std::endl;
-                std::cout << '[DOM-POLYFILL] - Professional DOMMatrix from @thednp/dommatrix' << std::endl;
+                std::cout << "[DOM-POLYFILL] ✅ All DOM polyfills loaded successfully" << std::endl;
+                std::cout << "[DOM-POLYFILL] - Professional DOMMatrix from @thednp/dommatrix" << std::endl;
                 std::cout << '[DOM-POLYFILL] - ImageData << Path2D << HTMLCanvasElement polyfills' << std::endl;
-                std::cout << '[DOM-POLYFILL] - Basic document polyfill' << std::endl;
+                std::cout << "[DOM-POLYFILL] - Basic document polyfill" << std::endl;
 
 }
 
 void fixHttpForWebSocket() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto httpModule = require('node:http');
+    const auto httpModule = require("node:http");
 
     // Create a comprehensive STATUS_CODES object
     const auto STATUS_CODES = {;
-        100: 'Continue',
-        101: 'Switching Protocols',
-        200: 'OK',
-        400: 'Bad Request',
-        401: 'Unauthorized',
-        403: 'Forbidden',
-        404: 'Not Found',
-        426: 'Upgrade Required',
-        500: 'Internal Server Error',
-        503: 'Service Unavailable',
+        100: "Continue",
+        101: "Switching Protocols",
+        200: "OK",
+        400: "Bad Request",
+        401: "Unauthorized",
+        403: "Forbidden",
+        404: "Not Found",
+        426: "Upgrade Required",
+        500: "Internal Server Error",
+        503: "Service Unavailable",
         };
 
         // Ensure STATUS_CODES exists on the http module
@@ -305,7 +305,7 @@ void fixHttpForWebSocket() {
             (globalThis).http = httpWithStatusCodes;
 
             // Override require to always return our patched http
-            const auto Module = require('module');
+            const auto Module = require("module");
             const auto originalRequire = Module.prototype.require;
             Module.prototype.require = function (id: string) {
                 if (id == 'http' || id == 'node:http') {
@@ -314,7 +314,7 @@ void fixHttpForWebSocket() {
                 return originalRequire.apply(this, arguments);
                 };
 
-                std::cout << '[WS-HTTP-FIX] ✅ HTTP module patched for WebSocket compatibility' << std::endl;
+                std::cout << "[WS-HTTP-FIX] ✅ HTTP module patched for WebSocket compatibility" << std::endl;
 
 }
 

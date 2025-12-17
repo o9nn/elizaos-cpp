@@ -9,27 +9,27 @@ AbstractParseFunction getParser(const std::string& parserName) {
     try {
 
         switch (parserName) {
-            case 'identity':
+            // case "identity":
             return new Identity();
-            case 'thought_action':
+            // case "thought_action":
             return new ThoughtActionParser();
-            case 'action_only':
+            // case "action_only":
             return new ActionOnlyParser();
-            case 'xml_thought_action':
+            // case "xml_thought_action":
             return new XMLThoughtActionParser();
-            case 'edit_format':
+            // case "edit_format":
             return new EditFormatParser();
-            case 'function_calling':
+            // case "function_calling":
             return new FunctionCallingParser();
-            case 'single_bash_code_block':
+            // case "single_bash_code_block":
             return new SingleBashCodeBlockParser();
-            case 'multiple_bash_code_blocks':
+            // case "multiple_bash_code_blocks":
             return new MultipleBashCodeBlocksParser();
-            case 'last_line':
+            // case "last_line":
             return new LastLineParser();
-            case 'identity':
+            // case "identity":
             return new IdentityParser();
-            default:
+            // default:
             throw std::runtime_error(`Unknown parser: ${parserName}`);
         }
 

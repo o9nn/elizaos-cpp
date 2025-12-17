@@ -1,11 +1,14 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
 #include "audio-capture-stream.hpp"
@@ -46,7 +49,7 @@ public:
     void startProcessing();
     void startFrameProcessing();
     std::future<void> captureAndProcessFrame();
-    std::future<VisionFrame> processFrameData(Buffer data);
+    std::future<VisionFrame> processFrameData(const std::vector<uint8_t>& data);
     std::future<double> calculatePixelChange(VisionFrame frame1, VisionFrame frame2);
     std::future<void> updateSceneDescription(VisionFrame frame, double changePercentage);
     std::future<std::string> describeSceneWithVLM(const std::string& imageUrl);
@@ -80,11 +83,11 @@ public:
     CameraDevice createCameraDevice(CameraInfo info);
     std::variant<Promise<Buffer, null>> captureImage();
     std::future<void> processMediaStream(std::optional<std::any> data);
-    std::variant<Promise<VisionFrame, null>> decodeVideoFrame(Uint8Array data, std::optional<std::string> encoding);
+    std::variant<Promise<VisionFrame, null>> decodeVideoFrame(const std::vector<uint8_t>& data, std::optional<std::string> encoding);
     std::future<void> processExternalFrame(const std::string& streamKey, VisionFrame frame);
     std::future<void> processAudioTranscriptionQueue();
-    std::variant<Promise<string, null>> transcribeAudioWithWhisper(Buffer audioData);
-    std::future<Buffer> pcmToWav(Buffer pcmData);
+    std::variant<Promise<string, null>> transcribeAudioWithWhisper(const std::vector<uint8_t>& audioData);
+    std::future<std::vector<uint8_t>> pcmToWav(const std::vector<uint8_t>& pcmData);
     std::unordered_map<std::string, std::any> getExternalStreams();
     void clearExternalStream(const std::string& streamKey);
 

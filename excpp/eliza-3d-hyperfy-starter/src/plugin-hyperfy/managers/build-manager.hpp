@@ -1,17 +1,20 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".hyperfy/src/core/extras/appTools.js.hpp"
-#include ".hyperfy/src/core/utils-client.js.hpp"
-#include ".hyperfy/src/core/utils.js.hpp"
-#include ".service.hpp"
-#include ".utils.js.hpp"
 #include "elizaos/core.hpp"
+#include "hyperfy/src/core/extras/appTools.js.hpp"
+#include "hyperfy/src/core/utils-client.js.hpp"
+#include "hyperfy/src/core/utils.js.hpp"
+#include "service.hpp"
+#include "utils.js.hpp"
 
 namespace elizaos {
 

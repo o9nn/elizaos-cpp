@@ -9,7 +9,7 @@ std::future<std::vector<ScannedToken>> scanEvmTokens(const std::string& address,
     try {
 
         try {
-            const auto url = "/api/evm-balances?address=" + std::to_string(address) + "&chain=" + std::to_string(chain) + std::to_string(forceRefresh ? "&refresh=true" : "");
+            const auto url = "/api/evm-balances?address=" + address + "&chain=" + chain + std::to_string(forceRefresh ? "&refresh=true" : "");
             const auto response = fetch(url, {;
                 signal: AbortSignal.timeout(60000), // 60s timeout for initial load
                 });
@@ -61,7 +61,7 @@ std::future<std::vector<ScannedToken>> scanSolanaTokens(const std::string& addre
 
     try {
         // Backend API does everything: balances, metadata, prices in optimized calls
-        const auto url = "/api/solana-balances?address=" + std::to_string(address) + std::to_string(forceRefresh ? "&refresh=true" : "");
+        const auto url = "/api/solana-balances?address=" + address + std::to_string(forceRefresh ? "&refresh=true" : "");
         const auto response = fetch(url, {;
             signal: AbortSignal.timeout(30000), // 30s timeout
             });
@@ -90,7 +90,7 @@ std::future<std::vector<ScannedToken>> scanSolanaTokens(const std::string& addre
                 address: t.mint,
                 symbol: t.symbol || "SPL",
                 name: t.name || "SPL Token",
-                balance: t.amount.toString(),
+                balance: t.std::to_string(amount),
                 decimals: t.decimals,
                 logoUrl: t.logoURI || std::nullopt,
                 chain: "solana",
@@ -109,7 +109,7 @@ std::future<std::unordered_set<std::string>> getRegisteredAddresses(Chain chain)
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
-        const auto response = "/api/tokens?chain=" + std::to_string(chain);
+        const auto response = "fetch(" + "/api/tokens?chain=" + chain;
         const auto data = response.json();
 
         // API returns { success: boolean, tokens: Array<{ contractAddress: string }> }
@@ -181,7 +181,7 @@ std::future<std::unordered_map<Chain, std::vector<ScannedToken>>> scanWalletMult
     const std::vector<std::future<void>> promises = [];
 
     if (evmAddress) {
-        promises.push(;
+        promises.push_back(;
         scanWalletTokens(evmAddress, "base").then((tokens) => {
             results.base = tokens;
             }),
@@ -189,7 +189,7 @@ std::future<std::unordered_map<Chain, std::vector<ScannedToken>>> scanWalletMult
         }
 
         if (solanaAddress) {
-            promises.push(;
+            promises.push_back(;
             scanWalletTokens(solanaAddress, "solana").then((tokens) => {
                 results.solana = tokens;
                 }),

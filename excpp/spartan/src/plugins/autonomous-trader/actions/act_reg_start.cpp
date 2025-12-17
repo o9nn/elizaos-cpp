@@ -7,9 +7,9 @@ namespace elizaos {
 void generateRandomString(auto length) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    auto result = '';
-    const auto charsLength = chars.length;
+    const auto chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    auto result = "";
+    const auto charsLength = chars.size();
 
     for (int i = 0; i < length; i++) {
         result += chars.charAt(Math.floor(Math.random() * charsLength));
@@ -31,19 +31,19 @@ void extractEmails(auto text) {
 std::future<void> sendVerifyEmail(auto address, auto regCode) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    std::cout << 'sending verify email to' << address << std::endl;
+    std::cout << "sending verify email to" << address << std::endl;
     const auto mailOptions = {;
         from: process.env.SMTP_FROM,
         to: address,
-        subject: 'Welcome to Spartan Services',
+        subject: "Welcome to Spartan Services",
         //text: 'Please click the following link to verify you are the owner of this email and continue registration'
-        text: 'Please give Spartan the following code: ' + regCode
+        text: "Please give Spartan the following code: " + regCode
         };
         try {
             const auto info = transporter.sendMail(mailOptions);
-            std::cout << 'Email sent:' << info.envelope << std::endl;
+            std::cout << "Email sent:" << info.envelope << std::endl;
             } catch (error) {
-                std::cerr << 'Error sending email:' << error << std::endl;
+                std::cerr << "Error sending email:" << error << std::endl;
             }
 
 }

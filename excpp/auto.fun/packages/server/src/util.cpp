@@ -55,7 +55,7 @@ std::future<void> getTxIdAndCreatorFromTokenAddress(const std::string& tokenAddr
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        std::cout << "tokenAddress: " + std::to_string(tokenAddress) << std::endl;
+        std::cout << "tokenAddress: " + tokenAddress << std::endl;
 
         // Get a Solana config with the right environment
         const auto solanaConfig = initSolanaConfig();
@@ -67,7 +67,7 @@ std::future<void> getTxIdAndCreatorFromTokenAddress(const std::string& tokenAddr
 
         if (transactionHistory.length > 0) {
             const auto tokenCreationTxId =;
-            transactionHistory[transactionHistory.length - 1].signature;
+            transactionHistory[transactionHistory.size() - 1].signature;
             const auto transactionDetails =;
             solanaConfig.connection.getTransaction(tokenCreationTxId);
 
@@ -105,7 +105,7 @@ std::future<std::optional<Token>> createNewTokenData(const std::string& txId, co
             solanaConfig.umi,
             tokenAddress;
             );
-            std::cout << "Fetched metadata for token " + std::to_string(tokenAddress) + ":" << std::endl;
+            std::cout << "Fetched metadata for token " + tokenAddress + ":" << std::endl;
 
             const auto [bondingCurvePda] = PublicKey.findProgramAddressSync(;
             [Buffer.from(SEED_BONDING_CURVE), new PublicKey(tokenAddress).toBytes()],
@@ -128,7 +128,7 @@ std::future<std::optional<Token>> createNewTokenData(const std::string& txId, co
                 additionalMetadata = (response.json());
                 } catch (error) {
                     logger.error(
-                    "Failed to fetch IPFS metadata from URI: " + std::to_string(metadata.metadata.uri)
+                    "Failed to fetch IPFS metadata from URI: " + metadata.metadata.uri
                     error;
                     );
                 }
@@ -140,7 +140,7 @@ std::future<std::optional<Token>> createNewTokenData(const std::string& txId, co
 
                 if (!bondingCurveAccount) {
                     throw new Error(
-                    "Bonding curve account not found for token " + std::to_string(tokenAddress);
+                    "Bonding curve account not found for token " + tokenAddress;
                     );
                 }
                 std::cout << "bondingCurveAccount" << bondingCurveAccount << std::endl;
@@ -224,7 +224,7 @@ std::future<std::optional<Token>> createNewTokenData(const std::string& txId, co
                     holderCount: 0,
                     marketId: nullptr,
                     txId,
-                    tokenSupply: tokenSupply.toString(),
+                    tokenSupply: std::to_string(tokenSupply),
                     tokenSupplyUiAmount: tokenSupply / Math.pow(10, TOKEN_DECIMALS),
                     tokenDecimals: TOKEN_DECIMALS,
                     lastSupplyUpdate: new Date(),
@@ -276,7 +276,7 @@ std::vector<std::string> splitIntoLines(std::optional<std::string> text) {
     return text;
     .split("\n");
     .map((line) => line.trim().replace("\n", ""));
-    .filter((line) => line.length > 0);
+    .filter((line) => line.size() > 0);
 
 }
 
@@ -287,11 +287,11 @@ std::future<void> getFeaturedMaxValues(const std::any& db) {
     try {
         const auto maxValues = db;
         .select({
-            "MAX(COALESCE(" + std::to_string(tokens.volume24h) + ", 0))"
-            "MAX(COALESCE(" + std::to_string(tokens.holderCount) + ", 0))"
+            "maxVolume: sql" + "MAX(COALESCE(" + tokens.volume24h + ", 0))"
+            "maxHolders: sql" + "MAX(COALESCE(" + tokens.holderCount + ", 0))"
             });
             .from(tokens);
-            std::to_string(tokens.status) + " != 'pending'";
+            ".where(sql" + tokens.status + " != "pending"";
 
             // Extract max values, default to 1 to avoid division by zero
             return {
@@ -313,10 +313,10 @@ void getFeaturedScoreExpression(double maxVolume, double maxHolders) {
     const auto normalizedMaxHolders = maxHolders || 1;
 
     // Return the weighted score SQL expression
-    return sql`(;
+    return "sql";
     (COALESCE(${tokens.volume24h}, 0) / ${normalizedMaxVolume} * 0.7) +;
     (COALESCE(${tokens.holderCount}, 0) / ${normalizedMaxHolders} * 0.3);
-    )`;
+    ")";
 
 }
 

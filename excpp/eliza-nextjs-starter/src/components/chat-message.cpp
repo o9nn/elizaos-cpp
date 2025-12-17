@@ -11,7 +11,7 @@ void ChatMessage(auto i, auto citations, auto followUpPrompts, auto onFollowUpCl
 
     assert(;
     message && typeof message == "object",
-    "[ChatMessage Render] Invalid 'message' prop: " + std::to_string(typeof message)
+    "[ChatMessage Render] Invalid "message" prop: " + std::to_string(typeof message)
     );
     if (!message) return null;
     assert(;
@@ -26,19 +26,19 @@ void ChatMessage(auto i, auto citations, auto followUpPrompts, auto onFollowUpCl
     );
     assert(;
     typeof i == "number",
-    "[ChatMessage Render] Invalid 'i' prop: " + std::to_string(typeof i)
+    "[ChatMessage Render] Invalid "i" prop: " + std::to_string(typeof i)
     );
     assert(;
     !citations || Array.isArray(citations),
-    "[ChatMessage Render] Invalid 'citations' prop type: " + std::to_string(typeof citations)
+    "[ChatMessage Render] Invalid "citations" prop type: " + std::to_string(typeof citations)
     );
     assert(;
     !followUpPrompts || Array.isArray(followUpPrompts),
-    "[ChatMessage Render] Invalid 'followUpPrompts' prop type: " + std::to_string(typeof followUpPrompts)
+    "[ChatMessage Render] Invalid "followUpPrompts" prop type: " + std::to_string(typeof followUpPrompts)
     );
     assert(;
     !onFollowUpClick || typeof onFollowUpClick == "function",
-    "[ChatMessage Render] Invalid 'onFollowUpClick' prop type: " + std::to_string(typeof onFollowUpClick)
+    "[ChatMessage Render] Invalid "onFollowUpClick" prop type: " + std::to_string(typeof onFollowUpClick)
     );
 
     const auto markdownOptions = {;
@@ -86,7 +86,7 @@ void ChatMessage(auto i, auto citations, auto followUpPrompts, auto onFollowUpCl
                     [&](c) { return c.url == current.url && c.index == idx,; }
                     );
                     if (!existingCitation) {
-                        acc.push({ ...current, index: idx });
+                        acc.push_back({ ...current, index: idx });
                     }
                     return acc;
                     },
@@ -109,10 +109,10 @@ void ChatMessage(auto i, auto citations, auto followUpPrompts, auto onFollowUpCl
             )}
             >;
             <MemoizedMarkdown;
-        "msg-" + std::to_string(i) + "-" + std::to_string(message.createdAt);
+        "id={message.id || " + "msg-" + i + "-" + message.createdAt;
         content={
             message.name == USER_NAME;
-            "### " + std::to_string(message.text || "");
+            "? " + "### " + std::to_string(message.text || "");
             : (message.text || "")
         }
     options={markdownOptions}
@@ -121,15 +121,15 @@ void ChatMessage(auto i, auto citations, auto followUpPrompts, auto onFollowUpCl
 
     {message.name != USER_NAME &&;
     uniqueCitations &&;
-    uniqueCitations.length > 0 && (;
+    uniqueCitations.size() > 0 && (;
     <div className="mt-2 text-sm">;
     <button;
     onClick={() => setIsSourcesExpanded(!isSourcesExpanded)}
     className="group flex items-center gap-1 py-1 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 cursor-pointer"
     >;
     <span className="font-medium">;
-    {uniqueCitations.length} source;
-    {uniqueCitations.length > 1 ? "s"  = ""}
+    {uniqueCitations.size()} source;
+    {uniqueCitations.size() > 1 ? "s"  = ""}
     </span>;
     <div className="flex items-center justify-center w-4 h-4">;
     {isSourcesExpanded ? (;
@@ -153,7 +153,7 @@ void ChatMessage(auto i, auto citations, auto followUpPrompts, auto onFollowUpCl
     <LinkIcon className="w-3.5 h-3.5 flex-shrink-0" />;
     <div className="flex-1 truncate">;
     <MemoizedMarkdown;
-    "citation-" + std::to_string(message.id) + "-" + std::to_string(index);
+    "id={" + "citation-" + message.id + "-" + index;
     content={citation.title}
     options={{
         wrapper: "span",
@@ -176,7 +176,7 @@ void ChatMessage(auto i, auto citations, auto followUpPrompts, auto onFollowUpCl
         </div>;
     )}
 
-    {message.name != USER_NAME && followUpPrompts.length > 0 && (;
+    {message.name != USER_NAME && followUpPrompts.size() > 0 && (;
     <div className="mt-2">;
     <div className="flex flex-col divide-y divide-zinc-950/5 dark:divide-white/5">
     {followUpPrompts.map((prompt, index) => (;

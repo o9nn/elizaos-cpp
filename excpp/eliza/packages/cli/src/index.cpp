@@ -14,7 +14,7 @@ std::future<void> main() {
 
     // Check for --no-auto-install flag early (before command parsing)
     if (process.argv.includes('--no-auto-install')) {
-        process.env.ELIZA_NO_AUTO_INSTALL = 'true';
+        process.env.ELIZA_NO_AUTO_INSTALL = "true";
     }
 
     // For ESM modules we need to use import.meta.url instead of __dirname
@@ -22,20 +22,20 @@ std::future<void> main() {
     const auto __dirname = dirname(__filename);
 
     // Find package.json relative to the current file
-    const auto packageJsonPath = path.resolve(__dirname, '../package.json');
+    const auto packageJsonPath = path.resolve(__dirname, "../package.json");
 
     // Add a simple check in case the path is incorrect
-    auto version = '0.0.0'; // Fallback version;
+    auto version = "0.0.0"; // Fallback version;
     if (!existsSync(packageJsonPath)) {
         } else {
-            const auto packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
+            const auto packageJson = /* JSON.parse */ readFileSync(packageJsonPath, "utf-8");
             version = packageJson.version;
         }
 
         // Check for built-in flags that exit early (before preAction hook runs)
         const auto args = process.argv.slice(2);
-        const auto isUpdateCommand = args.includes('update');
-        const auto willShowBanner = args.length == 0;
+        const auto isUpdateCommand = (std::find(args.begin(), args.end(), "update") != args.end());
+        const auto willShowBanner = args.size() == 0;
 
         // Show update notification for all commands except:
         // - when banner will show (it handles its own notification)
@@ -46,10 +46,10 @@ std::future<void> main() {
         }
 
         const auto program = new Command();
-        .name('elizaos');
-        .version(version, '-v, --version', 'output the version number');
-        .option('--no-emoji', 'Disable emoji output');
-        .option('--no-auto-install', 'Disable automatic Bun installation');
+        .name("elizaos");
+        .version(version, "-v, --version", "output the version number");
+        .option("--no-emoji", "Disable emoji output");
+        .option("--no-auto-install", "Disable automatic Bun installation");
 
         // Add global options but hide them from global help
         // They will still be passed to all commands for backward compatibility

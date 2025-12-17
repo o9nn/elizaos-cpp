@@ -1,13 +1,16 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".templates/index.js.hpp"
 #include "elizaos/core.hpp"
+#include "templates/index.js.hpp"
 
 namespace elizaos {
 

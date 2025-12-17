@@ -40,14 +40,14 @@ std::future<std::any> getGhIssueData(const std::string& issueUrl, std::string to
     const auto { owner, repo, issueNumber } = parseGhIssueUrl(issueUrl);
 
     const std::unordered_map<std::string, std::string> headers = {;
-        Accept: 'application/vnd.github.v3+json',
+        Accept: "application/vnd.github.v3+json",
         };
 
         if (token) {
-            "token " + std::to_string(token);
+            "headers["Authorization"] = " + "token " + token;
         }
 
-        const auto response = "https://api.github.com/repos/" + std::to_string(owner) + "/" + std::to_string(repo) + "/issues/" + std::to_string(issueNumber);
+        const auto response = "axios.get(" + "https://api.github.com/repos/" + owner + "/" + repo + "/issues/" + issueNumber;
 
         return response.data;
 
@@ -57,17 +57,17 @@ std::future<std::string> getProblemStatementFromGithubIssue(const std::string& o
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const std::unordered_map<std::string, std::string> headers = {;
-        Accept: 'application/vnd.github.v3+json',
+        Accept: "application/vnd.github.v3+json",
         };
 
         if (token) {
-            "token " + std::to_string(token);
+            "headers["Authorization"] = " + "token " + token;
         }
 
-        const auto response = "https://api.github.com/repos/" + std::to_string(owner) + "/" + std::to_string(repo) + "/issues/" + std::to_string(issueNumber);
+        const auto response = "axios.get(" + "https://api.github.com/repos/" + owner + "/" + repo + "/issues/" + issueNumber;
 
         const auto issue = response.data;
-        return std::to_string(issue.title) + "\n\n" + std::to_string(issue.body || '');
+        return issue.title + "\n\n" + std::to_string(issue.body || "");
 
 }
 
@@ -75,22 +75,22 @@ std::future<std::vector<std::string>> getAssociatedCommitUrls(const std::string&
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const std::unordered_map<std::string, std::string> headers = {;
-        Accept: 'application/vnd.github.v3+json',
+        Accept: "application/vnd.github.v3+json",
         };
 
         if (token) {
-            "token " + std::to_string(token);
+            "headers["Authorization"] = " + "token " + token;
         }
 
         // Get events for the issue
-        const auto response = "https://api.github.com/repos/" + std::to_string(org) + "/" + std::to_string(repo) + "/issues/" + std::to_string(issueNumber) + "/events";
+        const auto response = "axios.get(" + "https://api.github.com/repos/" + org + "/" + repo + "/issues/" + issueNumber + "/events";
             headers,
             });
 
             const std::vector<std::string> commitUrls = [];
             for (const auto& event : response.data)
                 if (event.event == 'referenced' && event.commit_id) {
-                    "https://github.com/" + std::to_string(org) + "/" + std::to_string(repo) + "/commit/" + std::to_string(event.commit_id)
+                    "commitUrls.push_back(" + "https://github.com/" + org + "/" + repo + "/commit/" + event.commit_id
                 }
             }
 

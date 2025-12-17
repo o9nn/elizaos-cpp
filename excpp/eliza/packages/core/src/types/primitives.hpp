@@ -1,9 +1,13 @@
 #pragma once
+#include <algorithm>
+#include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -64,6 +68,6 @@ enum ContentType {
  * A generic type for metadata objects, allowing for arbitrary key-value pairs.
  * This encourages consumers to perform type checking or casting.
  */
-using Metadata = std::unordered_map<std::string, unknown>;
+using Metadata = std::unordered_map<std::string, std::any>;
 
 } // namespace elizaos

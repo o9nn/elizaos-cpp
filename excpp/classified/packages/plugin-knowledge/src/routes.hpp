@@ -1,11 +1,14 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "elizaos/core.hpp"
 #include "service.hpp"
@@ -35,7 +38,7 @@ struct MulterFile {
     std::string destination;
     std::string filename;
     std::string path;
-    Buffer buffer;
+    std::vector<uint8_t> buffer;
 };
 
 // Helper to send success response

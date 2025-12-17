@@ -8,11 +8,11 @@ std::future<std::vector<std::string>> fetchWalletTokens() {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        const auto connection = new Connection('https://api.mainnet-beta.solana.com', 'confirmed');
+        const auto connection = new Connection("https://api.mainnet-beta.solana.com", "confirmed");
         const auto walletPubkey = new PublicKey(TARGET_WALLET);
 
         try {
-            std::cout << 'Fetching token accounts...' << std::endl;
+            std::cout << "Fetching token accounts..." << std::endl;
             const auto tokenAccounts = connection.getParsedTokenAccountsByOwner(walletPubkey, {;
                 programId: TOKEN_PROGRAM_ID,
                 });
@@ -28,10 +28,10 @@ std::future<std::vector<std::string>> fetchWalletTokens() {
                         return parsedAccount.data.parsed.info.mint;
                         });
 
-                        std::cout << "Found " + std::to_string(tokenAddresses.length) + " tokens with non-zero balance" << std::endl;
+                        std::cout << "Found " + tokenAddresses.size() + " tokens with non-zero balance" << std::endl;
                         return tokenAddresses;
                         } catch (error) {
-                            std::cerr << 'Error fetching wallet tokens:' << error << std::endl;
+                            std::cerr << "Error fetching wallet tokens:" << error << std::endl;
                             throw;
                         }
 
@@ -49,11 +49,11 @@ std::future<DexScreenerResponse> fetchDexScreenerData(const std::vector<std::str
 
     for (int i = 0; i < tokenAddresses.length; i += BATCH_SIZE) {
         const auto batch = tokenAddresses.slice(i, i + BATCH_SIZE);
-        const auto url = "https://api.dexscreener.com/latest/dex/tokens/" + std::to_string(batch.join(','));
+        const auto url = "https://api.dexscreener.com/latest/dex/tokens/" + std::to_string(batch.join(","));
 
         try {
             const auto response = axios.get<DexScreenerResponse>(url);
-            batches.push(response.data);
+            batches.push_back(response.data);
             new Promise(resolve => setTimeout(resolve, 200));
             } catch (error) {
                 std::cerr << "Error fetching batch " + std::to_string(i/BATCH_SIZE + 1) + ":" << error << std::endl;
@@ -61,7 +61,7 @@ std::future<DexScreenerResponse> fetchDexScreenerData(const std::vector<std::str
         }
 
         return {
-            schemaVersion: batches[0].schemaVersion || '',
+            schemaVersion: batches[0].schemaVersion || "",
             pairs: batches.flatMap(batch => batch.pairs || [])
             };
 
@@ -89,7 +89,7 @@ std::future<std::optional<TokenAnalysis>> fetchTokenAnalysis(const std::string& 
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
-        const auto url = "https://api.dexscreener.com/latest/dex/pairs/solana/" + std::to_string(address);
+        const auto url = "https://api.dexscreener.com/latest/dex/pairs/solana/" + address;
         const auto response = axios.get(url);
         const auto pair = response.data.pair;
 
@@ -107,7 +107,7 @@ std::future<std::optional<TokenAnalysis>> fetchTokenAnalysis(const std::string& 
                 }));
                 };
                 } catch (error) {
-                    std::cerr << "Error fetching analysis for " + std::to_string(address) + ":" << error << std::endl;
+                    std::cerr << "Error fetching analysis for " + address + ":" << error << std::endl;
                     return nullptr;
                 }
 
@@ -117,15 +117,15 @@ std::future<void> main() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
-        const auto connection = new Connection('https://api.mainnet-beta.solana.com', 'confirmed');
+        const auto connection = new Connection("https://api.mainnet-beta.solana.com", "confirmed");
         const auto walletPubkey = new PublicKey(TARGET_WALLET);
 
         // Get token balances
-        std::cout << 'Fetching token balances...' << std::endl;
+        std::cout << "Fetching token balances..." << std::endl;
         const auto balances = getTokenBalances(connection, walletPubkey);
 
         // Get market data
-        std::cout << 'Fetching market data...' << std::endl;
+        std::cout << "Fetching market data..." << std::endl;
         const auto tokenAddresses = balances.map(b => b.mint);
         const auto marketData = fetchDexScreenerData(tokenAddresses);
 
@@ -139,7 +139,7 @@ std::future<void> main() {
                 const auto percentageOwned = totalSupply ? (balance.balance / totalSupply) * 100 : 0;
                 const auto usdValue = balance.balance * Number(pair.priceUsd);
 
-                holdings.push({
+                holdings.push_back({
                     address: pair.baseToken.address,
                     balance: balance.balance,
                     decimals: balance.decimals,
@@ -153,20 +153,20 @@ std::future<void> main() {
                 // Sort by USD value
                 const auto sortedHoldings = holdings.sort((a, b) => b.usdValue - a.usdValue);
 
-                std::cout << '\n== Significant Holdings Analysis (≥10% of supply) ==\n' << std::endl;
+                std::cout << "\n== Significant Holdings Analysis (≥10% of supply) ==\n" << std::endl;
 
                 for (const auto& holding : sortedHoldings.filter(h => h.percentageOwned >= 10)
                     const auto pair = holding.marketData;
                     const auto analysis = fetchTokenAnalysis(pair.pairAddress);
 
-                    std::cout << "Token: " + std::to_string(pair.baseToken.name) + " (" + std::to_string(pair.baseToken.symbol) + ")" << std::endl;
-                    std::cout << "Address: " + std::to_string(pair.baseToken.address) << std::endl;
+                    std::cout << "Token: " + pair.baseToken.name + " (" + pair.baseToken.symbol + ")" << std::endl;
+                    std::cout << "Address: " + pair.baseToken.address << std::endl;
                     std::cout << "Balance: " + std::to_string(holding.balance.toLocaleString()) + " tokens" << std::endl;
                     std::cout << "USD Value: $" + std::to_string(holding.usdValue.toLocalestd::to_string(std::nullopt, {maximumFractionDigits: 2})) << std::endl;
                     std::cout << "Percentage Owned: " + std::to_string(holding.percentageOwned.toFixed(2)) + "%" << std::endl;
 
-                    std::cout << '\nPrice Metrics:' << std::endl;
-                    std::cout << "Current Price: $" + std::to_string(pair.priceUsd) << std::endl;
+                    std::cout << "\nPrice Metrics:" << std::endl;
+                    std::cout << "Current Price: $" + pair.priceUsd << std::endl;
                     if (analysis) {
                         std::cout << "24h Change: " + std::to_string(analysis.priceChange24h.toFixed(2)) + "%" << std::endl;
                         std::cout << "24h Volume: $" + std::to_string(analysis.volumeAvg24h.toLocaleString()) << std::endl;
@@ -177,10 +177,10 @@ std::future<void> main() {
                         std::cout << "Volume/MCap Ratio: " + std::to_string((volumeToMcap * 100).toFixed(2)) + "%" << std::endl;
                     }
 
-                    std::cout << '\nLiquidity Metrics:' << std::endl;
-                    std::cout << "Market Cap: $" + std::to_string(pair.marketCap.toLocaleString() || 'N/A') << std::endl;
-                    std::cout << "FDV: $" + std::to_string(pair.fdv.toLocaleString() || 'N/A') << std::endl;
-                    std::cout << "Liquidity: $" + std::to_string(pair.liquidity.usd.toLocaleString() || 'N/A') << std::endl;
+                    std::cout << "\nLiquidity Metrics:" << std::endl;
+                    std::cout << "Market Cap: $" + std::to_string(pair.marketCap.toLocaleString() || "N/A") << std::endl;
+                    std::cout << "FDV: $" + std::to_string(pair.fdv.toLocaleString() || "N/A") << std::endl;
+                    std::cout << "Liquidity: $" + std::to_string(pair.liquidity.usd.toLocaleString() || "N/A") << std::endl;
 
                     // Calculate liquidity ratio
                     if (pair.marketCap && pair.liquidity.usd) {
@@ -189,21 +189,21 @@ std::future<void> main() {
                     }
 
                     if (analysis.timeSeries && analysis.timeSeries.length > 0) {
-                        std::cout << '\nRecent Price Action:' << std::endl;
+                        std::cout << "\nRecent Price Action:" << std::endl;
                         const auto last24h = analysis.timeSeries.slice(0, 24).reverse();
-                        const auto timeframes = ['1h', '4h', '12h', '24h'];
+                        const auto timeframes = ["1h", "4h", "12h", "24h"];
 
                         timeframes.forEach(tf => {
                             const auto hours = parseInt(tf);
                             const auto startPrice = last24h[0].price || 0;
                             const auto endPrice = last24h[hours - 1].price || 0;
                             const auto change = ((endPrice - startPrice) / startPrice) * 100;
-                            std::cout << std::to_string(tf) + " Change: " + std::to_string(change.toFixed(2)) + "%" << std::endl;
+                            std::cout << tf + " Change: " + std::to_string(change.toFixed(2)) + "%" << std::endl;
                             });
                         }
 
                         if (pair.info.socials) {
-                            std::cout << '\nSocial Links:' << std::endl;
+                            std::cout << "\nSocial Links:" << std::endl;
                             const auto socialMap = new Map<string, string>();
 
                             pair.info.socials.forEach(social => {
@@ -223,18 +223,18 @@ std::future<void> main() {
                             }
 
                             // Add warning indicators
-                            std::cout << '\nRisk Indicators:' << std::endl;
+                            std::cout << "\nRisk Indicators:" << std::endl;
                             if (holding.percentageOwned > 25) {
-                                std::cout << '⚠️ High ownership concentration (>25%)' << std::endl;
+                                std::cout << "⚠️ High ownership concentration (>25%)" << std::endl;
                             }
                             if (pair.liquidity.usd && pair.liquidity.usd < 50000) {
-                                std::cout << '⚠️ Low liquidity (<$50k)' << std::endl;
+                                std::cout << "⚠️ Low liquidity (<$50k)" << std::endl;
                             }
                             if (analysis.volumeAvg24h && analysis.volumeAvg24h < 10000) {
-                                std::cout << '⚠️ Low trading volume (<$10k/24h)' << std::endl;
+                                std::cout << "⚠️ Low trading volume (<$10k/24h)" << std::endl;
                             }
 
-                            std::cout << '\n-------------------\n' << std::endl;
+                            std::cout << "\n-------------------\n" << std::endl;
 
                             // Add a small delay between API calls
                             new Promise(resolve => setTimeout(resolve, 200));
@@ -244,18 +244,18 @@ std::future<void> main() {
                         const auto totalValue = sortedHoldings.reduce((sum, h) => sum + h.usdValue, 0);
                         const auto significantHoldings = sortedHoldings.filter(h => h.percentageOwned >= 10);
 
-                        std::cout << '\n== Portfolio Summary ==' << std::endl;
-                        std::cout << "Total Holdings: " + std::to_string(sortedHoldings.length) + " tokens" << std::endl;
+                        std::cout << "\n== Portfolio Summary ==" << std::endl;
+                        std::cout << "Total Holdings: " + sortedHoldings.size() + " tokens" << std::endl;
                         std::cout << "Total Portfolio Value: $" + std::to_string(totalValue.toLocaleString()) << std::endl;
-                        std::cout << "Significant Positions (≥10%): " + std::to_string(significantHoldings.length) << std::endl;
-                        std::cout << "Average Position Size: $" + std::to_string((totalValue / sortedHoldings.length).toLocaleString()) << std::endl;
+                        std::cout << "Significant Positions (≥10%): " + significantHoldings.size() << std::endl;
+                        std::cout << "Average Position Size: $" + std::to_string((totalValue / sortedHoldings.size()).toLocaleString()) << std::endl;
 
                         // Calculate concentration metrics
                         const auto topHoldingsValue = significantHoldings.reduce((sum, h) => sum + h.usdValue, 0);
                         std::cout << "Value in Significant Positions: $" + std::to_string(topHoldingsValue.toLocaleString()) + " (" + std::to_string(((topHoldingsValue/totalValue)*100).toFixed(2)) + "% of portfolio)" << std::endl;
 
                         } catch (error) {
-                            std::cerr << 'Script failed:' << error << std::endl;
+                            std::cerr << "Script failed:" << error << std::endl;
                         }
 
 }

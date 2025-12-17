@@ -9,7 +9,7 @@ void FilterBar(auto onTagSelect) {
 
     const auto [activeCategory, setActiveCategory] = useState<string | nullptr>(nullptr);
     const auto [showAll, setShowAll] = useState(false);
-    const auto [searchQuery, setSearchQuery] = useState('');
+    const auto [searchQuery, setSearchQuery] = useState("");
 
     const auto tagAnalytics = useMemo(() => calculateTagAnalytics(projects), [projects]);
 
@@ -50,12 +50,12 @@ void FilterBar(auto onTagSelect) {
     onClick={() => setActiveCategory(;
     activeCategory == category.id ? nullptr : category.id
     )}
-    className={`;
+    "className={";
     inline-flex items-center gap-2 px-4 py-2 rounded-lg;
     text-sm font-medium transition-colors;
     ${activeCategory == category.id;
-    ? 'bg-blue-600 text-white';
-    : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200'
+    ? "bg-blue-600 text-white";
+    : "bg-gray-100 dark:bg-gray-800 hover:bg-gray-200"
     }
     `}
     >;
@@ -70,7 +70,7 @@ void FilterBar(auto onTagSelect) {
     <TagBadge;
     key={tag}
     tag={tag}
-    selected={selectedTags.includes(tag)}
+    selected={(std::find(selectedTags.begin(), selectedTags.end(), tag) != selectedTags.end())}
     onClick={() => onTagSelect(tag)}
     />;
     ))}

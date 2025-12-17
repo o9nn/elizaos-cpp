@@ -1,11 +1,13 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -15,9 +17,9 @@ namespace elizaos {
 
 // Trader Gainers Losers Types
 struct GainersLosersParams {
-    std::variant<"yesterday", "today", "1W"> type;
+    std::string type;
     "PnL" sort_by;
-    std::variant<"asc", "desc"> sort_type;
+    std::string sort_type;
     std::optional<double> offset;
     std::optional<double> limit;
 };
@@ -36,7 +38,7 @@ struct TraderTransactionsSeekParams {
     std::string address;
     std::optional<double> offset;
     std::optional<double> limit;
-    std::optional<std::variant<"swap", "add", "remove", "all">> tx_type;
+    std::optional<std::string> tx_type;
     std::optional<double> before_time;
     std::optional<double> after_time;
 };
@@ -48,7 +50,7 @@ struct TraderTransactionsSeekResponse {
     std::optional<std::string> address;
     std::optional<double> amount;
     std::optional<std::string> type;
-    std::optional<std::variant<"from", "to">> type_swap;
+    std::optional<std::string> type_swap;
     std::optional<double> ui_amount;
     std::optional<std::optional<double>> price;
     std::optional<double> nearest_price;
@@ -59,7 +61,7 @@ struct TraderTransactionsSeekResponse {
     std::optional<std::string> address;
     std::optional<double> amount;
     std::optional<std::string> type;
-    std::optional<std::variant<"from", "to">> type_swap;
+    std::optional<std::string> type_swap;
     std::optional<std::optional<std::any>> fee_info;
     std::optional<double> ui_amount;
     std::optional<std::optional<double>> price;

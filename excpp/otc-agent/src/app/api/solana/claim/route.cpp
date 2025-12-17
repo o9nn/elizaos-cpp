@@ -41,7 +41,7 @@ std::future<void> POST(NextRequest request) {
         process.cwd(),
         "solana/otc-program/target/idl/otc.json",
         );
-        const auto idl = JSON.parse(fs.readFile(idlPath, "utf8"));
+        const auto idl = /* JSON.parse */ fs.readFile(idlPath, "utf8");
 
         const auto connection = new Connection(SOLANA_RPC, "confirmed");
 
@@ -137,7 +137,7 @@ std::future<void> POST(NextRequest request) {
                                     .signers([deskKeypair]);
                                     .rpc();
 
-                                    std::cout << "[Solana Claim] ✅ Claimed " + std::to_string(offerAddress) << tx: ${tx}` << std::endl;
+                                    std::cout << "[Solana Claim] ✅ Claimed " + offerAddress << "tx: ${tx}" << std::endl;
 
                                     return NextResponse.json({;
                                         success: true,

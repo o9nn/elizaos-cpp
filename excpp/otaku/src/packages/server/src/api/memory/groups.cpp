@@ -12,12 +12,12 @@ express::Router createGroupMemoryRouter(ElizaOS elizaOS, AgentServer serverInsta
         const auto db = serverInstance.database;
 
         // Create group memory spaces for multiple agents
-        router.post('/groups/:serverId', async (req, res) => {
+        router.post("/groups/:serverId", async (req, res) => {
             const auto serverId = validateUuid(req.params.serverId);
             const auto { name, worldId, source, metadata, agentIds = [] } = req.body;
 
             if (!Array.isArray(agentIds) || agentIds.length == 0) {
-                return sendError(res, 400, 'BAD_REQUEST', 'agentIds must be a non-empty array');
+                return sendError(res, 400, "BAD_REQUEST", "agentIds must be a non-empty array");
             }
 
             std::vector<Room> results = [];
@@ -32,7 +32,7 @@ express::Router createGroupMemoryRouter(ElizaOS elizaOS, AgentServer serverInsta
                     try {
                         const auto runtime = getRuntime(elizaOS, agentId);
                         const auto roomId = createUniqueUuid(runtime, serverId);
-                        const auto roomName = "Chat " + std::to_string(new Date().toLocaleString());
+                        const auto roomName = "name || " + "Chat " + std::to_string(new Date().toLocaleString());
 
                         runtime.ensureWorldExists({
                             id: worldId,
@@ -54,30 +54,30 @@ express::Router createGroupMemoryRouter(ElizaOS elizaOS, AgentServer serverInsta
 
                                 runtime.addParticipant(runtime.agentId, roomId);
                                 runtime.ensureParticipantInRoom(runtime.agentId, roomId);
-                                runtime.setParticipantUserState(roomId, runtime.agentId, 'FOLLOWED');
+                                runtime.setParticipantUserState(roomId, runtime.agentId, "FOLLOWED");
 
-                                results.push({
+                                results.push_back({
                                     id: roomId,
                                     name: roomName,
-                                    source: 'client',
+                                    source: "client",
                                     worldId,
                                     type: ChannelType.API,
                                     });
                                     } catch (error) {
                                         logger.error(
-                                        "[ROOM CREATE] Error creating room for agent " + std::to_string(agentId) + ":"
+                                        "[ROOM CREATE] Error creating room for agent " + agentId + ":"
                                         true /* instanceof check */ ? error.message : std::to_string(error)
                                         );
-                                        errors.push({
+                                        errors.push_back({
                                             agentId,
                                             code:
-                                            true /* instanceof check */ && error.message == 'Agent not found';
-                                            ? 'NOT_FOUND';
-                                            : 'CREATE_ERROR',
+                                            true /* instanceof check */ && error.message == "Agent not found";
+                                            ? "NOT_FOUND";
+                                            : "CREATE_ERROR",
                                             message:
-                                            true /* instanceof check */ && error.message == 'Agent not found';
+                                            true /* instanceof check */ && error.message == "Agent not found";
                                             ? error.message;
-                                            : 'Failed to Create group',
+                                            : "Failed to Create group",
                                             details: true /* instanceof check */ ? error.message : std::to_string(error),
                                             });
                                         }
@@ -86,28 +86,28 @@ express::Router createGroupMemoryRouter(ElizaOS elizaOS, AgentServer serverInsta
                                     if (results.length == 0 && errors.length > 0) {
                                         res.status(500).json({
                                             success: false,
-                                            error: errors.length
+                                            error: errors.size()
                                             ? errors;
-                                            : [{ code: 'UNKNOWN_ERROR', message: 'No rooms were created' }],
+                                            : [{ code: "UNKNOWN_ERROR", message: "No rooms were created" }],
                                             });
                                             return;
                                         }
 
-                                        res.status(errors.length ? 207 : 201).json({
-                                            success: errors.length == 0,
+                                        res.status(errors.size() ? 207 : 201).json({
+                                            success: errors.size() == 0,
                                             data: results,
-                                            errors: errors.length ? errors : std::nullopt,
+                                            errors: errors.size() ? errors : std::nullopt,
                                             });
                                             });
 
                                             // Delete group
-                                            router.delete('/groups/:serverId', async (req, res) => {
+                                            router.delete("/groups/:serverId", async (req, res) => {
                                                 const auto worldId = validateUuid(req.params.serverId);
                                                 if (!worldId) {
-                                                    return sendError(res, 400, 'INVALID_ID', 'Invalid serverId (worldId) format');
+                                                    return sendError(res, 400, "INVALID_ID", "Invalid serverId (worldId) format");
                                                 }
                                                 if (!db) {
-                                                    return sendError(res, 500, 'DB_ERROR', 'Database not available');
+                                                    return sendError(res, 500, "DB_ERROR", "Database not available");
                                                 }
 
                                                 try {
@@ -115,31 +115,31 @@ express::Router createGroupMemoryRouter(ElizaOS elizaOS, AgentServer serverInsta
                                                     res.status(204).send();
                                                     } catch (error) {
                                                         logger.error(
-                                                        '[GROUP DELETE] Error deleting group:',
+                                                        "[GROUP DELETE] Error deleting group:",
                                                         true /* instanceof check */ ? error.message : std::to_string(error)
                                                         );
                                                         sendError(;
                                                         res,
                                                         500,
-                                                        'DELETE_ERROR',
-                                                        'Error deleting group',
+                                                        "DELETE_ERROR",
+                                                        "Error deleting group",
                                                         true /* instanceof check */ ? error.message : std::to_string(error)
                                                         );
                                                     }
                                                     });
 
                                                     // Clear group memories
-                                                    router.delete('/groups/:serverId/memories', async (req, res) => {
+                                                    router.delete("/groups/:serverId/memories", async (req, res) => {
                                                         const auto worldId = validateUuid(req.params.serverId);
                                                         if (!worldId) {
-                                                            return sendError(res, 400, 'INVALID_ID', 'Invalid serverId (worldId) format');
+                                                            return sendError(res, 400, "INVALID_ID", "Invalid serverId (worldId) format");
                                                         }
                                                         if (!db) {
-                                                            return sendError(res, 500, 'DB_ERROR', 'Database not available');
+                                                            return sendError(res, 500, "DB_ERROR", "Database not available");
                                                         }
 
                                                         try {
-                                                            const auto memories = db.getMemoriesByWorldId({ worldId, tableName: 'messages' });
+                                                            const auto memories = db.getMemoriesByWorldId({ worldId, tableName: "messages" });
                                                             const auto memoryIds = memories.map((memory) => memory.id);
 
                                                             if (memoryIds.length > 0) {
@@ -149,14 +149,14 @@ express::Router createGroupMemoryRouter(ElizaOS elizaOS, AgentServer serverInsta
                                                             res.status(204).send();
                                                             } catch (error) {
                                                                 logger.error(
-                                                                '[GROUP MEMORIES DELETE] Error clearing memories:',
+                                                                "[GROUP MEMORIES DELETE] Error clearing memories:",
                                                                 true /* instanceof check */ ? error.message : std::to_string(error)
                                                                 );
                                                                 sendError(;
                                                                 res,
                                                                 500,
-                                                                'DELETE_ERROR',
-                                                                'Error deleting group memories',
+                                                                "DELETE_ERROR",
+                                                                "Error deleting group memories",
                                                                 true /* instanceof check */ ? error.message : std::to_string(error)
                                                                 );
                                                             }

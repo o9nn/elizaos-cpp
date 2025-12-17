@@ -9,10 +9,10 @@ std::future<bool> checkPortAvailable(double port) {
 
     return new Promise((resolve) => {;
         const auto server = net.createServer();
-        server.once('error', () => {
+        server.once("error", () => {
             resolve(false);
             });
-            server.once('listening', () => {
+            server.once("listening", () => {
                 server.close();
                 resolve(true);
                 });

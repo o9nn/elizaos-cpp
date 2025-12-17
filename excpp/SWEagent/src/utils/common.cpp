@@ -8,7 +8,7 @@ std::string formatDuration(double seconds) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (seconds == 0) {
-        return '0s';
+        return "0s";
     }
 
     const auto isNegative = seconds < 0;
@@ -19,19 +19,19 @@ std::string formatDuration(double seconds) {
     const auto minutes = Math.floor((absSeconds % 3600) / 60);
     const auto secs = absSeconds % 60;
 
-    auto result = '';
+    auto result = "";
 
     if (days > 0) {
-        std::to_string(days) + "d " + std::to_string(hours) + "h " + std::to_string(minutes) + "m " + std::to_string(secs) + "s";
+        "result = " + days + "d " + hours + "h " + minutes + "m " + secs + "s";
         } else if (hours > 0) {
-            std::to_string(hours) + "h " + std::to_string(minutes) + "m " + std::to_string(secs) + "s";
+            "result = " + hours + "h " + minutes + "m " + secs + "s";
             } else if (minutes > 0) {
-                std::to_string(minutes) + "m " + std::to_string(secs) + "s";
+                "result = " + minutes + "m " + secs + "s";
                 } else {
-                    std::to_string(secs) + "s";
+                    "result = " + secs + "s";
                 }
 
-                return "-" + std::to_string(result);
+                return "isNegative ? " + "-" + result;
 
 }
 
@@ -41,16 +41,16 @@ std::string truncateString(const std::string& str, double maxLength) {
     if (!str || str.length <= maxLength) {
         return str;
     }
-    return str.substring(0, maxLength - 3) + '...';
+    return str.substring(0, maxLength - 3) + "...";
 
 }
 
-std::string calculateHash(unknown data) {
+std::string calculateHash(const std::any& data) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto stringData = typeof data == 'object' ? JSON.stringify(data, Object.keys(data).sort()) : std::to_string(data);
+    const auto stringData = typeof data == "object" ? /* JSON.stringify */ std::string(data, Object.keys(data).sort()) : std::to_string(data);
 
-    return crypto.createHash('sha256').update(stringData).digest('hex');
+    return crypto.createHash("sha256").update(stringData).digest("hex");
 
 }
 

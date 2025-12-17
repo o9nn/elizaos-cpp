@@ -1,10 +1,14 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <chrono>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
 
@@ -55,7 +59,7 @@ using UUID = CoreUUID;
 /**
  * Represents a value that can be stored in a SQLite database, which can be a string, number, or null.
  */
-using SQLiteValue = std::variant<std::string, double, nullptr>;
+using SQLiteValue = std::optional<double>;
 
 /**
  * Type utility for converting TypeScript types to SQLite column types.
@@ -117,8 +121,8 @@ struct RecommenderMetrics {
     double avgTokenPerformance;
     double consistencyScore;
     double trustScore;
-    Date lastUpdated;
-    Date createdAt;
+    std::chrono::system_clock::time_point lastUpdated;
+    std::chrono::system_clock::time_point createdAt;
 };
 
 /**
@@ -131,7 +135,7 @@ struct RecommenderMetrics {
 struct RecommenderMetricsHistory {
     UUID entityId;
     RecommenderMetrics metrics;
-    Date timestamp;
+    std::chrono::system_clock::time_point timestamp;
 };
 
 /**
@@ -186,8 +190,8 @@ struct TokenPerformance {
     std::optional<bool> rapidDump;
     std::optional<bool> suspiciousVolume;
     std::optional<double> validationTrust;
-    std::optional<Date> createdAt;
-    std::optional<Date> updatedAt;
+    std::optional<std::chrono::system_clock::time_point> createdAt;
+    std::optional<std::chrono::system_clock::time_point> updatedAt;
 };
 
 /**
@@ -224,8 +228,8 @@ struct Position {
     std::string walletAddress;
     std::string balance;
     std::string status;
-    Date createdAt;
-    std::optional<Date> closedAt;
+    std::chrono::system_clock::time_point createdAt;
+    std::optional<std::chrono::system_clock::time_point> closedAt;
     bool isSimulation;
     std::string amount;
     std::string initialPrice;
@@ -256,7 +260,7 @@ struct Transaction {
     std::optional<double> liquidity;
     std::string price;
     bool isSimulation;
-    Date timestamp;
+    std::chrono::system_clock::time_point timestamp;
     std::optional<std::string> chain;
     std::optional<std::string> transactionHash;
 };
@@ -335,7 +339,7 @@ struct Trade {
     std::variant<TransactionType::BUY, TransactionType::SELL> type;
     bigint amount;
     bigint price;
-    Date timestamp;
+    std::chrono::system_clock::time_point timestamp;
     std::string txHash;
 };
 

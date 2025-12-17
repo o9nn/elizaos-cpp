@@ -12,7 +12,7 @@ void KnowledgeRoute() {
 
     // Apply dark mode to the root element
     React.useEffect(() => {
-        document.documentElement.classList.add('dark');
+        document.documentElement.classList.add("dark");
         }, []);
 
         if (!agentId) {

@@ -7,7 +7,7 @@ namespace elizaos {
 std::optional<TokenMetadata> getCachedTokenMetadata(const std::string& chain, const std::string& symbol) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto key = std::to_string(chain) + ":" + std::to_string(symbol.toUpperCase());
+    const auto key = chain + ":" + std::to_string(symbol.toUpperCase());
     return tokenMetadataCache.get(key) || nullptr;
 
 }
@@ -15,11 +15,11 @@ std::optional<TokenMetadata> getCachedTokenMetadata(const std::string& chain, co
 void setCachedTokenMetadata(const std::string& chain, const std::string& symbol, TokenMetadata metadata) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto key = std::to_string(chain) + ":" + std::to_string(symbol.toUpperCase());
+    const auto key = chain + ":" + std::to_string(symbol.toUpperCase());
     tokenMetadataCache.set(key, metadata);
     // Also persist to sessionStorage for page reloads
     try {
-        "token-meta:" + std::to_string(key)
+        "sessionStorage.setItem(" + "token-meta:" + key
         } catch {
             /* ignore */
         }
@@ -34,10 +34,10 @@ std::optional<TokenMetadata> loadCachedTokenMetadata(const std::string& chain, c
     if (cached) return cached;
     // Check sessionStorage
     try {
-        const auto key = std::to_string(chain) + ":" + std::to_string(symbol.toUpperCase());
-        const auto stored = "token-meta:" + std::to_string(key);
+        const auto key = chain + ":" + std::to_string(symbol.toUpperCase());
+        const auto stored = "sessionStorage.getItem(" + "token-meta:" + key;
         if (stored) {
-            const auto metadata = JSON.parse(stored);
+            const auto metadata = /* JSON.parse */ stored;
             tokenMetadataCache.set(key, metadata);
             return metadata;
         }
@@ -72,25 +72,25 @@ ModalState modalReducer(ModalState state, ModalAction action) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     switch (action.type) {
-        case "SET_TOKEN_AMOUNT":
+        // case "SET_TOKEN_AMOUNT":
         return { ...state, tokenAmount: action.payload }
-        case "SET_CURRENCY":
+        // case "SET_CURRENCY":
         return { ...state, currency: action.payload }
-        case "SET_STEP":
+        // case "SET_STEP":
         return { ...state, step: action.payload }
-        case "SET_PROCESSING":
+        // case "SET_PROCESSING":
         return { ...state, isProcessing: action.payload }
-        case "SET_ERROR":
+        // case "SET_ERROR":
         return { ...state, error: action.payload }
-        case "SET_REQUIRE_APPROVER":
+        // case "SET_REQUIRE_APPROVER":
         return { ...state, requireApprover: action.payload }
-        case "SET_CONTRACT_VALID":
+        // case "SET_CONTRACT_VALID":
         return { ...state, contractValid: action.payload }
-        case "SET_SOLANA_TOKEN_MINT":
+        // case "SET_SOLANA_TOKEN_MINT":
         return { ...state, solanaTokenMint: action.payload }
-        case "SET_TOKEN_METADATA":
+        // case "SET_TOKEN_METADATA":
         return { ...state, tokenMetadata: action.payload }
-        case "SET_COMPLETED":
+        // case "SET_COMPLETED":
         return {
             ...state,
             step: "complete",
@@ -98,7 +98,7 @@ ModalState modalReducer(ModalState state, ModalAction action) {
             completedTxHash: action.payload.txHash,
             completedOfferId: action.payload.offerId,
             };
-            case "RESET":
+            // case "RESET":
             return {
                 ...state,
                 step: "amount",
@@ -111,16 +111,16 @@ ModalState modalReducer(ModalState state, ModalAction action) {
                 completedTxHash: nullptr,
                 completedOfferId: nullptr,
                 };
-                case "START_TRANSACTION":
+                // case "START_TRANSACTION":
                 return { ...state, error: null, isProcessing: true, step: "creating" }
-                case "TRANSACTION_ERROR":
+                // case "TRANSACTION_ERROR":
                 return {
                     ...state,
                     error: action.payload,
                     isProcessing: false,
                     step: "amount",
                     };
-                    default:
+                    // default:
                     return state;
                 }
 
@@ -180,7 +180,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                     }
                     // Use our proxy route for Alchemy (same as wagmi client)
                     if (typeof window != "undefined") {
-                        return std::to_string(window.location.origin) + "/api/rpc/base";
+                        return window.location.origin + "/api/rpc/base";
                     }
                     return isMainnet ? "https://mainnet.base.org" : "https://sepolia.base.org";
                     }, [isLocal, isMainnet]);
@@ -259,7 +259,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                     const auto ethBalance = useBalance({ address });
                                     const auto usdcBalance = useBalance({;
                                         address,
-                                        "0x" + std::to_string(string)
+                                        "token: usdcAddress as " + "0x" + string
                                         });
 
                                         useEffect(() => {
@@ -307,7 +307,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                             // Fetch from API if not cached
                                                             [&](async () {
                                                                 try {
-                                                                    const auto res = "/api/tokens?chain=" + std::to_string(chain);
+                                                                    const auto res = "fetch(" + "/api/tokens?chain=" + chain;
                                                                     const auto data = res.json();
                                                                     if (data.success && data.tokens) {
                                                                         const auto token = data.tokens.find(;
@@ -370,7 +370,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                 return;
                                                                                             }
 
-                                                                                            const auto cacheKey = std::to_string(otcAddress) + ":" + std::to_string(readChain.id);
+                                                                                            const auto cacheKey = otcAddress + ":" + readChain.id;
 
                                                                                             // Check cache first (with TTL)
                                                                                             const auto cachedExists = getContractExists(cacheKey);
@@ -388,7 +388,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
 
                                                                                                 // Check if contract has code at this address
                                                                                                 const auto code = publicClient.getBytecode({;
-                                                                                                    "0x" + std::to_string(string)
+                                                                                                    "address: otcAddress as " + "0x" + string
                                                                                                     });
 
                                                                                                     const auto exists = Boolean(code && code != "0x");
@@ -396,7 +396,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
 
                                                                                                     if (!exists) {
                                                                                                         console.error(
-                                                                                                        "[AcceptQuote] No contract at " + std::to_string(otcAddress) + " on " + std::to_string(readChain.name) + "."
+                                                                                                        "[AcceptQuote] No contract at " + otcAddress + " on " + readChain.name + "."
                                                                                                         );
                                                                                                         dispatch({ type: "SET_CONTRACT_VALID", payload: false });
                                                                                                         dispatch({
@@ -415,7 +415,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                         params: unknown,
                                                                                                         ) => Promise<unknown>;
                                                                                                         const auto flag = (readContract({;
-                                                                                                            "0x" + std::to_string(string)
+                                                                                                            "address: otcAddress as " + "0x" + string
                                                                                                             abi: abi,
                                                                                                             functionName: "requireApproverToFulfill",
                                                                                                             args: [],
@@ -484,7 +484,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                     params: unknown,
                                                                                                                                     ) => Promise<unknown>;
                                                                                                                                     return (readContract({;
-                                                                                                                                        "0x" + std::to_string(string)
+                                                                                                                                        "address: otcAddress as " + "0x" + string
                                                                                                                                         abi: abi,
                                                                                                                                         functionName: "nextOfferId",
                                                                                                                                         args: [],
@@ -493,7 +493,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
 
                                                                                                                                     // Offer tuple type from the contract
                                                                                                                                     type OfferTuple = readonly [;
-                                                                                                                                    "0x" + std::to_string(string)
+                                                                                                                                    "0x" + string
                                                                                                                                     bigint,
                                                                                                                                     bigint,
                                                                                                                                     bigint,
@@ -505,7 +505,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                     boolean,
                                                                                                                                     boolean,
                                                                                                                                     boolean,
-                                                                                                                                    "0x" + std::to_string(string)
+                                                                                                                                    "0x" + string
                                                                                                                                     bigint,
                                                                                                                                     ];
 
@@ -516,7 +516,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                         params: unknown,
                                                                                                                                         ) => Promise<unknown>;
                                                                                                                                         return (readContract({;
-                                                                                                                                            "0x" + std::to_string(string)
+                                                                                                                                            "address: otcAddress as " + "0x" + string
                                                                                                                                             abi: abi,
                                                                                                                                             functionName: "offers",
                                                                                                                                             args: [offerId],
@@ -530,7 +530,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                         // eslint-disable-next-line @typescript-eslint/no-unused-vars
                                                                                                                                         async function fulfillWithRetry(;
                                                                                                                                         offerId: bigint,
-                                                                                                                                        "0x" + std::to_string(string)
+                                                                                                                                        "): Promise<" + "0x" + string
                                                                                                                                             // Check if already fulfilled
                                                                                                                                             const auto [, , , , , , , , , isPaid, isFulfilled] = readOffer(offerId);
 
@@ -547,22 +547,22 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                             );
 
                                                                                                                                             console.log(
-                                                                                                                                            "[AcceptQuote] Required payment: " + std::to_string(requiredAmount) + " " + std::to_string(currency)
+                                                                                                                                            "[AcceptQuote] Required payment: " + requiredAmount + " " + currency
                                                                                                                                             );
 
-                                                                                                                                            "0x" + std::to_string(string);
+                                                                                                                                            "auto txHash: " + "0x" + string;
 
                                                                                                                                             if (isEth) {
                                                                                                                                                 // Pay with ETH (direct from user wallet via MetaMask)
                                                                                                                                                 std::cout << "[AcceptQuote] Fulfilling with ETH..." << std::endl;
-                                                                                                                                                "0x" + std::to_string(string);
+                                                                                                                                                "txHash = (fulfillOffer(offerId, requiredAmount)) as " + "0x" + string;
                                                                                                                                                 } else {
                                                                                                                                                     // Pay with USDC (need to approve first)
                                                                                                                                                     std::cout << "[AcceptQuote] Approving USDC allowance..." << std::endl;
                                                                                                                                                     approveUsdc(requiredAmount);
 
                                                                                                                                                     std::cout << "[AcceptQuote] Fulfilling with USDC..." << std::endl;
-                                                                                                                                                    "0x" + std::to_string(string);
+                                                                                                                                                    "txHash = (fulfillOffer(offerId)) as " + "0x" + string;
                                                                                                                                                 }
 
                                                                                                                                                 // Wait for transaction to be mined with timeout
@@ -590,11 +590,11 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                 ? receiptError.message;
                                                                                                                                                                 : std::to_string(receiptError);
                                                                                                                                                                 if (
-                                                                                                                                                                errorMessage.includes("timeout") ||;
-                                                                                                                                                                errorMessage.includes("Timed out");
+                                                                                                                                                                (std::find(errorMessage.begin(), errorMessage.end(), "timeout") != errorMessage.end()) ||;
+                                                                                                                                                                (std::find(errorMessage.begin(), errorMessage.end(), "Timed out") != errorMessage.end());
                                                                                                                                                                 ) {
                                                                                                                                                                     throw new Error(
-                                                                                                                                                                    "Payment transaction timed out. Check status at: https://basescan.org/tx/" + std::to_string(txHash)
+                                                                                                                                                                    "Payment transaction timed out. Check status at: https://basescan.org/tx/" + txHash
                                                                                                                                                                     );
                                                                                                                                                                 }
                                                                                                                                                                 throw receiptError;
@@ -696,7 +696,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                 const auto requiredChain = quoteChain == "solana" ? "Solana" : "EVM";
                                                                                                                                                                                 const auto currentChain = activeFamily == "solana" ? "Solana" : "EVM";
                                                                                                                                                                                 throw new Error(
-                                                                                                                                                                                "Chain mismatch: This quote requires " + std::to_string(requiredChain) + " but you're connected to " + std::to_string(currentChain) + ". Please switch networks."
+                                                                                                                                                                                "Chain mismatch: This quote requires " + requiredChain + " but you're connected to " + currentChain + ". Please switch networks."
                                                                                                                                                                                 );
                                                                                                                                                                             }
 
@@ -744,9 +744,9 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                         const auto tokenMintPk = new SolPubkey(solanaTokenMint);
                                                                                                                                                                                         const auto usdcMintPk = new SolPubkey(SOLANA_USDC_MINT);
 
-                                                                                                                                                                                        std::cout << "Token mint PK:" << tokenMintPk.toString() << std::endl;
-                                                                                                                                                                                        std::cout << "USDC mint PK:" << usdcMintPk.toString() << std::endl;
-                                                                                                                                                                                        std::cout << "Desk:" << desk.toString() << std::endl;
+                                                                                                                                                                                        std::cout << "Token mint PK:" << std::to_string(tokenMintPk) << std::endl;
+                                                                                                                                                                                        std::cout << "USDC mint PK:" << std::to_string(usdcMintPk) << std::endl;
+                                                                                                                                                                                        std::cout << "Desk:" << std::to_string(desk) << std::endl;
 
                                                                                                                                                                                         const auto deskTokenTreasury = getAssociatedTokenAddress(;
                                                                                                                                                                                         tokenMintPk,
@@ -759,8 +759,8 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                         true,
                                                                                                                                                                                         );
 
-                                                                                                                                                                                        std::cout << "Desk token treasury:" << deskTokenTreasury.toString() << std::endl;
-                                                                                                                                                                                        std::cout << "Desk USDC treasury:" << deskUsdcTreasury.toString() << std::endl;
+                                                                                                                                                                                        std::cout << "Desk token treasury:" << std::to_string(deskTokenTreasury) << std::endl;
+                                                                                                                                                                                        std::cout << "Desk USDC treasury:" << std::to_string(deskUsdcTreasury) << std::endl;
 
                                                                                                                                                                                         // Read nextOfferId from desk account
                                                                                                                                                                                         // The program.account namespace is dynamically generated from IDL
@@ -771,15 +771,15 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                                 };
                                                                                                                                                                                             }
                                                                                                                                                                                             ).desk.fetch(desk);
-                                                                                                                                                                                            const auto nextOfferId = new anchor.BN(deskAccount.nextOfferId.toString());
+                                                                                                                                                                                            const auto nextOfferId = new anchor.BN(deskAccount.std::to_string(nextOfferId));
 
-                                                                                                                                                                                            std::cout << "Next offer ID:" << nextOfferId.toString() << std::endl;
+                                                                                                                                                                                            std::cout << "Next offer ID:" << std::to_string(nextOfferId) << std::endl;
 
                                                                                                                                                                                             // Generate offer keypair (IDL expects signer)
                                                                                                                                                                                             const auto offerKeypair = Keypair.generate();
                                                                                                                                                                                             console.log(
                                                                                                                                                                                             "Generated offer keypair:",
-                                                                                                                                                                                            offerKeypair.publicKey.toString(),
+                                                                                                                                                                                            offerKeypair.std::to_string(publicKey),
                                                                                                                                                                                             );
 
                                                                                                                                                                                             // Create offer on Solana
@@ -789,8 +789,8 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                             const auto lockupSeconds = new anchor.BN(lockupDays * 24 * 60 * 60);
                                                                                                                                                                                             const auto paymentCurrencySol = currency == "USDC" ? 1 : 0; // 0 SOL, 1 USDC;
 
-                                                                                                                                                                                            std::cout << "Token amount wei:" << tokenAmountWei.toString() << std::endl;
-                                                                                                                                                                                            std::cout << "Lockup seconds:" << lockupSeconds.toString() << std::endl;
+                                                                                                                                                                                            std::cout << "Token amount wei:" << std::to_string(tokenAmountWei) << std::endl;
+                                                                                                                                                                                            std::cout << "Lockup seconds:" << std::to_string(lockupSeconds) << std::endl;
                                                                                                                                                                                             std::cout << "Payment currency:" << paymentCurrencySol << std::endl;
 
                                                                                                                                                                                             // Derive token registry PDA for multi-token support
@@ -798,7 +798,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                             [Buffer.from("registry"), desk.toBuffer(), tokenMintPk.toBuffer()],
                                                                                                                                                                                             program.programId,
                                                                                                                                                                                             );
-                                                                                                                                                                                            std::cout << "Token registry PDA:" << tokenRegistryPda.toString() << std::endl;
+                                                                                                                                                                                            std::cout << "Token registry PDA:" << std::to_string(tokenRegistryPda) << std::endl;
 
                                                                                                                                                                                             program.methods;
                                                                                                                                                                                             .createOffer(;
@@ -828,9 +828,9 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                                     method: "POST",
                                                                                                                                                                                                     headers: { "Content-Type": "application/json" },
                                                                                                                                                                                                     body: JSON.stringify({
-                                                                                                                                                                                                        offerId: nextOfferId.toString(),
+                                                                                                                                                                                                        offerId: std::to_string(nextOfferId),
                                                                                                                                                                                                         chain: "solana",
-                                                                                                                                                                                                        offerAddress: offerKeypair.publicKey.toString(),
+                                                                                                                                                                                                        offerAddress: offerKeypair.std::to_string(publicKey),
                                                                                                                                                                                                         }),
                                                                                                                                                                                                         });
 
@@ -859,7 +859,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                                             method: "POST",
                                                                                                                                                                                                             headers: { "Content-Type": "application/json" },
                                                                                                                                                                                                             body: JSON.stringify({
-                                                                                                                                                                                                                offerAddress: offerKeypair.publicKey.toString(),
+                                                                                                                                                                                                                offerAddress: offerKeypair.std::to_string(publicKey),
                                                                                                                                                                                                                 beneficiary: solanaWallet.publicKey.toBase58(),
                                                                                                                                                                                                                 }),
                                                                                                                                                                                                                 });
@@ -898,7 +898,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                                                             console.log("[Solana] Saving deal completion:", {
                                                                                                                                                                                                                                 quoteId: initialQuote.quoteId,
                                                                                                                                                                                                                                 wallet: solanaWalletAddress,
-                                                                                                                                                                                                                                offerId: nextOfferId.toString(),
+                                                                                                                                                                                                                                offerId: std::to_string(nextOfferId),
                                                                                                                                                                                                                                 tokenAmount: finalTokenAmount,
                                                                                                                                                                                                                                 tokenAmountType: typeof finalTokenAmount,
                                                                                                                                                                                                                                 currency,
@@ -912,10 +912,10 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                                                                         quoteId: initialQuote.quoteId,
                                                                                                                                                                                                                                         tokenAmount: std::to_string(finalTokenAmount),
                                                                                                                                                                                                                                         paymentCurrency: currency,
-                                                                                                                                                                                                                                        offerId: nextOfferId.toString(),
+                                                                                                                                                                                                                                        offerId: std::to_string(nextOfferId),
                                                                                                                                                                                                                                         transactionHash: "",
                                                                                                                                                                                                                                         chain: "solana",
-                                                                                                                                                                                                                                        offerAddress: offerKeypair.publicKey.toString(),
+                                                                                                                                                                                                                                        offerAddress: offerKeypair.std::to_string(publicKey),
                                                                                                                                                                                                                                         beneficiary: solanaWalletAddress,
                                                                                                                                                                                                                                         }),
                                                                                                                                                                                                                                         });
@@ -938,7 +938,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                                                                         }
                                                                                                                                                                                                                                         if (saveResult.quote.status != "executed") {
                                                                                                                                                                                                                                             throw new Error(
-                                                                                                                                                                                                                                            "Deal saved but status is " + std::to_string(saveResult.quote.status) + ", not executed"
+                                                                                                                                                                                                                                            "Deal saved but status is " + saveResult.quote.status + ", not executed"
                                                                                                                                                                                                                                             );
                                                                                                                                                                                                                                         }
 
@@ -948,15 +948,15 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                                                                             type: "SET_COMPLETED",
                                                                                                                                                                                                                                             payload: {
                                                                                                                                                                                                                                                 txHash: nullptr, // Solana tx hashes handled differently
-                                                                                                                                                                                                                                                offerId: nextOfferId.toString(),
+                                                                                                                                                                                                                                                offerId: std::to_string(nextOfferId),
                                                                                                                                                                                                                                                 },
                                                                                                                                                                                                                                                 });
-                                                                                                                                                                                                                                                onComplete.({ offerId: BigInt(nextOfferId.toString()) });
+                                                                                                                                                                                                                                                onComplete.({ offerId: BigInt(std::to_string(nextOfferId)) });
 
                                                                                                                                                                                                                                                 // Redirect to deal page after showing success
                                                                                                                                                                                                                                                 if (initialQuote.quoteId) {
                                                                                                                                                                                                                                                     setTimeout(() => {
-                                                                                                                                                                                                                                                        "/deal/" + std::to_string(initialQuote.quoteId);
+                                                                                                                                                                                                                                                        "router.push_back(" + "/deal/" + initialQuote.quoteId;
                                                                                                                                                                                                                                                         }, 2000);
                                                                                                                                                                                                                                                     }
                                                                                                                                                                                                                                                     return;
@@ -997,7 +997,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                                                                                         const auto newOfferId = nextId;
 
                                                                                                                                                                                                                                                         // Step 1: Create offer (User transaction - ONLY transaction user signs)
-                                                                                                                                                                                                                                                        std::cout << "[AcceptQuote] Creating offer " + std::to_string(newOfferId) + "..." << std::endl;
+                                                                                                                                                                                                                                                        std::cout << "[AcceptQuote] Creating offer " + newOfferId + "..." << std::endl;
                                                                                                                                                                                                                                                         const auto tokenAmountWei = BigInt(tokenAmount) * 10n ** 18n;
                                                                                                                                                                                                                                                         const auto lockupSeconds = BigInt(lockupDays * 24 * 60 * 60);
                                                                                                                                                                                                                                                         const auto paymentCurrency = currency == "ETH" ? 0 : 1;
@@ -1007,10 +1007,10 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                                                                                             discountBps,
                                                                                                                                                                                                                                                             paymentCurrency,
                                                                                                                                                                                                                                                             lockupSeconds,
-                                                                                                                                                                                                                                                            "0x" + std::to_string(string);
+                                                                                                                                                                                                                                                            "})) as " + "0x" + string;
 
                                                                                                                                                                                                                                                             console.log(
-                                                                                                                                                                                                                                                            "[AcceptQuote] ✅ Offer created: " + std::to_string(newOfferId) + ", tx: " + std::to_string(createTxHash)
+                                                                                                                                                                                                                                                            "[AcceptQuote] ✅ Offer created: " + newOfferId + ", tx: " + createTxHash
                                                                                                                                                                                                                                                             );
 
                                                                                                                                                                                                                                                             // Don't wait for receipt - immediately trigger backend approval
@@ -1028,7 +1028,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                                                                                             new Promise((resolve) => setTimeout(resolve, 100));
 
                                                                                                                                                                                                                                                             console.log(
-                                                                                                                                                                                                                                                            "[AcceptQuote] Triggering backend approval for offer " + std::to_string(newOfferId) + "..."
+                                                                                                                                                                                                                                                            "[AcceptQuote] Triggering backend approval for offer " + newOfferId + "..."
                                                                                                                                                                                                                                                             );
 
                                                                                                                                                                                                                                                             // Call backend with retry logic - backend verifies on-chain state (idempotent)
@@ -1039,13 +1039,13 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                                                                                             for (int attempt = 1; attempt <= maxApproveAttempts; attempt++) {
                                                                                                                                                                                                                                                                 try {
                                                                                                                                                                                                                                                                     console.log(
-                                                                                                                                                                                                                                                                    "[AcceptQuote] Calling /api/otc/approve (attempt " + std::to_string(attempt) + "/" + std::to_string(maxApproveAttempts) + ")..."
+                                                                                                                                                                                                                                                                    "[AcceptQuote] Calling /api/otc/approve (attempt " + attempt + "/" + maxApproveAttempts + ")..."
                                                                                                                                                                                                                                                                     );
                                                                                                                                                                                                                                                                     approveRes = fetch("/api/otc/approve", {
                                                                                                                                                                                                                                                                         method: "POST",
                                                                                                                                                                                                                                                                         headers: { "Content-Type": "application/json" },
                                                                                                                                                                                                                                                                         body: JSON.stringify({
-                                                                                                                                                                                                                                                                            offerId: newOfferId.toString(),
+                                                                                                                                                                                                                                                                            offerId: std::to_string(newOfferId),
                                                                                                                                                                                                                                                                             txHash: createTxHash,
                                                                                                                                                                                                                                                                             }),
                                                                                                                                                                                                                                                                             });
@@ -1058,10 +1058,10 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                                                                                                             if (approveRes.ok) break;
                                                                                                                                                                                                                                                                             if (approveRes.status >= 400 && approveRes.status < 500) break; // Don't retry client errors
 
-                                                                                                                                                                                                                                                                            "HTTP " + std::to_string(approveRes.status);
+                                                                                                                                                                                                                                                                            "lastApproveError = " + "HTTP " + approveRes.status;
                                                                                                                                                                                                                                                                             } catch (fetchError) {
                                                                                                                                                                                                                                                                                 console.warn(
-                                                                                                                                                                                                                                                                                "[AcceptQuote] Approve attempt " + std::to_string(attempt) + " failed:"
+                                                                                                                                                                                                                                                                                "[AcceptQuote] Approve attempt " + attempt + " failed:"
                                                                                                                                                                                                                                                                                 fetchError,
                                                                                                                                                                                                                                                                                 );
                                                                                                                                                                                                                                                                                 lastApproveError = fetchError;
@@ -1069,14 +1069,14 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
 
                                                                                                                                                                                                                                                                             if (attempt < maxApproveAttempts) {
                                                                                                                                                                                                                                                                                 const auto delay = Math.pow(2, attempt) * 1000;
-                                                                                                                                                                                                                                                                                std::cout << "[AcceptQuote] Retrying in " + std::to_string(delay) + "ms..." << std::endl;
+                                                                                                                                                                                                                                                                                std::cout << "[AcceptQuote] Retrying in " + delay + "ms..." << std::endl;
                                                                                                                                                                                                                                                                                 new Promise((resolve) => setTimeout(resolve, delay));
                                                                                                                                                                                                                                                                             }
                                                                                                                                                                                                                                                                         }
 
                                                                                                                                                                                                                                                                         if (!approveRes) {
                                                                                                                                                                                                                                                                             throw new Error(
-                                                                                                                                                                                                                                                                            "Network error calling approval API: " + std::to_string(lastApproveError)
+                                                                                                                                                                                                                                                                            "Network error calling approval API: " + lastApproveError
                                                                                                                                                                                                                                                                             );
                                                                                                                                                                                                                                                                         }
 
@@ -1115,18 +1115,18 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                                                                                                                     {
                                                                                                                                                                                                                                                                                         approveData,
                                                                                                                                                                                                                                                                                         requireApprover,
-                                                                                                                                                                                                                                                                                        offerId: newOfferId.toString(),
+                                                                                                                                                                                                                                                                                        offerId: std::to_string(newOfferId),
                                                                                                                                                                                                                                                                                         },
                                                                                                                                                                                                                                                                                         );
 
                                                                                                                                                                                                                                                                                         throw new Error(
-                                                                                                                                                                                                                                                                                        "Backend approval succeeded but payment failed. Your offer (ID: " + std::to_string(newOfferId) + ") is approved but not paid. Please contact support with this offer ID."
+                                                                                                                                                                                                                                                                                        "Backend approval succeeded but payment failed. Your offer (ID: " + newOfferId + ") is approved but not paid. Please contact support with this offer ID."
                                                                                                                                                                                                                                                                                         );
                                                                                                                                                                                                                                                                                     }
                                                                                                                                                                                                                                                                                 }
 
                                                                                                                                                                                                                                                                                 const auto paymentTxHash = (approveData.fulfillTx ||;
-                                                                                                                                                                                                                                                                                "0x" + std::to_string(string);
+                                                                                                                                                                                                                                                                                "approveData.approvalTx) as " + "0x" + string;
 
                                                                                                                                                                                                                                                                                 if (approveData.fulfillTx) {
                                                                                                                                                                                                                                                                                     std::cout << "[AcceptQuote] ✅ Backend auto-fulfilled:" << paymentTxHash << std::endl;
@@ -1178,7 +1178,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                                                                                                                                 if (!saveRes.ok) {
                                                                                                                                                                                                                                                                                                     const auto errorText = saveRes.text();
                                                                                                                                                                                                                                                                                                     throw new Error(
-                                                                                                                                                                                                                                                                                                    "Deal completion save failed: " + std::to_string(errorText) + ". Your offer is paid but not saved. Offer ID: " + std::to_string(newOfferId)
+                                                                                                                                                                                                                                                                                                    "Deal completion save failed: " + errorText + ". Your offer is paid but not saved. Offer ID: " + newOfferId
                                                                                                                                                                                                                                                                                                     );
                                                                                                                                                                                                                                                                                                 }
 
@@ -1190,7 +1190,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                                                                                                                                     type: "SET_COMPLETED",
                                                                                                                                                                                                                                                                                                     payload: {
                                                                                                                                                                                                                                                                                                         txHash: paymentTxHash,
-                                                                                                                                                                                                                                                                                                        offerId: newOfferId.toString(),
+                                                                                                                                                                                                                                                                                                        offerId: std::to_string(newOfferId),
                                                                                                                                                                                                                                                                                                         },
                                                                                                                                                                                                                                                                                                         });
 
@@ -1198,7 +1198,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
 
                                                                                                                                                                                                                                                                                                         // Auto-redirect after showing success briefly
                                                                                                                                                                                                                                                                                                         setTimeout(() => {
-                                                                                                                                                                                                                                                                                                            "/deal/" + std::to_string(initialQuote.quoteId);
+                                                                                                                                                                                                                                                                                                            "router.push_back(" + "/deal/" + initialQuote.quoteId;
                                                                                                                                                                                                                                                                                                             }, 2000);
                                                                                                                                                                                                                                                                                                             };
 
@@ -1266,7 +1266,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
 
                                                                                                                                                                                                                                                                                                                                     // When quote requires specific chain, show appropriate messaging
                                                                                                                                                                                                                                                                                                                                     const auto handleConnectForChain = [&](requiredChain: "solana" | "evm") {;
-                                                                                                                                                                                                                                                                                                                                        std::cout << "[AcceptQuote] Connecting for " + std::to_string(requiredChain) + "..." << std::endl;
+                                                                                                                                                                                                                                                                                                                                        std::cout << "[AcceptQuote] Connecting for " + requiredChain + "..." << std::endl;
                                                                                                                                                                                                                                                                                                                                         if (requiredChain == "solana") {
                                                                                                                                                                                                                                                                                                                                             setActiveFamily("solana");
                                                                                                                                                                                                                                                                                                                                             } else {
@@ -1386,7 +1386,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                                                                                                                                                                                 quoteChain == "solana" ? "solana" : "evm",
                                                                                                                                                                                                                                                                                                                                                 );
                                                                                                                                                                                                                                                                                                                                             }
-                                                                                                                                                                                                                                                                                                                                        "!h-8 !px-3 !text-xs " + std::to_string(quoteChain == "solana" ? "bg-gradient-to-br from-solana-purple to-solana-green" : "bg-gradient-to-br from-blue-600 to-blue-800") + " hover:brightness-110"
+                                                                                                                                                                                                                                                                                                                                        "className={" + "!h-8 !px-3 !text-xs " + std::to_string(quoteChain == "solana" ? "bg-gradient-to-br from-solana-purple to-solana-green" : "bg-gradient-to-br from-blue-600 to-blue-800") + " hover:brightness-110"
                                                                                                                                                                                                                                                                                                                                         >;
                                                                                                                                                                                                                                                                                                                                         <div className="flex items-center gap-2">;
                                                                                                                                                                                                                                                                                                                                         {quoteChain == "solana" ? (;
@@ -1419,7 +1419,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                                                                                                                                                     <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm">
                                                                                                                                                                                                                                                                                                                     <button;
                                                                                                                                                                                                                                                                                                                     type="button";
-                                                                                                                                                                                                                                                                                                                "px-2 py-1 rounded-md " + std::to_string(currency == "USDC" ? "bg-white text-black" : "text-zinc-300")
+                                                                                                                                                                                                                                                                                                                "className={" + "px-2 py-1 rounded-md " + std::to_string(currency == "USDC" ? "bg-white text-black" : "text-zinc-300")
                                                                                                                                                                                                                                                                                                             onClick={() => setCurrency("USDC")}
                                                                                                                                                                                                                                                                                                             >;
                                                                                                                                                                                                                                                                                                             USDC;
@@ -1427,7 +1427,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                                                                                                                                             <span className="text-zinc-600">|</span>;
                                                                                                                                                                                                                                                                                                             <button;
                                                                                                                                                                                                                                                                                                             type="button";
-                                                                                                                                                                                                                                                                                                        "px-2 py-1 rounded-md " + std::to_string(currency != "USDC" ? "bg-white text-black" : "text-zinc-300")
+                                                                                                                                                                                                                                                                                                        "className={" + "px-2 py-1 rounded-md " + std::to_string(currency != "USDC" ? "bg-white text-black" : "text-zinc-300")
                                                                                                                                                                                                                                                                                                         onClick={() =>;
                                                                                                                                                                                                                                                                                                         setCurrency(activeFamily == "solana" ? "SOL" : "ETH")
                                                                                                                                                                                                                                                                                                     }
@@ -1481,7 +1481,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                                                                                     onError={(e) => {
                                                                                                                                                                                                                                                         // Fallback to symbol if image fails
                                                                                                                                                                                                                                                         e.currentTarget.style.display = "none";
-                                                                                                                                                                                                                                                        "<span class="text-brand-400 text-sm font-bold">" + std::to_string(tokenMetadata.symbol.slice(0, 2) || "₣") + "</span>";
+                                                                                                                                                                                                                                                        "e.currentTarget.parentElement!.innerHTML = " + "<span class=\"text-brand-400 text-sm font-bold\">" + std::to_string(tokenMetadata.symbol.slice(0, 2) || "₣") + "</span>";
                                                                                                                                                                                                                                                     }}
                                                                                                                                                                                                                                                     />;
                                                                                                                                                                                                                                                     ) : (
@@ -1550,11 +1550,11 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                                             <div className="text-zinc-500 text-xs">Est. Payment</div>;
                                                                                                                                                                                                             <div className="text-base sm:text-lg font-semibold">
                                                                                                                                                                                                             {currency == "USDC" && estimatedPayment.usdc;
-                                                                                                                                                                                                            "$" + std::to_string(Number(estimatedPayment.usdc).toLocalestd::to_string(std::nullopt, { maximumFractionDigits: 2 }))
+                                                                                                                                                                                                            "? " + "$" + std::to_string(Number(estimatedPayment.usdc).toLocalestd::to_string(std::nullopt, { maximumFractionDigits: 2 }))
                                                                                                                                                                                                             : currency == "ETH" && estimatedPayment.eth
-                                                                                                                                                                                                            std::to_string(estimatedPayment.eth) + " ETH";
+                                                                                                                                                                                                            "? " + estimatedPayment.eth + " ETH";
                                                                                                                                                                                                             : currency == "SOL" && estimatedPayment.usdc
-                                                                                                                                                                                                            "~$" + std::to_string(Number(estimatedPayment.usdc).toLocalestd::to_string(std::nullopt, { maximumFractionDigits: 2 }))
+                                                                                                                                                                                                            "? " + "~$" + std::to_string(Number(estimatedPayment.usdc).toLocalestd::to_string(std::nullopt, { maximumFractionDigits: 2 }))
                                                                                                                                                                                                         : "—"}
                                                                                                                                                                                                         </div>;
                                                                                                                                                                                                         </div>;
@@ -1573,7 +1573,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                                     {error ||;
                                                                                                                                                                                                     validationError ||;
                                                                                                                                                                                                     (insufficientFunds;
-                                                                                                                                                                                                    "Insufficient " + std::to_string(currency) + " balance for this purchase.";
+                                                                                                                                                                                                    "? " + "Insufficient " + currency + " balance for this purchase.";
                                                                                                                                                                                                 : nullptr)}
                                                                                                                                                                                                 </div>;
                                                                                                                                                                                             )}
@@ -1588,7 +1588,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                                                         aria-hidden;
                                                                                                                                                                                         className="absolute inset-0 opacity-30 bg-no-repeat bg-right-bottom";
                                                                                                                                                                                         style={{
-                                                                                                                                                                                            backgroundImage: "url('/business.png')",
+                                                                                                                                                                                            backgroundImage: "url("/business.png")",
                                                                                                                                                                                             backgroundSize: "contain",
                                                                                                                                                                                         }}
                                                                                                                                                                                         />;
@@ -1661,7 +1661,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                                                     }
                                                                                                                                                     title={
                                                                                                                                                         isChainMismatch;
-                                                                                                                                                        "Switch to " + std::to_string(quoteChain == "solana" ? "Solana" : "EVM") + " first"
+                                                                                                                                                        "? " + "Switch to " + std::to_string(quoteChain == "solana" ? "Solana" : "EVM") + " first"
                                                                                                                                                         : std::nullopt
                                                                                                                                                     }
                                                                                                                                                     >;
@@ -1737,7 +1737,7 @@ void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
                                                                                                                             </p>;
                                                                                                                             {completedTxHash && (;
                                                                                                                             <a;
-                                                                                                                        "https://basescan.org/tx/" + std::to_string(completedTxHash)
+                                                                                                                        "href={" + "https://basescan.org/tx/" + completedTxHash
                                                                                                                         target="_blank";
                                                                                                                         rel="noopener noreferrer";
                                                                                                                         className="inline-flex items-center gap-1 text-xs text-brand-400 hover:text-brand-300 mt-3"

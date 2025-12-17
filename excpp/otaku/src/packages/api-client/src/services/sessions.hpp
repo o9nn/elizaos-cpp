@@ -1,13 +1,17 @@
 #pragma once
+#include <algorithm>
+#include <chrono>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
-#include ".lib/base-client.hpp"
+#include "lib/base-client.hpp"
 
 namespace elizaos {
 
@@ -31,7 +35,7 @@ struct SessionMessageQueryParams {
  * @param paramName Name of the parameter for error messages
  * @returns Timestamp string or undefined if value is invalid
  */
-std::string toTimestampString(const std::variant<Date, std::string, double>& value, const std::string& paramName);
+std::string toTimestampString(const std::variant<std::chrono::system_clock::time_point, std::string, double>& value, const std::string& paramName);
 
 /**
  * Validates required parameters

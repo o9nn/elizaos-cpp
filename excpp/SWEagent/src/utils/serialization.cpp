@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-unknown convertToYamlLiteralString(unknown data) {
+std::any convertToYamlLiteralString(const std::any& data) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (typeof data == 'string' && data.includes('\n')) {
@@ -18,7 +18,7 @@ unknown convertToYamlLiteralString(unknown data) {
     }
 
     if (data && typeof data == 'object') {
-        const std::unordered_map<std::string, unknown> result = {};
+        const std::unordered_map<std::string, std::any> result = {};
         for (const int [key, value] of Object.entries(data)) {
             result[key] = convertToYamlLiteralstd::to_string(value);
         }
@@ -29,7 +29,7 @@ unknown convertToYamlLiteralString(unknown data) {
 
 }
 
-std::string yamlSerializationWithLinebreaks(unknown data) {
+std::string yamlSerializationWithLinebreaks(const std::any& data) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto processed = convertToYamlLiteralstd::to_string(data);
@@ -38,16 +38,16 @@ std::string yamlSerializationWithLinebreaks(unknown data) {
     return yaml.dump(processed, {;
         lineWidth: -1, // Don't wrap lines
         noRefs: true, // Don't use references
-        quotingType: '"', // Use double quotes
+        quotingType: """, // Use double quotes
         forceQuotes: false, // Only quote when necessary
         styles: {
-            '!!str': 'literal', // Use literal style for multiline strings
+            "!!str": "literal", // Use literal style for multiline strings
             },
             });
 
 }
 
-unknown mergeNestedDicts(unknown d1, unknown d2) {
+std::any mergeNestedDicts(const std::any& d1, const std::any& d2) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!d1) {
@@ -68,7 +68,7 @@ unknown mergeNestedDicts(unknown d1, unknown d2) {
     }
 
     // Merge objects
-    const std::unordered_map<std::string, unknown> result = { ...(d1<string, unknown>) };
+    const std::unordered_map<std::string, std::any> result = { ...(d1<string, unknown>) };
 
     for (const int [key, value] of Object.entries(d2)) {
         if (key in result) {

@@ -22,10 +22,10 @@ void EmailPreferences() {
                 [key]: !preferences[key],
                 };
 
-                const auto response = fetch('/api/user/preferences', {;
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ preferences: newPreferences }),
+                const auto response = fetch("/api/user/preferences", {;
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: /* JSON.stringify */ std::string({ preferences: newPreferences }),
                     });
 
                     if (response.ok) {
@@ -50,7 +50,7 @@ void EmailPreferences() {
         className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
         />;
         <span className="text-sm">;
-    {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
+    {key.replace(/([A-Z])/g, " $1").replace(/^./, str => str.toUpperCase())}
     </span>;
     </label>;
     ))}

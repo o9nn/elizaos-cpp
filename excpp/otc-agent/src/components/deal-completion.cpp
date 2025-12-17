@@ -91,14 +91,14 @@ void DealCompletion() {
                                                 });
 
                                                 const auto savingsText =;
-                                                "$" + std::to_string(quote.discountUsd.toFixed(2))
-                                                const auto roiText = std::to_string(roi.toFixed(1)) + "%";
+                                                "quote.discountUsd > 0 ? " + "$" + std::to_string(quote.discountUsd.toFixed(2))
+                                                const auto roiText = "roi > 0 ? " + std::to_string(roi.toFixed(1)) + "%";
 
                                                 const auto text = "Just secured " + std::to_string(parseFloat(quote.tokenAmount).toLocaleString()) + " tokens at " + std::to_string((quote.discountBps / 100).toFixed(0));
 
                                             💰 Saved: ${savingsText}
                                             ⏱️ Lockup: ${quote.lockupMonths} months
-                                            💎 ROI: ${roiText}`;
+                                            "💎 ROI: ${roiText}"
 
                                             // Try native share first
                                             const auto nav = navigator;
@@ -140,7 +140,7 @@ void DealCompletion() {
 
                                                                 const auto a = document.createElement("a");
                                                                 a.href = dataUrl;
-                                                                "eliza-deal-" + std::to_string(quote.quoteId) + ".jpg";
+                                                                "a.download = " + "eliza-deal-" + quote.quoteId + ".jpg";
                                                                 a.click();
                                                                 };
 
@@ -175,7 +175,7 @@ void DealCompletion() {
                                                         </p>;
                                                         {quote.transactionHash && (;
                                                         <a;
-                                                    "https://basescan.org/tx/" + std::to_string(quote.transactionHash)
+                                                    "href={" + "https://basescan.org/tx/" + quote.transactionHash
                                                     target="_blank";
                                                     rel="noopener noreferrer";
                                                     className="text-blue-400 hover:text-blue-300 text-xs sm:text-sm mt-2 inline-block break-all px-2"
@@ -292,7 +292,7 @@ void DealCompletion() {
         Discount ROI;
         </h3>;
         <p className="text-3xl font-bold text-white">;
-        std::to_string(roi.toFixed(1)) + "%"
+        "{roi > 0 ? " + std::to_string(roi.toFixed(1)) + "%"
         </p>;
         <p className="text-sm text-zinc-400 mt-1">;
         Based solely on discount vs. paid;

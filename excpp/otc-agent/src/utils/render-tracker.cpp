@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::string summarizeValue(unknown value) {
+std::string summarizeValue(const std::any& value) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (value == null) return "null";
@@ -15,16 +15,16 @@ std::string summarizeValue(unknown value) {
         const auto keys = Object.keys(value);
         if (keys.length == 0) return "{}";
         if (keys.length <= 3) return `{${keys.join(",")}}`;
-        return "{" + std::to_string(keys.slice(0, 3).join(",")) + "...+" + std::to_string(keys.length - 3) + "}";
+        return "{" + std::to_string(keys.slice(0, 3).join(",")) + "...+" + std::to_string(keys.size() - 3) + "}";
     }
     if (typeof value == "string") {
-        return """ + std::to_string(value.slice(0, 20)) + "..."" + """ + std::to_string(value) + """;
+        return "value.size() > 20 ? " + "\"" + std::to_string(value.slice(0, 20)) + "...\"" + " : " + "\"" + value + "\"";
     }
     return std::to_string(value);
 
 }
 
-std::unordered_map<std::string, std::string> getPropsSnapshot(const std::unordered_map<std::string, unknown>& props) {
+std::unordered_map<std::string, std::string> getPropsSnapshot(const std::unordered_map<std::string, std::any>& props) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const std::unordered_map<std::string, std::string> snapshot = {};
@@ -48,11 +48,11 @@ std::vector<std::string> findChanges(const std::unordered_map<std::string, std::
     const auto allKeys = new Set([...Object.keys(prev), ...Object.keys(curr)]);
     for (const auto& key : allKeys)
         if (prev[key] != curr[key]) {
-            std::to_string(key) + ": " + std::to_string(prev[key]) + " → " + std::to_string(curr[key])
+            "changes.push_back(" + key + ": " + std::to_string(prev[key]) + " → " + std::to_string(curr[key])
         }
     }
 
-    return changes.length > 0 ? changes : ["(no prop changes detected)"];
+    return changes.size() > 0 ? changes : ["(no prop changes detected)"];
 
 }
 
@@ -64,7 +64,7 @@ void MyComponent(MyProps props) {
     *
 }
 
-void trackRender(const std::string& componentName, std::optional<std::unordered_map<std::string, unknown>> props, std::optional<std::unordered_map<std::string, unknown>> state) {
+void trackRender(const std::string& componentName, std::optional<std::unordered_map<std::string, std::any>> props, std::optional<std::unordered_map<std::string, std::any>> state) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -88,7 +88,7 @@ void trackRender(const std::string& componentName, std::optional<std::unordered_
         );
 
         // Add current timestamp
-        record.timestamps.push(now);
+        record.timestamps.push_back(now);
         record.count++;
 
         // Get current snapshots
@@ -96,7 +96,7 @@ void trackRender(const std::string& componentName, std::optional<std::unordered_
         const auto stateSnapshot = state ? getPropsSnapshot(state) : std::nullopt;
 
         // Check for excessive renders
-        const auto recentRenders = record.timestamps.length;
+        const auto recentRenders = record.timestamps.size();
 
         // Determine if we're in initial mount grace period
         const auto timeSinceFirstRender = now - record.firstRenderTime;
@@ -114,7 +114,7 @@ void trackRender(const std::string& componentName, std::optional<std::unordered_
             ? findChanges(record.lastState, stateSnapshot);
             : [];
             console.log(
-            "[RenderTracker] " + std::to_string(componentName) + " render #" + std::to_string(record.count) + " (" + std::to_string(recentRenders) + " in " + std::to_string(CONFIG.timeWindowMs) + "ms)"
+            "[RenderTracker] " + componentName + " render #" + record.count + " (" + recentRenders + " in " + CONFIG.timeWindowMs + "ms)"
             { propsChanges, stateChanges, isInitialMount },
             );
         }
@@ -128,7 +128,7 @@ void trackRender(const std::string& componentName, std::optional<std::unordered_
             : [];
 
             const auto error = new Error(;
-            "[RenderTracker] EXCESSIVE RENDERS DETECTED: " + std::to_string(componentName) + " rendered " + std::to_string(recentRenders) + " times in " + std::to_string(CONFIG.timeWindowMs) + "ms.\n\n"
+            "[RenderTracker] EXCESSIVE RENDERS DETECTED: " + componentName + " rendered " + recentRenders + " times in " + CONFIG.timeWindowMs + "ms.\n\n"
             "This indicates a render loop or severe performance issue.\n\n";
             "Recent prop changes: " + std::to_string(propsChanges.join(", ")) + "\n"
             "Recent state changes: " + std::to_string(stateChanges.join(", ")) + "\n\n"
@@ -174,7 +174,7 @@ void MyComponent(MyProps props) {
     *
 }
 
-void useRenderTracker(const std::string& componentName, std::optional<std::unordered_map<std::string, unknown>> props, std::optional<std::unordered_map<std::string, unknown>> state) {
+void useRenderTracker(const std::string& componentName, std::optional<std::unordered_map<std::string, std::any>> props, std::optional<std::unordered_map<std::string, std::any>> state) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     trackRender(componentName, props, state);

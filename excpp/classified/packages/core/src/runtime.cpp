@@ -7,7 +7,7 @@ namespace elizaos {
 void normalizeAction(const std::string& actionString) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return actionString.toLowerCase().replace(/_/g, '');
+    return actionString.toLowerCase().replace(/_/g, "");
 
 }
 

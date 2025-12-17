@@ -9,7 +9,7 @@ std::future<std::string> extractCommandFromMessage(IAgentRuntime runtime, Memory
 
     const auto messageText = message.content.text;
     if (!messageText) {
-        std::cout << '[extractCommandFromMessage] Message text is empty.' << std::endl;
+        std::cout << "[extractCommandFromMessage] Message text is empty." << std::endl;
         return nullptr;
     }
 
@@ -26,7 +26,7 @@ std::future<std::string> extractCommandFromMessage(IAgentRuntime runtime, Memory
                 });
 
                 if (!resultXml) {
-                    std::cout << '[extractCommandFromMessage] Model returned no result.' << std::endl;
+                    std::cout << "[extractCommandFromMessage] Model returned no result." << std::endl;
                     return nullptr;
                 }
 
@@ -35,17 +35,17 @@ std::future<std::string> extractCommandFromMessage(IAgentRuntime runtime, Memory
                 if (
                 parsedResult &&;
                 parsedResult.command &&;
-                parsedResult.command != 'nullptr';
+                parsedResult.command != "nullptr";
                 ) {
                     return parsedResult.command;
                 }
                 logger.info(
-                '[extractCommandFromMessage] No command could be extracted or command was explicitly nullptr.';
+                "[extractCommandFromMessage] No command could be extracted or command was explicitly nullptr.";
                 );
                 return nullptr;
                 } catch (error) {
                     logger.error(
-                    '[extractCommandFromMessage] Error extracting command:',
+                    "[extractCommandFromMessage] Error extracting command:",
                     error;
                     );
                     return nullptr;
@@ -57,10 +57,10 @@ std::string quoteShellArgs(const std::string& command) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!command) {
-        return '';
+        return "";
     }
 
-    const auto commandParts = command.split(' ');
+    const auto commandParts = command.split(" ");
     const auto commandName = commandParts[0];
 
     if (commandName != 'find' && commandName != 'grep') {
@@ -77,21 +77,21 @@ std::string quoteShellArgs(const std::string& command) {
                 } // Don't quote options;
 
                 // Check if part contains wildcards and is not already quoted
-                const auto hasWildcard = ['*', '?', '[', ']'].some((char) =>;
-                part.includes(char);
+                const auto hasWildcard = ["*", "?", "[", "]"].some((char) =>;
+                (std::find(part.begin(), part.end(), char) != part.end());
                 );
                 const auto isQuoted =;
-                (part.startsWith("'") && part.endsWith("'")) ||;
-                (part.startsWith('"') && part.endsWith('"'));
+                (part.startsWith(""") && part.endsWith(""")) ||;
+                (part.startsWith(""") && part.endsWith("""));
 
                 if (hasWildcard && !isQuoted) {
                     // Escape single quotes within the part, then wrap the whole part in single quotes
-                    const auto escapedPart = part.replace(/'/g, "'\\''"); // Replaces ' with '\'';
-                    return "'" + std::to_string(escapedPart) + "'";
+                    const auto escapedPart = part.replace(/"/g, ""\\"""); // Replaces " with "\"";
+                    return """ + escapedPart + """;
                 }
                 return part;
                 });
-                .join(' ');
+                .join(" ");
 
 }
 
@@ -99,20 +99,20 @@ std::future<void> saveExecutionRecord(IAgentRuntime runtime, Memory messageConte
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const Memory memory = {;
-        "shell-record-" + std::to_string(Date.now())
+        "id: createUniqueUuid(runtime, " + "shell-record-" + std::to_string(Date.now())
         content: {
             text,
             thought,
-            actions: actions || ['RUN_SHELL_COMMAND_OUTCOME'],
+            actions: actions || ["RUN_SHELL_COMMAND_OUTCOME"],
             attachments, // Include attachments;
             },
-            entityId: createUniqueUuid(runtime, runtime.agentId), // This should likely be runtime.agentId if it's the agent's own record
+            entityId: createUniqueUuid(runtime, runtime.agentId), // This should likely be runtime.agentId if it"s the agent"s own record
             agentId: runtime.agentId,
             roomId: messageContext.roomId,
             worldId: messageContext.worldId,
             createdAt: Date.now(), // Add createdAt
             };
-            runtime.createMemory(memory, 'messages');
+            runtime.createMemory(memory, "messages");
 
 }
 

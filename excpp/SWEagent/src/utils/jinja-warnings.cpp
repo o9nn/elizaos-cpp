@@ -13,7 +13,7 @@ void warnProbablyWrongJinjaSyntax(const std::string& template) {
 
     // Check for common Jinja syntax errors
     const auto patterns = [;
-    { pattern: /\{\{[^}]*\{[^}]*\}\}/, message: 'Nested braces detected in template'
+    { pattern: /\{\{[^}]*\{[^}]*\}\}/, message: "Nested braces detected in template"
 }
 
 } // namespace elizaos

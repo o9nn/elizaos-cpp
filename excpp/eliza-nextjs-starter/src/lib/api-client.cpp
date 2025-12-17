@@ -17,7 +17,7 @@ std::vector<ChatMessage> transformMemoriesToChatMessages(const std::vector<Backe
             : mem.metadata.entityName || "Agent",
             text:
             mem.content.text ||;
-            "*" + std::to_string(mem.content.thought) + "*"
+            "(mem.content.thought ? " + "*" + mem.content.thought + "*"
             senderId: mem.entityId,
             roomId: mem.roomId,
             createdAt: mem.createdAt || Date.now(),
@@ -31,7 +31,7 @@ std::vector<ChatMessage> transformMemoriesToChatMessages(const std::vector<Backe
 
             assert(;
             typeof message.name == "string" && message.text != std::nullopt,
-            "[transformMemoriesToChatMessages] Invalid transformed message: " + std::to_string(JSON.stringify(message))
+            "[transformMemoriesToChatMessages] Invalid transformed message: " + std::to_string(/* JSON.stringify */ std::string(message))
             );
 
             return message;

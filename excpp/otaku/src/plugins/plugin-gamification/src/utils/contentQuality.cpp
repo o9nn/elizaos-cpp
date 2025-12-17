@@ -7,7 +7,7 @@ namespace elizaos {
 double calculateEntropy(const std::string& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto len = text.length;
+    const auto len = text.size();
     if (len == 0) return 0;
 
     const std::unordered_map<std::string, double> freq = {};
@@ -89,7 +89,7 @@ ContentQualityResult checkContentQuality(const std::string& text) {
     const auto charCheck = checkRepeatedChars(trimmedText);
     if (!charCheck.valid) {
         score -= 40;
-        reasons.push('repeated_chars');
+        reasons.push_back("repeated_chars");
         } else {
             score -= charCheck.ratio * 20;
         }
@@ -98,7 +98,7 @@ ContentQualityResult checkContentQuality(const std::string& text) {
         const auto wordCheck = checkRepeatedWords(trimmedText);
         if (!wordCheck.valid) {
             score -= 35;
-            reasons.push('repeated_words');
+            reasons.push_back("repeated_words");
             } else {
                 score -= (1 - wordCheck.uniqueRatio) * 15;
             }
@@ -107,7 +107,7 @@ ContentQualityResult checkContentQuality(const std::string& text) {
             const auto mashCheck = checkKeyboardMash(trimmedText);
             if (!mashCheck.valid) {
                 score -= 50;
-                reasons.push('keyboard_mash');
+                reasons.push_back("keyboard_mash");
                 } else {
                     score -= mashCheck.matchRatio * 25;
                 }
@@ -116,34 +116,34 @@ ContentQualityResult checkContentQuality(const std::string& text) {
                 const auto entropy = calculateEntropy(trimmedText);
                 if (entropy < CONTENT_QUALITY_CONFIG.MIN_SHANNON_ENTROPY) {
                     score -= 30;
-                    reasons.push('low_entropy');
+                    reasons.push_back("low_entropy");
                 }
 
                 // 5. Check emoji spam
                 const auto emojiCheck = checkEmojiSpam(trimmedText);
                 if (!emojiCheck.valid) {
                     score -= 25;
-                    reasons.push('emoji_spam');
+                    reasons.push_back("emoji_spam");
                 }
 
                 // 6. Check URL spam
                 const auto urlCheck = checkUrlSpam(trimmedText);
                 if (!urlCheck.valid) {
                     score -= 30;
-                    reasons.push('url_spam');
+                    reasons.push_back("url_spam");
                 }
 
                 // 7. Check special char spam
                 const auto specialCheck = checkSpecialCharSpam(trimmedText);
                 if (!specialCheck.valid) {
                     score -= 25;
-                    reasons.push('special_char_spam');
+                    reasons.push_back("special_char_spam");
                 }
 
                 // 8. Check common spam phrases
                 if (!checkSpamPhrases(trimmedText)) {
                     score -= 35;
-                    reasons.push('spam_phrase');
+                    reasons.push_back("spam_phrase");
                 }
 
                 // Normalize score
@@ -155,13 +155,13 @@ ContentQualityResult checkContentQuality(const std::string& text) {
                 if (!isValid) {
                     logger.debug(
                     { text: trimmedText.substring(0, 50), score, reasons },
-                    '[ContentQuality] Message failed quality check';
+                    "[ContentQuality] Message failed quality check";
                     );
                 }
 
                 return {
                     isValid,
-                    reason: reasons.length > 0 ? reasons.join(', ') : std::nullopt,
+                    reason: reasons.size() > 0 ? reasons.join(", ") : std::nullopt,
                     score,
                     };
 

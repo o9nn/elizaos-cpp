@@ -26,7 +26,7 @@ UUID resolveEntity(UUID entityId, const std::vector<Entity>& entities) {
         }
 
         // Try partial UUID match with entityId
-        entity = entities.find((a) => a.id.includes(entityId));
+        entity = entities.find((a) => a.(std::find(id.begin(), id.end(), entityId) != id.end()));
         if (entity) {
             return entity.id;
         }
@@ -71,8 +71,8 @@ std::future<void> handler(IAgentRuntime runtime, Memory message, std::optional<S
                     ...state.values,
                     knownFacts: formatFacts(knownFacts),
                     roomType: message.content.channelType,
-                    entitiesInRoom: JSON.stringify(entities),
-                    existingRelationships: JSON.stringify(existingRelationships),
+                    entitiesInRoom: /* JSON.stringify */ std::string(entities),
+                    existingRelationships: /* JSON.stringify */ std::string(existingRelationships),
                     senderId: message.entityId,
                     },
                     template:
@@ -181,7 +181,7 @@ std::future<void> handler(IAgentRuntime runtime, Memory message, std::optional<S
                                                                 }
 
                                                                 runtime.setCache<string>(;
-                                                                std::to_string(message.roomId) + "-reflection-last-processed"
+                                                                message.roomId + "-reflection-last-processed"
                                                                 message.id,
                                                                 );
 

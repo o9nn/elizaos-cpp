@@ -70,7 +70,7 @@ void Leaderboard() {
                             } else {
                                 params.set("skill", value);
                             }
-                            "?" + std::to_string(params.toString());
+                            "router.replace(" + "?" + std::to_string(std::to_string(params));
                             },
                             [searchParams, router],
                             );
@@ -84,7 +84,7 @@ void Leaderboard() {
                                     } else {
                                         params.set("period", value);
                                     }
-                                    "?" + std::to_string(params.toString());
+                                    "router.replace(" + "?" + std::to_string(std::to_string(params));
                                     },
                                     [searchParams, router],
                                     );
@@ -126,8 +126,8 @@ void Leaderboard() {
                                                 }, [currentTab.users, searchTerm, selectedSkill, getTagData, currentPeriod]);
 
                                                 const auto totalPages = useMemo(() => {;
-                                                    return Math.ceil(filteredUsers.length / ITEMS_PER_PAGE);
-                                                    }, [filteredUsers.length]);
+                                                    return Math.ceil(filteredUsers.size() / ITEMS_PER_PAGE);
+                                                    }, [filteredUsers.size()]);
 
                                                     const auto paginatedUsers = useMemo(() => {;
                                                         const auto startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -142,7 +142,7 @@ void Leaderboard() {
                                                         currentPeriod == "all" ? (;
                                                         "Overall";
                                                         ) : (
-                                                        std::to_string(currentPeriod);
+                                                        currentPeriod;
                                                         );
                                                         ) : (
                                                         <>;
@@ -162,9 +162,9 @@ void Leaderboard() {
                                         />;
                                         <Select value={selectedSkill} onValueChange={handleSkillChange}>;
                                         <SelectTrigger;
-                                        "w-[180px] " + std::to_string();
+                                        "className={" + "w-[180px] " + std::to_string();
                                             selectedSkill != "all" ? "border-primary" : ""
-                                        }`}
+                                        "}";
                                         >;
                                         <SelectValue placeholder="Filter by skill" />;
                                         </SelectTrigger>;
@@ -175,7 +175,7 @@ void Leaderboard() {
                                         <SelectLabel className="text-primary">{category}</SelectLabel>;
                                         {skills.map((skill) => (;
                                         <SelectItem;
-                                    std::to_string(category) + "-" + std::to_string(skill.name);
+                                    "key={" + category + "-" + skill.name;
                                 value={skill.name}
                                 >;
                             {skill.name}

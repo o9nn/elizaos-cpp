@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void apiKeyAuthMiddleware(Request req, Response res, NextFunction next) {
+void apiKeyAuthMiddleware(const std::string& req, const std::string& res, NextFunction next) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto serverAuthToken = process.env.ELIZA_SERVER_AUTH_TOKEN;
@@ -19,11 +19,11 @@ void apiKeyAuthMiddleware(Request req, Response res, NextFunction next) {
         return next();
     }
 
-    const auto apiKey = req.headers.['x-api-key'];
+    const auto apiKey = req.headers.["x-api-key"];
 
     if (!apiKey || apiKey != serverAuthToken) {
-        std::cout << "Unauthorized access attempt: Missing or invalid X-API-KEY from " + std::to_string(req.ip) << std::endl;
-        return res.status(401).send('Unauthorized: Invalid or missing X-API-KEY');
+        std::cout << "Unauthorized access attempt: Missing or invalid X-API-KEY from " + req.ip << std::endl;
+        return res.status(401).send("Unauthorized: Invalid or missing X-API-KEY");
     }
 
     // If key is valid, proceed

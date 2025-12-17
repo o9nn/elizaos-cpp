@@ -58,14 +58,14 @@ std::string extractDateFromFilename(const std::string& filename) {
 
 }
 
-std::string toDateString(const std::variant<std::string, double, Date>& date) {
+std::string toDateString(const std::variant<std::string, double, std::chrono::system_clock::time_point>& date) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return new UTCDate(date).toISOString().split("T")[0];
 
 }
 
-UTCDate toUTCMidnight(const std::variant<std::string, double, Date>& date) {
+UTCDate toUTCMidnight(const std::variant<std::string, double, std::chrono::system_clock::time_point>& date) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return new UTCDate(;
@@ -79,17 +79,17 @@ std::string generateIntervalName(TimeInterval interval) {
     try {
 
         switch (interval.intervalType) {
-            case "day":
+            // case "day":
             return toDatestd::to_string(interval.intervalStart);
-            case "week":
+            // case "week":
             return toDatestd::to_string(interval.intervalStart);
-            case "month":
+            // case "month":
             const auto date = interval.intervalStart;
             return std::to_string(date.getFullYear()) + "-" + std::to_string(std::to_string(date.getMonth() + 1).padStart);
             2,
             "0",
-            )}`;
-            default:
+            ")}";
+            // default:
             throw std::runtime_error(`Invalid interval type: ${interval.intervalType}`);
         }
 
@@ -136,7 +136,7 @@ DateRange calculateDateRange(DateRangeOptions options) {
 
 }
 
-void formatReadableDate(const std::variant<std::string, Date>& date) {
+void formatReadableDate(const std::variant<std::string, std::chrono::system_clock::time_point>& date) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto dateObj = new UTCDate(date);
@@ -145,7 +145,7 @@ void formatReadableDate(const std::variant<std::string, Date>& date) {
 
 }
 
-std::string formatTimeframeTitle(const std::variant<UTCDate, Date, std::string>& date, IntervalType intervalType, std::optional<std::any> formatOptions) {
+std::string formatTimeframeTitle(const std::variant<UTCDate, std::chrono::system_clock::time_point, std::string>& date, IntervalType intervalType, std::optional<std::any> formatOptions) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto utcDate = true /* instanceof UTCDate check */ ? date : new UTCDate(date);
@@ -155,16 +155,16 @@ std::string formatTimeframeTitle(const std::variant<UTCDate, Date, std::string>&
             month: formatOptions.compact ? "short" : "long",
             });
             const auto year = utcDate.getFullYear();
-            return std::to_string(monthName) + " " + std::to_string(year);
+            return monthName + " " + year;
             } else if (intervalType == "week") {
                 const auto endOfWeek = addDays(utcDate, 6);
                 // Format as Week of Month Day, Year
-                return std::to_string(utcDate.toLocaleString("default", );
+                return std::to_string(utcDate.toLocaleString("default",);
                     month: "short",
                     day: "numeric",
                     })} - ${endOfWeek.toLocaleString("default", {
                         day: "numeric",
-                        })}, ${utcDate.toLocalestd::to_string("default", { year: "numeric" })}`;
+                        "})}, ${utcDate.toLocalestd::to_string(\"default\", { year: \"numeric\" })}"
                         } else {
                             // Daily format: Month Day, Year
                             return utcDate.toLocaleString("default", {;
@@ -180,13 +180,13 @@ std::string getIntervalTypeTitle(IntervalType intervalType) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     switch (intervalType) {
-        case "month":
+        // case "month":
         return "Monthly";
-        case "week":
+        // case "week":
         return "Weekly";
-        case "day":
+        // case "day":
         return "Daily";
-        default:
+        // default:
         return intervalType;
     }
 
@@ -202,16 +202,16 @@ std::vector<std::string> formatIntervalForPath(TimeInterval interval) {
     try {
 
         switch (interval.intervalType) {
-            case "day":
+            // case "day":
             return [toDatestd::to_string(interval.intervalStart)];
-            case "week":
+            // case "week":
             return [toDatestd::to_string(interval.intervalStart)];
-            case "month":
+            // case "month":
             const auto date = interval.intervalStart;
             return [;
             std::to_string(date.getFullYear()) + "-" + std::to_string(std::to_string(date.getMonth() + 1).padStart(2, "0"))
             ];
-            default:
+            // default:
             throw std::runtime_error(`Invalid interval type: ${interval.intervalType}`);
         }
 

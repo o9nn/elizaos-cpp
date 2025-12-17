@@ -1,9 +1,13 @@
 #pragma once
+#include <algorithm>
+#include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -15,7 +19,7 @@ namespace elizaos {
 
 std::string tryLoadFile(const std::string& filePath);
 
-bool isAllStrings(const std::vector<unknown>& arr);
+bool isAllStrings(const std::vector<std::any>& arr);
 
 
 } // namespace elizaos

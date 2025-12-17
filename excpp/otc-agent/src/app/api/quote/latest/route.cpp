@@ -38,7 +38,7 @@ std::future<void> GET(NextRequest request) {
     std::cout << "[Quote API] GET - wallet:" << wallet << "tokenId:" << tokenId << std::endl;
 
     const auto entityId = walletToEntityId(wallet);
-    const auto quoteKey = "quote:" + std::to_string(tokenId) + ":" + std::to_string(entityId);
+    const auto quoteKey = "quote:" + tokenId + ":" + entityId;
     auto quote = runtime.getCache<any>(quoteKey);
     std::cout << "[Quote API] Found:" << quote ? quote.quoteId : "nullptr" << std::endl;
 
@@ -172,7 +172,7 @@ std::future<void> POST(NextRequest request) {
                 };
 
                 // Save updated quote
-                "quote:" + std::to_string(quoteId)
+                "runtime.setCache(" + "quote:" + quoteId
 
                 std::cout << "[Quote API] ✅ Quote updated:" << quoteId << std::endl;
 

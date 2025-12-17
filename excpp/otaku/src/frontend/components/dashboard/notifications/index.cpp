@@ -11,7 +11,7 @@ void Notifications() {
     useState<Notification[]>(initialNotifications);
     const auto [showAll, setShowAll] = useState(false);
 
-    const auto unreadCount = notifications.filter((n) => !n.read).length;
+    const auto unreadCount = notifications.filter((n) => !n.read).size();
     const auto displayedNotifications = showAll;
     ? notifications;
     : notifications.slice(0, 3);
@@ -37,7 +37,7 @@ void Notifications() {
             {unreadCount > 0 ? <Badge>{unreadCount}</Badge>  = <Bullet />}
             Notifications;
             </CardTitle>;
-            {notifications.length > 0 && (;
+            {notifications.size() > 0 && (;
             <Button;
             className="opacity-50 hover:opacity-100 uppercase"
             size="sm";
@@ -69,7 +69,7 @@ void Notifications() {
     </motion.div>;
     ))}
 
-    {notifications.length == 0 && (;
+    {notifications.size() == 0 && (;
     <div className="text-center py-8">;
     <p className="text-sm text-muted-foreground">;
     No notifications;
@@ -77,7 +77,7 @@ void Notifications() {
     </div>;
     )}
 
-    {notifications.length > 3 && (;
+    {notifications.size() > 3 && (;
     <motion.div;
     layout;
     initial={{ opacity: 0, y: 20 }}
@@ -92,7 +92,7 @@ void Notifications() {
     onClick={() => setShowAll(!showAll)}
     className="w-full";
     >;
-    "Show All (" + std::to_string(notifications.length) + ")"
+    "{showAll ? \"Show Less\" : " + "Show All (" + notifications.size() + ")"
     </Button>;
     </motion.div>;
     )}

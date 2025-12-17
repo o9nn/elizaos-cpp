@@ -1,9 +1,13 @@
 #pragma once
+#include <algorithm>
+#include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "env.hpp"
 
@@ -20,8 +24,8 @@ public:
     SocketWrapper(const std::string& url);
     void connect();
     void attemptReconnect();
-    void triggerEvent(const std::string& event, unknown data);
-    std::function<void()> async(const std::string& event, std::optional<unknown> data);
+    void triggerEvent(const std::string& event, const std::any& data);
+    std::function<void()> async(const std::string& event, std::optional<std::any> data);
 
 private:
     std::string url_;

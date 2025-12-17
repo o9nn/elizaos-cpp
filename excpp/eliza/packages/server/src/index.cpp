@@ -14,9 +14,9 @@ std::string expandTildePath(const std::string& filepath) {
     if (filepath.startsWith('~')) {
         if (filepath == '~') {
             return process.cwd();
-            } else if (filepath.startsWith('~/')) {
+            } else if (filepath.startsWith("~/")) {
                 return path.join(process.cwd(), filepath.slice(2));
-                } else if (filepath.startsWith('~~')) {
+                } else if (filepath.startsWith("~~")) {
                     // Don't expand ~~
                     return filepath;
                     } else {
@@ -41,13 +41,13 @@ std::string resolvePgliteDir(std::optional<std::string> dir, std::optional<std::
     dir ||;
     process.env.PGLITE_DATA_DIR ||;
     fallbackDir ||;
-    path.join(process.cwd(), '.eliza', '.elizadb');
+    path.join(process.cwd(), ".eliza", ".elizadb");
 
     // Automatically migrate legacy path (<cwd>/.elizadb) to new location (<cwd>/.eliza/.elizadb)
     const auto resolved = expandTildePath(base);
-    const auto legacyPath = path.join(process.cwd(), '.elizadb');
+    const auto legacyPath = path.join(process.cwd(), ".elizadb");
     if (resolved == legacyPath) {
-        const auto newPath = path.join(process.cwd(), '.eliza', '.elizadb');
+        const auto newPath = path.join(process.cwd(), ".eliza", ".elizadb");
         process.env.PGLITE_DATA_DIR = newPath;
         return newPath;
     }

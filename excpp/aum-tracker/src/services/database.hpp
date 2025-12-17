@@ -1,10 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -20,7 +22,7 @@ struct WalletBalance {
     double sol_balance;
     std::string tokens;
     std::string last_updated;
-    std::variant<"success", "error", "pending"> fetch_status;
+    std::string fetch_status;
     std::optional<std::string> error_message;
     double retry_count;
 };
@@ -34,15 +36,15 @@ struct TokenPrice {
     std::optional<double> market_cap;
     std::optional<std::string> image_url;
     std::string last_updated;
-    std::variant<"jupiter", "coingecko", "fallback", "jupiter-metadata"> source;
+    std::string source;
 };
 
 struct FetchLog {
     std::optional<double> id;
     std::string wallet_address;
     std::string timestamp;
-    std::variant<"balance", "tokens", "prices", "token-metadata"> operation;
-    std::variant<"success", "error", "timeout"> status;
+    std::string operation;
+    std::string status;
     std::optional<std::string> error_details;
     double response_time_ms;
     std::optional<std::string> details;
@@ -61,7 +63,7 @@ struct PortfolioSnapshot {
     double sol_balance;
     std::string tokens;
     double total_usd_value;
-    std::variant<"hourly", "daily", "manual"> snapshot_type;
+    std::string snapshot_type;
 };
 
 struct WalletPNL {

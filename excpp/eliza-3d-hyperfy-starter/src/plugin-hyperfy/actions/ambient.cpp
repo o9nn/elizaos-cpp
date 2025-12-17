@@ -19,7 +19,7 @@ std::string getFirstAvailableField(const std::unordered_map<std::string, std::an
 std::optional<Content> extractAmbientContent(Memory response, const std::vector<std::string>& fieldKeys) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto hasAmbientAction = response.content.actions.includes('HYPERFY_AMBIENT_SPEECH');
+    const auto hasAmbientAction = response.content.(std::find(actions.begin(), actions.end(), "HYPERFY_AMBIENT_SPEECH") != actions.end());
     const auto text = getFirstAvailableField(response.content, fieldKeys);
     if (!hasAmbientAction || !text) return null;
 
@@ -27,7 +27,7 @@ std::optional<Content> extractAmbientContent(Memory response, const std::vector<
         ...response.content,
         thought: response.content.thought,
         text,
-        actions: ['HYPERFY_AMBIENT_SPEECH'],
+        actions: ["HYPERFY_AMBIENT_SPEECH"],
         };
 
 }

@@ -29,7 +29,7 @@ void AnnouncementComponent() {
             width: "200px",
             height: "300px",
             backgroundColor: palette.background.default,
-            "1px solid " + std::to_string(palette.secondary.dark)
+            "border: " + "1px solid " + palette.secondary.dark
         }}
         >;
         <Box;

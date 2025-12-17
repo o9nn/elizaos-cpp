@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::future<bool> checkExistingSummary(const std::string& username, const std::variant<std::string, Date>& date, IntervalType intervalType) {
+std::future<bool> checkExistingSummary(const std::string& username, const std::variant<std::string, std::chrono::system_clock::time_point>& date, IntervalType intervalType) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto existingSummary = db.query.userSummaries.findFirst({;

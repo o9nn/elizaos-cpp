@@ -8,7 +8,7 @@ Keypair getWalletKeypair(std::optional<IAgentRuntime> runtime) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        const auto privateKeyString = runtime.getSetting('SOLANA_PRIVATE_KEY');
+        const auto privateKeyString = runtime.getSetting("SOLANA_PRIVATE_KEY");
         if (!privateKeyString) {
             throw std::runtime_error('No wallet private key configured');
         }
@@ -17,7 +17,7 @@ Keypair getWalletKeypair(std::optional<IAgentRuntime> runtime) {
             const auto privateKeyBytes = decodeBase58(privateKeyString);
             return Keypair.fromSecretKey(privateKeyBytes);
             } catch (error) {
-                std::cerr << 'Failed to create wallet keypair:' << error << std::endl;
+                std::cerr << "Failed to create wallet keypair:" << error << std::endl;
                 throw;
             }
 
@@ -32,7 +32,7 @@ std::future<double> getWalletBalance(IAgentRuntime runtime) {
 
     try {
         const auto walletKeypair = getWalletKeypair(runtime);
-        const auto connection = new Connection(runtime.getSetting('SOLANA_RPC_URL'));
+        const auto connection = new Connection(runtime.getSetting("SOLANA_RPC_URL"));
         const auto balance = connection.getBalance(walletKeypair.publicKey);
         const auto solBalance = balance / 1e9;
 
@@ -43,7 +43,7 @@ std::future<double> getWalletBalance(IAgentRuntime runtime) {
 
             return solBalance;
             } catch (error) {
-                std::cerr << 'Failed to get wallet balance:' << error << std::endl;
+                std::cerr << "Failed to get wallet balance:" << error << std::endl;
                 return 0;
             }
 
@@ -53,7 +53,7 @@ std::future<Connection> getConnection(IAgentRuntime runtime) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return new Connection(;
-    runtime.getSetting('RPC_URL') || 'https://zondra-wil7oz-fast-mainnet.helius-rpc.com'
+    runtime.getSetting("RPC_URL") || "https://zondra-wil7oz-fast-mainnet.helius-rpc.com"
     );
 
 }
@@ -62,7 +62,7 @@ double calculateDynamicSlippage(const std::string& amount, const std::any& quote
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto baseSlippage = 0.45;
-    const auto priceImpact = Number.parseFloat(quoteData.priceImpactPct || '0');
+    const auto priceImpact = Number.parseFloat(quoteData.priceImpactPct || "0");
     const auto amountNum = Number(amount);
 
     auto dynamicSlippage = baseSlippage;
@@ -126,7 +126,7 @@ std::future<std::string> simulateTransaction(const std::any& client, const std::
             });
             return result;
             } catch (error) {
-                return "Simulation failed: " + std::to_string(error.message);
+                return "Simulation failed: " + error.message;
             }
 
 }
@@ -136,11 +136,11 @@ std::future<void> getWalletBalances(IAgentRuntime runtime) {
 
     try {
         const auto walletKeypair = getWalletKeypair(runtime);
-        const auto connection = new Connection(runtime.getSetting('RPC_URL'));
+        const auto connection = new Connection(runtime.getSetting("RPC_URL"));
 
         const auto solBalance = connection.getBalance(walletKeypair.publicKey);
         const auto tokenAccounts = connection.getParsedTokenAccountsByOwner(walletKeypair.publicKey, {;
-            programId: new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'),
+            programId: new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"),
             });
 
             const auto balances = {;
@@ -156,7 +156,7 @@ std::future<void> getWalletBalances(IAgentRuntime runtime) {
                     //logger.log('Fetched wallet balances:', balances);
                     return balances;
                     } catch (error) {
-                        std::cerr << 'Failed to get wallet balances:' << error << std::endl;
+                        std::cerr << "Failed to get wallet balances:" << error << std::endl;
                         return {
                             solBalance: 0,
                             tokens: [],
@@ -180,7 +180,7 @@ std::future<std::optional<TokenBalance>> getTokenBalance(IAgentRuntime runtime, 
 
             return token;
             } catch (error) {
-                std::cerr << 'Failed to get token balance:' << error << std::endl;
+                std::cerr << "Failed to get token balance:" << error << std::endl;
                 return nullptr;
             }
 

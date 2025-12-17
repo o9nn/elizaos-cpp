@@ -1,9 +1,13 @@
 #pragma once
+#include <algorithm>
+#include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -30,7 +34,7 @@ namespace elizaos {
  */
 class InternalMessageBus {
 public:
-    bool emit(const std::string& event, unknown data);
+    bool emit(const std::string& event, const std::any& data);
     double getMaxListeners();
     void setMaxListeners(double n);
     void removeAllListeners(std::optional<std::string> event);

@@ -33,15 +33,15 @@ BatchInstance simpleToFullBatchInstance(SimpleBatchInstance simple, DeploymentCo
                         },
                         repo: simple.repoName
                         ? {
-                            type: 'preexisting',
+                            type: "preexisting",
                             repoName: simple.repoName,
-                            baseCommit: simple.baseCommit || 'HEAD',
+                            baseCommit: simple.baseCommit || "HEAD",
                             reset: false,
                         }
                         : nullptr,
                         postStartupCommands: [],
                         postStartupCommandTimeout: 500,
-                        name: 'main',
+                        name: "main",
                         };
 
                         return { env, problemStatement }
@@ -81,7 +81,7 @@ std::vector<BatchInstance> filterBatchItems(const std::vector<BatchInstance>& in
     if (options.filter) {
         const auto regex = new RegExp(options.filter);
         filtered = filtered.filter((instance) => {
-            const auto id = (instance.problemStatement as { id?: string }).id || '';
+            const auto id = (instance.problemStatement as { id?: string }).id || "";
             return regex.test(id);
             });
         }
@@ -90,12 +90,12 @@ std::vector<BatchInstance> filterBatchItems(const std::vector<BatchInstance>& in
         if (options.slice) {
             const auto { start, stop, step } = sliceSpecToSlice(options.slice);
             const auto startIdx = start || 0;
-            const auto stopIdx = stop || filtered.length;
+            const auto stopIdx = stop || filtered.size();
             const auto stepSize = step || 1;
 
             const std::vector<BatchInstance> sliced = [];
             for (int i = startIdx; i < stopIdx && i < filtered.length; i += stepSize) {
-                sliced.push(filtered[i]);
+                sliced.push_back(filtered[i]);
             }
             filtered = sliced;
         }
@@ -104,7 +104,7 @@ std::vector<BatchInstance> filterBatchItems(const std::vector<BatchInstance>& in
 
 }
 
-SimpleBatchInstance fromSWEBench(const std::unordered_map<std::string, unknown>& sweBenchInstance) {
+SimpleBatchInstance fromSWEBench(const std::unordered_map<std::string, std::any>& sweBenchInstance) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto instanceId = sweBenchInstance.instance_id;
@@ -114,16 +114,16 @@ SimpleBatchInstance fromSWEBench(const std::unordered_map<std::string, unknown>&
 
     // Generate image name if not provided
     if (!imageName) {
-        const auto parts = instanceId.split('__');
+        const auto parts = instanceId.split("__");
         if (parts.length == 2) {
             const auto [org, proj] = parts;
             // Only replace hyphens in the org part, keep proj as is for the tag
-            const auto imageTag = std::to_string(org.replace(/-/g, '_')) + "_1776_" + std::to_string(proj);
-            "swebench/sweb.eval.x86_64." + std::to_string(imageTag) + ":latest"
+            const auto imageTag = std::to_string(org.replace(/-/g, "_")) + "_1776_" + proj;
+            "imageName = " + "swebench/sweb.eval.x86_64." + imageTag + ":latest"
             } else {
                 // Fallback for instances without proper org__proj format
-                const auto safeId = instanceId.replace(/[^a-zA-Z0-9_-]/g, '_');
-                "swebench/sweb.eval.x86_64." + std::to_string(safeId) + ":latest"
+                const auto safeId = instanceId.replace(/[^a-zA-Z0-9_-]/g, "_");
+                "imageName = " + "swebench/sweb.eval.x86_64." + safeId + ":latest"
             }
         }
 
@@ -132,7 +132,7 @@ SimpleBatchInstance fromSWEBench(const std::unordered_map<std::string, unknown>&
             problemStatement,
             baseCommit,
             imageName,
-            repoName: 'testbed',
+            repoName: "testbed",
             extraFields: {},
             };
 
@@ -140,7 +140,7 @@ SimpleBatchInstance fromSWEBench(const std::unordered_map<std::string, unknown>&
             if (sweBenchInstance.image_assets) {
                 auto imageAssets = sweBenchInstance.image_assets;
                 if (typeof imageAssets == 'string') {
-                    imageAssets = JSON.parse(imageAssets);
+                    imageAssets = /* JSON.parse */ imageAssets;
                 }
                 if ((imageAssets as any).problem_statement) {
                     result.extraFields = { ...result.extraFields, issue_images: (imageAssets).problem_statement };
@@ -166,7 +166,7 @@ AbstractInstanceSource createInstanceSource(BatchInstanceSourceConfig config) {
                 shuffle: config.shuffle,
                 deployment: config.deployment,
                 });
-                } else if (config.type == 'swe_bench') {
+                } else if (config.type == "swe_bench") {
                     return new SWEBenchInstances(config);
                     } else {
                         throw std::runtime_error(`Unknown instance source type: ${config.type}`);

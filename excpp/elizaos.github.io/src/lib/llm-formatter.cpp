@@ -28,93 +28,93 @@ std::string formatDataForLLM(IntervalMetrics metrics, const std::string& summary
     const std::vector<std::string> parts = [];
 
     // Metadata Section
-    parts.push("## Metadata");
-    parts.push("```json");
-    parts.push("{");
-    "  "interval_type": "" + std::to_string(metrics.interval.intervalType) + "","
-    "  "start_date": "" + std::to_string(metrics.interval.intervalStart) + "","
-    "  "end_date": "" + std::to_string(metrics.interval.intervalEnd) + """
-    parts.push("}");
-    parts.push("```");
-    parts.push("");
+    parts.push_back("## Metadata");
+    "parts.push_back(\"";
+    parts.push_back("{");
+    "parts.push_back(" + "  \"interval_type\": \"" + metrics.interval.intervalType + "\","
+    "parts.push_back(" + "  \"start_date\": \"" + metrics.interval.intervalStart + "\","
+    "parts.push_back(" + "  \"end_date\": \"" + metrics.interval.intervalEnd + "\""
+    parts.push_back("}");
+    "parts.push_back(\"";
+    parts.push_back("");
 
     // Statistics Section
     if (options.includeStats) {
-        parts.push("## Statistics");
-        parts.push("```json");
-        parts.push("{");
-        parts.push('  "pull_requests": {');
-        "    \"new\": " + std::to_string(metrics.pullRequests.new) + ","
-        "    \"merged\": " + std::to_string(metrics.pullRequests.merged) + ","
-        "    \"total_unique\": " + std::to_string(metrics.pullRequests.total)
-        parts.push("  },");
-        parts.push('  "issues": {');
-        "    \"new\": " + std::to_string(metrics.issues.new) + ","
-        "    \"closed\": " + std::to_string(metrics.issues.closed) + ","
-        "    \"total_unique\": " + std::to_string(metrics.issues.total)
-        parts.push("  },");
-        parts.push('  "contributors": {');
-        "    \"active\": " + std::to_string(metrics.activeContributors)
-        parts.push("  },");
-        parts.push('  "code_changes": {');
-        "    \"commits\": " + std::to_string(metrics.codeChanges.commitCount) + ","
-        "    \"files_changed\": " + std::to_string(metrics.codeChanges.files) + ","
-        parts.push(;
-        "    \"lines_added\": " + std::to_string(metrics.codeChanges.additions.toLocaleString()) + ","
+        parts.push_back("## Statistics");
+        "parts.push_back(\"";
+        parts.push_back("{");
+        parts.push_back("  "pull_requests": {");
+        "parts.push_back(" + "    \\"new\\": " + metrics.pullRequests.new + ","
+        "parts.push_back(" + "    \\"merged\\": " + metrics.pullRequests.merged + ","
+        "parts.push_back(" + "    \\"total_unique\\": " + metrics.pullRequests.total
+        parts.push_back("  },");
+        parts.push_back("  "issues": {");
+        "parts.push_back(" + "    \\"new\\": " + metrics.issues.new + ","
+        "parts.push_back(" + "    \\"closed\\": " + metrics.issues.closed + ","
+        "parts.push_back(" + "    \\"total_unique\\": " + metrics.issues.total
+        parts.push_back("  },");
+        parts.push_back("  "contributors": {");
+        "parts.push_back(" + "    \\"active\\": " + metrics.activeContributors
+        parts.push_back("  },");
+        parts.push_back("  "code_changes": {");
+        "parts.push_back(" + "    \\"commits\\": " + metrics.codeChanges.commitCount + ","
+        "parts.push_back(" + "    \\"files_changed\\": " + metrics.codeChanges.files + ","
+        parts.push_back(;
+        "    \\"lines_added\\": " + std::to_string(metrics.codeChanges.additions.toLocaleString()) + ","
         );
-        parts.push(;
-        "    \"lines_deleted\": " + std::to_string(metrics.codeChanges.deletions.toLocaleString())
+        parts.push_back(;
+        "    \\"lines_deleted\\": " + std::to_string(metrics.codeChanges.deletions.toLocaleString())
         );
-        parts.push("  }");
-        parts.push("}");
-        parts.push("```");
-        parts.push("");
+        parts.push_back("  }");
+        parts.push_back("}");
+        "parts.push_back(\"";
+        parts.push_back("");
     }
 
     // Summary Section
     if (options.includeSummary && summaryContent) {
-        parts.push("## Summary");
-        parts.push(summaryContent);
-        parts.push("");
+        parts.push_back("## Summary");
+        parts.push_back(summaryContent);
+        parts.push_back("");
     }
 
     // Top Contributors
     if (metrics.topContributors && metrics.topContributors.length > 0) {
-        parts.push("## Top Contributors");
-        parts.push("```json");
-        parts.push("/* Top contributors for this period */");
-        parts.push("[");
+        parts.push_back("## Top Contributors");
+        "parts.push_back(\"";
+        parts.push_back("/* Top contributors for this period */");
+        parts.push_back("[");
         metrics.topContributors.forEach((contributor, index) => {
-            const auto comma = index < metrics.topContributors!.length - 1 ? "," : "";
-            "  {";
-            "    "username": "" + std::to_string(contributor.username) + "","
-            "    "score": " + std::to_string(contributor.totalScore)
-            "  }" + std::to_string(comma);
+            const auto comma = index < metrics.topContributors!.size() - 1 ? "," : "";
+            "parts.push_back(" + "  {";
+            "parts.push_back(" + "    \"username\": \"" + contributor.username + "\","
+            "parts.push_back(" + "    \"score\": " + contributor.totalScore
+            "parts.push_back(" + "  }" + comma;
             });
-            parts.push("]");
-            parts.push("```");
-            parts.push("");
+            parts.push_back("]");
+            "parts.push_back(\"";
+            parts.push_back("");
         }
 
         // Detailed Contributor Summaries Section
         if (
         options.includeDetailedContributorSummaries &&;
         metrics.detailedContributorSummaries &&;
-        Object.keys(metrics.detailedContributorSummaries).length > 0;
+        Object.keys(metrics.detailedContributorSummaries).size() > 0;
         ) {
-            parts.push("## Detailed Contributor Summaries");
-            parts.push(""); // Add a blank line after the main heading;
+            parts.push_back("## Detailed Contributor Summaries");
+            parts.push_back(""); // Add a blank line after the main heading;
             console.log(
-            "[formatDataForLLM] Including detailed contributor summaries. Found " + std::to_string(Object.keys(metrics.detailedContributorSummaries).length) + " summaries."
+            "[formatDataForLLM] Including detailed contributor summaries. Found " + std::to_string(Object.keys(metrics.detailedContributorSummaries).size()) + " summaries."
             );
 
             for (const int [username, summary] of Object.entries(
             metrics.detailedContributorSummaries,
             )) {
                 if (summary && summary.trim() != "") {
-                    "### " + std::to_string(username);
-                    parts.push(summary);
-                    parts.push(""); // Add a blank line after each summary for spacing;
+                    "parts.push_back(" + "### " + username;
+                    parts.push_back(summary);
+                    parts.push_back(""); // Add a blank line after each summary for spacing;
                 }
             }
             // The last blank line ensures separation from the next section, or adds padding at the end if it's the last one.
@@ -134,59 +134,59 @@ std::string formatDataForLLM(IntervalMetrics metrics, const std::string& summary
                 if (
                 options.includePrData &&;
                 metrics.topPullRequests &&;
-                metrics.topPullRequests.length > 0;
+                metrics.topPullRequests.size() > 0;
                 ) {
-                    parts.push("## Pull Requests");
-                    parts.push("```json");
-                    parts.push("[");
+                    parts.push_back("## Pull Requests");
+                    "parts.push_back(\"";
+                    parts.push_back("[");
                     metrics.topPullRequests.forEach((pr, index) => {
-                        const auto comma = index < metrics.topPullRequests!.length - 1 ? "," : "";
-                        "  {";
-                        "    "number": " + std::to_string(pr.number) + ","
-                        "    "title": "" + std::to_string(pr.title.replace(/"/g, '\\"')) + "","
-                        "    "author": "" + std::to_string(pr.author) + "","
-                        "    "status": "" + std::to_string(pr.mergedAt ? "Merged" : "New") + "","
-                        parts.push(;
-                        "    "link": "https://github.com/" + std::to_string(pr.repository) + "/pull/" + std::to_string(pr.number) + "","
+                        const auto comma = index < metrics.topPullRequests!.size() - 1 ? "," : "";
+                        "parts.push_back(" + "  {";
+                        "parts.push_back(" + "    \"number\": " + pr.number + ","
+                        "parts.push_back(" + "    \"title\": \"" + std::to_string(pr.title.replace(/"/g, "\\"")) + "\","
+                        "parts.push_back(" + "    \"author\": \"" + pr.author + "\","
+                        "parts.push_back(" + "    \"status\": \"" + std::to_string(pr.mergedAt ? "Merged" : "New") + "\","
+                        parts.push_back(;
+                        "    \"link\": \"https://github.com/" + pr.repository + "/pull/" + pr.number + "\","
                         );
-                        parts.push(;
-                        "    "body": "" + std::to_string(sanitizeBodyText(pr.body || "Body not available.", 750).replace(/"/g, '\\"')) + """
+                        parts.push_back(;
+                        "    \"body\": \"" + std::to_string(sanitizeBodyText(pr.body || "Body not available.", 750).replace(/"/g, "\\"")) + "\""
                         );
-                        "  }" + std::to_string(comma);
+                        "parts.push_back(" + "  }" + comma;
                         });
-                        parts.push("]");
-                        parts.push("```");
-                        parts.push("");
+                        parts.push_back("]");
+                        "parts.push_back(\"";
+                        parts.push_back("");
                     }
 
                     // Issues Section
                     if (
                     options.includeIssueData &&;
                     metrics.topIssues &&;
-                    metrics.topIssues.length > 0;
+                    metrics.topIssues.size() > 0;
                     ) {
-                        parts.push("## Issues");
-                        parts.push("```json");
-                        parts.push("[");
+                        parts.push_back("## Issues");
+                        "parts.push_back(\"";
+                        parts.push_back("[");
                         metrics.topIssues.forEach((issue, index) => {
-                            const auto comma = index < metrics.topIssues!.length - 1 ? "," : "";
-                            "  {";
-                            "    "number": " + std::to_string(issue.number) + ","
-                            "    "title": "" + std::to_string(issue.title.replace(/"/g, '\\"')) + "","
-                            "    "author": "" + std::to_string(issue.author) + "","
-                            "    "state": "" + std::to_string(issue.state) + "","
-                            "    "comments": " + std::to_string(issue.commentCount) + ","
-                            parts.push(;
-                            "    "link": "https://github.com/" + std::to_string(issue.repository) + "/issues/" + std::to_string(issue.number) + "","
+                            const auto comma = index < metrics.topIssues!.size() - 1 ? "," : "";
+                            "parts.push_back(" + "  {";
+                            "parts.push_back(" + "    \"number\": " + issue.number + ","
+                            "parts.push_back(" + "    \"title\": \"" + std::to_string(issue.title.replace(/"/g, "\\"")) + "\","
+                            "parts.push_back(" + "    \"author\": \"" + issue.author + "\","
+                            "parts.push_back(" + "    \"state\": \"" + issue.state + "\","
+                            "parts.push_back(" + "    \"comments\": " + issue.commentCount + ","
+                            parts.push_back(;
+                            "    \"link\": \"https://github.com/" + issue.repository + "/issues/" + issue.number + "\","
                             );
-                            parts.push(;
-                            "    "body": "" + std::to_string(sanitizeBodyText(issue.body || "Body not available.").replace(/"/g, '\\"')) + """
+                            parts.push_back(;
+                            "    \"body\": \"" + std::to_string(sanitizeBodyText(issue.body || "Body not available.").replace(/"/g, "\\"")) + "\""
                             );
-                            "  }" + std::to_string(comma);
+                            "parts.push_back(" + "  }" + comma;
                             });
-                            parts.push("]");
-                            parts.push("```");
-                            parts.push("");
+                            parts.push_back("]");
+                            "parts.push_back(\"";
+                            parts.push_back("");
                         }
 
                         return parts.join("\n");

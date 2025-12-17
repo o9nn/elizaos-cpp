@@ -1,9 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
 
@@ -19,7 +22,7 @@ struct AcceptQuoteModalProps {
     std::optional<std::optional<OTCQuote>> initialQuote;
 };
 
-using StepState = std::variant<, "amount", "sign", "creating", "await_approval", "paying", "complete">;
+using StepState = ;
 
 // --- Token Metadata from cache ---
 struct TokenMetadata {
@@ -51,7 +54,7 @@ void setContractExists(const std::string& key, bool exists);
 // --- Consolidated Modal State ---
 struct ModalState {
     double tokenAmount;
-    std::variant<"ETH", "USDC", "SOL"> currency;
+    std::string currency;
     StepState step;
     bool isProcessing;
     std::string error;

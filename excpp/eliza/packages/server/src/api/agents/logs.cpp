@@ -11,22 +11,22 @@ express::Router createAgentLogsRouter(const std::unordered_map<UUID, IAgentRunti
         const auto router = express.Router();
 
         // Get Agent Logs
-        router.get('/:agentId/logs', async (req, res) => {
+        router.get("/:agentId/logs", async (req, res) => {
             const auto agentId = validateUuid(req.params.agentId);
             const auto { roomId, type, count, offset, excludeTypes } = req.query;
             if (!agentId) {
-                return sendError(res, 400, 'INVALID_ID', 'Invalid agent ID format');
+                return sendError(res, 400, "INVALID_ID", "Invalid agent ID format");
             }
 
             const auto runtime = agents.get(agentId);
             if (!runtime) {
-                return sendError(res, 404, 'NOT_FOUND', 'Agent not found');
+                return sendError(res, 404, "NOT_FOUND", "Agent not found");
             }
 
             if (roomId) {
                 const auto roomIdValidated = validateUuid(roomId);
                 if (!roomIdValidated) {
-                    return sendError(res, 400, 'INVALID_ID', 'Invalid room ID format');
+                    return sendError(res, 400, "INVALID_ID", "Invalid room ID format");
                 }
             }
 
@@ -71,40 +71,40 @@ express::Router createAgentLogsRouter(const std::unordered_map<UUID, IAgentRunti
 
                         sendSuccess(res, filteredLogs);
                         } catch (error) {
-                            std::cerr << "[AGENT LOGS] Error retrieving logs for agent " + std::to_string(agentId) + ":" << error << std::endl;
+                            std::cerr << "[AGENT LOGS] Error retrieving logs for agent " + agentId + ":" << error << std::endl;
                             sendError(;
                             res,
                             500,
-                            'LOG_ERROR',
-                            'Error retrieving agent logs',
+                            "LOG_ERROR",
+                            "Error retrieving agent logs",
                             true /* instanceof check */ ? error.message : std::to_string(error)
                             );
                         }
                         });
 
                         // Delete specific log
-                        router.delete('/:agentId/logs/:logId', async (req, res) => {
+                        router.delete("/:agentId/logs/:logId", async (req, res) => {
                             const auto agentId = validateUuid(req.params.agentId);
                             const auto logId = validateUuid(req.params.logId);
                             if (!agentId || !logId) {
-                                return sendError(res, 400, 'INVALID_ID', 'Invalid agent or log ID format');
+                                return sendError(res, 400, "INVALID_ID", "Invalid agent or log ID format");
                             }
 
                             const auto runtime = agents.get(agentId);
                             if (!runtime) {
-                                return sendError(res, 404, 'NOT_FOUND', 'Agent not found');
+                                return sendError(res, 404, "NOT_FOUND", "Agent not found");
                             }
 
                             try {
                                 runtime.deleteLog(logId);
                                 res.status(204).send();
                                 } catch (error) {
-                                    std::cerr << "[LOG DELETE] Error deleting log " + std::to_string(logId) + " for agent " + std::to_string(agentId) + ":" << error << std::endl;
+                                    std::cerr << "[LOG DELETE] Error deleting log " + logId + " for agent " + agentId + ":" << error << std::endl;
                                     sendError(;
                                     res,
                                     500,
-                                    'DELETE_ERROR',
-                                    'Failed to delete log',
+                                    "DELETE_ERROR",
+                                    "Failed to delete log",
                                     true /* instanceof check */ ? error.message : std::to_string(error)
                                     );
                                 }

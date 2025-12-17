@@ -8,14 +8,14 @@ void ProfileCard(auto content, auto buttons) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
-    "h-full " + std::to_string(className || '');
+    "<Card className={" + "h-full " + std::to_string(className || "");
     <CardHeader className="pb-2 pt-3">;
     <CardTitle className="text-base truncate max-w-48">{title}</CardTitle>;
     </CardHeader>;
     <CardContent className="p-3">;
     <div;
     className="rounded-md bg-muted w-full mb-3 overflow-hidden";
-    style={{ aspectRatio: '1 / 1' }}
+    style={{ aspectRatio: "1 / 1" }}
     >;
     <div className="flex items-center justify-center h-full">;
     <div className="text-4xl font-bold uppercase h-full flex items-center justify-center w-full">;

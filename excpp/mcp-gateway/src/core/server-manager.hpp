@@ -1,13 +1,16 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".transports/factory.hpp"
-#include ".types/index.hpp"
+#include "transports/factory.hpp"
+#include "types/index.hpp"
 
 namespace elizaos {
 

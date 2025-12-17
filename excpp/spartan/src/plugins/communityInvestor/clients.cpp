@@ -18,7 +18,7 @@ void parseTimeToMs(const std::string& timeStr) {
 void parseExpires(const std::variant<std::string, double>& expires) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return typeof expires == 'string' ? parseTimeToMs(expires) : expires;
+    return typeof expires == "string" ? parseTimeToMs(expires) : expires;
 
 }
 

@@ -14,7 +14,7 @@ void cn() {
 std::string getRandomAvatar() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto randomIndex = Math.floor(Math.random() * PREDEFINED_AVATARS.length);
+    const auto randomIndex = Math.floor(Math.random() * PREDEFINED_AVATARS.size());
     return PREDEFINED_AVATARS[randomIndex];
 
 }

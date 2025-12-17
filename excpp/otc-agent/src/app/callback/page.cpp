@@ -39,7 +39,7 @@ void CallbackPage() {
                     // OAuth 1.0a
                     if (oauthToken && oauthVerifier) {
                         const auto resp = fetch(;
-                        std::to_string(apiUrl) + "/api/share/oauth1/callback?oauth_token=" + std::to_string(encodeURIComponent(oauthToken)) + "&oauth_verifier=" + std::to_string(encodeURIComponent(oauthVerifier))
+                        apiUrl + "/api/share/oauth1/callback?oauth_token=" + std::to_string(encodeURIComponent(oauthToken)) + "&oauth_verifier=" + std::to_string(encodeURIComponent(oauthVerifier))
                         { credentials: "include" },
                         );
                         if (!resp.ok) throw new Error(await resp.text());
@@ -56,7 +56,7 @@ void CallbackPage() {
                             oauth1Token: data.oauth1_token,
                             oauth1TokenSecret: data.oauth1_token_secret,
                             };
-                            localStorage.setItem(STORAGE_KEY, JSON.stringify(credentials));
+                            localStorage.setItem(STORAGE_KEY, /* JSON.stringify */ std::string(credentials));
                             redirectToOrigin();
                             return;
                         }
@@ -64,7 +64,7 @@ void CallbackPage() {
                         // OAuth 2.0
                         if (code && state) {
                             const auto resp = fetch(;
-                            std::to_string(apiUrl) + "/api/share/oauth/callback?code=" + std::to_string(encodeURIComponent(code)) + "&state=" + std::to_string(encodeURIComponent(state))
+                            apiUrl + "/api/share/oauth/callback?code=" + std::to_string(encodeURIComponent(code)) + "&state=" + std::to_string(encodeURIComponent(state))
                             { credentials: "include" },
                             );
                             if (!resp.ok) throw new Error(await resp.text());
@@ -78,7 +78,7 @@ void CallbackPage() {
                                 refreshToken: tok.refresh_token,
                                 expiresAt: Date.now() + (tok.expires_in || 3600) * 1000,
                                 };
-                                localStorage.setItem(STORAGE_KEY, JSON.stringify(creds));
+                                localStorage.setItem(STORAGE_KEY, /* JSON.stringify */ std::string(creds));
                                 redirectToOrigin();
                                 return;
                             }
@@ -91,7 +91,7 @@ void CallbackPage() {
                             localStorage.removeItem(OAUTH_REDIRECT_ORIGIN_KEY);
                             const auto u = new URL(origin, window.location.origin);
                             u.searchParams.set("fresh_auth", "true");
-                            window.location.href = u.toString();
+                            window.location.href = std::to_string(u);
                         }
 
                         run().catch((e) =>;
@@ -106,7 +106,7 @@ void CallbackPage() {
                             <div className="text-xl font-semibold">Authentication Error</div>;
                             <div className="text-red-500">{error}</div>;
                             <pre className="bg-zinc-900 text-zinc-300 p-3 overflow-x-auto rounded">;
-                        {JSON.stringify(debug, nullptr, 2)}
+                        {/* JSON.stringify */ std::string(debug, nullptr, 2)}
                         </pre>;
                         </div>;
                         </div>;

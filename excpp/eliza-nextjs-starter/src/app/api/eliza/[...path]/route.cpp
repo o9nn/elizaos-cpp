@@ -11,10 +11,10 @@ std::future<void> GET(NextRequest request) {
         const auto resolvedParams = params;
         const auto path = resolvedParams.path.join("/");
         const auto searchParams = request.nextUrl.searchParams;
-        const auto query = searchParams.toString();
-        const auto elizaUrl = std::to_string(ELIZA_SERVER_URL) + "/api/" + std::to_string(path) + std::to_string(query ? `?${query}` : "");
+        const auto query = std::to_string(searchParams);
+        const auto elizaUrl = ELIZA_SERVER_URL + "/api/" + path + std::to_string(query ? `?${query}` : "");
 
-        std::cout << "[Proxy] GET " + std::to_string(elizaUrl) << std::endl;
+        std::cout << "[Proxy] GET " + elizaUrl << std::endl;
 
         const auto response = fetch(elizaUrl, {;
             method: "GET",
@@ -52,9 +52,9 @@ std::future<void> POST(NextRequest request) {
         const auto resolvedParams = params;
         const auto path = resolvedParams.path.join("/");
         const auto body = request.text();
-        const auto elizaUrl = std::to_string(ELIZA_SERVER_URL) + "/api/" + std::to_string(path);
+        const auto elizaUrl = ELIZA_SERVER_URL + "/api/" + path;
 
-        std::cout << "[Proxy] POST " + std::to_string(elizaUrl) << std::endl;
+        std::cout << "[Proxy] POST " + elizaUrl << std::endl;
 
         const auto response = fetch(elizaUrl, {;
             method: "POST",
@@ -93,9 +93,9 @@ std::future<void> PUT(NextRequest request) {
         const auto resolvedParams = params;
         const auto path = resolvedParams.path.join("/");
         const auto body = request.text();
-        const auto elizaUrl = std::to_string(ELIZA_SERVER_URL) + "/api/" + std::to_string(path);
+        const auto elizaUrl = ELIZA_SERVER_URL + "/api/" + path;
 
-        std::cout << "[Proxy] PUT " + std::to_string(elizaUrl) << std::endl;
+        std::cout << "[Proxy] PUT " + elizaUrl << std::endl;
 
         const auto response = fetch(elizaUrl, {;
             method: "PUT",
@@ -133,9 +133,9 @@ std::future<void> DELETE(NextRequest request) {
     try {
         const auto resolvedParams = params;
         const auto path = resolvedParams.path.join("/");
-        const auto elizaUrl = std::to_string(ELIZA_SERVER_URL) + "/api/" + std::to_string(path);
+        const auto elizaUrl = ELIZA_SERVER_URL + "/api/" + path;
 
-        std::cout << "[Proxy] DELETE " + std::to_string(elizaUrl) << std::endl;
+        std::cout << "[Proxy] DELETE " + elizaUrl << std::endl;
 
         const auto response = fetch(elizaUrl, {;
             method: "DELETE",

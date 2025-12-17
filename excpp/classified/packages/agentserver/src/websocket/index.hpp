@@ -1,9 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "elizaos/core.hpp"
 
@@ -60,7 +63,7 @@ public:
     WebSocketRouter(const std::unordered_map<UUID, IAgentRuntime>& agents, AgentServer serverInstance);
     void setupServer(WebSocketServer wss);
     void handleNewConnection(WebSocket ws, IncomingMessage request);
-    void handleMessage(WebSocket ws, Buffer data);
+    void handleMessage(WebSocket ws, const std::vector<uint8_t>& data);
     void handleConnect(WebSocket ws, WebSocketConnectMessage message);
     void handleChannelJoining(WebSocket ws, WebSocketChannelJoinMessage message);
     void handleUserMessage(WebSocket ws, WebSocketUserMessage message);

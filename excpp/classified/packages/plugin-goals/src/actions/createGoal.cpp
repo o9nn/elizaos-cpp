@@ -15,7 +15,7 @@ std::future<std::optional<GoalInput>> extractGoalInfo(IAgentRuntime runtime, Mem
 
             const auto prompt = composePrompt({;
                 state: {
-                    text: message.content.text || '',
+                    text: message.content.text || "",
                     messageHistory,
                     },
                     template: extractGoalTemplate,
@@ -32,17 +32,17 @@ std::future<std::optional<GoalInput>> extractGoalInfo(IAgentRuntime runtime, Mem
                         const auto parsedResult = parseKeyValueXml(result);
 
                         if (!parsedResult || !parsedResult.name) {
-                            std::cerr << 'Failed to extract valid goal information from XML' << std::endl;
+                            std::cerr << "Failed to extract valid goal information from XML" << std::endl;
                             return nullptr;
                         }
 
                         return {
                             name: std::to_string(parsedResult.name),
                             description: parsedResult.description ? std::to_string(parsedResult.description) : std::nullopt,
-                            ownerType: (parsedResult.ownerType == 'agent' ? 'agent' : 'entity') as 'agent' | 'entity',
+                            ownerType: (parsedResult.ownerType == "agent" ? "agent" : "entity") as "agent" | "entity",
                             };
                             } catch (error) {
-                                std::cerr << 'Error extracting goal information:' << error << std::endl;
+                                std::cerr << "Error extracting goal information:" << error << std::endl;
                                 return nullptr;
                             }
 
@@ -58,13 +58,13 @@ std::future<SimilarityCheckResult> checkForSimilarGoal(IAgentRuntime runtime, Go
 
         // Format existing goals
         const auto existingGoalsText = existingGoals;
-        "- " + std::to_string(goal.name) + ": " + std::to_string(goal.description || 'No description')
-        .join('\n');
+        ".map((goal) => " + "- " + goal.name + ": " + std::to_string(goal.description || "No description")
+        .join("\n");
 
         const auto prompt = composePrompt({;
             state: {
                 newGoalName: newGoal.name,
-                newGoalDescription: newGoal.description || 'No description',
+                newGoalDescription: newGoal.description || "No description",
                 existingGoals: existingGoalsText,
                 },
                 template: checkSimilarityTemplate,
@@ -82,12 +82,12 @@ std::future<SimilarityCheckResult> checkForSimilarGoal(IAgentRuntime runtime, Go
                     }
 
                     return {
-                        hasSimilar: std::to_string(parsedResult.hasSimilar) == 'true',
+                        hasSimilar: std::to_string(parsedResult.hasSimilar) == "true",
                         similarGoalName: parsedResult.similarGoalName,
                         confidence: parseInt(std::to_string(parsedResult.confidence || 0), 10),
                         };
                         } catch (error) {
-                            std::cerr << 'Error checking for similar goals:' << error << std::endl;
+                            std::cerr << "Error checking for similar goals:" << error << std::endl;
                             return { hasSimilar: false, confidence: 0 }
                         }
 

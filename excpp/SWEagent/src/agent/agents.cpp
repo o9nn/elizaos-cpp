@@ -9,15 +9,15 @@ std::future<AbstractAgent> getAgentFromConfig(AgentConfig config) {
     try {
 
         switch (config.type) {
-            case 'default':
+            // case "default":
             return DefaultAgent.fromConfig(config);
-            case 'retry':
+            // case "retry":
             return RetryAgent.fromConfig(config);
-            case 'shell':
+            // case "shell":
             // Dynamic import to avoid circular dependency
-            const auto { ShellAgent } = require('./extra/shell-agent');
+            const auto { ShellAgent } = require("./extra/shell-agent");
             return ShellAgent.fromConfig(config);
-            default:
+            // default:
             throw std::runtime_error(`Unknown agent type: ${(config as AgentConfig).type}`);
         }
 

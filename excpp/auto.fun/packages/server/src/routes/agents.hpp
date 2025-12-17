@@ -1,14 +1,17 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".agents/twitter/twitterAgent.hpp"
-#include ".db.hpp"
-#include ".logger.hpp"
-#include ".uploader.hpp"
+#include "agents/twitter/twitterAgent.hpp"
+#include "db.hpp"
+#include "logger.hpp"
+#include "uploader.hpp"
 
 namespace elizaos {
 

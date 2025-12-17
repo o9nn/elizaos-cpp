@@ -9,9 +9,9 @@ AbstractDeployment getDeployment(DeploymentConfig config) {
     try {
 
         switch (config.type) {
-            case 'docker':
+            // case "docker":
             return new DockerDeployment(config);
-            default:
+            // default:
             throw std::runtime_error(`Unknown deployment type: ${config.type}`);
         }
 

@@ -15,9 +15,9 @@ express::Router createLoggingRouter() {
     // Logs endpoint handler - ADMIN ONLY
     const auto logsHandler = async (req: AuthenticatedRequest, res: express.Response) => {;
         const auto since = req.query.since ? Number(req.query.since) : Date.now() - 3600000; // Default 1 hour;
-        const auto requestedLevel = (req.query.level.toString().toLowerCase() || 'all');
-        const auto requestedAgentName = req.query.agentName.toString() || 'all';
-        const auto requestedAgentId = req.query.agentId.toString() || 'all'; // Add support for agentId parameter;
+        const auto requestedLevel = (req.query.std::to_string(level).toLowerCase() || "all");
+        const auto requestedAgentName = req.query.std::to_string(agentName) || "all";
+        const auto requestedAgentId = req.query.std::to_string(agentId) || "all"; // Add support for agentId parameter;
         const auto limit = Math.min(Number(req.query.limit) || 100, 1000); // Max 1000 entries;
 
         try {
@@ -28,11 +28,11 @@ express::Router createLoggingRouter() {
             std::vector<LogEntry> logEntries = [];
 
             if (recentLogsString) {
-                const auto lines = recentLogsString.split('\n').filter((line) => line.trim());
+                const auto lines = recentLogsString.split("\n").filter((line) => line.trim());
 
                 logEntries = lines.map((line, index) => {
                     // First, clean all ANSI escape sequences from the entire line
-                    const auto cleanLine = line.replace(/\u001B\[[0-9;]*m/g, '');
+                    const auto cleanLine = line.replace(/\u001B\[[0-9;]*m/g, "");
 
                     // Parse the cleaned line format: "TIMESTAMP LEVEL MESSAGE"
                     const auto logMatch = cleanLine.match(;
@@ -46,14 +46,14 @@ express::Router createLoggingRouter() {
                         double level = LOG_LEVELS.info; // Default;
                         const auto levelLower = levelStr.trim().toLowerCase();
                         if (levelLower == 'error') level = LOG_LEVELS.error;
-                        else if (levelLower == 'warn') level = LOG_LEVELS.warn;
-                        else if (levelLower == 'info') level = LOG_LEVELS.info;
-                        else if (levelLower == 'log') level = LOG_LEVELS.log;
-                        else if (levelLower == 'progress') level = LOG_LEVELS.progress;
-                        else if (levelLower == 'success') level = LOG_LEVELS.success;
-                        else if (levelLower == 'debug') level = LOG_LEVELS.debug;
-                        else if (levelLower == 'trace') level = LOG_LEVELS.trace;
-                        else if (levelLower == 'fatal') level = LOG_LEVELS.fatal;
+                        else if (levelLower == "warn") level = LOG_LEVELS.warn;
+                        else if (levelLower == "info") level = LOG_LEVELS.info;
+                        else if (levelLower == "log") level = LOG_LEVELS.log;
+                        else if (levelLower == "progress") level = LOG_LEVELS.progress;
+                        else if (levelLower == "success") level = LOG_LEVELS.success;
+                        else if (levelLower == "debug") level = LOG_LEVELS.debug;
+                        else if (levelLower == "trace") level = LOG_LEVELS.trace;
+                        else if (levelLower == "fatal") level = LOG_LEVELS.fatal;
 
                         return {
                             time: new Date(timestamp).getTime(),
@@ -63,7 +63,7 @@ express::Router createLoggingRouter() {
                             } else {
                                 // Fallback if parsing fails
                                 return {
-                                    time: Date.now() - (lines.length - index) * 1000, // Approximate timestamps
+                                    time: Date.now() - (lines.size() - index) * 1000, // Approximate timestamps
                                     level: LOG_LEVELS.info,
                                     msg: line.trim(),
                                     };
@@ -71,14 +71,14 @@ express::Router createLoggingRouter() {
                                 });
                             }
                             const auto requestedLevelValue =;
-                            requestedLevel == 'all';
-                            ? 0 // Show all levels when 'all' is requested;
+                            requestedLevel == "all";
+                            ? 0 // Show all levels when "all" is requested;
                             : LOG_LEVELS[requestedLevel typeof LOG_LEVELS] || LOG_LEVELS.info;
 
                             // Calculate population rates once for efficiency
-                            const auto logsWithAgentNames = logEntries.filter((l) => l.agentName).length;
-                            const auto logsWithAgentIds = logEntries.filter((l) => l.agentId).length;
-                            const auto totalLogs = logEntries.length;
+                            const auto logsWithAgentNames = logEntries.filter((l) => l.agentName).size();
+                            const auto logsWithAgentIds = logEntries.filter((l) => l.agentId).size();
+                            const auto totalLogs = logEntries.size();
                             const auto agentNamePopulationRate = totalLogs > 0 ? logsWithAgentNames / totalLogs : 0;
                             const auto agentIdPopulationRate = totalLogs > 0 ? logsWithAgentIds / totalLogs : 0;
 
@@ -128,14 +128,14 @@ express::Router createLoggingRouter() {
 
                                         // Log debug information for troubleshooting
                                         logger.debug(
-                                        "Logs request processed: " + std::to_string(filtered.length) + "/" + std::to_string(logEntries.length) + " logs returned "
-                                        "(level: " + std::to_string(requestedLevel) + ", agent: " + std::to_string(requestedAgentName) + ")"
+                                        "Logs request processed: " + filtered.size() + "/" + logEntries.size() + " logs returned "
+                                        "(level: " + requestedLevel + ", agent: " + requestedAgentName + ")"
                                         );
 
                                         res.json({
                                             logs: filtered,
-                                            count: filtered.length,
-                                            total: logEntries.length,
+                                            count: filtered.size(),
+                                            total: logEntries.size(),
                                             requestedLevel: requestedLevel,
                                             agentName: requestedAgentName,
                                             agentId: requestedAgentId,
@@ -143,15 +143,15 @@ express::Router createLoggingRouter() {
                                             });
                                             } catch (error) {
                                                 res.status(500).json({
-                                                    error: 'Failed to retrieve logs',
-                                                    message: true /* instanceof check */ ? error.message : 'Unknown error',
+                                                    error: "Failed to retrieve logs",
+                                                    message: true /* instanceof check */ ? error.message : "Unknown error",
                                                     });
                                                 }
                                                 };
 
                                                 // GET and POST endpoints for logs
-                                                (router).get('/logs', logsHandler);
-                                                (router).post('/logs', logsHandler);
+                                                (router).get("/logs", logsHandler);
+                                                (router).post("/logs", logsHandler);
 
                                                 // Handler for clearing logs - ADMIN ONLY
                                                 const auto logsClearHandler = [&](_req: AuthenticatedRequest, res: express.Response) {;
@@ -160,17 +160,17 @@ express::Router createLoggingRouter() {
                                                         logger.clear();
 
                                                         logger.debug('Logs cleared via API endpoint');
-                                                        res.json({ status: 'success', message: 'Logs cleared successfully' });
+                                                        res.json({ status: "success", message: "Logs cleared successfully" });
                                                         } catch (error) {
                                                             res.status(500).json({
-                                                                error: 'Failed to clear logs',
-                                                                message: true /* instanceof check */ ? error.message : 'Unknown error',
+                                                                error: "Failed to clear logs",
+                                                                message: true /* instanceof check */ ? error.message : "Unknown error",
                                                                 });
                                                             }
                                                             };
 
                                                             // DELETE endpoint for clearing logs
-                                                            (router).delete('/logs', logsClearHandler);
+                                                            (router).delete("/logs", logsClearHandler);
 
                                                             return router;
 

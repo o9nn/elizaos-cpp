@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-double calculatePoints(Task task, const std::variant<"onTime", "late", "daily", "streakBonus">& completionStatus) {
+double calculatePoints(Task task, const std::string& completionStatus) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     auto points = 0;
@@ -16,33 +16,33 @@ double calculatePoints(Task task, const std::variant<"onTime", "late", "daily", 
 
     if (isNaN(priority) || priority < 1 || priority > 4) {
         logger.warn(
-        "Invalid priority parsed for task " + std::to_string(task.id) + ". Defaulting to 4."
+        "Invalid priority parsed for task " + task.id + ". Defaulting to 4."
         );
         // priority = 4;
     }
 
     switch (completionStatus) {
-        case "onTime":
+        // case "onTime":
         // Higher points for higher priority (lower number) and urgent tasks
         points = (5 - priority) * 10; // P1=40, P2=30, P3=20, P4=10;
         if (task.tags.includes("urgent")) {
             points += 10;
         }
         break;
-        case "late":
+        // case "late":
         points = 5; // Flat small points for late completion;
         break;
-        case "daily":
+        // case "daily":
         points = 10; // Standard points for daily tasks;
         break;
-        case "streakBonus":
+        // case "streakBonus":
         const auto streak =;
         typeof task.metadata.streak == "number" ? task.metadata.streak : 0;
         points = Math.min(streak * 5, 50); // Bonus points for streak, capped;
         break;
     }
     logger.debug(
-    "Calculated points: " + std::to_string(points) + " for task " + std::to_string(task.name) + " (" + std::to_string(completionStatus) + ")"
+    "Calculated points: " + points + " for task " + task.name + " (" + completionStatus + ")"
     );
     return points;
 
@@ -60,7 +60,7 @@ std::future<double> getPoints(IAgentRuntime runtime, UUID entityId, UUID roomId,
 
         if (!component) {
             logger.debug(
-            "Points component not found for entity " + std::to_string(entityId) + ", creating."
+            "Points component not found for entity " + entityId + ", creating."
             );
             // Create component if it doesn't exist
             const UserPointsData newComponentData = {;
@@ -71,13 +71,13 @@ std::future<double> getPoints(IAgentRuntime runtime, UUID entityId, UUID roomId,
                 // Use the provided parameters directly
                 if (!roomId || !worldId) {
                     logger.error(
-                    "Cannot create points component for entity " + std::to_string(entityId) + ": Invalid roomId or worldId provided."
+                    "Cannot create points component for entity " + entityId + ": Invalid roomId or worldId provided."
                     );
                     return 0;
                 }
 
                 logger.debug(
-                "Creating points component for entity " + std::to_string(entityId) + " using provided roomId " + std::to_string(roomId) + " and worldId " + std::to_string(worldId) + "."
+                "Creating points component for entity " + entityId + " using provided roomId " + roomId + " and worldId " + worldId + "."
                 );
 
                 componentService.createComponent({
@@ -93,7 +93,7 @@ std::future<double> getPoints(IAgentRuntime runtime, UUID entityId, UUID roomId,
                 }
                 return component.data.currentPoints;
                 } catch (error) {
-                    std::cerr << "Error getting points for entity " + std::to_string(entityId) + ":" << error << std::endl;
+                    std::cerr << "Error getting points for entity " + entityId + ":" << error << std::endl;
                     return 0; // Return 0 in case of error;
                 }
 
@@ -120,20 +120,20 @@ std::future<bool> addPoints(IAgentRuntime runtime, UUID entityId, double pointsT
 
         if (!component) {
             logger.debug(
-            "Points component not found for entity " + std::to_string(entityId) + " during addPoints, creating."
+            "Points component not found for entity " + entityId + " during addPoints, creating."
             );
             currentData = { currentPoints: 0, history: [] };
 
             // Use the provided parameters directly
             if (!roomId || !worldId) {
                 logger.error(
-                "Cannot create points component for entity " + std::to_string(entityId) + " during addPoints: Invalid roomId or worldId provided."
+                "Cannot create points component for entity " + entityId + " during addPoints: Invalid roomId or worldId provided."
                 );
                 return false;
             }
 
             logger.debug(
-            "Creating points component for entity " + std::to_string(entityId) + " using provided roomId " + std::to_string(roomId) + " and worldId " + std::to_string(worldId) + "."
+            "Creating points component for entity " + entityId + " using provided roomId " + roomId + " and worldId " + worldId + "."
             );
 
             // Create component before updating
@@ -149,7 +149,7 @@ std::future<bool> addPoints(IAgentRuntime runtime, UUID entityId, double pointsT
 
                 if (!createdComponentId) {
                     logger.error(
-                    "Failed to create points component for entity " + std::to_string(entityId) + "."
+                    "Failed to create points component for entity " + entityId + "."
                     );
                     return false;
                 }
@@ -162,7 +162,7 @@ std::future<bool> addPoints(IAgentRuntime runtime, UUID entityId, double pointsT
 
                 if (!component) {
                     logger.error(
-                    "Failed to retrieve points component for entity " + std::to_string(entityId) + " after creation."
+                    "Failed to retrieve points component for entity " + entityId + " after creation."
                     );
                     return false;
                 }
@@ -188,7 +188,7 @@ std::future<bool> addPoints(IAgentRuntime runtime, UUID entityId, double pointsT
                     };
 
                     const auto updatedHistory = [...(currentData.history || [])];
-                    updatedHistory.push(newHistoryEntry);
+                    updatedHistory.push_back(newHistoryEntry);
                     if (updatedHistory.length > MAX_HISTORY) {
                         updatedHistory.shift(); // Remove oldest entry;
                     }
@@ -200,7 +200,7 @@ std::future<bool> addPoints(IAgentRuntime runtime, UUID entityId, double pointsT
                         };
 
                         logger.debug(
-                        "Adding " + std::to_string(pointsToAdd) + " points to entity " + std::to_string(entityId) + ". New total: " + std::to_string(newPoints) + ". Reason: " + std::to_string(reason)
+                        "Adding " + pointsToAdd + " points to entity " + entityId + ". New total: " + newPoints + ". Reason: " + reason
                         );
 
                         // Update the component
@@ -217,7 +217,7 @@ std::future<bool> addPoints(IAgentRuntime runtime, UUID entityId, double pointsT
 
                             return true;
                             } catch (error) {
-                                std::cerr << "Error adding points for entity " + std::to_string(entityId) + ":" << error << std::endl;
+                                std::cerr << "Error adding points for entity " + entityId + ":" << error << std::endl;
                                 return false;
                             }
 

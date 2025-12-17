@@ -14,7 +14,7 @@ std::string formatBridgeResponse(RelayStatus status, ResolvedBridgeRequest reque
     const auto symbol = statusData.metadata.currencyIn.currency.symbol ||;
     statusData.currency ||;
     tokenSymbol ||;
-    'TOKEN';
+    "TOKEN";
 
     auto response = `;
     ${statusIndicator} **Bridge ${(status.status || "PENDING").toUpperCase()}**;
@@ -32,11 +32,11 @@ std::string formatBridgeResponse(RelayStatus status, ResolvedBridgeRequest reque
     collectedTxHashes.find(tx => tx.chainId == request.destinationChainId).txHash;
 
     if (originTxHash) {
-        "\n\n**Origin Transaction:**\n- Hash: \" + "\n- Chain: " + std::to_string(getChainName(request.originChainId))
+        "response += " + "\n\n**Origin Transaction:**\n- Hash: \" + "${originTxHash}\" + "\n- Chain: " + std::to_string(getChainName(request.originChainId))
     }
 
     if (destTxHash) {
-        "\n\n**Destination Transaction:**\n- Hash: \" + "\n- Chain: " + std::to_string(getChainName(request.destinationChainId))
+        "response += " + "\n\n**Destination Transaction:**\n- Hash: \" + "${destTxHash}\" + "\n- Chain: " + std::to_string(getChainName(request.destinationChainId))
     }
 
     // Show all collected tx hashes if there are more than origin/dest
@@ -45,9 +45,9 @@ std::string formatBridgeResponse(RelayStatus status, ResolvedBridgeRequest reque
         [&](tx) { return tx.txHash != originTxHash && tx.txHash != destTxHash; }
         );
         if (otherTxs.length > 0) {
-            "\n\n**Other Transactions:**"
+            "response += " + "\n\n**Other Transactions:**"
             for (const auto& tx : otherTxs)
-                "\n- \" + " (Chain " + std::to_string(tx.chainId) + ")";
+                "response += " + "\n- \" + "${tx.txHash}\" + " (Chain " + tx.chainId + ")";
             }
         }
     }
@@ -56,7 +56,7 @@ std::string formatBridgeResponse(RelayStatus status, ResolvedBridgeRequest reque
         const auto gasFeeWei = status.data.fees.gas || "0";
         const auto relayerFeeWei = status.data.fees.relayer || "0";
         const auto totalFees = BigInt(gasFeeWei) + BigInt(relayerFeeWei);
-        "\n\n**Total Fees:** " + std::to_string((Number(totalFees) / 1e18).toFixed(6)) + " ETH"
+        "response += " + "\n\n**Total Fees:** " + std::to_string((Number(totalFees) / 1e18).toFixed(6)) + " ETH"
     }
 
     return response;
@@ -77,7 +77,7 @@ std::string getChainName(double chainId) {
         534352: "Scroll",
         59144: "Linea",
         };
-        return "Chain " + std::to_string(chainId);
+        return "chains[chainId] || " + "Chain " + chainId;
 
 }
 

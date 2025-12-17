@@ -7,7 +7,7 @@ namespace elizaos {
 void ArrayInput(auto data) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto [inputValue, setInputValue] = useState('');
+    const auto [inputValue, setInputValue] = useState("");
 
     const auto handleKeyDown = [&](e: React.KeyboardEvent<HTMLInputElement>) {;
         if (e.key == 'Enter') {
@@ -15,7 +15,7 @@ void ArrayInput(auto data) {
             const auto trimmedValue = inputValue.trim();
             if (trimmedValue && !data.includes(trimmedValue)) {
                 onChange([...data, trimmedValue]);
-                setInputValue('');
+                setInputValue("");
             }
         }
         };

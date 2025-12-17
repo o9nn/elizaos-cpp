@@ -14,17 +14,17 @@ std::future<void> showMainMenu(InteractiveEnvOptions options) {
 
     while (!exit) {
         const auto action = clack.select({;
-            message: 'Select an action:',
+            message: "Select an action:",
             options: [
-            { label: 'List environment variables', value: 'list' },
-            { label: 'Edit local environment variables', value: 'edit_local' },
-            { label: 'Reset environment variables', value: 'reset' },
-            { label: 'Exit', value: 'exit' },
+            { label: "List environment variables", value: "list" },
+            { label: "Edit local environment variables", value: "edit_local" },
+            { label: "Reset environment variables", value: "reset" },
+            { label: "Exit", value: "exit" },
             ],
             });
 
             if (clack.isCancel(action)) {
-                clack.cancel('Operation cancelled.');
+                clack.cancel("Operation cancelled.");
                 process.exit(0);
             }
             if (!action || action == 'exit') {
@@ -33,15 +33,15 @@ std::future<void> showMainMenu(InteractiveEnvOptions options) {
             }
 
             switch (action) {
-                case 'list':
+                // case "list":
                 listEnvVars();
                 break;
-                case 'edit_local': {
+                // case "edit_local":
                     const auto returnToMainFromLocal = editEnvVars({ yes }, true);
                     exit = !returnToMainFromLocal;
                     break;
                 }
-                case 'reset':
+                // case "reset":
                 resetEnv({ yes });
                 break;
             }

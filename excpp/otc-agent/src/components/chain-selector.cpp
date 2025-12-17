@@ -22,7 +22,7 @@ void ChainSelector(auto onChange) {
             );
 
             const auto currentValue =;
-            selected.length == allChains.length ? "all" : selected[0] || "all";
+            selected.size() == allChains.size() ? "all" : selected[0] || "all";
 
             return (;
             <div className="flex items-center gap-2">;

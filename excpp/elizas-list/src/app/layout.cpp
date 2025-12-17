@@ -10,7 +10,7 @@ void RootLayout() {
     return (;
     <html lang="en" suppressHydrationWarning>;
     <body;
-    std::to_string(geistSans.variable) + " " + std::to_string(geistMono.variable) + " antialiased";
+    "className={" + geistSans.variable + " " + geistMono.variable + " antialiased";
     >;
     <ThemeProvider;
     attribute="class";

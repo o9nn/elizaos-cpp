@@ -23,9 +23,9 @@ Provider fromV2Provider(ProviderV2 providerV2) {
                     const auto result = providerV2.get(runtime, message, stateV2);
 
                     // Extract text or use an empty string if not present
-                    return result.text || '';
+                    return result.text || "";
                     } catch (error) {
-                        std::cerr << "Error in v2 provider " + std::to_string(providerV2.name) + ":" << error << std::endl;
+                        std::cerr << "Error in v2 provider " + providerV2.name + ":" << error << std::endl;
                         throw;
                     }
                     },
@@ -42,7 +42,7 @@ ProviderV2 toV2Provider(Provider provider) {
     try {
 
         return {
-            name: provider.name || 'unnamed-provider',
+            name: provider.name || "unnamed-provider",
             description: provider.description,
             dynamic: provider.dynamic,
             position: provider.position,
@@ -59,7 +59,7 @@ ProviderV2 toV2Provider(Provider provider) {
                             ...result,
                             values: result.values || {},
                             data: result.data || {},
-                            text: result.text || '',
+                            text: result.text || "",
                             };
                         }
 
@@ -67,10 +67,10 @@ ProviderV2 toV2Provider(Provider provider) {
                         return {
                             values: {},
                             data: {},
-                            text: std::to_string(result || ''),
+                            text: std::to_string(result || ""),
                             };
                             } catch (error) {
-                                std::cerr << "Error in v1 provider " + std::to_string(provider.name || 'unnamed') + ":" << error << std::endl;
+                                std::cerr << "Error in v1 provider " + std::to_string(provider.name || "unnamed") + ":" << error << std::endl;
                                 throw;
                             }
                             },

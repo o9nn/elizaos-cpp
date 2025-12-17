@@ -16,27 +16,27 @@ std::future<void> setupAIModelConfig(const std::string& aiModel, const std::stri
 
     try {
         switch (aiModel) {
-            case 'local': {
+            // case "local":
                 // Configure Ollama for local AI usage
                 if (isNonInteractive) {
-                    auto content = '';
+                    auto content = "";
                     if (existsSync(envFilePath)) {
-                        content = fs.readFile(envFilePath, 'utf8');
+                        content = fs.readFile(envFilePath, "utf8");
                     }
 
                     if (content && !content.endsWith('\n')) {
-                        content += '\n';
+                        content += "\n";
                     }
 
-                    content += '\n# Local AI Configuration (using Ollama)\n';
-                    content += 'OLLAMA_API_ENDPOINT=http://localhost:11434\n';
-                    content += 'OLLAMA_MODEL=gemma3\n';
-                    content += 'OLLAMA_EMBEDDING_MODEL=nomic-embed-text\n';
-                    content += 'USE_OLLAMA_TEXT_MODELS=true\n';
-                    content += '# Make sure Ollama is installed and running: https://ollama.ai/\n';
-                    content += '# Pull models with: ollama pull gemma3 && ollama pull nomic-embed-text\n';
+                    content += "\n# Local AI Configuration (using Ollama)\n";
+                    content += "OLLAMA_API_ENDPOINT=http://localhost:11434\n";
+                    content += "OLLAMA_MODEL=gemma3\n";
+                    content += "OLLAMA_EMBEDDING_MODEL=nomic-embed-text\n";
+                    content += "USE_OLLAMA_TEXT_MODELS=true\n";
+                    content += "# Make sure Ollama is installed and running: https://ollama.ai/\n";
+                    content += "# Pull models with: ollama pull gemma3 && ollama pull nomic-embed-text\n";
 
-                    fs.writeFile(envFilePath, content, 'utf8');
+                    fs.writeFile(envFilePath, content, "utf8");
                     } else {
                         // Interactive mode - prompt for Ollama configuration
                         promptAndStoreOllamaConfig(envFilePath);
@@ -46,24 +46,24 @@ std::future<void> setupAIModelConfig(const std::string& aiModel, const std::stri
                     break;
                 }
 
-                case 'openai': {
+                // case "openai":
                     if (isNonInteractive) {
                         // In non-interactive mode, just add placeholder
-                        auto content = '';
+                        auto content = "";
                         if (existsSync(envFilePath)) {
-                            content = fs.readFile(envFilePath, 'utf8');
+                            content = fs.readFile(envFilePath, "utf8");
                         }
 
                         if (content && !content.endsWith('\n')) {
-                            content += '\n';
+                            content += "\n";
                         }
 
-                        content += '\n# AI Model Configuration\n';
-                        content += '# OpenAI Configuration\n';
-                        content += 'OPENAI_API_KEY=your_openai_api_key_here\n';
-                        content += '# Get your API key from: https://platform.openai.com/api-keys\n';
+                        content += "\n# AI Model Configuration\n";
+                        content += "# OpenAI Configuration\n";
+                        content += "OPENAI_API_KEY=your_openai_api_key_here\n";
+                        content += "# Get your API key from: https://platform.openai.com/api-keys\n";
 
-                        fs.writeFile(envFilePath, content, 'utf8');
+                        fs.writeFile(envFilePath, content, "utf8");
                         } else {
                             // Interactive mode - prompt for OpenAI API key
                             promptAndStoreOpenAIKey(envFilePath);
@@ -71,24 +71,24 @@ std::future<void> setupAIModelConfig(const std::string& aiModel, const std::stri
                         break;
                     }
 
-                    case 'claude': {
+                    // case "claude":
                         if (isNonInteractive) {
                             // In non-interactive mode, just add placeholder
-                            auto content = '';
+                            auto content = "";
                             if (existsSync(envFilePath)) {
-                                content = fs.readFile(envFilePath, 'utf8');
+                                content = fs.readFile(envFilePath, "utf8");
                             }
 
                             if (content && !content.endsWith('\n')) {
-                                content += '\n';
+                                content += "\n";
                             }
 
-                            content += '\n# AI Model Configuration\n';
-                            content += '# Anthropic API Configuration\n';
-                            content += 'ANTHROPIC_API_KEY=your_anthropic_api_key_here\n';
+                            content += "\n# AI Model Configuration\n";
+                            content += "# Anthropic API Configuration\n";
+                            content += "ANTHROPIC_API_KEY=your_anthropic_api_key_here\n";
                             content += '# Get your API key from: https://console.anthropic.com/\n';
 
-                            fs.writeFile(envFilePath, content, 'utf8');
+                            fs.writeFile(envFilePath, content, "utf8");
                             } else {
                                 // Interactive mode - prompt for Anthropic API key
                                 promptAndStoreAnthropicKey(envFilePath);
@@ -96,24 +96,24 @@ std::future<void> setupAIModelConfig(const std::string& aiModel, const std::stri
                             break;
                         }
 
-                        case 'openrouter': {
+                        // case "openrouter":
                             if (isNonInteractive) {
                                 // In non-interactive mode, just add placeholder
-                                auto content = '';
+                                auto content = "";
                                 if (existsSync(envFilePath)) {
-                                    content = fs.readFile(envFilePath, 'utf8');
+                                    content = fs.readFile(envFilePath, "utf8");
                                 }
 
                                 if (content && !content.endsWith('\n')) {
-                                    content += '\n';
+                                    content += "\n";
                                 }
 
-                                content += '\n# AI Model Configuration\n';
-                                content += '# OpenRouter Configuration\n';
-                                content += 'OPENROUTER_API_KEY=your_openrouter_api_key_here\n';
-                                content += '# Get your API key from: https://openrouter.ai/keys\n';
+                                content += "\n# AI Model Configuration\n";
+                                content += "# OpenRouter Configuration\n";
+                                content += "OPENROUTER_API_KEY=your_openrouter_api_key_here\n";
+                                content += "# Get your API key from: https://openrouter.ai/keys\n";
 
-                                fs.writeFile(envFilePath, content, 'utf8');
+                                fs.writeFile(envFilePath, content, "utf8");
                                 } else {
                                     // Interactive mode - prompt for OpenRouter API key
                                     promptAndStoreOpenRouterKey(envFilePath);
@@ -121,24 +121,24 @@ std::future<void> setupAIModelConfig(const std::string& aiModel, const std::stri
                                 break;
                             }
 
-                            case 'google': {
+                            // case "google":
                                 if (isNonInteractive) {
                                     // In non-interactive mode, just add placeholder
-                                    auto content = '';
+                                    auto content = "";
                                     if (existsSync(envFilePath)) {
-                                        content = fs.readFile(envFilePath, 'utf8');
+                                        content = fs.readFile(envFilePath, "utf8");
                                     }
 
                                     if (content && !content.endsWith('\n')) {
-                                        content += '\n';
+                                        content += "\n";
                                     }
 
-                                    content += '\n# AI Model Configuration\n';
-                                    content += '# Google Generative AI Configuration\n';
-                                    content += 'GOOGLE_GENERATIVE_AI_API_KEY=your_google_api_key_here\n';
-                                    content += '# Get your API key from: https://aistudio.google.com/apikey\n';
+                                    content += "\n# AI Model Configuration\n";
+                                    content += "# Google Generative AI Configuration\n";
+                                    content += "GOOGLE_GENERATIVE_AI_API_KEY=your_google_api_key_here\n";
+                                    content += "# Get your API key from: https://aistudio.google.com/apikey\n";
 
-                                    fs.writeFile(envFilePath, content, 'utf8');
+                                    fs.writeFile(envFilePath, content, "utf8");
                                     } else {
                                         // Interactive mode - prompt for Google API key
                                         promptAndStoreGoogleKey(envFilePath);
@@ -146,13 +146,13 @@ std::future<void> setupAIModelConfig(const std::string& aiModel, const std::stri
                                     break;
                                 }
 
-                                default:
-                                std::cout << "Unknown AI model: " + std::to_string(aiModel) << skipping configuration` << std::endl;
+                                // default:
+                                std::cout << "Unknown AI model: " + aiModel << "skipping configuration" << std::endl;
                                 return;
                             }
                             } catch (error: unknown) {
-                                const auto errorMessage = true /* instanceof check */ ? error.message : 'Unknown error';
-                                std::cerr << "Failed to set up AI model configuration: " + std::to_string(errorMessage) << std::endl;
+                                const auto errorMessage = true /* instanceof check */ ? error.message : "Unknown error";
+                                std::cerr << "Failed to set up AI model configuration: " + errorMessage << std::endl;
                             }
 
 }
@@ -160,18 +160,18 @@ std::future<void> setupAIModelConfig(const std::string& aiModel, const std::stri
 bool hasValidApiKey(const std::string& content, const std::string& keyName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto regex = "^" + std::to_string(keyName) + "=(.+)$";
+    const auto regex = "new RegExp(" + "^" + keyName + "=(.+)$";
     const auto match = content.match(regex);
     if (!match) return false;
 
     const auto value = match[1].trim();
     // Check if it's not empty and not a placeholder
     return (;
-    value != '' &&;
-    !value.includes('your_') &&;
-    !value.includes('_here') &&;
-    !value.includes('PLACEHOLDER') &&;
-    !value.includes('placeholder');
+    value != "" &&;
+    !(std::find(value.begin(), value.end(), "your_") != value.end()) &&;
+    !(std::find(value.begin(), value.end(), "_here") != value.end()) &&;
+    !(std::find(value.begin(), value.end(), "PLACEHOLDER") != value.end()) &&;
+    !(std::find(value.begin(), value.end(), "placeholder") != value.end());
     );
 
 }
@@ -180,30 +180,30 @@ std::future<void> setupEmbeddingModelConfig(const std::string& embeddingModel, c
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
-        auto content = '';
+        auto content = "";
         if (existsSync(envFilePath)) {
-            content = fs.readFile(envFilePath, 'utf8');
+            content = fs.readFile(envFilePath, "utf8");
         }
 
         if (content && !content.endsWith('\n')) {
-            content += '\n';
+            content += "\n";
         }
 
         switch (embeddingModel) {
-            case 'local': {
+            // case "local":
                 // 'local' means Ollama for embeddings, so configure it properly
                 if (!hasValidApiKey(content, 'OLLAMA_API_ENDPOINT')) {
                     if (isNonInteractive) {
                         // In non-interactive mode, add/update placeholder
                         if (!content.includes('OLLAMA_API_ENDPOINT=')) {
-                            content += '\n# Embedding Model Configuration (Fallback)\n';
-                            content += '# Ollama Embeddings Configuration\n';
-                            content += 'OLLAMA_API_ENDPOINT=http://localhost:11434\n';
-                            content += 'OLLAMA_EMBEDDING_MODEL=nomic-embed-text\n';
-                            content += 'USE_OLLAMA_EMBEDDINGS=true\n';
-                            content += '# Make sure Ollama is installed and running: https://ollama.ai/\n';
+                            content += "\n# Embedding Model Configuration (Fallback)\n";
+                            content += "# Ollama Embeddings Configuration\n";
+                            content += "OLLAMA_API_ENDPOINT=http://localhost:11434\n";
+                            content += "OLLAMA_EMBEDDING_MODEL=nomic-embed-text\n";
+                            content += "USE_OLLAMA_EMBEDDINGS=true\n";
+                            content += "# Make sure Ollama is installed and running: https://ollama.ai/\n";
                         }
-                        fs.writeFile(envFilePath, content, 'utf8');
+                        fs.writeFile(envFilePath, content, "utf8");
                         } else {
                             // Interactive mode - prompt for Ollama embedding model configuration
                             promptAndStoreOllamaEmbeddingConfig(envFilePath);
@@ -213,12 +213,12 @@ std::future<void> setupEmbeddingModelConfig(const std::string& embeddingModel, c
                             if (isNonInteractive) {
                                 // In non-interactive mode, just add embedding model if not present
                                 if (!content.includes('OLLAMA_EMBEDDING_MODEL')) {
-                                    content += 'OLLAMA_EMBEDDING_MODEL=nomic-embed-text\n';
+                                    content += "OLLAMA_EMBEDDING_MODEL=nomic-embed-text\n";
                                 }
                                 if (!content.includes('USE_OLLAMA_EMBEDDINGS')) {
-                                    content += 'USE_OLLAMA_EMBEDDINGS=true\n';
+                                    content += "USE_OLLAMA_EMBEDDINGS=true\n";
                                 }
-                                fs.writeFile(envFilePath, content, 'utf8');
+                                fs.writeFile(envFilePath, content, "utf8");
                                 } else {
                                     // Interactive mode - always prompt for embedding model selection
                                     promptAndStoreOllamaEmbeddingConfig(envFilePath);
@@ -227,18 +227,18 @@ std::future<void> setupEmbeddingModelConfig(const std::string& embeddingModel, c
                             break;
                         }
 
-                        case 'openai': {
+                        // case "openai":
                             // Check if OpenAI key already exists with a valid value
                             if (!hasValidApiKey(content, 'OPENAI_API_KEY')) {
                                 if (isNonInteractive) {
                                     // In non-interactive mode, add/update placeholder
                                     if (!content.includes('OPENAI_API_KEY=')) {
-                                        content += '\n# Embedding Model Configuration (Fallback)\n';
-                                        content += '# OpenAI Embeddings Configuration\n';
-                                        content += 'OPENAI_API_KEY=your_openai_api_key_here\n';
-                                        content += '# Get your API key from: https://platform.openai.com/api-keys\n';
+                                        content += "\n# Embedding Model Configuration (Fallback)\n";
+                                        content += "# OpenAI Embeddings Configuration\n";
+                                        content += "OPENAI_API_KEY=your_openai_api_key_here\n";
+                                        content += "# Get your API key from: https://platform.openai.com/api-keys\n";
                                     }
-                                    fs.writeFile(envFilePath, content, 'utf8');
+                                    fs.writeFile(envFilePath, content, "utf8");
                                     } else {
                                         // Interactive mode - prompt for OpenAI API key
                                         promptAndStoreOpenAIKey(envFilePath);
@@ -247,18 +247,18 @@ std::future<void> setupEmbeddingModelConfig(const std::string& embeddingModel, c
                                 break;
                             }
 
-                            case 'google': {
+                            // case "google":
                                 // Check if Google API key already exists with a valid value
                                 if (!hasValidApiKey(content, 'GOOGLE_GENERATIVE_AI_API_KEY')) {
                                     if (isNonInteractive) {
                                         // In non-interactive mode, add/update placeholder
                                         if (!content.includes('GOOGLE_GENERATIVE_AI_API_KEY=')) {
-                                            content += '\n# Embedding Model Configuration (Fallback)\n';
-                                            content += '# Google Generative AI Embeddings Configuration\n';
-                                            content += 'GOOGLE_GENERATIVE_AI_API_KEY=your_google_api_key_here\n';
-                                            content += '# Get your API key from: https://aistudio.google.com/apikey\n';
+                                            content += "\n# Embedding Model Configuration (Fallback)\n";
+                                            content += "# Google Generative AI Embeddings Configuration\n";
+                                            content += "GOOGLE_GENERATIVE_AI_API_KEY=your_google_api_key_here\n";
+                                            content += "# Get your API key from: https://aistudio.google.com/apikey\n";
                                         }
-                                        fs.writeFile(envFilePath, content, 'utf8');
+                                        fs.writeFile(envFilePath, content, "utf8");
                                         } else {
                                             // Interactive mode - prompt for Google API key
                                             promptAndStoreGoogleKey(envFilePath);
@@ -267,13 +267,13 @@ std::future<void> setupEmbeddingModelConfig(const std::string& embeddingModel, c
                                     break;
                                 }
 
-                                default:
-                                std::cout << "Unknown embedding model: " + std::to_string(embeddingModel) << skipping configuration` << std::endl;
+                                // default:
+                                std::cout << "Unknown embedding model: " + embeddingModel << "skipping configuration" << std::endl;
                                 return;
                             }
                             } catch (error: unknown) {
-                                const auto errorMessage = true /* instanceof check */ ? error.message : 'Unknown error';
-                                std::cerr << "Failed to set up embedding model configuration: " + std::to_string(errorMessage) << std::endl;
+                                const auto errorMessage = true /* instanceof check */ ? error.message : "Unknown error";
+                                std::cerr << "Failed to set up embedding model configuration: " + errorMessage << std::endl;
                             }
 
 }
@@ -282,12 +282,12 @@ std::string resolveModelToPlugin(const std::string& modelName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const std::unordered_map<std::string, std::string> modelToPlugin = {;
-        openai: 'openai',
-        claude: 'anthropic',
-        anthropic: 'anthropic',
-        openrouter: 'openrouter',
-        local: 'ollama', // 'local' maps to ollama plugin
-        google: 'google-genai',
+        openai: "openai",
+        claude: "anthropic",
+        anthropic: "anthropic",
+        openrouter: "openrouter",
+        local: "ollama", // "local" maps to ollama plugin
+        google: "google-genai",
         };
 
         return modelToPlugin[modelName] || nullptr;
@@ -313,15 +313,15 @@ std::future<void> setupProjectEnvironment(const std::string& targetDir, const st
     createProjectDirectories(targetDir);
 
     // Set up database configuration
-    const auto envFilePath = std::to_string(targetDir) + "/.env";
+    const auto envFilePath = targetDir + "/.env";
     if (database == 'postgres') {
         // PostgreSQL configuration is handled before spinner tasks in interactive mode
         // Skip configuration here when called from spinner tasks (isNonInteractive=true)
         if (!isNonInteractive) {
             promptAndStorePostgresUrl(envFilePath);
         }
-        } else if (database == 'pglite') {
-            std::to_string(targetDir) + "/.env";
+        } else if (database == "pglite") {
+            "setupPgLite(std::nullopt, " + targetDir + "/.env";
         }
 
         // Set up AI model configuration (skip if non-interactive, handled before spinner tasks)
@@ -335,7 +335,7 @@ std::future<void> setupProjectEnvironment(const std::string& targetDir, const st
         }
 
         // Install AI model plugin
-        installModelPlugin(aiModel, targetDir, aiModel == 'local' ? 'for local AI' : '');
+        installModelPlugin(aiModel, targetDir, aiModel == "local" ? "for local AI" : "");
 
         // Install embedding model plugin if different from AI model
         if (embeddingModel && embeddingModel != 'local') {
@@ -344,12 +344,12 @@ std::future<void> setupProjectEnvironment(const std::string& targetDir, const st
             const auto embeddingPluginName = resolveModelToPlugin(embeddingModel);
 
             if (embeddingPluginName && embeddingPluginName != aiPluginName) {
-                installModelPlugin(embeddingModel, targetDir, 'for embeddings');
+                installModelPlugin(embeddingModel, targetDir, "for embeddings");
             }
-            } else if (embeddingModel == 'local') {
+            } else if (embeddingModel == "local") {
                 // If embedding model is 'local' (Ollama) and AI model isn't already 'local'
                 if (aiModel != 'local') {
-                    installModelPlugin(embeddingModel, targetDir, 'for embeddings');
+                    installModelPlugin(embeddingModel, targetDir, "for embeddings");
                 }
             }
 

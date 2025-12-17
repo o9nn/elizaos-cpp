@@ -1,11 +1,14 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "config.ts.hpp"
 #include "ctx-embeddings.ts.hpp"
@@ -65,7 +68,7 @@ std::future<double> processFragmentsSynchronously(auto documentId, auto fullDocu
  * @param originalFilename Original filename
  * @returns Extracted text
  */
-std::future<std::string> extractTextFromDocument(Buffer fileBuffer, const std::string& contentType, const std::string& originalFilename);
+std::future<std::string> extractTextFromDocument(const std::vector<uint8_t>& fileBuffer, const std::string& contentType, const std::string& originalFilename);
 
 /**
  * Create a memory object for the main document

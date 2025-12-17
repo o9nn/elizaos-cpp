@@ -12,8 +12,8 @@ void validateAgainstRules(const std::string& code, CodingGuidelines guidelines) 
 std::vector<CodingRule> getApplicableRules(const std::string& filePath, std::optional<std::string> language) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto lang = language || (filePath.endsWith('.py') ? 'python' : 'typescript');
-    return lang == 'python' ? PYTHON_CODING_RULES : TYPESCRIPT_CODING_RULES;
+    const auto lang = language || (filePath.endsWith(".py") ? "python" : "typescript");
+    return lang == "python" ? PYTHON_CODING_RULES : TYPESCRIPT_CODING_RULES;
 
 }
 

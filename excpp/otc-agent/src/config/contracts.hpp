@@ -1,10 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 #include "deployments/local-evm.json.hpp"
 #include "deployments/local-solana.json.hpp"
@@ -55,7 +57,7 @@ struct SolanaDeployment {
 
 // DEPLOYMENT CONFIGS
 
-using NetworkType = std::variant<"local", "testnet", "mainnet">;
+using NetworkType = std::string;
 
 // HELPER FUNCTIONS
 

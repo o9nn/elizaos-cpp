@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::vector<MemoryEntry> extractMemoriesFromResponse(unknown response) {
+std::vector<MemoryEntry> extractMemoriesFromResponse(const std::any& response) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!response || typeof response != 'object') {
@@ -37,7 +37,7 @@ std::vector<MemoryEntry> extractMemoriesFromResponse(unknown response) {
 
 }
 
-std::vector<LogEntry> extractLogsFromResponse(unknown response) {
+std::vector<LogEntry> extractLogsFromResponse(const std::any& response) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!response || typeof response != 'object') {
@@ -55,12 +55,12 @@ std::vector<LogEntry> extractLogsFromResponse(unknown response) {
 
 }
 
-response is TauriMemoryResponse & isSuccessfulTauriResponse(unknown response) {
+response is TauriMemoryResponse & isSuccessfulTauriResponse(const std::any& response) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     success: true
 }
 
-std::vector<std::unordered_map<std::string, unknown>> convertToRecordArray(const std::vector<unknown>& data) {
+std::vector<std::unordered_map<std::string, std::any>> convertToRecordArray(const std::vector<std::any>& data) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return data.map((item) => {;

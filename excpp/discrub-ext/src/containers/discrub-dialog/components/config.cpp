@@ -26,7 +26,7 @@ void Config(auto onChangeSettings, auto visibleSettings, auto containerProps) {
                     return "Images will be automatically expanded to a safe size.";
                     case ResolutionType.NO_HOVER_FULL:
                     return "Images will be automatically expanded to its full resolution.";
-                    default:
+                    // default:
                     return "";
                 }
                 };
@@ -61,7 +61,7 @@ void Config(auto onChangeSettings, auto visibleSettings, auto containerProps) {
                             { value: "false", name: "No" },
                             ],
                             description:
-                            "Having this setting set to 'Yes' will ensure that User mentions are correctly displayed, even if the mentioned User is not apart of the conversation. It is recommended to keep this setting enabled.",
+                            "Having this setting set to "Yes" will ensure that User mentions are correctly displayed, even if the mentioned User is not apart of the conversation. It is recommended to keep this setting enabled.",
                             },
                             {
                                 name: DiscrubSetting.RANDOM_DELETE_DELAY,
@@ -175,12 +175,12 @@ void Config(auto onChangeSettings, auto visibleSettings, auto containerProps) {
                                                                         { value: SortDirection.ASCENDING, name: "Ascending" },
                                                                         { value: SortDirection.DESCENDING, name: "Descending" },
                                                                         ],
-                                                                        "Messages will be sorted by their date, " + std::to_string()
+                                                                        "description: " + "Messages will be sorted by their date, " + std::to_string()
                                                                             getValue(DiscrubSetting.EXPORT_MESSAGE_SORT_ORDER) ==;
                                                                             SortDirection.ASCENDING;
                                                                             ? "older";
                                                                             : "newer"
-                                                                            } messages at the top.`,
+                                                                            "} messages at the top."
                                                                             icon: () =>
                                                                             getValue(DiscrubSetting.EXPORT_MESSAGE_SORT_ORDER) ==;
                                                                             SortDirection.ASCENDING ? (;
@@ -199,7 +199,7 @@ void Config(auto onChangeSettings, auto visibleSettings, auto containerProps) {
                                                                                 const auto input = parseInt(e.target.value);
                                                                                 const auto settings = setSetting(;
                                                                                 setting,
-                                                                                std::to_string(input)
+                                                                                "!isNaN(input) ? " + input
                                                                                 );
                                                                                 onChangeSettings(settings);
                                                                                 };
@@ -213,7 +213,7 @@ void Config(auto onChangeSettings, auto visibleSettings, auto containerProps) {
                                                                                     ...containerProps,
                                                                                 }}
                                                                                 >;
-                                                                                {Object.keys(settings).length &&;
+                                                                                {Object.keys(settings).size() &&;
                                                                                 controls.map((control) => {
                                                                                     const auto Icon = control.icon.();
                                                                                     return (;
@@ -230,7 +230,7 @@ void Config(auto onChangeSettings, auto visibleSettings, auto containerProps) {
                                                                 InputProps={{ endAdornment: Icon }}
                                                                 />;
                                                             )}
-                                                            {control.options.length && !control.multiselect && (;
+                                                            {control.options.size() && !control.multiselect && (;
                                                             <>;
                                                             <InputLabel variant="filled">{control.label}</InputLabel>;
                                                             <Select;

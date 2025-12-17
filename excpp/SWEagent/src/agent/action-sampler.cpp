@@ -9,11 +9,11 @@ AbstractActionSampler createActionSampler(ActionSamplerConfig config, AbstractMo
     try {
 
         switch (config.type) {
-            case 'ask_colleagues':
+            // case "ask_colleagues":
             return AskColleagues.fromConfig(config, model, tools);
-            case 'binary_trajectory_comparison':
+            // case "binary_trajectory_comparison":
             return BinaryTrajectoryComparison.fromConfig(config, model, tools);
-            default:
+            // default:
             throw std::runtime_error(`Unknown action sampler type: ${(config as ActionSamplerConfig).type}`);
         }
 

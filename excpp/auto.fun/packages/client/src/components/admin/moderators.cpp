@@ -9,7 +9,7 @@ void AdminModerators() {
 
     const auto [newModeratorAddress, setNewModeratorAddress] = useState("");
     const auto { walletAddress } = useAuthentication();
-    const auto isAdmin = walletAddress && env.adminAddresses.includes(walletAddress);
+    const auto isAdmin = walletAddress && env.(std::find(adminAddresses.begin(), adminAddresses.end(), walletAddress) != adminAddresses.end());
 
     // Fetch moderators using react-query
     const auto moderatorsQuery = useQuery({;
@@ -40,7 +40,7 @@ void AdminModerators() {
                             // Remove moderator mutation
                             const auto removeModeratorMutation = useMutation({;
                                 mutationFn: async (address: string) => {
-                                    return "/api/admin/moderators/" + std::to_string(address);
+                                    return "fetcher(" + "/api/admin/moderators/" + address;
                                     },
                                     onSuccess: () => {
                                         toast.success("Moderator removed successfully");
@@ -129,7 +129,7 @@ void AdminModerators() {
     <h3 className="text-lg font-medium mb-3">Current Moderators</h3>;
     {moderatorsQuery.isLoading ? (;
     <Loader />;
-    ) : moderatorsQuery.data.length == 0 ? (
+    ) : moderatorsQuery.data.size() == 0 ? (
     <div className="text-center py-4 text-autofun-text-secondary">;
     No moderators found;
     </div>;
@@ -200,7 +200,7 @@ void AdminModerators() {
     )}
     </div>;
 
-    {moderatorsQuery.data.length > 0 && isAdmin && (;
+    {moderatorsQuery.data.size() > 0 && isAdmin && (;
     <div className="text-sm text-autofun-text-secondary mt-2">;
     Note: Administrators (marked in green) cannot be removed from the
     moderators list.;

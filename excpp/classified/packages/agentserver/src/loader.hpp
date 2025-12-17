@@ -1,10 +1,14 @@
 #pragma once
+#include <algorithm>
+#include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "elizaos/core.hpp"
 
@@ -37,7 +41,7 @@ std::string tryLoadFile(const std::string& filePath);
  * @returns {Promise<Character>} - A Promise that resolves to a validated Character object.
  * @throws {Error} If character validation fails.
  */
-std::future<Character> jsonToCharacter(unknown character);
+std::future<Character> jsonToCharacter(const std::any& character);
 
 /**
  * Loads a character from the specified file path with safe JSON parsing and validation.

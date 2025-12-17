@@ -113,11 +113,11 @@ std::future<void> getUserProfile(const std::string& username) {
         const auto prStats = db;
         .select({
             total: count(),
-            "SUM(CASE WHEN " + std::to_string(rawPullRequests.merged) + " = 1 THEN 1 ELSE 0 END)"
-            "SUM(CASE WHEN " + std::to_string(rawPullRequests.state) + " = 'CLOSED' AND " + std::to_string(rawPullRequests.merged) + " = 0 THEN 1 ELSE 0 END)"
-            "SUM(" + std::to_string(rawPullRequests.additions) + ")"
-            "SUM(" + std::to_string(rawPullRequests.deletions) + ")"
-            "SUM(" + std::to_string(rawPullRequests.changedFiles) + ")"
+            "merged: sql<number>" + "SUM(CASE WHEN " + rawPullRequests.merged + " = 1 THEN 1 ELSE 0 END)"
+            "closed: sql<number>" + "SUM(CASE WHEN " + rawPullRequests.state + " = "CLOSED" AND " + rawPullRequests.merged + " = 0 THEN 1 ELSE 0 END)"
+            "additions: sql<number>" + "SUM(" + rawPullRequests.additions + ")"
+            "deletions: sql<number>" + "SUM(" + rawPullRequests.deletions + ")"
+            "changedFiles: sql<number>" + "SUM(" + rawPullRequests.changedFiles + ")"
             });
             .from(rawPullRequests);
             .where(eq(rawPullRequests.author, username));

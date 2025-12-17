@@ -10,10 +10,10 @@ std::string getFileExtension(const std::string& url) {
     try {
         const auto urlObj = new URL(url);
         const auto pathname = urlObj.pathname;
-        const auto extension = pathname.split('.').pop().toLowerCase();
-        return extension || '';
+        const auto extension = pathname.split(".").pop().toLowerCase();
+        return extension || "";
         } catch {
-            return '';
+            return "";
         }
 
 }
@@ -51,12 +51,12 @@ std::vector<MediaInfo> parseMediaFromText(const std::string& text) {
     return urls;
     .map((url) => {
         // Remove trailing punctuation that might be captured
-        const auto cleanUrl = url.replace(/[.,!?;)]*$/, '');
+        const auto cleanUrl = url.replace(/[.,!?;)]*$/, "");
 
         if (isImageUrl(cleanUrl)) {
             return {
                 url: cleanUrl,
-                type: 'image',
+                type: "image",
                 isEmbed: false,
                 };
             }
@@ -64,7 +64,7 @@ std::vector<MediaInfo> parseMediaFromText(const std::string& text) {
             if (isVideoFileUrl(cleanUrl)) {
                 return {
                     url: cleanUrl,
-                    type: 'video',
+                    type: "video",
                     isEmbed: false,
                     };
                 }
@@ -73,18 +73,18 @@ std::vector<MediaInfo> parseMediaFromText(const std::string& text) {
                 if (platformInfo) {
                     return {
                         url: platformInfo.embedUrl,
-                        type: 'video',
+                        type: "video",
                         isEmbed: true,
                         };
                     }
 
                     return {
                         url: cleanUrl,
-                        type: 'unknown',
+                        type: "unknown",
                         isEmbed: false,
                         };
                         });
-                        .filter((media) => media.type != 'unknown');
+                        .filter((media) => media.type != "unknown");
 
 }
 
@@ -101,15 +101,15 @@ std::string removeMediaUrlsFromText(const std::string& text, const std::vector<M
             const auto urls = text.match(urlRegex) || [];
 
             for (const auto& url : urls)
-                const auto cleanUrl = url.replace(/[.,!?;)]*$/, '');
+                const auto cleanUrl = url.replace(/[.,!?;)]*$/, "");
                 const auto platformInfo = getVideoPlatformInfo(cleanUrl);
                 if (platformInfo && platformInfo.embedUrl == media.url) {
-                    cleanText = cleanText.replace(url, '').trim();
+                    cleanText = cleanText.replace(url, "").trim();
                     break;
                 }
             }
             } else {
-                cleanText = cleanText.replace(media.url, '').trim();
+                cleanText = cleanText.replace(media.url, "").trim();
             }
             });
 

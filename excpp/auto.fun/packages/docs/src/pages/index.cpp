@@ -9,7 +9,7 @@ void HomepageHeader() {
 
     const auto {siteConfig} = useDocusaurusContext();
     return (;
-    <header className={clsx('hero hero--primary', styles.heroBanner)}>;
+    <header className={clsx("hero hero--primary", styles.heroBanner)}>;
     <div className="container">;
     <Heading as="h1" className="hero__title">;
     {siteConfig.title}
@@ -34,7 +34,7 @@ ReactNode Home() {
     const auto {siteConfig} = useDocusaurusContext();
     return (;
     <Layout;
-    "Hello from " + std::to_string(siteConfig.title);
+    "title={" + "Hello from " + siteConfig.title;
     description="Description will go into a meta tag in <head />">;
     <HomepageHeader />;
     <main>;

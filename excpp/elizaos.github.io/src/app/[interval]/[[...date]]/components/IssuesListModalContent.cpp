@@ -18,7 +18,7 @@ void IssuesListModalContent() {
     className="px-4";
     author={issue.author}
     number={issue.number}
-    "https://github.com/" + std::to_string(issue.repository) + "/issues/" + std::to_string(issue.number)
+    "href={" + "https://github.com/" + issue.repository + "/issues/" + issue.number
     icon={
         issue.state == "closed" || issue.closedAt ? (;
         <CheckCircle className="h-4 w-4 text-green-500" />;
@@ -26,10 +26,10 @@ void IssuesListModalContent() {
         <CircleDot className="h-4 w-4 text-amber-500" />;
         );
     }
-    std::to_string(issue.commentCount) + " comments";
+    "metadata={" + issue.commentCount + " comments";
     />;
     ))}
-    {issues.length == 0 && (;
+    {issues.size() == 0 && (;
     <p className="p-4 text-center text-sm text-muted-foreground">;
     No issues to display.;
     </p>;

@@ -1,12 +1,16 @@
 #pragma once
+#include <algorithm>
+#include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".core/payment-middleware.js.hpp"
+#include "core/payment-middleware.js.hpp"
 
 namespace elizaos {
 
@@ -48,7 +52,7 @@ public:
     std::future<void> handleMessage(IncomingMessage req, ServerResponse res);
     std::future<bool> checkPaymentForToolCall(JSONRPCRequest message, const std::unordered_map<std::string, std::string>& headers, ServerResponse res);
     std::future<JSONRPCResponse> processMessage(JSONRPCRequest message, const std::unordered_map<std::string, std::string>& headers);
-    void sendSSE(ServerResponse res, const std::string& event, unknown data);
+    void sendSSE(ServerResponse res, const std::string& event, const std::any& data);
     std::unordered_map<std::string, std::string> extractHeaders(IncomingMessage req);
     std::string generateSessionId();
     void cleanupStaleSessions();

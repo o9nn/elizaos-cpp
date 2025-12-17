@@ -7,7 +7,7 @@ namespace elizaos {
 std::variant<PythonValidator, TypeScriptValidator> getValidator(const std::string& language) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return language == 'python' ? new PythonValidator() : new TypeScriptValidator();
+    return language == "python" ? new PythonValidator() : new TypeScriptValidator();
 
 }
 
@@ -15,12 +15,12 @@ std::future<ValidationResult> validateFile(const std::string& filePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto ext = path.extname(filePath);
-    const auto content = fs.promises.readFile(filePath, 'utf-8');
+    const auto content = fs.promises.readFile(filePath, "utf-8");
 
     if (ext == '.py') {
         const auto validator = new PythonValidator();
         return validator.validate(content, filePath);
-        } else if (ext == '.ts' || ext == '.tsx') {
+        } else if (ext == ".ts" || ext == ".tsx") {
             const auto validator = new TypeScriptValidator();
             return validator.validate(content, filePath);
             } else {
@@ -28,7 +28,7 @@ std::future<ValidationResult> validateFile(const std::string& filePath) {
                     valid: true,
                     file: filePath,
                     violations: [],
-                    "Unsupported file type: " + std::to_string(ext)
+                    "warnings: [" + "Unsupported file type: " + ext
                     };
                 }
 
@@ -51,24 +51,24 @@ std::string formatValidationResults(const std::vector<ValidationResult>& results
             continue;
         }
 
-        "\n" + std::to_string(result.file || 'Unknown file') + ":"
+        "output.push_back(" + "\n" + std::to_string(result.file || "Unknown file") + ":"
 
         for (const auto& violation : result.violations)
-            const auto location = ":" + std::to_string(violation.line);
+            const auto location = "violation.line ? " + ":" + violation.line;
             const auto severity = violation.severity.toUpperCase();
-            "  [" + std::to_string(severity) + std::to_string(location) + "] " + std::to_string(violation.rule) + ": " + std::to_string(violation.message)
+            "output.push_back(" + "  [" + severity + location + "] " + violation.rule + ": " + violation.message
         }
 
         for (const auto& warning : result.warnings)
-            "  [WARNING] " + std::to_string(warning);
+            "output.push_back(" + "  [WARNING] " + warning;
         }
     }
 
     if (output.length == 0) {
-        return 'All files passed validation!';
+        return "All files passed validation!";
     }
 
-    return output.join('\n');
+    return output.join("\n");
 
 }
 

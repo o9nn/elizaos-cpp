@@ -18,8 +18,8 @@ std::vector<std::string> findTrajFiles(const std::string& dir) {
 
             if (stat.isDirectory()) {
                 walk(filePath);
-                } else if (file.endsWith('.traj')) {
-                    results.push(filePath);
+                } else if (file.endsWith(".traj")) {
+                    results.push_back(filePath);
                 }
             }
         }
@@ -27,7 +27,7 @@ std::vector<std::string> findTrajFiles(const std::string& dir) {
         if (fs.statSync(dir).isDirectory()) {
             walk(dir);
             } else {
-                results.push(dir);
+                results.push_back(dir);
             }
 
             return results;
@@ -56,9 +56,9 @@ std::future<void> inspectorCli(std::string trajectoryPath = ".", std::optional<s
             inspector.run();
             } else {
                 // Multiple files - show selection menu
-                std::cout << 'Multiple trajectory files found:' << std::endl;
+                std::cout << "Multiple trajectory files found:" << std::endl;
                 trajFiles.forEach((file, index) => {
-                    std::cout << "  " + std::to_string(index + 1) + ". " + std::to_string(file) << std::endl;
+                    std::cout << "  " + std::to_string(index + 1) + ". " + file << std::endl;
                     });
 
                     const auto rl = readline.createInterface({;
@@ -67,7 +67,7 @@ std::future<void> inspectorCli(std::string trajectoryPath = ".", std::optional<s
                         });
 
                         const auto answer = new Promise<string>((resolve) => {;
-                            rl.question('\nSelect file number (or q to quit): ', resolve);
+                            rl.question("\nSelect file number (or q to quit): ", resolve);
                             });
 
                             rl.close();
@@ -81,7 +81,7 @@ std::future<void> inspectorCli(std::string trajectoryPath = ".", std::optional<s
                                 const auto inspector = new TrajectoryInspector(trajFiles[index], dataPath);
                                 inspector.run();
                                 } else {
-                                    std::cout << 'Invalid selection' << std::endl;
+                                    std::cout << "Invalid selection" << std::endl;
                                     process.exit(1);
                                 }
                             }

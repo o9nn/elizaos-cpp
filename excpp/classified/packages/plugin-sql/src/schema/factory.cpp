@@ -16,7 +16,7 @@ SchemaFactory getSchemaFactory() {
 
     if (!globalFactory) {
         // Default to postgres for backward compatibility
-        globalFactory = new SchemaFactory('postgres');
+        globalFactory = new SchemaFactory("postgres");
     }
     return globalFactory;
 

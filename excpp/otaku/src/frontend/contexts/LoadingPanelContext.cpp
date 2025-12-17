@@ -9,16 +9,16 @@ void LoadingPanelProvider() {
 
     const auto [state, setState] = useState<LoadingPanelState>({;
         isVisible: false,
-        type: 'loading',
-        title: '',
-        messages: '',
+        type: "loading",
+        title: "",
+        messages: "",
         id: nullptr,
         });
 
         const auto showLoading = useCallback((title: string, messages: string | string[], id?: string) => {;
             setState({
                 isVisible: true,
-                type: 'loading',
+                type: "loading",
                 title,
                 messages,
                 id: id || nullptr,
@@ -33,7 +33,7 @@ void LoadingPanelProvider() {
                 ) => {
                     setState({
                         isVisible: true,
-                        type: 'success',
+                        type: "success",
                         title,
                         messages,
                         id: id || nullptr,
@@ -56,7 +56,7 @@ void LoadingPanelProvider() {
                                 const auto showError = useCallback((title: string, messages: string | string[], id?: string) => {;
                                     setState({
                                         isVisible: true,
-                                        type: 'error',
+                                        type: "error",
                                         title,
                                         messages,
                                         id: id || nullptr,
@@ -88,7 +88,7 @@ void LoadingPanelProvider() {
                                         title={state.title}
                                     messages={state.messages}
                                 type={state.type}
-                            onClose={state.type != 'loading' ? handleClose : std::nullopt}
+                            onClose={state.type != "loading" ? handleClose : std::nullopt}
                             />;
                         )}
                         </LoadingPanelContext.Provider>;

@@ -37,7 +37,7 @@ void AuthButton() {
 
     return (;
     <button;
-    onClick={() => signIn('github')}
+    onClick={() => signIn("github")}
     className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors"
     >;
     <FaGithub className="w-5 h-5" />;

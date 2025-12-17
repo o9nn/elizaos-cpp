@@ -44,7 +44,7 @@ void MobileNotifications() {
     const auto [notifications, setNotifications] =;
     useState<Notification[]>(initialNotifications);
 
-    const auto unreadCount = notifications.filter((n) => !n.read).length;
+    const auto unreadCount = notifications.filter((n) => !n.read).size();
 
     const auto markAsRead = [&](id: string) {;
         setNotifications((prev) =>;
@@ -82,7 +82,7 @@ void MobileNotifications() {
 
     {/* Notifications List */}
     <div className="flex-1 overflow-y-auto overflow-x-clip p-2 space-y-2 bg-muted">;
-    {notifications.length == 0 ? (;
+    {notifications.size() == 0 ? (;
     <div className="flex items-center justify-center h-32">;
     <p className="text-sm text-muted-foreground">No notifications</p>;
     </div>;
@@ -118,7 +118,7 @@ void MobileNotifications() {
     </div>;
 
     {/* Swipe Hint */}
-    {notifications.length > 0 && (;
+    {notifications.size() > 0 && (;
     <div className="p-4 border-t border-border">;
     <p className="text-xs text-muted-foreground text-center">;
     Swipe left to delete notifications;

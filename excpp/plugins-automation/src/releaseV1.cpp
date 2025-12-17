@@ -19,7 +19,7 @@ std::future<void> main() {
         // Load the new GitHub Action workflow from assets
         const auto workflowPath = path.join(__dirname, "../assets/npm-deploy.yml");
         if (!fs.existsSync(workflowPath)) {
-            std::cerr << "Error: Workflow file not found at " + std::to_string(workflowPath) << std::endl;
+            std::cerr << "Error: Workflow file not found at " + workflowPath << std::endl;
             process.exit(1);
         }
 
@@ -33,7 +33,7 @@ std::future<void> main() {
             });
 
             for (const auto& repo : repos)
-                std::cout << "\n--- Processing " + std::to_string(ORG_NAME) + "/" + std::to_string(repo.name) + " ---" << std::endl;
+                std::cout << "\n--- Processing " + ORG_NAME + "/" + repo.name + " ---" << std::endl;
 
                 // Check if 1.x branch exists
                 try {
@@ -45,7 +45,7 @@ std::future<void> main() {
                         } catch (error: any) {
                             if (error.status == 404) {
                                 console.log(
-                                "Skipping " + std::to_string(ORG_NAME) + "/" + std::to_string(repo.name) + " (no " + std::to_string(TARGET_BRANCH) + " branch)";
+                                "Skipping " + ORG_NAME + "/" + repo.name + " (no " + TARGET_BRANCH + " branch)";
                                 );
                                 continue;
                             }
@@ -66,7 +66,7 @@ std::future<void> main() {
                                     );
                                     if (pkg.version == "1.0.0") {
                                         console.log(
-                                        "Skipping " + std::to_string(ORG_NAME) + "/" + std::to_string(repo.name) + " (package.json already @ version 1.0.0)";
+                                        "Skipping " + ORG_NAME + "/" + repo.name + " (package.json already @ version 1.0.0)";
                                         );
                                         continue;
                                     }
@@ -76,7 +76,7 @@ std::future<void> main() {
                                         throw;
                                     }
                                     console.log(
-                                    "  ⚠️ No package.json in " + std::to_string(repo.name) + ", proceeding with updates";
+                                    "  ⚠️ No package.json in " + repo.name + ", proceeding with updates";
                                     );
                                 }
 
@@ -90,9 +90,9 @@ std::future<void> main() {
                                     // Update package.json dependencies and version
                                     updatePackageJsonDependencies(octokit, repo.name);
 
-                                    std::cout << "✅ Successfully updated " + std::to_string(ORG_NAME) + "/" + std::to_string(repo.name) << std::endl;
+                                    std::cout << "✅ Successfully updated " + ORG_NAME + "/" + repo.name << std::endl;
                                     } catch (error) {
-                                        std::cerr << "❌ Error updating " + std::to_string(ORG_NAME) + "/" + std::to_string(repo.name) + ":" << error << std::endl;
+                                        std::cerr << "❌ Error updating " + ORG_NAME + "/" + repo.name + ":" << error << std::endl;
                                     }
                                 }
 
@@ -144,7 +144,7 @@ std::future<void> updateWorkflowFile(Octokit octokit, const std::string& repoNam
                         content: encodedContent,
                         sha: existingFile.sha,
                         });
-                        std::cout << "  📝 Updated workflow file in " + std::to_string(repoName) << std::endl;
+                        std::cout << "  📝 Updated workflow file in " + repoName << std::endl;
                         } else {
                             // Create new file
                             octokit.repos.createOrUpdateFileContents({
@@ -155,7 +155,7 @@ std::future<void> updateWorkflowFile(Octokit octokit, const std::string& repoNam
                                 message: "chore: add npm deployment workflow",
                                 content: encodedContent,
                                 });
-                                std::cout << "  ➕ Created workflow file in " + std::to_string(repoName) << std::endl;
+                                std::cout << "  ➕ Created workflow file in " + repoName << std::endl;
                             }
 
     } catch (const std::exception& e) {
@@ -185,7 +185,7 @@ std::future<void> updatePackageJsonDependencies(Octokit octokit, const std::stri
                 packageFile = response.data;
                 } catch (error: any) {
                     if (error.status == 404) {
-                        std::cout << "  ⚠️ No package.json found in " + std::to_string(repoName) << std::endl;
+                        std::cout << "  ⚠️ No package.json found in " + repoName << std::endl;
                         return;
                     }
                     throw;
@@ -194,7 +194,7 @@ std::future<void> updatePackageJsonDependencies(Octokit octokit, const std::stri
                 const auto packageContent = Buffer.from(packageFile.content, "base64").toString(;
                 "utf8";
                 );
-                const auto pkg = JSON.parse(packageContent) as {;
+                const auto pkg = /* JSON.parse */ packageContent as {;
                     dependencies?: Record<string, string>;
                     devDependencies?: Record<string, string>;
                     peerDependencies?: Record<string, string>;
@@ -207,7 +207,7 @@ std::future<void> updatePackageJsonDependencies(Octokit octokit, const std::stri
                     if (pkg.version != "1.0.0") {
                         const auto currentVersion = pkg.version;
                         pkg.version = "1.0.0";
-                        std::cout << "  📦 Updated version: " + std::to_string(currentVersion) + " → 1.0.0" << std::endl;
+                        std::cout << "  📦 Updated version: " + currentVersion + " → 1.0.0" << std::endl;
                         updated = true;
                     }
 
@@ -224,7 +224,7 @@ std::future<void> updatePackageJsonDependencies(Octokit octokit, const std::stri
                             if (currentVersion != "^1.0.0") {
                                 pkg[depType]!["@elizaos/core"] = "^1.0.0";
                                 console.log(
-                                "  🔄 Updated @elizaos/core in " + std::to_string(depType) + ": " + std::to_string(currentVersion) + " → ^1.0.0"
+                                "  🔄 Updated @elizaos/core in " + depType + ": " + currentVersion + " → ^1.0.0"
                                 );
                                 updated = true;
                             }
@@ -233,7 +233,7 @@ std::future<void> updatePackageJsonDependencies(Octokit octokit, const std::stri
 
                     if (updated) {
                         const auto updatedContent = Buffer.from(;
-                        JSON.stringify(pkg, nullptr, 2) + "\n",
+                        /* JSON.stringify */ std::string(pkg, nullptr, 2) + "\n",
                         "utf8";
                         ).tostd::to_string("base64");
 
@@ -246,10 +246,10 @@ std::future<void> updatePackageJsonDependencies(Octokit octokit, const std::stri
                             content: updatedContent,
                             sha: packageFile.sha,
                             });
-                            std::cout << "  📦 Updated package.json dependencies in " + std::to_string(repoName) << std::endl;
+                            std::cout << "  📦 Updated package.json dependencies in " + repoName << std::endl;
                             } else {
                                 console.log(
-                                "  ✓ @elizaos/core dependencies already up to date in " + std::to_string(repoName);
+                                "  ✓ @elizaos/core dependencies already up to date in " + repoName;
                                 );
                             }
 
@@ -285,14 +285,14 @@ std::future<void> removeBunLockfile(Octokit octokit, const std::string& repoName
                 sha: response.data.sha,
                 });
                 console.log(
-                "  🗑️ Removed bun.lock in " + std::to_string(repoName) + " (will be regenerated on next install)";
+                "  🗑️ Removed bun.lock in " + repoName + " (will be regenerated on next install)";
                 );
                 } catch (error: any) {
                     if (error.status == 404) {
-                        std::cout << "  ℹ️ No bun.lock found in " + std::to_string(repoName) << std::endl;
+                        std::cout << "  ℹ️ No bun.lock found in " + repoName << std::endl;
                         } else {
                             console.warn(
-                            "  ⚠️ Could not remove bun.lock in " + std::to_string(repoName) + ":"
+                            "  ⚠️ Could not remove bun.lock in " + repoName + ":"
                             error.message;
                             );
                         }

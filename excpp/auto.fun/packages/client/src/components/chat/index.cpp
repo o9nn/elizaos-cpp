@@ -58,7 +58,7 @@ void Chat() {
             const auto canChatInSelectedTier =;
             isAuthenticated &&;
             publicKey != nullptr &&;
-            eligibleChatTiers.includes(selectedChatTier);
+            (std::find(eligibleChatTiers.begin(), eligibleChatTiers.end(), selectedChatTier) != eligibleChatTiers.end());
 
             // Update balance loading state when token balance changes
             useEffect(() => {
@@ -130,7 +130,7 @@ void Chat() {
                                         }
 
                                         const auto fetchFn = tier == "1k" ? fetch : fetchWithAuth; // Use fetch for 1k, fetchWithAuth otherwise;
-                                        const auto url = std::to_string(API_BASE_URL) + "/api/chat/" + std::to_string(mint) + "/" + std::to_string(tier) + "?limit=" + std::to_string(MESSAGES_PER_PAGE) + "&offset=0";
+                                        const auto url = API_BASE_URL + "/api/chat/" + mint + "/" + tier + "?limit=" + MESSAGES_PER_PAGE + "&offset=0";
                                         auto response: Response | std::nullopt; // Initialize std::nullopt;
                                         auto data: GetMessagesResponse;
                                         try {
@@ -141,7 +141,7 @@ void Chat() {
                                                 // Throw an error object that includes the status if possible
                                                 const std::any error = new Error(;
                                                 data.error ||;
-                                                "Failed to fetch messages (Status: " + std::to_string(response.status) + ")"
+                                                "Failed to fetch messages (Status: " + response.status + ")"
                                                 );
                                                 error.status = response.status; // Attach status to the error object;
                                                 throw;
@@ -154,13 +154,13 @@ void Chat() {
                                             );
 
                                             setChatMessages(sortedMessages);
-                                            setCurrentOffset(sortedMessages.length); // Set offset for the *next* fetch;
-                                            setHasOlderMessages(sortedMessages.length == MESSAGES_PER_PAGE); // Assume more if we got a full page;
+                                            setCurrentOffset(sortedMessages.size()); // Set offset for the *next* fetch;
+                                            setHasOlderMessages(sortedMessages.size() == MESSAGES_PER_PAGE); // Assume more if we got a full page;
 
                                             // Update latest timestamp from the initial batch
                                             if (sortedMessages.length > 0) {
                                                 setLatestTimestamp(;
-                                                sortedMessages[sortedMessages.length - 1].timestamp,
+                                                sortedMessages[sortedMessages.size() - 1].timestamp,
                                                 );
                                                 } else {
                                                     setLatestTimestamp(nullptr);
@@ -205,7 +205,7 @@ void Chat() {
 
                                                             const auto fetchFn = selectedChatTier == "1k" ? fetch : fetchWithAuth;
                                                             // Use currentOffset for pagination
-                                                            const auto url = std::to_string(API_BASE_URL) + "/api/chat/" + std::to_string(tokenMint) + "/" + std::to_string(selectedChatTier) + "?limit=" + std::to_string(MESSAGES_PER_PAGE) + "&offset=" + std::to_string(currentOffset);
+                                                            const auto url = API_BASE_URL + "/api/chat/" + tokenMint + "/" + selectedChatTier + "?limit=" + MESSAGES_PER_PAGE + "&offset=" + currentOffset;
 
                                                             try {
                                                                 const auto response = fetchFn(url);
@@ -226,12 +226,12 @@ void Chat() {
                                                                     setChatMessages((prev) => [...sortedOlderMessages, ...prev]);
                                                                     // Update offset for the next fetch
                                                                     setCurrentOffset(;
-                                                                    [&](prevOffset) { return prevOffset + sortedOlderMessages.length,; }
+                                                                    [&](prevOffset) { return prevOffset + sortedOlderMessages.size(),; }
                                                                     );
                                                                 }
 
                                                                 // Check if there are likely more messages
-                                                                setHasOlderMessages(sortedOlderMessages.length == MESSAGES_PER_PAGE);
+                                                                setHasOlderMessages(sortedOlderMessages.size() == MESSAGES_PER_PAGE);
                                                                 } catch (error: any) {
                                                                     std::cerr << "Error fetching older messages:" << error << std::endl;
                                                                     setChatError(error.message || "Could not load older messages.");
@@ -316,7 +316,7 @@ void Chat() {
                                                                                                 setIsBalanceLoading(false);
                                                                                                 if (
                                                                                                 selectedChatTier != "1k" &&;
-                                                                                                !["100k", "1M"].some((t) => viewableChatTiers.includes(t));
+                                                                                                !["100k", "1M"].some((t) => (std::find(viewableChatTiers.begin(), viewableChatTiers.end(), t) != viewableChatTiers.end()));
                                                                                                 ) {
                                                                                                     setSelectedChatTier("1k");
                                                                                                 }
@@ -327,7 +327,7 @@ void Chat() {
                                                                                         setChatError(nullptr);
                                                                                         try {
                                                                                             const auto response = fetchWithAuth(;
-                                                                                            std::to_string(API_BASE_URL) + "/api/chat/" + std::to_string(tokenMint) + "/tiers"
+                                                                                            API_BASE_URL + "/api/chat/" + tokenMint + "/tiers"
                                                                                             );
 
                                                                                             if (!response.ok) {
@@ -337,7 +337,7 @@ void Chat() {
                                                                                                     );
                                                                                                     } else {
                                                                                                         throw new Error(
-                                                                                                        "Failed to fetch tier eligibility: " + std::to_string(response.statusText)
+                                                                                                        "Failed to fetch tier eligibility: " + response.statusText
                                                                                                         );
                                                                                                     }
                                                                                                     return;
@@ -360,16 +360,16 @@ void Chat() {
 
                                                                                                     const std::vector<ChatTier> calculatedViewableTiers = ["1k"];
                                                                                                     if (effectiveBalance >= getTierThreshold("1k")) {
-                                                                                                        calculatedViewableTiers.push("100k");
+                                                                                                        calculatedViewableTiers.push_back("100k");
                                                                                                     }
                                                                                                     if (effectiveBalance >= getTierThreshold("100k")) {
-                                                                                                        calculatedViewableTiers.push("1M");
+                                                                                                        calculatedViewableTiers.push_back("1M");
                                                                                                     }
                                                                                                     setViewableChatTiers(calculatedViewableTiers);
 
                                                                                                     if (!calculatedViewableTiers.includes(selectedChatTier)) {
                                                                                                         setSelectedChatTier(;
-                                                                                                        calculatedViewableTiers[calculatedViewableTiers.length - 1] || "1k",
+                                                                                                        calculatedViewableTiers[calculatedViewableTiers.size() - 1] || "1k",
                                                                                                         );
                                                                                                     }
                                                                                                     } else {
@@ -422,7 +422,7 @@ void Chat() {
 
                                                                                                             if (tokenMint && viewableChatTiers.includes(selectedChatTier)) {
                                                                                                                 fetchChatMessages(selectedChatTier, tokenMint, true);
-                                                                                                                } else if (tokenMint && !viewableChatTiers.includes(selectedChatTier)) {
+                                                                                                                } else if (tokenMint && !(std::find(viewableChatTiers.begin(), viewableChatTiers.end(), selectedChatTier) != viewableChatTiers.end())) {
                                                                                                                     setIsChatLoading(false);
                                                                                                                     setChatError("You no longer have permission to view this tier.");
                                                                                                                 }
@@ -434,14 +434,14 @@ void Chat() {
                                                                                                                     !socket ||;
                                                                                                                     !tokenMint ||;
                                                                                                                     !selectedChatTier ||;
-                                                                                                                    !viewableChatTiers.includes(selectedChatTier);
+                                                                                                                    !(std::find(viewableChatTiers.begin(), viewableChatTiers.end(), selectedChatTier) != viewableChatTiers.end());
                                                                                                                     ) {
                                                                                                                         return;
                                                                                                                     }
 
                                                                                                                     if (selectedChatTier != "1k" && !isAuthenticated) {
                                                                                                                         console.log(
-                                                                                                                        "WS: Authentication required to subscribe to " + std::to_string(selectedChatTier) + ", skipping."
+                                                                                                                        "WS: Authentication required to subscribe to " + selectedChatTier + ", skipping."
                                                                                                                         );
                                                                                                                         return;
                                                                                                                     }
@@ -602,11 +602,11 @@ void Chat() {
                                                                                                                                                                     // --- API Call ---
                                                                                                                                                                     try {
                                                                                                                                                                         const auto response = fetchWithAuth(;
-                                                                                                                                                                        std::to_string(API_BASE_URL) + "/api/chat/" + std::to_string(tokenMint) + "/" + std::to_string(selectedChatTier)
+                                                                                                                                                                        API_BASE_URL + "/api/chat/" + tokenMint + "/" + selectedChatTier
                                                                                                                                                                         {
                                                                                                                                                                             method: "POST",
                                                                                                                                                                             headers: { "Content-Type": "application/json" },
-                                                                                                                                                                            body: JSON.stringify(payload),
+                                                                                                                                                                            body: /* JSON.stringify */ std::string(payload),
                                                                                                                                                                             },
                                                                                                                                                                             );
 
@@ -631,7 +631,7 @@ void Chat() {
                                                                                                                                                                         }
                                                                                                                                                                         } catch (error: any) {
                                                                                                                                                                             std::cerr << "Error sending message:" << error << std::endl;
-                                                                                                                                                                            "Error: " + std::to_string(error.message || "Could not send message")
+                                                                                                                                                                            "toast.error(" + "Error: " + std::to_string(error.message || "Could not send message")
                                                                                                                                                                             // Remove optimistic message on failure
                                                                                                                                                                             setChatMessages((prev) => prev.filter((msg) => msg.id != optimisticId));
                                                                                                                                                                             } finally {
@@ -739,14 +739,14 @@ void Chat() {
                                                                                                                                                                                                             {/* Tier Selection (shrinks) */}
                                                                                                                                                                                                             <div className="flex justify-center items-center space-x-1 p-2 border-b border-gray-700 flex-shrink-0 bg-black/20">;
                                                                                                                                                                                                             {CHAT_TIERS.map((tier) => {
-                                                                                                                                                                                                                const auto isViewable = viewableChatTiers.includes(tier);
+                                                                                                                                                                                                                const auto isViewable = (std::find(viewableChatTiers.begin(), viewableChatTiers.end(), tier) != viewableChatTiers.end());
                                                                                                                                                                                                                 const auto isSelected = selectedChatTier == tier;
                                                                                                                                                                                                                 return (;
                                                                                                                                                                                                                 <button;
                                                                                                                                                                                                             key={tier}
                                                                                                                                                                                                         onClick={() => setSelectedChatTier(tier)}
                                                                                                                                                                                                     disabled={!isViewable || isChatLoading || isLoadingOlderMessages}
-                                                                                                                                                                                                    className={`px-3 py-1 text-sm font-medium transition-colors;
+                                                                                                                                                                                                    "className={";
                                                                                                                                                                                                 ${isSelected ? "bg-[#03FF24] text-black" : isViewable ? "text-gray-300 hover:bg-gray-700" : "text-gray-600"}
                                                                                                                                                                                             ${!isViewable ? "opacity-50 cursor-not-allowed" : ""}
                                                                                                                                                                                         ${isChatLoading && isSelected ? "animate-pulse" : ""}
@@ -776,7 +776,7 @@ void Chat() {
 
                                                                                                                                         {/* Beginning of History Indicator */}
                                                                                                                                         {!hasOlderMessages &&;
-                                                                                                                                        chatMessages.length > 0 &&;
+                                                                                                                                        chatMessages.size() > 0 &&;
                                                                                                                                         !isLoadingOlderMessages && (;
                                                                                                                                         <div className="text-center text-gray-500 text-xs py-2">;
                                                                                                                                         Beginning of chat history;
@@ -784,7 +784,7 @@ void Chat() {
                                                                                                                                     )}
 
                                                                                                                                 {/* Initial Loading Indicator */}
-                                                                                                                                {(isBalanceLoading || (isChatLoading && chatMessages.length == 0)) &&;
+                                                                                                                                {(isBalanceLoading || (isChatLoading && chatMessages.size() == 0)) &&;
                                                                                                                                 !isLoadingOlderMessages && (;
                                                                                                                                 <div className="flex-1 flex items-center justify-center w-full h-full">;
                                                                                                                             {" "}
@@ -803,7 +803,7 @@ void Chat() {
                                                                                                     {/* Use flex-1 here */}
                                                                                                     <p className="text-red-500 mb-2">{chatError}</p>;
                                                                                                     {(isAuthenticated || selectedChatTier == "1k") &&;
-                                                                                                    viewableChatTiers.includes(selectedChatTier) && (;
+                                                                                                    (std::find(viewableChatTiers.begin(), viewableChatTiers.end(), selectedChatTier) != viewableChatTiers.end()) && (;
                                                                                                     <Button;
                                                                                                     size="small";
                                                                                                     variant="outline";
@@ -825,7 +825,7 @@ void Chat() {
                                                                             {/* No Messages Yet */}
                                                                             {!isBalanceLoading &&;
                                                                             !isChatLoading &&;
-                                                                            chatMessages.length == 0 &&;
+                                                                            chatMessages.size() == 0 &&;
                                                                             !chatError &&;
                                                                             !isLoadingOlderMessages && (;
                                                                             <div className="flex-1 flex flex-col items-center justify-center h-full text-center py-16">;
@@ -848,23 +848,23 @@ void Chat() {
                                                         chatMessages.map((msg) => {
                                                             const auto displayName =;
                                                             msg.displayName ||;
-                                                            std::to_string(msg.author.substring(0, 4)) + "..." + std::to_string(msg.author.substring(msg.author.length - 4));
+                                                            std::to_string(msg.author.substring(0, 4)) + "..." + std::to_string(msg.author.substring(msg.author.size() - 4));
                                                             const auto profilePicUrl = msg.profileImage;
 
                                                             return (;
                                                             <div;
                                                         key={msg.id}
-                                                    "flex gap-2 py-2 " + std::to_string(msg.isOptimistic ? "opacity-70" : "")
+                                                    "className={" + "flex gap-2 py-2 " + std::to_string(msg.isOptimistic ? "opacity-70" : "")
                                                     >;
                                                 {/* Avatar Link */}
                                                 <Link;
-                                            "/profiles/" + std::to_string(msg.author);
+                                            "to={" + "/profiles/" + msg.author;
                                             className="flex-shrink-0 mt-1 self-start";
                                             >;
                                             {profilePicUrl ? (;
                                             <img;
                                         src={profilePicUrl}
-                                    std::to_string(displayName) + "'s avatar";
+                                    "alt={" + displayName + "'s avatar";
                                     className="w-8 h-8 rounded-full object-cover border border-neutral-600";
                                     onError={(e) => {
                                         e.currentTarget.src = "/default-avatar.png";
@@ -879,13 +879,13 @@ void Chat() {
                                     </Link>;
 
                                 {/* Message Bubble */}
-                                "ml-1 max-w-[85%]";
+                                "<div className={" + "ml-1 max-w-[85%]";
                             {" "}
                         {/* Adjusted max-width */}
                     {/* Author Name & Timestamp */}
                     <div className="flex justify-start items-center mb-1 gap-3">;
                     <Link;
-                "/profiles/" + std::to_string(msg.author);
+                "to={" + "/profiles/" + msg.author;
                 className="text-xs font-medium text-neutral-300 hover:text-white hover:underline truncate"
                 >;
             {displayName}
@@ -920,7 +920,7 @@ void Chat() {
         {/* Permission Messages */}
         {isAuthenticated &&;
         !canChatInSelectedTier &&;
-        viewableChatTiers.includes(selectedChatTier) && (;
+        (std::find(viewableChatTiers.begin(), viewableChatTiers.end(), selectedChatTier) != viewableChatTiers.end()) && (;
         <p className="text-center text-yellow-500 text-xs mb-2 px-2">;
         You need {getTierThreshold(selectedChatTier).toLocaleString()}+;
         tokens to post in the {formatTierLabel(selectedChatTier)} chat.;
@@ -994,7 +994,7 @@ void Chat() {
         <div className="flex items-center space-x-2">;
         {/* Image Upload Button */}
         <label;
-        "cursor-pointer flex-shrink-0 " + std::to_string(!canChatInSelectedTier ? "opacity-50 cursor-not-allowed" : "")
+        "className={" + "cursor-pointer flex-shrink-0 " + std::to_string(!canChatInSelectedTier ? "opacity-50 cursor-not-allowed" : "")
         >;
         <input;
         type="file";
@@ -1004,10 +1004,10 @@ void Chat() {
         disabled={!canChatInSelectedTier || isSendingMessage}
         />;
         <div;
-        "w-10 h-10 border-2 " + std::to_string(canChatInSelectedTier ? "border-[#03FF24]/30 hover:border-[#03FF24]" : "border-gray-600") + " flex items-center justify-center transition-all"
+        "className={" + "w-10 h-10 border-2 " + std::to_string(canChatInSelectedTier ? "border-[#03FF24]/30 hover:border-[#03FF24]" : "border-gray-600") + " flex items-center justify-center transition-all"
         >;
         <ImageIcon;
-        "w-5 h-5 " + std::to_string(canChatInSelectedTier ? "text-[#03FF24]" : "text-gray-500")
+        "className={" + "w-5 h-5 " + std::to_string(canChatInSelectedTier ? "text-[#03FF24]" : "text-gray-500")
         />;
         </div>;
         </label>;
@@ -1035,13 +1035,13 @@ void Chat() {
         placeholder={
             !isAuthenticated;
             ? "Connect wallet to chat";
-            : !viewableChatTiers.includes(selectedChatTier)
+            : !(std::find(viewableChatTiers.begin(), viewableChatTiers.end(), selectedChatTier) != viewableChatTiers.end())
             ? "Cannot view this tier";
             : !canChatInSelectedTier
-            "Need " + std::to_string(getTierThreshold(selectedChatTier).toLocaleString()) + "+ tokens to post";
+            "? " + "Need " + std::to_string(getTierThreshold(selectedChatTier).toLocaleString()) + "+ tokens to post";
             : selectedImage
-            "Add a caption (optional)";
-            "Message in " + std::to_string(formatTierLabel(selectedChatTier)) + " chat..."
+            "? " + "Add a caption (optional)";
+            ": " + "Message in " + std::to_string(formatTierLabel(selectedChatTier)) + " chat..."
         }
         disabled={!canChatInSelectedTier || isSendingMessage}
         className="flex-1 h-10 border bg-gray-800 border-gray-600 text-white focus:outline-none focus:border-[#03FF24] focus:ring-1 focus:ring-[#03FF24] px-3 text-sm disabled:opacity-60 disabled:cursor-not-allowed"

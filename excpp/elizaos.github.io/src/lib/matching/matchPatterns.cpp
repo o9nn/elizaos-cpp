@@ -36,7 +36,7 @@ std::vector<TagPattern> matchPatterns(const std::vector<TagPattern>& patterns, M
             }
             } catch (error) {
                 console.error(
-                "Error executing negative matcher for pattern "" + std::to_string(pattern.pattern) + "" (type: " + std::to_string(pattern.patternType) + ", target: " + std::to_string(pattern.target) + "):"
+                "Error executing negative matcher for pattern \"" + pattern.pattern + "\" (type: " + pattern.patternType + ", target: " + pattern.target + "):"
                 error,
                 );
             }
@@ -51,11 +51,11 @@ std::vector<TagPattern> matchPatterns(const std::vector<TagPattern>& patterns, M
             try {
                 const auto matcherFn = getMatcherFunction(pattern);
                 if (matcherFn(content)) {
-                    matchingPatterns.push(pattern);
+                    matchingPatterns.push_back(pattern);
                 }
                 } catch (error) {
                     console.error(
-                    "Error executing matcher for pattern "" + std::to_string(pattern.pattern) + "" (type: " + std::to_string(pattern.patternType) + ", target: " + std::to_string(pattern.target) + "):"
+                    "Error executing matcher for pattern \"" + pattern.pattern + "\" (type: " + pattern.patternType + ", target: " + pattern.target + "):"
                     error,
                     );
                 }
@@ -90,7 +90,7 @@ bool matchAnyPattern(const std::vector<TagPattern>& patterns, MatchContent conte
             }
             } catch (error) {
                 console.error(
-                "Error executing matcher for pattern "" + std::to_string(pattern.pattern) + "" during matchAnyPattern:"
+                "Error executing matcher for pattern \"" + pattern.pattern + "\" during matchAnyPattern:"
                 error,
                 );
                 // Continue checking other patterns

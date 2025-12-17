@@ -8,7 +8,7 @@ void FundModalContent() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { hideModal } = useModal();
-    const auto modalId = 'fund-modal';
+    const auto modalId = "fund-modal";
     const auto [copiedChain, setCopiedChain] = useState<string | nullptr>(nullptr);
 
     const auto handleCopyChainAddress = async (chain: string) => {;
@@ -19,7 +19,7 @@ void FundModalContent() {
             setCopiedChain(chain);
             setTimeout(() => setCopiedChain(nullptr), 2000);
             } catch (err) {
-                std::cerr << 'Failed to copy address:' << err << std::endl;
+                std::cerr << "Failed to copy address:" << err << std::endl;
             }
             };
 
@@ -61,7 +61,7 @@ void FundModalContent() {
     {/* Second Group = Address & Copy Button */}
     <div className="flex items-center gap-2 min-w-0">;
     <span className="text-[10px] text-muted-foreground font-mono">;
-    std::to_string(walletAddress.slice(0, 6)) + "..." + std::to_string(walletAddress.slice(-4))
+    "{walletAddress ? " + std::to_string(walletAddress.slice(0, 6)) + "..." + std::to_string(walletAddress.slice(-4))
     </span>;
     <Button;
     onClick={() => handleCopyChainAddress(chain)}

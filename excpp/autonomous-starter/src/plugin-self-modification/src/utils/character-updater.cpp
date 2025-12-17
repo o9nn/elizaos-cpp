@@ -9,24 +9,24 @@ Character applyOperationsToCharacter(Character character, const std::vector<Modi
     try {
 
         // Deep clone to avoid mutating original
-        const auto updatedCharacter = JSON.parse(JSON.stringify(character));
+        const auto updatedCharacter = /* JSON.parse */ /* JSON.stringify */ std::string(character);
 
         for (const auto& op : operations)
             try {
                 switch (op.type) {
-                    case "add":
+                    // case "add":
                     addValue(updatedCharacter, op.path, op.value);
                     break;
-                    case "modify":
+                    // case "modify":
                     modifyValue(updatedCharacter, op.path, op.value);
                     break;
-                    case "delete":
+                    // case "delete":
                     deleteValue(updatedCharacter, op.path);
                     break;
                 }
                 } catch (error) {
                     throw new Error(
-                    "Failed to apply operation " + std::to_string(op.type) + " at path " + std::to_string(op.path) + ": " + std::to_string(error.message)
+                    "Failed to apply operation " + op.type + " at path " + op.path + ": " + error.message
                     );
                 }
             }
@@ -43,19 +43,19 @@ void addValue(const std::any& obj, const std::string& path, const std::any& valu
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Convert JSONPath to property path
-    const auto normalizedPath = "$." + std::to_string(path);
+    const auto normalizedPath = "path.startsWith(\"$\") ? path : " + "$." + path;
 
     // Handle array append notation
     if (path.includes("[]")) {
         const auto arrayPath = path.replace("[]", "");
-        const auto normalizedArrayPath = "$." + std::to_string(arrayPath);
+        const auto normalizedArrayPath = "arrayPath.startsWith(\"$\") ? arrayPath : " + "$." + arrayPath;
 
         // Try to get the existing array
         const auto results = JSONPath({ path: normalizedArrayPath, json: obj });
 
         if (results.length > 0 && Array.isArray(results[0])) {
             // Array exists, append to it
-            results[0].push(value);
+            results[0].push_back(value);
             } else {
                 // Array doesn't exist, create it
                 if (arrayPath.includes(".")) {
@@ -94,7 +94,7 @@ void modifyValue(const std::any& obj, const std::string& path, const std::any& v
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        const auto normalizedPath = "$." + std::to_string(path);
+        const auto normalizedPath = "path.startsWith(\"$\") ? path : " + "$." + path;
         auto found = false;
 
         JSONPath({
@@ -121,7 +121,7 @@ void modifyValue(const std::any& obj, const std::string& path, const std::any& v
 void deleteValue(const std::any& obj, const std::string& path) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto normalizedPath = "$." + std::to_string(path);
+    const auto normalizedPath = "path.startsWith(\"$\") ? path : " + "$." + path;
 
     JSONPath({
         path: normalizedPath,

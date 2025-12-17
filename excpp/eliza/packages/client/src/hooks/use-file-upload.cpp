@@ -25,18 +25,18 @@ void useFileUpload(auto channelId) {
                 const auto files = Array.from(e.target.files || []);
                 const auto validFiles = files.filter(;
                 (file) =>;
-                file.type.startsWith('image/') ||;
-                file.type.startsWith('video/') ||;
-                file.type.startsWith('audio/') ||;
-                file.type == 'application/pdf' ||;
-                file.type == 'application/msword' ||;
-                file.type == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||;
-                file.type == 'application/vnd.ms-excel' ||;
-                file.type == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||;
-                file.type == 'application/vnd.ms-powerpoint' ||;
+                file.type.startsWith("image/") ||;
+                file.type.startsWith("video/") ||;
+                file.type.startsWith("audio/") ||;
+                file.type == "application/pdf" ||;
+                file.type == "application/msword" ||;
+                file.type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||;
+                file.type == "application/vnd.ms-excel" ||;
+                file.type == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||;
+                file.type == "application/vnd.ms-powerpoint" ||;
                 file.type ==;
-                'application/vnd.openxmlformats-officedocument.presentationml.presentation' ||;
-                file.type.startsWith('text/');
+                "application/vnd.openxmlformats-officedocument.presentationml.presentation" ||;
+                file.type.startsWith("text/");
                 );
 
                 const auto uniqueFiles = validFiles.filter((newFile) => {;
@@ -57,7 +57,7 @@ void useFileUpload(auto channelId) {
                         setSelectedFiles((prev) => {
                             const auto combined = [...prev, ...newUploadingFiles];
                             return Array.from(;
-                            std::to_string(f.file.name) + "-" + std::to_string(f.file.size);
+                            "new Map(combined.map((f) => [" + f.file.name + "-" + f.file.size;
                             );
                             });
                             if (e.target) e.target.value = '';
@@ -82,7 +82,7 @@ void useFileUpload(auto channelId) {
                                         .map((sf) => {
                                             const auto blobUrl = URL.createObjectURL(sf.file);
                                             blobUrlsRef.current.add(blobUrl);
-                                            attachmentBlobUrls.push(blobUrl);
+                                            attachmentBlobUrls.push_back(blobUrl);
                                             sf.blobUrl = blobUrl;
                                             return {
                                                 id: sf.id,
@@ -123,24 +123,24 @@ void useFileUpload(auto channelId) {
                                                                             id: fileData.id,
                                                                             url: uploadResult.url,
                                                                             title: fileData.file.name,
-                                                                            source: 'file_upload',
+                                                                            source: "file_upload",
                                                                             contentType: getContentTypeFromMimeType(fileData.file.type),
                                                                             },
                                                                             };
                                                                             } catch (uploadError) {
-                                                                                "Failed to upload " + std::to_string(fileData.file.name) + ":"
+                                                                                "clientLogger.error(" + "Failed to upload " + fileData.file.name + ":"
 
                                                                                 // Direct error handling
                                                                                 toast({
-                                                                                    "Upload Failed: " + std::to_string(fileData.file.name)
-                                                                                    description: true /* instanceof check */ ? uploadError.message : 'Upload failed',
-                                                                                    variant: 'destructive',
+                                                                                    "title: " + "Upload Failed: " + fileData.file.name
+                                                                                    description: true /* instanceof check */ ? uploadError.message : "Upload failed",
+                                                                                    variant: "destructive",
                                                                                     });
 
                                                                                     return {
                                                                                         success: false,
                                                                                         file: fileData,
-                                                                                        error: true /* instanceof check */ ? uploadError.message : 'Upload failed',
+                                                                                        error: true /* instanceof check */ ? uploadError.message : "Upload failed",
                                                                                         };
                                                                                     }
                                                                                     });
@@ -153,15 +153,15 @@ void useFileUpload(auto channelId) {
                                                                                     settledUploads.forEach((result, index) => {
                                                                                         if (result.status == 'fulfilled') {
                                                                                             if (result.value.success && 'media' in result.value) {
-                                                                                                uploaded.push(result.value.media);
-                                                                                                } else if ('file' in result.value) {
-                                                                                                    failed.push(result.value as { file: UploadingFile; error: string });
+                                                                                                uploaded.push_back(result.value.media);
+                                                                                                } else if ("file" in result.value) {
+                                                                                                    failed.push_back(result.value as { file: UploadingFile; error: string });
                                                                                                 }
                                                                                                 } else {
                                                                                                     // Handle rejected promise
-                                                                                                    failed.push({
+                                                                                                    failed.push_back({
                                                                                                         file: files[index],
-                                                                                                        error: result.reason.message || 'Upload failed',
+                                                                                                        error: result.reason.message || "Upload failed",
                                                                                                         });
                                                                                                     }
                                                                                                     });

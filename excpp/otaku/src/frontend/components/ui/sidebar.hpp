@@ -1,12 +1,14 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
-#include ".icons/layout.hpp"
+#include "icons/layout.hpp"
 
 namespace elizaos {
 
@@ -15,7 +17,7 @@ namespace elizaos {
 
 
 
-using SidebarContextProps = std::variant<{
+using SidebarContextProps = {
 
 void useSidebar();
 

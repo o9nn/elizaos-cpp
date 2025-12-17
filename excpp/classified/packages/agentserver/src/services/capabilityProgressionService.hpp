@@ -1,10 +1,15 @@
 #pragma once
+#include <algorithm>
+#include <any>
+#include <chrono>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "elizaos/core.hpp"
 
@@ -36,7 +41,7 @@ struct ProgressionState {
     std::vector<std::string> unlockedLevels;
     std::vector<std::string> completedActions;
     bool agentNamed;
-    std::optional<Date> lastUnlockTime;
+    std::optional<std::chrono::system_clock::time_point> lastUnlockTime;
 };
 
 class CapabilityProgressionService {
@@ -53,7 +58,7 @@ public:
     std::future<void> injectUnlockMessage(ProgressionLevel level);
     std::future<void> recordAgentNamed(const std::string& name);
     std::future<void> recordCapabilityUsed(const std::string& capability);
-    std::future<void> recordFormSubmitted(std::optional<std::unordered_map<std::string, unknown>> formData);
+    std::future<void> recordFormSubmitted(std::optional<std::unordered_map<std::string, std::any>> formData);
     std::future<void> recordActionPerformed(const std::string& actionName);
     double getCurrentLevel();
     std::vector<std::string> getUnlockedCapabilities();

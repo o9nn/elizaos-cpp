@@ -7,7 +7,7 @@ namespace elizaos {
 void Button(auto variant, auto size, auto asChild) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto Comp = asChild ? Slot : 'button';
+    const auto Comp = asChild ? Slot : "button";
 
     return (;
     <Comp;

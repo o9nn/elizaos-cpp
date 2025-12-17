@@ -37,7 +37,7 @@ void AdminUsersList() {
     const auto handleGoToUser = [&](e: React.FormEvent) {;
         e.preventDefault();
         if (goToAddress.trim()) {
-            "/admin/users/" + std::to_string(goToAddress.trim());
+            "navigate(" + "/admin/users/" + std::to_string(goToAddress.trim());
         }
         };
 
@@ -103,26 +103,26 @@ void AdminUsersList() {
     <td className="p-2">{user.id}</td>;
     <td className="p-2 font-mono text-xs">;
     {user.address.substring(0, 6)}...;
-    {user.address.substring(user.address.length - 4)}
+    {user.address.substring(user.address.size() - 4)}
     </td>;
     <td className="p-2">;
     {new Date(user.createdAt).toLocaleDateString()}
     </td>;
-    <td className="p-2">{user.tokensCreated.length || 0}</td>;
+    <td className="p-2">{user.tokensCreated.size() || 0}</td>;
     <td className="p-2">;
     <span;
-    "px-2 py-1 rounded-full text-xs " + std::to_string();
+    "className={" + "px-2 py-1 rounded-full text-xs " + std::to_string();
         user.suspended;
         ? "bg-red-900 text-red-300";
         : "bg-green-900 text-green-300"
-    }`}
+    "}";
     >;
     {user.suspended ? "suspended"  = "active"}
     </span>;
     </td>;
     <td className="p-2">;
     <Link;
-    "/admin/users/" + std::to_string(user.address);
+    "to={" + "/admin/users/" + user.address;
     className="text-autofun-text-highlight hover:underline"
     >;
     View;
@@ -137,7 +137,7 @@ void AdminUsersList() {
     {/* Pagination */}
     <div className="flex justify-between items-center pt-4">;
     <div className="text-sm text-autofun-text-secondary">;
-    Showing {users.length} of {usersPagination.totalItems || 0} users;
+    Showing {users.size()} of {usersPagination.totalItems || 0} users;
     </div>;
     {usersPagination.totalPages > 1 && (;
     <Pagination;
@@ -164,7 +164,7 @@ void AdminUserDetails() {
         queryKey: ["admin-user", address],
         queryFn: async () => {
             const auto response = (fetcher(;
-            "/api/admin/users/" + std::to_string(address)
+            "/api/admin/users/" + address
             "GET",
             )) as { user: User };
             return response.user;
@@ -174,12 +174,12 @@ void AdminUserDetails() {
             // Mutation for updating user suspended status
             const auto updateStatusMutation = useMutation({;
                 mutationFn: async (suspended: boolean) => {
-                    return "/api/admin/users/" + std::to_string(address) + "/suspended";
+                    return "fetcher(" + "/api/admin/users/" + address + "/suspended";
                         suspended,
                         });
                         },
                         onSuccess: () => {
-                            "User status updated successfully";
+                            "toast.success(" + "User status updated successfully";
                             userQuery.refetch(); // Refetch user data after update;
                             },
                             onError: (error) => {
@@ -259,11 +259,11 @@ void AdminUserDetails() {
                                     <div>;
                                     <span className="text-autofun-text-secondary">Status:</span>
                                     <span;
-                                    "ml-2 px-2 py-1 rounded-full text-xs " + std::to_string();
+                                    "className={" + "ml-2 px-2 py-1 rounded-full text-xs " + std::to_string();
                                         isSuspended;
                                         ? "bg-red-900 text-red-300";
                                         : "bg-green-900 text-green-300"
-                                    }`}
+                                    "}";
                                     >;
                                 {isSuspended ? "suspended"  = "active"}
                                 </span>;
@@ -285,13 +285,13 @@ void AdminUserDetails() {
                                 <span className="text-autofun-text-secondary">;
                                 Tokens Created:
                                 </span>;
-                                <span className="ml-2">{user.tokensCreated.length || 0}</span>;
+                                <span className="ml-2">{user.tokensCreated.size() || 0}</span>;
                                 </div>;
                                 <div>;
                                 <span className="text-autofun-text-secondary">;
                                 Tokens Held:
                                 </span>;
-                                <span className="ml-2">{user.tokensHeld.length || 0}</span>;
+                                <span className="ml-2">{user.tokensHeld.size() || 0}</span>;
                                 </div>;
                                 <div>;
                                 <span className="text-autofun-text-secondary">;
@@ -305,7 +305,7 @@ void AdminUserDetails() {
                                 <span className="text-autofun-text-secondary">;
                                 Transactions:
                                 </span>;
-                                <span className="ml-2">{user.transactions.length || 0}</span>;
+                                <span className="ml-2">{user.transactions.size() || 0}</span>;
                                 </div>;
                                 </div>;
                                 </div>;
@@ -314,7 +314,7 @@ void AdminUserDetails() {
 
                                 <div className="p-4 bg-autofun-background-primary mb-4">;
                                 <h3 className="text-lg font-medium mb-2">Tokens Created</h3>;
-                                {user.tokensCreated && user.tokensCreated.length > 0 ? (;
+                                {user.tokensCreated && user.tokensCreated.size() > 0 ? (;
                                 <div className="overflow-x-auto">;
                                 <table className="w-full">;
                                 <thead>;
@@ -339,7 +339,7 @@ void AdminUserDetails() {
                             <td className="p-2">;
                             <div className="flex items-center space-x-2">;
                             <Link;
-                        "/admin/tokens/" + std::to_string(token.mint);
+                        "to={" + "/admin/tokens/" + token.mint;
                         className="text-autofun-text-highlight hover:underline"
                         >;
                         View;
@@ -359,7 +359,7 @@ void AdminUserDetails() {
 
                 <div className="p-4 bg-autofun-background-primary mb-4">;
                 <h3 className="text-lg font-medium mb-2">Tokens Held</h3>;
-                {user.tokensHeld && user.tokensHeld.length > 0 ? (;
+                {user.tokensHeld && user.tokensHeld.size() > 0 ? (;
                 <div className="overflow-x-auto">;
                 <table className="w-full">;
                 <thead>;
@@ -382,7 +382,7 @@ void AdminUserDetails() {
             <td className="p-2">;
             <div className="flex items-center space-x-2">;
             <Link;
-        "/admin/tokens/" + std::to_string(token.mint);
+        "to={" + "/admin/tokens/" + token.mint;
         className="text-autofun-text-highlight hover:underline"
         >;
         View;
@@ -402,7 +402,7 @@ void AdminUserDetails() {
 
     <div className="p-4 bg-autofun-background-primary  mb-4">;
     <h3 className="text-lg font-medium mb-2">Recent Transactions</h3>;
-    {user.transactions && user.transactions.length > 0 ? (;
+    {user.transactions && user.transactions.size() > 0 ? (;
     <div className="overflow-x-auto">;
     <table className="w-full">;
     <thead>;
@@ -423,11 +423,11 @@ void AdminUserDetails() {
     <td className="p-2">{tx.id}</td>;
     <td className="p-2">;
     <span;
-    "px-2 py-1 rounded-full text-xs " + std::to_string();
+    "className={" + "px-2 py-1 rounded-full text-xs " + std::to_string();
         tx.type == "buy";
         ? "bg-green-900 text-green-300";
         : "bg-red-900 text-red-300"
-    }`}
+    "}";
     >;
     {tx.type}
     </span>;
@@ -447,11 +447,11 @@ void AdminUserDetails() {
 
     <div className="mt-4 flex justify-end space-x-2">;
     <button;
-    "px-4 py-2 " + std::to_string();
+    "className={" + "px-4 py-2 " + std::to_string();
         isSuspended;
         ? "bg-green-900 text-green-300 hover:bg-green-800"
         : "bg-yellow-900 text-yellow-300 hover:bg-yellow-800"
-    } `}
+    "} ";
     onClick={handleToggleStatus}
     disabled={updateStatusMutation.isPending}
     >;

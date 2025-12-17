@@ -26,14 +26,14 @@ void ChatTtsButton() {
             }, [audioUrl]);
 
             const auto mutation = useMutation({;
-                mutationKey: ['tts', text],
+                mutationKey: ["tts", text],
                 mutationFn: async () => {
-                    std::cout << '🎵 Starting TTS API call...' << std::endl;
-                    std::cout << '🎵 agentId:' << agentId << std::endl;
-                    std::cout << '🎵 text:' << text << std::endl;
+                    std::cout << "🎵 Starting TTS API call..." << std::endl;
+                    std::cout << "🎵 agentId:" << agentId << std::endl;
+                    std::cout << "🎵 text:" << text << std::endl;
 
                     const auto response = elizaClient.audio.generateSpeech(agentId, { text });
-                    std::cout << '🎵 TTS API response:' << response << std::endl;
+                    std::cout << "🎵 TTS API response:" << response << std::endl;
 
                     // Convert base64 audio string to Blob
                     const auto { audio, format } = response;
@@ -43,19 +43,19 @@ void ChatTtsButton() {
                     auto mimeType: string;
 
                     if (audio.startsWith('data:')) {
-                        const auto [header, base64Data] = audio.split(',');
+                        const auto [header, base64Data] = audio.split(",");
                         const auto mimeMatch = header.match(/data:([^;]+)/);
-                        "audio/" + std::to_string(format || 'mpeg')
+                        "mimeType = mimeMatch ? mimeMatch[1] : " + "audio/" + std::to_string(format || "mpeg")
                         audioData = base64Data;
                         } else {
                             // Plain base64 string
                             audioData = audio;
-                            "audio/" + std::to_string(format || 'mpeg');
+                            "mimeType = " + "audio/" + std::to_string(format || "mpeg");
                         }
 
                         // Convert base64 to Blob
                         const auto binaryString = atob(audioData);
-                        const auto bytes = new Uint8Array(binaryString.length);
+                        const auto bytes = new Uint8Array(binaryString.size());
                         for (int i = 0; i < binaryString.length; i++) {
                             bytes[i] = binaryString.charCodeAt(i);
                         }
@@ -75,8 +75,8 @@ void ChatTtsButton() {
                                 },
                                 onError: (e) => {
                                     toast({
-                                        variant: 'destructive',
-                                        title: 'Unable to read message aloud',
+                                        variant: "destructive",
+                                        title: "Unable to read message aloud",
                                         description: e.message,
                                         });
                                         },
@@ -101,8 +101,8 @@ void ChatTtsButton() {
                                                     setPlaying(true);
                                                     } catch (err) {
                                                         toast({
-                                                            variant: 'destructive',
-                                                            title: 'Audio playback failed',
+                                                            variant: "destructive",
+                                                            title: "Audio playback failed",
                                                             description: (err).message,
                                                             });
                                                             setPlaying(false);
@@ -137,7 +137,7 @@ void ChatTtsButton() {
                                                             const auto hasAudioBlob =;
                                                             audioBlob ||;
                                                             audioBlobRef.current ||;
-                                                            (audioRef.current.src && audioRef.current.src.startsWith('blob:'));
+                                                            (audioRef.current.src && audioRef.current.src.startsWith("blob:"));
                                                             if (hasAudioBlob) {
                                                                 play();
                                                                 return;
@@ -147,7 +147,7 @@ void ChatTtsButton() {
                                                             mutation.mutate();
                                                             };
 
-                                                            const auto iconClass = 'text-muted-foreground size-4';
+                                                            const auto iconClass = "text-muted-foreground size-4";
 
                                                             return (;
                                                             <div>;
@@ -156,7 +156,7 @@ void ChatTtsButton() {
                                                             crossOrigin="anonymous";
                                                             playsInline;
                                                         ref={audioRef}
-                                                    src={audioUrl || ''}
+                                                    src={audioUrl || ""}
                                                     onEnded={() => {
                                                         setPlaying(false);
                                                         // Clear global reference when audio ends
@@ -187,7 +187,7 @@ void ChatTtsButton() {
                                     </Button>;
                                     </TooltipTrigger>;
                                     <TooltipContent side="bottom">;
-                                    <p>{playing ? 'Stop' : 'Read aloud'}</p>
+                                    <p>{playing ? "Stop" : "Read aloud"}</p>
                                     </TooltipContent>;
                                     </Tooltip>;
                                     </div>;

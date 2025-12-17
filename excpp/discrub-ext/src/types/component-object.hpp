@@ -1,9 +1,13 @@
 #pragma once
+#include <algorithm>
+#include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -12,6 +16,6 @@ namespace elizaos {
 // Manual refinement required for production use
 
 // https://discord.com/developers/docs/interactions/message-components#component-object
-using ComponentObject = unknown;
+using ComponentObject = std::any;
 
 } // namespace elizaos

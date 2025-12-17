@@ -1,11 +1,14 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "constants.hpp"
 #include "elizaos/core.hpp"
@@ -28,7 +31,7 @@ public:
     std::future<Keypair> getWalletKeypair();
     static std::future<SolanaService> start(IAgentRuntime runtime);
     static void stop(IAgentRuntime runtime);
-    std::future<unknown> fetchWithRetry(const std::string& url, RequestInit options = {});
+    std::future<std::any> fetchWithRetry(const std::string& url, RequestInit options = {});
     std::future<Prices> fetchPrices();
     void getTokenAccounts();
     std::future<WalletPortfolio> updateWalletData(auto force);

@@ -19,7 +19,7 @@ std::string getFirstAvailableField(const std::unordered_map<std::string, std::an
 std::optional<Content> extractReplyContent(Memory response, const std::vector<std::string>& replyFieldKeys) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto hasReplyAction = response.content.actions.includes('REPLY');
+    const auto hasReplyAction = response.content.(std::find(actions.begin(), actions.end(), "REPLY") != actions.end());
     const auto text = getFirstAvailableField(response.content, replyFieldKeys);
 
     if (!hasReplyAction || !text) return null;
@@ -28,7 +28,7 @@ std::optional<Content> extractReplyContent(Memory response, const std::vector<st
         ...response.content,
         thought: response.content.thought,
         text,
-        actions: ['REPLY'],
+        actions: ["REPLY"],
         };
 
 }

@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::future<void> GET(Request request) {
+std::future<void> GET(const std::string& request) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto startTime = Date.now();
@@ -14,7 +14,7 @@ std::future<void> GET(Request request) {
 
         // Record API latency
         const auto latency = Date.now() - startTime;
-        MetricsService.recordApiLatency('/api/projects/analytics', latency);
+        MetricsService.recordApiLatency("/api/projects/analytics", latency);
 
         return NextResponse.json(insights);
         } catch (error) {
@@ -24,7 +24,7 @@ std::future<void> GET(Request request) {
                 });
 
                 return NextResponse.json(;
-                { error: 'Failed to fetch analytics' },
+                { error: "Failed to fetch analytics" },
             { status = 500 }
             );
         }

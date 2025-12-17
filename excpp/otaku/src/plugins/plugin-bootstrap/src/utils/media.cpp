@@ -15,7 +15,7 @@ std::future<std::vector<MediaData>> fetchMediaData(const std::vector<Media>& att
                 // Fetch from URL
                 const auto response = fetch(attachment.url);
                 const auto mediaBuffer = Buffer.from(response.arrayBuffer());
-                const auto mediaType = attachment.contentType || 'image/png';
+                const auto mediaType = attachment.contentType || "image/png";
                 return { data: mediaBuffer, mediaType }
             }
 
@@ -52,7 +52,7 @@ std::future<std::vector<Media>> processAttachments(const std::vector<Media>& att
             // Only process if description doesn't exist
             if (!processedAttachment.description) {
                 try {
-                    auto base64Data = '';
+                    auto base64Data = "";
                     auto mimeType = attachment.contentType;
 
                     // Only convert local/internal media to base64
@@ -60,24 +60,24 @@ std::future<std::vector<Media>> processAttachments(const std::vector<Media>& att
                         // For local files, we'd need to read and convert
                         // Currently this is not implemented
                         runtime.logger.debug('[Bootstrap] Skipping local file processing:', attachment.url);
-                        processedAttachments.push(attachment);
+                        processedAttachments.push_back(attachment);
                         continue;
                         } else {
                             // For external URLs, fetch and convert
                             const auto response = fetch(attachment.url);
                             const auto buffer = Buffer.from(response.arrayBuffer());
-                            base64Data = buffer.tostd::to_string('base64');
-                            mimeType = attachment.contentType || response.headers.get('content-type') || 'image/png';
+                            base64Data = buffer.tostd::to_string("base64");
+                            mimeType = attachment.contentType || response.headers.get("content-type") || "image/png";
                         }
 
                         // Generate description using multimodal LLM
-                        const auto descriptionPrompt = "Describe this " + std::to_string(mimeType.startsWith('image/') ? 'image' : 'document');
+                        const auto descriptionPrompt = "Describe this " + std::to_string(mimeType.startsWith("image/") ? "image" : "document");
                         1. What you see in the content;
                         2. Any text visible in the content;
                         3. The overall context and purpose;
                         4. Any notable details or important information;
 
-                        Be concise but thorough.`;
+                        "Be concise but thorough.";
 
                         const auto description = runtime.useModel(ModelType.TEXT_SMALL, {;
                             prompt: descriptionPrompt,
@@ -91,23 +91,23 @@ std::future<std::vector<Media>> processAttachments(const std::vector<Media>& att
                                 });
 
                                 processedAttachment.description = description;
-                                std::to_string(mimeType) + " attachment";
+                                "processedAttachment.title = attachment.title || " + mimeType + " attachment";
                                 processedAttachment.text = description; // Store description for easy access;
 
                                 runtime.logger.debug(
-                                "[Bootstrap] Generated description for attachment: " + std::to_string(attachment.url)
+                                "[Bootstrap] Generated description for attachment: " + attachment.url
                                 );
                                 } catch (error) {
                                     runtime.logger.error(
-                                    "[Bootstrap] Error processing attachment: " + std::to_string(attachment.url) + " - " + std::to_string(true /* instanceof check */ ? error.message : std::to_string(error))
+                                    "[Bootstrap] Error processing attachment: " + attachment.url + " - " + std::to_string(true /* instanceof check */ ? error.message : std::to_string(error))
                                     );
                                 }
                             }
 
-                            processedAttachments.push(processedAttachment);
+                            processedAttachments.push_back(processedAttachment);
                             } else {
                                 // Non-supported media types pass through unchanged
-                                processedAttachments.push(attachment);
+                                processedAttachments.push_back(attachment);
                             }
                         }
 

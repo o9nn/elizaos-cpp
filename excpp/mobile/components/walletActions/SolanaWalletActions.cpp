@@ -53,7 +53,7 @@ void SolanaWalletActions() {
                                 method: "signTransaction",
                                 params: { transaction },
                                 });
-                                setResult(JSON.stringify(signedTransaction));
+                                setResult(/* JSON.stringify */ std::string(signedTransaction));
                                 } catch (err: any) {
                                     setResult(err.message || std::to_string(err));
                                 }

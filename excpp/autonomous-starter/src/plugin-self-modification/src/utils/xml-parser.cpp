@@ -39,7 +39,7 @@ std::string escapeXml(const std::string& unsafe) {
 
 }
 
-std::variant<type is "add", "modify", "delete"> isValidOperationType(const std::string& type) {
+type is "add" isValidOperationType(const std::string& type) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return ["add", "modify", "delete"].includes(type);
@@ -98,7 +98,7 @@ CharacterDiff parseCharacterDiff(const std::string& xmlString) {
                                 operation.dataType = item["@_type"];
                             }
 
-                            operations.push(operation);
+                            operations.push_back(operation);
                             });
                             };
 
@@ -121,7 +121,7 @@ CharacterDiff parseCharacterDiff(const std::string& xmlString) {
                         if (
                         !reasoning ||;
                         typeof reasoning != "string" ||;
-                        reasoning.trim().length == 0;
+                        reasoning.trim().size() == 0;
                         ) {
                             throw std::runtime_error("Missing or empty reasoning in character modification");
                         }

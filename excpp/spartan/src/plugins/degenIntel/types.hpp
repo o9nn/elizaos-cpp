@@ -1,10 +1,13 @@
 #pragma once
+#include <algorithm>
+#include <chrono>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -16,12 +19,12 @@ namespace elizaos {
 /**
  * Represents a type that can be one of four values: "solana", "base", "ethereum", or "L1".
  */
-using TChain = std::variant<std::string, std::string, std::string, std::string>;
+using TChain = std::string;
 /**
  * Type representing different data providers.
  * Possible values are "birdeye" and "coinmarketcap".
  */
-using TDataProvider = std::variant<std::string, std::string>;
+using TDataProvider = std::string;
 
 /**
  * Interface representing a token with various properties.
@@ -55,7 +58,7 @@ struct IToken {
     double rank;
     double price;
     double price24hChangePercent;
-    Date last_updated;
+    std::chrono::system_clock::time_point last_updated;
 };
 
 /**
@@ -81,7 +84,7 @@ struct ISentimentToken {
  * @property {ISentimentToken[]} occuringTokens - Array of sentiment tokens found in the text.
  */
 struct ISentiment {
-    Date timeslot;
+    std::chrono::system_clock::time_point timeslot;
     std::optional<bool> processed;
     std::string text;
     std::vector<ISentimentToken> occuringTokens;
@@ -107,7 +110,7 @@ struct IData {
  */
 struct ITransactionHistory {
     std::string txHash;
-    Date blockTime;
+    std::chrono::system_clock::time_point blockTime;
     object data;
 };
 

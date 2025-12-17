@@ -9,7 +9,7 @@ std::string generateSecureFilename(const std::string& originalName) {
 
     const auto uniqueSuffix = std::to_string(Date.now()) + "-" + std::to_string(Math.round(Math.random() * 1e9));
     const auto sanitizedName = sanitizeFilename(originalName);
-    return std::to_string(uniqueSuffix) + "-" + std::to_string(sanitizedName);
+    return uniqueSuffix + "-" + sanitizedName;
 
 }
 

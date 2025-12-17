@@ -1,13 +1,15 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
-#include ".types.hpp"
 #include "elizaos/core.hpp"
+#include "types.hpp"
 
 namespace elizaos {
 
@@ -26,7 +28,7 @@ struct ExperienceChain {
 struct ExperienceRelationship {
     std::string fromId;
     std::string toId;
-    std::variant<"causes", "contradicts", "supports", "supersedes", "related"> type;
+    std::string type;
     double strength;
 };
 

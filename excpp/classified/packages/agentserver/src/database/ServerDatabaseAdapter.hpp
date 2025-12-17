@@ -1,15 +1,19 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <chrono>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
-#include ".schema.hpp"
 #include "elizaos/core.hpp"
+#include "schema.hpp"
 
 namespace elizaos {
 
@@ -23,8 +27,8 @@ struct MessageServer {
     std::string name;
     std::string sourceType;
     std::optional<std::string> sourceId;
-    Date createdAt;
-    Date updatedAt;
+    std::chrono::system_clock::time_point createdAt;
+    std::chrono::system_clock::time_point updatedAt;
 };
 
 struct Channel {
@@ -35,8 +39,8 @@ struct Channel {
     std::optional<std::string> sourceType;
     std::optional<std::string> sourceId;
     std::optional<std::string> topic;
-    Date createdAt;
-    Date updatedAt;
+    std::chrono::system_clock::time_point createdAt;
+    std::chrono::system_clock::time_point updatedAt;
 };
 
 struct Message {
@@ -44,12 +48,12 @@ struct Message {
     std::string channelId;
     std::string authorId;
     std::string content;
-    std::optional<unknown> rawMessage;
+    std::optional<std::any> rawMessage;
     std::optional<std::string> sourceType;
     std::optional<std::string> sourceId;
     std::optional<std::string> inReplyToRootMessageId;
-    Date createdAt;
-    Date updatedAt;
+    std::chrono::system_clock::time_point createdAt;
+    std::chrono::system_clock::time_point updatedAt;
 };
 
 // Define the minimal database type we need

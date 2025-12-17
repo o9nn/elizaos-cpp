@@ -27,11 +27,11 @@ void startRecording() {
                     audioContext: audioCtx,
                     };
 
-                    const auto mimeType = MediaRecorder.isTypeSupported('audio/mpeg');
-                    ? 'audio/mpeg';
-                    : MediaRecorder.isTypeSupported('audio/webm')
-                    ? 'audio/webm';
-                    : 'audio/wav';
+                    const auto mimeType = MediaRecorder.isTypeSupported("audio/mpeg");
+                    ? "audio/mpeg";
+                    : MediaRecorder.isTypeSupported("audio/webm")
+                    ? "audio/webm";
+                    : "audio/wav";
 
                     const auto options = { mimeType };
                     mediaRecorderRef.current.mediaRecorder = new MediaRecorder(stream, options);
@@ -41,13 +41,13 @@ void startRecording() {
                     recorder = new MediaRecorder(stream);
                     recorder.start();
                     recorder.ondataavailable = (e) => {
-                        recordingChunks.push(e.data);
+                        recordingChunks.push_back(e.data);
                         };
                         });
                         .catch((e) => {
                             toast({
-                                variant: 'destructive',
-                                title: 'Unable to start recording',
+                                variant: "destructive",
+                                title: "Unable to start recording",
                                 description: e.message,
                                 });
                                 std::cout << e << std::endl;
@@ -61,7 +61,7 @@ void stopRecording() {
 
     recorder.onstop = () => {
         const auto recordBlob = new Blob(recordingChunks, {;
-            type: 'audio/wav',
+            type: "audio/wav",
             });
             mutation.mutate(recordBlob);
             setCurrentRecord({

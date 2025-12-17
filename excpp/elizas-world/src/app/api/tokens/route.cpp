@@ -11,10 +11,10 @@ std::future<void> GET() {
         // Check cache first
         const auto cached = getCachedData();
         if (cached && !shouldRefreshCache()) {
-            return new NextResponse(JSON.stringify(cached.holdings), {;
+            return new NextResponse(/* JSON.stringify */ std::string(cached.holdings), {;
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Cache-Control': 'public, max-age=60',
+                    "Content-Type": "application/json",
+                    "Cache-Control": "public, max-age=60",
                     },
                     });
                 }
@@ -34,21 +34,21 @@ std::future<void> GET() {
                 // Update cache
                 setCachedData(holdings);
 
-                return new NextResponse(JSON.stringify(holdings), {;
+                return new NextResponse(/* JSON.stringify */ std::string(holdings), {;
                     headers: {
-                        'Content-Type': 'application/json',
-                        'Cache-Control': 'public, max-age=60',
+                        "Content-Type": "application/json",
+                        "Cache-Control": "public, max-age=60",
                         },
                         });
                         } catch (error) {
-                            std::cerr << 'API Error:' << error << std::endl;
+                            std::cerr << "API Error:" << error << std::endl;
                             // Return cached data on error if available
                             const auto cached = getCachedData();
                             if (cached) {
-                                return new NextResponse(JSON.stringify(cached.holdings), {;
+                                return new NextResponse(/* JSON.stringify */ std::string(cached.holdings), {;
                                     headers: {
-                                        'Content-Type': 'application/json',
-                                        'Cache-Control': 'public, max-age=60',
+                                        "Content-Type": "application/json",
+                                        "Cache-Control": "public, max-age=60",
                                         },
                                         });
                                     }

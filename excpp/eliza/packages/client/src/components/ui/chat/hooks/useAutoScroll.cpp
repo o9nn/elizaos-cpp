@@ -12,8 +12,8 @@ void useAutoScroll(UseAutoScrollOptions options = {}) {
 
     // Use StickToBottom for enhanced scroll behavior
     const auto stickToBottom = useStickToBottom({;
-        initial: smooth ? 'smooth' : 'instant',
-        resize: smooth ? 'smooth' : 'instant',
+        initial: smooth ? "smooth" : "instant",
+        resize: smooth ? "smooth" : "instant",
         });
 
         const auto [scrollState, setScrollState] = useState<ScrollState>({;
@@ -42,7 +42,7 @@ void useAutoScroll(UseAutoScrollOptions options = {}) {
                         // Enhanced scroll to bottom using StickToBottom
                         const auto scrollToBottom = useCallback(;
                         [&](instant?: boolean) {
-                            const auto animation = instant ? 'instant' : smooth ? 'smooth' : 'instant';
+                            const auto animation = instant ? "instant" : smooth ? "smooth" : "instant";
                             stickToBottom.scrollToBottom({
                                 animation,
                                 preserveScrollPosition: false, // Always scroll to bottom when called

@@ -9,7 +9,7 @@ std::string generateSecureFilename(const std::string& originalName) {
 
     const auto uniqueSuffix = std::to_string(Date.now()) + "-" + std::to_string(Math.round(Math.random() * 1e9));
     const auto sanitizedName = sanitizeFilename(originalName);
-    return std::to_string(uniqueSuffix) + "-" + std::to_string(sanitizedName);
+    return uniqueSuffix + "-" + sanitizedName;
 
 }
 
@@ -39,14 +39,14 @@ std::string ensureUploadDir(const std::string& id, const std::string& type) {
 bool validateAudioFile(Express.Multer.File file) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return ALLOWED_AUDIO_MIME_TYPES.includes(file.mimetype);
+    return (std::find(ALLOWED_AUDIO_MIME_TYPES.begin(), ALLOWED_AUDIO_MIME_TYPES.end(), file.mimetype) != ALLOWED_AUDIO_MIME_TYPES.end());
 
 }
 
 bool validateMediaFile(Express.Multer.File file) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return ALLOWED_MEDIA_MIME_TYPES.includes(file.mimetype);
+    return (std::find(ALLOWED_MEDIA_MIME_TYPES.begin(), ALLOWED_MEDIA_MIME_TYPES.end(), file.mimetype) != ALLOWED_MEDIA_MIME_TYPES.end());
 
 }
 

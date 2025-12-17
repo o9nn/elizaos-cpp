@@ -8,22 +8,22 @@ std::future<std::vector<std::string>> promptForMultipleItems(const std::string& 
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto items = [...initial];
-    std::cout << "\n" + std::to_string(fieldName) << std::endl;
+    std::cout << "\n" + fieldName << std::endl;
     if (initial.length > 0) {
-        std::cout << 'Current values:' << std::endl;
+        std::cout << "Current values:" << std::endl;
         initial.forEach((item, i) => logger.info(`  ${i + 1}. ${item}`));
         std::cout << '\nPress Enter to keep existing values << or start typing new ones:' << std::endl;
     }
 
     while (true) {
-        const auto val = "> " + std::to_string(fieldName) + ":";
+        const auto val = "promptWithNav(" + "> " + fieldName + ":";
         if (val == NAV_NEXT) break;
         if (val == NAV_BACK) {
             if (items.length == initial.length) return initial; // Return original if no change
             break;
         }
         if (val == 'cancel') return initial;
-        items.push(val);
+        items.push_back(val);
     }
     return items;
 
@@ -38,7 +38,7 @@ std::future<bool> confirmAction(const std::string& message) {
         });
 
         if (clack.isCancel(response)) {
-            clack.cancel('Operation cancelled.');
+            clack.cancel("Operation cancelled.");
             process.exit(0);
         }
 

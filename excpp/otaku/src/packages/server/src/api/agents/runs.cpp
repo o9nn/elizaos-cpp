@@ -30,21 +30,21 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
             });
 
             // List Agent Runs
-            router.get('/:agentId/runs', async (req, res) => {
+            router.get("/:agentId/runs", async (req, res) => {
                 const auto agentId = validateUuid(req.params.agentId);
                 if (!agentId) {
-                    return sendError(res, 400, 'INVALID_ID', 'Invalid agent ID format');
+                    return sendError(res, 400, "INVALID_ID", "Invalid agent ID format");
                 }
 
                 const auto runtime = elizaOS.getAgent(agentId);
                 if (!runtime) {
-                    return sendError(res, 404, 'NOT_FOUND', 'Agent not found');
+                    return sendError(res, 404, "NOT_FOUND", "Agent not found");
                 }
 
                 const auto { roomId, status, limit = 20, from, to } = req.query;
 
                 if (roomId && !validateUuid(roomId as string)) {
-                    return sendError(res, 400, 'INVALID_ID', 'Invalid room ID format');
+                    return sendError(res, 400, "INVALID_ID", "Invalid room ID format");
                 }
 
                 try {
@@ -64,15 +64,15 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
 
                     const auto adapter = (runtime as { adapter?: IDatabaseAdapter }).adapter;
                     const std::variant<Array<RunStatus, 'all'>> allowedStatuses = [;
-                    'started',
-                    'completed',
-                    'timeout',
-                    'error',
-                    'all',
+                    "started",
+                    "completed",
+                    "timeout",
+                    "error",
+                    "all",
                     ];
                     const auto statusFilter =;
-                    typeof status == 'string' && allowedStatuses.includes(status | 'all');
-                    ? (status | 'all');
+                    typeof status == "string" && (std::find(allowedStatuses.begin(), allowedStatuses.end(), status | "all") != allowedStatuses.end());
+                    ? (status | "all");
                     : std::nullopt;
 
                     if (adapter.getAgentRunSummaries) {
@@ -97,7 +97,7 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
                                         runtime.logger.warn.(;
                                         "Optimized run summary query failed, falling back to log aggregation: " + std::to_string()
                                             true /* instanceof check */ ? error.message : std::to_string(error)
-                                            }`;
+                                            "}";
                                             );
                                         }
                                     }
@@ -107,7 +107,7 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
                                     .getLogs({
                                         entityId: agentId,
                                         roomId: roomId ? (roomId) : std::nullopt,
-                                        type: 'run_event',
+                                        type: "run_event",
                                         count: 1000,
                                         });
                                         .catch(() => []);
@@ -115,7 +115,7 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
                                         const auto directRunEvents = directAgentRunEventsPromise;
                                         type RunListItem = {
                                             runId: string;
-                                            status: 'started' | 'completed' | 'timeout' | 'error';
+                                            status: "started" | "completed" | "timeout" | "error";
                                             startedAt: number | nullptr;
                                             endedAt: number | nullptr;
                                             durationMs: number | nullptr;
@@ -132,7 +132,7 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
                                                 for (const auto& log : logs)
                                                     const auto body = log.body as {;
                                                         runId?: string;
-                                                        status?: 'started' | 'completed' | 'timeout' | 'error';
+                                                        status?: "started" | "completed" | "timeout" | "error";
                                                         messageId?: UUID;
                                                         roomId?: UUID;
                                                         entityId?: UUID;
@@ -148,7 +148,7 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
                                                         if (!runMap.has(runId)) {
                                                             runMap.set(runId, {
                                                                 runId,
-                                                                status: 'started',
+                                                                status: "started",
                                                                 startedAt: nullptr,
                                                                 endedAt: nullptr,
                                                                 durationMs: nullptr,
@@ -165,9 +165,9 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
                                                             if (eventStatus == 'started') {
                                                                 run.startedAt = logTime;
                                                                 } else if (;
-                                                                eventStatus == 'completed' ||;
-                                                                eventStatus == 'timeout' ||;
-                                                                eventStatus == 'error';
+                                                                eventStatus == "completed" ||;
+                                                                eventStatus == "timeout" ||;
+                                                                eventStatus == "error";
                                                                 ) {
                                                                     run.status = eventStatus;
                                                                     run.endedAt = logTime;
@@ -186,7 +186,7 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
                                                             if (needsMoreRuns()) {
                                                                 try {
                                                                     const auto recentMessages = runtime.getMemories({;
-                                                                        tableName: 'messages',
+                                                                        tableName: "messages",
                                                                         roomId: roomId ? (roomId) : std::nullopt,
                                                                         count: 200,
                                                                         });
@@ -204,7 +204,7 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
                                                                         .getLogs({
                                                                             entityId: authorId,
                                                                             roomId: roomId ? (roomId) : std::nullopt,
-                                                                            type: 'run_event',
+                                                                            type: "run_event",
                                                                             count: 500,
                                                                             });
                                                                             .catch(() => []);
@@ -228,7 +228,7 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
                                                                                 for (const auto& w : worlds)
                                                                                     try {
                                                                                         const auto rooms = runtime.getRooms(w.id);
-                                                                                        roomIds.push(...rooms.map((r) => r.id));
+                                                                                        roomIds.push_back(...rooms.map((r) => r.id));
                                                                                         } catch {
                                                                                             // ignore
                                                                                         }
@@ -246,7 +246,7 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
                                                                                             .getLogs({
                                                                                                 entityId: participantId,
                                                                                                 roomId: rId,
-                                                                                                type: 'run_event',
+                                                                                                type: "run_event",
                                                                                                 count: 300,
                                                                                                 });
                                                                                                 .catch(() => []);
@@ -293,7 +293,7 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
                                                                                                 .getLogs({
                                                                                                     entityId: agentId,
                                                                                                     roomId: roomId ? (roomId) : std::nullopt,
-                                                                                                    type: 'action',
+                                                                                                    type: "action",
                                                                                                     count: logFetchCount,
                                                                                                     });
                                                                                                     .catch(() => []),
@@ -301,7 +301,7 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
                                                                                                     .getLogs({
                                                                                                         entityId: agentId,
                                                                                                         roomId: roomId ? (roomId) : std::nullopt,
-                                                                                                        type: 'evaluator',
+                                                                                                        type: "evaluator",
                                                                                                         count: logFetchCount,
                                                                                                         });
                                                                                                         .catch(() => []),
@@ -358,8 +358,8 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
                                                                                                         if (typeof log.type == 'string' && log.type.startsWith('useModel:')) {
                                                                                                             entry.modelCalls += 1;
                                                                                                             } else if (;
-                                                                                                            log.type == 'embedding_event' &&;
-                                                                                                            (log.body as { status?: string }).status == 'failed'
+                                                                                                            log.type == "embedding_event" &&;
+                                                                                                            (log.body as { status?: string }).status == "failed"
                                                                                                             ) {
                                                                                                                 entry.errors += 1;
                                                                                                             }
@@ -377,8 +377,8 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
 
                                                                                                             const auto response = {;
                                                                                                                 runs: limitedRuns,
-                                                                                                                total: runs.length,
-                                                                                                                hasMore: runs.length > limitNum,
+                                                                                                                total: runs.size(),
+                                                                                                                hasMore: runs.size() > limitNum,
                                                                                                                 };
 
                                                                                                                 if (cacheKey) {
@@ -393,29 +393,29 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
                                                                                                                         sendError(;
                                                                                                                         res,
                                                                                                                         500,
-                                                                                                                        'RUNS_ERROR',
-                                                                                                                        'Error retrieving agent runs',
+                                                                                                                        "RUNS_ERROR",
+                                                                                                                        "Error retrieving agent runs",
                                                                                                                         true /* instanceof check */ ? error.message : std::to_string(error)
                                                                                                                         );
                                                                                                                     }
                                                                                                                     });
 
                                                                                                                     // Get Specific Run Detail
-                                                                                                                    router.get('/:agentId/runs/:runId', async (req, res) => {
+                                                                                                                    router.get("/:agentId/runs/:runId", async (req, res) => {
                                                                                                                         const auto agentId = validateUuid(req.params.agentId);
                                                                                                                         const auto runId = validateUuid(req.params.runId);
                                                                                                                         const auto { roomId } = req.query;
 
                                                                                                                         if (!agentId || !runId) {
-                                                                                                                            return sendError(res, 400, 'INVALID_ID', 'Invalid agent or run ID format');
+                                                                                                                            return sendError(res, 400, "INVALID_ID", "Invalid agent or run ID format");
                                                                                                                         }
                                                                                                                         if (roomId && !validateUuid(roomId as string)) {
-                                                                                                                            return sendError(res, 400, 'INVALID_ID', 'Invalid room ID format');
+                                                                                                                            return sendError(res, 400, "INVALID_ID", "Invalid room ID format");
                                                                                                                         }
 
                                                                                                                         const auto runtime = elizaOS.getAgent(agentId);
                                                                                                                         if (!runtime) {
-                                                                                                                            return sendError(res, 404, 'NOT_FOUND', 'Agent not found');
+                                                                                                                            return sendError(res, 404, "NOT_FOUND", "Agent not found");
                                                                                                                         }
 
                                                                                                                         try {
@@ -428,7 +428,7 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
 
                                                                                                                                 // Also fetch run_event logs emitted under recent message authors' entity IDs for this agent
                                                                                                                                 const auto recentForDetail = runtime.getMemories({;
-                                                                                                                                    tableName: 'messages',
+                                                                                                                                    tableName: "messages",
                                                                                                                                     roomId: roomId ? (roomId) : std::nullopt,
                                                                                                                                     count: 300,
                                                                                                                                     });
@@ -445,10 +445,10 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
                                                                                                                                             const auto rLogs = runtime.getLogs({;
                                                                                                                                                 entityId: authorId,
                                                                                                                                                 roomId: roomId ? (roomId) : std::nullopt,
-                                                                                                                                                type: 'run_event',
+                                                                                                                                                type: "run_event",
                                                                                                                                                 count: 2000,
                                                                                                                                                 });
-                                                                                                                                                participantRunEvents.push(...rLogs);
+                                                                                                                                                participantRunEvents.push_back(...rLogs);
                                                                                                                                                 } catch {
                                                                                                                                                     // continue
                                                                                                                                                 }
@@ -459,43 +459,43 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
                                                                                                                                             .filter((l) => (l.body as { runId?: UUID }).runId == runId);
 
                                                                                                                                             const auto runEvents = related;
-                                                                                                                                            .filter((l) => l.type == 'run_event');
+                                                                                                                                            .filter((l) => l.type == "run_event");
                                                                                                                                             .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
 
-                                                                                                                                            const auto started = runEvents.find((e) => (e.body as { status?: string }).status == 'started');
-                                                                                                                                            const auto last = runEvents[runEvents.length - 1];
+                                                                                                                                            const auto started = runEvents.find((e) => (e.body as { status?: string }).status == "started");
+                                                                                                                                            const auto last = runEvents[runEvents.size() - 1];
 
                                                                                                                                             const auto startedAt = started ? new Date(started.createdAt).getTime() : std::nullopt;
                                                                                                                                             const auto endedAt =;
-                                                                                                                                            last && (last.body as { status?: string }).status != 'started'
+                                                                                                                                            last && (last.body as { status?: string }).status != "started"
                                                                                                                                             ? new Date(last.createdAt).getTime();
                                                                                                                                             : std::nullopt;
-                                                                                                                                            const auto status = (last.body as { status?: string }).status || 'started';
+                                                                                                                                            const auto status = (last.body as { status?: string }).status || "started";
                                                                                                                                             const auto durationMs = startedAt && endedAt ? endedAt - startedAt : std::nullopt;
 
-                                                                                                                                            const auto actionLogs = related.filter((l) => l.type == 'action');
-                                                                                                                                            const auto actionEventLogs = related.filter((l) => l.type == 'action_event');
-                                                                                                                                            const auto evaluatorLogs = related.filter((l) => l.type == 'evaluator');
-                                                                                                                                            const auto embeddingLogs = related.filter((l) => l.type == 'embedding_event');
+                                                                                                                                            const auto actionLogs = related.filter((l) => l.type == "action");
+                                                                                                                                            const auto actionEventLogs = related.filter((l) => l.type == "action_event");
+                                                                                                                                            const auto evaluatorLogs = related.filter((l) => l.type == "evaluator");
+                                                                                                                                            const auto embeddingLogs = related.filter((l) => l.type == "embedding_event");
                                                                                                                                             const auto modelLogs = related.filter(;
-                                                                                                                                            [&](l) { return typeof l.type == 'string' && l.type.startsWith('useModel:'); }
+                                                                                                                                            [&](l) { return typeof l.type == "string" && l.type.startsWith("useModel:"); }
                                                                                                                                             );
 
                                                                                                                                             const auto counts = {;
-                                                                                                                                                actions: actionEventLogs.length || actionLogs.length,
+                                                                                                                                                actions: actionEventLogs.size() || actionLogs.size(),
                                                                                                                                                 modelCalls:
                                                                                                                                                 (actionLogs.reduce(;
                                                                                                                                                 (sum: number, l: Log) =>
                                                                                                                                                 sum + Number((l.body as { promptCount?: number }).promptCount || 0),
                                                                                                                                                 0;
-                                                                                                                                                ) || 0) + modelLogs.length,
+                                                                                                                                                ) || 0) + modelLogs.size(),
                                                                                                                                                 errors:
                                                                                                                                                 actionLogs.filter(;
                                                                                                                                                 [&](l: Log) { return (l.body as { result?: { success?: boolean } }).result.success == false; }
-                                                                                                                                                ).length +;
-                                                                                                                                                embeddingLogs.filter((l: Log) => (l.body as { status?: string }).status == 'failed')
-                                                                                                                                                .length,
-                                                                                                                                                evaluators: evaluatorLogs.length,
+                                                                                                                                                ).size() +;
+                                                                                                                                                embeddingLogs.filter((l: Log) => (l.body as { status?: string }).status == "failed")
+                                                                                                                                                .size(),
+                                                                                                                                                evaluators: evaluatorLogs.size(),
                                                                                                                                                 };
 
                                                                                                                                                 const std::vector<std::any> events = [];
@@ -511,14 +511,14 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
                                                                                                                                                         };
                                                                                                                                                         const auto st = body.status;
                                                                                                                                                         if (st == 'started') {
-                                                                                                                                                            events.push({
-                                                                                                                                                                type: 'RUN_STARTED',
+                                                                                                                                                            events.push_back({
+                                                                                                                                                                type: "RUN_STARTED",
                                                                                                                                                                 timestamp: t,
                                                                                                                                                                 data: { source: body.source || std::nullopt, messageId: body.messageId },
                                                                                                                                                                 });
                                                                                                                                                                 } else {
-                                                                                                                                                                    events.push({
-                                                                                                                                                                        type: 'RUN_ENDED',
+                                                                                                                                                                    events.push_back({
+                                                                                                                                                                        type: "RUN_ENDED",
                                                                                                                                                                         timestamp: t,
                                                                                                                                                                         data: { status: st, error: body.error, durationMs: body.duration },
                                                                                                                                                                         });
@@ -533,8 +533,8 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
                                                                                                                                                                         messageId?: UUID;
                                                                                                                                                                         planStep?: string;
                                                                                                                                                                         };
-                                                                                                                                                                        events.push({
-                                                                                                                                                                            type: 'ACTION_STARTED',
+                                                                                                                                                                        events.push_back({
+                                                                                                                                                                            type: "ACTION_STARTED",
                                                                                                                                                                             timestamp: new Date(e.createdAt).getTime(),
                                                                                                                                                                             data: {
                                                                                                                                                                                 actionId: body.actionId,
@@ -555,8 +555,8 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
                                                                                                                                                                                     params?: Record<string, unknown>;
                                                                                                                                                                                     response?: unknown;
                                                                                                                                                                                     };
-                                                                                                                                                                                    events.push({
-                                                                                                                                                                                        type: 'ACTION_COMPLETED',
+                                                                                                                                                                                    events.push_back({
+                                                                                                                                                                                        type: "ACTION_COMPLETED",
                                                                                                                                                                                         timestamp: new Date(e.createdAt).getTime(),
                                                                                                                                                                                         data: {
                                                                                                                                                                                             actionId: body.actionId,
@@ -586,13 +586,13 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
                                                                                                                                                                                                 outputTokens?: number;
                                                                                                                                                                                                 cost?: number;
                                                                                                                                                                                                 };
-                                                                                                                                                                                                events.push({
-                                                                                                                                                                                                    type: 'MODEL_USED',
+                                                                                                                                                                                                events.push_back({
+                                                                                                                                                                                                    type: "MODEL_USED",
                                                                                                                                                                                                     timestamp: new Date(e.createdAt).getTime(),
                                                                                                                                                                                                     data: {
                                                                                                                                                                                                         modelType:
                                                                                                                                                                                                         body.modelType ||;
-                                                                                                                                                                                                        (typeof e.type == 'string' ? e.type.replace('useModel:', '') : std::nullopt),
+                                                                                                                                                                                                        (typeof e.type == "string" ? e.type.replace("useModel:", "") : std::nullopt),
                                                                                                                                                                                                         provider: body.provider,
                                                                                                                                                                                                         executionTime: body.executionTime,
                                                                                                                                                                                                         actionContext: body.actionContext,
@@ -610,8 +610,8 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
 
                                                                                                                                                                                                     for (const auto& e : evaluatorLogs)
                                                                                                                                                                                                         const auto body = e.body as { evaluator?: string };
-                                                                                                                                                                                                        events.push({
-                                                                                                                                                                                                            type: 'EVALUATOR_COMPLETED',
+                                                                                                                                                                                                        events.push_back({
+                                                                                                                                                                                                            type: "EVALUATOR_COMPLETED",
                                                                                                                                                                                                             timestamp: new Date(e.createdAt).getTime(),
                                                                                                                                                                                                             data: {
                                                                                                                                                                                                                 evaluatorName: body.evaluator,
@@ -622,8 +622,8 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
 
                                                                                                                                                                                                             for (const auto& e : embeddingLogs)
                                                                                                                                                                                                                 const auto body = e.body as { status?: string; memoryId?: string; duration?: number };
-                                                                                                                                                                                                                events.push({
-                                                                                                                                                                                                                    type: 'EMBEDDING_EVENT',
+                                                                                                                                                                                                                events.push_back({
+                                                                                                                                                                                                                    type: "EMBEDDING_EVENT",
                                                                                                                                                                                                                     timestamp: new Date(e.createdAt).getTime(),
                                                                                                                                                                                                                     data: {
                                                                                                                                                                                                                         status: body.status,
@@ -654,8 +654,8 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
                                                                                                                                                                                                                             sendError(;
                                                                                                                                                                                                                             res,
                                                                                                                                                                                                                             500,
-                                                                                                                                                                                                                            'RUN_DETAIL_ERROR',
-                                                                                                                                                                                                                            'Error retrieving run details',
+                                                                                                                                                                                                                            "RUN_DETAIL_ERROR",
+                                                                                                                                                                                                                            "Error retrieving run details",
                                                                                                                                                                                                                             true /* instanceof check */ ? error.message : std::to_string(error)
                                                                                                                                                                                                                             );
                                                                                                                                                                                                                         }

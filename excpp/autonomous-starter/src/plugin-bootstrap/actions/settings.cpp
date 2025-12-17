@@ -17,7 +17,7 @@ std::future<std::optional<WorldSettings>> getWorldSettings(IAgentRuntime runtime
 
         return world.metadata.settings;
         } catch (error) {
-            std::cerr << "Error getting settings state: " + std::to_string(error) << std::endl;
+            std::cerr << "Error getting settings state: " + error << std::endl;
             return nullptr;
         }
 
@@ -31,7 +31,7 @@ std::future<bool> updateWorldSettings(IAgentRuntime runtime, const std::string& 
         const auto world = runtime.getWorld(worldId);
 
         if (!world) {
-            std::cerr << "No world found for server " + std::to_string(serverId) << std::endl;
+            std::cerr << "No world found for server " + serverId << std::endl;
             return false;
         }
 
@@ -48,7 +48,7 @@ std::future<bool> updateWorldSettings(IAgentRuntime runtime, const std::string& 
 
         return true;
         } catch (error) {
-            std::cerr << "Error updating settings state: " + std::to_string(error) << std::endl;
+            std::cerr << "Error updating settings state: " + error << std::endl;
             return false;
         }
 
@@ -62,7 +62,7 @@ std::string formatSettingsList(WorldSettings worldSettings) {
     .map(([key, setting]) => {
         const auto status = setting.value != nullptr ? "Configured" : "Not configured";
         const auto required = setting.required ? "Required" : "Optional";
-        return "- " + std::to_string(setting.name) + " (" + std::to_string(key) + "): " + std::to_string(status) + ", " + std::to_string(required);
+        return "- " + setting.name + " (" + key + "): " + status + ", " + required;
         });
         .join("\n");
 
@@ -91,11 +91,11 @@ std::future<std::vector<SettingUpdate>> extractSettingValues(IAgentRuntime runti
     .concat(optionalUnconfigured);
     .map(([key, setting]) => {
         const auto requiredStr = setting.required ? "Required." : "Optional.";
-        return std::to_string(key) + ": " + std::to_string(setting.description) + " " + std::to_string(requiredStr);
+        return key + ": " + setting.description + " " + requiredStr;
         });
         .join("\n");
 
-        const auto basePrompt = dedent`;
+        const auto basePrompt = "dedent";
         I need to extract settings values from the user's message.;
 
         Available settings:
@@ -146,7 +146,7 @@ std::future<std::vector<SettingUpdate>> extractSettingValues(IAgentRuntime runti
                                     } else if (typeof node == "object" && node != nullptr) {
                                         for (const int [key, value] of Object.entries(node)) {
                                             if (worldSettings[key] && typeof value != "object") {
-                                                extracted.push({ key, value });
+                                                extracted.push_back({ key, value });
                                                 } else {
                                                     traverse(value);
                                                 }
@@ -201,7 +201,7 @@ std::future<void> handleOnboardingComplete(IAgentRuntime runtime, WorldSettings 
                         source: state.message.content.source,
                         });
                         } catch (error) {
-                            std::cerr << "Error handling settings completion: " + std::to_string(error) << std::endl;
+                            std::cerr << "Error handling settings completion: " + error << std::endl;
                             callback({
                                 text: "Great! All required settings have been configured. Your server is now fully set up and ready to use.",
                                 actions: ["ONBOARDING_COMPLETE"],
@@ -225,7 +225,7 @@ std::future<void> generateSuccessResponse(IAgentRuntime runtime, WorldSettings w
         }
 
         const auto requiredUnconfiguredString = requiredUnconfigured;
-        std::to_string(key) + ": " + std::to_string(setting.name)
+        ".map(([key, setting]) => " + key + ": " + setting.name
         .join("\n");
 
         // Generate success message
@@ -233,7 +233,7 @@ std::future<void> generateSuccessResponse(IAgentRuntime runtime, WorldSettings w
             state: {
                 updateMessages: messages.join("\n"),
                 nextSetting: requiredUnconfiguredString,
-                remainingRequired: requiredUnconfigured.length.toString(),
+                remainingRequired: requiredUnconfigured.std::to_string(length),
                 },
                 template: successTemplate,
                 });
@@ -250,7 +250,7 @@ std::future<void> generateSuccessResponse(IAgentRuntime runtime, WorldSettings w
                         source: "discord",
                         });
                         } catch (error) {
-                            std::cerr << "Error generating success response: " + std::to_string(error) << std::endl;
+                            std::cerr << "Error generating success response: " + error << std::endl;
                             callback({
                                 text: "Settings updated successfully. Please continue with the remaining configuration.",
                                 actions: ["SETTING_UPDATED"],
@@ -274,14 +274,14 @@ std::future<void> generateFailureResponse(IAgentRuntime runtime, WorldSettings w
         }
 
         const auto requiredUnconfiguredString = requiredUnconfigured;
-        std::to_string(key) + ": " + std::to_string(setting.name)
+        ".map(([key, setting]) => " + key + ": " + setting.name
         .join("\n");
 
         // Generate failure message
         const auto prompt = composePrompt({;
             state: {
                 nextSetting: requiredUnconfiguredString,
-                remainingRequired: requiredUnconfigured.length.toString(),
+                remainingRequired: requiredUnconfigured.std::to_string(length),
                 },
                 template: failureTemplate,
                 });
@@ -298,7 +298,7 @@ std::future<void> generateFailureResponse(IAgentRuntime runtime, WorldSettings w
                         source: "discord",
                         });
                         } catch (error) {
-                            std::cerr << "Error generating failure response: " + std::to_string(error) << std::endl;
+                            std::cerr << "Error generating failure response: " + error << std::endl;
                             callback({
                                 text: "I couldn't understand your settings update. Please try again with a clearer format.",
                                 actions: ["SETTING_UPDATE_FAILED"],
@@ -329,7 +329,7 @@ std::future<void> generateErrorResponse(IAgentRuntime runtime, State state, Hand
                     source: "discord",
                     });
                     } catch (error) {
-                        std::cerr << "Error generating error response: " + std::to_string(error) << std::endl;
+                        std::cerr << "Error generating error response: " + error << std::endl;
                         callback({
                             text: "I'm sorry, but I encountered an error while processing your request. Please try again or contact support if the issue persists.",
                             actions: ["SETTING_UPDATE_ERROR"],

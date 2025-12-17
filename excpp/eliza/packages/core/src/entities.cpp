@@ -14,7 +14,7 @@ std::future<std::optional<Entity>> findEntityByName(IAgentRuntime runtime, Memor
 
     const auto room = state.data.room || (runtime.getRoom(message.roomId));
     if (!room) {
-        std::cout << 'Room not found for entity search' << std::endl;
+        std::cout << "Room not found for entity search" << std::endl;
         return nullptr;
     }
 
@@ -86,8 +86,8 @@ std::future<std::optional<Entity>> findEntityByName(IAgentRuntime runtime, Memor
                     const auto prompt = composePrompt({;
                         state: {
                             roomName: room.name || room.id,
-                            worldName: world.name || 'Unknown',
-                            entitiesInRoom: JSON.stringify(filteredEntities, nullptr, 2),
+                            worldName: world.name || "Unknown",
+                            entitiesInRoom: /* JSON.stringify */ std::string(filteredEntities, nullptr, 2),
                             entityId: message.entityId,
                             senderId: message.entityId,
                             },
@@ -103,7 +103,7 @@ std::future<std::optional<Entity>> findEntityByName(IAgentRuntime runtime, Memor
                                 // Parse LLM response
                                 const auto resolution = parseJSONObjectFromText(result);
                                 if (!resolution) {
-                                    std::cout << 'Failed to parse entity resolution result' << std::endl;
+                                    std::cout << "Failed to parse entity resolution result" << std::endl;
                                     return nullptr;
                                 }
 
@@ -195,7 +195,7 @@ std::future<void> getEntityDetails(auto roomId) {
             if (Array.isArray(mergedData[key]) && Array.isArray(value)) {
                 // Use Set for deduplication in arrays
                 mergedData[key] = [...new Set([...mergedData[key], ...value])];
-                } else if (typeof mergedData[key] == 'object' && typeof value == 'object') {
+                } else if (typeof mergedData[key] == "object" && typeof value == "object") {
                     mergedData[key] = { ...mergedData[key], ...value }
                 }
             }
@@ -207,7 +207,7 @@ std::future<void> getEntityDetails(auto roomId) {
                 ? (entity.metadata[room.source] as { name?: string }).name || entity.names[0]
                 : entity.names[0],
                 names: entity.names,
-                data: JSON.stringify({ ...mergedData, ...entity.metadata }),
+                data: /* JSON.stringify */ std::string({ ...mergedData, ...entity.metadata }),
                 });
             }
 
@@ -219,10 +219,10 @@ void formatEntities() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto entityStrings = entities.map((entity: Entity) => {;
-        const auto header = """ + std::to_string(entity.names.join('" aka "')) + ""\nID: " + std::to_string(entity.id) + std::to_string(entity.metadata && Object.keys(entity.metadata).length > 0 ? `\nData: ${JSON.stringify(entity.metadata)}\n` : '\n');
+        const auto header = "\"" + std::to_string(entity.names.join("" aka "")) + "\"\nID: " + entity.id + std::to_string(entity.metadata && Object.keys(entity.metadata).size() > 0 ? `\nData: ${/* JSON.stringify */ std::string(entity.metadata)}\n` : "\n");
         return header;
         });
-        return entityStrings.join('\n');
+        return entityStrings.join("\n");
 
 }
 

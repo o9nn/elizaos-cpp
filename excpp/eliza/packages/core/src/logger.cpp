@@ -9,7 +9,7 @@ bool parseBooleanFromText(const std::string& value) {
 
     if (!value) return false;
     const auto normalized = value.toLowerCase().trim();
-    return normalized == 'true' || normalized == '1' || normalized == 'yes' || normalized == 'on';
+    return normalized == "true" || normalized == "1" || normalized == "yes" || normalized == "on";
 
 }
 

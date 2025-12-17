@@ -7,16 +7,16 @@ namespace elizaos {
 std::future<double> checkUserTokenBalance(const std::string& userPublicKey, const std::string& tokenMint) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    std::cout << "Checking balance for user " + std::to_string(userPublicKey) << token ${tokenMint}` << std::endl;
+    std::cout << "Checking balance for user " + userPublicKey << "token ${tokenMint}" << std::endl;
     const auto redisCache = getGlobalRedisCache(); // Instantiate Redis;
 
     // First check Redis cache
     auto cachedBalance = 0;
-    const auto holdersListKey = "holders:" + std::to_string(tokenMint);
+    const auto holdersListKey = "holders:" + tokenMint;
     try {
         const auto holdersString = redisCache.get(holdersListKey);
         if (holdersString) {
-            const std::vector<std::any> allHolders = JSON.parse(holdersString);
+            const std::vector<std::any> allHolders = /* JSON.parse */ holdersString;
             const auto specificHolderData = allHolders.find(;
             [&](h) { return h.address == userPublicKey,; }
             );
@@ -27,7 +27,7 @@ std::future<double> checkUserTokenBalance(const std::string& userPublicKey, cons
         }
         } catch (redisError) {
             console.error(
-            "Chat: Error checking Redis balance for " + std::to_string(userPublicKey) + " / " + std::to_string(tokenMint) + ":"
+            "Chat: Error checking Redis balance for " + userPublicKey + " / " + tokenMint + ":"
             redisError,
             );
             // Continue to blockchain check if Redis fails
@@ -58,7 +58,7 @@ std::future<double> checkUserTokenBalance(const std::string& userPublicKey, cons
             }
             } catch (error) {
                 console.error(
-                "Error checking blockchain balance for " + std::to_string(userPublicKey) + " / " + std::to_string(tokenMint) + ":"
+                "Error checking blockchain balance for " + userPublicKey + " / " + tokenMint + ":"
                 error,
                 );
             }
@@ -66,7 +66,7 @@ std::future<double> checkUserTokenBalance(const std::string& userPublicKey, cons
             // Use the higher of the two balances (Redis vs Blockchain)
             const auto effectiveBalance = Math.max(cachedBalance, blockchainBalance);
             console.log(
-            "Chat Balance check results - Redis: " + std::to_string(cachedBalance) + ", Blockchain: " + std::to_string(blockchainBalance) + ", Effective: " + std::to_string(effectiveBalance)
+            "Chat Balance check results - Redis: " + cachedBalance + ", Blockchain: " + blockchainBalance + ", Effective: " + effectiveBalance
             );
 
             return effectiveBalance;
@@ -89,13 +89,13 @@ double getTierThreshold(const std::string& tier) {
     try {
 
         switch (tier) {
-            case "1k":
+            // case "1k":
             return 1000;
-            case "100k":
+            // case "100k":
             return 100000;
-            case "1M":
+            // case "1M":
             return 1000000;
-            default:
+            // default:
             throw std::runtime_error("Invalid tier");
         }
 

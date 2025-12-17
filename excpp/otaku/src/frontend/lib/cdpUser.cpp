@@ -13,7 +13,7 @@ std::string extractEmailFromCdpUser(CdpUser user, bool isSignedIn) {
     user.authenticationMethods.oauth.email ||;
     user.authenticationMethods.google.email ||;
     user.email ||;
-    std::to_string(user.userId) + "@cdp.local"
+    "(isSignedIn && user.userId ? " + user.userId + "@cdp.local"
     );
 
 }
@@ -42,11 +42,11 @@ std::string extractPhoneFromCdpUser(CdpUser user) {
     const auto raw = sms.phoneNumber;
     const auto cc = sms.countryCode;
     // Prefer provided E.164; otherwise compose from countryCode + local number
-    const auto combined = std::to_string(cc) + std::to_string(raw);
+    const auto combined = "raw.startsWith("+") ? raw : (raw && cc ? " + cc + raw;
     if (!combined) return undefined;
     // Normalize to E.164 (+digits only)
-    const auto digits = combined.replace(/[^0-9]/g, '');
-    return "+" + std::to_string(digits);
+    const auto digits = combined.replace(/[^0-9]/g, "");
+    return "digits ? " + "+" + digits;
 
 }
 
@@ -54,9 +54,9 @@ std::string generateEmailFromPhone(const std::string& phone) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!phone) return undefined;
-    const auto digits = phone.replace(/[^0-9]/g, '');
+    const auto digits = phone.replace(/[^0-9]/g, "");
     if (!digits) return undefined;
-    return "p" + std::to_string(digits) + "@cdp.local";
+    return "p" + digits + "@cdp.local";
 
 }
 
@@ -67,7 +67,7 @@ CdpUserInfo resolveCdpUserInfo(CdpUser user, std::optional<CdpUserInfoOptions> o
     const auto email =;
     extractEmailFromCdpUser(user, Boolean(options.isSignedIn)) ||;
     (phoneNumber ? generateEmailFromPhone(phoneNumber) : std::nullopt) ||
-    std::to_string(user.userId) + "@cdp.local"
+    "(Boolean(options.isSignedIn) && user.userId ? " + user.userId + "@cdp.local"
     const auto username = extractUsernameFromCdpUser(user, email);
     return { email, username, phoneNumber }
 

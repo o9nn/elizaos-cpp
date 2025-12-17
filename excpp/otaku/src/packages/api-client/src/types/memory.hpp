@@ -1,10 +1,14 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <chrono>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "base.hpp"
 #include "elizaos/core.hpp"
@@ -23,8 +27,8 @@ struct Memory {
     std::string type;
     std::any content;
     std::optional<std::vector<double>> embedding;
-    Date createdAt;
-    Date updatedAt;
+    std::chrono::system_clock::time_point createdAt;
+    std::chrono::system_clock::time_point updatedAt;
 };
 
 struct Room {
@@ -32,8 +36,8 @@ struct Room {
     UUID agentId;
     std::string name;
     std::optional<std::string> type;
-    Date createdAt;
-    Date updatedAt;
+    std::chrono::system_clock::time_point createdAt;
+    std::chrono::system_clock::time_point updatedAt;
 };
 
 struct MemoryUpdateParams {

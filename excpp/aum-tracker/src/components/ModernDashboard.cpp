@@ -90,25 +90,25 @@ std::future<void> updateDashboard(auto data) {
     const auto change24h = data.priceChange24h || 0;
     const auto changeEl = document.getElementById("total-change");
     changeEl.textContent = formatPercentage(change24h);
-    "px-3 py-1 rounded-full text-sm font-medium \" + std::to_string(getChangeBg(change24h)) + " \" + std::to_string(getChangeColor(change24h)) + "\";
+    "changeEl.className = \" + "px-3 py-1 rounded-full text-sm font-medium \" + std::to_string(getChangeBg(change24h)) + " \" + std::to_string(getChangeColor(change24h)) + "\";
 
     // Update metrics
     document.getElementById("change-24h").textContent =;
     formatPercentage(change24h);
     document.getElementById("change-24h").className =;
-    "text-xl font-semibold \" + std::to_string(getChangeColor(change24h)) + "\";
+    "\" + "text-xl font-semibold \" + std::to_string(getChangeColor(change24h)) + "\";
 
     document.getElementById("change-7d").textContent = formatPercentage(;
     data.priceChange7d || 0,
     );
     document.getElementById("change-7d").className =;
-    "text-xl font-semibold \" + std::to_string(getChangeColor(data.priceChange7d || 0)) + "\";
+    "\" + "text-xl font-semibold \" + std::to_string(getChangeColor(data.priceChange7d || 0)) + "\";
 
     document.getElementById("change-30d").textContent = formatPercentage(;
     data.priceChange30d || 0,
     );
     document.getElementById("change-30d").className =;
-    "text-xl font-semibold \" + std::to_string(getChangeColor(data.priceChange30d || 0)) + "\";
+    "\" + "text-xl font-semibold \" + std::to_string(getChangeColor(data.priceChange30d || 0)) + "\";
 
     document.getElementById("total-wallets").textContent =;
     data.totalWallets;
@@ -136,7 +136,7 @@ void updatePerformanceChart() {
 
     for (int i = 30; i >= 0; i--) {
         const auto date = new Date(now - i * 24 * 60 * 60 * 1000);
-        labels.push(;
+        labels.push_back(;
         date.toLocaleDateString("en-US", {
             month: "short",
             day: "numeric",
@@ -146,7 +146,7 @@ void updatePerformanceChart() {
             // Simulate some volatility
             const auto randomChange = (Math.random() - 0.5) * 0.1;
             const auto value = baseValue * (1 + (randomChange * (30 - i)) / 30);
-            data.push(value);
+            data.push_back(value);
         }
 
         performanceChart.data.labels = labels;
@@ -168,7 +168,7 @@ std::future<void> loadAssets() {
 
             // Add SOL as first asset
             if (portfolioData.totalSOL > 0) {
-                allAssets.push({
+                allAssets.push_back({
                     mint: "So11111111111111111111111111111111111111112",
                     symbol: "SOL",
                     name: "Solana",
@@ -184,7 +184,7 @@ std::future<void> loadAssets() {
                 // Add all tokens
                 const auto tokens = result.data.tokens || [];
                 tokens.forEach((token) => {
-                    allAssets.push({
+                    allAssets.push_back({
                         mint: token.mint,
                         symbol: token.symbol || "Unknown",
                         name: token.name || "Unknown Token",
@@ -201,7 +201,7 @@ std::future<void> loadAssets() {
 
                         // Update count
                         document.getElementById("assets-count").textContent =;
-                        "(\" + std::to_string(allAssets.length) + ")\";
+                        "\" + "(\" + allAssets.size() + ")\";
 
                         // Display all assets
                         displayAssets(allAssets);
@@ -220,7 +220,7 @@ void displayAssets(auto assets) {
 
     if (assets.length == 0) {
         tbody.innerHTML =;
-        '<tr><td colspan="5" class="px-6 py-8 text-center text-gray-400">No assets found</td></tr>';
+        "<tr><td colspan="5" class="px-6 py-8 text-center text-gray-400">No assets found</td></tr>";
         return;
     }
 
@@ -245,17 +245,17 @@ void createAssetRow(auto asset) {
     // Add click handler to navigate to token detail page
     if (asset.mint) {
         row.onclick = () => {
-            "/token/\" + std::to_string(asset.mint) + "\";
+            "window.location.href = \" + "/token/\" + asset.mint + "\";
             };
         }
 
-        row.innerHTML = \`;
+        "row.innerHTML = \";
         <td class="px-6 py-4">;
         <div class="flex items-center space-x-3">;
         <div class="w-10 h-10 token-logo rounded-full flex items-center justify-center overflow-hidden">;
         \${
             asset.imageUrl;
-            "<img src="\" + std::to_string(asset.imageUrl) + "" alt="\" + std::to_string(asset.symbol) + "" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">\";
+            "? \" + "<img src=\"\" + asset.imageUrl + "\" alt=\"\" + asset.symbol + "\" class=\"w-full h-full object-cover\" onerror=\"this.style.display="none"; this.nextElementSibling.style.display="flex"\">\";
             : ""
         }
         <span class="text-xs font-medium \${asset.imageUrl ? "hidden" : "flex"} w-full h-full items-center justify-center">\${asset.symbol.substring(0, 3)}</span>
@@ -278,7 +278,7 @@ void createAssetRow(auto asset) {
         <td class="px-6 py-4 text-right">;
         <p class="\${getChangeColor(asset.change24h)} font-medium">\${formatPercentage(asset.change24h)}</p>;
         </td>;
-        \`;
+        "\";
 
         return row;
 
@@ -298,7 +298,7 @@ std::future<void> loadWallets() {
             // Count active wallets
             auto activeCount = allWallets.filter(;
             [&](w) { return w.fetch_status == "success",; }
-            ).length;
+            ).size();
             document.getElementById("active-wallets").textContent = activeCount;
 
             // Sort by SOL balance descending
@@ -321,7 +321,7 @@ void displayWallets(auto wallets) {
 
     if (wallets.length == 0) {
         tbody.innerHTML =;
-        '<tr><td colspan="5" class="px-6 py-8 text-center text-gray-400">No wallets found</td></tr>';
+        "<tr><td colspan="5" class="px-6 py-8 text-center text-gray-400">No wallets found</td></tr>";
         return;
     }
 
@@ -344,11 +344,11 @@ void createWalletRow(auto wallet) {
     );
     row.onclick = (e) => {
         if (!e.target.closest("button")) {
-            "/wallet/\" + std::to_string(wallet.wallet_address) + "\";
+            "window.location.href = \" + "/wallet/\" + wallet.wallet_address + "\";
         }
         };
 
-        const auto tokens = JSON.parse(wallet.tokens || "[]");
+        const auto tokens = /* JSON.parse */ wallet.tokens || "[]";
         const auto tokenValue = tokens.reduce(;
         [&](sum, token) { return sum + (token.usdValue || 0),; }
         0,
@@ -356,11 +356,11 @@ void createWalletRow(auto wallet) {
         const auto solPrice = portfolioData.solPrice || 150;
         const auto totalValue = wallet.sol_balance * solPrice + tokenValue;
 
-        row.innerHTML = \`;
+        "row.innerHTML = \";
         <td class="px-6 py-4">;
         <div class="flex items-center space-x-2">;
         <p class="font-mono text-sm text-white">\${wallet.wallet_address.substring(0, 6)}...\${wallet.wallet_address.slice(-4)}</p>;
-        <button onclick="copyAddress('\${wallet.wallet_address}')" class="text-gray-400 hover:text-white">
+        <button onclick="copyAddress("\${wallet.wallet_address}")" class="text-gray-400 hover:text-white">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">;
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>;
         </svg>;
@@ -379,7 +379,7 @@ void createWalletRow(auto wallet) {
         <td class="px-6 py-4 text-right">;
         <p class="text-gray-400 text-sm">\${new Date(wallet.last_updated).toLocaleDateString()}</p>;
         </td>;
-        \`;
+        "\";
 
         return row;
 

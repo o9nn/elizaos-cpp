@@ -1,10 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -36,7 +38,7 @@ struct ChatConversation {
     std::vector<ChatMessage> messages;
 };
 
-using ChatState = std::variant<"collapsed", "expanded", "conversation">;
+using ChatState = std::string;
 
 struct ChatData {
     ChatUser currentUser;

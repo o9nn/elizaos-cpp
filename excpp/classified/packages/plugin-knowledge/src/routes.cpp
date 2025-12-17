@@ -7,16 +7,16 @@ namespace elizaos {
 void sendSuccess(const std::any& res, const std::any& data, auto status) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    res.writeHead(status, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ success: true, data }));
+    res.writeHead(status, { "Content-Type": "application/json" });
+    res.end(/* JSON.stringify */ std::string({ success: true, data }));
 
 }
 
 void sendError(const std::any& res, double status, const std::string& code, const std::string& message, std::optional<std::string> details) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    res.writeHead(status, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ success: false, error: { code, message, details } }));
+    res.writeHead(status, { "Content-Type": "application/json" });
+    res.end(/* JSON.stringify */ std::string({ success: false, error: { code, message, details } }));
 
 }
 
@@ -26,15 +26,15 @@ std::future<void> uploadKnowledgeHandler(const std::any& req, const std::any& re
 
         const auto service = runtime.getService<KnowledgeService>(KnowledgeService.serviceType);
         if (!service) {
-            return sendError(res, 500, 'SERVICE_NOT_FOUND', 'KnowledgeService not found');
+            return sendError(res, 500, "SERVICE_NOT_FOUND", "KnowledgeService not found");
         }
 
         // Check if the request has uploaded files or URLs
-        const auto hasUploadedFiles = req.files && req.files.length > 0;
+        const auto hasUploadedFiles = req.files && req.files.size() > 0;
         const auto isJsonRequest = !hasUploadedFiles && req.body && (req.body.fileUrl || req.body.fileUrls);
 
         if (!hasUploadedFiles && !isJsonRequest) {
-            return sendError(res, 400, 'INVALID_REQUEST', 'Request must contain either files or URLs');
+            return sendError(res, 400, "INVALID_REQUEST", "Request must contain either files or URLs");
         }
 
         try {
@@ -43,14 +43,14 @@ std::future<void> uploadKnowledgeHandler(const std::any& req, const std::any& re
                 const auto files = req.files[];
 
                 if (!files || files.length == 0) {
-                    return sendError(res, 400, 'NO_FILES', 'No files uploaded');
+                    return sendError(res, 400, "NO_FILES", "No files uploaded");
                 }
 
                 // Validate files for corruption/truncation
                 const auto invalidFiles = files.filter((file) => {;
                     // Check for empty files
                     if (file.size == 0) {
-                        std::cout << "File " + std::to_string(file.originalname) + " is empty" << std::endl;
+                        std::cout << "File " + file.originalname + " is empty" << std::endl;
                         return true;
                     }
 
@@ -62,7 +62,7 @@ std::future<void> uploadKnowledgeHandler(const std::any& req, const std::any& re
 
                     // Check if file has valid path
                     if (!file.path) {
-                        std::cout << "File " + std::to_string(file.originalname) + " has no path" << std::endl;
+                        std::cout << "File " + file.originalname + " has no path" << std::endl;
                         return true;
                     }
 
@@ -71,12 +71,12 @@ std::future<void> uploadKnowledgeHandler(const std::any& req, const std::any& re
 
                     if (invalidFiles.length > 0) {
                         cleanupFiles(files);
-                        const auto invalidFileNames = invalidFiles.map((f) => f.originalname || 'unnamed').join(', ');
+                        const auto invalidFileNames = invalidFiles.map((f) => f.originalname || "unnamed").join(", ");
                         return sendError(;
                         res,
                         400,
-                        'INVALID_FILES',
-                        "Invalid or corrupted files: " + std::to_string(invalidFileNames)
+                        "INVALID_FILES",
+                        "Invalid or corrupted files: " + invalidFileNames
                         );
                     }
 
@@ -85,35 +85,35 @@ std::future<void> uploadKnowledgeHandler(const std::any& req, const std::any& re
                     const auto agentId = (req.body.agentId) || (req.query.agentId);
 
                     if (!agentId) {
-                        std::cerr << '[Document Processor] ❌ No agent ID provided in upload request' << std::endl;
+                        std::cerr << "[Document Processor] ❌ No agent ID provided in upload request" << std::endl;
                         return sendError(;
                         res,
                         400,
-                        'MISSING_AGENT_ID',
-                        'Agent ID is required for uploading knowledge';
+                        "MISSING_AGENT_ID",
+                        "Agent ID is required for uploading knowledge";
                         );
                     }
 
                     const auto worldId = (req.body.worldId) || agentId;
-                    std::cout << "[Document Processor] 📤 Processing file upload for agent: " + std::to_string(agentId) << std::endl;
+                    std::cout << "[Document Processor] 📤 Processing file upload for agent: " + agentId << std::endl;
 
                     const auto processingPromises = files.map(async (file, index) => {;
                         const auto originalFilename = file.originalname;
                         const auto filePath = file.path;
 
                         logger.debug(
-                        "[Document Processor] 📄 Processing file: " + std::to_string(originalFilename) + " (agent: " + std::to_string(agentId) + ")"
+                        "[Document Processor] 📄 Processing file: " + originalFilename + " (agent: " + agentId + ")"
                         );
 
                         try {
                             const auto fileBuffer = fs.promises.readFile(filePath);
-                            const auto base64Content = fileBuffer.tostd::to_string('base64');
+                            const auto base64Content = fileBuffer.tostd::to_string("base64");
 
                             // Construct AddKnowledgeOptions directly using available variables
                             // Note: We no longer provide clientDocumentId - the service will generate it
                             const import('./types.ts').AddKnowledgeOptions addKnowledgeOpts = {;
                                 agentId: agentId, // Pass the agent ID from frontend
-                                clientDocumentId: '', // This will be ignored by the service
+                                clientDocumentId: "", // This will be ignored by the service
                                 contentType: file.mimetype, // Directly from multer file object
                                 originalFilename: originalFilename, // Directly from multer file object
                                 content: base64Content, // The base64 string of the file
@@ -132,18 +132,18 @@ std::future<void> uploadKnowledgeHandler(const std::any& req, const std::any& re
                                     type: file.mimetype,
                                     size: file.size,
                                     uploadedAt: Date.now(),
-                                    status: 'success',
+                                    status: "success",
                                     };
                                     } catch (fileError: any) {
                                         logger.error(
-                                        "[Document Processor] ❌ Error processing file " + std::to_string(file.originalname) + ":"
+                                        "[Document Processor] ❌ Error processing file " + file.originalname + ":"
                                         fileError;
                                         );
                                         cleanupFile(filePath);
                                         return {
-                                            id: '', // No ID since processing failed
+                                            id: "", // No ID since processing failed
                                             filename: originalFilename,
-                                            status: 'error_processing',
+                                            status: "error_processing",
                                             error: fileError.message,
                                             };
                                         }
@@ -162,7 +162,7 @@ std::future<void> uploadKnowledgeHandler(const std::any& req, const std::any& re
                                         : [];
 
                                         if (fileUrls.length == 0) {
-                                            return sendError(res, 400, 'MISSING_URL', 'File URL is required');
+                                            return sendError(res, 400, "MISSING_URL", "File URL is required");
                                         }
 
                                         // Get agentId from request body or query parameter
@@ -170,16 +170,16 @@ std::future<void> uploadKnowledgeHandler(const std::any& req, const std::any& re
                                         const auto agentId = (req.body.agentId) || (req.query.agentId);
 
                                         if (!agentId) {
-                                            std::cerr << '[Document Processor] ❌ No agent ID provided in URL request' << std::endl;
+                                            std::cerr << "[Document Processor] ❌ No agent ID provided in URL request" << std::endl;
                                             return sendError(;
                                             res,
                                             400,
-                                            'MISSING_AGENT_ID',
-                                            'Agent ID is required for uploading knowledge from URLs';
+                                            "MISSING_AGENT_ID",
+                                            "Agent ID is required for uploading knowledge from URLs";
                                             );
                                         }
 
-                                        std::cout << "[Document Processor] 📤 Processing URL upload for agent: " + std::to_string(agentId) << std::endl;
+                                        std::cout << "[Document Processor] 📤 Processing URL upload for agent: " + agentId << std::endl;
 
                                         // Process each URL as a distinct file
                                         const auto processingPromises = fileUrls.map(async (fileUrl: string) => {;
@@ -191,9 +191,9 @@ std::future<void> uploadKnowledgeHandler(const std::any& req, const std::any& re
 
                                                 // Extract filename from URL for better display
                                                 const auto urlObject = new URL(fileUrl);
-                                                const auto pathSegments = urlObject.pathname.split('/');
+                                                const auto pathSegments = urlObject.pathname.split("/");
                                                 // Decode URL-encoded characters and handle empty filename
-                                                const auto encodedFilename = pathSegments[pathSegments.length - 1] || 'document.pdf';
+                                                const auto encodedFilename = pathSegments[pathSegments.size() - 1] || "document.pdf";
                                                 const auto originalFilename = decodeURIComponent(encodedFilename);
 
                                                 logger.debug(`[Document Processor] 🌐 Fetching content from URL: ${fileUrl}`);
@@ -206,22 +206,22 @@ std::future<void> uploadKnowledgeHandler(const std::any& req, const std::any& re
 
                                                 // If content type is generic, try to infer from file extension
                                                 if (contentType == 'application/octet-stream') {
-                                                    const auto fileExtension = originalFilename.split('.').pop().toLowerCase();
+                                                    const auto fileExtension = originalFilename.split(".").pop().toLowerCase();
                                                     if (fileExtension) {
                                                         if (['pdf'].includes(fileExtension)) {
-                                                            contentType = 'application/pdf';
-                                                            } else if (['txt', 'text'].includes(fileExtension)) {
-                                                                contentType = 'text/plain';
-                                                                } else if (['md', 'markdown'].includes(fileExtension)) {
-                                                                    contentType = 'text/markdown';
-                                                                    } else if (['doc', 'docx'].includes(fileExtension)) {
-                                                                        contentType = 'application/msword';
-                                                                        } else if (['html', 'htm'].includes(fileExtension)) {
-                                                                            contentType = 'text/html';
-                                                                            } else if (['json'].includes(fileExtension)) {
-                                                                                contentType = 'application/json';
-                                                                                } else if (['xml'].includes(fileExtension)) {
-                                                                                    contentType = 'application/xml';
+                                                            contentType = "application/pdf";
+                                                            } else if (["txt", "text"].includes(fileExtension)) {
+                                                                contentType = "text/plain";
+                                                                } else if (["md", "markdown"].includes(fileExtension)) {
+                                                                    contentType = "text/markdown";
+                                                                    } else if (["doc", "docx"].includes(fileExtension)) {
+                                                                        contentType = "application/msword";
+                                                                        } else if (["html", "htm"].includes(fileExtension)) {
+                                                                            contentType = "text/html";
+                                                                            } else if (["json"].includes(fileExtension)) {
+                                                                                contentType = "application/json";
+                                                                                } else if (["xml"].includes(fileExtension)) {
+                                                                                    contentType = "application/xml";
                                                                                 }
                                                                             }
                                                                         }
@@ -229,7 +229,7 @@ std::future<void> uploadKnowledgeHandler(const std::any& req, const std::any& re
                                                                         // Construct AddKnowledgeOptions with the fetched content
                                                                         const import('./types.ts').AddKnowledgeOptions addKnowledgeOpts = {;
                                                                             agentId: agentId, // Pass the agent ID from frontend
-                                                                            clientDocumentId: '', // This will be ignored by the service
+                                                                            clientDocumentId: "", // This will be ignored by the service
                                                                             contentType: contentType,
                                                                             originalFilename: originalFilename,
                                                                             content: content, // Use the base64 encoded content from the URL
@@ -243,7 +243,7 @@ std::future<void> uploadKnowledgeHandler(const std::any& req, const std::any& re
                                                                                 };
 
                                                                                 logger.debug(
-                                                                                "[Document Processor] 📄 Processing knowledge from URL: " + std::to_string(originalFilename) + " (type: " + std::to_string(contentType) + ")"
+                                                                                "[Document Processor] 📄 Processing knowledge from URL: " + originalFilename + " (type: " + contentType + ")"
                                                                                 );
                                                                                 const auto result = service.addKnowledge(addKnowledgeOpts);
 
@@ -251,16 +251,16 @@ std::future<void> uploadKnowledgeHandler(const std::any& req, const std::any& re
                                                                                     id: result.clientDocumentId, // Use the content-based ID returned by the service
                                                                                     fileUrl: fileUrl,
                                                                                     filename: originalFilename,
-                                                                                    message: 'Knowledge created successfully',
+                                                                                    message: "Knowledge created successfully",
                                                                                     createdAt: Date.now(),
                                                                                     fragmentCount: result.fragmentCount,
-                                                                                    status: 'success',
+                                                                                    status: "success",
                                                                                     };
                                                                                     } catch (urlError: any) {
-                                                                                        std::cerr << "[Document Processor] ❌ Error processing URL " + std::to_string(fileUrl) + ":" << urlError << std::endl;
+                                                                                        std::cerr << "[Document Processor] ❌ Error processing URL " + fileUrl + ":" << urlError << std::endl;
                                                                                         return {
                                                                                             fileUrl: fileUrl,
-                                                                                            status: 'error_processing',
+                                                                                            status: "error_processing",
                                                                                             error: urlError.message,
                                                                                             };
                                                                                         }
@@ -270,11 +270,11 @@ std::future<void> uploadKnowledgeHandler(const std::any& req, const std::any& re
                                                                                         sendSuccess(res, results);
                                                                                     }
                                                                                     } catch (error: any) {
-                                                                                        std::cerr << '[Document Processor] ❌ Error processing knowledge:' << error << std::endl;
+                                                                                        std::cerr << "[Document Processor] ❌ Error processing knowledge:" << error << std::endl;
                                                                                         if (hasUploadedFiles) {
                                                                                             cleanupFiles(req.files[]);
                                                                                         }
-                                                                                        sendError(res, 500, 'PROCESSING_ERROR', 'Failed to process knowledge', error.message);
+                                                                                        sendError(res, 500, "PROCESSING_ERROR", "Failed to process knowledge", error.message);
                                                                                     }
 
     } catch (const std::exception& e) {
@@ -292,26 +292,26 @@ std::future<void> getKnowledgeDocumentsHandler(const std::any& req, const std::a
             return sendError(;
             res,
             500,
-            'SERVICE_NOT_FOUND',
-            'KnowledgeService not found for getKnowledgeDocumentsHandler';
+            "SERVICE_NOT_FOUND",
+            "KnowledgeService not found for getKnowledgeDocumentsHandler";
             );
         }
 
         try {
             const auto limit = req.query.limit ? Number.parseInt(req.query.limit, 10) : 10000;
             const auto before = req.query.before ? Number.parseInt(req.query.before, 10) : Date.now();
-            const auto includeEmbedding = req.query.includeEmbedding == 'true';
+            const auto includeEmbedding = req.query.includeEmbedding == "true";
             const auto agentId = req.query.agentId | std::nullopt;
 
             // Retrieve fileUrls if they are provided in the request
             const auto fileUrls = req.query.fileUrls;
-            ? typeof req.query.fileUrls == 'string' && req.query.fileUrls.includes(',');
-            ? req.query.fileUrls.split(',');
+            ? typeof req.query.fileUrls == "string" && req.query.(std::find(fileUrls.begin(), fileUrls.end(), ",") != fileUrls.end());
+            ? req.query.fileUrls.split(",");
             : [req.query.fileUrls]
             : nullptr;
 
             const auto memories = service.getMemories({;
-                tableName: 'documents',
+                tableName: "documents",
                 count: limit,
                 end: before,
                 });
@@ -329,16 +329,16 @@ std::future<void> getKnowledgeDocumentsHandler(const std::any& req, const std::a
 
                     filteredMemories = memories.filter(;
                     (memory) =>;
-                    urlBasedIds.includes(memory.id) || // If the ID corresponds directly;
+                    (std::find(urlBasedIds.begin(), urlBasedIds.end(), memory.id) != urlBasedIds.end()) || // If the ID corresponds directly;
                     // Or if the URL is stored in the metadata (check if it exists)
                     (memory.metadata &&;
-                    'url' in memory.metadata &&;
-                    typeof memory.metadata.url == 'string' &&;
-                    normalizedRequestUrls.includes(normalizeS3Url(memory.metadata.url)));
+                    "url" in memory.metadata &&;
+                    typeof memory.metadata.url == "string" &&;
+                    (std::find(normalizedRequestUrls.begin(), normalizedRequestUrls.end(), normalizeS3Url(memory.metadata.url) != normalizedRequestUrls.end())));
                     );
 
                     logger.debug(
-                    "[Document Processor] 🔍 Filtered documents by URLs: " + std::to_string(fileUrls.length) + " URLs, found " + std::to_string(filteredMemories.length) + " matching documents"
+                    "[Document Processor] 🔍 Filtered documents by URLs: " + fileUrls.size() + " URLs, found " + filteredMemories.size() + " matching documents"
                     );
                 }
 
@@ -351,12 +351,12 @@ std::future<void> getKnowledgeDocumentsHandler(const std::any& req, const std::a
                     sendSuccess(res, {
                         memories: cleanMemories,
                         urlFiltered: fileUrls ? true : false,
-                        totalFound: cleanMemories.length,
-                        totalRequested: fileUrls ? fileUrls.length : 0,
+                        totalFound: cleanMemories.size(),
+                        totalRequested: fileUrls ? fileUrls.size() : 0,
                         });
                         } catch (error: any) {
-                            std::cerr << '[Document Processor] ❌ Error retrieving documents:' << error << std::endl;
-                            sendError(res, 500, 'RETRIEVAL_ERROR', 'Failed to retrieve documents', error.message);
+                            std::cerr << "[Document Processor] ❌ Error retrieving documents:" << error << std::endl;
+                            sendError(res, 500, "RETRIEVAL_ERROR", "Failed to retrieve documents", error.message);
                         }
 
     } catch (const std::exception& e) {
@@ -376,8 +376,8 @@ std::future<void> deleteKnowledgeDocumentHandler(const std::any& req, const std:
             return sendError(;
             res,
             500,
-            'SERVICE_NOT_FOUND',
-            'KnowledgeService not found for deleteKnowledgeDocumentHandler';
+            "SERVICE_NOT_FOUND",
+            "KnowledgeService not found for deleteKnowledgeDocumentHandler";
             );
         }
 
@@ -385,21 +385,21 @@ std::future<void> deleteKnowledgeDocumentHandler(const std::any& req, const std:
         const auto knowledgeId = req.params.knowledgeId;
 
         if (!knowledgeId || knowledgeId.length < 36) {
-            std::cerr << "[Document Processor] ❌ Invalid knowledge ID format: " + std::to_string(knowledgeId) << std::endl;
-            return sendError(res, 400, 'INVALID_ID', 'Invalid Knowledge ID format');
+            std::cerr << "[Document Processor] ❌ Invalid knowledge ID format: " + knowledgeId << std::endl;
+            return sendError(res, 400, "INVALID_ID", "Invalid Knowledge ID format");
         }
 
         try {
             // Use type conversion with template string to ensure the typing is correct
-            const auto typedKnowledgeId = std::to_string(string) + "-" + std::to_string(string) + "-" + std::to_string(string) + "-" + std::to_string(string) + "-" + std::to_string(string);
+            const auto typedKnowledgeId = "knowledgeId as " + string + "-" + string + "-" + string + "-" + string + "-" + string;
             logger.debug(`[Document Processor] 🗑️ Deleting document: ${typedKnowledgeId}`);
 
             service.deleteMemory(typedKnowledgeId);
-            std::cout << "[Document Processor] ✅ Successfully deleted document: " + std::to_string(typedKnowledgeId) << std::endl;
+            std::cout << "[Document Processor] ✅ Successfully deleted document: " + typedKnowledgeId << std::endl;
             sendSuccess(res, nullptr, 204);
             } catch (error: any) {
-                std::cerr << "[Document Processor] ❌ Error deleting document " + std::to_string(knowledgeId) + ":" << error << std::endl;
-                sendError(res, 500, 'DELETE_ERROR', 'Failed to delete document', error.message);
+                std::cerr << "[Document Processor] ❌ Error deleting document " + knowledgeId + ":" << error << std::endl;
+                sendError(res, 500, "DELETE_ERROR", "Failed to delete document", error.message);
             }
 
     } catch (const std::exception& e) {
@@ -419,8 +419,8 @@ std::future<void> getKnowledgeByIdHandler(const std::any& req, const std::any& r
             return sendError(;
             res,
             500,
-            'SERVICE_NOT_FOUND',
-            'KnowledgeService not found for getKnowledgeByIdHandler';
+            "SERVICE_NOT_FOUND",
+            "KnowledgeService not found for getKnowledgeByIdHandler";
             );
         }
 
@@ -428,8 +428,8 @@ std::future<void> getKnowledgeByIdHandler(const std::any& req, const std::any& r
         const auto knowledgeId = req.params.knowledgeId;
 
         if (!knowledgeId || knowledgeId.length < 36) {
-            std::cerr << "[Document Processor] ❌ Invalid knowledge ID format: " + std::to_string(knowledgeId) << std::endl;
-            return sendError(res, 400, 'INVALID_ID', 'Invalid Knowledge ID format');
+            std::cerr << "[Document Processor] ❌ Invalid knowledge ID format: " + knowledgeId << std::endl;
+            return sendError(res, 400, "INVALID_ID", "Invalid Knowledge ID format");
         }
 
         try {
@@ -440,18 +440,18 @@ std::future<void> getKnowledgeByIdHandler(const std::any& req, const std::any& r
             // We can't use getMemoryById directly because it's not exposed by the service
             // So we'll use getMemories with a filter
             const auto memories = service.getMemories({;
-                tableName: 'documents',
+                tableName: "documents",
                 count: 10000,
                 });
 
                 // Use type conversion with template string to ensure the typing is correct
-                const auto typedKnowledgeId = std::to_string(string) + "-" + std::to_string(string) + "-" + std::to_string(string) + "-" + std::to_string(string) + "-" + std::to_string(string);
+                const auto typedKnowledgeId = "knowledgeId as " + string + "-" + string + "-" + string + "-" + string + "-" + string;
 
                 // Find the document with the corresponding ID
                 const auto document = memories.find((memory) => memory.id == typedKnowledgeId);
 
                 if (!document) {
-                    return "Knowledge with ID " + std::to_string(typedKnowledgeId) + " not found";
+                    return "sendError(res, 404, "NOT_FOUND", " + "Knowledge with ID " + typedKnowledgeId + " not found";
                 }
 
                 // Filter the embedding if necessary
@@ -462,8 +462,8 @@ std::future<void> getKnowledgeByIdHandler(const std::any& req, const std::any& r
 
                     sendSuccess(res, { document: cleanDocument });
                     } catch (error: any) {
-                        std::cerr << "[Document Processor] ❌ Error retrieving document " + std::to_string(knowledgeId) + ":" << error << std::endl;
-                        sendError(res, 500, 'RETRIEVAL_ERROR', 'Failed to retrieve document', error.message);
+                        std::cerr << "[Document Processor] ❌ Error retrieving document " + knowledgeId + ":" << error << std::endl;
+                        sendError(res, 500, "RETRIEVAL_ERROR", "Failed to retrieve document", error.message);
                     }
 
     } catch (const std::exception& e) {
@@ -483,36 +483,36 @@ std::future<void> knowledgePanelHandler(const std::any& req, const std::any& res
         try {
             const auto currentDir = path.dirname(new URL(import.meta.url).pathname);
             // Serve the main index.html from Vite's build output
-            const auto frontendPath = path.join(currentDir, '../dist/index.html');
+            const auto frontendPath = path.join(currentDir, "../dist/index.html");
 
             logger.debug(`[Document Processor] 🌐 Looking for frontend at: ${frontendPath}`);
 
             if (fs.existsSync(frontendPath)) {
-                const auto html = fs.promises.readFile(frontendPath, 'utf8');
+                const auto html = fs.promises.readFile(frontendPath, "utf8");
                 // Inject config into existing HTML
                 const auto injectedHtml = html.replace(;
-                '<head>',
+                "<head>",
                 `<head>;
                 <script>;
                 window.ELIZA_CONFIG = {
-                    agentId: '${agentId}',
-                    apiBase: '/api'
+                    agentId: "${agentId}",
+                    apiBase: "/api"
                     };
-                    </script>`;
+                    "</script>";
                     );
-                    res.writeHead(200, { 'Content-Type': 'text/html' });
+                    res.writeHead(200, { "Content-Type": "text/html" });
                     res.end(injectedHtml);
                     } else {
                         // Fallback: serve a basic HTML page that loads the JS bundle from the assets folder
                         // Use manifest.json to get the correct asset filenames if it exists
-                        auto cssFile = 'index.css';
-                        auto jsFile = 'index.js';
+                        auto cssFile = "index.css";
+                        auto jsFile = "index.js";
 
-                        const auto manifestPath = path.join(currentDir, '../dist/manifest.json');
+                        const auto manifestPath = path.join(currentDir, "../dist/manifest.json");
                         if (fs.existsSync(manifestPath)) {
                             try {
-                                const auto manifestContent = fs.promises.readFile(manifestPath, 'utf8');
-                                const auto manifest = JSON.parse(manifestContent);
+                                const auto manifestContent = fs.promises.readFile(manifestPath, "utf8");
+                                const auto manifest = /* JSON.parse */ manifestContent;
 
                                 // Look for the entry points in the manifest
                                 // Different Vite versions might structure the manifest differently
@@ -527,7 +527,7 @@ std::future<void> knowledgePanelHandler(const std::any& req, const std::any& res
                                     }
                                 }
                                 } catch (manifestError) {
-                                    std::cerr << '[Document Processor] ❌ Error reading manifest:' << manifestError << std::endl;
+                                    std::cerr << "[Document Processor] ❌ Error reading manifest:" << manifestError << std::endl;
                                     // Continue with default filenames if manifest can't be read
                                 }
                             }
@@ -543,8 +543,8 @@ std::future<void> knowledgePanelHandler(const std::any& req, const std::any& res
                             <title>Knowledge</title>;
                             <script>;
                             window.ELIZA_CONFIG = {
-                                agentId: '${agentId}',
-                                apiBase: '/api'
+                                agentId: "${agentId}",
+                                apiBase: "/api"
                                 };
                                 </script>;
                                 <link rel="stylesheet" href="./assets/${cssFile}">;
@@ -562,13 +562,13 @@ std::future<void> knowledgePanelHandler(const std::any& req, const std::any& res
                     </div>;
                     <script type="module" src="./assets/${jsFile}"></script>;
                     </body>;
-                    </html>`;
-                    res.writeHead(200, { 'Content-Type': 'text/html' });
+                    "</html>";
+                    res.writeHead(200, { "Content-Type": "text/html" });
                     res.end(html);
                 }
                 } catch (error: any) {
-                    std::cerr << '[Document Processor] ❌ Error serving frontend:' << error << std::endl;
-                    sendError(res, 500, 'FRONTEND_ERROR', 'Failed to load knowledge panel', error.message);
+                    std::cerr << "[Document Processor] ❌ Error serving frontend:" << error << std::endl;
+                    sendError(res, 500, "FRONTEND_ERROR", "Failed to load knowledge panel", error.message);
                 }
 
     } catch (const std::exception& e) {
@@ -586,12 +586,12 @@ std::future<void> frontendAssetHandler(const std::any& req, const std::any& res,
             const auto currentDir = path.dirname(new URL(import.meta.url).pathname);
 
             const auto assetRequestPath = req.path; // This is the full path, e.g., /api/agents/X/plugins/knowledge/assets/file.js;
-            const auto assetsMarker = '/assets/';
+            const auto assetsMarker = "/assets/";
             const auto assetsStartIndex = assetRequestPath.indexOf(assetsMarker);
 
             auto assetName = nullptr;
             if (assetsStartIndex != -1) {
-                assetName = assetRequestPath.substring(assetsStartIndex + assetsMarker.length);
+                assetName = assetRequestPath.substring(assetsStartIndex + assetsMarker.size());
             }
 
             if (!assetName || assetName.includes('..')) {
@@ -599,30 +599,30 @@ std::future<void> frontendAssetHandler(const std::any& req, const std::any& res,
                 return sendError(;
                 res,
                 400,
-                'BAD_REQUEST',
-                "Invalid asset name: '" + std::to_string(assetName) + "' from path " + std::to_string(assetRequestPath)
+                "BAD_REQUEST",
+                "Invalid asset name: "" + assetName + "" from path " + assetRequestPath
                 );
             }
 
-            const auto assetPath = path.join(currentDir, '../dist/assets', assetName);
+            const auto assetPath = path.join(currentDir, "../dist/assets", assetName);
             logger.debug(`[Document Processor] 🌐 Serving asset: ${assetPath}`);
 
             if (fs.existsSync(assetPath)) {
                 const auto fileStream = fs.createReadStream(assetPath);
-                auto contentType = 'application/octet-stream'; // Default;
+                auto contentType = "application/octet-stream"; // Default;
                 if (assetPath.endsWith('.js')) {
-                    contentType = 'application/javascript';
-                    } else if (assetPath.endsWith('.css')) {
-                        contentType = 'text/css';
+                    contentType = "application/javascript";
+                    } else if (assetPath.endsWith(".css")) {
+                        contentType = "text/css";
                     }
-                    res.writeHead(200, { 'Content-Type': contentType });
+                    res.writeHead(200, { "Content-Type": contentType });
                     fileStream.pipe(res);
                     } else {
-                        "Asset not found: " + std::to_string(req.url)
+                        "sendError(res, 404, "NOT_FOUND", " + "Asset not found: " + req.url
                     }
                     } catch (error: any) {
-                        std::cerr << "[Document Processor] ❌ Error serving asset " + std::to_string(req.url) + ":" << error << std::endl;
-                        "Failed to load asset " + std::to_string(req.url);
+                        std::cerr << "[Document Processor] ❌ Error serving asset " + req.url + ":" << error << std::endl;
+                        "sendError(res, 500, "ASSET_ERROR", " + "Failed to load asset " + req.url;
                     }
 
     } catch (const std::exception& e) {
@@ -637,16 +637,16 @@ std::future<void> getKnowledgeChunksHandler(const std::any& req, const std::any&
 
         const auto service = runtime.getService<KnowledgeService>(KnowledgeService.serviceType);
         if (!service) {
-            return sendError(res, 500, 'SERVICE_NOT_FOUND', 'KnowledgeService not found');
+            return sendError(res, 500, "SERVICE_NOT_FOUND", "KnowledgeService not found");
         }
 
         try {
             const auto documentId = req.query.documentId | std::nullopt;
-            const auto documentsOnly = req.query.documentsOnly == 'true';
+            const auto documentsOnly = req.query.documentsOnly == "true";
 
             // Always get documents first
             const auto documents = service.getMemories({;
-                tableName: 'documents',
+                tableName: "documents",
                 count: 10000, // High limit to get all documents
                 end: Date.now(),
                 });
@@ -656,9 +656,9 @@ std::future<void> getKnowledgeChunksHandler(const std::any& req, const std::any&
                     sendSuccess(res, {
                         chunks: documents,
                         stats: {
-                            documents: documents.length,
+                            documents: documents.size(),
                             fragments: 0,
-                            mode: 'documents-only',
+                            mode: "documents-only",
                             },
                             });
                             return;
@@ -667,7 +667,7 @@ std::future<void> getKnowledgeChunksHandler(const std::any& req, const std::any&
                         // If specific document requested, get ALL its fragments
                         if (documentId) {
                             const auto allFragments = service.getMemories({;
-                                tableName: 'knowledge',
+                                tableName: "knowledge",
                                 count: 100000, // Very high limit to get all fragments
                                 });
 
@@ -686,8 +686,8 @@ std::future<void> getKnowledgeChunksHandler(const std::any& req, const std::any&
                                         chunks: results,
                                         stats: {
                                             documents: specificDocument ? 1 : 0,
-                                            fragments: documentFragments.length,
-                                            mode: 'single-document',
+                                            fragments: documentFragments.size(),
+                                            mode: "single-document",
                                             documentId,
                                             },
                                             });
@@ -698,14 +698,14 @@ std::future<void> getKnowledgeChunksHandler(const std::any& req, const std::any&
                                         sendSuccess(res, {
                                             chunks: documents,
                                             stats: {
-                                                documents: documents.length,
+                                                documents: documents.size(),
                                                 fragments: 0,
-                                                mode: 'documents-only',
+                                                mode: "documents-only",
                                                 },
                                                 });
                                                 } catch (error: any) {
-                                                    std::cerr << '[Document Processor] ❌ Error retrieving chunks:' << error << std::endl;
-                                                    sendError(res, 500, 'RETRIEVAL_ERROR', 'Failed to retrieve knowledge chunks', error.message);
+                                                    std::cerr << "[Document Processor] ❌ Error retrieving chunks:" << error << std::endl;
+                                                    sendError(res, 500, "RETRIEVAL_ERROR", "Failed to retrieve knowledge chunks", error.message);
                                                 }
 
     } catch (const std::exception& e) {
@@ -720,7 +720,7 @@ std::future<void> searchKnowledgeHandler(const std::any& req, const std::any& re
 
         const auto service = runtime.getService<KnowledgeService>(KnowledgeService.serviceType);
         if (!service) {
-            return sendError(res, 500, 'SERVICE_NOT_FOUND', 'KnowledgeService not found');
+            return sendError(res, 500, "SERVICE_NOT_FOUND", "KnowledgeService not found");
         }
 
         try {
@@ -745,13 +745,13 @@ std::future<void> searchKnowledgeHandler(const std::any& req, const std::any& re
             const auto agentId = (req.query.agentId) || runtime.agentId;
 
             if (!searchText || searchText.trim().length == 0) {
-                return sendError(res, 400, 'INVALID_QUERY', 'Search query cannot be empty');
+                return sendError(res, 400, "INVALID_QUERY", "Search query cannot be empty");
             }
 
             // Log if values were clamped
             if (req.query.threshold && (parsedThreshold < 0 || parsedThreshold > 1)) {
                 logger.debug(
-                "[Document Processor] 🔍 Threshold value " + std::to_string(parsedThreshold) + " was clamped to " + std::to_string(matchThreshold);
+                "[Document Processor] 🔍 Threshold value " + parsedThreshold + " was clamped to " + matchThreshold;
                 );
             }
             if (req.query.limit && (parsedLimit < 1 || parsedLimit > 100)) {
@@ -759,7 +759,7 @@ std::future<void> searchKnowledgeHandler(const std::any& req, const std::any& re
             }
 
             logger.debug(
-            "[Document Processor] 🔍 Searching: "" + std::to_string(searchText) + "" (threshold: " + std::to_string(matchThreshold) + ", limit: " + std::to_string(limit) + ")"
+            "[Document Processor] 🔍 Searching: \"" + searchText + "\" (threshold: " + matchThreshold + ", limit: " + limit + ")"
             );
 
             // First get the embedding for the search text
@@ -769,7 +769,7 @@ std::future<void> searchKnowledgeHandler(const std::any& req, const std::any& re
 
                 // Use searchMemories directly for more control over the search
                 const auto results = runtime.searchMemories({;
-                    tableName: 'knowledge',
+                    tableName: "knowledge",
                     embedding,
                     query: searchText,
                     count: limit,
@@ -780,14 +780,14 @@ std::future<void> searchKnowledgeHandler(const std::any& req, const std::any& re
                     // Enhance results with document information
                     const auto enhancedResults = Promise.all(;
                     results.map(async (fragment) => {
-                        auto documentTitle = 'Unknown Document';
-                        auto documentFilename = 'unknown';
+                        auto documentTitle = "Unknown Document";
+                        auto documentFilename = "unknown";
 
                         // Try to get the parent document information
                         if (
                         fragment.metadata &&;
-                        typeof fragment.metadata == 'object' &&;
-                        'documentId' in fragment.metadata;
+                        typeof fragment.metadata == "object" &&;
+                        "documentId" in fragment.metadata;
                         ) {
                             const auto documentId = fragment.metadata.documentId;
                             try {
@@ -818,18 +818,18 @@ std::future<void> searchKnowledgeHandler(const std::any& req, const std::any& re
                                     );
 
                                     logger.info(
-                                    "[Document Processor] 🔍 Found " + std::to_string(enhancedResults.length) + " results for: "" + std::to_string(searchText) + """
+                                    "[Document Processor] 🔍 Found " + enhancedResults.size() + " results for: \"" + searchText + "\""
                                     );
 
                                     sendSuccess(res, {
                                         query: searchText,
                                         threshold: matchThreshold,
                                         results: enhancedResults,
-                                        count: enhancedResults.length,
+                                        count: enhancedResults.size(),
                                         });
                                         } catch (error: any) {
-                                            std::cerr << '[Document Processor] ❌ Error searching knowledge:' << error << std::endl;
-                                            sendError(res, 500, 'SEARCH_ERROR', 'Failed to search knowledge', error.message);
+                                            std::cerr << "[Document Processor] ❌ Error searching knowledge:" << error << std::endl;
+                                            sendError(res, 500, "SEARCH_ERROR", "Failed to search knowledge", error.message);
                                         }
 
     } catch (const std::exception& e) {
@@ -844,15 +844,15 @@ std::future<void> uploadKnowledgeWithMulter(const std::any& req, const std::any&
 
         const auto upload = createUploadMiddleware(runtime);
         const auto uploadArray = upload.array(;
-        'files',
-        parseInt(runtime.getSetting('KNOWLEDGE_MAX_FILES') || '10');
+        "files",
+        parseInt(runtime.getSetting("KNOWLEDGE_MAX_FILES") || "10");
         );
 
         // Apply multer middleware manually
         uploadArray(req, res, (err: any) => {
             if (err) {
-                std::cerr << '[Document Processor] ❌ File upload error:' << err << std::endl;
-                return sendError(res, 400, 'UPLOAD_ERROR', err.message);
+                std::cerr << "[Document Processor] ❌ File upload error:" << err << std::endl;
+                return sendError(res, 400, "UPLOAD_ERROR", err.message);
             }
             // If multer succeeded, call the actual handler
             uploadKnowledgeHandler(req, res, runtime);

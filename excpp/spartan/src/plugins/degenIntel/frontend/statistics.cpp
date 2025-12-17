@@ -8,10 +8,10 @@ void Statistics() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto query = useQuery({;
-        queryKey: ['statistics'],
+        queryKey: ["statistics"],
         queryFn: async () => {
-            const auto response = std::to_string(import.meta.env.VITE_API_URL) + "/statistics";
-                method: 'POST',
+            const auto response = "fetch(" + import.meta.env.VITE_API_URL + "/statistics";
+                method: "POST",
                 });
                 const auto data = response.json();
                 return data;

@@ -1,10 +1,13 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -30,7 +33,7 @@ namespace elizaos {
  * @param context - Object containing values to replace in the template
  * @returns The rendered template string
  */
-std::string renderTemplate(const std::string& template, const std::unordered_map<std::string, unknown>& context);
+std::string renderTemplate(const std::string& template, const std::unordered_map<std::string, std::any>& context);
 
 /**
  * Handle conditional blocks
@@ -55,17 +58,17 @@ std::string handleFilters(const std::string& template, const std::unordered_map<
 /**
  * Get nested value from object using dot notation
  */
-unknown getNestedValue(unknown obj, const std::string& path);
+std::any getNestedValue(const std::any& obj, const std::string& path);
 
 /**
  * Evaluate a condition in the given context
  */
-bool evaluateCondition(const std::string& condition, const std::unordered_map<std::string, unknown>& context);
+bool evaluateCondition(const std::string& condition, const std::unordered_map<std::string, std::any>& context);
 
 /**
  * Apply a filter to a value
  */
-unknown applyFilter(unknown value, const std::string& filterStr);
+std::any applyFilter(const std::any& value, const std::string& filterStr);
 
 /**
  * Escape special characters in a string for use in templates

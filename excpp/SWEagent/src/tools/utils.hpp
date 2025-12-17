@@ -1,10 +1,13 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "commands.hpp"
 
@@ -27,7 +30,7 @@ namespace elizaos {
 /**
  * Check if a value should be quoted
  */
-bool shouldQuote(unknown value, Command command);
+bool shouldQuote(const std::any& value, Command command);
 
 /**
  * Get command signature

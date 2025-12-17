@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-double validateVolumeUsd(unknown volume) {
+double validateVolumeUsd(const std::any& volume) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto num = Number(volume);
@@ -49,7 +49,7 @@ std::future<std::optional<UUID>> getUserIdFromMessage(std::optional<UUID> messag
                 // Try to get message directly if possible (more efficient than fetching 100)
                 // For now, fallback to fetching memories, but limit to smaller count
                 const auto memories = runtime.getMemories({;
-                    tableName: 'messages',
+                    tableName: "messages",
                     roomId,
                     count: 50, // Reduced from 100
                     });
@@ -67,14 +67,14 @@ std::future<bool> recordSwapPoints(ActionEventPayload payload) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
-        const auto gamificationService = payload.runtime.getService('gamification');
+        const auto gamificationService = payload.runtime.getService("gamification");
         if (!gamificationService) return false;
 
         // Handle both actionResults (array) and actionResult (single) formats
         const auto actionResults = payload.content.actionResults;
         const auto actionResultSingle = payload.content.actionResult;
         const auto actionResult: ActionResultWithValues | std::nullopt =;
-        Array.isArray(actionResults) && actionResults.length > 0;
+        Array.isArray(actionResults) && actionResults.size() > 0;
         ? (actionResults[0]);
         : actionResultSingle
         ? (actionResultSingle);
@@ -109,7 +109,7 @@ std::future<bool> recordSwapPoints(ActionEventPayload payload) {
 
             return true; // Return true to indicate we handled this action;
             } catch (error) {
-                std::cerr << { error } << '[Gamification] Error recording swap points' << std::endl;
+                std::cerr << { error } << "[Gamification] Error recording swap points" << std::endl;
                 return false;
             }
 
@@ -119,14 +119,14 @@ std::future<bool> recordBridgePoints(ActionEventPayload payload) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
-        const auto gamificationService = payload.runtime.getService('gamification');
+        const auto gamificationService = payload.runtime.getService("gamification");
         if (!gamificationService) return false;
 
         // Handle both actionResults (array) and actionResult (single) formats
         const auto actionResults = payload.content.actionResults;
         const auto actionResultSingle = payload.content.actionResult;
         const auto actionResult: ActionResultWithValues | std::nullopt =;
-        Array.isArray(actionResults) && actionResults.length > 0;
+        Array.isArray(actionResults) && actionResults.size() > 0;
         ? (actionResults[0]);
         : actionResultSingle
         ? (actionResultSingle);
@@ -157,7 +157,7 @@ std::future<bool> recordBridgePoints(ActionEventPayload payload) {
 
             return true; // Return true to indicate we handled this action;
             } catch (error) {
-                std::cerr << { error } << '[Gamification] Error recording bridge points' << std::endl;
+                std::cerr << { error } << "[Gamification] Error recording bridge points" << std::endl;
                 return false;
             }
 
@@ -167,14 +167,14 @@ std::future<bool> recordTransferPoints(ActionEventPayload payload) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
-        const auto gamificationService = payload.runtime.getService('gamification');
+        const auto gamificationService = payload.runtime.getService("gamification");
         if (!gamificationService) return false;
 
         // Handle both actionResults (array) and actionResult (single) formats
         const auto actionResults = payload.content.actionResults;
         const auto actionResultSingle = payload.content.actionResult;
         const auto actionResult: ActionResultWithValues | std::nullopt =;
-        Array.isArray(actionResults) && actionResults.length > 0;
+        Array.isArray(actionResults) && actionResults.size() > 0;
         ? (actionResults[0]);
         : actionResultSingle
         ? (actionResultSingle);
@@ -205,7 +205,7 @@ std::future<bool> recordTransferPoints(ActionEventPayload payload) {
 
             return true; // Return true to indicate we handled this action;
             } catch (error) {
-                std::cerr << { error } << '[Gamification] Error recording transfer points' << std::endl;
+                std::cerr << { error } << "[Gamification] Error recording transfer points" << std::endl;
                 return false;
             }
 
@@ -238,18 +238,18 @@ std::future<void> recordChatPoints(RunEventPayload payload) {
         if (payload.status != 'completed') return;
 
         // Get message text from the message itself
-        auto input = '';
+        auto input = "";
         try {
             if (payload.messageId) {
                 // Try to get message directly if possible (more efficient)
                 // For now, use smaller count to reduce overhead
                 const auto memories = payload.runtime.getMemories({;
-                    tableName: 'messages',
+                    tableName: "messages",
                     roomId: payload.roomId,
                     count: 50, // Reduced from 100
                     });
                     const auto message = memories.find((m) => m.id == payload.messageId);
-                    input = message.content.text || '';
+                    input = message.content.text || "";
                 }
                 } catch (error) {
                     // If we can't get the message, skip
@@ -257,7 +257,7 @@ std::future<void> recordChatPoints(RunEventPayload payload) {
                     return;
                 }
 
-                const auto messageLength = input.length;
+                const auto messageLength = input.size();
                 const auto points = calculateChatPoints(messageLength);
 
                 // Skip if message is too short or no points
@@ -272,12 +272,12 @@ std::future<void> recordChatPoints(RunEventPayload payload) {
                         score: qualityResult.score,
                         messagePreview: input.substring(0, 50),
                         },
-                        '[Gamification] Message failed content quality check, no points awarded';
+                        "[Gamification] Message failed content quality check, no points awarded";
                         );
                         return;
                     }
 
-                    const auto gamificationService = payload.runtime.getService('gamification');
+                    const auto gamificationService = payload.runtime.getService("gamification");
                     if (!gamificationService) return;
 
                     // Resolve actual user ID (handles agent-scoped entities)
@@ -296,7 +296,7 @@ std::future<void> recordChatPoints(RunEventPayload payload) {
                             sourceEventId: payload.messageId,
                             });
                             } catch (error) {
-                                std::cerr << { error } << '[Gamification] Error recording chat points' << std::endl;
+                                std::cerr << { error } << "[Gamification] Error recording chat points" << std::endl;
                             }
 
 }
@@ -305,14 +305,14 @@ std::future<void> recordAgentActionPoints(ActionEventPayload payload) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
-        const auto gamificationService = payload.runtime.getService('gamification');
+        const auto gamificationService = payload.runtime.getService("gamification");
         if (!gamificationService) return;
 
         // Handle both actionResults (array) and actionResult (single) formats
         const auto actionResults = payload.content.actionResults;
         const auto actionResultSingle = payload.content.actionResult;
         const auto actionResult: ActionResultWithValues | std::nullopt =;
-        Array.isArray(actionResults) && actionResults.length > 0;
+        Array.isArray(actionResults) && actionResults.size() > 0;
         ? (actionResults[0]);
         : actionResultSingle
         ? (actionResultSingle);
@@ -326,7 +326,7 @@ std::future<void> recordAgentActionPoints(ActionEventPayload payload) {
         const auto userId = getUserIdFromMessage(payload.runtime, payload.messageId, payload.roomId, payload.entityId);
         if (!userId) return;
 
-        const auto actionName = payload.content.actions.[0] || 'unknown';
+        const auto actionName = payload.content.actions.[0] || "unknown";
 
         gamificationService.recordEvent({
             userId,
@@ -338,7 +338,7 @@ std::future<void> recordAgentActionPoints(ActionEventPayload payload) {
                 sourceEventId: payload.messageId,
                 });
                 } catch (error) {
-                    std::cerr << { error } << '[Gamification] Error recording agent action points' << std::endl;
+                    std::cerr << { error } << "[Gamification] Error recording agent action points" << std::endl;
                 }
 
 }
@@ -351,7 +351,7 @@ std::future<void> recordAccountCreationPoints(EntityPayload payload) {
         const auto userId = getUserIdFromMessage(payload.runtime, std::nullopt, std::nullopt, payload.entityId);
         if (!userId) return;
 
-        const auto gamificationService = payload.runtime.getService('gamification');
+        const auto gamificationService = payload.runtime.getService("gamification");
         if (gamificationService) {
             gamificationService.recordEvent({
                 userId,
@@ -361,7 +361,7 @@ std::future<void> recordAccountCreationPoints(EntityPayload payload) {
             }
 
             // Process referral if present
-            const auto referralService = payload.runtime.getService('referral');
+            const auto referralService = payload.runtime.getService("referral");
             if (referralService) {
                 try {
                     // Use the actual user entity for referral processing
@@ -369,15 +369,15 @@ std::future<void> recordAccountCreationPoints(EntityPayload payload) {
                     const auto referredBy = entity.metadata.referredBy;
 
                     if (referredBy && typeof referredBy == 'string') {
-                        std::cout << "[Gamification] Processing referral code " + std::to_string(referredBy) + " for user " + std::to_string(userId) << std::endl;
+                        std::cout << "[Gamification] Processing referral code " + referredBy + " for user " + userId << std::endl;
                         referralService.processReferralSignup(userId, referredBy);
                     }
                     } catch (err) {
-                        std::cerr << { error = err } << '[Gamification] Error processing referral in account creation' << std::endl;
+                        std::cerr << { error = err } << "[Gamification] Error processing referral in account creation" << std::endl;
                     }
                 }
                 } catch (error) {
-                    std::cerr << { error } << '[Gamification] Error recording account creation points' << std::endl;
+                    std::cerr << { error } << "[Gamification] Error recording account creation points" << std::endl;
                 }
 
 }

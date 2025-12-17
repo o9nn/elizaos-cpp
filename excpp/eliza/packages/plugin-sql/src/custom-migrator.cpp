@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::string extractErrorMessage(unknown error) {
+std::string extractErrorMessage(const std::any& error) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (error instanceof Error && 'cause' in error && error.cause) {
@@ -12,11 +12,11 @@ std::string extractErrorMessage(unknown error) {
         } else if (true /* instanceof check */) {
             return error.message;
         }
-        return 'Unknown error';
+        return "Unknown error";
 
 }
 
-void extractErrorDetails(unknown error) {
+void extractErrorDetails(const std::any& error) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     message: string; stack?: string
 }
@@ -30,7 +30,7 @@ std::vector<std::string> topologicalSort(const std::unordered_map<std::string, T
 
     function visit(tableName: string) {
         if (visiting.has(tableName)) {
-            std::cout << "Circular dependency detected involving table: " + std::to_string(tableName) << std::endl;
+            std::cout << "Circular dependency detected involving table: " + tableName << std::endl;
             return;
         }
 
@@ -52,7 +52,7 @@ std::vector<std::string> topologicalSort(const std::unordered_map<std::string, T
 
         visiting.delete(tableName);
         visited.add(tableName);
-        sorted.push(tableName);
+        sorted.push_back(tableName);
     }
 
     // Visit all tables
@@ -72,13 +72,13 @@ std::future<void> runPluginMigrations(DrizzleDB db, const std::string& pluginNam
 
         // Test database connection first
         try {
-            db.execute(sql.raw('SELECT 1'));
+            db.execute(sql.raw("SELECT 1"));
             logger.debug('[CUSTOM MIGRATOR] Database connection verified');
             } catch (error) {
                 const auto errorDetails = extractErrorDetails(error);
-                std::cerr << "[CUSTOM MIGRATOR] Database connection failed: " + std::to_string(errorDetails.message) << std::endl;
+                std::cerr << "[CUSTOM MIGRATOR] Database connection failed: " + errorDetails.message << std::endl;
                 if (errorDetails.stack) {
-                    std::cerr << "[CUSTOM MIGRATOR] Stack trace: " + std::to_string(errorDetails.stack) << std::endl;
+                    std::cerr << "[CUSTOM MIGRATOR] Stack trace: " + errorDetails.stack << std::endl;
                 }
                 throw std::runtime_error(`Database connection failed: ${errorDetails.message}`);
             }
@@ -87,7 +87,7 @@ std::future<void> runPluginMigrations(DrizzleDB db, const std::string& pluginNam
             const auto introspector = new DrizzleSchemaIntrospector();
             const auto extensionManager = new ExtensionManager(db);
 
-            extensionManager.installRequiredExtensions(['vector', 'fuzzystrmatch']);
+            extensionManager.installRequiredExtensions(["vector", "fuzzystrmatch"]);
             const auto schemaName = namespaceManager.getPluginSchema(pluginName);
             namespaceManager.ensureNamespace(schemaName);
             const auto existingTables = namespaceManager.introspectExistingTables(schemaName);
@@ -99,10 +99,10 @@ std::future<void> runPluginMigrations(DrizzleDB db, const std::string& pluginNam
             const auto tableEntries = Object.entries(schema).filter(([key, v]) => {;
                 const auto isDrizzleTable =;
                 v &&;
-                (((v)._ && typeof (v)._.name == 'string') ||;
-                (typeof v == 'object' &&;
+                (((v)._ && typeof (v)._.name == "string") ||;
+                (typeof v == "object" &&;
                 v != nullptr &&;
-                ('tableName' in v || 'dbName' in v || key.toLowerCase().includes('table'))));
+                ("tableName" in v || "dbName" in v || key.toLowerCase().includes("table"))));
                 return isDrizzleTable;
                 });
 
@@ -133,7 +133,7 @@ std::future<void> runPluginMigrations(DrizzleDB db, const std::string& pluginNam
                         const auto tableDef = tableDefinitions.get(tableName);
                         if (!tableDef) continue;
 
-                        const auto tableExists = existingTables.includes(tableDef.name);
+                        const auto tableExists = (std::find(existingTables.begin(), existingTables.end(), tableDef.name) != existingTables.end());
                         logger.debug(`[CUSTOM MIGRATOR] Table ${tableDef.name} exists: ${tableExists}`);
 
                         if (!tableExists) {
@@ -143,10 +143,10 @@ std::future<void> runPluginMigrations(DrizzleDB db, const std::string& pluginNam
                                 } catch (error) {
                                     const auto errorDetails = extractErrorDetails(error);
                                     logger.error(
-                                    "[CUSTOM MIGRATOR] Failed to create table " + std::to_string(tableDef.name) + ": " + std::to_string(errorDetails.message)
+                                    "[CUSTOM MIGRATOR] Failed to create table " + tableDef.name + ": " + errorDetails.message
                                     );
                                     if (errorDetails.stack) {
-                                        std::cerr << "[CUSTOM MIGRATOR] Table creation stack trace: " + std::to_string(errorDetails.stack) << std::endl;
+                                        std::cerr << "[CUSTOM MIGRATOR] Table creation stack trace: " + errorDetails.stack << std::endl;
                                     }
                                     throw std::runtime_error(`Failed to create table ${tableDef.name}: ${errorDetails.message}`);
                                 }
@@ -164,8 +164,8 @@ std::future<void> runPluginMigrations(DrizzleDB db, const std::string& pluginNam
                                 // Add constraints if table has foreign keys OR check constraints
                                 if (tableDef.foreignKeys.length > 0 || tableDef.checkConstraints.length > 0) {
                                     logger.debug(`[CUSTOM MIGRATOR] Adding constraints for table: ${tableDef.name}`, {
-                                        foreignKeys: tableDef.foreignKeys.length,
-                                        checkConstraints: tableDef.checkConstraints.length,
+                                        foreignKeys: tableDef.foreignKeys.size(),
+                                        checkConstraints: tableDef.checkConstraints.size(),
                                         });
                                         namespaceManager.addConstraints(tableDef, schemaName);
                                     }
@@ -175,10 +175,10 @@ std::future<void> runPluginMigrations(DrizzleDB db, const std::string& pluginNam
                                 } catch (error) {
                                     const auto errorDetails = extractErrorDetails(error);
                                     logger.error(
-                                    "[CUSTOM MIGRATOR] Migration failed for plugin " + std::to_string(pluginName) + ": " + std::to_string(errorDetails.message)
+                                    "[CUSTOM MIGRATOR] Migration failed for plugin " + pluginName + ": " + errorDetails.message
                                     );
                                     if (errorDetails.stack) {
-                                        std::cerr << "[CUSTOM MIGRATOR] Migration stack trace: " + std::to_string(errorDetails.stack) << std::endl;
+                                        std::cerr << "[CUSTOM MIGRATOR] Migration stack trace: " + errorDetails.stack << std::endl;
                                     }
                                     throw std::runtime_error(`Migration failed for plugin ${pluginName}: ${errorDetails.message}`);
                                 }

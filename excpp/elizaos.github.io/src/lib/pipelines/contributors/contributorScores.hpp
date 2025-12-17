@@ -1,14 +1,17 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include "..scoring/scoreCalculator.hpp"
-#include ".queryHelpers.hpp"
-#include ".types.hpp"
 #include "context.hpp"
+#include "queryHelpers.hpp"
+#include "scoring/scoreCalculator.hpp"
+#include "types.hpp"
 
 namespace elizaos {
 

@@ -18,7 +18,7 @@ std::future<void> formatRelationships(IAgentRuntime runtime, const std::vector<R
     .slice(0, 30); // Get top 30;
 
     if (sortedRelationships.length == 0) {
-        return '';
+        return "";
     }
 
     // Deduplicate target entity IDs to avoid redundant fetches
@@ -41,9 +41,9 @@ std::future<void> formatRelationships(IAgentRuntime runtime, const std::vector<R
             return JSON.stringify(;
             Object.entries(metadata);
             .map(;
-            std::to_string(key) + ": " + std::to_string(typeof value == 'object' ? JSON.stringify(value) : value)
+            "([key, value]) => " + key + ": " + std::to_string(typeof value == "object" ? /* JSON.stringify */ std::string(value) : value)
             );
-            .join('\n');
+            .join("\n");
             );
             };
 
@@ -57,14 +57,14 @@ std::future<void> formatRelationships(IAgentRuntime runtime, const std::vector<R
                     return nullptr;
                 }
 
-                const auto names = entity.names.join(' aka ');
-                return std::to_string(names) + "\n" + std::to_string();
-                    rel.tags ? rel.tags.join(', ') : ''
-                    }\n${formatMetadata(entity.metadata)}\n`;
+                const auto names = entity.names.join(" aka ");
+                return names + "\n" + std::to_string();
+                    rel.tags ? rel.tags.join(", ") : ""
+                    "}\n${formatMetadata(entity.metadata)}\n";
                     });
                     .filter(Boolean);
 
-                    return formattedRelationships.join('\n');
+                    return formattedRelationships.join("\n");
 
 }
 

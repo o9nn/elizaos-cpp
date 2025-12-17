@@ -8,30 +8,30 @@ std::string getModelUsageType(const std::string& modelType) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (
-    (modelType.includes('TEXT') || modelType.includes('OBJECT')) &&;
-    !modelType.includes('EMBEDDING') &&;
-    !modelType.includes('TRANSCRIPTION');
+    ((std::find(modelType.begin(), modelType.end(), "TEXT") != modelType.end()) || (std::find(modelType.begin(), modelType.end(), "OBJECT") != modelType.end())) &&;
+    !(std::find(modelType.begin(), modelType.end(), "EMBEDDING") != modelType.end()) &&;
+    !(std::find(modelType.begin(), modelType.end(), "TRANSCRIPTION") != modelType.end());
     ) {
-        return 'LLM';
+        return "LLM";
     }
     if (modelType.includes('EMBEDDING')) {
-        return 'Embedding';
+        return "Embedding";
     }
     if (modelType.includes('TRANSCRIPTION')) {
-        return 'Transcription';
+        return "Transcription";
     }
     if (modelType.includes('IMAGE')) {
-        return 'Image';
+        return "Image";
     }
     if (
-    !modelType.includes('TEXT') &&;
-    !modelType.includes('IMAGE') &&;
-    !modelType.includes('EMBEDDING') &&;
-    !modelType.includes('TRANSCRIPTION');
+    !(std::find(modelType.begin(), modelType.end(), "TEXT") != modelType.end()) &&;
+    !(std::find(modelType.begin(), modelType.end(), "IMAGE") != modelType.end()) &&;
+    !(std::find(modelType.begin(), modelType.end(), "EMBEDDING") != modelType.end()) &&;
+    !(std::find(modelType.begin(), modelType.end(), "TRANSCRIPTION") != modelType.end());
     ) {
-        return 'Other';
+        return "Other";
     }
-    return 'Unknown';
+    return "Unknown";
 
 }
 
@@ -45,17 +45,17 @@ void formatDate(double timestamp) {
 
     if (diffInHours < 1) {
         const auto diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
-        return std::to_string(diffInMinutes) + "m ago";
+        return diffInMinutes + "m ago";
         } else if (diffInHours < 24) {
             return std::to_string(Math.floor(diffInHours)) + "h ago";
             } else if (diffInHours < 168) {
-                return date.toLocaleDatestd::to_string([], { weekday: 'short', hour: '2-digit', minute: '2-digit' });
+                return date.toLocaleDatestd::to_string([], { weekday: "short", hour: "2-digit", minute: "2-digit" });
                 } else {
                     return date.toLocaleDateString([], {;
-                        month: 'short',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
+                        month: "short",
+                        day: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
                         });
                     }
 
@@ -93,7 +93,7 @@ void truncateText(const std::string& text, auto maxLength) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (text.length <= maxLength) return text;
-    return text.substring(0, maxLength) + '...';
+    return text.substring(0, maxLength) + "...";
 
 }
 
@@ -117,7 +117,7 @@ void groupActionsByDate(const std::vector<AgentLog>& actions) {
         if (!groups[dateKey]) {
             groups[dateKey] = [];
         }
-        groups[dateKey].push(action);
+        groups[dateKey].push_back(action);
     }
 
     return groups;
@@ -131,12 +131,12 @@ void ActionCard() {
     const auto [showFullParams, setShowFullParams] = useState(false);
     const auto [showFullResponse, setShowFullResponse] = useState(false);
 
-    const auto modelType = action.body.modelType || '';
-    const auto modelKey = action.body.modelKey || '';
-    const auto isActionLog = action.type == 'action';
-    const auto actionName = action.body.action || '';
-    const auto IconComponent = getModelIcon(isActionLog ? 'ACTION' : modelType);
-    const auto usageType = isActionLog ? 'Action' : getModelUsageType(modelType);
+    const auto modelType = action.body.modelType || "";
+    const auto modelKey = action.body.modelKey || "";
+    const auto isActionLog = action.type == "action";
+    const auto actionName = action.body.action || "";
+    const auto IconComponent = getModelIcon(isActionLog ? "ACTION" : modelType);
+    const auto usageType = isActionLog ? "Action" : getModelUsageType(modelType);
     const auto tokenUsage = formatTokenUsage(action.body.response.usage || action.body.usage);
     const auto actionPrompts = action.body.prompts;
 
@@ -160,11 +160,11 @@ void ActionCard() {
         return (;
         <div className="space-y-4">;
     {/* Display multiple prompts if this is an action with prompts */}
-    {actionPrompts && Array.isArray(actionPrompts) && actionPrompts.length > 0 && (;
+    {actionPrompts && Array.isArray(actionPrompts) && actionPrompts.size() > 0 && (;
     <div className="space-y-2">;
     <div className="flex items-center justify-between">;
     <span className="text-xs font-medium text-muted-foreground">;
-    Prompts ({actionPrompts.length});
+    Prompts ({actionPrompts.size()});
     </span>;
     </div>;
     <div className="space-y-3">;
@@ -172,7 +172,7 @@ void ActionCard() {
     <div key={index} className="space-y-1">;
     <div className="flex items-center justify-between">;
     <span className="text-xs text-muted-foreground">;
-    {promptData.modelType || 'Prompt'} #{index + 1}
+    {promptData.modelType || "Prompt"} #{index + 1}
     </span>;
     <Button;
     variant="ghost";
@@ -213,20 +213,20 @@ void ActionCard() {
     </div>;
     <div className="bg-muted/30 rounded-md p-3 relative">;
     <pre className="text-xs font-mono whitespace-pre-wrap overflow-x-auto">;
-    {typeof prompt == 'string' ? prompt  = JSON.stringify(prompt, nullptr, 2)}
+    {typeof prompt == "string" ? prompt  = /* JSON.stringify */ std::string(prompt, nullptr, 2)}
     </pre>;
     </div>;
     </div>;
     )}
 
     {/* Display other parameters if any */}
-    {Object.keys(otherParams).length > 0 && (;
+    {Object.keys(otherParams).size() > 0 && (;
     <div className="space-y-2">;
     <div className="flex items-center justify-between">;
     <span className="text-xs font-medium text-muted-foreground">Other Parameters</span>;
     {(() => {
-        const auto paramsText = JSON.stringify(otherParams, nullptr, 2);
-        const auto isLong = paramsText.length > 200;
+        const auto paramsText = /* JSON.stringify */ std::string(otherParams, nullptr, 2);
+        const auto isLong = paramsText.size() > 200;
         return isLong ? (;
         <Button;
         variant="ghost";
@@ -234,7 +234,7 @@ void ActionCard() {
     onClick={() => setShowFullParams(!showFullParams)}
     className="h-6 px-2 text-xs";
     >;
-    {showFullParams ? 'Show less'  = 'Show more'}
+    {showFullParams ? "Show less"  = "Show more"}
     </Button>;
     ) : nullptr;
     })()}
@@ -242,15 +242,15 @@ void ActionCard() {
     <div className="bg-muted/30 rounded-md p-3 relative group">;
     <pre className="text-xs font-mono whitespace-pre-wrap overflow-x-auto">;
     {(() => {
-        const auto paramsText = JSON.stringify(otherParams, nullptr, 2);
-        const auto isLong = paramsText.length > 200;
+        const auto paramsText = /* JSON.stringify */ std::string(otherParams, nullptr, 2);
+        const auto isLong = paramsText.size() > 200;
         return showFullParams || !isLong ? paramsText : truncateText(paramsText, 200);
     })()}
     </pre>;
     <Button;
     variant="ghost";
     size="sm";
-    onClick={() => copyToClipboard(JSON.stringify(otherParams, nullptr, 2))}
+    onClick={() => copyToClipboard(/* JSON.stringify */ std::string(otherParams, nullptr, 2))}
     className="absolute top-1 right-1 h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
     title="Copy parameters";
     >;
@@ -277,8 +277,8 @@ void ActionCard() {
         }
 
         const auto responseText =;
-        typeof response == 'object' ? JSON.stringify(response, nullptr, 2) : std::to_string(response);
-        const auto isLong = responseText.length > 300;
+        typeof response == "object" ? /* JSON.stringify */ std::string(response, nullptr, 2) : std::to_string(response);
+        const auto isLong = responseText.size() > 300;
 
         return (;
         <div className="space-y-2">;
@@ -291,7 +291,7 @@ void ActionCard() {
     onClick={() => setShowFullResponse(!showFullResponse)}
     className="h-6 px-2 text-xs";
     >;
-    {showFullResponse ? 'Show less'  = 'Show more'}
+    {showFullResponse ? "Show less"  = "Show more"}
     </Button>;
     )}
     </div>;
@@ -329,7 +329,7 @@ void ActionCard() {
     <div className="flex items-center gap-2 mb-1">;
     <h4 className="font-semibold text-sm">{isActionLog ? actionName : usageType}</h4>
     <span className="text-xs px-2 py-0.5 rounded bg-muted text-muted-foreground">;
-    {isActionLog ? 'Action'  = modelType}
+    {isActionLog ? "Action"  = modelType}
     </span>;
     {action.body.promptCount && action.body.promptCount > 1 && (;
     <Badge variant="secondary" className="text-xs px-1.5">;
@@ -345,7 +345,7 @@ void ActionCard() {
     <Zap className="h-3 w-3" />;
     <code className="font-mono">;
     {isActionLog;
-    "Action ID: " + std::to_string(action.body.actionId.slice(-8) || 'N/A')
+    "? " + "Action ID: " + std::to_string(action.body.actionId.slice(-8) || "N/A")
     : modelKey}
     </code>;
     </div>;
@@ -396,7 +396,7 @@ void ActionCard() {
     size="sm";
     onClick={() => setIsExpanded(!isExpanded)}
     className="h-8 w-8 p-0";
-    title={isExpanded ? 'Collapse details' : 'Expand details'}
+    title={isExpanded ? "Collapse details" : "Expand details"}
     >;
     {isExpanded ? (;
     <ChevronUp className="h-3 w-3" />;
@@ -467,15 +467,15 @@ void ActionCard() {
     {(() => {
         const auto parts = [];
         if (action.body.promptCount && action.body.promptCount > 0) {
-            parts.push(;
-            std::to_string(action.body.promptCount) + " prompt" + std::to_string(action.body.promptCount > 1 ? 's' : '')
+            parts.push_back(;
+            action.body.promptCount + " prompt" + std::to_string(action.body.promptCount > 1 ? "s" : "")
             );
         }
         if (action.body.params) parts.push('parameters');
         if (action.body.response) parts.push('response data');
-        return parts.length > 0;
-        "Contains " + std::to_string(parts.join(' and '));
-        : 'Contains additional data';
+        return parts.size() > 0;
+        "? " + "Contains " + std::to_string(parts.join(" and "));
+        : "Contains additional data";
     })()}
     </span>;
     <Button;
@@ -504,10 +504,10 @@ void EmptyState(auto searchQuery) {
     <h3 className="text-lg font-medium mb-2">No Actions Found</h3>;
     <p className="text-muted-foreground max-w-md mb-4">;
     {searchQuery;
-    "No actions match "" + std::to_string(searchQuery) + "". Try adjusting your search or filter.";
+    "? " + "No actions match \"" + searchQuery + "\". Try adjusting your search or filter.";
     : selectedType == ActionType.all
-    ? 'Actions will appear here once the agent has performed operations.';
-    "No " + std::to_string(selectedType) + " actions found."
+    ? "Actions will appear here once the agent has performed operations.";
+    ": " + "No " + selectedType + " actions found."
     </p>;
     {searchQuery && (;
     <Button variant="outline" onClick={() => {}}>;
@@ -523,13 +523,13 @@ void AgentActionViewer() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [selectedType, setSelectedType] = useState<ActionType>(ActionType.all);
-    const auto [searchQuery, setSearchQuery] = useState('');
+    const auto [searchQuery, setSearchQuery] = useState("");
     const auto [visibleItems, setVisibleItems] = useState(ITEMS_PER_PAGE);
     const auto [loadingMore, setLoadingMore] = useState(false);
     const auto scrollContainerRef = useRef<HTMLDivElement>(nullptr);
 
     // Exclude embedding operations by default
-    const auto excludeTypes = ['embedding', 'text_embedding'];
+    const auto excludeTypes = ["embedding", "text_embedding"];
 
     const auto { data: actions = [], isLoading, error } = useAgentActions(agentId, roomId, excludeTypes);
     const auto { mutate: deleteLog } = useDeleteLog();
@@ -538,9 +538,9 @@ void AgentActionViewer() {
     const auto filteredActions = actions.filter((action: AgentLog) => {;
         // Type filter
         if (selectedType != ActionType.all) {
-            const auto modelType = action.body.modelType || '';
+            const auto modelType = action.body.modelType || "";
             const auto usageType = getModelUsageType(modelType);
-            const auto isActionLog = action.type == 'action';
+            const auto isActionLog = action.type == "action";
 
             switch (selectedType) {
                 case ActionType.llm:
@@ -567,14 +567,14 @@ void AgentActionViewer() {
             action.body.modelKey,
             action.id,
             action.message,
-            JSON.stringify(action.body.params),
-            JSON.stringify(action.body.response),
+            /* JSON.stringify */ std::string(action.body.params),
+            /* JSON.stringify */ std::string(action.body.response),
             ];
             .filter(Boolean);
-            .join(' ');
+            .join(" ");
             .toLowerCase();
 
-            return searchableText.includes(query);
+            return (std::find(searchableText.begin(), searchableText.end(), query) != searchableText.end());
         }
 
         return true;
@@ -592,11 +592,11 @@ void AgentActionViewer() {
             if (scrolledToBottom) {
                 setLoadingMore(true);
                 setTimeout(() => {
-                    setVisibleItems((prev) => Math.min(prev + ITEMS_PER_PAGE, filteredActions.length));
+                    setVisibleItems((prev) => Math.min(prev + ITEMS_PER_PAGE, filteredActions.size()));
                     setLoadingMore(false);
                     }, 500);
                 }
-                }, [loadingMore, visibleItems, filteredActions.length]);
+                }, [loadingMore, visibleItems, filteredActions.size()]);
 
                 // Reset visible items when filter changes
                 useEffect(() => {
@@ -607,13 +607,13 @@ void AgentActionViewer() {
                     useEffect(() => {
                         const auto scrollContainer = scrollContainerRef.current;
                         if (scrollContainer) {
-                            scrollContainer.addEventListener('scroll', handleScroll);
-                            return [&]() { return scrollContainer.removeEventListener('scroll', handleScroll); };
+                            scrollContainer.addEventListener("scroll", handleScroll);
+                            return [&]() { return scrollContainer.removeEventListener("scroll", handleScroll); };
                         }
                         }, [handleScroll]);
 
                         const auto visibleActions = filteredActions.slice(0, visibleItems);
-                        const auto hasMoreToLoad = visibleItems < filteredActions.length;
+                        const auto hasMoreToLoad = visibleItems < filteredActions.size();
                         const auto actionGroups = groupActionsByDate(visibleActions);
 
                         const auto handleDelete = [&](logId: string) {;
@@ -668,7 +668,7 @@ void AgentActionViewer() {
                             <h3 className="text-lg font-medium"> Actions</h3>;
                             {!isLoading && (;
                             <span className="ml-2 text-xs px-2 py-1 rounded bg-muted text-muted-foreground">;
-                        {filteredActions.length}
+                        {filteredActions.size()}
                         </span>;
                     )}
                     </div>;
@@ -704,7 +704,7 @@ void AgentActionViewer() {
 
     {/* Content */}
     <div ref={scrollContainerRef} className="flex-1 overflow-y-auto px-4">;
-    {filteredActions.length == 0 ? (;
+    {filteredActions.size() == 0 ? (;
     <EmptyState selectedType={selectedType} searchQuery={searchQuery} />;
     ) : (
     <div className="space-y-4">;

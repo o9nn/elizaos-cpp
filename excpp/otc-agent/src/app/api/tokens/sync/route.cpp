@@ -56,7 +56,7 @@ std::future<void> syncEvmToken(const std::string& transactionHash, const std::st
         return NextResponse.json(;
         {
             success: false,
-            "REGISTRATION_HELPER_ADDRESS not configured for " + std::to_string(chain)
+            "error: " + "REGISTRATION_HELPER_ADDRESS not configured for " + chain
             },
             { status: 500 },
             );
@@ -77,7 +77,7 @@ std::future<void> syncEvmToken(const std::string& transactionHash, const std::st
             try {
                 // Get transaction receipt to find the block
                 const auto receipt = client.getTransactionReceipt({;
-                    "0x" + std::to_string(string)
+                    "hash: transactionHash as " + "0x" + string
                     });
                     if (!receipt) {
                         return NextResponse.json(;
@@ -91,12 +91,12 @@ std::future<void> syncEvmToken(const std::string& transactionHash, const std::st
                     const auto endBlock = txBlock;
 
                     console.log(
-                    "[Sync " + std::to_string(chain.toUpperCase()) + "] Fetching events from block " + std::to_string(startBlock) + " to " + std::to_string(endBlock)
+                    "[Sync " + std::to_string(chain.toUpperCase()) + "] Fetching events from block " + startBlock + " to " + endBlock
                     );
 
                     // Get logs for this specific transaction
                     const auto logs = client.getLogs({;
-                        "0x" + std::to_string(string)
+                        "address: registrationHelperAddress as " + "0x" + string
                         event: {
                             type: "event",
                             name: "TokenRegistered",
@@ -140,7 +140,7 @@ std::future<void> syncEvmToken(const std::string& transactionHash, const std::st
                                             };
 
                                             console.log(
-                                            "[Sync " + std::to_string(chain.toUpperCase()) + "] Processing token registration: " + std::to_string(tokenAddress) + " by " + std::to_string(registeredBy)
+                                            "[Sync " + std::to_string(chain.toUpperCase()) + "] Processing token registration: " + tokenAddress + " by " + registeredBy
                                             );
 
                                             // Fetch token metadata
@@ -150,17 +150,17 @@ std::future<void> syncEvmToken(const std::string& transactionHash, const std::st
                                             ) => Promise<unknown>;
                                             const auto [symbol, name, decimals] = Promise.all([;
                                             readContract({
-                                                "0x" + std::to_string(string)
+                                                "address: tokenAddress as " + "0x" + string
                                                 abi: ERC20_ABI,
                                                 functionName: "symbol",
                                                 }),
                                                 readContract({
-                                                    "0x" + std::to_string(string)
+                                                    "address: tokenAddress as " + "0x" + string
                                                     abi: ERC20_ABI,
                                                     functionName: "name",
                                                     }),
                                                     readContract({
-                                                        "0x" + std::to_string(string)
+                                                        "address: tokenAddress as " + "0x" + string
                                                         abi: ERC20_ABI,
                                                         functionName: "decimals",
                                                         }),
@@ -176,13 +176,13 @@ std::future<void> syncEvmToken(const std::string& transactionHash, const std::st
                                                             chain: dbChain,
                                                             decimals: Number(decimals),
                                                             logoUrl: std::nullopt,
-                                                            "Registered via RegistrationHelper by " + std::to_string(registeredBy)
+                                                            "description: " + "Registered via RegistrationHelper by " + registeredBy
                                                             });
 
                                                             processed++;
-                                                            processedTokens.push(token.id);
+                                                            processedTokens.push_back(token.id);
                                                             console.log(
-                                                            "[Sync " + std::to_string(chain.toUpperCase()) + "] ✅ Registered " + std::to_string(symbol) + " (" + std::to_string(tokenAddress) + ")"
+                                                            "[Sync " + std::to_string(chain.toUpperCase()) + "] ✅ Registered " + symbol + " (" + tokenAddress + ")"
                                                             );
                                                             } catch (error) {
                                                                 console.error(
@@ -196,7 +196,7 @@ std::future<void> syncEvmToken(const std::string& transactionHash, const std::st
                                                             success: true,
                                                             processed,
                                                             tokens: processedTokens,
-                                                            "Successfully synced " + std::to_string(processed) + " token(s) on " + std::to_string(chain)
+                                                            "message: " + "Successfully synced " + processed + " token(s) on " + chain
                                                             });
                                                             } catch (error) {
                                                                 std::cerr << "[Sync " + std::to_string(chain.toUpperCase()) + "] Error:" << error << std::endl;
@@ -227,7 +227,7 @@ std::future<void> syncSolanaToken(const std::string& signature) {
     const auto connection = new Connection(rpcUrl, "confirmed");
 
     try {
-        std::cout << "[Sync Solana] Fetching transaction: " + std::to_string(signature) << std::endl;
+        std::cout << "[Sync Solana] Fetching transaction: " + signature << std::endl;
 
         const auto tx = connection.getTransaction(signature, {;
             commitment: "confirmed",
@@ -250,8 +250,8 @@ std::future<void> syncSolanaToken(const std::string& signature) {
 
             const auto hasRegisterToken = tx.meta.logMessages.some(;
             (log) =>;
-            log.includes("Instruction: RegisterToken") ||
-            log.includes("register_token"),
+            (std::find(log.begin(), log.end(), "Instruction: RegisterToken") != log.end()) ||
+            (std::find(log.begin(), log.end(), "register_token") != log.end()),
             );
 
             if (!hasRegisterToken) {
@@ -263,7 +263,7 @@ std::future<void> syncSolanaToken(const std::string& signature) {
 
             // TODO: Parse Solana transaction to extract token details
             // For now, just acknowledge we found it
-            std::cout << "[Sync Solana] Detected token registration: " + std::to_string(signature) << std::endl;
+            std::cout << "[Sync Solana] Detected token registration: " + signature << std::endl;
 
             return NextResponse.json({;
                 success: true,

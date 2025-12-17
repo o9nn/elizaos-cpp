@@ -13,7 +13,7 @@ std::string normalizeTokenId(const std::string& tokenId) {
     // Solana addresses are case-sensitive (Base58), preserve them
     if (chain == "solana") return tokenId;
     // EVM addresses are case-insensitive, lowercase for consistency
-    return "token-" + std::to_string(chain) + "-" + std::to_string(address.toLowerCase());
+    return "token-" + chain + "-" + std::to_string(address.toLowerCase());
 
 }
 

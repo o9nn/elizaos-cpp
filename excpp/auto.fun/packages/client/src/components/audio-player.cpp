@@ -12,7 +12,7 @@ void AudioPlayer(auto albumArt, auto lyrics, auto showControls, auto className) 
 
     return (;
     <div;
-    "flex flex-col gap-4 border border-gray-700 p-0 bg-black " + std::to_string(className);
+    "className={" + "flex flex-col gap-4 border border-gray-700 p-0 bg-black " + className;
     >;
     {albumArt && (;
     <div className="flex flex-col md:flex-row gap-4">
@@ -56,7 +56,7 @@ void AudioPlayer(auto albumArt, auto lyrics, auto showControls, auto className) 
     <div className="w-full">;
     <audio;
     controls;
-    "w-full [&::-webkit-media-controls-panel]:bg-[#03FF24] [&::-webkit-media-controls-panel]:rounded-none [&::-webkit-media-controls-current-time-display]:text-black [&::-webkit-media-controls-time-remaining-display]:text-black [&::-webkit-media-controls-timeline]:bg-[#03FF24] [&::-webkit-media-controls-timeline]:rounded-none [&::-webkit-media-controls-play-button]:text-black [&::-webkit-media-controls-volume-slider]:bg-[#03FF24] [&::-webkit-media-controls-volume-slider]:rounded-none [&::-webkit-media-controls-mute-button]:text-black [&::-webkit-media-controls-enclosure]:bg-[#03FF24] [&::-webkit-media-controls]:text-black [&::-webkit-media-controls-timeline-container]:bg-[#03FF24] [&::-webkit-media-controls-enclosure]:rounded-none [&::-webkit-media-controls-panel]:rounded-none [&::-webkit-media-controls-volume-slider-container]:rounded-none [&::-webkit-media-controls-timeline-container]:rounded-none " + std::to_string(className)
+    "className={" + "w-full [&::-webkit-media-controls-panel]:bg-[#03FF24] [&::-webkit-media-controls-panel]:rounded-none [&::-webkit-media-controls-current-time-display]:text-black [&::-webkit-media-controls-time-remaining-display]:text-black [&::-webkit-media-controls-timeline]:bg-[#03FF24] [&::-webkit-media-controls-timeline]:rounded-none [&::-webkit-media-controls-play-button]:text-black [&::-webkit-media-controls-volume-slider]:bg-[#03FF24] [&::-webkit-media-controls-volume-slider]:rounded-none [&::-webkit-media-controls-mute-button]:text-black [&::-webkit-media-controls-enclosure]:bg-[#03FF24] [&::-webkit-media-controls]:text-black [&::-webkit-media-controls-timeline-container]:bg-[#03FF24] [&::-webkit-media-controls-enclosure]:rounded-none [&::-webkit-media-controls-panel]:rounded-none [&::-webkit-media-controls-volume-slider-container]:rounded-none [&::-webkit-media-controls-timeline-container]:rounded-none " + className
     src={src}
     >;
     Your browser does not support the audio element.;

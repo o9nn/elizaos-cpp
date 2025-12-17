@@ -1,11 +1,13 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 #include "elizaos/core.hpp"
 #include "services/componentService.hpp"
@@ -30,7 +32,7 @@ struct UserPointsData {
  * Calculates points based on task type and completion status.
  * Needs refinement based on specific point values.
  */
-double calculatePoints(Task task, const std::variant<"onTime", "late", "daily", "streakBonus">& completionStatus);
+double calculatePoints(Task task, const std::string& completionStatus);
 
 /**
  * Retrieves the current points for a given entity.

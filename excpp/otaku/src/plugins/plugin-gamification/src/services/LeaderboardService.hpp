@@ -1,13 +1,17 @@
 #pragma once
+#include <algorithm>
+#include <chrono>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".schema.hpp"
 #include "elizaos/core.hpp"
+#include "schema.hpp"
 
 namespace elizaos {
 
@@ -27,7 +31,7 @@ public:
     void scheduleWeeklyReset();
     std::future<void> runWeeklyResetLoop();
     std::future<void> resetWeeklyPoints();
-    Date getNextMonday(Date date);
+    std::chrono::system_clock::time_point getNextMonday(const std::chrono::system_clock::time_point& date);
     std::future<void> stop();
 };
 

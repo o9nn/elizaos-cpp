@@ -8,7 +8,7 @@ std::future<std::optional<PoolInfo>> findBestPool(const std::string& tokenAddres
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        const auto cacheKey = "pool:" + std::to_string(chainId) + ":" + std::to_string(tokenAddress.toLowerCase());
+        const auto cacheKey = "pool:" + chainId + ":" + std::to_string(tokenAddress.toLowerCase());
 
         // Check cache first
         const auto cached = getCached<PoolInfo | nullptr>(cacheKey);
@@ -40,11 +40,11 @@ std::future<std::optional<PoolInfo>> findBestPool(const std::string& tokenAddres
             // Aerodrome Slipstream (CL) pools - compatible with SimplePoolOracle (Uniswap V3 interface)
             // Note: Aerodrome V2 pools (Basic/Volatile) do NOT support the IUniswapV3Pool interface
             if (config.aerodromeCLFactory) {
-                promises.push(findAerodromeCLPools(client, tokenAddress, config));
+                promises.push_back(findAerodromeCLPools(client, tokenAddress, config));
             }
 
             if (config.pancakeswapFactory) {
-                promises.push(findPancakeswapPools(client, tokenAddress, config));
+                promises.push_back(findPancakeswapPools(client, tokenAddress, config));
             }
 
             const auto results = Promise.all(promises);
@@ -83,10 +83,10 @@ std::string formatPoolInfo(PoolInfo pool) {
 
     if (pool.protocol == "Aerodrome") {
         const auto type = pool.stable ? "Stable" : "Volatile";
-        return "Aerodrome " + std::to_string(type) + " (" + std::to_string(pool.baseToken) + ") - TVL: ~$" + std::to_string(Math.floor(pool.tvlUsd).toLocaleString());
+        return "Aerodrome " + type + " (" + pool.baseToken + ") - TVL: ~$" + std::to_string(Math.floor(pool.tvlUsd).toLocaleString());
     }
     const auto feePercent = ((pool.fee || 0) / 10000).toFixed(2);
-    return std::to_string(pool.protocol) + " (" + std::to_string(feePercent) + "%, " + std::to_string(pool.baseToken) + ") - TVL: ~$" + std::to_string(Math.floor(pool.tvlUsd).toLocaleString());
+    return pool.protocol + " (" + feePercent + "%, " + pool.baseToken + ") - TVL: ~$" + std::to_string(Math.floor(pool.tvlUsd).toLocaleString());
 
 }
 

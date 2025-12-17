@@ -17,7 +17,7 @@ void ShowcaseHeader() {
     </Link>;
     </div>;
     <br></br>;
-    <div className="alert alert--warning" style={{ marginBottom: '2rem' }}>
+    <div className="alert alert--warning" style={{ marginBottom: "2rem" }}>
     <h4>⚠️ V2 Compatibility Notice</h4>;
     <p>;
     V2 compatibility of plugins are in progress. Please check back here later. You can also;
@@ -56,9 +56,9 @@ void filterUsers(const std::vector<User>& users, const std::string& search, cons
         }
 
         if (operator == 'AND') {
-            return selectedTags.every((tag) => user.tags.includes(tag));
+            return selectedTags.every((tag) => user.(std::find(tags.begin(), tags.end(), tag) != tags.end()));
         }
-        return selectedTags.some((tag) => user.tags.includes(tag));
+        return selectedTags.some((tag) => user.(std::find(tags.begin(), tags.end(), tag) != tags.end()));
         });
 
 }
@@ -72,14 +72,14 @@ JSX::Element ShowcaseComponent() {
 
     // Initialize state from URL parameters
     const auto [selectedTags, setSelectedTags] = useState<string[]>(() => {;
-        const auto tags = searchParams.get('tags');
-        return tags ? tags.split(',') : [];
+        const auto tags = searchParams.get("tags");
+        return tags ? tags.split(",") : [];
         });
-        const auto [operator, setOperator] = useState<'OR' | 'AND'>(() => {;
-            return (searchParams.get('operator') as 'OR' | 'AND') || 'OR';
+        const auto [operator, setOperator] = useState<"OR" | "AND">(() => {;
+            return (searchParams.get("operator") as "OR" | "AND") || "OR";
             });
             const auto [searchValue, setSearchValue] = useState(() => {;
-                return searchParams.get('search') || '';
+                return searchParams.get("search") || "";
                 });
 
                 // Update URL when filters change
@@ -88,36 +88,36 @@ JSX::Element ShowcaseComponent() {
 
                     // Update tags parameter
                     if (selectedTags.length > 0) {
-                        newSearchParams.set('tags', selectedTags.join(','));
+                        newSearchParams.set("tags", selectedTags.join(","));
                         } else {
-                            newSearchParams.delete('tags');
+                            newSearchParams.delete("tags");
                         }
 
                         // Update operator parameter
                         if (operator != 'OR') {
-                            newSearchParams.set('operator', operator);
+                            newSearchParams.set("operator", operator);
                             } else {
-                                newSearchParams.delete('operator');
+                                newSearchParams.delete("operator");
                             }
 
                             // Update search parameter
                             if (searchValue) {
-                                newSearchParams.set('search', searchValue);
+                                newSearchParams.set("search", searchValue);
                                 } else {
-                                    newSearchParams.delete('search');
+                                    newSearchParams.delete("search");
                                 }
 
-                                std::to_string(location.pathname) + "?" + std::to_string(newSearchParams.toString());
+                                "history.replace(" + location.pathname + "?" + std::to_string(std::to_string(newSearchParams));
                                 }, [selectedTags, operator, searchValue, location.pathname, history]);
 
                                 // Update filters when URL changes
                                 useEffect(() => {
-                                    const auto tags = searchParams.get('tags');
-                                    const auto newOperator = searchParams.get('operator') as 'OR' | 'AND';
-                                    const auto search = searchParams.get('search');
+                                    const auto tags = searchParams.get("tags");
+                                    const auto newOperator = searchParams.get("operator") as "OR" | "AND";
+                                    const auto search = searchParams.get("search");
 
                                     if (tags) {
-                                        setSelectedTags(tags.split(','));
+                                        setSelectedTags(tags.split(","));
                                     }
                                     if (newOperator) {
                                         setOperator(newOperator);
@@ -129,12 +129,12 @@ JSX::Element ShowcaseComponent() {
 
                                     const auto toggleTag = [&](tag: string) {;
                                         setSelectedTags((tags) =>;
-                                        tags.includes(tag) ? tags.filter((t) => t != tag) : [...tags, tag]
+                                        (std::find(tags.begin(), tags.end(), tag) != tags.end()) ? tags.filter((t) => t != tag) : [...tags, tag]
                                         );
                                         };
 
                                         const auto toggleOperator = [&]() {;
-                                            setOperator((op) => (op == 'OR' ? 'AND' : 'OR'));
+                                            setOperator((op) => (op == "OR" ? "AND" : "OR"));
                                             };
 
                                             const auto filteredUsers = useMemo(() => {;

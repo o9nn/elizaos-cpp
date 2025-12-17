@@ -45,15 +45,15 @@ void PrefilterUser(auto purge, auto disabled) {
 
                         const auto toolTipTitle = isDm;
                         ? "Messages By";
-                        std::to_string(purge ? "Purge" : "Messages") + " By"
+                        ": " + std::to_string(purge ? "Purge" : "Messages") + " By"
 
                         const auto toolTipDescription = isDm;
                         ? "Search messages by User";
-                        std::to_string(purge ? "Purge" : "Search") + " messages by User or User Id"
+                        ": " + std::to_string(purge ? "Purge" : "Search") + " messages by User or User Id"
 
                         const auto textfieldLabel = isDm;
                         ? "Messages By";
-                        std::to_string(purge ? "Purge" : "Messages") + " By"
+                        ": " + std::to_string(purge ? "Purge" : "Messages") + " By"
 
                         return (;
                         <Tooltip;

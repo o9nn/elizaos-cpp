@@ -1,9 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
 #include "elizaos/core.hpp"
@@ -16,22 +19,22 @@ namespace elizaos {
 
 
 // Define the days of the week for availability
-using WeekDay = std::variant<, std::string, std::string, std::string, std::string, std::string, std::string, std::string>;
+using WeekDay = std::variant<, std::string>;
 
 // Define employment status types
-using EmploymentStatus = std::variant<std::string, std::string, std::string, std::string>;
+using EmploymentStatus = std::string;
 
 // Define report types
-using ReportType = std::variant<std::string, std::string, std::string>;
+using ReportType = std::string;
 
 // Define task status types
-using TaskStatus = std::variant<std::string, std::string, std::string, std::string>;
+using TaskStatus = std::string;
 
 // Define task priority levels
-using TaskPriority = std::variant<std::string, std::string, std::string, std::string>;
+using TaskPriority = std::string;
 
 // Define platform types for multi-platform support
-using PlatformType = std::variant<std::string, std::string, std::string, std::string>;
+using PlatformType = std::string;
 
 /**
  * Interface for team member availability

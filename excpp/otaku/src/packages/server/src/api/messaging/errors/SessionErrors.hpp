@@ -1,10 +1,14 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <chrono>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -34,7 +38,7 @@ public:
  */
 class SessionExpiredError {
 public:
-    SessionExpiredError(const std::string& sessionId, std::optional<Date> expiredAt, std::optional<std::any> details);
+    SessionExpiredError(const std::string& sessionId, std::optional<std::chrono::system_clock::time_point> expiredAt, std::optional<std::any> details);
 };
 
 /**

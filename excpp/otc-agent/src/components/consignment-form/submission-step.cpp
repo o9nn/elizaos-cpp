@@ -64,7 +64,7 @@ void SubmissionStepComponent(auto consignerAddress, auto chain, auto activeFamil
                             const auto NON_RETRYABLE = ["rejected", "denied", "cancelled", "user"];
                             const auto RETRYABLE = ["network", "timeout", "fetch", "connection", "rate"];
 
-                            std::optional<Error> lastError = nullptr;
+                            std::optional<std::runtime_error> lastError = nullptr;
                             for (int attempt = 0; attempt < MAX_RETRIES; attempt++) {
                                 try {
                                     return action();
@@ -77,16 +77,16 @@ void SubmissionStepComponent(auto consignerAddress, auto chain, auto activeFamil
 
                                         // Only retry transient errors, and only if we have retries left
                                         const auto canRetry =;
-                                        RETRYABLE.some((p) => msg.includes(p)) && attempt < MAX_RETRIES - 1;
+                                        RETRYABLE.some((p) => (std::find(msg.begin(), msg.end(), p) != msg.end())) && attempt < MAX_RETRIES - 1;
                                         if (!canRetry) throw lastError;
 
                                         const auto delayMs = Math.pow(2, attempt) * 1000;
                                         console.log(
-                                        "[SubmissionStep] " + std::to_string(stepId) + " failed, retrying in " + std::to_string(delayMs) + "ms:"
+                                        "[SubmissionStep] " + stepId + " failed, retrying in " + delayMs + "ms:"
                                         msg,
                                         );
                                         updateStepStatus(stepId, {
-                                            "Retrying... (" + std::to_string(attempt + 2) + "/" + std::to_string(MAX_RETRIES) + ")"
+                                            "statusMessage: " + "Retrying... (" + std::to_string(attempt + 2) + "/" + MAX_RETRIES + ")"
                                             });
                                             new Promise((resolve) => setTimeout(resolve, delayMs));
                                         }
@@ -103,7 +103,7 @@ void SubmissionStepComponent(auto consignerAddress, auto chain, auto activeFamil
                                             const auto raw = BigInt(;
                                             Math.floor(parsed * Math.pow(10, selectedTokenDecimals)),
                                             );
-                                            return raw.toString();
+                                            return std::to_string(raw);
                                             };
 
                                             const auto response = fetch("/api/consignments", {;
@@ -132,7 +132,7 @@ void SubmissionStepComponent(auto consignerAddress, auto chain, auto activeFamil
                                                         .catch(() => ({ error: "Unknown error" }));
                                                         if (contractConsignmentIdRef.current) {
                                                             throw new Error(
-                                                            "Your consignment is on-chain (ID: " + std::to_string(contractConsignmentIdRef.current) + ") but failed to save to our database. Click retry to try saving again."
+                                                            "Your consignment is on-chain (ID: " + contractConsignmentIdRef.current + ") but failed to save to our database. Click retry to try saving again."
                                                             );
                                                         }
                                                         throw std::runtime_error(data.error || "Failed to save to database");
@@ -297,7 +297,7 @@ void SubmissionStepComponent(auto consignerAddress, auto chain, auto activeFamil
                                                                                                                 );
 
                                                                                                                 const auto handleGoToDeals = [&]() {;
-                                                                                                                    router.push("/my-deals");
+                                                                                                                    router.push_back("/my-deals");
                                                                                                                     };
 
                                                                                                                     const auto formatAmount = [&](amount: string) {;
@@ -319,7 +319,7 @@ void SubmissionStepComponent(auto consignerAddress, auto chain, auto activeFamil
                                                                                                                 <p className="text-sm text-zinc-500">;
                                                                                                                 {isComplete;
                                                                                                                 ? "Your tokens are now listed on the OTC desk";
-                                                                                                            "Listing " + std::to_string(formatAmount(formData.amount)) + " " + std::to_string(selectedTokenSymbol)
+                                                                                                            ": " + "Listing " + std::to_string(formatAmount(formData.amount)) + " " + selectedTokenSymbol
                                                                                                             </p>;
                                                                                                             </div>;
 

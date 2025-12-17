@@ -1,10 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 #include "util.hpp"
 
@@ -58,7 +60,7 @@ struct CodexTokenEvent {
  * Resolution type for Codex getBars API
  * Possible values: '1', '5', '15', '30', '60', '240', '720', '1D', '1W', '1M'
  */
-using CodexBarResolution = std::variant<, "1", "5", "15", "30", "60", "240", "720", "1D", "1W", "1M">;
+using CodexBarResolution = ;
 
 /**
  * Response structure for Codex getBars API

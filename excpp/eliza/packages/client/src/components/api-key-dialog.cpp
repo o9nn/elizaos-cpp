@@ -7,7 +7,7 @@ namespace elizaos {
 void ApiKeyDialog(auto onOpenChange) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto [apiKey, setApiKey] = useState('');
+    const auto [apiKey, setApiKey] = useState("");
     const auto [showKey, setShowKey] = useState(false);
     const auto { toast } = useToast();
 
@@ -19,7 +19,7 @@ void ApiKeyDialog(auto onOpenChange) {
                 const auto storedKey = localStorage.getItem(storageKey);
                 if (storedKey) setApiKey(storedKey);
                 } catch (err) {
-                    std::cerr << 'Unable to access localStorage' << err << std::endl;
+                    std::cerr << "Unable to access localStorage" << err << std::endl;
                 }
             }
             }, [open, storageKey]);
@@ -27,9 +27,9 @@ void ApiKeyDialog(auto onOpenChange) {
             const auto handleSave = [&]() {;
                 if (!apiKey.trim()) {
                     toast({
-                        title: 'API Key Required',
-                        description: 'Please enter a valid API key.',
-                        variant: 'destructive',
+                        title: "API Key Required",
+                        description: "Please enter a valid API key.",
+                        variant: "destructive",
                         });
                         return;
                     }
@@ -37,16 +37,16 @@ void ApiKeyDialog(auto onOpenChange) {
                         localStorage.setItem(storageKey, apiKey);
                         } catch (err) {
                             toast({
-                                title: 'Storage Error',
-                                description: 'Unable to save the API key (browser storage blocked).',
-                                variant: 'destructive',
+                                title: "Storage Error",
+                                description: "Unable to save the API key (browser storage blocked).",
+                                variant: "destructive",
                                 });
                                 return;
                             }
                             onApiKeySaved();
                             toast({
-                                title: 'API Key Saved',
-                                description: 'The API key has been stored locally.',
+                                title: "API Key Saved",
+                                description: "The API key has been stored locally.",
                                 });
                                 onOpenChange(false);
                                 };
@@ -69,7 +69,7 @@ void ApiKeyDialog(auto onOpenChange) {
                                 <div className="col-span-3 relative">;
                                 <Input;
                                 id="api-key";
-                            type={showKey ? 'text' : 'password'}
+                            type={showKey ? "text" : "password"}
                         value={apiKey}
                     onChange={(e) => setApiKey(e.target.value)}
                     className="pr-10";
@@ -80,7 +80,7 @@ void ApiKeyDialog(auto onOpenChange) {
                     size="icon";
                     className="absolute right-1 top-1/2 h-7 w-7 -translate-y-1/2 text-muted-foreground";
                 onClick={() => setShowKey(!showKey)}
-            aria-label={showKey ? 'Hide API key' : 'Show API key'}
+            aria-label={showKey ? "Hide API key" : "Show API key"}
             >;
         {showKey ? <EyeOff className="h-4 w-4" />  = <Eye className="h-4 w-4" />}
         </Button>;

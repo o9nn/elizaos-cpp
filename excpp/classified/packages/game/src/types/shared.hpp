@@ -1,9 +1,13 @@
 #pragma once
+#include <algorithm>
+#include <chrono>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
 
@@ -22,7 +26,7 @@ namespace elizaos {
 struct BaseMessage {
     std::string id;
     std::string content;
-    std::variant<Date, std::string> timestamp;
+    std::variant<std::chrono::system_clock::time_point, std::string> timestamp;
 };
 
 struct TauriWindow {
@@ -37,7 +41,7 @@ struct WebSocketMessage {
     std::optional<std::string> userId;
     std::optional<std::string> author;
     std::optional<std::string> name;
-    std::optional<std::variant<std::string, Date>> timestamp;
+    std::optional<std::variant<std::string, std::chrono::system_clock::time_point>> timestamp;
 };
 
 // Configuration types
@@ -66,7 +70,7 @@ struct RuntimeSettings {
 
 // Log entry types
 struct LogEntry {
-    std::variant<std::string, Date> timestamp;
+    std::variant<std::string, std::chrono::system_clock::time_point> timestamp;
     std::string level;
     std::string message;
     std::optional<std::string> source;
@@ -98,8 +102,8 @@ struct ModelInfo {
 struct MemoryEntry {
     std::string id;
     std::string type;
-    std::variant<Date, std::string> createdAt;
-    std::optional<std::variant<Date, std::string>> updatedAt;
+    std::variant<std::chrono::system_clock::time_point, std::string> createdAt;
+    std::optional<std::variant<std::chrono::system_clock::time_point, std::string>> updatedAt;
     std::optional<double> importance;
     std::optional<std::string> entityId;
     std::optional<std::string> agentId;
@@ -114,7 +118,7 @@ struct Goal {
     std::string name;
     std::string description;
     bool isCompleted;
-    std::variant<std::string, Date> createdAt;
+    std::variant<std::string, std::chrono::system_clock::time_point> createdAt;
 };
 
 struct Todo {
@@ -125,8 +129,8 @@ struct Todo {
     std::string type;
     bool isCompleted;
     std::optional<double> priority;
-    std::variant<std::string, Date> createdAt;
-    std::optional<std::variant<std::string, Date>> dueDate;
+    std::variant<std::string, std::chrono::system_clock::time_point> createdAt;
+    std::optional<std::variant<std::string, std::chrono::system_clock::time_point>> dueDate;
 };
 
 // Capability and Status types
@@ -134,7 +138,7 @@ struct CapabilityStatus {
     bool enabled;
     std::string status;
     std::optional<std::string> error;
-    std::optional<std::variant<std::string, Date>> lastUsed;
+    std::optional<std::variant<std::string, std::chrono::system_clock::time_point>> lastUsed;
 };
 
 struct AgentStatus {
@@ -151,7 +155,7 @@ struct FileUpload {
     std::string name;
     std::string type;
     double size;
-    std::variant<std::string, ArrayBuffer> content;
+    std::variant<std::string, std::vector<uint8_t>> content;
     std::optional<double> lastModified;
 };
 
@@ -161,7 +165,7 @@ using KnowledgeFile = KnowledgeItem;
 // Backup types
 struct BackupInfo {
     std::string id;
-    std::variant<std::string, Date> timestamp;
+    std::variant<std::string, std::chrono::system_clock::time_point> timestamp;
     std::string backup_type;
     double size_bytes;
     std::vector<BackupComponent> components;

@@ -1,11 +1,13 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -31,7 +33,7 @@ std::string extractAreaFromPath(const std::string& path);
  */
 bool isRootConfigFile(const std::string& path);
 
-using WorkItemType = std::variant<, "feature", "bugfix", "refactor", "docs", "tests", "other">;
+using WorkItemType = ;
 
 /**
  * Utility to build a map of focus areas from files

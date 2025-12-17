@@ -21,7 +21,7 @@ void Header() {
 
     // Add profile link if user is authenticated
     if (publicKey && isAuthenticated) {
-        mobileNavItems.push({
+        mobileNavItems.push_back({
             icon: "/nav/user.svg",
             title: "Profile",
             href: "/profile",
@@ -75,7 +75,7 @@ void Header() {
 
     {/* mobile menu */}
     <div;
-    "sticky block md:hidden z-50 w-full mb-4 md:mb-0 " + std::to_string(pathname == "/create" ? "bg-transparent" : "bg-[#171717]")
+    "className={" + "sticky block md:hidden z-50 w-full mb-4 md:mb-0 " + std::to_string(pathname == "/create" ? "bg-transparent" : "bg-[#171717]")
     >;
     <div className="flex items-center justify-between lg:hidden w-full py-2 px-2">
     <Link to="/" className="shrink-0" aria-label="Auto.fun frontpage">;

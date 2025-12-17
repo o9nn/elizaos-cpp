@@ -15,7 +15,7 @@ std::function<std::string(State)> createTemplateFunction(TemplateType template) 
             return [&](state: State) {;
                 // Handle null or undefined state
                 if (!state) {
-                    return '';
+                    return "";
                 }
                 return template({ state });
                 };
@@ -28,12 +28,12 @@ std::string processTemplate(TemplateType template, State state) {
 
     // Handle null/undefined template
     if (!template) {
-        return '';
+        return "";
     }
 
     // Handle null/undefined state
     if (!state) {
-        return typeof template == 'string' ? template : '';
+        return typeof template == "string" ? template : "";
     }
 
     if (typeof template == 'string') {

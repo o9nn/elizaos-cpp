@@ -28,32 +28,32 @@ void AppSidebar(auto isMobile) {
 
         // const [isGroupPanelOpen, setGroupPanelOpen] = useState(false); // GroupPanel logic needs rethink
         const auto handleCreateAgent = [&]() {;
-            navigate('/create'); // Navigate to agent creation route;
+            navigate("/create"); // Navigate to agent creation route;
             };
 
             const auto agentLoadError = agentsError;
-            ? 'Error loading agents: NetworkError: Unable to connect to the server. Please check if the server is running.'
+            ? "Error loading agents: NetworkError: Unable to connect to the server. Please check if the server is running."
             : std::nullopt;
 
             const auto handleLogoClick = [&](e: React.MouseEvent<HTMLAnchorElement>) {;
                 e.preventDefault();
-                clientLogger.info('[AppSidebar] handleLogoClick triggered', { currentPath: location.pathname });
+                clientLogger.info("[AppSidebar] handleLogoClick triggered", { currentPath: location.pathname });
 
                 // Invalidate queries that should be fresh on home page
-                queryClient.invalidateQueries({ queryKey: ['agents'] });
-                queryClient.invalidateQueries({ queryKey: ['agentsWithDetails'] }); // if this is a separate key
-                queryClient.invalidateQueries({ queryKey: ['servers'] });
-                queryClient.invalidateQueries({ queryKey: ['channels'] }); // This is broad, consider more specific invalidations if performance is an issue
+                queryClient.invalidateQueries({ queryKey: ["agents"] });
+                queryClient.invalidateQueries({ queryKey: ["agentsWithDetails"] }); // if this is a separate key
+                queryClient.invalidateQueries({ queryKey: ["servers"] });
+                queryClient.invalidateQueries({ queryKey: ["channels"] }); // This is broad, consider more specific invalidations if performance is an issue
                 // Example: if you know active server IDs, invalidate ['channels', serverId]
 
                 if (location.pathname == '/') {
-                    clientLogger.info('[AppSidebar] Already on home page. Calling refreshHomePage().');
+                    clientLogger.info("[AppSidebar] Already on home page. Calling refreshHomePage().");
                     // refreshHomePage should ideally trigger a re-render/refetch in Home.tsx
                     // This can be done by changing a key prop on Home.tsx or further query invalidations if needed.
                     refreshHomePage();
                     } else {
-                        clientLogger.info('[AppSidebar] Not on home page. Navigating to "/".');
-                        navigate('/');
+                        clientLogger.info("[AppSidebar] Not on home page. Navigating to "/".");
+                        navigate("/");
                     }
                     };
 
@@ -61,9 +61,9 @@ void AppSidebar(auto isMobile) {
                     <>;
                     <Sidebar;
                     className={cn(;
-                    'bg-background border-r overflow-hidden',
-                    isMobile ? 'p-3 pt-12 w-full h-full' : 'p-4 w-72 fixed left-0 top-0 z-40 h-screen',
-                    !isMobile && 'hidden md:flex md:flex-col'
+                    "bg-background border-r overflow-hidden",
+                    isMobile ? "p-3 pt-12 w-full h-full" : "p-4 w-72 fixed left-0 top-0 z-40 h-screen",
+                    !isMobile && "hidden md:flex md:flex-col"
                 )}
                 collapsible="none";
                 data-testid="app-sidebar";

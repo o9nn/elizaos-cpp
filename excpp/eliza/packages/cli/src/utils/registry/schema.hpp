@@ -1,10 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -20,7 +22,7 @@ namespace elizaos {
  * - "client"
  * - "plugin"
  */
-using PluginType = std::variant<std::string, std::string, std::string>;
+using PluginType = std::string;
 
 // TODO: we should handle this better later
 /**

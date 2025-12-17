@@ -1,16 +1,19 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".events.hpp"
-#include ".hyperfy/src/core/utils.hpp"
-#include ".service.hpp"
 #include "elizaos/core.hpp"
+#include "events.hpp"
 #include "guards.hpp"
+#include "hyperfy/src/core/utils.hpp"
+#include "service.hpp"
 
 namespace elizaos {
 

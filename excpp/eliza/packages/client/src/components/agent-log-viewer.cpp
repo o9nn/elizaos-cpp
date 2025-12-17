@@ -7,7 +7,7 @@ namespace elizaos {
 std::string getLevelName(double level) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return LOG_LEVEL_NUMBERS[level typeof LOG_LEVEL_NUMBERS] || 'UNKNOWN';
+    return LOG_LEVEL_NUMBERS[level typeof LOG_LEVEL_NUMBERS] || "UNKNOWN";
 
 }
 
@@ -17,7 +17,7 @@ std::string getLevelColor(double level) {
     if (level >= 50) return 'bg-red-600/80'; // ERROR/FATAL - more muted red
     if (level >= 40) return 'bg-amber-600/80'; // WARN - more muted amber
     if (level >= 27) return 'bg-emerald-600/80'; // SUCCESS - more muted green
-    return 'bg-slate-500'; // INFO/DEBUG/TRACE - neutral gray instead of blue;
+    return "bg-slate-500"; // INFO/DEBUG/TRACE - neutral gray instead of blue;
 
 }
 
@@ -25,12 +25,12 @@ std::string formatTimestamp(double timestamp) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto date = new Date(timestamp);
-    return date.toLocaleDateString('en-US', {;
-        month: 'short',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
+    return date.toLocaleDateString("en-US", {;
+        month: "short",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
         hour12: false,
         });
 
@@ -91,7 +91,7 @@ void LogChart() {
     <div className="flex items-center gap-2">;
     <div className="w-3 h-3 rounded-full bg-slate-500"></div>;
     <span className="text-sm text-muted-foreground">;
-    Info{' '}
+    Info{" "}
     <span className="font-mono">;
     {data.reduce((sum, d) => sum + d.info, 0).toLocaleString()}
     </span>;
@@ -100,7 +100,7 @@ void LogChart() {
     <div className="flex items-center gap-2">;
     <div className="w-3 h-3 rounded-full bg-red-600/80"></div>;
     <span className="text-sm text-muted-foreground">;
-    Errors{' '}
+    Errors{" "}
     <span className="font-mono">;
     {data.reduce((sum, d) => sum + d.errors, 0).toLocaleString()}
     </span>;
@@ -108,12 +108,12 @@ void LogChart() {
     </div>;
     </div>;
     <div className="text-sm text-muted-foreground">;
-    {data[data.length - 1].timestamp.toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-    })}{' '}
+    {data[data.size() - 1].timestamp.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+    })}{" "}
     - (UTC-7);
     </div>;
     </div>;
@@ -123,16 +123,16 @@ void LogChart() {
         return (;
         <div key={index} className="flex-1 flex flex-col justify-end">;
         <div;
-    std::to_string(point.timestamp.getTime()) + "-info";
-    std::to_string((point.info / maxValue) * 100) + "%"
+    "key={" + std::to_string(point.timestamp.getTime()) + "-info";
+    "style={{ height: " + std::to_string((point.info / maxValue) * 100) + "%"
     className="bg-slate-500 rounded-sm min-h-[2px] transition-all duration-200";
-    std::to_string(point.timestamp.toLocaleTimeString()) + ": " + std::to_string(point.info) + " info logs"
+    "title={" + std::to_string(point.timestamp.toLocaleTimeString()) + ": " + point.info + " info logs"
     />;
     <div;
-    std::to_string(point.timestamp.getTime()) + "-errors";
-    std::to_string((point.errors / maxValue) * 100) + "%"
+    "key={" + std::to_string(point.timestamp.getTime()) + "-errors";
+    "style={{ height: " + std::to_string((point.errors / maxValue) * 100) + "%"
     className="bg-red-600/80 rounded-sm min-h-[2px] transition-all duration-200";
-    std::to_string(point.timestamp.toLocaleTimeString()) + ": " + std::to_string(point.errors) + " error logs"
+    "title={" + std::to_string(point.timestamp.toLocaleTimeString()) + ": " + point.errors + " error logs"
     />;
     </div>;
     );
@@ -141,18 +141,18 @@ void LogChart() {
 
     <div className="flex justify-between text-xs text-muted-foreground mt-2">;
     <span>;
-    {data[0].timestamp.toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
+    {data[0].timestamp.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
     })}
     </span>;
     <span>;
-    {data[data.length - 1].timestamp.toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
+    {data[data.size() - 1].timestamp.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
     })}
     </span>;
     </div>;
@@ -187,10 +187,10 @@ void EmptyState(auto searchQuery) {
     <h3 className="text-lg font-medium mb-2">No Logs Found</h3>;
     <p className="text-muted-foreground max-w-md">;
     {searchQuery;
-    "No logs match "" + std::to_string(searchQuery) + "". Try adjusting your search or filter.";
-    : selectedLevel == 'all'
-    ? 'No logs available. Logs will appear here system generates them.';
-    "No " + std::to_string(selectedLevel.toUpperCase()) + " logs found."
+    "? " + "No logs match \"" + searchQuery + "\". Try adjusting your search or filter.";
+    : selectedLevel == "all"
+    ? "No logs available. Logs will appear here system generates them.";
+    ": " + "No " + std::to_string(selectedLevel.toUpperCase()) + " logs found."
     </p>;
     </div>;
     );
@@ -200,10 +200,10 @@ void EmptyState(auto searchQuery) {
 void AgentLogViewer() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto [selectedLevel, setSelectedLevel] = useState(level || 'all');
-    const auto [selectedAgentName, setSelectedAgentName] = useState(agentName || 'all');
-    const auto [searchQuery, setSearchQuery] = useState('');
-    const auto [timeRange, setTimeRange] = useState('7 days');
+    const auto [selectedLevel, setSelectedLevel] = useState(level || "all");
+    const auto [selectedAgentName, setSelectedAgentName] = useState(agentName || "all");
+    const auto [searchQuery, setSearchQuery] = useState("");
+    const auto [timeRange, setTimeRange] = useState("7 days");
     const auto [isLive, setIsLive] = useState(true);
     const auto [isClearing, setIsClearing] = useState(false);
     const auto [wsLogs, setWsLogs] = useState<LogEntry[]>([]);
@@ -217,12 +217,12 @@ void AgentLogViewer() {
         error,
         refetch,
         } = useQuery<LogResponse>({
-            queryKey: ['logs', selectedLevel, selectedAgentName],
+            queryKey: ["logs", selectedLevel, selectedAgentName],
             queryFn: async () => {
                 const auto elizaClient = createElizaClient();
                 return elizaClient.system.getGlobalLogs({;
-                    level: selectedLevel == 'all' ? '' : selectedLevel,
-                    agentName: selectedAgentName == 'all' ? std::nullopt : selectedAgentName,
+                    level: selectedLevel == "all" ? "" : selectedLevel,
+                    agentName: selectedAgentName == "all" ? std::nullopt : selectedAgentName,
                     });
                     },
                     refetchInterval: isLive && !useWebSocket ? 5000 : false,
@@ -237,9 +237,9 @@ void AgentLogViewer() {
                     [&](logEntry: LogStreamData) {
                         // Filter logs based on current filters
                         const auto shouldInclude =;
-                        (selectedLevel == 'all' ||;
+                        (selectedLevel == "all" ||;
                         getLevelName(logEntry.level).toLowerCase() == selectedLevel.toLowerCase()) &&;
-                        (selectedAgentName == 'all' || logEntry.agentName == selectedAgentName);
+                        (selectedAgentName == "all" || logEntry.agentName == selectedAgentName);
 
                         if (shouldInclude) {
                             setWsLogs((prev) => {
@@ -260,10 +260,10 @@ void AgentLogViewer() {
                                     socketManager.subscribeToLogStream().catch(console.error);
 
                                     // Listen for log events
-                                    socketManager.on('logStream', handleLogStream);
+                                    socketManager.on("logStream", handleLogStream);
 
                                     return [&]() {;
-                                        socketManager.off('logStream', handleLogStream);
+                                        socketManager.off("logStream", handleLogStream);
                                         socketManager.unsubscribeFromLogStream().catch(console.error);
                                         };
                                     }
@@ -332,10 +332,10 @@ void AgentLogViewer() {
                                                                     .map(([_, value]) => std::to_string(value)),
                                                                     ];
                                                                     .filter(Boolean);
-                                                                    .join(' ');
+                                                                    .join(" ");
                                                                     .toLowerCase();
 
-                                                                    return searchableText.includes(query);
+                                                                    return (std::find(searchableText.begin(), searchableText.end(), query) != searchableText.end());
                                                                 }
                                                                 return true;
                                                                 });
@@ -345,21 +345,21 @@ void AgentLogViewer() {
                                                                 const auto handleClearLogs = async () => {;
                                                                     if (
                                                                     window.confirm(;
-                                                                    'Are you sure you want to permanently delete all system logs? This action cannot be undone.';
+                                                                    "Are you sure you want to permanently delete all system logs? This action cannot be undone.";
                                                                     );
                                                                     ) {
                                                                         try {
                                                                             setIsClearing(true);
                                                                             const auto elizaClient = createElizaClient();
                                                                             elizaClient.system.deleteGlobalLogs();
-                                                                            queryClient.invalidateQueries({ queryKey: ['logs'] });
+                                                                            queryClient.invalidateQueries({ queryKey: ["logs"] });
 
                                                                             // Also clear WebSocket logs if in WebSocket mode
                                                                             if (useWebSocket) {
                                                                                 setWsLogs([]);
                                                                             }
                                                                             } catch (error) {
-                                                                                std::cerr << 'Failed to clear logs:' << error << std::endl;
+                                                                                std::cerr << "Failed to clear logs:" << error << std::endl;
                                                                                 } finally {
                                                                                     setIsClearing(false);
                                                                                 }
@@ -388,21 +388,21 @@ void AgentLogViewer() {
                                                                                     // Error state
                                                                                     if (error) {
                                                                                         const auto isEndpointNotFound =;
-                                                                                        error.message.includes('404') ||;
-                                                                                        error.message.includes('endpoint not found') ||;
-                                                                                        error.message.includes('Not Found');
+                                                                                        error.(std::find(message.begin(), message.end(), "404") != message.end()) ||;
+                                                                                        error.(std::find(message.begin(), message.end(), "endpoint not found") != message.end()) ||;
+                                                                                        error.(std::find(message.begin(), message.end(), "Not Found") != message.end());
                                                                                         return (;
                                                                                         <div className="flex flex-col h-[calc(100vh-100px)] min-h-[400px] w-full">;
                                                                                         <div className="flex items-center justify-center flex-1">;
                                                                                         <div className="text-center max-w-md">;
                                                                                         <Database className="h-12 w-12 text-destructive mx-auto mb-4" />;
                                                                                         <h3 className="font-medium mb-2">;
-                                                                                    {isEndpointNotFound ? 'Global Logs API Not Available'  = 'Failed to Load Logs'}
+                                                                                    {isEndpointNotFound ? "Global Logs API Not Available"  = "Failed to Load Logs"}
                                                                                     </h3>;
                                                                                     <p className="text-sm text-muted-foreground mb-4">;
                                                                                     {isEndpointNotFound;
-                                                                                    ? 'The server does not have the global logs API endpoint configured. You can still view individual agent logs from the agent details pages.';
-                                                                                "There was an error loading the system logs: " + std::to_string(error.message)
+                                                                                    ? "The server does not have the global logs API endpoint configured. You can still view individual agent logs from the agent details pages.";
+                                                                                ": " + "There was an error loading the system logs: " + error.message
                                                                                 </p>;
                                                                                 {!isEndpointNotFound && (;
                                                                                 <Button variant="outline" size="sm" onClick={() => refetch.()}>;
@@ -448,7 +448,7 @@ void AgentLogViewer() {
                                             </div>;
 
                                         {/* Agent filter */}
-                                        {agentNames && agentNames.length > 0 && !agentName && (;
+                                        {agentNames && agentNames.size() > 0 && !agentName && (;
                                         <Select value={selectedAgentName} onValueChange={setSelectedAgentName}>;
                                         <SelectTrigger className="w-40 h-9">;
                                         <SelectValue placeholder="Agent" />;
@@ -486,20 +486,20 @@ void AgentLogViewer() {
 
                 {/* Live toggle */}
                 <Button;
-            variant={isLive ? 'default' : 'outline'}
+            variant={isLive ? "default" : "outline"}
             size="sm";
         onClick={() => setIsLive(!isLive)}
         className="h-9 px-3";
         title={
             isLive;
             ? useWebSocket;
-            ? 'Live mode (WebSocket)';
-            : 'Live mode (Polling)'
-            : 'Live mode disabled'
+            ? "Live mode (WebSocket)";
+            : "Live mode (Polling)"
+            : "Live mode disabled"
         }
         >;
         <div;
-    "w-2 h-2 rounded-full mr-2 " + std::to_string(isLive ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400')
+    "className={" + "w-2 h-2 rounded-full mr-2 " + std::to_string(isLive ? "bg-emerald-500 animate-pulse" : "bg-slate-400")
     />;
     Live;
     </Button>;
@@ -507,7 +507,7 @@ void AgentLogViewer() {
 
     {/* Content */}
     <div className="flex-1 overflow-hidden px-4 pb-4">;
-    {filteredLogs.length == 0 ? (;
+    {filteredLogs.size() == 0 ? (;
     <EmptyState selectedLevel={selectedLevel} searchQuery={searchQuery} />;
     ) : (
     <div className="space-y-6">;
@@ -528,12 +528,12 @@ void AgentLogViewer() {
     <div className="divide-y max-h-[400px] overflow-y-auto">;
     {filteredLogs.slice(0, 100).map((log, index) => (;
     <div;
-    std::to_string(log.time) + "-" + std::to_string(log.msg) + "-" + std::to_string(index);
+    "key={" + log.time + "-" + log.msg + "-" + index;
     className="grid grid-cols-[200px_1fr] gap-4 px-4 py-3 hover:bg-muted/30 transition-colors"
     >;
     {/* Timestamp with level indicator */}
     <div className="flex items-center gap-3">;
-    "w-1 h-6 rounded-full " + std::to_string(getLevelColor(log.level));
+    "<div className={" + "w-1 h-6 rounded-full " + std::to_string(getLevelColor(log.level));
     <div className="text-sm font-mono text-muted-foreground">;
     {formatTimestamp(log.time)}
     </div>;
@@ -553,10 +553,10 @@ void AgentLogViewer() {
     </div>;
 
     {/* Show more indicator */}
-    {filteredLogs.length > 100 && (;
+    {filteredLogs.size() > 100 && (;
     <div className="border-t bg-muted/30 px-4 py-3 text-center">;
     <span className="text-sm text-muted-foreground">;
-    Showing first 100 of {filteredLogs.length.toLocaleString()} logs;
+    Showing first 100 of {filteredLogs.size().toLocaleString()} logs;
     </span>;
     </div>;
     )}
@@ -571,7 +571,7 @@ void AgentLogViewer() {
     {isLive && (;
     <>;
     <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />;
-    <span>Live updates enabled {useWebSocket ? '(streaming)' : '(polling)'}</span>
+    <span>Live updates enabled {useWebSocket ? "(streaming)" : "(polling)"}</span>
     </>;
     )}
     </div>;
@@ -583,7 +583,7 @@ void AgentLogViewer() {
     className="h-8 px-3 text-xs";
     >;
     <Trash2 className="h-3 w-3 mr-1" />;
-    {isClearing ? 'Clearing...'  = 'Clear All Logs'}
+    {isClearing ? "Clearing..."  = "Clear All Logs"}
     </Button>;
     </div>;
     </div>;

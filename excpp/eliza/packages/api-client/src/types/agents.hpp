@@ -1,9 +1,13 @@
 #pragma once
+#include <algorithm>
+#include <chrono>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "base.hpp"
 #include "elizaos/core.hpp"
@@ -20,8 +24,8 @@ struct Agent {
     std::string name;
     std::optional<std::string> description;
     std::string status;
-    Date createdAt;
-    Date updatedAt;
+    std::chrono::system_clock::time_point createdAt;
+    std::chrono::system_clock::time_point updatedAt;
 };
 
 struct AgentCreateParams {
@@ -57,7 +61,7 @@ struct AgentLog {
     UUID agentId;
     std::string level;
     std::string message;
-    Date timestamp;
+    std::chrono::system_clock::time_point timestamp;
 };
 
 

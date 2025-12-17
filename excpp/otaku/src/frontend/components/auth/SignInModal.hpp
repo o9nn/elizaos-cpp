@@ -1,12 +1,14 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
-#include ".ui/bullet.hpp"
+#include "ui/bullet.hpp"
 
 namespace elizaos {
 
@@ -19,8 +21,8 @@ struct SignInModalProps {
     bool isOpen;
 };
 
-using AuthMethod = std::variant<std::string, std::string, std::string>;
-using AuthStep = std::variant<std::string, std::string>;
+using AuthMethod = std::string;
+using AuthStep = std::string;
 
 /**
  * Sign In Modal Component

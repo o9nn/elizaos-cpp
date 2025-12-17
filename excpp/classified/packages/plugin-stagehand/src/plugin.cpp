@@ -7,7 +7,7 @@ namespace elizaos {
 std::string extractUrl(const std::string& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto quotedUrlMatch = text.match(/["']([^"']+)["']/);
+    const auto quotedUrlMatch = text.match(/[""]([^""]+)["']/);
     if (quotedUrlMatch && (quotedUrlMatch[1].startsWith('http') || quotedUrlMatch[1].includes('.'))) {
         return quotedUrlMatch[1];
     }
@@ -32,7 +32,7 @@ std::future<void> testStagehandConnection(IAgentRuntime runtime) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
-        std::cout << '[Stagehand] Running Google.com test to verify browser automation...' << std::endl;
+        std::cout << "[Stagehand] Running Google.com test to verify browser automation..." << std::endl;
 
         // Retry getting the service with exponential backoff
         std::optional<StagehandService> service = nullptr;
@@ -44,7 +44,7 @@ std::future<void> testStagehandConnection(IAgentRuntime runtime) {
             if (!service) {
                 if (retries == maxRetries - 1) {
                     logger.warn(
-                    '[Stagehand] Service not available after retries. The plugin may not be fully initialized.';
+                    "[Stagehand] Service not available after retries. The plugin may not be fully initialized.";
                     );
                     return;
                 }
@@ -56,7 +56,7 @@ std::future<void> testStagehandConnection(IAgentRuntime runtime) {
         }
 
         if (!service) {
-            std::cout << '[Stagehand] Service not available for test' << std::endl;
+            std::cout << "[Stagehand] Service not available for test" << std::endl;
             return;
         }
 
@@ -69,7 +69,7 @@ std::future<void> testStagehandConnection(IAgentRuntime runtime) {
 
         // Navigate to Google
         const auto client = service.getClient();
-        const auto result = client.navigate(session.id, 'https://www.google.com');
+        const auto result = client.navigate(session.id, "https://www.google.com");
 
         logger.info('[Stagehand] Successfully navigated to Google.com:', {
             url: result.url,
@@ -80,10 +80,10 @@ std::future<void> testStagehandConnection(IAgentRuntime runtime) {
             service.destroySession(sessionId);
 
             logger.info(
-            '[Stagehand] Google.com test completed successfully! Browser automation is working.';
+            "[Stagehand] Google.com test completed successfully! Browser automation is working.";
             );
             } catch (error) {
-                std::cerr << '[Stagehand] Google.com test failed:' << error << std::endl;
+                std::cerr << "[Stagehand] Google.com test failed:" << error << std::endl;
             }
 
 }

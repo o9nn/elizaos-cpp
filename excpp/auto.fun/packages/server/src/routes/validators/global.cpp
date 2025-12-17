@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::string parseSolanaAddress(unknown raw, auto name) {
+std::string parseSolanaAddress(const std::any& raw, auto name) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

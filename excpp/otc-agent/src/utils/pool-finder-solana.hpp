@@ -1,11 +1,14 @@
 #pragma once
+#include <algorithm>
+#include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 #include "retry-cache.hpp"
 
@@ -21,20 +24,20 @@ namespace elizaos {
 // Rate limiting: delay between sequential RPC calls (ms)
 
 // Helper to check if error is rate limit related
-bool isRateLimitError(unknown error);
+bool isRateLimitError(const std::any& error);
 
 // Helper to delay between RPC calls
 std::future<void> delay(double ms);
 
 struct SolanaPoolInfo {
-    std::variant<"Raydium", "Meteora", "Orca", "PumpSwap"> protocol;
+    std::string protocol;
     std::string address;
     std::string tokenA;
     std::string tokenB;
     double liquidity;
     double tvlUsd;
     std::optional<double> priceUsd;
-    std::variant<"SOL", "USDC"> baseToken;
+    std::string baseToken;
     std::optional<std::string> solVault;
     std::optional<std::string> tokenVault;
 };

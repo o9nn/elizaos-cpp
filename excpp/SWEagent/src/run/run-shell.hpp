@@ -1,18 +1,21 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
-#include ".agent/agents.hpp"
-#include ".agent/hooks.hpp"
-#include ".agent/problem-statement.hpp"
-#include ".environment/swe-env.hpp"
-#include ".utils/log.hpp"
+#include "agent/agents.hpp"
+#include "agent/hooks.hpp"
+#include "agent/problem-statement.hpp"
+#include "environment/swe-env.hpp"
+#include "utils/log.hpp"
 
 namespace elizaos {
 

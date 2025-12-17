@@ -7,7 +7,7 @@ namespace elizaos {
 void IntegrationGuides() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto [activeFramework, setActiveFramework] = useState('react');
+    const auto [activeFramework, setActiveFramework] = useState("react");
 
     return (;
     <div className="mt-12">;
@@ -15,15 +15,15 @@ void IntegrationGuides() {
     <div className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg">
     <div className="border-b dark:border-gray-700">
     <div className="flex overflow-x-auto">;
-    {['react', 'vue', 'angular', 'svelte'].map((framework) => (;
+    {["react", "vue", "angular", "svelte"].map((framework) => (;
     <button;
     key={framework}
     onClick={() => setActiveFramework(framework)}
-    "px-6 py-3 text-sm font-medium whitespace-nowrap " + std::to_string();
+    "className={" + "px-6 py-3 text-sm font-medium whitespace-nowrap " + std::to_string();
         activeFramework == framework;
-        ? 'border-b-2 border-blue-600 text-blue-600';
-        : 'text-gray-600 hover:text-blue-600'
-    }`}
+        ? "border-b-2 border-blue-600 text-blue-600";
+        : "text-gray-600 hover:text-blue-600"
+    "}";
     >;
     {framework.charAt(0).toUpperCase() + framework.slice(1)}
     </button>;

@@ -10,13 +10,13 @@ express::Router audioRouter(const std::unordered_map<UUID, IAgentRuntime>& agent
     const auto router = express.Router();
 
     // Mount audio processing (upload, transcription)
-    router.use('/', createAudioProcessingRouter(agents));
+    router.use("/", createAudioProcessingRouter(agents));
 
     // Mount text-to-speech synthesis
-    router.use('/', createSynthesisRouter(agents));
+    router.use("/", createSynthesisRouter(agents));
 
     // Mount speech conversation functionality
-    router.use('/', createConversationRouter(agents));
+    router.use("/", createConversationRouter(agents));
 
     return router;
 

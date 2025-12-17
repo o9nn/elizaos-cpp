@@ -1,13 +1,15 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
-#include ".button.hpp"
-#include ".multiwallet.hpp"
+#include "button.hpp"
+#include "multiwallet.hpp"
 
 namespace elizaos {
 
@@ -32,7 +34,7 @@ struct ReviewStepProps {
     bool isPrivate;
     double maxPriceVolatilityBps;
     double maxTimeToExecuteSeconds;
-    std::optional<std::variant<"evm", "solana">> requiredChain;
+    std::optional<std::string> requiredChain;
     std::optional<bool> isConnectedToRequiredChain;
     std::optional<bool> privyReady;
     std::optional<std::string> selectedTokenSymbol;

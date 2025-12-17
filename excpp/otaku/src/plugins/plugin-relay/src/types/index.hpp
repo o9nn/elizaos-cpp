@@ -1,10 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -60,7 +62,7 @@ using StatusRequest = z::infer<typeof StatusRequestSchema>;
 // Transaction status
 struct RelayStatus {
     std::string id;
-    std::variant<"pending", "success", "failed"> status;
+    std::string status;
     std::string user;
     std::string recipient;
     std::string createdAt;

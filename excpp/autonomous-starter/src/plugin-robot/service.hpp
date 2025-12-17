@@ -1,10 +1,13 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "elizaos/core.hpp"
 #include "types.hpp"
@@ -23,16 +26,16 @@ public:
     RobotService(IAgentRuntime runtime);
     static std::future<Service> start(IAgentRuntime runtime);
     static std::future<void> stop(IAgentRuntime runtime);
-    std::future<Buffer> captureScreen();
-    Buffer createMockPNG(double width, double height);
-    Buffer downscaleImage(Buffer imageBuffer, double maxSize = 1024);
-    double calculatePixelDifference(Buffer buffer1, Buffer buffer2);
-     shouldTriggerAIProcessing(Buffer currentScreenshot);
-    std::future<std::string> performLocalOCR(Buffer image);
-    bool isValidImageBuffer(Buffer buffer);
-    std::future<std::string> performAIOCR(Buffer image);
-    std::future<std::string> describeImage(Buffer image);
-    std::future<std::vector<ScreenObject>> detectObjects(Buffer image);
+    std::future<std::vector<uint8_t>> captureScreen();
+    std::vector<uint8_t> createMockPNG(double width, double height);
+    std::vector<uint8_t> downscaleImage(const std::vector<uint8_t>& imageBuffer, double maxSize = 1024);
+    double calculatePixelDifference(const std::vector<uint8_t>& buffer1, const std::vector<uint8_t>& buffer2);
+     shouldTriggerAIProcessing(const std::vector<uint8_t>& currentScreenshot);
+    std::future<std::string> performLocalOCR(const std::vector<uint8_t>& image);
+    bool isValidImageBuffer(const std::vector<uint8_t>& buffer);
+    std::future<std::string> performAIOCR(const std::vector<uint8_t>& image);
+    std::future<std::string> describeImage(const std::vector<uint8_t>& image);
+    std::future<std::vector<ScreenObject>> detectObjects(const std::vector<uint8_t>& image);
     std::string formatRelativeTime(double timestamp);
     void updateDescriptionHistory(const std::string& description, double timestamp);
     std::future<void> updateContextInBackground();

@@ -1,10 +1,13 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "db.hpp"
 #include "mcap.hpp"
@@ -25,7 +28,7 @@ namespace elizaos {
 // --- Helper Functions ---
 
 // Simple fetch with timeout
-std::future<Response> fetchWithTimeout(const std::string& resource, RequestInit options = {});
+std::future<std::string> fetchWithTimeout(const std::string& resource, RequestInit options = {});
 
 // Format numbers nicely
 std::string formatCurrency(const std::optional<double>& value, double decimals = 2);
@@ -38,5 +41,4 @@ std::string formatMarketCap(const std::optional<double>& value);
 /*
 */
 
-std::future<Buffer> generateOgImage(const std::string& mint); 
 } // namespace elizaos

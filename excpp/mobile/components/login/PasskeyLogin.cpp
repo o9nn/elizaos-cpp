@@ -12,7 +12,7 @@ void PasskeyLogin() {
         const auto { loginWithPasskey } = useLoginWithPasskey({;
             onError: (err) => {
                 std::cout << err << std::endl;
-                setError(JSON.stringify(err.message));
+                setError(/* JSON.stringify */ std::string(err.message));
                 },
                 });
                 return (;

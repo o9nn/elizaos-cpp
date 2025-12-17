@@ -1,12 +1,16 @@
 #pragma once
+#include <algorithm>
+#include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
-#include ".types.hpp"
+#include "types.hpp"
 
 namespace elizaos {
 
@@ -26,7 +30,7 @@ std::string shortenString(const std::string& s, double maxLength, bool shortenLe
 /**
  * Shorten strings in a nested object/array
  */
-unknown shortenStrings(unknown data, double maxLength = 30);
+std::any shortenStrings(const std::any& data, double maxLength = 30);
 
 /**
  * Save predictions from agent run result
@@ -41,11 +45,11 @@ bool isPromisingPatch(AgentInfo info);
 /**
  * Create a nested dictionary structure
  */
-std::unordered_map<std::string, unknown> createNestedDict();
+std::unordered_map<std::string, std::any> createNestedDict();
 
 /**
  * Parse command-line arguments into nested dictionary
  */
-std::unordered_map<std::string, unknown> parseArgsToNestedDict(const std::vector<std::string>& args);
+std::unordered_map<std::string, std::any> parseArgsToNestedDict(const std::vector<std::string>& args);
 
 } // namespace elizaos

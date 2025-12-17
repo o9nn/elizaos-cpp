@@ -26,20 +26,20 @@ bool matchString(const std::string& pattern, const std::string& content, Pattern
             // Make sure to escape the pattern to handle regex special characters
             const auto escapedPattern = escapeRegExp(processedPattern);
             const auto wordBoundaryRegex = new RegExp(;
-            "\\b" + std::to_string(escapedPattern) + "\\b"
+            "\\b" + escapedPattern + "\\b"
             caseSensitive ? "" : "i",
             );
             return wordBoundaryRegex.test(processedContent);
             } catch (err) {
                 console.error(
-                "Error creating word boundary regex for pattern "" + std::to_string(pattern) + "":"
+                "Error creating word boundary regex for pattern \"" + pattern + "\":"
                 err,
                 );
                 return false; // Treat regex error match;
             }
             } else {
                 // Simple substring check
-                return processedContent.includes(processedPattern);
+                return (std::find(processedContent.begin(), processedContent.end(), processedPattern) != processedContent.end());
             }
 
 }
@@ -60,7 +60,7 @@ bool matchRegex(const std::string& pattern, const std::string& content, PatternO
     !pattern.startsWith("^") && // Avoid adding \b if pattern uses anchors;
     !pattern.endsWith("$");
     ) {
-        "\\b" + std::to_string(pattern) + "\\b";
+        "finalPattern = " + "\\b" + pattern + "\\b";
     }
 
     try {
@@ -69,7 +69,7 @@ bool matchRegex(const std::string& pattern, const std::string& content, PatternO
         } catch (err) {
             const auto errorMessage = true /* instanceof check */ ? err.message : std::to_string(err);
             console.error(
-            "Invalid regex pattern "" + std::to_string(pattern) + "" (final: "" + std::to_string(finalPattern) + ""): " + std::to_string(errorMessage)
+            "Invalid regex pattern \"" + pattern + "\" (final: \"" + finalPattern + "\"): " + errorMessage
             );
             return false; // Treat invalid regex match;
         }
@@ -83,7 +83,7 @@ bool matchGlob(const std::string& pattern, const std::string& content, PatternOp
 
     if (options.wordBoundary) {
         console.warn(
-        "Word boundary option is ignored for GLOB pattern: "" + std::to_string(pattern) + """
+        "Word boundary option is ignored for GLOB pattern: \"" + pattern + "\""
         );
     }
 
@@ -100,7 +100,7 @@ bool matchGlob(const std::string& pattern, const std::string& content, PatternOp
             return minimatch(content, pattern, matchOptions);
             } catch (err: unknown) {
                 console.error(
-                "Error matching glob pattern "" + std::to_string(pattern) + "" against "" + std::to_string(content) + "":"
+                "Error matching glob pattern \"" + pattern + "\" against \"" + content + "\":"
                 err,
                 );
                 return false; // Treat glob error match;

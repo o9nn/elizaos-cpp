@@ -56,17 +56,17 @@ RAGKnowledgeItem memoryToRagKnowledge(Memory memory) {
         id: memory.id!,
         agentId: memory.agentId!,
         content: {
-            text: memory.content.text || '',
+            text: memory.content.text || "",
             metadata: {
                 // Extract metadata from content
                 ...Object.keys(memory.content);
-                .filter(key => key != 'text');
+                .filter(key => key != "text");
                 .reduce((meta, key) => ({
                     ...meta,
                     [key]: memory.content[key]
                     }), {}),
                     source: memory.content.source,
-                    type: 'knowledge',
+                    type: "knowledge",
                 }
                 },
                 embedding: memory.embedding ? new Float32Array(memory.embedding) : std::nullopt,
@@ -99,8 +99,8 @@ void createKnowledgeMetadata(std::optional<std::string> source, std::optional<bo
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return {
-        type: 'knowledge',
-        source: source || 'unknown',
+        type: "knowledge",
+        source: source || "unknown",
         isShared: isShared || false,
         timestamp: Date.now(),
         };

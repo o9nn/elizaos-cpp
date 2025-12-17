@@ -7,7 +7,7 @@ namespace elizaos {
 double estimateTokens(const std::string& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return Math.ceil(text.length / 4);
+    return Math.ceil(text.size() / 4);
 
 }
 
@@ -19,16 +19,16 @@ bool getCtxKnowledgeEnabled(std::optional<IAgentRuntime> runtime) {
     auto rawValue: string | std::nullopt;
 
     if (runtime) {
-        rawValue = runtime.getSetting('CTX_KNOWLEDGE_ENABLED');
+        rawValue = runtime.getSetting("CTX_KNOWLEDGE_ENABLED");
         // CRITICAL FIX: Use trim() and case-insensitive comparison
-        const auto cleanValue = rawValue.toString().trim().toLowerCase();
-        result = cleanValue == 'true';
-        source = 'runtime.getSetting()';
+        const auto cleanValue = std::to_string(rawValue).trim().toLowerCase();
+        result = cleanValue == "true";
+        source = "runtime.getSetting()";
         } else {
             rawValue = process.env.CTX_KNOWLEDGE_ENABLED;
-            const auto cleanValue = rawValue.toString().trim().toLowerCase();
-            result = cleanValue == 'true';
-            source = 'process.env';
+            const auto cleanValue = std::to_string(rawValue).trim().toLowerCase();
+            result = cleanValue == "true";
+            source = "process.env";
         }
 
         // Only log when there's a mismatch or for initial debugging
@@ -52,15 +52,15 @@ bool shouldUseCustomLLM() {
 
     // Check for provider-specific API keys
     switch (textProvider.toLowerCase()) {
-        case 'openrouter':
+        // case "openrouter":
         return !!process.env.OPENROUTER_API_KEY;
-        case 'openai':
+        // case "openai":
         return !!process.env.OPENAI_API_KEY;
-        case 'anthropic':
+        // case "anthropic":
         return !!process.env.ANTHROPIC_API_KEY;
-        case 'google':
+        // case "google":
         return !!process.env.GOOGLE_API_KEY;
-        default:
+        // default:
         return false;
     }
 
@@ -70,7 +70,7 @@ std::future<double> processFragmentsSynchronously(auto documentId, auto fullDocu
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!fullDocumentText || fullDocumentText.trim() == '') {
-        std::cout << "No text content available to chunk for document " + std::to_string(documentId) + "." << std::endl;
+        std::cout << "No text content available to chunk for document " + documentId + "." << std::endl;
         return 0;
     }
 
@@ -78,12 +78,12 @@ std::future<double> processFragmentsSynchronously(auto documentId, auto fullDocu
     const auto chunks = splitDocumentIntoChunks(fullDocumentText);
 
     if (chunks.length == 0) {
-        std::cout << "No chunks generated from text for " + std::to_string(documentId) + ". No fragments to save." << std::endl;
+        std::cout << "No chunks generated from text for " + documentId + ". No fragments to save." << std::endl;
         return 0;
     }
 
     const auto docName = documentTitle || documentId.substring(0, 8);
-    std::cout << "[Document Processor] "" + std::to_string(docName) + "": Split into " + std::to_string(chunks.length) + " chunks" << std::endl;
+    std::cout << "[Document Processor] \"" + docName + "\": Split into " + chunks.size() + " chunks" << std::endl;
 
     // Get provider limits for rate limiting
     const auto providerLimits = getProviderRateLimits();
@@ -94,7 +94,7 @@ std::future<double> processFragmentsSynchronously(auto documentId, auto fullDocu
     );
 
     logger.debug(
-    "[Document Processor] Rate limits: " + std::to_string(providerLimits.requestsPerMinute) + " RPM, " + std::to_string(providerLimits.tokensPerMinute) + " TPM (" + std::to_string(providerLimits.provider) + ", concurrency: " + std::to_string(CONCURRENCY_LIMIT) + ")"
+    "[Document Processor] Rate limits: " + providerLimits.requestsPerMinute + " RPM, " + providerLimits.tokensPerMinute + " TPM (" + providerLimits.provider + ", concurrency: " + CONCURRENCY_LIMIT + ")"
     );
 
     // Process and save fragments
@@ -114,22 +114,22 @@ std::future<double> processFragmentsSynchronously(auto documentId, auto fullDocu
         });
 
         // Report results with summary
-        const auto successRate = ((savedCount / chunks.length) * 100).toFixed(1);
+        const auto successRate = ((savedCount / chunks.size()) * 100).toFixed(1);
 
         if (failedCount > 0) {
             logger.warn(
-            "[Document Processor] "" + std::to_string(docName) + "": " + std::to_string(failedCount) + "/" + std::to_string(chunks.length) + " chunks failed processing"
+            "[Document Processor] \"" + docName + "\": " + failedCount + "/" + chunks.size() + " chunks failed processing"
             );
         }
 
         logger.info(
-        "[Document Processor] "" + std::to_string(docName) + "" complete: " + std::to_string(savedCount) + "/" + std::to_string(chunks.length) + " fragments saved (" + std::to_string(successRate) + "% success)"
+        "[Document Processor] \"" + docName + "\" complete: " + savedCount + "/" + chunks.size() + " fragments saved (" + successRate + "% success)"
         );
 
         // Provide comprehensive end summary
         logKnowledgeGenerationSummary({
             documentId,
-            totalChunks: chunks.length,
+            totalChunks: chunks.size(),
             savedCount,
             failedCount,
             successRate: parseFloat(successRate),
@@ -141,7 +141,7 @@ std::future<double> processFragmentsSynchronously(auto documentId, auto fullDocu
 
 }
 
-std::future<std::string> extractTextFromDocument(Buffer fileBuffer, const std::string& contentType, const std::string& originalFilename) {
+std::future<std::string> extractTextFromDocument(const std::vector<uint8_t>& fileBuffer, const std::string& contentType, const std::string& originalFilename) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -159,15 +159,15 @@ std::future<std::string> extractTextFromDocument(Buffer fileBuffer, const std::s
 
                     // For plain text files, try UTF-8 decoding first
                     if (
-                    contentType.includes('text/') ||;
-                    contentType.includes('application/json') ||;
-                    contentType.includes('application/xml');
+                    (std::find(contentType.begin(), contentType.end(), "text/") != contentType.end()) ||;
+                    (std::find(contentType.begin(), contentType.end(), "application/json") != contentType.end()) ||;
+                    (std::find(contentType.begin(), contentType.end(), "application/xml") != contentType.end());
                     ) {
                         try {
-                            return fileBuffer.tostd::to_string('utf8');
+                            return fileBuffer.tostd::to_string("utf8");
                             } catch (textError) {
                                 logger.warn(
-                                "Failed to decode " + std::to_string(originalFilename) + "-8, falling back to binary extraction";
+                                "Failed to decode " + originalFilename + "-8, falling back to binary extraction";
                                 );
                             }
                         }
@@ -176,7 +176,7 @@ std::future<std::string> extractTextFromDocument(Buffer fileBuffer, const std::s
                         return extractTextFromFileBuffer(fileBuffer, contentType, originalFilename);
                     }
                     } catch (error: any) {
-                        std::cerr << "Error extracting text from " + std::to_string(originalFilename) + ": " + std::to_string(error.message) << std::endl;
+                        std::cerr << "Error extracting text from " + originalFilename + ": " + error.message << std::endl;
                         throw std::runtime_error(`Failed to extract text from ${originalFilename}: ${error.message}`);
                     }
 
@@ -189,8 +189,8 @@ std::future<std::string> extractTextFromDocument(Buffer fileBuffer, const std::s
 Memory createDocumentMemory(auto agentId, auto clientDocumentId, auto originalFilename, auto contentType, auto worldId, auto fileSize, auto documentId, auto customMetadata) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto fileExt = originalFilename.split('.').pop().toLowerCase() || '';
-    const auto title = "." + std::to_string(fileExt);
+    const auto fileExt = originalFilename.split(".").pop().toLowerCase() || "";
+    const auto title = "originalFilename.replace(" + "." + fileExt;
 
     // Use the provided documentId or generate a new one
     const auto docId = documentId || (uuidv4());
@@ -210,7 +210,7 @@ Memory createDocumentMemory(auto agentId, auto clientDocumentId, auto originalFi
             title,
             fileExt,
             fileSize,
-            source: 'rag-service-main-upload',
+            source: "rag-service-main-upload",
             timestamp: Date.now(),
             // Merge custom metadata if provided
             ...(customMetadata || {}),
@@ -231,8 +231,8 @@ std::future<std::vector<std::string>> splitDocumentIntoChunks(const std::string&
     const auto targetCharChunkOverlap = Math.round(tokenChunkOverlap * DEFAULT_CHARS_PER_TOKEN);
 
     logger.debug(
-    "Using core splitChunks with settings: tokenChunkSize=" + std::to_string(tokenChunkSize) + ", tokenChunkOverlap=" + std::to_string(tokenChunkOverlap) + ", "
-    "charChunkSize=" + std::to_string(targetCharChunkSize) + ", charChunkOverlap=" + std::to_string(targetCharChunkOverlap);
+    "Using core splitChunks with settings: tokenChunkSize=" + tokenChunkSize + ", tokenChunkOverlap=" + tokenChunkOverlap + ", "
+    "charChunkSize=" + targetCharChunkSize + ", charChunkOverlap=" + targetCharChunkOverlap;
     );
 
     // Split the text into chunks
@@ -266,7 +266,7 @@ std::vector<std::any> prepareContextPrompts(const std::vector<std::string>& chun
                 // If there was an error in prompt generation
                 if (cachingPromptInfo.prompt.startsWith('Error:')) {
                     logger.warn(
-                    "Skipping contextualization for chunk " + std::to_string(originalIndex) + " due to: " + std::to_string(cachingPromptInfo.prompt)
+                    "Skipping contextualization for chunk " + originalIndex + " due to: " + cachingPromptInfo.prompt
                     );
                     return {
                         originalIndex,
@@ -292,7 +292,7 @@ std::vector<std::any> prepareContextPrompts(const std::vector<std::string>& chun
                             : getContextualizationPrompt(fullDocumentText, chunkText);
 
                             if (prompt.startsWith('Error:')) {
-                                std::cout << "Skipping contextualization for chunk " + std::to_string(originalIndex) + " due to: " + std::to_string(prompt) << std::endl;
+                                std::cout << "Skipping contextualization for chunk " + originalIndex + " due to: " + prompt << std::endl;
                                 return {
                                     prompt: nullptr,
                                     originalIndex,
@@ -312,7 +312,7 @@ std::vector<std::any> prepareContextPrompts(const std::vector<std::string>& chun
                                 }
                                 } catch (error: any) {
                                     logger.error(
-                                    "Error preparing prompt for chunk " + std::to_string(originalIndex) + ": " + std::to_string(error.message)
+                                    "Error preparing prompt for chunk " + originalIndex + ": " + error.message
                                     error.stack;
                                     );
                                     return {
@@ -360,7 +360,7 @@ void createRateLimiter(double requestsPerMinute, std::optional<double> tokensPer
         const auto currentTokens = tokenUsage.reduce((sum, usage) => sum + usage.tokens, 0);
 
         // Check both request and token limits
-        const auto requestLimitExceeded = requestTimes.length >= requestsPerMinute;
+        const auto requestLimitExceeded = requestTimes.size() >= requestsPerMinute;
         const auto tokenLimitExceeded = tokensPerMinute && currentTokens + estimatedTokens > tokensPerMinute;
 
         if (requestLimitExceeded || tokenLimitExceeded) {
@@ -377,15 +377,15 @@ void createRateLimiter(double requestsPerMinute, std::optional<double> tokensPer
             }
 
             if (timeToWait > 0) {
-                const auto reason = requestLimitExceeded ? 'request' : 'token';
+                const auto reason = requestLimitExceeded ? "request" : "token";
                 // Only log significant waits to reduce spam
                 if (timeToWait > 5000) {
                     logger.info(
-                    "[Document Processor] Rate limiting: waiting " + std::to_string(Math.round(timeToWait / 1000)) + "s due to " + std::to_string(reason) + " limit"
+                    "[Document Processor] Rate limiting: waiting " + std::to_string(Math.round(timeToWait / 1000)) + "s due to " + reason + " limit"
                     );
                     } else {
                         logger.debug(
-                        "[Document Processor] Rate limiting: " + std::to_string(timeToWait) + "ms wait (" + std::to_string(reason) + " limit)"
+                        "[Document Processor] Rate limiting: " + timeToWait + "ms wait (" + reason + " limit)"
                         );
                     }
                     new Promise((resolve) => setTimeout(resolve, timeToWait));
@@ -393,9 +393,9 @@ void createRateLimiter(double requestsPerMinute, std::optional<double> tokensPer
             }
 
             // Record this request
-            requestTimes.push(now);
+            requestTimes.push_back(now);
             if (tokensPerMinute) {
-                tokenUsage.push({ timestamp: now, tokens: estimatedTokens });
+                tokenUsage.push_back({ timestamp: now, tokens: estimatedTokens });
             }
             };
 
@@ -406,14 +406,14 @@ void logKnowledgeGenerationSummary(auto savedCount, auto failedCount, auto ctxEn
 
     // Only show summary for failed processing or debug mode
     if (failedCount > 0 || process.env.NODE_ENV == 'development') {
-        const auto status = failedCount > 0 ? 'PARTIAL' : 'SUCCESS';
+        const auto status = failedCount > 0 ? "PARTIAL" : "SUCCESS";
         logger.info(
-        "[Document Processor] " + std::to_string(status) + ": " + std::to_string(savedCount) + "/" + std::to_string(totalChunks) + " chunks, CTX: " + std::to_string(ctxEnabled ? 'ON' : 'OFF') + ", Provider: " + std::to_string(providerLimits.provider)
+        "[Document Processor] " + status + ": " + savedCount + "/" + totalChunks + " chunks, CTX: " + std::to_string(ctxEnabled ? "ON" : "OFF") + ", Provider: " + providerLimits.provider
         );
     }
 
     if (failedCount > 0) {
-        std::cout << "[Document Processor] " + std::to_string(failedCount) + " chunks failed processing" << std::endl;
+        std::cout << "[Document Processor] " + failedCount + " chunks failed processing" << std::endl;
     }
 
 }

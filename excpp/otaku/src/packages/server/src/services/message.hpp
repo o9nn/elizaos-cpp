@@ -1,14 +1,17 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
-#include ".bus.hpp"
+#include "bus.hpp"
 #include "elizaos/core.hpp"
 
 namespace elizaos {
@@ -27,7 +30,7 @@ struct MessageServiceMessage {
     UUID author_id;
     std::optional<std::string> author_display_name;
     std::string content;
-    std::optional<unknown> raw_message;
+    std::optional<std::any> raw_message;
     std::optional<std::string> source_id;
     std::optional<std::string> source_type;
     std::optional<UUID> in_reply_to_message_id;
@@ -50,7 +53,7 @@ public:
     std::future<bool> validateNotSelfMessage(MessageServiceMessage message);
     std::future<UUID> ensureAuthorEntityExists(MessageServiceMessage message);
     Memory createAgentMemory(MessageServiceMessage message, UUID agentAuthorEntityId, UUID agentRoomId, UUID agentWorldId);
-    void handleIncomingMessage(unknown data);
+    void handleIncomingMessage(const std::any& data);
     void handleMessageDeleted(const std::any& data);
     void handleChannelCleared(const std::any& data);
     void sendAgentResponseToBus(UUID agentRoomId, UUID agentWorldId, Content content, std::optional<UUID> inReplyToAgentMemoryId, std::optional<MessageServiceMessage> originalMessage);

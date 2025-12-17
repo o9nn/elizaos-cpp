@@ -8,11 +8,11 @@ std::string getProxyUrl(const std::string& path) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (typeof window != "undefined") {
-        return std::to_string(window.location.origin) + std::to_string(path);
+        return window.location.origin + path;
     }
     // Server-side fallback - use env or default
     const auto appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:4444";
-    return std::to_string(appUrl) + std::to_string(path);
+    return appUrl + path;
 
 }
 
@@ -25,14 +25,14 @@ void getAvailableChains() {
 
     // Only add localhost when explicitly using local network
     if (isLocalNetwork) {
-        chains.push(localhost);
+        chains.push_back(localhost);
     }
 
     // Add Base chains (always available)
-    chains.push(base, baseSepolia);
+    chains.push_back(base, baseSepolia);
 
     // Add BSC chains (always available)
-    chains.push(bsc, bscTestnet);
+    chains.push_back(bsc, bscTestnet);
 
     return chains;
 

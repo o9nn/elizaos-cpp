@@ -1,10 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -25,7 +27,7 @@ struct PairTradesResponse {
     std::optional<std::string> signature;
     std::optional<double> blockNumber;
     std::optional<double> unixTime;
-    std::optional<std::variant<"buy", "sell">> type;
+    std::optional<std::string> type;
     std::optional<std::string> tokenAddress;
     std::optional<double> tokenAmount;
     std::optional<double> tokenAmountUI;

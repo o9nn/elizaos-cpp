@@ -8,7 +8,7 @@ std::future<void> handler(NextApiRequest req, NextApiResponse res) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
-        const auto URL = std::to_string(process.env.DAO_API_URL);
+        const auto URL = process.env.DAO_API_URL;
 
         const auto response = fetch(URL, {;
             headers: {

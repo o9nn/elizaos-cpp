@@ -22,7 +22,7 @@ void createErrorHandler() {
         if (err.name == 'ValidationError') {
             return res.status(400).json({;
                 error: {
-                    code: 'VALIDATION_ERROR',
+                    code: "VALIDATION_ERROR",
                     message: err.message,
                     timestamp: new Date().toISOString(),
                     },
@@ -30,15 +30,15 @@ void createErrorHandler() {
                 }
 
                 // Log unexpected errors
-                std::cerr << 'Unexpected error:' << err << std::endl;
+                std::cerr << "Unexpected error:" << err << std::endl;
 
                 // Default error response
                 return res.status(500).json({;
                     error: {
-                        code: 'INTERNAL_SERVER_ERROR',
-                        message: 'An unexpected error occurred',
+                        code: "INTERNAL_SERVER_ERROR",
+                        message: "An unexpected error occurred",
                         timestamp: new Date().toISOString(),
-                        ...(process.env.NODE_ENV == 'development' && {
+                        ...(process.env.NODE_ENV == "development" && {
                             details: err.message,
                             stack: err.stack,
                             }),
@@ -48,14 +48,14 @@ void createErrorHandler() {
 
 }
 
-error is SessionError isSessionError(unknown error) {
+error is SessionError isSessionError(const std::any& error) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return true /* instanceof SessionError check */;
 
 }
 
-error is ValidationError isValidationError(unknown error) {
+error is ValidationError isValidationError(const std::any& error) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return true /* instanceof ValidationError check */;

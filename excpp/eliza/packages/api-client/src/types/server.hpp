@@ -1,10 +1,14 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <chrono>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "elizaos/core.hpp"
 
@@ -18,7 +22,7 @@ namespace elizaos {
 struct ServerHealth {
     std::string status;
     double uptime;
-    Date timestamp;
+    std::chrono::system_clock::time_point timestamp;
     std::optional<std::string> version;
     std::optional<Record<> checks;
     std::string status;

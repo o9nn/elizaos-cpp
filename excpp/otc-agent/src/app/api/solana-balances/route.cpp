@@ -34,7 +34,7 @@ std::future<std::unordered_map<std::string, double>> getSolanaPriceCache() {
         if (!cached) return {};
         if (Date.now() - cached.cachedAt >= PRICE_CACHE_TTL_MS) return {};
         console.log(
-        "[Solana Balances] Using cached prices (" + std::to_string(Object.keys(cached.prices).length) + " tokens)"
+        "[Solana Balances] Using cached prices (" + std::to_string(Object.keys(cached.prices).size()) + " tokens)"
         );
         return cached.prices;
         } catch {
@@ -64,12 +64,12 @@ std::future<std::optional<CachedWalletResponse["tokens"]>> getCachedWalletRespon
     try {
         const auto runtime = agentRuntime.getRuntime();
         const auto cached = runtime.getCache<CachedWalletResponse>(;
-        "solana-wallet:" + std::to_string(address)
+        "solana-wallet:" + address
         );
         if (!cached) return null;
         if (Date.now() - cached.cachedAt >= WALLET_CACHE_TTL_MS) return null;
         console.log(
-        "[Solana Balances] Using cached wallet data (" + std::to_string(cached.tokens.length) + " tokens)"
+        "[Solana Balances] Using cached wallet data (" + cached.tokens.size() + " tokens)"
         );
         return cached.tokens;
         } catch {
@@ -83,7 +83,7 @@ std::future<void> setCachedWalletResponse(const std::string& address, CachedWall
 
     try {
         const auto runtime = agentRuntime.getRuntime();
-        "solana-wallet:" + std::to_string(address)
+        "runtime.setCache(" + "solana-wallet:" + address
             tokens,
             cachedAt: Date.now(),
             });
@@ -93,7 +93,7 @@ std::future<void> setCachedWalletResponse(const std::string& address, CachedWall
 
 }
 
-std::future<std::optional<Response>> fetchWithIpfsGatewayFallback(const std::string& imageUrl) {
+std::future<std::string> fetchWithIpfsGatewayFallback(const std::string& imageUrl) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Extract IPFS hash from various URL formats
@@ -118,17 +118,17 @@ std::future<std::optional<Response>> fetchWithIpfsGatewayFallback(const std::str
 
     // If it's an IPFS URL, try multiple gateways
     if (ipfsHash) {
-        const auto ipfsPath = "/ipfs/" + std::to_string(ipfsHash);
+        const auto ipfsPath = "/ipfs/" + ipfsHash;
 
         for (const auto& gateway : IPFS_GATEWAYS)
             try {
-                const auto gatewayUrl = std::to_string(gateway) + std::to_string(ipfsPath);
+                const auto gatewayUrl = gateway + ipfsPath;
                 const auto response = fetch(gatewayUrl, {;
                     headers: { "User-Agent": "OTC-Desk/1.0" },
                     signal: AbortSignal.timeout(8000), // 8s timeout per gateway
                     });
                     if (response.ok) {
-                        std::cout << "[Solana Balances] IPFS fetched from " + std::to_string(gateway) << std::endl;
+                        std::cout << "[Solana Balances] IPFS fetched from " + gateway << std::endl;
                         return response;
                     }
                     } catch {
@@ -159,12 +159,12 @@ std::future<std::string> cacheImageToBlob(const std::string& imageUrl) {
     try {
         const auto urlHash = crypto.createHash("md5").update(imageUrl).digest("hex");
         const auto extension = getExtensionFromUrl(imageUrl) || "png";
-        const auto blobPath = "token-images/" + std::to_string(urlHash) + "." + std::to_string(extension);
+        const auto blobPath = "token-images/" + urlHash + "." + extension;
 
         // Check if already cached in blob storage
         const auto existing = head(blobPath).catch(() => nullptr);
         if (existing) {
-            std::cout << "[Solana Balances] Image already cached: " + std::to_string(existing.url) << std::endl;
+            std::cout << "[Solana Balances] Image already cached: " + existing.url << std::endl;
             return existing.url;
         }
 
@@ -172,7 +172,7 @@ std::future<std::string> cacheImageToBlob(const std::string& imageUrl) {
         const auto response = fetchWithIpfsGatewayFallback(imageUrl);
 
         if (!response || !response.ok) {
-            std::cout << "[Solana Balances] Failed to fetch image: " + std::to_string(imageUrl) << std::endl;
+            std::cout << "[Solana Balances] Failed to fetch image: " + imageUrl << std::endl;
             return nullptr; // Return nullptr instead of broken URL;
         }
 
@@ -186,7 +186,7 @@ std::future<std::string> cacheImageToBlob(const std::string& imageUrl) {
             allowOverwrite: true,
             });
 
-            std::cout << "[Solana Balances] Cached image to blob: " + std::to_string(blob.url) << std::endl;
+            std::cout << "[Solana Balances] Cached image to blob: " + blob.url << std::endl;
             return blob.url;
             } catch (error) {
                 std::cerr << "[Solana Balances] Image cache error:" << error << std::endl;
@@ -263,7 +263,7 @@ std::future<std::optional<CachedWalletResponse["tokens"]>> fetchFromCodex(const 
                             });
 
                             if (!response.ok) {
-                                std::cout << "[Solana Balances] Codex returned " + std::to_string(response.status) << std::endl;
+                                std::cout << "[Solana Balances] Codex returned " + response.status << std::endl;
                                 return nullptr;
                             }
 
@@ -279,7 +279,7 @@ std::future<std::optional<CachedWalletResponse["tokens"]>> fetchFromCodex(const 
                                 return nullptr;
                             }
 
-                            std::cout << "[Solana Balances] Codex returned " + std::to_string(items.length) + " tokens" << std::endl;
+                            std::cout << "[Solana Balances] Codex returned " + items.size() + " tokens" << std::endl;
 
                             // Transform to our format
                             const auto tokens = items;
@@ -357,7 +357,7 @@ std::future<void> GET(NextRequest request) {
             const auto codexTokens = fetchFromCodex(walletAddress, codexKey);
             if (codexTokens && codexTokens.length > 0) {
                 console.log(
-                "[Solana Balances] Codex returned " + std::to_string(codexTokens.length) + " tokens"
+                "[Solana Balances] Codex returned " + codexTokens.size() + " tokens"
                 );
                 setCachedWalletResponse(walletAddress, codexTokens);
                 return NextResponse.json({ tokens: codexTokens, source: "codex" });
@@ -375,7 +375,7 @@ std::future<void> GET(NextRequest request) {
         try {
             // Step 1: Get token balances from Helius (fast, single call)
             const auto balancesResponse = fetch(;
-            "https://mainnet.helius-rpc.com/?api-key=" + std::to_string(heliusKey)
+            "https://mainnet.helius-rpc.com/?api-key=" + heliusKey
             {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -423,7 +423,7 @@ std::future<void> GET(NextRequest request) {
                                         const auto accounts = (balancesData.result.value || [])[];
 
                                         console.log(
-                                        "[Solana Balances] RPC returned " + std::to_string(accounts.length) + " token accounts"
+                                        "[Solana Balances] RPC returned " + accounts.size() + " token accounts"
                                         );
 
                                         // Filter to tokens with balance > 0
@@ -445,7 +445,7 @@ std::future<void> GET(NextRequest request) {
                                                 .filter((t) => t.amount > 0); // Any non-zero balance;
 
                                                 console.log(
-                                                "[Solana Balances] Found " + std::to_string(tokensWithBalance.length) + " tokens with balance > 0"
+                                                "[Solana Balances] Found " + tokensWithBalance.size() + " tokens with balance > 0"
                                                 );
 
                                                 if (tokensWithBalance.length == 0) {
@@ -472,7 +472,7 @@ std::future<void> GET(NextRequest request) {
                                                 // Find mints that need metadata
                                                 const auto mintsNeedingMetadata = allMints.filter((mint) => !metadata[mint]);
                                                 console.log(
-                                                "[Solana Balances] " + std::to_string(Object.keys(cachedMetadata).length) + " cached, " + std::to_string(mintsNeedingMetadata.length) + " need metadata"
+                                                "[Solana Balances] " + std::to_string(Object.keys(cachedMetadata).size()) + " cached, " + mintsNeedingMetadata.size() + " need metadata"
                                                 );
 
                                                 // Batch fetch metadata for uncached tokens (100 at a time)
@@ -481,7 +481,7 @@ std::future<void> GET(NextRequest request) {
                                                         const auto batch = mintsNeedingMetadata.slice(i, i + 100);
                                                         try {
                                                             const auto metadataResponse = fetch(;
-                                                            "https://mainnet.helius-rpc.com/?api-key=" + std::to_string(heliusKey)
+                                                            "https://mainnet.helius-rpc.com/?api-key=" + heliusKey
                                                             {
                                                                 method: "POST",
                                                                 headers: { "Content-Type": "application/json" },
@@ -531,7 +531,7 @@ std::future<void> GET(NextRequest request) {
                                                                     }
 
                                                                     console.log(
-                                                                    "[Solana Balances] Got metadata for " + std::to_string(Object.keys(metadata).length) + " tokens"
+                                                                    "[Solana Balances] Got metadata for " + std::to_string(Object.keys(metadata).size()) + " tokens"
                                                                     );
 
                                                                     // Step 3: Get prices from cache first, then fetch missing from Jupiter
@@ -544,7 +544,7 @@ std::future<void> GET(NextRequest request) {
                                                                     [&](mint) { return prices[mint] == std::nullopt,; }
                                                                     );
                                                                     console.log(
-                                                                    "[Solana Balances] " + std::to_string(Object.keys(cachedPrices).length) + " prices cached, " + std::to_string(mintsNeedingPrices.length) + " need fetch"
+                                                                    "[Solana Balances] " + std::to_string(Object.keys(cachedPrices).size()) + " prices cached, " + mintsNeedingPrices.size() + " need fetch"
                                                                     );
 
                                                                     // Jupiter price API - fetch in batches of 100
@@ -567,7 +567,7 @@ std::future<void> GET(NextRequest request) {
                                                                                     }
                                                                                     } else {
                                                                                         console.log(
-                                                                                        "[Solana Balances] Jupiter batch " + std::to_string(i / 100 + 1) + " returned " + std::to_string(priceResponse.status)
+                                                                                        "[Solana Balances] Jupiter batch " + std::to_string(i / 100 + 1) + " returned " + priceResponse.status
                                                                                         );
                                                                                     }
                                                                                     } catch (err) {
@@ -589,7 +589,7 @@ std::future<void> GET(NextRequest request) {
                                                                                     .catch(() => {});
                                                                                 }
                                                                                 console.log(
-                                                                                "[Solana Balances] Have prices for " + std::to_string(Object.keys(prices).length) + " tokens"
+                                                                                "[Solana Balances] Have prices for " + std::to_string(Object.keys(prices).size()) + " tokens"
                                                                                 );
 
                                                                                 // Step 4: Check blob cache for unreliable image URLs (parallel)
@@ -598,9 +598,9 @@ std::future<void> GET(NextRequest request) {
                                                                                 .filter(;
                                                                                 (url) =>;
                                                                                 url &&;
-                                                                                (url.includes("ipfs.io/ipfs/") ||;
-                                                                                url.includes("storage.auto.fun") ||;
-                                                                                url.includes(".mypinata.cloud")),
+                                                                                ((std::find(url.begin(), url.end(), "ipfs.io/ipfs/") != url.end()) ||;
+                                                                                (std::find(url.begin(), url.end(), "storage.auto.fun") != url.end()) ||;
+                                                                                (std::find(url.begin(), url.end(), ".mypinata.cloud") != url.end())),
                                                                                 )[];
 
                                                                                 const std::unordered_map<std::string, std::string> cachedBlobUrls = {};
@@ -608,7 +608,7 @@ std::future<void> GET(NextRequest request) {
                                                                                     const auto blobChecks = Promise.all(;
                                                                                     unreliableUrls.map(async (url) => {
                                                                                         const auto urlHash = crypto.createHash("md5").update(url).digest("hex");
-                                                                                        const auto blobPath = "token-images/" + std::to_string(urlHash) + ".png";
+                                                                                        const auto blobPath = "token-images/" + urlHash + ".png";
                                                                                         const auto existing = head(blobPath).catch(() => nullptr);
                                                                                         return { url, blobUrl: existing?.url || null }
                                                                                         }),
@@ -618,7 +618,7 @@ std::future<void> GET(NextRequest request) {
                                                                                         }
                                                                                     }
                                                                                     console.log(
-                                                                                    "[Solana Balances] Found " + std::to_string(Object.keys(cachedBlobUrls).length) + " cached blob images"
+                                                                                    "[Solana Balances] Found " + std::to_string(Object.keys(cachedBlobUrls).size()) + " cached blob images"
                                                                                     );
 
                                                                                     // Step 5: Combine everything
@@ -635,9 +635,9 @@ std::future<void> GET(NextRequest request) {
                                                                                                 } else if (cachedBlobUrls[rawLogoUrl]) {
                                                                                                     logoURI = cachedBlobUrls[rawLogoUrl];
                                                                                                     } else if (;
-                                                                                                    !rawLogoUrl.includes("ipfs.io/ipfs/") &&;
-                                                                                                    !rawLogoUrl.includes("storage.auto.fun") &&;
-                                                                                                    !rawLogoUrl.includes(".mypinata.cloud");
+                                                                                                    !(std::find(rawLogoUrl.begin(), rawLogoUrl.end(), "ipfs.io/ipfs/") != rawLogoUrl.end()) &&;
+                                                                                                    !(std::find(rawLogoUrl.begin(), rawLogoUrl.end(), "storage.auto.fun") != rawLogoUrl.end()) &&;
+                                                                                                    !(std::find(rawLogoUrl.begin(), rawLogoUrl.end(), ".mypinata.cloud") != rawLogoUrl.end());
                                                                                                     ) {
                                                                                                         logoURI = rawLogoUrl;
                                                                                                     }
@@ -677,7 +677,7 @@ std::future<void> GET(NextRequest request) {
                                                                                                             });
 
                                                                                                             console.log(
-                                                                                                            "[Solana Balances] " + std::to_string(tokensWithBalance.length) + " total -> " + std::to_string(filteredTokens.length) + " after filter"
+                                                                                                            "[Solana Balances] " + tokensWithBalance.size() + " total -> " + filteredTokens.size() + " after filter"
                                                                                                             );
 
                                                                                                             // Fire-and-forget: cache unreliable images in background for next request

@@ -1,13 +1,16 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".shared/response-utils.hpp"
 #include "audioBuffer.hpp"
 #include "elizaos/core.hpp"
+#include "shared/response-utils.hpp"
 
 namespace elizaos {
 

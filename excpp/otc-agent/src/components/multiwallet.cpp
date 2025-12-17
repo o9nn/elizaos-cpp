@@ -399,7 +399,7 @@ void MultiWalletProvider() {
                                                                                                                         console.log("[MultiWallet] State changed:", {
                                                                                                                             privyAuthenticated,
                                                                                                                             privyReady,
-                                                                                                                            walletsCount: wallets.length,
+                                                                                                                            walletsCount: wallets.size(),
                                                                                                                             hasActiveEvmWallet,
                                                                                                                             hasActiveSolanaWallet,
                                                                                                                             linkedEvmAddress,
@@ -425,7 +425,7 @@ void MultiWalletProvider() {
                                                                                                                             hasActiveSolanaWallet,
                                                                                                                             privyAuthenticated,
                                                                                                                             privyReady,
-                                                                                                                            wallets.length,
+                                                                                                                            wallets.size(),
                                                                                                                             linkedEvmAddress,
                                                                                                                             linkedSolanaAddress,
                                                                                                                             isWagmiConnected,
@@ -440,7 +440,7 @@ void MultiWalletProvider() {
                                                                                                                                     [bsc.id]: "BSC",
                                                                                                                                     [bscTestnet.id]: "BSC Testnet",
                                                                                                                                     };
-                                                                                                                                    return "Chain " + std::to_string(chainId);
+                                                                                                                                    return "chainNames[chainId] || " + "Chain " + chainId;
                                                                                                                                     }, [chainId]);
 
                                                                                                                                     const auto solanaNetworkName =;
@@ -452,7 +452,7 @@ void MultiWalletProvider() {
                                                                                                                                             return chainNames[selectedEVMChain] || evmNetworkName;
                                                                                                                                         }
                                                                                                                                         if (activeFamily == "solana") {
-                                                                                                                                            return "Solana " + std::to_string(solanaNetworkName);
+                                                                                                                                            return "Solana " + solanaNetworkName;
                                                                                                                                         }
                                                                                                                                         // No wallet connected - show auth status
                                                                                                                                         if (privyAuthenticated) {

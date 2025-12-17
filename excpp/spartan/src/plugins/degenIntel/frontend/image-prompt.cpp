@@ -7,24 +7,24 @@ namespace elizaos {
 void ImagePrompt() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto [prompt, setPrompt] = useState<string>('');
+    const auto [prompt, setPrompt] = useState<string>("");
 
     const auto mutation = useMutation({;
         mutationFn: async () => {
-            const auto response = std::to_string(import.meta.env.VITE_API_URL) + "/image-prompt";
-                method: 'POST',
+            const auto response = "fetch(" + import.meta.env.VITE_API_URL + "/image-prompt";
+                method: "POST",
                 headers: {
-                    Accept: '*/*',
-                    'Content-Type': 'application/json',
+                    Accept: "*/*",
+                    "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({ prompt }),
+                    body: /* JSON.stringify */ std::string({ prompt }),
                     });
                     const auto buffer = response.arrayBuffer();
                     const auto blob = new Blob([buffer]);
                     const auto url = URL.createObjectURL(blob);
                     return url;
                     },
-                    mutationKey: ['image_prompt'],
+                    mutationKey: ["image_prompt"],
                     });
 
                     return (;

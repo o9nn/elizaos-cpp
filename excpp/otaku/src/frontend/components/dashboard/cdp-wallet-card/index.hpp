@@ -1,23 +1,26 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
-#include "...constants/chains.hpp"
-#include "...contexts/ModalContext.hpp"
-#include "...lib/elizaClient.hpp"
-#include "...lib/number-format.hpp"
-#include "..ui/bullet.hpp"
-#include "..ui/button.hpp"
-#include "..ui/card.hpp"
 #include "FundModal.hpp"
 #include "NFTDetailModal.hpp"
 #include "SendModal.hpp"
 #include "SwapModal.hpp"
 #include "TokenDetailModal.hpp"
+#include "constants/chains.hpp"
+#include "contexts/ModalContext.hpp"
+#include "lib/elizaClient.hpp"
+#include "lib/number-format.hpp"
+#include "ui/bullet.hpp"
+#include "ui/button.hpp"
+#include "ui/card.hpp"
 
 namespace elizaos {
 

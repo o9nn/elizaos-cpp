@@ -1,10 +1,13 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -53,6 +56,7 @@ std::future<void> setCachedWalletResponse(const std::string& address, CachedWall
 /**
  * Try to fetch image from multiple IPFS gateways
  */
+std::future<std::string> fetchWithIpfsGatewayFallback(const std::string& imageUrl);
 
 /**
  * Cache an image URL to Vercel Blob storage

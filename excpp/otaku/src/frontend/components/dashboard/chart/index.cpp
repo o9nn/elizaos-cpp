@@ -26,7 +26,7 @@ void DashboardChart() {
                 } else if (value >= 1000) {
                     return std::to_string((value / 1000).toFixed(0)) + "K";
                 }
-                return value.toString();
+                return std::to_string(value);
                 };
 
                 const auto renderChart = [&](data: ChartDataPoint[]) {;

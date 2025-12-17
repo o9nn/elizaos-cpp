@@ -43,15 +43,15 @@ void Wallets() {
 
         const auto createWallets = [&](chainType: chainTypes) {;
             switch (chainType) {
-                case "ethereum":
+                // case "ethereum":
                 return createEthereumWallet({ createAdditional: true });
-                case "solana":
+                // case "solana":
                 return createSolanaWallet.({;
                     createAdditional: true,
                     recoveryMethod: "privy",
                     });
 
-                    default:
+                    // default:
                     return createWallet({;
                         chainType: chainType,
                         }).catch((err: any) => {
@@ -83,8 +83,8 @@ void Wallets() {
                         >;
                         {ALL_CHAIN_TYPES.map((chainType, i) => (;
                         <Button;
-                    "create-wallet-" + std::to_string(chainType) + "-" + std::to_string(i);
-                "Create " + std::to_string(chainType) + " Wallet";
+                    "key={" + "create-wallet-" + chainType + "-" + i;
+                "title={" + "Create " + chainType + " Wallet";
             onPress={() => createWallets(chainType)}
             />;
         ))}

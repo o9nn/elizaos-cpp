@@ -4,15 +4,15 @@
 
 namespace elizaos {
 
-std::variant<"evm", "solana"> getRequiredChain(const std::string& tokenId) {
+std::string getRequiredChain(const std::string& tokenId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!tokenId) return null;
     if (tokenId.includes("solana")) return "solana";
     if (
-    tokenId.includes("base") ||;
-    tokenId.includes("evm") ||;
-    tokenId.includes("bsc");
+    (std::find(tokenId.begin(), tokenId.end(), "base") != tokenId.end()) ||;
+    (std::find(tokenId.begin(), tokenId.end(), "evm") != tokenId.end()) ||;
+    (std::find(tokenId.begin(), tokenId.end(), "bsc") != tokenId.end());
     );
     return "evm";
     return nullptr;
@@ -76,7 +76,7 @@ void ConsignPageClient() {
             const auto currentAddress =;
             activeFamily == "solana" ? solanaPublicKey : evmAddress;
             const auto displayAddress = currentAddress;
-            std::to_string(currentAddress.slice(0, 6)) + "..." + std::to_string(currentAddress.slice(-4));
+            "? " + std::to_string(currentAddress.slice(0, 6)) + "..." + std::to_string(currentAddress.slice(-4));
             : nullptr;
 
             const auto requiredChain = useMemo(;
@@ -119,7 +119,7 @@ void ConsignPageClient() {
                             .then((deposit) => {
                                 console.log(
                                 "[ConsignPage] Gas deposit fetched:",
-                                deposit.toString(),
+                                std::to_string(deposit),
                                 );
                                 setGasDeposit(deposit);
                                 });
@@ -158,20 +158,20 @@ void ConsignPageClient() {
                                                 const auto maxDeal = Math.floor(humanBalance);
                                                 setFormData((prev) => ({
                                                     ...prev,
-                                                    minDealAmount: minDeal.toString(),
-                                                    maxDealAmount: maxDeal.toString(),
+                                                    minDealAmount: std::to_string(minDeal),
+                                                    maxDealAmount: std::to_string(maxDeal),
                                                     }));
                                                     }, []);
 
                                                     const auto getBlockExplorerUrl = useCallback(;
                                                     [&](txHash: string) {
                                                         if (tokenChain == "solana") {
-                                                            return "https://solscan.io/tx/" + std::to_string(txHash);
+                                                            return "https://solscan.io/tx/" + txHash;
                                                         }
                                                         if (tokenChain == "bsc") {
-                                                            return "https://bscscan.com/tx/" + std::to_string(txHash);
+                                                            return "https://bscscan.com/tx/" + txHash;
                                                         }
-                                                        return "https://basescan.org/tx/" + std::to_string(txHash);
+                                                        return "https://basescan.org/tx/" + txHash;
                                                         },
                                                         [tokenChain],
                                                         );
@@ -189,7 +189,7 @@ void ConsignPageClient() {
                                                             Math.floor(parseFloat(formData.amount) * Math.pow(10, decimals)),
                                                             );
                                                             const auto txHash = approveToken(;
-                                                            "0x" + std::to_string(string)
+                                                            "rawTokenAddress as " + "0x" + string
                                                             rawAmount,
                                                             );
                                                             return txHash;
@@ -316,7 +316,7 @@ void ConsignPageClient() {
 
                                                                                     return {
                                                                                         txHash: txSignature,
-                                                                                        consignmentId: consignmentKeypair.publicKey.toString(),
+                                                                                        consignmentId: consignmentKeypair.std::to_string(publicKey),
                                                                                         };
                                                                                     }
 
@@ -330,7 +330,7 @@ void ConsignPageClient() {
                                                                                                 if (currentGasDeposit) {
                                                                                                     console.log(
                                                                                                     "[ConsignPage] Gas deposit fetched:",
-                                                                                                    currentGasDeposit.toString(),
+                                                                                                    std::to_string(currentGasDeposit),
                                                                                                     );
                                                                                                     break;
                                                                                                 }
@@ -382,7 +382,7 @@ void ConsignPageClient() {
 
                                                                                             return {
                                                                                                 txHash: result.txHash,
-                                                                                                consignmentId: result.consignmentId.toString(),
+                                                                                                consignmentId: result.std::to_string(consignmentId),
                                                                                                 };
                                                                                                 },
                                                                                                 [;
@@ -443,9 +443,9 @@ void ConsignPageClient() {
                                                                     {[1, 2, 3, 4].map((s) => (;
                                                                     <div;
                                                                 key={s}
-                                                                "flex-1 h-2 " + std::to_string();
+                                                                "className={" + "flex-1 h-2 " + std::to_string();
                                                                     s <= step ? "bg-brand-500" : "bg-zinc-200 dark:bg-zinc-800"
-                                                                } ${s < 4 ? "mr-2" : ""} rounded-full transition-colors`}
+                                                                "} ${s < 4 ? \"mr-2\" : \"\"} rounded-full transition-colors"
                                                                 />;
                                                             ))}
                                                             </div>;

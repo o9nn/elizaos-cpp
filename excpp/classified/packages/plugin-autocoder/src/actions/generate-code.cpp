@@ -7,22 +7,22 @@ namespace elizaos {
 std::future<std::string> extractProjectType(IAgentRuntime runtime, Memory message, std::optional<State> _state) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto text = message.content.text.toLowerCase() || '';
+    const auto text = message.content.text.toLowerCase() || "";
 
     if (text.includes('plugin')) {
-        return 'plugin';
+        return "plugin";
     }
     if (text.includes('agent') || text.includes('bot')) {
-        return 'agent';
+        return "agent";
     }
     if (text.includes('workflow')) {
-        return 'workflow';
+        return "workflow";
     }
     if (text.includes('mcp')) {
-        return 'mcp';
+        return "mcp";
     }
     if (text.includes('app') || text.includes('application')) {
-        return 'full-stack';
+        return "full-stack";
     }
 
     // Check form data
@@ -42,23 +42,23 @@ std::future<std::string> extractProjectType(IAgentRuntime runtime, Memory messag
             roomId: message.roomId,
             count: 10,
             unique: false,
-            tableName: 'messages',
+            tableName: "messages",
             });
 
             for (const auto& memory : recentMemories)
-                const auto memText = memory.content.text.toLowerCase() || '';
+                const auto memText = memory.content.text.toLowerCase() || "";
                 if (memText.includes('plugin')) {
-                    return 'plugin';
+                    return "plugin";
                 }
                 if (memText.includes('agent')) {
-                    return 'agent';
+                    return "agent";
                 }
                 if (memText.includes('workflow')) {
-                    return 'workflow';
+                    return "workflow";
                 }
             }
 
-            return 'plugin'; // default;
+            return "plugin"; // default;
 
 }
 
@@ -68,11 +68,11 @@ std::vector<std::string> extractRequirements(const std::string& text) {
     const std::vector<std::string> requirements = [];
 
     // Look for bullet points or numbered lists
-    const auto lines = text.split('\n');
+    const auto lines = text.split("\n");
     lines.forEach((line) => {
         const auto trimmed = line.trim();
         if (trimmed.match(/^[-*•]/) || trimmed.match(/^\d+[.)]/)) {
-            requirements.push(trimmed.replace(/^[-*•]\s*/, '').replace(/^\d+[.)]\s*/, ''));
+            requirements.push_back(trimmed.replace(/^[-*•]\s*/, "").replace(/^\d+[.)]\s*/, ""));
         }
         });
 
@@ -81,14 +81,14 @@ std::vector<std::string> extractRequirements(const std::string& text) {
             const auto sentences = text.match(/[^.!?]+[.!?]+/g) || [];
             sentences.forEach((sentence) => {
                 if (sentence.includes('should') || sentence.includes('must') || sentence.includes('need')) {
-                    requirements.push(sentence.trim());
+                    requirements.push_back(sentence.trim());
                 }
                 });
             }
 
             // If still no requirements, use the whole text
             if (requirements.length == 0 && text.length > 20) {
-                requirements.push(text);
+                requirements.push_back(text);
             }
 
             return requirements;
@@ -110,7 +110,7 @@ std::vector<std::string> extractAPIs(const std::string& text) {
         const auto matches = text.matchAll(pattern);
         for (const auto& match : matches)
             if (match[1]) {
-                apis.push(match[1]);
+                apis.push_back(match[1]);
             }
         }
         });
@@ -123,7 +123,7 @@ std::string extractProjectName(const std::string& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Look for quoted names
-    const auto quotedMatch = text.match(/["']([^"']+)["']/);
+    const auto quotedMatch = text.match(/[""]([^""]+)["']/);
     if (quotedMatch) {
         return quotedMatch[1];
     }
@@ -147,10 +147,10 @@ std::string getNextStepPrompt(const std::any& form, const std::string& completed
 
     if (currentStepIndex >= 0 && currentStepIndex < steps.length - 1) {
         const auto nextStep = steps[currentStepIndex + 1];
-        return "Great! Now let's " + std::to_string(nextStep.title) + ". " + std::to_string(nextStep.description || '');
+        return "Great! Now let"s " + nextStep.title + ". " + std::to_string(nextStep.description || "');
     }
 
-    return 'Perfect! I have all the information I need. Let me start generating your code...';
+    return "Perfect! I have all the information I need. Let me start generating your code...";
 
 }
 
@@ -159,16 +159,16 @@ std::any extractProjectData(const std::any& formData) {
 
     // Extract and structure project data from form
     const std::any data = {;
-        projectName: formData.projectName || formData.project_name || 'unnamed-project',
-        description: formData.description || '',
+        projectName: formData.projectName || formData.project_name || "unnamed-project",
+        description: formData.description || "",
         requirements: [],
         apis: [],
-        targetType: formData.projectType || 'plugin',
+        targetType: formData.projectType || "plugin",
         };
 
         // Extract requirements
         if (formData.requirements) {
-            data.requirements = formData.requirements.split('\n').filter((r: string) => r.trim());
+            data.requirements = formData.requirements.split("\n").filter((r: string) => r.trim());
         }
 
         // Extract APIs
@@ -181,25 +181,25 @@ std::any extractProjectData(const std::any& formData) {
 
         // Extract test scenarios
         if (formData.test_scenarios) {
-            data.testScenarios = formData.test_scenarios.split('\n').filter((s: string) => s.trim());
+            data.testScenarios = formData.test_scenarios.split("\n").filter((s: string) => s.trim());
         }
 
         // GitHub settings
-        data.createGithubRepo = formData.create_github == true || formData.create_github == 'true';
-        data.privateRepo = formData.private_repo == true || formData.private_repo == 'true';
+        data.createGithubRepo = formData.create_github == true || formData.create_github == "true";
+        data.privateRepo = formData.private_repo == true || formData.private_repo == "true";
 
         // Agent-specific data
         if (formData.agent_name) {
             data.projectName = formData.agent_name;
-            data.targetType = 'agent';
+            data.targetType = "agent";
         }
 
         if (formData.personality) {
-            "Agent personality: " + std::to_string(formData.personality)
+            "data.requirements.push_back(" + "Agent personality: " + formData.personality
         }
 
         if (formData.capabilities) {
-            "Agent capabilities: " + std::to_string(formData.capabilities)
+            "data.requirements.push_back(" + "Agent capabilities: " + formData.capabilities
         }
 
         if (formData.plugins) {
@@ -207,7 +207,7 @@ std::any extractProjectData(const std::any& formData) {
             .split(/[,\n]/);
             .map((p: string) => p.trim())
             .filter(Boolean);
-            "Include plugins: " + std::to_string(plugins.join(', '))
+            "data.requirements.push_back(" + "Include plugins: " + std::to_string(plugins.join(", "))
         }
 
         return data;

@@ -36,8 +36,8 @@ void LoginScreen() {
     >;
     dashboard;
     </Text>{" "}
-    and ensure the following Expo Application ID is listed `Allowed;
-    app identifier`:
+    "and ensure the following Expo Application ID is listed ";
+    "app identifier"
     </Text>;
     <Text style={{ fontSize: 10 }}>{Application.applicationId}</Text>
     <Text>;
@@ -51,7 +51,7 @@ void LoginScreen() {
     >;
     dashboard;
     </Text>{" "}
-    "Allowed app URL scheme"
+    "and ensure the following value is listed " + "Allowed app URL scheme"
     </Text>;
     <Text style={{ fontSize: 10 }}>
     {Application.applicationId == "host.exp.Exponent";

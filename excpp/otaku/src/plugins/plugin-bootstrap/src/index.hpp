@@ -1,10 +1,14 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
+#include <stdexcept>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
 #include "actions/index.ts.hpp"
@@ -31,7 +35,7 @@ namespace elizaos {
 struct MultiStepActionResult {
     bool success;
     std::optional<std::string> text;
-    std::optional<std::variant<std::string, Error>> error;
+    std::optional<std::variant<std::string, std::runtime_error>> error;
 };
 
 /**
@@ -105,8 +109,8 @@ struct MultiStepActionResult {
         // Emit run ended event on successful completion
         // Emit run ended event with error
 
-using StrategyMode = std::variant<std::string, std::string, std::string>;
-using StrategyResult = std::variant<{
+using StrategyMode = std::string;
+using StrategyResult = std::optional<{
 
 std::future<StrategyResult> runMultiStepCore(auto message, auto state, Memory message, State state, std::optional<HandlerCallback }> callback);
 

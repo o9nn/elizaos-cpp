@@ -96,11 +96,11 @@ std::future<void> POST(NextRequest request) {
             const auto dayTimestamp = Math.floor(Date.now() / (24 * 60 * 60 * 1000));
             const auto hash = crypto;
             .createHash("sha256");
-            std::to_string(userEntityId) + "-" + std::to_string(dayTimestamp);
+            ".update(" + userEntityId + "-" + dayTimestamp;
             .digest("hex");
             .substring(0, 12);
             .toUpperCase();
-            const auto initialQuoteId = "OTC-" + std::to_string(hash);
+            const auto initialQuoteId = "OTC-" + hash;
 
             // Worst possible deal for buyer (lowest discount, longest lockup)
             // Buyers can negotiate better terms from this starting point
@@ -137,20 +137,20 @@ std::future<void> POST(NextRequest request) {
                 approvalNote: "",
                 };
 
-                "quote:" + std::to_string(initialQuoteId)
+                "runtime.setCache(" + "quote:" + initialQuoteId
 
                 // Add to indexes
                 const auto allQuotes = (runtime.getCache<string[]>("all_quotes")) || [];
                 if (!allQuotes.includes(initialQuoteId)) {
-                    allQuotes.push(initialQuoteId);
+                    allQuotes.push_back(initialQuoteId);
                     runtime.setCache("all_quotes", allQuotes);
                 }
 
                 const auto entityQuoteIds =;
-                "entity_quotes:" + std::to_string(userEntityId)
+                "(runtime.getCache<string[]>(" + "entity_quotes:" + userEntityId
                 if (!entityQuoteIds.includes(initialQuoteId)) {
-                    entityQuoteIds.push(initialQuoteId);
-                    "entity_quotes:" + std::to_string(userEntityId)
+                    entityQuoteIds.push_back(initialQuoteId);
+                    "runtime.setCache(" + "entity_quotes:" + userEntityId
                 }
 
                 console.log(
@@ -169,7 +169,7 @@ std::future<void> POST(NextRequest request) {
 
                 Tell me which token you're interested in, and we can negotiate better terms based on the amount and lockup period you prefer.;
 
-                For example, try: "I want to buy ELIZA tokens" or "What tokens are available?"`;
+                "For example, try: \"I want to buy ELIZA tokens\" or \"What tokens are available?\""
 
                 const Memory agentMessage = {;
                     id: uuidv4(),

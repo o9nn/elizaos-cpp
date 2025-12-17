@@ -12,7 +12,7 @@ std::future<void> registerRepository(const std::string& owner, const std::string
     .values({
         owner,
         name,
-        std::to_string(owner) + "/" + std::to_string(name)
+        "repoId: " + owner + "/" + name
         lastUpdated: new UTCDate().toISOString(),
         });
         .onConflictDoUpdate({

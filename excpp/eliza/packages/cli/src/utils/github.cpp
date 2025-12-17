@@ -8,10 +8,10 @@ std::future<bool> validateGitHubToken(const std::string& token) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
-        const auto response = std::to_string(GITHUB_API_URL) + "/user";
+        const auto response = "fetch(" + GITHUB_API_URL + "/user";
             headers: {
-                "token " + std::to_string(token)
-                Accept: 'application/vnd.github.v3+json',
+                "Authorization: " + "token " + token
+                Accept: "application/vnd.github.v3+json",
                 },
                 });
 
@@ -35,10 +35,10 @@ std::future<bool> forkExists(const std::string& token, const std::string& repo, 
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
-        const auto response = std::to_string(GITHUB_API_URL) + "/repos/" + std::to_string(username) + "/" + std::to_string(repo);
+        const auto response = "fetch(" + GITHUB_API_URL + "/repos/" + username + "/" + repo;
             headers: {
-                "token " + std::to_string(token)
-                Accept: 'application/vnd.github.v3+json',
+                "Authorization: " + "token " + token
+                Accept: "application/vnd.github.v3+json",
                 },
                 });
 
@@ -53,11 +53,11 @@ std::future<std::string> forkRepository(const std::string& token, const std::str
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
-        const auto response = std::to_string(GITHUB_API_URL) + "/repos/" + std::to_string(owner) + "/" + std::to_string(repo) + "/forks";
-            method: 'POST',
+        const auto response = "fetch(" + GITHUB_API_URL + "/repos/" + owner + "/" + repo + "/forks";
+            method: "POST",
             headers: {
-                "token " + std::to_string(token)
-                Accept: 'application/vnd.github.v3+json',
+                "Authorization: " + "token " + token
+                Accept: "application/vnd.github.v3+json",
                 },
                 });
 
@@ -67,7 +67,7 @@ std::future<std::string> forkRepository(const std::string& token, const std::str
                     return forkData.full_name;
                 }
 
-                std::cerr << "Failed to fork repository: " + std::to_string(response.statusText) << std::endl;
+                std::cerr << "Failed to fork repository: " + response.statusText << std::endl;
                 return nullptr;
                 } catch (error) {
                     logger.error(
@@ -82,10 +82,10 @@ std::future<bool> branchExists(const std::string& token, const std::string& owne
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
-        const auto response = std::to_string(GITHUB_API_URL) + "/repos/" + std::to_string(owner) + "/" + std::to_string(repo) + "/branches/" + std::to_string(branch);
+        const auto response = "fetch(" + GITHUB_API_URL + "/repos/" + owner + "/" + repo + "/branches/" + branch;
             headers: {
-                "token " + std::to_string(token)
-                Accept: 'application/vnd.github.v3+json',
+                "Authorization: " + "token " + token
+                Accept: "application/vnd.github.v3+json",
                 },
                 });
 
@@ -102,24 +102,24 @@ std::future<bool> createBranch(const std::string& token, const std::string& owne
     try {
         // Get the SHA of the base branch
         auto baseResponse = fetch(;
-        std::to_string(GITHUB_API_URL) + "/repos/" + std::to_string(owner) + "/" + std::to_string(repo) + "/git/ref/heads/" + std::to_string(baseBranch)
+        GITHUB_API_URL + "/repos/" + owner + "/" + repo + "/git/ref/heads/" + baseBranch
         {
             headers: {
-                "token " + std::to_string(token)
-                Accept: 'application/vnd.github.v3+json',
+                "Authorization: " + "token " + token
+                Accept: "application/vnd.github.v3+json",
                 },
             }
             );
 
             // If the requested base branch doesn't exist, try to find an alternative branch
             if (baseResponse.status != 200) {
-                std::cout << "Base branch '" + std::to_string(baseBranch) << checking for alternative branches...` << std::endl;
+                std::cout << "Base branch '" + baseBranch << "checking for alternative branches..." << std::endl;
 
                 // List available branches
-                const auto branchesResponse = std::to_string(GITHUB_API_URL) + "/repos/" + std::to_string(owner) + "/" + std::to_string(repo) + "/branches";
+                const auto branchesResponse = "fetch(" + GITHUB_API_URL + "/repos/" + owner + "/" + repo + "/branches";
                     headers: {
-                        "token " + std::to_string(token)
-                        Accept: 'application/vnd.github.v3+json',
+                        "Authorization: " + "token " + token
+                        Accept: "application/vnd.github.v3+json",
                         },
                         });
 
@@ -128,15 +128,15 @@ std::future<bool> createBranch(const std::string& token, const std::string& owne
                             if (branches && branches.length > 0) {
                                 // Use the first available branch as base
                                 const auto alternativeBranch = branches[0].name;
-                                std::cout << "Using '" + std::to_string(alternativeBranch) + "' branch instead" << std::endl;
+                                std::cout << "Using "" + alternativeBranch + "" branch instead" << std::endl;
 
                                 // Try again with the alternative branch
                                 baseResponse = fetch(;
-                                std::to_string(GITHUB_API_URL) + "/repos/" + std::to_string(owner) + "/" + std::to_string(repo) + "/git/ref/heads/" + std::to_string(alternativeBranch)
+                                GITHUB_API_URL + "/repos/" + owner + "/" + repo + "/git/ref/heads/" + alternativeBranch
                                 {
                                     headers: {
-                                        "token " + std::to_string(token)
-                                        Accept: 'application/vnd.github.v3+json',
+                                        "Authorization: " + "token " + token
+                                        Accept: "application/vnd.github.v3+json",
                                         },
                                     }
                                     );
@@ -145,21 +145,21 @@ std::future<bool> createBranch(const std::string& token, const std::string& owne
                                         std::cout << 'No branches found in repository << creating initial commit' << std::endl;
 
                                         // Create a blob for empty README
-                                        const auto blobResponse = std::to_string(GITHUB_API_URL) + "/repos/" + std::to_string(owner) + "/" + std::to_string(repo) + "/git/blobs";
-                                            method: 'POST',
+                                        const auto blobResponse = "fetch(" + GITHUB_API_URL + "/repos/" + owner + "/" + repo + "/git/blobs";
+                                            method: "POST",
                                             headers: {
-                                                "token " + std::to_string(token)
-                                                Accept: 'application/vnd.github.v3+json',
-                                                'Content-Type': 'application/json',
+                                                "Authorization: " + "token " + token
+                                                Accept: "application/vnd.github.v3+json",
+                                                "Content-Type": "application/json",
                                                 },
                                                 body: JSON.stringify({
-                                                    content: '# Repository initialized by Eliza CLI',
-                                                    encoding: 'utf-8',
+                                                    content: "# Repository initialized by Eliza CLI",
+                                                    encoding: "utf-8",
                                                     }),
                                                     });
 
                                                     if (blobResponse.status != 201) {
-                                                        std::cerr << 'Failed to create initial blob' << std::endl;
+                                                        std::cerr << "Failed to create initial blob" << std::endl;
                                                         return false;
                                                     }
 
@@ -167,19 +167,19 @@ std::future<bool> createBranch(const std::string& token, const std::string& owne
                                                     const auto blobSha = blobData.sha;
 
                                                     // Create a tree with the README
-                                                    const auto treeResponse = std::to_string(GITHUB_API_URL) + "/repos/" + std::to_string(owner) + "/" + std::to_string(repo) + "/git/trees";
-                                                        method: 'POST',
+                                                    const auto treeResponse = "fetch(" + GITHUB_API_URL + "/repos/" + owner + "/" + repo + "/git/trees";
+                                                        method: "POST",
                                                         headers: {
-                                                            "token " + std::to_string(token)
-                                                            Accept: 'application/vnd.github.v3+json',
-                                                            'Content-Type': 'application/json',
+                                                            "Authorization: " + "token " + token
+                                                            Accept: "application/vnd.github.v3+json",
+                                                            "Content-Type": "application/json",
                                                             },
                                                             body: JSON.stringify({
                                                                 tree: [
                                                                 {
-                                                                    path: 'README.md',
-                                                                    mode: '100644',
-                                                                    type: 'blob',
+                                                                    path: "README.md",
+                                                                    mode: "100644",
+                                                                    type: "blob",
                                                                     sha: blobSha,
                                                                     },
                                                                     ],
@@ -187,7 +187,7 @@ std::future<bool> createBranch(const std::string& token, const std::string& owne
                                                                     });
 
                                                                     if (treeResponse.status != 201) {
-                                                                        std::cerr << 'Failed to create initial tree' << std::endl;
+                                                                        std::cerr << "Failed to create initial tree" << std::endl;
                                                                         return false;
                                                                     }
 
@@ -196,23 +196,23 @@ std::future<bool> createBranch(const std::string& token, const std::string& owne
 
                                                                     // Create a commit
                                                                     const auto commitResponse = fetch(;
-                                                                    std::to_string(GITHUB_API_URL) + "/repos/" + std::to_string(owner) + "/" + std::to_string(repo) + "/git/commits"
+                                                                    GITHUB_API_URL + "/repos/" + owner + "/" + repo + "/git/commits"
                                                                     {
-                                                                        method: 'POST',
+                                                                        method: "POST",
                                                                         headers: {
-                                                                            "token " + std::to_string(token)
-                                                                            Accept: 'application/vnd.github.v3+json',
-                                                                            'Content-Type': 'application/json',
+                                                                            "Authorization: " + "token " + token
+                                                                            Accept: "application/vnd.github.v3+json",
+                                                                            "Content-Type": "application/json",
                                                                             },
                                                                             body: JSON.stringify({
-                                                                                message: 'Initial commit',
+                                                                                message: "Initial commit",
                                                                                 tree: treeSha,
                                                                                 }),
                                                                             }
                                                                             );
 
                                                                             if (commitResponse.status != 201) {
-                                                                                std::cerr << 'Failed to create initial commit' << std::endl;
+                                                                                std::cerr << "Failed to create initial commit" << std::endl;
                                                                                 return false;
                                                                             }
 
@@ -220,21 +220,21 @@ std::future<bool> createBranch(const std::string& token, const std::string& owne
                                                                             const auto commitSha = commitData.sha;
 
                                                                             // Create a reference for main branch
-                                                                            const auto refResponse = std::to_string(GITHUB_API_URL) + "/repos/" + std::to_string(owner) + "/" + std::to_string(repo) + "/git/refs";
-                                                                                method: 'POST',
+                                                                            const auto refResponse = "fetch(" + GITHUB_API_URL + "/repos/" + owner + "/" + repo + "/git/refs";
+                                                                                method: "POST",
                                                                                 headers: {
-                                                                                    "token " + std::to_string(token)
-                                                                                    Accept: 'application/vnd.github.v3+json',
-                                                                                    'Content-Type': 'application/json',
+                                                                                    "Authorization: " + "token " + token
+                                                                                    Accept: "application/vnd.github.v3+json",
+                                                                                    "Content-Type": "application/json",
                                                                                     },
                                                                                     body: JSON.stringify({
-                                                                                        ref: 'refs/heads/main',
+                                                                                        ref: "refs/heads/main",
                                                                                         sha: commitSha,
                                                                                         }),
                                                                                         });
 
                                                                                         if (refResponse.status != 201) {
-                                                                                            std::cerr << 'Failed to create main branch' << std::endl;
+                                                                                            std::cerr << "Failed to create main branch" << std::endl;
                                                                                             return false;
                                                                                         }
 
@@ -242,11 +242,11 @@ std::future<bool> createBranch(const std::string& token, const std::string& owne
 
                                                                                         // Now we can use this as our base
                                                                                         baseResponse = fetch(;
-                                                                                        std::to_string(GITHUB_API_URL) + "/repos/" + std::to_string(owner) + "/" + std::to_string(repo) + "/git/ref/heads/main"
+                                                                                        GITHUB_API_URL + "/repos/" + owner + "/" + repo + "/git/ref/heads/main"
                                                                                         {
                                                                                             headers: {
-                                                                                                "token " + std::to_string(token)
-                                                                                                Accept: 'application/vnd.github.v3+json',
+                                                                                                "Authorization: " + "token " + token
+                                                                                                Accept: "application/vnd.github.v3+json",
                                                                                                 },
                                                                                             }
                                                                                             );
@@ -255,7 +255,7 @@ std::future<bool> createBranch(const std::string& token, const std::string& owne
                                                                                 }
 
                                                                                 if (baseResponse.status != 200) {
-                                                                                    std::cerr << "Failed to get base branch " + std::to_string(baseBranch) + ": " + std::to_string(baseResponse.statusText) << std::endl;
+                                                                                    std::cerr << "Failed to get base branch " + baseBranch + ": " + baseResponse.statusText << std::endl;
                                                                                     return false;
                                                                                 }
 
@@ -263,15 +263,15 @@ std::future<bool> createBranch(const std::string& token, const std::string& owne
                                                                                 const auto sha = baseData.object.sha;
 
                                                                                 // Create the new branch
-                                                                                const auto response = std::to_string(GITHUB_API_URL) + "/repos/" + std::to_string(owner) + "/" + std::to_string(repo) + "/git/refs";
-                                                                                    method: 'POST',
+                                                                                const auto response = "fetch(" + GITHUB_API_URL + "/repos/" + owner + "/" + repo + "/git/refs";
+                                                                                    method: "POST",
                                                                                     headers: {
-                                                                                        "token " + std::to_string(token)
-                                                                                        Accept: 'application/vnd.github.v3+json',
-                                                                                        'Content-Type': 'application/json',
+                                                                                        "Authorization: " + "token " + token
+                                                                                        Accept: "application/vnd.github.v3+json",
+                                                                                        "Content-Type": "application/json",
                                                                                         },
                                                                                         body: JSON.stringify({
-                                                                                            "refs/heads/" + std::to_string(branch)
+                                                                                            "ref: " + "refs/heads/" + branch
                                                                                             sha,
                                                                                             }),
                                                                                             });
@@ -281,7 +281,7 @@ std::future<bool> createBranch(const std::string& token, const std::string& owne
                                                                                                 return true;
                                                                                             }
 
-                                                                                            std::cerr << "Failed to create branch: " + std::to_string(response.statusText) << std::endl;
+                                                                                            std::cerr << "Failed to create branch: " + response.statusText << std::endl;
                                                                                             return false;
                                                                                             } catch (error) {
                                                                                                 logger.error(
@@ -297,11 +297,11 @@ std::future<std::string> getFileContent(const std::string& token, const std::str
 
     try {
         const auto response = fetch(;
-        std::to_string(GITHUB_API_URL) + "/repos/" + std::to_string(owner) + "/" + std::to_string(repo) + "/contents/" + std::to_string(path) + "?ref=" + std::to_string(branch)
+        GITHUB_API_URL + "/repos/" + owner + "/" + repo + "/contents/" + path + "?ref=" + branch
         {
             headers: {
-                "token " + std::to_string(token)
-                Accept: 'application/vnd.github.v3+json',
+                "Authorization: " + "token " + token
+                Accept: "application/vnd.github.v3+json",
                 },
             }
             );
@@ -309,7 +309,7 @@ std::future<std::string> getFileContent(const std::string& token, const std::str
             if (response.status == 200) {
                 const auto data = (response.json());
                 // GitHub API returns content as base64
-                return Buffer.from(data.content, 'base64').tostd::to_string('utf-8');
+                return Buffer.from(data.content, "base64").tostd::to_string("utf-8");
             }
 
             return nullptr;
@@ -327,17 +327,17 @@ std::future<bool> updateFile(const std::string& token, const std::string& owner,
         const auto existingContent = getFileContent(token, owner, repo, path, branch);
         // GitHub API behavior: PUT works more reliably than POST for creating files
         // in directories that may not exist yet, so we always use PUT
-        const auto method = 'PUT';
+        const auto method = "PUT";
 
         // Get the SHA if the file exists
         auto sha: string | std::nullopt;
         if (existingContent != null) {
             const auto response = fetch(;
-            std::to_string(GITHUB_API_URL) + "/repos/" + std::to_string(owner) + "/" + std::to_string(repo) + "/contents/" + std::to_string(path) + "?ref=" + std::to_string(branch)
+            GITHUB_API_URL + "/repos/" + owner + "/" + repo + "/contents/" + path + "?ref=" + branch
             {
                 headers: {
-                    "token " + std::to_string(token)
-                    Accept: 'application/vnd.github.v3+json',
+                    "Authorization: " + "token " + token
+                    Accept: "application/vnd.github.v3+json",
                     },
                 }
                 );
@@ -349,27 +349,27 @@ std::future<bool> updateFile(const std::string& token, const std::string& owner,
             }
 
             // Full URL for debugging
-            const auto fileUrl = std::to_string(GITHUB_API_URL) + "/repos/" + std::to_string(owner) + "/" + std::to_string(repo) + "/contents/" + std::to_string(path);
-            std::cout << "Updating file at: " + std::to_string(fileUrl) << std::endl;
+            const auto fileUrl = GITHUB_API_URL + "/repos/" + owner + "/" + repo + "/contents/" + path;
+            std::cout << "Updating file at: " + fileUrl << std::endl;
 
             // Full request body for debugging
             const auto requestBody = {;
                 message,
-                content: Buffer.from(content).tostd::to_string('base64'),
+                content: Buffer.from(content).tostd::to_string("base64"),
                 branch,
                 sha,
                 };
-                std::cout << "Request details: method=" + std::to_string(method) << branch=${branch} << has_sha=${!!sha}` << std::endl;
+                std::cout << "Request details: method=" + method << branch=${branch} << "has_sha=${!!sha}" << std::endl;
 
                 // Update or create the file
                 const auto response = fetch(fileUrl, {;
                     method,
                     headers: {
-                        "token " + std::to_string(token)
-                        Accept: 'application/vnd.github.v3+json',
-                        'Content-Type': 'application/json',
+                        "Authorization: " + "token " + token
+                        Accept: "application/vnd.github.v3+json",
+                        "Content-Type": "application/json",
                         },
-                        body: JSON.stringify(requestBody),
+                        body: /* JSON.stringify */ std::string(requestBody),
                         });
 
                         if (response.status == 200 || response.status == 201) {
@@ -379,24 +379,24 @@ std::future<bool> updateFile(const std::string& token, const std::string& owner,
 
                         // Log the full error response for debugging
                         const auto errorBody = response.text();
-                        std::cerr << "Failed to update file: " + std::to_string(response.status) + " " + std::to_string(response.statusText) << std::endl;
-                        std::cerr << "Response body: " + std::to_string(errorBody) << std::endl;
+                        std::cerr << "Failed to update file: " + response.status + " " + response.statusText << std::endl;
+                        std::cerr << "Response body: " + errorBody << std::endl;
 
                         // Check for common GitHub API errors
                         if (response.status == 404) {
-                            std::cerr << "Repository or path not found: " + std::to_string(owner) + "/" + std::to_string(repo) + "/" + std::to_string(path) << std::endl;
+                            std::cerr << "Repository or path not found: " + owner + "/" + repo + "/" + path << std::endl;
                             // Try to check if the repo exists
-                            const auto repoCheck = std::to_string(GITHUB_API_URL) + "/repos/" + std::to_string(owner) + "/" + std::to_string(repo);
+                            const auto repoCheck = "fetch(" + GITHUB_API_URL + "/repos/" + owner + "/" + repo;
                                 headers: {
-                                    "token " + std::to_string(token)
-                                    Accept: 'application/vnd.github.v3+json',
+                                    "Authorization: " + "token " + token
+                                    Accept: "application/vnd.github.v3+json",
                                     },
                                     });
 
                                     if (repoCheck.status == 404) {
-                                        std::cerr << "Repository " + std::to_string(owner) + "/" + std::to_string(repo) + " does not exist or is not accessible" << std::endl;
+                                        std::cerr << "Repository " + owner + "/" + repo + " does not exist or is not accessible" << std::endl;
                                         } else {
-                                            std::cout << `Repository exists << but path is likely invalid` << std::endl;
+                                            std::cout << `Repository exists << "but path is likely invalid" << std::endl;
                                         }
                                     }
 
@@ -412,12 +412,12 @@ std::future<std::string> createPullRequest(const std::string& token, const std::
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
-        const auto response = std::to_string(GITHUB_API_URL) + "/repos/" + std::to_string(owner) + "/" + std::to_string(repo) + "/pulls";
-            method: 'POST',
+        const auto response = "fetch(" + GITHUB_API_URL + "/repos/" + owner + "/" + repo + "/pulls";
+            method: "POST",
             headers: {
-                "token " + std::to_string(token)
-                Accept: 'application/vnd.github.v3+json',
-                'Content-Type': 'application/json',
+                "Authorization: " + "token " + token
+                Accept: "application/vnd.github.v3+json",
+                "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
                     title,
@@ -433,7 +433,7 @@ std::future<std::string> createPullRequest(const std::string& token, const std::
                         return data.html_url;
                     }
 
-                    std::cerr << "Failed to create pull request: " + std::to_string(response.statusText) << std::endl;
+                    std::cerr << "Failed to create pull request: " + response.statusText << std::endl;
                     return nullptr;
                     } catch (error) {
                         logger.error(
@@ -448,10 +448,10 @@ std::future<std::optional<GitHubUserResponse>> getAuthenticatedUser(const std::s
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
-        const auto response = std::to_string(GITHUB_API_URL) + "/user";
+        const auto response = "fetch(" + GITHUB_API_URL + "/user";
             headers: {
-                "token " + std::to_string(token)
-                Accept: 'application/vnd.github.v3+json',
+                "Authorization: " + "token " + token
+                Accept: "application/vnd.github.v3+json",
                 },
                 });
 
@@ -489,33 +489,33 @@ std::future<void> saveGitHubCredentials(const std::string& username, const std::
 
     // Ensure .env file exists
     if (!existsSync(envFilePath)) {
-        fs.writeFile(envFilePath, '', { encoding: 'utf8' });
+        fs.writeFile(envFilePath, "", { encoding: "utf8" });
     }
 
     // Read current content
-    const auto currentContent = fs.readFile(envFilePath, 'utf8');
-    const auto lines = currentContent.split('\n');
+    const auto currentContent = fs.readFile(envFilePath, "utf8");
+    const auto lines = currentContent.split("\n");
 
     // Update or add GITHUB_USERNAME
-    const auto usernameLineIndex = lines.findIndex((line) => line.startsWith('GITHUB_USERNAME='));
-    const auto usernameLine = "GITHUB_USERNAME=" + std::to_string(username);
+    const auto usernameLineIndex = lines.findIndex((line) => line.startsWith("GITHUB_USERNAME="));
+    const auto usernameLine = "GITHUB_USERNAME=" + username;
     if (usernameLineIndex >= 0) {
         lines[usernameLineIndex] = usernameLine;
         } else {
-            lines.push(usernameLine);
+            lines.push_back(usernameLine);
         }
 
         // Update or add GITHUB_TOKEN
-        const auto tokenLineIndex = lines.findIndex((line) => line.startsWith('GITHUB_TOKEN='));
-        const auto tokenLine = "GITHUB_TOKEN=" + std::to_string(token);
+        const auto tokenLineIndex = lines.findIndex((line) => line.startsWith("GITHUB_TOKEN="));
+        const auto tokenLine = "GITHUB_TOKEN=" + token;
         if (tokenLineIndex >= 0) {
             lines[tokenLineIndex] = tokenLine;
             } else {
-                lines.push(tokenLine);
+                lines.push_back(tokenLine);
             }
 
             // Write back to file
-            fs.writeFile(envFilePath, lines.join('\n'));
+            fs.writeFile(envFilePath, lines.join("\n"));
 
             // Set in current process
             process.env.GITHUB_USERNAME = username;
@@ -532,34 +532,34 @@ std::future<bool> ensureDirectory(const std::string& token, const std::string& r
         // First check if the directory already exists
         try {
             const auto response = fetch(;
-            std::to_string(GITHUB_API_URL) + "/repos/" + std::to_string(repo) + "/contents/" + std::to_string(path) + "?ref=" + std::to_string(branch)
+            GITHUB_API_URL + "/repos/" + repo + "/contents/" + path + "?ref=" + branch
             {
                 headers: {
-                    "token " + std::to_string(token)
-                    Accept: 'application/vnd.github.v3+json',
+                    "Authorization: " + "token " + token
+                    Accept: "application/vnd.github.v3+json",
                     },
                 }
                 );
 
                 // Directory exists
                 if (response.status == 200) {
-                    std::cout << "Directory " + std::to_string(path) + " already exists" << std::endl;
+                    std::cout << "Directory " + path + " already exists" << std::endl;
                     return true;
                 }
                 } catch (error) {
                     // Directory doesn't exist, we'll create it
-                    std::cout << "Directory " + std::to_string(path) << creating it` << std::endl;
+                    std::cout << "Directory " + path << "creating it" << std::endl;
                 }
 
                 // Create a placeholder file in the directory
                 // (GitHub doesn't have a concept of empty directories)
-                const auto placeholderPath = std::to_string(path) + "/.gitkeep";
+                const auto placeholderPath = path + "/.gitkeep";
                 const auto result = updateFile(;
                 token,
                 repo,
                 placeholderPath,
-                '', // Empty content for placeholder;
-                "Create directory: " + std::to_string(path)
+                "", // Empty content for placeholder;
+                "Create directory: " + path
                 branch;
                 );
 
@@ -568,7 +568,7 @@ std::future<bool> ensureDirectory(const std::string& token, const std::string& r
                     return true;
                 }
 
-                std::cerr << "Failed to create directory: " + std::to_string(path) << std::endl;
+                std::cerr << "Failed to create directory: " + path << std::endl;
                 return false;
                 } catch (error) {
                     logger.error(
@@ -589,18 +589,18 @@ std::future<bool> pushToGitHub(const std::string& cwd, const std::string& repoUr
 
     try {
         // Check if git is initialized
-        const auto gitDirExists = existsSync(path.join(cwd, '.git'));
+        const auto gitDirExists = existsSync(path.join(cwd, ".git"));
 
         // If we have a git directory, check if it has the correct remote
         auto hasCorrectRemote = false;
         if (gitDirExists) {
             try {
-                const auto { stdout: remoteUrl } = execa('git', ['remote', 'get-url', 'origin'], { cwd });
+                const auto { stdout: remoteUrl } = execa("git", ["remote", "get-url", "origin"], { cwd });
                 // Check if the remote URL matches our target (ignoring the token part)
-                const auto sanitizedRepoUrl = repoUrl.replace(/https:\/\/.*?@/, 'https://');
-                const auto sanitizedRemoteUrl = remoteUrl.replace(/https:\/\/.*?@/, 'https://');
+                const auto sanitizedRepoUrl = repoUrl.replace(/https:\/\/.*?@/, "https://");
+                const auto sanitizedRemoteUrl = remoteUrl.replace(/https:\/\/.*?@/, "https://");
                 hasCorrectRemote = sanitizedRemoteUrl.includes(;
-                sanitizedRepoUrl.replace(/^https:\/\/.*?@/, '')
+                sanitizedRepoUrl.replace(/^https:\/\/.*?@/, "")
                 );
                 } catch (error) {
                     // Remote doesn't exist or command failed, will set up remote later
@@ -612,54 +612,54 @@ std::future<bool> pushToGitHub(const std::string& cwd, const std::string& repoUr
             if (!gitDirExists || !hasCorrectRemote) {
                 if (gitDirExists) {
                     std::cout << 'Existing git repository has incorrect remote << reinitializing...' << std::endl;
-                    execa('rm', ['-rf', '.git'], { cwd });
+                    execa("rm", ["-rf", ".git"], { cwd });
                 }
 
-                execa('git', ['init'], { cwd });
+                execa("git", ["init"], { cwd });
                 // Explicitly create and switch to main branch
-                execa('git', ['checkout', '-b', 'main'], { cwd });
-                std::cout << 'Git repository initialized with main branch' << std::endl;
+                execa("git", ["checkout", "-b", "main"], { cwd });
+                std::cout << "Git repository initialized with main branch" << std::endl;
 
                 // Add remote
-                execa('git', ['remote', 'add', 'origin', repoUrl], { cwd });
-                std::cout << "Added remote: " + std::to_string(repoUrl.replace(/\/\/.*?@/, '//***@')) << std::endl;
+                execa("git", ["remote", "add", "origin", repoUrl], { cwd });
+                std::cout << "Added remote: " + std::to_string(repoUrl.replace(/\/\/.*?@/, "//***@")) << std::endl;
                 } else {
                     // Make sure we're on the main branch
                     try {
-                        execa('git', ['rev-parse', '--verify', branch], { cwd });
-                        execa('git', ['checkout', branch], { cwd });
+                        execa("git", ["rev-parse", "--verify", branch], { cwd });
+                        execa("git", ["checkout", branch], { cwd });
                         } catch (error) {
                             // Branch doesn't exist, create it
-                            execa('git', ['checkout', '-b', branch], { cwd });
-                            std::cout << "Created and switched to " + std::to_string(branch) + " branch" << std::endl;
+                            execa("git", ["checkout", "-b", branch], { cwd });
+                            std::cout << "Created and switched to " + branch + " branch" << std::endl;
                         }
                     }
 
                     // Add all files
-                    execa('git', ['add', '.'], { cwd });
-                    std::cout << 'Added files to git' << std::endl;
+                    execa("git", ["add", "."], { cwd });
+                    std::cout << "Added files to git" << std::endl;
 
                     // Set git user info if not already set
                     try {
-                        execa('git', ['config', 'user.email'], { cwd });
+                        execa("git", ["config", "user.email"], { cwd });
                         } catch (error) {
-                            execa('git', ['config', 'user.email', 'plugindev@elizaos.com'], { cwd });
-                            execa('git', ['config', 'user.name', 'ElizaOS Plugin Dev'], { cwd });
-                            std::cout << 'Set git user info for commit' << std::endl;
+                            execa("git", ["config", "user.email", "plugindev@elizaos.com"], { cwd });
+                            execa("git", ["config", "user.name", "ElizaOS Plugin Dev"], { cwd });
+                            std::cout << "Set git user info for commit" << std::endl;
                         }
 
                         // Commit if there are changes
                         try {
-                            execa('git', ['commit', '-m', 'Initial commit from ElizaOS CLI'], { cwd });
-                            std::cout << 'Committed changes' << std::endl;
+                            execa("git", ["commit", "-m", "Initial commit from ElizaOS CLI"], { cwd });
+                            std::cout << "Committed changes" << std::endl;
                             } catch (error) {
                                 // If no changes to commit, that's okay
-                                std::cout << 'No changes to commit' << std::endl;
+                                std::cout << "No changes to commit" << std::endl;
                             }
 
                             // Push to GitHub
                             try {
-                                execa('git', ['push', '-u', 'origin', branch], { cwd });
+                                execa("git", ["push", "-u", "origin", branch], { cwd });
                                 logger.success(`Pushed to GitHub repository: ${repoUrl}`);
                                 return true;
                                 } catch (error) {
@@ -669,16 +669,16 @@ std::future<bool> pushToGitHub(const std::string& cwd, const std::string& repoUr
 
                                     // Try force pushing if normal push fails
                                     try {
-                                        std::cout << 'Attempting force push...' << std::endl;
+                                        std::cout << "Attempting force push..." << std::endl;
                                         // Use force-with-lease as a slightly safer option than force
-                                        execa('git', ['push', '-u', 'origin', 'main', '--force-with-lease'], {
+                                        execa("git", ["push", "-u", "origin", "main", "--force-with-lease"], {
                                             cwd,
-                                            stdio: 'pipe',
+                                            stdio: "pipe",
                                             });
                                             return true;
                                             } catch (forcePushError) {
                                                 logger.error(
-                                                'Force push also failed:',
+                                                "Force push also failed:",
                                                 true /* instanceof check */ ? forcePushError.message : std::to_string(forcePushError)
                                                 );
                                                 return false;

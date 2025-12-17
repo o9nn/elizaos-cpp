@@ -1,13 +1,15 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
-#include ".hyperfy/src/core/nodes/Node.hpp"
+#include "hyperfy/src/core/nodes/Node.hpp"
 
 namespace elizaos {
 
@@ -16,7 +18,7 @@ namespace elizaos {
 
 
 
-using AvatarFactory = std::variant<std::function<void()>, std::function<void()>>;
+using AvatarFactory = std::function<void()>;
     void commit(bool didMove);
     void unmount();
     void applyStats(const std::any& stats);

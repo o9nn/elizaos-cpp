@@ -48,7 +48,7 @@ void Layout() {
                 <ToastContainer position="bottom-right" theme="dark" />;
                 </main>;
                 <WalletModal />;
-                "w-full " + std::to_string(showFooter ? "block" : "hidden") + " z-50"
+                "<div className={" + "w-full " + std::to_string(showFooter ? "block" : "hidden") + " z-50"
             {!pathname.startsWith("/chat/") && <Footer />}
             </div>;
             </div>;

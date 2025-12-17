@@ -7,7 +7,7 @@ namespace elizaos {
 std::string getBaseURL(const std::any& runtime) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return runtime.getSetting('GROQ_BASE_URL') || 'https://api.groq.com/openai/v1';
+    return runtime.getSetting("GROQ_BASE_URL") || "https://api.groq.com/openai/v1";
 
 }
 
@@ -17,12 +17,12 @@ TiktokenModel findModelName(IAgentRuntime runtime, ModelTypeName model) {
     try {
         const auto name =;
         model == ModelType.TEXT_SMALL;
-        ? (runtime.getSetting('GROQ_SMALL_MODEL') || 'llama-3.1-8b-instant');
-        : (runtime.getSetting('GROQ_LARGE_MODEL') || 'qwen-qwq-32b');
+        ? (runtime.getSetting("GROQ_SMALL_MODEL") || "llama-3.1-8b-instant");
+        : (runtime.getSetting("GROQ_LARGE_MODEL") || "qwen-qwq-32b");
         return name;
         } catch (error) {
-            std::cerr << 'Error in findModelName:' << error << std::endl;
-            return 'llama-3.1-8b-instant';
+            std::cerr << "Error in findModelName:" << error << std::endl;
+            return "llama-3.1-8b-instant";
         }
 
 }
@@ -35,7 +35,7 @@ std::future<void> tokenizeText(IAgentRuntime runtime, ModelTypeName model, const
         const auto tokens = encoding.encode(prompt);
         return tokens;
         } catch (error) {
-            std::cerr << 'Error in tokenizeText:' << error << std::endl;
+            std::cerr << "Error in tokenizeText:" << error << std::endl;
             return [];
         }
 
@@ -49,8 +49,8 @@ std::future<void> detokenizeText(IAgentRuntime runtime, ModelTypeName model, con
         const auto encoding = encodingForModel(modelName);
         return encoding.decode(tokens);
         } catch (error) {
-            std::cerr << 'Error in detokenizeText:' << error << std::endl;
-            return '';
+            std::cerr << "Error in detokenizeText:" << error << std::endl;
+            return "";
         }
 
 }
@@ -95,8 +95,8 @@ std::future<void> generateGroqText(ReturnType<typeof createGroq> groq, const std
                                 return groqRetryResponse;
                                 });
                                 } catch (retryError) {
-                                    std::cerr << 'Final error in generateGroqText:' << retryError << std::endl;
-                                    return 'Error generating text. Please try again later.';
+                                    std::cerr << "Final error in generateGroqText:" << retryError << std::endl;
+                                    return "Error generating text. Please try again later.";
                                 }
                             }
 
@@ -112,13 +112,13 @@ std::future<void> generateGroqObject(ReturnType<typeof createGroq> groq, const s
     try {
         const auto { object } = generateObject({;
             model: groq.languageModel(model),
-            output: 'no-schema',
+            output: "no-schema",
             prompt: params.prompt,
             temperature: params.temperature,
             });
             return object;
             } catch (error: unknown) {
-                std::cerr << 'Error generating object:' << error << std::endl;
+                std::cerr << "Error generating object:" << error << std::endl;
                 return {}
             }
 

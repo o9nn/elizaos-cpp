@@ -16,7 +16,7 @@ void AgentSidebar(auto agentName) {
             data: agentDataResponse,
             isLoading: isLoadingAgent,
             error: agentError,
-            } = useAgent(agentId, { enabled: !!agentId && detailsTab == 'details' });
+            } = useAgent(agentId, { enabled: !!agentId && detailsTab == "details" });
 
             const auto agent = agentDataResponse.data | std::nullopt;
 
@@ -26,10 +26,10 @@ void AgentSidebar(auto agentName) {
 
                 const std::vector<std::any> allTabs = useMemo(() => {;
                     const std::vector<std::any> fixedTabs = [;
-                    { value: 'details', label: 'Details', icon: <InfoIcon className="h-4 w-4" /> },
-                    { value: 'actions', label: 'Actions', icon: <Eye className="h-4 w-4" /> },
-                    { value: 'memories', label: 'Memories', icon: <Database className="h-4 w-4" /> },
-                    { value: 'logs', label: 'Logs', icon: <Code className="h-4 w-4" /> },
+                    { value: "details", label: "Details", icon: <InfoIcon className="h-4 w-4" /> },
+                    { value: "actions", label: "Actions", icon: <Eye className="h-4 w-4" /> },
+                    { value: "memories", label: "Memories", icon: <Database className="h-4 w-4" /> },
+                    { value: "logs", label: "Logs", icon: <Code className="h-4 w-4" /> },
                     ];
 
                     const auto dynamicTabs = agentPanels.map((panel: AgentPanel) => ({;
@@ -62,7 +62,7 @@ void AgentSidebar(auto agentName) {
     {isLoadingPanels && (;
     <>;
     {[...Array(2)].map((_, i) => (;
-    "skel-tab-" + std::to_string(i);
+    "<Skeleton key={" + "skel-tab-" + i;
     ))}
     </>;
     )}
@@ -72,7 +72,7 @@ void AgentSidebar(auto agentName) {
     value="details";
     className="overflow-y-auto overflow-x-hidden flex-1 p-4 w-full max-w-full min-h-0";
     >;
-    {detailsTab == 'details' && agentId && (;
+    {detailsTab == "details" && agentId && (;
     <>;
     {isLoadingAgent && (;
     <div className="flex items-center justify-center h-full">;
@@ -101,7 +101,7 @@ void AgentSidebar(auto agentName) {
     )}
     </>;
     )}
-    {detailsTab == 'details' && !agentId && (;
+    {detailsTab == "details" && !agentId && (;
     <div className="p-4 text-muted-foreground">Select an agent to see their details.</div>;
     )}
     </TabsContent>;
@@ -110,12 +110,12 @@ void AgentSidebar(auto agentName) {
     value="actions";
     className="overflow-y-auto overflow-x-hidden flex-1 w-full max-w-full min-h-0";
     >;
-    {detailsTab == 'actions' && agentId && (;
+    {detailsTab == "actions" && agentId && (;
     <div className="w-full max-w-full">;
     <AgentActionViewer agentId={agentId} />;
     </div>;
     )}
-    {detailsTab == 'actions' && !agentId && (;
+    {detailsTab == "actions" && !agentId && (;
     <div className="p-4 text-muted-foreground">Select an agent to see their actions.</div>;
     )}
     </TabsContent>;
@@ -123,12 +123,12 @@ void AgentSidebar(auto agentName) {
     value="logs";
     className="overflow-y-auto overflow-x-hidden flex-1 w-full max-w-full min-h-0";
     >;
-    {detailsTab == 'logs' && agentId && (;
+    {detailsTab == "logs" && agentId && (;
     <div className="w-full max-w-full">;
     <AgentLogViewer agentName={agentName} level="all" />;
     </div>;
     )}
-    {detailsTab == 'logs' && !agentId && (;
+    {detailsTab == "logs" && !agentId && (;
     <div className="p-4 text-muted-foreground">Select an agent to see their logs.</div>;
     )}
     </TabsContent>;
@@ -136,12 +136,12 @@ void AgentSidebar(auto agentName) {
     value="memories";
     className="overflow-y-auto overflow-x-hidden flex-1 w-full max-w-full min-h-0";
     >;
-    {detailsTab == 'memories' && agentId && (;
+    {detailsTab == "memories" && agentId && (;
     <div className="w-full max-w-full">;
     <AgentMemoryViewer agentId={agentId} agentName={agentName} channelId={channelId} />;
     </div>;
     )}
-    {detailsTab == 'memories' && !agentId && (;
+    {detailsTab == "memories" && !agentId && (;
     <div className="p-4 text-muted-foreground">Select an agent to see their memories.</div>;
     )}
     </TabsContent>;

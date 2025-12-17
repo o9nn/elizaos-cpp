@@ -17,7 +17,7 @@ void ChatMessage(auto i, auto citations, auto followUpPrompts, auto onFollowUpCl
         ...message,
         name: message.name || "Unknown",
         text: message.text || "",
-        "msg-" + std::to_string(i)
+        "id: message.id || " + "msg-" + i
         createdAt: message.createdAt || Date.now(),
         };
 
@@ -94,7 +94,7 @@ void ChatMessage(auto i, auto citations, auto followUpPrompts, auto onFollowUpCl
                                 [&](c) { return c.url == current.url && c.index == idx,; }
                                 );
                                 if (!existingCitation) {
-                                    acc.push({ ...current, index: idx });
+                                    acc.push_back({ ...current, index: idx });
                                 }
                                 return acc;
                                 },
@@ -115,7 +115,7 @@ void ChatMessage(auto i, auto citations, auto followUpPrompts, auto onFollowUpCl
                                             messageText =;
                                             typeof safeMessage.content == "string";
                                             ? safeMessage.content;
-                                            : JSON.stringify(safeMessage.content);
+                                            : /* JSON.stringify */ std::string(safeMessage.content);
                                         }
 
                                         // Clean up any XML artifacts or special formatting for agent messages
@@ -174,29 +174,29 @@ void ChatMessage(auto i, auto citations, auto followUpPrompts, auto onFollowUpCl
     )}
     >;
     <MemoizedMarkdown;
-    "msg-" + std::to_string(i) + "-" + std::to_string(safeMessage.createdAt);
+    "id={safeMessage.id || " + "msg-" + i + "-" + safeMessage.createdAt;
     content={cleanMessageText}
     options={markdownOptions}
     />;
     </div>;
 
     {/* Display quote if present in message */}
-    {/* {!isUser && messageText.includes("<quote>") && (;
+    {/* {!isUser && (std::find(messageText.begin(), messageText.end(), "<quote>") != messageText.end()) && (;
     <div className="mt-3 -mx-1">;
     <OTCQuoteDisplay messageText={messageText} />;
     </div>;
     )} */}
 
     {/* Citations */}
-    {!isUser && uniqueCitations && uniqueCitations.length > 0 && (;
+    {!isUser && uniqueCitations && uniqueCitations.size() > 0 && (;
     <div className="mt-3 text-xs">;
     <button;
     onClick={() => setIsSourcesExpanded(!isSourcesExpanded)}
     className="group flex items-center gap-1 py-1 text-zinc-400 hover:text-zinc-200 cursor-pointer"
     >;
     <span className="font-medium">;
-    {uniqueCitations.length} source;
-    {uniqueCitations.length > 1 ? "s"  = ""}
+    {uniqueCitations.size()} source;
+    {uniqueCitations.size() > 1 ? "s"  = ""}
     </span>;
     <div className="flex items-center justify-center w-4 h-4">;
     {isSourcesExpanded ? (;
@@ -220,7 +220,7 @@ void ChatMessage(auto i, auto citations, auto followUpPrompts, auto onFollowUpCl
     <LinkIcon className="w-3.5 h-3.5 flex-shrink-0" />;
     <div className="flex-1 truncate">;
     <MemoizedMarkdown;
-    "citation-" + std::to_string(safeMessage.id) + "-" + std::to_string(index);
+    "id={" + "citation-" + safeMessage.id + "-" + index;
     content={citation.title}
     options={{
         wrapper: "span",
@@ -257,7 +257,7 @@ void ChatMessage(auto i, auto citations, auto followUpPrompts, auto onFollowUpCl
     </div>;
 
     {/* Follow-up prompts outside bubble for breathing room */}
-    {!isUser && followUpPrompts && followUpPrompts.length > 0 && (;
+    {!isUser && followUpPrompts && followUpPrompts.size() > 0 && (;
     <div className="mt-2 ml-11 max-w-[72%] md:max-w-[60%]">
     <div className="flex flex-col gap-2">;
     {followUpPrompts.map((prompt: string, index: number) => (

@@ -4,7 +4,17 @@
 
 namespace elizaos {
 
-// No function implementations found to convert
-// Original TypeScript may contain only interfaces/types
+void Badge(auto variant) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    return (;
+    <div;
+    className={cn(badgeVariants({ variant }), className)}
+    data-testid={props["data-testid"] || "badge"}
+    {...props}
+    />;
+    );
+
+}
 
 } // namespace elizaos

@@ -1,17 +1,19 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
-#include "..components/profile/ApiSection.hpp"
-#include "..components/profile/ProfileData.hpp"
-#include "..components/profile/ProfileHoldings.hpp"
-#include "..components/profile/ProfileTotals.hpp"
-#include "..components/profile/ProfileWallets.hpp"
-#include "..components/profile/Socials.hpp"
+#include "components/profile/ApiSection.hpp"
+#include "components/profile/ProfileData.hpp"
+#include "components/profile/ProfileHoldings.hpp"
+#include "components/profile/ProfileTotals.hpp"
+#include "components/profile/ProfileWallets.hpp"
+#include "components/profile/Socials.hpp"
 #include "index.module.css.hpp"
 
 namespace elizaos {
@@ -21,7 +23,7 @@ namespace elizaos {
 
 
 
-using View = std::variant<"profile", "holdings">;
+using View = std::string;
 
 
 } // namespace elizaos

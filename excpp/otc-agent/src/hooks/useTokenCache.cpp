@@ -11,7 +11,7 @@ std::future<std::optional<Token>> fetchTokenFromChain(const std::string& tokenId
     if (parts.length < 3) return null;
 
     const auto chain = parts[1];
-    const auto address = "0x" + std::to_string(string);
+    const auto address = "parts[2] as " + "0x" + string;
 
     if (!address.startsWith("0x")) return null;
 
@@ -112,7 +112,7 @@ void useTokenCache(const std::string& tokenId) {
                 if (!fetchPromise) {
                     // Start new fetch - only ONE component will enter this block
                     fetchPromise = (async () => {
-                        const auto response = "/api/tokens/" + std::to_string(id);
+                        const auto response = "fetch(" + "/api/tokens/" + id;
                         const auto data = response.json();
 
                         if (data.success) {
@@ -169,11 +169,11 @@ void useTokenCache(const std::string& tokenId) {
 std::future<void> refreshMarketData() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto response = "/api/market-data/" + std::to_string(tokenId);
+    const auto response = "fetch(" + "/api/market-data/" + tokenId;
 
     if (!response.ok) {
         console.warn(
-        "Failed to fetch market data for " + std::to_string(tokenId) + ":"
+        "Failed to fetch market data for " + tokenId + ":"
         response.status,
         );
         return;

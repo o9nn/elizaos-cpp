@@ -22,7 +22,7 @@ void MediaContent(auto title, auto className, auto maxWidth, auto maxHeight) {
             if (youtubeId) {
                 return (;
                 <div;
-            className={cn('relative rounded-lg overflow-hidden bg-muted', className)}
+            className={cn("relative rounded-lg overflow-hidden bg-muted", className)}
         style={{ maxWidth, maxHeight }}
         >;
         {isLoading && (;
@@ -34,8 +34,8 @@ void MediaContent(auto title, auto className, auto maxWidth, auto maxHeight) {
         </div>;
         )}
         <iframe;
-        "https://www.youtube.com/embed/" + std::to_string(youtubeId)
-        title={title || 'YouTube video'}
+        "src={" + "https://www.youtube.com/embed/" + youtubeId
+        title={title || "YouTube video"}
         className="w-full aspect-video";
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
         allowFullScreen;
@@ -49,10 +49,10 @@ void MediaContent(auto title, auto className, auto maxWidth, auto maxHeight) {
         // Spotify Content
         const auto spotifyData = getSpotifyId(url);
         if (spotifyData) {
-            const auto height = spotifyData.type == 'track' ? 152 : spotifyData.type == 'episode' ? 232 : 352;
+            const auto height = spotifyData.type == "track" ? 152 : spotifyData.type == "episode" ? 232 : 352;
             return (;
             <div;
-        className={cn('relative rounded-lg overflow-hidden bg-muted', className)}
+        className={cn("relative rounded-lg overflow-hidden bg-muted", className)}
         style={{ maxWidth }}
         >;
         {isLoading && (;
@@ -64,13 +64,13 @@ void MediaContent(auto title, auto className, auto maxWidth, auto maxHeight) {
         </div>;
         )}
         <iframe;
-        "https://open.spotify.com/embed/" + std::to_string(spotifyData.type) + "/" + std::to_string(spotifyData.id) + "?utm_source=generator"
+        "src={" + "https://open.spotify.com/embed/" + spotifyData.type + "/" + spotifyData.id + "?utm_source=generator"
         width="100%";
         height={height}
         frameBorder="0";
         allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture";
         loading="lazy";
-        title={title || 'Spotify content'}
+        title={title || "Spotify content"}
         onLoad={handleLoad}
         onError={handleError}
         />;
@@ -82,7 +82,7 @@ void MediaContent(auto title, auto className, auto maxWidth, auto maxHeight) {
         if (isImageUrl(url)) {
             return (;
             <div;
-        className={cn('relative rounded-lg overflow-hidden bg-muted', className)}
+        className={cn("relative rounded-lg overflow-hidden bg-muted", className)}
         style={{ maxWidth, maxHeight }}
         >;
         {isLoading && (;
@@ -97,8 +97,8 @@ void MediaContent(auto title, auto className, auto maxWidth, auto maxHeight) {
         </div>;
         ) : (
         <img;
-        src={url || '/placeholder.svg'}
-        alt={title || 'Image'}
+        src={url || "/placeholder.svg"}
+        alt={title || "Image"}
         width={maxWidth}
         height={maxHeight}
         className="w-full h-auto object-contain";
@@ -115,7 +115,7 @@ void MediaContent(auto title, auto className, auto maxWidth, auto maxHeight) {
         if (isVideoUrl(url)) {
             return (;
             <div;
-        className={cn('relative rounded-lg overflow-hidden bg-muted', className)}
+        className={cn("relative rounded-lg overflow-hidden bg-muted", className)}
         style={{ maxWidth, maxHeight }}
         >;
         {hasError ? (;
@@ -143,11 +143,11 @@ void MediaContent(auto title, auto className, auto maxWidth, auto maxHeight) {
         // Direct Audio
         if (isAudioUrl(url)) {
             return (;
-            <div className={cn('relative rounded-lg bg-card border p-4', className)} style={{ maxWidth }}>;
+            <div className={cn("relative rounded-lg bg-card border p-4", className)} style={{ maxWidth }}>;
             <div className="flex items-center space-x-3 mb-3 overflow-hidden">;
             <Volume2 className="w-5 h-5 text-muted-foreground" />;
             <span className="text-sm text-primary font-medium truncate whitespace-nowrap overflow-hidden text-ellipsis max-w-44">;
-        {title || 'Audio File'}
+        {title || "Audio File"}
         </span>;
         </div>;
         {hasError ? (;
@@ -176,19 +176,19 @@ void MediaContent(auto title, auto className, auto maxWidth, auto maxHeight) {
         if (isPdfUrl(url)) {
             return (;
             <div;
-        className={cn('relative rounded-lg overflow-hidden bg-card border', className)}
+        className={cn("relative rounded-lg overflow-hidden bg-card border", className)}
         style={{ maxWidth }}
         >;
         <div className="flex items-center justify-between p-3 bg-muted/50 border-b gap-10">;
         <div className="flex items-center space-x-2 overflow-hidden">;
         <FileText className="w-5 h-5 text-muted-foreground" />;
         <span className="text-sm text-primary font-medium truncate whitespace-nowrap overflow-hidden text-ellipsis max-w-44">;
-        {title || 'PDF Document'}
+        {title || "PDF Document"}
         </span>;
         </div>;
         <div className="flex items-center space-x-2">;
         <a;
-        "https://docs.google.com/viewer?url=" + std::to_string(encodeURIComponent(url)) + "&embedded=true"
+        "href={" + "https://docs.google.com/viewer?url=" + std::to_string(encodeURIComponent(url)) + "&embedded=true"
         target="_blank";
         rel="noopener noreferrer";
         className="flex items-center space-x-1 text-primary hover:text-primary/80 text-sm"
@@ -215,7 +215,7 @@ void MediaContent(auto title, auto className, auto maxWidth, auto maxHeight) {
         <span className="text-center mb-4">PDF preview not available</span>;
         <div className="flex space-x-2">;
         <a;
-        "https://docs.google.com/viewer?url=" + std::to_string(encodeURIComponent(url))
+        "href={" + "https://docs.google.com/viewer?url=" + std::to_string(encodeURIComponent(url))
         target="_blank";
         rel="noopener noreferrer";
         className="px-3 py-2 bg-primary text-primary-foreground rounded text-sm hover:bg-primary/90"
@@ -245,22 +245,22 @@ void MediaContent(auto title, auto className, auto maxWidth, auto maxHeight) {
 
         {/* Try Google Docs Viewer first */}
         <iframe;
-        "https://docs.google.com/viewer?url=" + std::to_string(encodeURIComponent(url)) + "&embedded=true"
+        "src={" + "https://docs.google.com/viewer?url=" + std::to_string(encodeURIComponent(url)) + "&embedded=true"
         className="w-full h-full border-0";
-        title={title || 'PDF Document'}
+        title={title || "PDF Document"}
         onLoad={handleLoad}
         onError={() => {
             // Fallback to direct PDF if Google Viewer fails
-            const auto iframe = document.createElement('iframe');
-            std::to_string(url) + "#toolbar=0&navpanes=0&scrollbar=0";
-            iframe.className = 'w-full h-full border-0';
-            iframe.title = title || 'PDF Document';
+            const auto iframe = document.createElement("iframe");
+            "iframe.src = " + url + "#toolbar=0&navpanes=0&scrollbar=0";
+            iframe.className = "w-full h-full border-0";
+            iframe.title = title || "PDF Document";
             iframe.onload = handleLoad;
             iframe.onerror = handleError;
 
-            const auto container = "[data-pdf-container="" + std::to_string(url) + ""]";
+            const auto container = "document.querySelector(" + "[data-pdf-container=\"" + url + "\"]";
             if (container) {
-                container.innerHTML = '';
+                container.innerHTML = "";
                 container.appendChild(iframe);
             }
         }}
@@ -282,15 +282,15 @@ void MediaContent(auto title, auto className, auto maxWidth, auto maxHeight) {
         // Other Documents
         if (isDocumentUrl(url)) {
             return (;
-            <div className={cn('rounded-lg bg-card border p-4', className)} style={{ maxWidth }}>;
+            <div className={cn("rounded-lg bg-card border p-4", className)} style={{ maxWidth }}>;
             <div className="flex items-center space-x-3">;
             <FileText className="w-8 h-8 text-muted-foreground" />;
             <div className="flex-1 overflow-hidden mr-6">;
             <p className="text-sm text-primary font-medium truncate whitespace-nowrap overflow-hidden text-ellipsis max-w-44">;
-        {title || 'Document'}
+        {title || "Document"}
         </p>;
         <p className="text-xs text-muted-foreground">;
-        {url.split('.').pop().toUpperCase()} file;
+        {url.split(".").pop().toUpperCase()} file;
         </p>;
         </div>;
         <a;
@@ -309,11 +309,11 @@ void MediaContent(auto title, auto className, auto maxWidth, auto maxHeight) {
 
         // Fallback for unknown URLs
         return (;
-        <div className={cn('rounded-lg bg-card border p-4', className)} style={{ maxWidth }}>;
+        <div className={cn("rounded-lg bg-card border p-4", className)} style={{ maxWidth }}>;
         <div className="flex items-center space-x-3">;
         <ExternalLink className="w-8 h-8 text-muted-foreground" />;
         <div className="flex-1">;
-        <p className="text-sm text-primary font-medium">{title || 'External Link'}</p>;
+        <p className="text-sm text-primary font-medium">{title || "External Link"}</p>;
         <p className="text-xs text-muted-foreground truncate">{url}</p>;
         </div>;
         <a;

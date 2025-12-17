@@ -1,16 +1,19 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <tuple>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
-#include ".exceptions.hpp"
-#include ".types.hpp"
 #include "commands.hpp"
+#include "exceptions.hpp"
+#include "types.hpp"
 
 namespace elizaos {
 

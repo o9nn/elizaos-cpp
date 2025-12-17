@@ -1,14 +1,17 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".hooks/useProfileWallets.hpp"
 #include "ProfileRepoNotice.hpp"
 #include "WalletLinkBoard.hpp"
 #include "WalletLinkForm.hpp"
+#include "hooks/useProfileWallets.hpp"
 
 namespace elizaos {
 

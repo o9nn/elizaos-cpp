@@ -1,16 +1,20 @@
 #pragma once
+#include <algorithm>
+#include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
-#include "..middleware.hpp"
-#include "..utils/media-transformer.hpp"
 #include "elizaos/core.hpp"
 #include "errors/SessionErrors.hpp"
+#include "middleware.hpp"
+#include "utils/media-transformer.hpp"
 
 namespace elizaos {
 
@@ -70,7 +74,7 @@ struct ParsedRawMessage {
     std::optional<std::string> thought;
     std::optional<std::vector<std::string>> actions;
     std::optional<std::string> content;
-    std::optional<std::vector<unknown>> attachments;
+    std::optional<std::vector<std::any>> attachments;
 };
 
 // Input validation constants
@@ -92,7 +96,6 @@ SessionTimeoutConfig mergeTimeoutConfigs(std::optional<SessionTimeoutConfig> ses
 /**
  * Calculates the expiration date for a session
  */
-Date calculateExpirationDate(Date createdAt, Date lastActivity, SessionTimeoutConfig config, number // Prefix with underscore to indicate intentionally unused _renewalCount);
 
 /**
  * Checks if a session should trigger a warning
@@ -112,7 +115,7 @@ SessionInfoResponse createSessionInfoResponse(Session session);
 /**
  * Validates session metadata
  */
-void validateMetadata(unknown metadata);
+void validateMetadata(const std::any& metadata);
 
 /**
  * Validates message content
@@ -121,7 +124,7 @@ void validateMetadata(unknown metadata);
 /**
  * Express async handler wrapper to catch errors
  */
-using AsyncRequestHandler = std::variant<std::function<std::future<void>(express::Request, express::Response, express::NextFunction)>, void>;
+using AsyncRequestHandler = std::function<std::variant<std::future<void>, void>(express::Request, express::Response, express::NextFunction)>;
 
 /**
  * Creates a unified sessions router for simplified messaging

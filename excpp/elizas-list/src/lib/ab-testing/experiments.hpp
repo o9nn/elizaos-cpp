@@ -1,14 +1,18 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <chrono>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".monitoring/logger.hpp"
-#include ".monitoring/metrics.hpp"
+#include "monitoring/logger.hpp"
+#include "monitoring/metrics.hpp"
 
 namespace elizaos {
 
@@ -23,8 +27,8 @@ struct Experiment {
     std::string id;
     double weight;
     std::any config;
-    Date startDate;
-    std::optional<Date> endDate;
+    std::chrono::system_clock::time_point startDate;
+    std::optional<std::chrono::system_clock::time_point> endDate;
 };
 
 class ABTestingService {

@@ -1,10 +1,15 @@
 #pragma once
+#include <algorithm>
+#include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
+#include <stdexcept>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -117,13 +122,13 @@ struct ServiceClassMap {
 struct ServiceError {
     std::string code;
     std::string message;
-    std::optional<unknown> details;
-    std::optional<Error> cause;
+    std::optional<std::any> details;
+    std::optional<std::runtime_error> cause;
 };
 
 /**
  * Safely create a ServiceError from any caught error
  */
-ServiceError createServiceError(unknown error, auto code);
+ServiceError createServiceError(const std::any& error, auto code);
 
 } // namespace elizaos

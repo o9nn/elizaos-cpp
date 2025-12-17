@@ -1,9 +1,13 @@
 #pragma once
+#include <algorithm>
+#include <chrono>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "service.hpp"
 
@@ -73,7 +77,7 @@ struct PostContent {
     std::string question;
     std::string text;
     double votes;
-    std::optional<Date> expiresAt;
+    std::optional<std::chrono::system_clock::time_point> expiresAt;
     std::optional<bool> multipleChoice;
 };
 
@@ -84,9 +88,9 @@ struct PostInfo {
     std::string platform;
     std::string platformId;
     std::string url;
-    Date createdAt;
-    std::optional<Date> editedAt;
-    std::optional<Date> scheduledAt;
+    std::chrono::system_clock::time_point createdAt;
+    std::optional<std::chrono::system_clock::time_point> editedAt;
+    std::optional<std::chrono::system_clock::time_point> scheduledAt;
     PostEngagement engagement;
     std::string visibility;
     std::optional<UUID> replyTo;
@@ -100,7 +104,7 @@ struct PostInfo {
 
 struct PostCreateOptions {
     std::optional<std::vector<std::string>> platforms;
-    std::optional<Date> scheduledAt;
+    std::optional<std::chrono::system_clock::time_point> scheduledAt;
     std::optional<PostInfo['visibility']> visibility;
     std::optional<UUID> replyTo;
     std::optional<bool> thread;
@@ -119,8 +123,8 @@ struct PostSearchOptions {
     std::optional<std::string> platform;
     std::optional<std::vector<std::string>> tags;
     std::optional<std::vector<UUID>> mentions;
-    std::optional<Date> since;
-    std::optional<Date> before;
+    std::optional<std::chrono::system_clock::time_point> since;
+    std::optional<std::chrono::system_clock::time_point> before;
     std::optional<double> limit;
     std::optional<double> offset;
     std::optional<bool> hasMedia;

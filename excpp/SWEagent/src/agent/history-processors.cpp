@@ -15,13 +15,13 @@ std::string getContentText(HistoryItem entry) {
         const std::vector<std::string> texts = [];
         for (const auto& item : entry.content)
             if (item.type == 'text' && item.text) {
-                texts.push(item.text);
+                texts.push_back(item.text);
             }
         }
-        return texts.join('\n');
+        return texts.join("\n");
     }
 
-    return '';
+    return "";
 
 }
 
@@ -30,15 +30,15 @@ void addCacheControlToEntry(HistoryItem entry) {
 
     // Special handling for different content types
     if (typeof entry.content == 'string') {
-        entry.content = [{ type: 'text', text: entry.content, cacheControl: { type: 'ephemeral' } }];
-        } else if (Array.isArray(entry.content) && entry.content.length > 0) {
-            entry.content[0].cacheControl = { type: 'ephemeral' };
+        entry.content = [{ type: "text", text: entry.content, cacheControl: { type: "ephemeral" } }];
+        } else if (Array.isArray(entry.content) && entry.content.size() > 0) {
+            entry.content[0].cacheControl = { type: "ephemeral" };
         }
 
         // Workaround for weird bug with tool role
         if (entry.role == 'tool' && Array.isArray(entry.content) && entry.content.length > 0) {
             delete entry.content[0].cacheControl;
-            entry.cacheControl = { type: 'ephemeral' };
+            entry.cacheControl = { type: "ephemeral" };
         }
 
 }
@@ -50,30 +50,30 @@ AbstractHistoryProcessor createHistoryProcessor(const std::any& config) {
         { process: (history: History) processor = > History };
 
         switch (config.type) {
-            case 'default':
+            // case "default":
             processor = new DefaultHistoryProcessor();
             break;
-            case 'last_n_observations':
+            // case "last_n_observations":
             processor = new LastNObservations({ n: (config as { n?: number }).n });
             break;
-            case 'tag_tool_call_observations':
+            // case "tag_tool_call_observations":
             processor = new TagToolCallObservations(config as { tags?: Set<string>; functionNames?: Set<string> });
             break;
-            case 'closed_window':
+            // case "closed_window":
             processor = new ClosedWindowHistoryProcessor();
             break;
-            case 'cache_control':
+            // case "cache_control":
             processor = new CacheControlHistoryProcessor({ cacheLastN: (config as { cacheLastN?: number }).cacheLastN });
             break;
-            case 'remove_regex':
+            // case "remove_regex":
             processor = new RemoveRegex({ patterns: (config as { patterns?: string[] }).patterns });
             break;
-            case 'image_parsing':
+            // case "image_parsing":
             processor = new ImageParsingHistoryProcessor({
                 allowedMimeTypes: (config as { allowedMimeTypes?: string[] }).allowedMimeTypes,
                 });
                 break;
-                default:
+                // default:
                 throw std::runtime_error(`Unknown history processor type: ${config.type}`);
             }
 

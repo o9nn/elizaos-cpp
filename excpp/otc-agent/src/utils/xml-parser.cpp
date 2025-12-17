@@ -146,10 +146,10 @@ bool messageContainsQuote(const std::string& messageText) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return !!(;
-    messageText.includes("<quote>") ||;
-    messageText.includes("<quote>") ||;
-    messageText.includes("<quoteAccepted>") ||;
-    messageText.includes("<!-- XML_START -->");
+    (std::find(messageText.begin(), messageText.end(), "<quote>") != messageText.end()) ||;
+    (std::find(messageText.begin(), messageText.end(), "<quote>") != messageText.end()) ||;
+    (std::find(messageText.begin(), messageText.end(), "<quoteAccepted>") != messageText.end()) ||;
+    (std::find(messageText.begin(), messageText.end(), "<!-- XML_START -->") != messageText.end());
     );
 
 }

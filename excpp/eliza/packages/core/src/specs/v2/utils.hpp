@@ -1,15 +1,18 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
-#include "..utils.hpp"
 #include "types.hpp"
+#include "utils.hpp"
 
 namespace elizaos {
 
@@ -101,7 +104,7 @@ void upgradeDoubleToTriple(auto tpl);
  * @param {unknown} value - The value to validate.
  * @returns {UUID | null} Returns the validated UUID value or null if validation fails.
  */
-std::optional<UUID> validateUuid(unknown value);
+std::optional<UUID> validateUuid(const std::any& value);
 
 /**
  * Converts a string or number to a UUID.

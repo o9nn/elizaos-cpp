@@ -10,13 +10,13 @@ express::Router runtimeRouter(const std::unordered_map<UUID, IAgentRuntime>& age
     const auto router = express.Router();
 
     // Mount health endpoints at root level
-    router.use('/', createHealthRouter(agents, serverInstance));
+    router.use("/", createHealthRouter(agents, serverInstance));
 
     // Mount logging endpoints
-    router.use('/', createLoggingRouter(agents, serverInstance));
+    router.use("/", createLoggingRouter(agents, serverInstance));
 
     // Mount debug endpoints under /debug
-    router.use('/debug', createDebugRouter(serverInstance));
+    router.use("/debug", createDebugRouter(serverInstance));
 
     return router;
 

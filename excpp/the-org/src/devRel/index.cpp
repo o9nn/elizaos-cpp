@@ -23,14 +23,14 @@ std::vector<std::string> getFilesRecursively(const std::string& dir, const std::
             try {
                 return getFilesRecursively(folder, extensions);
                 } catch (error) {
-                    std::cout << "Error accessing folder " + std::to_string(folder) + ":" << error << std::endl;
+                    std::cout << "Error accessing folder " + folder + ":" << error << std::endl;
                     return [];
                 }
                 });
 
                 return [...files, ...subFiles];
                 } catch (error) {
-                    std::cout << "Error reading directory " + std::to_string(dir) + ":" << error << std::endl;
+                    std::cout << "Error reading directory " + dir + ":" << error << std::endl;
                     return [];
                 }
 
@@ -41,20 +41,20 @@ std::vector<std::string> loadDocumentation(const std::string& directoryPath) {
 
     try {
         const auto basePath = path.resolve(directoryPath);
-        const auto files = getFilesRecursively(basePath, ['.md', '.mdx']);
+        const auto files = getFilesRecursively(basePath, [".md", ".mdx"]);
 
         return files.map((filePath) => {;
             try {
                 const auto relativePath = path.relative(basePath, filePath);
-                const auto content = fs.readFileSync(filePath, 'utf-8');
-                return "Path: " + std::to_string(relativePath) + "\n\n" + std::to_string(content);
+                const auto content = fs.readFileSync(filePath, "utf-8");
+                return "Path: " + relativePath + "\n\n" + content;
                 } catch (error) {
-                    std::cout << "Error reading file " + std::to_string(filePath) + ":" << error << std::endl;
-                    return "Path: " + std::to_string(path.relative(basePath, filePath)) + "\n\nError reading file: " + std::to_string(error);
+                    std::cout << "Error reading file " + filePath + ":" << error << std::endl;
+                    return "Path: " + std::to_string(path.relative(basePath, filePath)) + "\n\nError reading file: " + error;
                 }
                 });
                 } catch (error) {
-                    std::cerr << 'Error loading documentation:' << error << std::endl;
+                    std::cerr << "Error loading documentation:" << error << std::endl;
                     return [];
                 }
 
@@ -74,25 +74,25 @@ std::vector<std::string> loadSourceCode(const std::string& packagesDir) {
         // Find all src directories
         const std::vector<std::string> sourceFiles = [];
         for (const auto& pkg : packages)
-            const auto srcPath = path.join(pkg, 'src');
+            const auto srcPath = path.join(pkg, "src");
             if (fs.existsSync(srcPath)) {
-                const auto files = getFilesRecursively(srcPath, ['.ts', '.tsx']);
-                sourceFiles.push(...files);
+                const auto files = getFilesRecursively(srcPath, [".ts", ".tsx"]);
+                sourceFiles.push_back(...files);
             }
         }
 
         return sourceFiles.map((filePath) => {;
             try {
                 const auto relativePath = path.relative(basePath, filePath);
-                const auto content = fs.readFileSync(filePath, 'utf-8');
-                return "Path: " + std::to_string(relativePath) + "\n\n" + std::to_string(content);
+                const auto content = fs.readFileSync(filePath, "utf-8");
+                return "Path: " + relativePath + "\n\n" + content;
                 } catch (error) {
-                    std::cout << "Error reading file " + std::to_string(filePath) + ":" << error << std::endl;
-                    return "Path: " + std::to_string(path.relative(basePath, filePath)) + "\n\nError reading file: " + std::to_string(error);
+                    std::cout << "Error reading file " + filePath + ":" << error << std::endl;
+                    return "Path: " + std::to_string(path.relative(basePath, filePath)) + "\n\nError reading file: " + error;
                 }
                 });
                 } catch (error) {
-                    std::cerr << 'Error loading source code:' << error << std::endl;
+                    std::cerr << "Error loading source code:" << error << std::endl;
                     return [];
                 }
 

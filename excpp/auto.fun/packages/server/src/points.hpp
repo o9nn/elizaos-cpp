@@ -1,11 +1,14 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
 #include "db.hpp"
@@ -20,7 +23,7 @@ namespace elizaos {
 
 
 // point events for now
-using PointEvent = std::variant<, std::any, std::any, { type: "prebond_buy">; usdVolume: number }
+using PointEvent = std::variant<, std::any, { type: "prebond_buy">; usdVolume: number }
 
 // helper calc points per event
 double calculatePoints(PointEvent evt);

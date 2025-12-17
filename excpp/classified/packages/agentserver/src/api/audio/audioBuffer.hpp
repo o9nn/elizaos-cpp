@@ -1,9 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -20,13 +23,13 @@ namespace elizaos {
  * @param audioBuffer - The audio data buffer to check
  * @returns The appropriate MIME type string
  */
-std::string getAudioMimeType(Buffer audioBuffer);
+std::string getAudioMimeType(const std::vector<uint8_t>& audioBuffer);
 
 /**
  * Result of audio processing containing the buffer and MIME type
  */
 struct AudioProcessingResult {
-    Buffer buffer;
+    std::vector<uint8_t> buffer;
     std::string mimeType;
 };
 

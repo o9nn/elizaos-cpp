@@ -1,13 +1,17 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
+#include <stdexcept>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".emoji-handler.hpp"
 #include "elizaos/core.hpp"
+#include "emoji-handler.hpp"
 
 namespace elizaos {
 
@@ -24,7 +28,7 @@ struct MigrationResult {
     bool success;
     std::string branchName;
     std::string repoPath;
-    std::optional<Error> error;
+    std::optional<std::runtime_error> error;
 };
 
 struct ProductionValidationResult {

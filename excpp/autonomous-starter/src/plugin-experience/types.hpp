@@ -1,9 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
 
@@ -74,7 +77,7 @@ struct ExperienceAnalysis {
 
 struct ExperienceEvent {
     UUID experienceId;
-    std::variant<"created", "accessed", "updated", "superseded"> eventType;
+    std::string eventType;
     double timestamp;
 };
 

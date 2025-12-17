@@ -69,8 +69,8 @@ std::future<void> handleProgramLogs(Logs logs) {
     // Look for register_token instruction signature
     const auto hasRegisterToken = logMessages.some(;
     (log: string) =>
-    log.includes("Instruction: RegisterToken") ||
-    log.includes("register_token"),
+    (std::find(log.begin(), log.end(), "Instruction: RegisterToken") != log.end()) ||
+    (std::find(log.begin(), log.end(), "register_token") != log.end()),
     );
 
     if (!hasRegisterToken) {
@@ -146,7 +146,7 @@ std::future<void> backfillSolanaEvents(std::optional<std::vector<std::string>> s
             });
             ).map((s) => s.signature);
 
-            std::cout << "[Solana Backfill] Found " + std::to_string(sigs.length) + " transactions" << std::endl;
+            std::cout << "[Solana Backfill] Found " + sigs.size() + " transactions" << std::endl;
 
             for (const auto& sig : sigs)
                 try {
@@ -158,8 +158,8 @@ std::future<void> backfillSolanaEvents(std::optional<std::vector<std::string>> s
                         if (tx && tx.meta && tx.meta.logMessages) {
                             const auto hasRegisterToken = tx.meta.logMessages.some(;
                             (log) =>;
-                            log.includes("Instruction: RegisterToken") ||
-                            log.includes("register_token"),
+                            (std::find(log.begin(), log.end(), "Instruction: RegisterToken") != log.end()) ||
+                            (std::find(log.begin(), log.end(), "register_token") != log.end()),
                             );
 
                             if (hasRegisterToken) {
@@ -168,7 +168,7 @@ std::future<void> backfillSolanaEvents(std::optional<std::vector<std::string>> s
                         }
                         } catch (error) {
                             console.warn(
-                            "[Solana Backfill] Failed to process signature " + std::to_string(sig) + ":"
+                            "[Solana Backfill] Failed to process signature " + sig + ":"
                             error,
                             );
                         }

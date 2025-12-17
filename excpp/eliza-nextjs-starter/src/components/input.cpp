@@ -52,7 +52,7 @@ void Input(ForwardedRef<HTMLInputElement> ref) {
     className={clsx([;
     // Date classes
     props.type &&;
-    dateTypes.includes(props.type) && [;
+    (std::find(dateTypes.begin(), dateTypes.end(), props.type) != dateTypes.end()) && [;
     "[&::-webkit-datetime-edit-fields-wrapper]:p-0",
     "[&::-webkit-date-and-time-value]:min-h-[1.5em]",
     "[&::-webkit-datetime-edit]:inline-flex",

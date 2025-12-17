@@ -33,7 +33,7 @@ std::future<anchor::Program> getProgram(Connection connection, Keypair wallet) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto idlPath = path.join(process.cwd(), "solana/otc-program/target/idl/otc.json");
-    const auto idl = JSON.parse(fs.readFileSync(idlPath, "utf8"));
+    const auto idl = /* JSON.parse */ fs.readFileSync(idlPath, "utf8");
 
     const auto provider = new anchor.AnchorProvider(;
     connection,
@@ -165,7 +165,7 @@ std::future<void> setPrice(const std::string& tokenMintStr, double priceUsd) {
     const auto price8d = new anchor.BN(Math.floor(priceUsd * 1e8));
 
     std::cout << "Token:" << tokenMint.toBase58() << std::endl;
-    std::cout << "Price: $" + priceUsd + " (" + price8d.toString() + " in 8d format)" << std::endl;
+    std::cout << "Price: $" + priceUsd + " (" + std::to_string(price8d) + " in 8d format)" << std::endl;
 
     // Derive token registry PDA
     const auto [tokenRegistryPda] = PublicKey.findProgramAddressSync(;
@@ -211,13 +211,13 @@ std::future<void> showStatus() {
     }
 
     std::cout << "\n✅ Desk exists" << std::endl;
-    std::cout << "   Data size:" << deskInfo.data.length << "bytes" << std::endl;
+    std::cout << "   Data size:" << deskInfo.data.size() << "bytes" << std::endl;
     std::cout << "   Lamports:" << deskInfo.lamports / 1e9 << "SOL" << std::endl;
 
     // Try to decode desk state
     const auto idlPath = path.join(process.cwd(), "solana/otc-program/target/idl/otc.json");
     if (fs.existsSync(idlPath)) {
-        const auto idl = JSON.parse(fs.readFileSync(idlPath, "utf8"));
+        const auto idl = /* JSON.parse */ fs.readFileSync(idlPath, "utf8");
         const auto dummyWallet = new anchor.Wallet(Keypair.generate());
         const auto provider = new anchor.AnchorProvider(connection, dummyWallet, { commitment: "confirmed" });
         const auto program = new anchor.Program(idl, provider);
@@ -300,7 +300,7 @@ std::future<void> main() {
     }
 
     switch (command) {
-        case "create-treasury":
+        // case "create-treasury":
         if (!args[1]) {
             std::cerr << "Error: TOKEN_MINT required" << std::endl;
             printUsage();
@@ -309,7 +309,7 @@ std::future<void> main() {
         createTreasury(args[1]);
         break;
 
-        case "register-token":
+        // case "register-token":
         if (!args[1]) {
             std::cerr << "Error: TOKEN_MINT required" << std::endl;
             printUsage();
@@ -318,7 +318,7 @@ std::future<void> main() {
         registerToken(args[1], args[2] ? parseFloat(args[2]) : std::nullopt);
         break;
 
-        case "set-price":
+        // case "set-price":
         if (!args[1] || !args[2]) {
             std::cerr << "Error: TOKEN_MINT and PRICE_USD required" << std::endl;
             printUsage();
@@ -327,11 +327,11 @@ std::future<void> main() {
         setPrice(args[1], parseFloat(args[2]));
         break;
 
-        case "status":
+        // case "status":
         showStatus();
         break;
 
-        default:
+        // default:
         std::cerr << "Unknown command:" << command << std::endl;
         printUsage();
         process.exit(1);

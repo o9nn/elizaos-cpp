@@ -20,15 +20,15 @@ std::future<ConfirmationResponse> extractConfirmationIntent(IAgentRuntime runtim
             const auto pendingTaskText = `;
         Name: ${pendingTask.name}
     Type: ${pendingTask.taskType}
-    "Priority: " + std::to_string(pendingTask.priority)
-    ${pendingTask.urgent ? 'Urgent: Yes' : ''}
-    "Due Date: " + std::to_string(pendingTask.dueDate)
-    "Recurring: " + std::to_string(pendingTask.recurring)
+    "${pendingTask.priority ? " + "Priority: " + pendingTask.priority
+    ${pendingTask.urgent ? "Urgent: Yes" : ""}
+    "${pendingTask.dueDate ? " + "Due Date: " + pendingTask.dueDate
+    "${pendingTask.recurring ? " + "Recurring: " + pendingTask.recurring
     `;
 
     const auto prompt = composePrompt({;
         state: {
-            text: message.content.text || '',
+            text: message.content.text || "",
             messageHistory,
             pendingTask: pendingTaskText,
             },
@@ -43,17 +43,17 @@ std::future<ConfirmationResponse> extractConfirmationIntent(IAgentRuntime runtim
                 const auto parsedResult = parseKeyValueXml(result) | nullptr;
 
                 if (!parsedResult) {
-                    std::cerr << 'Failed to parse confirmation response' << std::endl;
+                    std::cerr << "Failed to parse confirmation response" << std::endl;
                     return { isConfirmation: false, shouldProceed: false }
                 }
 
                 return {
-                    isConfirmation: std::to_string(parsedResult.isConfirmation) == 'true',
-                    shouldProceed: std::to_string(parsedResult.shouldProceed) == 'true',
-                    modifications: parsedResult.modifications == 'none' ? std::nullopt : parsedResult.modifications,
+                    isConfirmation: std::to_string(parsedResult.isConfirmation) == "true",
+                    shouldProceed: std::to_string(parsedResult.shouldProceed) == "true",
+                    modifications: parsedResult.modifications == "none" ? std::nullopt : parsedResult.modifications,
                     };
                     } catch (error) {
-                        std::cerr << 'Error extracting confirmation intent:' << error << std::endl;
+                        std::cerr << "Error extracting confirmation intent:" << error << std::endl;
                         return { isConfirmation: false, shouldProceed: false }
                     }
 

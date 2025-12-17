@@ -7,16 +7,16 @@ namespace elizaos {
 void sendSuccess(const std::any& res, const std::any& data, auto status) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    res.writeHead(status, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ success: true, data }));
+    res.writeHead(status, { "Content-Type": "application/json" });
+    res.end(/* JSON.stringify */ std::string({ success: true, data }));
 
 }
 
 void sendError(const std::any& res, double status, const std::string& code, const std::string& message, std::optional<std::string> details) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    res.writeHead(status, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ success: false, error: { code, message, details } }));
+    res.writeHead(status, { "Content-Type": "application/json" });
+    res.end(/* JSON.stringify */ std::string({ success: false, error: { code, message, details } }));
 
 }
 
@@ -26,15 +26,15 @@ std::future<void> getLeaderboardDataHandler(const std::any& req, const std::any&
 
         const auto service = runtime.getService<CommunityInvestorService>(ServiceType.COMMUNITY_INVESTOR);
         if (!service) {
-            return sendError(res, 500, 'SERVICE_NOT_FOUND', 'CommunityInvestorService not found');
+            return sendError(res, 500, "SERVICE_NOT_FOUND", "CommunityInvestorService not found");
         }
         try {
             const auto leaderboardData = service.getLeaderboardData(runtime);
             // Return the leaderboard data directly as an array, not wrapped in an object
             sendSuccess(res, leaderboardData);
             } catch (error: any) {
-                std::cerr << '[API /leaderboard] Error fetching leaderboard data:' << error << std::endl;
-                sendError(res, 500, 'LEADERBOARD_ERROR', 'Failed to fetch leaderboard data', error.message);
+                std::cerr << "[API /leaderboard] Error fetching leaderboard data:" << error << std::endl;
+                sendError(res, 500, "LEADERBOARD_ERROR", "Failed to fetch leaderboard data", error.message);
             }
 
     } catch (const std::exception& e) {
@@ -48,32 +48,32 @@ std::future<void> communityInvestorPanelHandler(const std::any& req, const std::
     try {
 
         try {
-            const auto pluginDistPath = path.dirname(new URL(import.meta.url).pathname.replace(/^\/[A-Z]:/, ''));
-            const auto indexPath = path.join(pluginDistPath, 'index.html');
+            const auto pluginDistPath = path.dirname(new URL(import.meta.url).pathname.replace(/^\/[A-Z]:/, ""));
+            const auto indexPath = path.join(pluginDistPath, "index.html");
 
             logger.debug(`[COMMUNITY INVESTOR PANEL] pluginDistPath: ${pluginDistPath}`);
             logger.debug(`[COMMUNITY INVESTOR PANEL] indexPath: ${indexPath}`);
             logger.debug(`[COMMUNITY INVESTOR PANEL] File exists: ${fs.existsSync(indexPath)}`);
 
             if (fs.existsSync(indexPath)) {
-                auto html = fs.promises.readFile(indexPath, 'utf8');
+                auto html = fs.promises.readFile(indexPath, "utf8");
                 const auto agentId = runtime.agentId;
                 if (agentId) {
                     html = html.replace(;
-                    '<head>',
-                    "<head>\n    <script>window.elizaAgentId = "" + std::to_string(agentId) + "";</script>";
+                    "<head>",
+                    "<head>\n    <script>window.elizaAgentId = \"" + agentId + "\";</script>";
                     );
                     logger.debug(`[COMMUNITY INVESTOR PANEL] Injected agentId: ${agentId}`);
                     } else {
-                        std::cout << '[COMMUNITY INVESTOR PANEL] AgentId not available in runtime for injection.' << std::endl;
+                        std::cout << "[COMMUNITY INVESTOR PANEL] AgentId not available in runtime for injection." << std::endl;
                     }
                     logger.debug(
                     "[COMMUNITY INVESTOR PANEL] Serving HTML (first 250 chars after potential injection): " + std::to_string(html.substring(0, 250))
                     );
-                    res.writeHead(200, { 'Content-Type': 'text/html' });
+                    res.writeHead(200, { "Content-Type": "text/html" });
                     res.end(html);
                     } else {
-                        std::cerr << "[COMMUNITY INVESTOR PANEL] Frontend index.html not found at " + std::to_string(indexPath) << std::endl;
+                        std::cerr << "[COMMUNITY INVESTOR PANEL] Frontend index.html not found at " + indexPath << std::endl;
                         // Fallback: serve a basic HTML page that loads the JS bundle from the assets folder
                         const auto html = `;
                         <!DOCTYPE html>;
@@ -101,13 +101,13 @@ std::future<void> communityInvestorPanelHandler(const std::any& req, const std::
         </div>;
         </div>;
         </body>;
-        </html>`;
-        res.writeHead(200, { 'Content-Type': 'text/html' });
+        "</html>";
+        res.writeHead(200, { "Content-Type": "text/html" });
         res.end(html);
         }
         } catch (error: any) {
-            std::cerr << '[COMMUNITY INVESTOR PANEL] Error serving leaderboard panel:' << error << std::endl;
-            sendError(res, 500, 'PANEL_ERROR', 'Failed to load leaderboard panel', error.message);
+            std::cerr << "[COMMUNITY INVESTOR PANEL] Error serving leaderboard panel:" << error << std::endl;
+            sendError(res, 500, "PANEL_ERROR", "Failed to load leaderboard panel", error.message);
         }
 
     } catch (const std::exception& e) {
@@ -122,27 +122,27 @@ std::future<void> communityInvestorAssetsHandler(const std::any& req, const std:
 
         try {
             logger.debug(
-            "[COMMUNITY INVESTOR ASSET HANDLER] Called with req.path: " + std::to_string(req.path) + ", req.originalUrl: " + std::to_string(req.originalUrl)
+            "[COMMUNITY INVESTOR ASSET HANDLER] Called with req.path: " + req.path + ", req.originalUrl: " + req.originalUrl
             );
-            const auto pluginDistPath = path.dirname(new URL(import.meta.url).pathname.replace(/^\/[A-Z]:/, ''));
+            const auto pluginDistPath = path.dirname(new URL(import.meta.url).pathname.replace(/^\/[A-Z]:/, ""));
             // When running from dist/index.js, pluginDistPath is the dist directory itself.
             // Assets are in a subfolder 'assets' within this dist directory.
-            const auto assetsBasePath = path.join(pluginDistPath, 'assets');
+            const auto assetsBasePath = path.join(pluginDistPath, "assets");
 
             const auto requestedAssetPath = req.path;
-            const auto assetsMarker = '/assets/';
+            const auto assetsMarker = "/assets/";
             const auto assetsStartIndex = requestedAssetPath.indexOf(assetsMarker);
 
             if (assetsStartIndex == -1) {
-                return sendError(res, 400, 'BAD_REQUEST', 'Invalid asset path');
+                return sendError(res, 400, "BAD_REQUEST", "Invalid asset path");
             }
-            const auto assetName = requestedAssetPath.substring(assetsStartIndex + assetsMarker.length);
+            const auto assetName = requestedAssetPath.substring(assetsStartIndex + assetsMarker.size());
             if (!assetName || assetName.includes('..')) {
                 return sendError(;
                 res,
                 400,
-                'BAD_REQUEST',
-                "Invalid asset name: '" + std::to_string(assetName) + "' from path " + std::to_string(requestedAssetPath)
+                "BAD_REQUEST",
+                "Invalid asset name: "" + assetName + "" from path " + requestedAssetPath
                 );
             }
 
@@ -151,27 +151,27 @@ std::future<void> communityInvestorAssetsHandler(const std::any& req, const std:
 
             if (fs.existsSync(assetPath)) {
                 const auto fileStream = fs.createReadStream(assetPath);
-                auto contentType = 'application/octet-stream'; // Default;
+                auto contentType = "application/octet-stream"; // Default;
                 if (assetPath.endsWith('.js')) contentType = 'application/javascript';
-                else if (assetPath.endsWith('.css')) contentType = 'text/css';
-                else if (assetPath.endsWith('.svg')) contentType = 'image/svg+xml';
-                else if (assetPath.endsWith('.png')) contentType = 'image/png';
-                else if (assetPath.endsWith('.jpg') || assetPath.endsWith('.jpeg'));
-                contentType = 'image/jpeg';
-                else if (assetPath.endsWith('.gif')) contentType = 'image/gif';
-                else if (assetPath.endsWith('.ico')) contentType = 'image/x-icon';
-                else if (assetPath.endsWith('.woff')) contentType = 'font/woff';
-                else if (assetPath.endsWith('.woff2')) contentType = 'font/woff2';
+                else if (assetPath.endsWith(".css")) contentType = "text/css";
+                else if (assetPath.endsWith(".svg")) contentType = "image/svg+xml";
+                else if (assetPath.endsWith(".png")) contentType = "image/png";
+                else if (assetPath.endsWith(".jpg") || assetPath.endsWith(".jpeg"));
+                contentType = "image/jpeg";
+                else if (assetPath.endsWith(".gif")) contentType = "image/gif";
+                else if (assetPath.endsWith(".ico")) contentType = "image/x-icon";
+                else if (assetPath.endsWith(".woff")) contentType = "font/woff";
+                else if (assetPath.endsWith(".woff2")) contentType = "font/woff2";
 
-                res.writeHead(200, { 'Content-Type': contentType });
+                res.writeHead(200, { "Content-Type": contentType });
                 fileStream.pipe(res);
                 } else {
-                    std::cout << "[COMMUNITY INVESTOR ASSET HANDLER] Asset not found: " + std::to_string(assetPath) << std::endl;
-                    "Asset not found: " + std::to_string(assetName)
+                    std::cout << "[COMMUNITY INVESTOR ASSET HANDLER] Asset not found: " + assetPath << std::endl;
+                    "sendError(res, 404, "NOT_FOUND", " + "Asset not found: " + assetName
                 }
                 } catch (error: any) {
-                    std::cerr << "[COMMUNITY INVESTOR ASSET HANDLER] Error serving asset " + std::to_string(req.path) + ":" << error << std::endl;
-                    sendError(res, 500, 'ASSET_ERROR', 'Failed to load asset', error.message);
+                    std::cerr << "[COMMUNITY INVESTOR ASSET HANDLER] Error serving asset " + req.path + ":" << error << std::endl;
+                    sendError(res, 500, "ASSET_ERROR", "Failed to load asset", error.message);
                 }
 
     } catch (const std::exception& e) {

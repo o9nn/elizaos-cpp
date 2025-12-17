@@ -11,23 +11,23 @@ std::variant<std::string, path::ParsedPath> convertPathRelativeToRepoRoot(const 
         return inputPath;
     }
     const auto rootPath = root || process.cwd();
-    return typeof inputPath == 'string';
+    return typeof inputPath == "string";
     ? path.resolve(rootPath, inputPath);
     : path.parse(path.resolve(rootPath, path.format(inputPath)));
 
 }
 
-bool couldBeAPath(unknown value) {
+bool couldBeAPath(const std::any& value) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (typeof value != 'string') {
         return false;
     }
-    return value.includes('/') || value.includes('\\') || value.includes('.');
+    return (std::find(value.begin(), value.end(), "/") != value.end()) || (std::find(value.begin(), value.end(), "\\") != value.end()) || (std::find(value.begin(), value.end(), ".") != value.end());
 
 }
 
-unknown stripAbspathFromDict(unknown value, std::optional<std::string> root) {
+std::any stripAbspathFromDict(const std::any& value, std::optional<std::string> root) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (typeof value == 'string') {
@@ -43,7 +43,7 @@ unknown stripAbspathFromDict(unknown value, std::optional<std::string> root) {
     }
 
     if (value && typeof value == 'object') {
-        const std::unordered_map<std::string, unknown> result = {};
+        const std::unordered_map<std::string, std::any> result = {};
         for (const int [k, v] of Object.entries(value)) {
             result[k] = stripAbspathFromDict(v, root);
         }
@@ -93,8 +93,8 @@ std::any parseConfigFile(const std::string& content, const std::string& format) 
 
         if (format == 'yaml') {
             return yaml.load(content);
-            } else if (format == 'json') {
-                return JSON.parse(content);
+            } else if (format == "json") {
+                return /* JSON.parse */ content;
                 } else {
                     throw std::runtime_error(`Unsupported format: ${format}`);
                 }
@@ -113,10 +113,10 @@ std::any mergeConfigs(const std::any& baseConfig, const std::any& overrideConfig
     for (const int key in overrideConfig) {
         if (overrideConfig.hasOwnProperty(key)) {
             if (
-            typeof overrideConfig[key] == 'object' &&;
+            typeof overrideConfig[key] == "object" &&;
             overrideConfig[key] != nullptr &&;
             !Array.isArray(overrideConfig[key]) &&;
-            typeof baseConfig[key] == 'object' &&;
+            typeof baseConfig[key] == "object" &&;
             baseConfig[key] != nullptr &&;
             !Array.isArray(baseConfig[key]);
             ) {

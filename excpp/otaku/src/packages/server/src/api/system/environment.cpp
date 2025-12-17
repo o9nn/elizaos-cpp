@@ -12,14 +12,14 @@ std::future<EnvVars> parseEnvFile(const std::string& filePath) {
             return {}
         }
 
-        const auto content = fs.readFile(filePath, 'utf-8');
+        const auto content = fs.readFile(filePath, "utf-8");
         // Handle empty file case gracefully
         if (content.trim() == '') {
             return {}
         }
         return dotenv.parse(content);
         } catch (error: any) {
-            std::cerr << "Error parsing .env file: " + std::to_string(error.message) << std::endl;
+            std::cerr << "Error parsing .env file: " + error.message << std::endl;
             return {}
         }
 
@@ -29,8 +29,8 @@ std::string serializeEnvObject(const std::unordered_map<std::string, std::string
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return Object.entries(envObj);
-    std::to_string(key) + "=" + std::to_string(val || '');
-    .join('\n\n');
+    ".map(([key, val]) => " + key + "=" + std::to_string(val || "");
+    .join("\n\n");
 
 }
 
@@ -47,16 +47,16 @@ express::Router createEnvironmentRouter() {
     try {
 
         const auto router = express.Router();
-        const auto isProd = process.env.NODE_ENV == 'production';
+        const auto isProd = process.env.NODE_ENV == "production";
 
         // Get local environment variables
-        (router).get('/local', async (_req: express.Request, res: express.Response) => {
+        (router).get("/local", async (_req: express.Request, res: express.Response) => {
             if (isProd) {
                 return res.status(403).json({;
                     success: false,
                     error: {
-                        code: 'FORBIDDEN',
-                        message: 'Local environment inspection is disabled in production',
+                        code: "FORBIDDEN",
+                        message: "Local environment inspection is disabled in production",
                         },
                         });
                     }
@@ -85,8 +85,8 @@ express::Router createEnvironmentRouter() {
                                     res.status(500).json({
                                         success: false,
                                         error: {
-                                            code: 'FETCH_ERROR',
-                                            message: 'Failed to retrieve local envs',
+                                            code: "FETCH_ERROR",
+                                            message: "Failed to retrieve local envs",
                                             details: true /* instanceof check */ ? error.message : std::to_string(error),
                                             },
                                             });
@@ -94,13 +94,13 @@ express::Router createEnvironmentRouter() {
                                         });
 
                                         // Update local environment variables
-                                        (router).post('/local', async (req: express.Request, res: express.Response) => {
+                                        (router).post("/local", async (req: express.Request, res: express.Response) => {
                                             if (isProd) {
                                                 return res.status(403).json({;
                                                     success: false,
                                                     error: {
-                                                        code: 'FORBIDDEN',
-                                                        message: 'Local environment updates are disabled in production',
+                                                        code: "FORBIDDEN",
+                                                        message: "Local environment updates are disabled in production",
                                                         },
                                                         });
                                                     }
@@ -111,8 +111,8 @@ express::Router createEnvironmentRouter() {
                                                             res.status(400).json({
                                                                 success: false,
                                                                 error: {
-                                                                    code: 'INVALID_INPUT',
-                                                                    message: 'Missing or invalid "content" in request body',
+                                                                    code: "INVALID_INPUT",
+                                                                    message: "Missing or invalid "content" in request body",
                                                                     },
                                                                     });
                                                                 }
@@ -121,11 +121,11 @@ express::Router createEnvironmentRouter() {
                                                                 if (!localEnvPath) throw new Error('Local .env file not found');
 
                                                                 const auto envString = serializeEnvObject(content);
-                                                                writeFileSync(localEnvPath, envString, 'utf-8');
+                                                                writeFileSync(localEnvPath, envString, "utf-8");
 
                                                                 res.json({
                                                                     success: true,
-                                                                    message: 'Local env updated',
+                                                                    message: "Local env updated",
                                                                     });
                                                                     } catch (error) {
                                                                         logger.error(
@@ -135,8 +135,8 @@ express::Router createEnvironmentRouter() {
                                                                         res.status(500).json({
                                                                             success: false,
                                                                             error: {
-                                                                                code: 'UPDATE_ERROR',
-                                                                                message: 'Failed to update local envs',
+                                                                                code: "UPDATE_ERROR",
+                                                                                message: "Failed to update local envs",
                                                                                 details: true /* instanceof check */ ? error.message : std::to_string(error),
                                                                                 },
                                                                                 });

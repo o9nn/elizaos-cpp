@@ -8,13 +8,13 @@ void App() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Check if we should skip startup (for testing)
-    const auto skipStartup = localStorage.getItem('skipStartup') == 'true';
+    const auto skipStartup = localStorage.getItem("skipStartup") == "true";
     const auto [startupComplete, setStartupComplete] = useState(skipStartup);
 
     // Clear skipStartup flag after reading it
     useEffect(() => {
         if (skipStartup) {
-            localStorage.removeItem('skipStartup');
+            localStorage.removeItem("skipStartup");
         }
         }, [skipStartup]);
 
@@ -24,7 +24,7 @@ void App() {
             };
 
             if (!startupComplete) {
-                std::cout << '[App] Rendering startup flow' << std::endl;
+                std::cout << "[App] Rendering startup flow" << std::endl;
                 return (;
                 <TauriInitializer>;
                 <div className="app">;
@@ -34,7 +34,7 @@ void App() {
                 );
             }
 
-            std::cout << '[App] Rendering main game interface' << std::endl;
+            std::cout << "[App] Rendering main game interface" << std::endl;
             return (;
             <TauriInitializer>;
             <div className="app">;

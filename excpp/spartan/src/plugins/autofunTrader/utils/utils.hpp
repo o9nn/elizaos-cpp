@@ -1,11 +1,14 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "elizaos/core.hpp"
 
@@ -29,7 +32,7 @@ std::future<std::any> fetchWithRetry(const std::string& url, RequestInit options
 /**
  * Decodes a base58 string to Uint8Array
  */
-Uint8Array decodeBase58(const std::string& str);
+std::vector<uint8_t> decodeBase58(const std::string& str);
 
 /**
  * Tracks analyzed tokens with timestamps

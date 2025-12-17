@@ -35,7 +35,7 @@ std::future<std::string> generateAISummaryForContributor(ContributorMetricsForSu
                 model: config.models[intervalType],
                 });
                 } catch (error) {
-                    std::cerr << "Error generating summary for " + std::to_string(metrics.username) + ":" << error << std::endl;
+                    std::cerr << "Error generating summary for " + metrics.username + ":" << error << std::endl;
                     return nullptr;
                 }
 
@@ -75,8 +75,8 @@ std::string formatContributorPrompt(ContributorMetricsForSummary metrics, Interv
             if (
             area.area.endsWith(".md") ||;
             area.area.endsWith(".mdx") ||;
-            area.area.includes("/docs/") ||;
-            area.area.includes("documentation");
+            area.(std::find(area.begin(), area.end(), "/docs/") != area.end()) ||;
+            area.(std::find(area.begin(), area.end(), "documentation") != area.end());
             ) {
                 return "documentation";
             }
@@ -93,25 +93,25 @@ std::string formatContributorPrompt(ContributorMetricsForSummary metrics, Interv
                 const auto deletions =;
                 pr.commits.reduce((sum, c) => sum + (c.deletions || 0), 0) || 0;
 
-                return std::to_string(pr.repository) + "#" + std::to_string(pr.number) + " "" + std::to_string(truncateTitle);
+                return pr.repository + "#" + pr.number + " \"" + truncateTitle;
                 pr.title,
-                )}" (+${additions}/-${deletions} lines)`;
+                ")}\" (+${additions}/-${deletions} lines)";
                 });
                 .join(", ");
 
                 // Format open PRs
                 const auto openPRDetails = metrics.pullRequests.items;
                 .filter((pr) => pr.merged != 1);
-                std::to_string(pr.repository) + "#" + std::to_string(pr.number) + " "" + std::to_string(truncateTitle(pr.title)) + """;
+                ".map((pr) => " + pr.repository + "#" + pr.number + " \"" + std::to_string(truncateTitle(pr.title)) + "\"";
                 .join(", ");
 
                 // Format issues
                 const auto issueDetails = metrics.issues.items;
                 .map(;
                 (issue) =>;
-                std::to_string(issue.repository) + "#" + std::to_string(issue.number) + " "" + std::to_string(truncateTitle(issue.title)) + "" (" + std::to_string();
+                issue.repository + "#" + issue.number + " \"" + std::to_string(truncateTitle(issue.title)) + "\" (" + std::to_string();
                     issue.state;
-                    })`,
+                    "})"
                     );
                     .join(", ");
 
@@ -146,7 +146,7 @@ std::string formatContributorPrompt(ContributorMetricsForSummary metrics, Interv
 
                             if (sortedTypes.length > 0) {
                                 workFocus = sortedTypes;
-                                std::to_string(type) + " work (" + std::to_string(percentage) + "%)";
+                                ".map(([type, percentage]) => " + type + " work (" + percentage + "%)";
                                 .join(", ");
                             }
                         }
@@ -173,7 +173,7 @@ std::string formatContributorPrompt(ContributorMetricsForSummary metrics, Interv
 
                                 if (sortedFileTypes.length > 0) {
                                     fileTypesFocus = sortedFileTypes;
-                                    std::to_string(type) + " (" + std::to_string(percentage) + "%)";
+                                    ".map(([type, percentage]) => " + type + " (" + percentage + "%)";
                                     .join(", ");
                                 }
                             }
@@ -182,29 +182,29 @@ std::string formatContributorPrompt(ContributorMetricsForSummary metrics, Interv
                             const auto prMetrics = metrics.pullRequests.metrics;
                             const auto prComplexityInsights =;
                             metrics.pullRequests.merged > 0;
-                            "Average PR: +" + std::to_string(prMetrics.avgAdditions) + "/-" + std::to_string(prMetrics.avgDeletions) + " lines, " + std::to_string(prMetrics.avgTimeToMerge)
-                            Largest PR: ${prMetrics.largestPR.repository}#${prMetrics.largestPR.number} with +${prMetrics.largestPR.additions}/-${prMetrics.largestPR.deletions} lines`
+                            "? " + "Average PR: +" + prMetrics.avgAdditions + "/-" + prMetrics.avgDeletions + " lines, " + prMetrics.avgTimeToMerge
+                            "Largest PR: ${prMetrics.largestPR.repository}#${prMetrics.largestPR.number} with +${prMetrics.largestPR.additions}/-${prMetrics.largestPR.deletions} lines"
                             : "No merged PRs";
 
                             // Build the summary prompt
-                            return "Summarize " + std::to_string(metrics.username) + "'s contributions " + std::to_string(timePeriod.timeFrame);
+                            return "Summarize " + metrics.username + "'s contributions " + timePeriod.timeFrame;
 
                             PULL REQUESTS:
                             - Merged: ${
                                 metrics.pullRequests.merged > 0;
-                                std::to_string(metrics.pullRequests.merged) + " PRs: " + std::to_string(mergedPRDetails)
+                                "? " + metrics.pullRequests.merged + " PRs: " + mergedPRDetails
                                 : "None"
                             }
                             - Open: ${
                                 metrics.pullRequests.open > 0;
-                                std::to_string(metrics.pullRequests.open) + " PRs: " + std::to_string(openPRDetails)
+                                "? " + metrics.pullRequests.open + " PRs: " + openPRDetails
                                 : "None"
                             }
                         - Complexity: ${prComplexityInsights}
 
                         ISSUES:
                         - Created: ${metrics.issues.opened > 0 ? metrics.issues.opened : "None"} ${
-                            "(" + std::to_string(issueDetails) + ")"
+                            "issueDetails ? " + "(" + issueDetails + ")"
                         }
                     - Closed: ${metrics.issues.closed > 0 ? metrics.issues.closed : "None"}
                     - Commented on: ${
@@ -214,7 +214,7 @@ std::string formatContributorPrompt(ContributorMetricsForSummary metrics, Interv
                     REVIEWS & COMMENTS:
                     - Reviews: ${
                         metrics.reviews.total > 0;
-                        std::to_string(metrics.reviews.total) + " total (" + std::to_string(metrics.reviews.approved) + " approvals, " + std::to_string(metrics.reviews.changesRequested) + " change requests, " + std::to_string(metrics.reviews.commented) + " comments)";
+                        "? " + metrics.reviews.total + " total (" + metrics.reviews.approved + " approvals, " + metrics.reviews.changesRequested + " change requests, " + metrics.reviews.commented + " comments)";
                         : "None"
                     }
                     - PR Comments: ${
@@ -227,12 +227,12 @@ std::string formatContributorPrompt(ContributorMetricsForSummary metrics, Interv
                     CODE CHANGES:
                     ${
                         metrics.codeChanges.files > 0;
-                        "- Modified " + std::to_string(metrics.codeChanges.files) + " files (+" + std::to_string();
+                        "? " + "- Modified " + metrics.codeChanges.files + " files (+" + std::to_string();
                             metrics.codeChanges.additions;
                             }/-${metrics.codeChanges.deletions} lines);
                         - Commits: ${metrics.codeChanges.commitCount}
                     - Primary focus: ${workFocus || "Mixed work"}
-                    - File types: ${fileTypesFocus || "Various file types"}`
+                    "- File types: ${fileTypesFocus || \"Various file types\"}"
                     : "No code changes"
                 }
 
@@ -259,7 +259,7 @@ std::string formatContributorPrompt(ContributorMetricsForSummary metrics, Interv
             "No activity ${timePeriod.timeFrameShort}.";
             "Focused on UI improvements with 3 merged PRs (+2k/-500 lines), consistently active with daily commits.";
             "Fixed 4 critical bugs in the authentication system (PRs #123, #124) and reviewed 7 PRs, primarily working on backend code.";
-            "Led documentation efforts with substantial contributions to the API docs (+1.2k lines), opened 3 issues for missing features, and provided 5 detailed code reviews."`;
+            "\"Led documentation efforts with substantial contributions to the API docs (+1.2k lines), opened 3 issues for missing features, and provided 5 detailed code reviews.\"";
 
 }
 

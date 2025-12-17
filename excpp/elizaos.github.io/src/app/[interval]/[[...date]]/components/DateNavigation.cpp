@@ -11,7 +11,7 @@ void DateNavigation(auto nextDate, auto currentDate, auto intervalType) {
     <div className="mb-6">;
     <div className="flex items-center justify-between">;
     <NavigationButton;
-    "/" + std::to_string(intervalType) + "/" + std::to_string(prevDate)
+    "href={prevDate ? " + "/" + intervalType + "/" + prevDate
     direction="prev";
     isVisible={!!prevDate}
     />;
@@ -26,7 +26,7 @@ void DateNavigation(auto nextDate, auto currentDate, auto intervalType) {
     </div>;
 
     <NavigationButton;
-    "/" + std::to_string(intervalType) + "/" + std::to_string(nextDate)
+    "href={nextDate ? " + "/" + intervalType + "/" + nextDate
     direction="next";
     isVisible={!!nextDate}
     />;

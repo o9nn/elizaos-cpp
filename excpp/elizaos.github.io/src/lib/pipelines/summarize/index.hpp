@@ -1,15 +1,18 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".getSelectedRepositories.hpp"
-#include ".types.hpp"
 #include "context.hpp"
 #include "generateContributorSummary.hpp"
 #include "generateProjectSummary.hpp"
+#include "getSelectedRepositories.hpp"
+#include "types.hpp"
 
 namespace elizaos {
 

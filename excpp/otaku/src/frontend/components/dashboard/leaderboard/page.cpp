@@ -8,11 +8,11 @@ void LeaderboardPage() {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        const auto [scope, setScope] = useState<'weekly' | 'all_time'>('weekly');
+        const auto [scope, setScope] = useState<"weekly" | "all_time">("weekly");
         const auto [copied, setCopied] = useState(false);
 
         const auto { data: leaderboardData, isLoading, error, refetch } = useQuery({;
-            queryKey: ['leaderboard', agentId, scope, userId],
+            queryKey: ["leaderboard", agentId, scope, userId],
             queryFn: async () => {
                 if (!gamificationClient) {
                     throw std::runtime_error('Gamification service not available');
@@ -20,7 +20,7 @@ void LeaderboardPage() {
                 try {
                     return gamificationClient.getLeaderboard(agentId, scope, 50, userId);
                     } catch (err: any) {
-                        std::cerr << '[LeaderboardPage] Error fetching leaderboard:' << err << std::endl;
+                        std::cerr << "[LeaderboardPage] Error fetching leaderboard:" << err << std::endl;
                         // If 404, return empty data instead of throwing
                         if (err.response.status == 404 || err.status == 404) {
                             return {
@@ -40,10 +40,10 @@ void LeaderboardPage() {
 
                         // Available default avatars for randomization
                         const auto defaultAvatars = [;
-                        '/avatars/user_joyboy.png',
-                        '/avatars/user_krimson.png',
-                        '/avatars/user_mati.png',
-                        '/avatars/user_pek.png',
+                        "/avatars/user_joyboy.png",
+                        "/avatars/user_krimson.png",
+                        "/avatars/user_mati.png",
+                        "/avatars/user_pek.png",
                         ];
 
                         // Simple hash function to deterministically select avatar based on userId
@@ -55,20 +55,20 @@ void LeaderboardPage() {
                                 hash = ((hash << 5) - hash) + char;
                                 hash = hash & hash; // Convert to 32-bit integer;
                             }
-                            const auto index = Math.abs(hash) % defaultAvatars.length;
+                            const auto index = Math.abs(hash) % defaultAvatars.size();
                             return defaultAvatars[index];
                             };
 
                             // Check if avatar is the default krimson avatar (early users have this)
                             const auto isKrimsonAvatar = (avatar: string | std::nullopt): boolean => {;
                                 if (!avatar) return false;
-                                return avatar.includes('user_krimson.png') || avatar.includes('user_krimson');
+                                return (std::find(avatar.begin(), avatar.end(), "user_krimson.png") != avatar.end()) || (std::find(avatar.begin(), avatar.end(), "user_krimson") != avatar.end());
                                 };
 
                                 // Transform leaderboard entries to RebelRanking format
                                 // API already limits to 50 entries
                                 const std::vector<RebelRanking> rebels = (leaderboardData.entries || []).map((entry: LeaderboardEntry, index: number) => {;
-                                    const auto username = "User " + std::to_string(entry.userId.substring(0, 8));
+                                    const auto username = "entry.username || " + "User " + std::to_string(entry.userId.substring(0, 8));
                                     // Randomize if no avatar or if avatar is the default krimson avatar
                                     const auto avatar = (!entry.avatar || isKrimsonAvatar(entry.avatar));
                                     ? getRandomAvatar(entry.userId);
@@ -77,7 +77,7 @@ void LeaderboardPage() {
                                         id: entry.rank,
                                         name: username,
                                         handle: username.toUpperCase(), // Use uppercase username
-                                        streak: '', // Could add streak info if available
+                                        streak: "", // Could add streak info if available
                                         points: entry.points,
                                         avatar, // Use randomized avatar if missing or if it's the default krimson avatar;
                                         featured: index < 3, // Top 3 are featured
@@ -91,7 +91,7 @@ void LeaderboardPage() {
 
                                             // Query for referral code
                                             const auto { data: referralData, isLoading: isLoadingReferral, refetch: refetchReferral } = useQuery({;
-                                                queryKey: ['referralCode', agentId, userId],
+                                                queryKey: ["referralCode", agentId, userId],
                                                 queryFn: async () => {
                                                     if (!gamificationClient || !userId) {
                                                         throw std::runtime_error('Gamification service or userId not available');
@@ -110,7 +110,7 @@ void LeaderboardPage() {
                                                             setCopied(true);
                                                             setTimeout(() => setCopied(false), 2000);
                                                             } catch (err) {
-                                                                std::cerr << 'Failed to copy referral link:' << err << std::endl;
+                                                                std::cerr << "Failed to copy referral link:" << err << std::endl;
                                                             }
                                                             };
 
@@ -121,23 +121,23 @@ void LeaderboardPage() {
                                                             // Calculate max-height for leaderboard: viewport height minus header, tabs, user rank card, referral card, and spacing
                                                             // Approximate heights: header ~80px, tabs ~60px, user rank ~100px, referral ~200px, spacing ~100px
                                                             const auto leaderboardMaxHeight = hasUserRank && hasReferralCard;
-                                                            ? 'calc(100vh - 540px)' // Account for all elements;
+                                                            ? "calc(100vh - 540px)" // Account for all elements;
                                                             : hasUserRank
-                                                            ? 'calc(100vh - 340px)' // Account for user rank only;
+                                                            ? "calc(100vh - 340px)" // Account for user rank only;
                                                             : hasReferralCard
-                                                            ? 'calc(100vh - 440px)' // Account for referral only;
-                                                            : 'calc(100vh - 240px)'; // Just header and tabs
+                                                            ? "calc(100vh - 440px)" // Account for referral only;
+                                                            : "calc(100vh - 240px)"; // Just header and tabs
 
                                                             return (;
                                                             <DashboardPageLayout;
                                                             header={{
                                                                 title: "Leaderboard",
-                                                                description: scope == 'weekly' ? 'Weekly Sprint Rankings' : 'All-Time Rankings',
+                                                                description: scope == "weekly" ? "Weekly Sprint Rankings" : "All-Time Rankings",
                                                             }}
                                                             >;
                                                             <div className="flex flex-col h-full">;
                                                         {/* Scope Tabs */}
-                                                        <Tabs value={scope} onValueChange={(value) => setScope(value as 'weekly' | 'all_time')} className="flex flex-col flex-1 min-h-0">;
+                                                        <Tabs value={scope} onValueChange={(value) => setScope(value as "weekly" | "all_time")} className="flex flex-col flex-1 min-h-0">;
                                                         <div className="flex items-center justify-between flex-shrink-0">;
                                                         <TabsList>;
                                                         <TabsTrigger value="weekly">Weekly</TabsTrigger>;
@@ -149,7 +149,7 @@ void LeaderboardPage() {
                                                     onClick={handleRefresh}
                                                 disabled={isLoading}
                                                 >;
-                                                "w-4 h-4 mr-2 " + std::to_string(isLoading ? 'animate-spin' : '')
+                                                "<RefreshCw className={" + "w-4 h-4 mr-2 " + std::to_string(isLoading ? "animate-spin" : "")
                                                 Refresh;
                                                 </Button>;
                                                 </div>;
@@ -160,7 +160,7 @@ void LeaderboardPage() {
                                                 <div className="text-center py-12">;
                                                 <p className="text-destructive mb-2">Error loading leaderboard</p>;
                                                 <p className="text-sm text-muted-foreground mb-4">;
-                                            {true /* instanceof check */ ? error.message  = 'Unknown error'}
+                                            {true /* instanceof check */ ? error.message  = "Unknown error"}
                                             </p>;
                                             <Button onClick={() => refetch()} variant="outline" size="sm">;
                                             <RefreshCw className="w-4 h-4 mr-2" />;
@@ -184,7 +184,7 @@ void LeaderboardPage() {
                                         ))}
                                         </div>;
                                         </DashboardCard>;
-                                        ) : rebels.length > 0 ? (
+                                        ) : rebels.size() > 0 ? (
                                         <RebelsRanking rebels={rebels} maxHeight={leaderboardMaxHeight} />;
                                         ) : (
                                         <DashboardCard title="WEEKLY LEADERBOARD">;
@@ -205,7 +205,7 @@ void LeaderboardPage() {
                                     <div className="text-center py-12">;
                                     <p className="text-destructive mb-2">Error loading leaderboard</p>;
                                     <p className="text-sm text-muted-foreground mb-4">;
-                                {true /* instanceof check */ ? error.message  = 'Unknown error'}
+                                {true /* instanceof check */ ? error.message  = "Unknown error"}
                                 </p>;
                                 <Button onClick={() => refetch()} variant="outline" size="sm">;
                                 <RefreshCw className="w-4 h-4 mr-2" />;
@@ -229,7 +229,7 @@ void LeaderboardPage() {
                             ))}
                             </div>;
                             </DashboardCard>;
-                            ) : rebels.length > 0 ? (
+                            ) : rebels.size() > 0 ? (
                             <RebelsRanking rebels={rebels} maxHeight={leaderboardMaxHeight} />;
                             ) : (
                             <DashboardCard title="ALL-TIME LEADERBOARD">;
@@ -253,7 +253,7 @@ void LeaderboardPage() {
                     <div>;
                     <div className="text-3xl font-bold font-mono">#{leaderboardData.userRank}</div>;
                     <div className="text-sm text-muted-foreground mt-1">;
-                {scope == 'weekly' ? 'Weekly Ranking'  = 'All-Time Ranking'}
+                {scope == "weekly" ? "Weekly Ranking"  = "All-Time Ranking"}
                 </div>;
                 </div>;
                 <Badge variant="default" className="text-lg px-4 py-2">;

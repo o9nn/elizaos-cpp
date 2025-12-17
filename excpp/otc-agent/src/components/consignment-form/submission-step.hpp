@@ -1,12 +1,14 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
-#include ".button.hpp"
+#include "button.hpp"
 
 namespace elizaos {
 
@@ -18,7 +20,7 @@ namespace elizaos {
 struct StepState {
     std::string id;
     std::string label;
-    std::variant<"pending", "processing", "complete", "error"> status;
+    std::string status;
     std::optional<std::string> statusMessage;
     std::optional<std::string> errorMessage;
     std::optional<std::string> txHash;
@@ -43,7 +45,7 @@ struct SubmissionStepProps {
     double maxTimeToExecuteSeconds;
     std::string consignerAddress;
     std::string chain;
-    std::variant<"evm", "solana"> activeFamily;
+    std::string activeFamily;
     double selectedTokenDecimals;
     std::string selectedTokenSymbol;
     std::optional<std::string> selectedTokenName;

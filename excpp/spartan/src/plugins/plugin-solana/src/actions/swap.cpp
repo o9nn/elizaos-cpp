@@ -13,8 +13,8 @@ std::future<double> getTokenDecimals(Connection connection, const std::string& m
 
         if (
         tokenAccountInfo.value &&;
-        typeof tokenAccountInfo.value.data == 'object' &&;
-        'parsed' in tokenAccountInfo.value.data;
+        typeof tokenAccountInfo.value.data == "object" &&;
+        "parsed" in tokenAccountInfo.value.data;
         ) {
             const auto parsedInfo = tokenAccountInfo.value.data.parsed.info;
             if (parsedInfo && typeof parsedInfo.decimals == 'number') {
@@ -30,7 +30,7 @@ std::future<double> getTokenDecimals(Connection connection, const std::string& m
     }
 }
 
-std::future<unknown> swapToken(Connection connection, PublicKey walletPublicKey, const std::string& inputTokenCA, const std::string& outputTokenCA, double amount) {
+std::future<std::any> swapToken(Connection connection, PublicKey walletPublicKey, const std::string& inputTokenCA, const std::string& outputTokenCA, double amount) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -40,7 +40,7 @@ std::future<unknown> swapToken(Connection connection, PublicKey walletPublicKey,
             ? new BigNumber(9);
             : new BigNumber(getTokenDecimals(connection, inputTokenCA));
 
-            std::cout << 'Decimals:' << decimals.toString() << std::endl;
+            std::cout << "Decimals:" << std::to_string(decimals) << std::endl;
 
             const auto amountBN = new BigNumber(amount);
             const auto adjustedAmount = amountBN.multipliedBy(new BigNumber(10).pow(decimals));
@@ -52,12 +52,12 @@ std::future<unknown> swapToken(Connection connection, PublicKey walletPublicKey,
                 });
 
                 const auto quoteResponse = fetch(;
-                "https://quote-api.jup.ag/v6/quote?inputMint=" + std::to_string(inputTokenCA) + "&outputMint=" + std::to_string(outputTokenCA) + "&amount=" + std::to_string(adjustedAmount) + "&dynamicSlippage=true&maxAccounts=64"
+                "https://quote-api.jup.ag/v6/quote?inputMint=" + inputTokenCA + "&outputMint=" + outputTokenCA + "&amount=" + adjustedAmount + "&dynamicSlippage=true&maxAccounts=64"
                 );
                 const auto quoteData = quoteResponse.json();
 
                 if (!quoteData || quoteData.error) {
-                    std::cerr << 'Quote error:' << quoteData << std::endl;
+                    std::cerr << "Quote error:" << quoteData << std::endl;
                     throw std::runtime_error(`Failed to get quote: ${quoteData?.error || 'Unknown error'}`);
                 }
 
@@ -68,28 +68,28 @@ std::future<unknown> swapToken(Connection connection, PublicKey walletPublicKey,
                     dynamicSlippage: true,
                     priorityLevelWithMaxLamports: {
                         maxLamports: 4000000,
-                        priorityLevel: 'veryHigh',
+                        priorityLevel: "veryHigh",
                         },
                         };
 
-                        const auto swapResponse = fetch('https://quote-api.jup.ag/v6/swap', {;
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(swapRequestBody),
+                        const auto swapResponse = fetch("https://quote-api.jup.ag/v6/swap", {;
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: /* JSON.stringify */ std::string(swapRequestBody),
                             });
 
                             const auto swapData = swapResponse.json();
 
                             if (!swapData || !swapData.swapTransaction) {
-                                std::cerr << 'Swap error:' << swapData << std::endl;
+                                std::cerr << "Swap error:" << swapData << std::endl;
                                 throw new Error(
-                                "Failed to get swap transaction: " + std::to_string(swapData.error || 'No swap transaction returned')
+                                "Failed to get swap transaction: " + std::to_string(swapData.error || "No swap transaction returned")
                                 );
                             }
 
                             return swapData;
                             } catch (error) {
-                                std::cerr << 'Error in swapToken:' << error << std::endl;
+                                std::cerr << "Error in swapToken:" << error << std::endl;
                                 throw;
                             }
 
@@ -120,7 +120,7 @@ std::future<std::string> getTokenFromWallet(IAgentRuntime runtime, const std::st
 
             return token ? token.address : nullptr;
             } catch (error) {
-                std::cerr << 'Error checking token in wallet:' << error << std::endl;
+                std::cerr << "Error checking token in wallet:" << error << std::endl;
                 return nullptr;
             }
 

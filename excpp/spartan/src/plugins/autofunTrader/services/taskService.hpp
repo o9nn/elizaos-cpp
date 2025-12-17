@@ -1,17 +1,20 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".types.hpp"
 #include "elizaos/core.hpp"
 #include "execution/buyService.hpp"
 #include "execution/sellService.hpp"
 #include "execution/tradeExecutionService.hpp"
+#include "types.hpp"
 
 namespace elizaos {
 

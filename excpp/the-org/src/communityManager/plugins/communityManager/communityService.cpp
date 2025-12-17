@@ -4,10 +4,10 @@
 
 namespace elizaos {
 
-std::string extractString(unknown value) {
+std::string extractString(const std::any& value) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    auto result = '';
+    auto result = "";
 
     function traverse(node: unknown): void {
         if (typeof node == 'string') {
@@ -16,7 +16,7 @@ std::string extractString(unknown value) {
                 for (const auto& item : node)
                     traverse(item);
                 }
-                } else if (typeof node == 'object' && node != nullptr) {
+                } else if (typeof node == "object" && node != nullptr) {
                     for (const auto& val : Object.values(node)
                         traverse(val);
                     }

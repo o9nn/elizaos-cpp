@@ -1,9 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
 
@@ -53,7 +56,7 @@ using AST_NODE_TYPES = {
  * Represents types of nodes that are documentable.
  * @typedef {("ClassDeclaration" | "FunctionDeclaration" | "TSTypeAliasDeclaration" | "TSEnumDeclaration" | "MethodDefinition" | "TSMethodSignature" | "TSInterfaceDeclaration" | "TSPropertySignature" | "VariableDeclaration")} DocumentableNodeType
  */
-using DocumentableNodeType = std::variant<, std::string, std::string, std::string, std::string, std::string, std::string, std::string, std::string, std::string>;
+using DocumentableNodeType = std::variant<, std::string>;
 
 /**
  * Represents a location within a data structure, specified by a start and end index.

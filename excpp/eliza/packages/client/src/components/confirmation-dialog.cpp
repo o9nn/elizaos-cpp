@@ -24,7 +24,7 @@ void ConfirmationDialog(auto onOpenChange, auto title, auto description, auto co
         <AlertDialogAction;
     onClick={handleConfirm}
     className={
-        variant == 'destructive' ? 'bg-destructive text-destructive-foreground' : std::nullopt
+        variant == "destructive" ? "bg-destructive text-destructive-foreground" : std::nullopt
     }
     >;
     {confirmText}

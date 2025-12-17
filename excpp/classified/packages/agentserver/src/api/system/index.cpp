@@ -10,10 +10,10 @@ express::Router systemRouter() {
     const auto router = express.Router();
 
     // Mount environment management under /env
-    router.use('/env', createEnvironmentRouter());
+    router.use("/env", createEnvironmentRouter());
 
     // Mount version information under /version
-    router.use('/version', createVersionRouter());
+    router.use("/version", createVersionRouter());
 
     return router;
 

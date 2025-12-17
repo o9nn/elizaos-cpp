@@ -21,13 +21,13 @@ std::future<void> getPopularSearches(auto limit) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto searches = prisma.searchQuery.groupBy({;
-        by: ['query'],
+        by: ["query"],
         _count: {
             query: true,
             },
             orderBy: {
                 _count: {
-                    query: 'desc',
+                    query: "desc",
                     },
                     },
                     take: limit,

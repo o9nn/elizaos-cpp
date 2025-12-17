@@ -14,7 +14,7 @@ std::string createSecureUploadDir(const std::string& id, const std::string& type
         }
 
         // Use CLI data directory structure consistently
-        const auto baseUploadDir = type == 'agents' ? getUploadsAgentsDir() : getUploadsChannelsDir();
+        const auto baseUploadDir = type == "agents" ? getUploadsAgentsDir() : getUploadsChannelsDir();
         const auto finalDir = path.join(baseUploadDir, id);
 
         // Ensure the resolved path is still within the expected directory
@@ -39,19 +39,19 @@ std::string sanitizeFilename(const std::string& filename) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!filename) {
-        return 'unnamed';
+        return "unnamed";
     }
 
     // Remove path separators and null bytes
     const auto sanitized = filename;
-    .replace(/[/\\:*?"<>|]/g, '_')
-    .replace(/\0/g, '');
-    .replace(/\.+/g, '.');
+    .replace(/[/\\:*?"<>|]/g, "_")
+    .replace(/\0/g, "");
+    .replace(/\.+/g, ".");
     .trim();
 
     // Ensure filename isn't empty after sanitization
     if (!sanitized || sanitized == '.') {
-        return 'unnamed';
+        return "unnamed";
     }
 
     // Limit filename length
@@ -59,7 +59,7 @@ std::string sanitizeFilename(const std::string& filename) {
     if (sanitized.length > maxLength) {
         const auto ext = path.extname(sanitized);
         const auto nameWithoutExt = path.basename(sanitized, ext);
-        const auto truncatedName = nameWithoutExt.substring(0, maxLength - ext.length - 1);
+        const auto truncatedName = nameWithoutExt.substring(0, maxLength - ext.size() - 1);
         return truncatedName + ext;
     }
 

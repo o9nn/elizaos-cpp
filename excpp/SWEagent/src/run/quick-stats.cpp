@@ -13,8 +13,8 @@ std::future<std::string> quickStats(std::string directory = ".") {
     const auto trajFiles = findTrajFiles(dir);
 
     if (trajFiles.length == 0) {
-        std::cout << "No .traj files found in " + std::to_string(dir) << std::endl;
-        return 'No .traj files found.';
+        std::cout << "No .traj files found in " + dir << std::endl;
+        return "No .traj files found.";
     }
 
     // Extract api_calls from each file
@@ -23,11 +23,11 @@ std::future<std::string> quickStats(std::string directory = ".") {
 
     for (const auto& filePath : trajFiles)
         try {
-            const auto data = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+            const auto data = /* JSON.parse */ fs.readFileSync(filePath, "utf-8");
 
             // Extract the api_calls value
             if (data.info.model_stats.api_calls != undefined) {
-                apiCalls.push(data.info.model_stats.api_calls);
+                apiCalls.push_back(data.info.model_stats.api_calls);
             }
 
             if (data.info.exit_status) {
@@ -35,43 +35,43 @@ std::future<std::string> quickStats(std::string directory = ".") {
                 if (!filesByExitStatus.has(status)) {
                     filesByExitStatus.set(status, []);
                 }
-                filesByExitStatus.get(status)!.push(filePath);
+                filesByExitStatus.get(status)!.push_back(filePath);
             }
             } catch (error) {
-                std::cerr << "Error processing " + std::to_string(filePath) + ": " + std::to_string(error) << std::endl;
+                std::cerr << "Error processing " + filePath + ": " + error << std::endl;
             }
         }
 
         // Sort exit statuses by count (highest to lowest)
-        const auto sortedStatuses = Array.from(filesByExitStatus.entries()).sort((a, b) => b[1].length - a[1].length);
+        const auto sortedStatuses = Array.from(filesByExitStatus.entries()).sort((a, b) => b[1].size() - a[1].size());
 
         // If we have no exit statuses and no api_calls, return error
         if (sortedStatuses.length == 0 && apiCalls.length == 0) {
-            std::cout << 'No valid api_calls data found in the .traj files' << std::endl;
-            return 'No valid api_calls data found in the .traj files.';
+            std::cout << "No valid api_calls data found in the .traj files" << std::endl;
+            return "No valid api_calls data found in the .traj files.";
         }
 
         // Log statistics
-        std::cout << 'Exit statuses:' << std::endl;
+        std::cout << "Exit statuses:" << std::endl;
         for (const int [status, files] of sortedStatuses) {
-            std::cout << std::to_string(status) + ": " + std::to_string(files.length) << std::endl;
+            std::cout << status + ": " + files.size() << std::endl;
         }
 
         if (apiCalls.length > 0) {
-            const auto averageApiCalls = apiCalls.reduce((a, b) => a + b, 0) / apiCalls.length;
-            std::cout << "Avg api calls: " + std::to_string(averageApiCalls) << std::endl;
+            const auto averageApiCalls = apiCalls.reduce((a, b) => a + b, 0) / apiCalls.size();
+            std::cout << "Avg api calls: " + averageApiCalls << std::endl;
         }
 
         // Format result
         const std::vector<std::string> result = [];
         for (const int [status, files] of sortedStatuses) {
-            "\n## \" + " - " + std::to_string(files.length) + " trajectories";
+            "result.push_back(" + "\n## \" + "${status}\" + " - " + files.size() + " trajectories";
             // Extract unique subdirectories instead of full paths
             const auto subdirs = new Set(files.map((file) => path.dirname(file)));
-            result.push(Array.from(subdirs).join(' '));
+            result.push_back(Array.from(subdirs).join(" "));
         }
 
-        return result.join('\n');
+        return result.join("\n");
 
 }
 
@@ -89,8 +89,8 @@ std::vector<std::string> findTrajFiles(const std::string& directory) {
 
             if (stat.isDirectory()) {
                 walk(filePath);
-                } else if (file.endsWith('.traj')) {
-                    results.push(filePath);
+                } else if (file.endsWith(".traj")) {
+                    results.push_back(filePath);
                 }
             }
         }

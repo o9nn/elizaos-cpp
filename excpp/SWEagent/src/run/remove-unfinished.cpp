@@ -25,16 +25,16 @@ std::future<void> removeUnfinished(const std::string& baseDir, bool dryRun = tru
 
         const auto trajs = fs;
         .readdirSync(directory);
-        .filter((file) => file.endsWith('.traj'));
+        .filter((file) => file.endsWith(".traj"));
         .map((file) => path.join(directory, file));
 
         if (trajs.length == 0) {
-            std::cout << "No trajectories found in " + std::to_string(directory) << std::endl;
+            std::cout << "No trajectories found in " + directory << std::endl;
             continue;
         }
 
         if (trajs.length > 1) {
-            std::cout << "Found multiple trajectories in " + std::to_string(directory) + ". Skipping." << std::endl;
+            std::cout << "Found multiple trajectories in " + directory + ". Skipping." << std::endl;
             continue;
         }
 
@@ -43,32 +43,32 @@ std::future<void> removeUnfinished(const std::string& baseDir, bool dryRun = tru
 
             if (!traj || typeof traj != 'object') {
                 std::cout << "Invalid trajectory format in " + std::to_string(trajs[0]) + ". Adding to remove list." << std::endl;
-                toRemove.push(directory);
+                toRemove.push_back(directory);
                 continue;
             }
 
             const auto submission = (traj).info.submission || nullptr;
 
             if (submission == null) {
-                std::cout << "No submission found in " + std::to_string(directory) + ". Adding to remove list." << std::endl;
-                toRemove.push(directory);
+                std::cout << "No submission found in " + directory + ". Adding to remove list." << std::endl;
+                toRemove.push_back(directory);
                 continue;
             }
             } catch (error) {
-                std::cout << "Error loading trajectory " + std::to_string(trajs[0]) + ": " + std::to_string(error) + ". Adding to remove list." << std::endl;
-                toRemove.push(directory);
+                std::cout << "Error loading trajectory " + std::to_string(trajs[0]) + ": " + error + ". Adding to remove list." << std::endl;
+                toRemove.push_back(directory);
                 continue;
             }
         }
 
         if (dryRun) {
-            std::cout << "Would remove " + std::to_string(toRemove.length) + " unfinished trajectories." << std::endl;
+            std::cout << "Would remove " + toRemove.size() + " unfinished trajectories." << std::endl;
             for (const auto& directory : toRemove)
                 std::cout << directory << std::endl;
             }
             } else {
                 for (const auto& directory : toRemove)
-                    std::cout << "Removing " + std::to_string(directory) << std::endl;
+                    std::cout << "Removing " + directory << std::endl;
                     fs.rmSync(directory, { recursive: true, force: true });
                 }
             }

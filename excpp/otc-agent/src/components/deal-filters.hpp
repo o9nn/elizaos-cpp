@@ -1,10 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 #include "chain-selector.hpp"
 
@@ -26,7 +28,7 @@ struct DealFiltersProps {
     FiltersState filters;
 };
 
-using DealType = std::variant<"all", "negotiable", "fixed">;
+using DealType = std::string;
 
 
 } // namespace elizaos

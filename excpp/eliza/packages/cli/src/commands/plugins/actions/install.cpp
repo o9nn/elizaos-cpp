@@ -16,20 +16,20 @@ std::future<void> installPluginFromGitHub(const std::string& plugin, const std::
         }
 
         const auto [, owner, repo, ref] = githubMatch;
-        const auto githubSpecifier = "github:" + std::to_string(owner) + "/" + std::to_string(repo) + std::to_string(ref ? `#${ref}` : '');
+        const auto githubSpecifier = "github:" + owner + "/" + repo + std::to_string(ref ? `#${ref}` : "");
         const auto pluginNameForPostInstall = repo;
 
         const auto success = installPlugin(githubSpecifier, cwd, std::nullopt, opts.skipVerification);
 
         if (success) {
-            std::cout << "Successfully installed " + std::to_string(pluginNameForPostInstall) + " from " + std::to_string(githubSpecifier) + "." << std::endl;
+            std::cout << "Successfully installed " + pluginNameForPostInstall + " from " + githubSpecifier + "." << std::endl;
 
             // Prompt for environment variables if not skipped
             if (!opts.skipEnvPrompt) {
                 // Brief pause to ensure installation logs are complete
                 new Promise((resolve) => setTimeout(resolve, 50));
                 const auto packageName = extractPackageName(plugin);
-                std::cout << "\n🔧 Checking environment variables for " + std::to_string(packageName) + "..." << std::endl;
+                std::cout << "\n🔧 Checking environment variables for " + packageName + "..." << std::endl;
                 try {
                     promptForPluginEnvVars(packageName, cwd);
                     } catch (error) {
@@ -44,7 +44,7 @@ std::future<void> installPluginFromGitHub(const std::string& plugin, const std::
 
                     process.exit(0);
                     } else {
-                        std::cerr << "Failed to install plugin from " + std::to_string(githubSpecifier) + "." << std::endl;
+                        std::cerr << "Failed to install plugin from " + githubSpecifier + "." << std::endl;
                         process.exit(1);
                     }
 
@@ -59,7 +59,7 @@ std::future<void> installPluginFromRegistry(const std::string& plugin, const std
 
     const auto cachedRegistry = fetchPluginRegistry();
     if (!cachedRegistry || !cachedRegistry.registry) {
-        std::cerr << 'Plugin registry cache not found. Please run "elizaos plugins update" first.' << std::endl;
+        std::cerr << "Plugin registry cache not found. Please run "elizaos plugins update" first." << std::endl;
         process.exit(1);
     }
 
@@ -76,7 +76,7 @@ std::future<void> installPluginFromRegistry(const std::string& plugin, const std
     );
 
     if (registryInstallResult) {
-        std::cout << "Successfully installed " + std::to_string(targetName) << std::endl;
+        std::cout << "Successfully installed " + targetName << std::endl;
 
         // Prompt for environment variables if not skipped
         if (!opts.skipEnvPrompt) {
@@ -87,7 +87,7 @@ std::future<void> installPluginFromRegistry(const std::string& plugin, const std
             const auto actualPackageName =;
             findPluginPackageName(targetName, updatedDependencies || {}) || targetName;
 
-            std::cout << "\n🔧 Checking environment variables for " + std::to_string(actualPackageName) + "..." << std::endl;
+            std::cout << "\n🔧 Checking environment variables for " + actualPackageName + "..." << std::endl;
             try {
                 promptForPluginEnvVars(actualPackageName, cwd);
                 } catch (error) {
@@ -103,7 +103,7 @@ std::future<void> installPluginFromRegistry(const std::string& plugin, const std
                 process.exit(0);
             }
 
-            std::cerr << "Failed to install " + std::to_string(targetName) + " from registry." << std::endl;
+            std::cerr << "Failed to install " + targetName + " from registry." << std::endl;
             process.exit(1);
 
 }
@@ -113,9 +113,9 @@ std::future<void> addPlugin(const std::string& pluginArg, AddPluginOptions opts)
 
     // Validate plugin name is not empty or whitespace
     if (!pluginArg || !pluginArg.trim()) {
-        std::cerr << 'Plugin name cannot be empty or whitespace-only.' << std::endl;
+        std::cerr << "Plugin name cannot be empty or whitespace-only." << std::endl;
         logger.info(
-        'Please provide a valid plugin name (e.g., "openai", "plugin-anthropic", "@elizaos/plugin-sql")';
+        "Please provide a valid plugin name (e.g., "openai", "plugin-anthropic", "@elizaos/plugin-sql")";
         );
         process.exit(1);
     }
@@ -125,14 +125,14 @@ std::future<void> addPlugin(const std::string& pluginArg, AddPluginOptions opts)
 
     if (!directoryInfo || !directoryInfo.hasPackageJson) {
         logger.error(
-        "Command must be run inside an ElizaOS project directory. This directory is: " + std::to_string(directoryInfo.type || 'invalid or inaccessible')
+        "Command must be run inside an ElizaOS project directory. This directory is: " + std::to_string(directoryInfo.type || "invalid or inaccessible")
         );
         process.exit(1);
     }
 
     const auto allDependencies = getDependenciesFromDirectory(cwd);
     if (!allDependencies) {
-        std::cerr << 'Could not read dependencies from package.json' << std::endl;
+        std::cerr << "Could not read dependencies from package.json" << std::endl;
         process.exit(1);
     }
 
@@ -146,12 +146,12 @@ std::future<void> addPlugin(const std::string& pluginArg, AddPluginOptions opts)
 
     if (httpsMatch) {
         const auto [, owner, repo, ref] = httpsMatch;
-        "github:" + std::to_string(owner) + "/" + std::to_string(repo) + std::to_string(ref ? `#${ref}` : '')
+        "plugin = " + "github:" + owner + "/" + repo + std::to_string(ref ? `#${ref}` : "")
     }
 
     const auto installedPluginName = findPluginPackageName(plugin, allDependencies);
     if (installedPluginName) {
-        std::cout << "Plugin "" + std::to_string(installedPluginName) + "" is already added to this project." << std::endl;
+        std::cout << "Plugin \"" + installedPluginName + "\" is already added to this project." << std::endl;
         process.exit(0);
     }
 

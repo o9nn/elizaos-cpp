@@ -72,16 +72,16 @@ std::string quoteShellArgs(const std::string& command) {
 
         // Check if part contains wildcards and is not already quoted
         const auto hasWildcard = ["*", "?", "[", "]"].some((char) =>;
-        part.includes(char),
+        (std::find(part.begin(), part.end(), char) != part.end()),
         );
         const auto isQuoted =;
-        (part.startsWith("'") && part.endsWith("'")) ||;
-        (part.startsWith('"') && part.endsWith('"'));
+        (part.startsWith(""") && part.endsWith(""")) ||;
+        (part.startsWith(""") && part.endsWith("""));
 
         if (hasWildcard && !isQuoted) {
             // Escape single quotes within the part, then wrap the whole part in single quotes
-            const auto escapedPart = part.replace(/'/g, "'\\''"); // Replaces ' with '\'';
-            return "'" + std::to_string(escapedPart) + "'";
+            const auto escapedPart = part.replace(/"/g, ""\\"""); // Replaces " with "\"";
+            return """ + escapedPart + """;
         }
         return part;
         });
@@ -93,14 +93,14 @@ std::future<void> saveExecutionRecord(IAgentRuntime runtime, Memory messageConte
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const Memory memory = {;
-        "shell-record-" + std::to_string(Date.now())
+        "id: createUniqueUuid(runtime, " + "shell-record-" + std::to_string(Date.now())
         content: {
             text,
             thought,
             actions: actions || ["RUN_SHELL_COMMAND_OUTCOME"],
             attachments, // Include attachments;
             },
-            entityId: createUniqueUuid(runtime, runtime.agentId), // This should likely be runtime.agentId if it's the agent's own record
+            entityId: createUniqueUuid(runtime, runtime.agentId), // This should likely be runtime.agentId if it"s the agent"s own record
             agentId: runtime.agentId,
             roomId: messageContext.roomId,
             worldId: messageContext.worldId,

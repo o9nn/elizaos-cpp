@@ -23,9 +23,9 @@ std::future<void> sendTxUsingJito(auto region) {
             method: "sendTransaction",
             params: [encodedTx],
             };
-            const auto res = std::to_string(rpcEndpoint) + "?bundleOnly=true";
+            const auto res = "fetch(" + rpcEndpoint + "?bundleOnly=true";
                 method: "POST",
-                body: JSON.stringify(payload),
+                body: /* JSON.stringify */ std::string(payload),
                 headers: { "Content-Type": "application/json" },
                 });
                 const auto json = (res.json());

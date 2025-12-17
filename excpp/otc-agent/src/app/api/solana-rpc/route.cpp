@@ -20,13 +20,13 @@ std::future<void> POST(NextRequest request) {
         const auto body = request.json();
 
         const auto response = fetch(;
-        "https://mainnet.helius-rpc.com/?api-key=" + std::to_string(heliusKey)
+        "https://mainnet.helius-rpc.com/?api-key=" + heliusKey
         {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
                 },
-                body: JSON.stringify(body),
+                body: /* JSON.stringify */ std::string(body),
                 },
                 );
 

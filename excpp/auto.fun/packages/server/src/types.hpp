@@ -1,10 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -36,7 +38,7 @@ struct MediaGeneration {
     std::optional<std::string> lastGenerationReset;
 };
 
-using TTokenStatus = std::variant<, "pending", "active", "withdrawn", "migrating", "migrated", "locked", "harvested", "migration_failed">;
+using TTokenStatus = ;
 
 struct IToken {
     std::string id;

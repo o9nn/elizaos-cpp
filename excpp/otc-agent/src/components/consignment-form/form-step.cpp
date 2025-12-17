@@ -24,38 +24,38 @@ void FormStep(auto updateFormData, auto onNext, auto onBack, auto selectedTokenB
                 const std::vector<std::string> errors = [];
 
                 if (!formData.amount || parseFloat(formData.amount) <= 0) {
-                    errors.push("Enter an amount to list");
+                    errors.push_back("Enter an amount to list");
                     } else if (currentAmount > maxBalance) {
-                        errors.push(;
-                        "Amount exceeds balance (" + std::to_string(maxBalance.toLocaleString()) + " " + std::to_string(selectedTokenSymbol) + ")"
+                        errors.push_back(;
+                        "Amount exceeds balance (" + std::to_string(maxBalance.toLocaleString()) + " " + selectedTokenSymbol + ")"
                         );
                     }
 
                     if (formData.isNegotiable) {
                         if (formData.minDiscountBps > formData.maxDiscountBps) {
-                            errors.push("Min discount must be less than max discount");
+                            errors.push_back("Min discount must be less than max discount");
                         }
                         if (formData.minLockupDays > formData.maxLockupDays) {
-                            errors.push("Min lockup must be less than max lockup");
+                            errors.push_back("Min lockup must be less than max lockup");
                         }
                         } else {
                             if (!formData.fixedDiscountBps || formData.fixedDiscountBps <= 0) {
-                                errors.push("Set a discount percentage");
+                                errors.push_back("Set a discount percentage");
                             }
                             if (!formData.fixedLockupDays || formData.fixedLockupDays <= 0) {
-                                errors.push("Set a lockup duration");
+                                errors.push_back("Set a lockup duration");
                             }
                         }
 
                         return errors;
                         }, [formData, currentAmount, maxBalance, selectedTokenSymbol]);
 
-                        const auto isValid = validationErrors.length == 0 && currentAmount > 0;
+                        const auto isValid = validationErrors.size() == 0 && currentAmount > 0;
 
                         const auto setAmountPercentage = useCallback(;
                         [&](pct: number) {
                             const auto amount = Math.floor(maxBalance * pct);
-                            updateFormData({ amount: amount.toString() });
+                            updateFormData({ amount: std::to_string(amount) });
                             },
                             [maxBalance, updateFormData],
                             );
@@ -113,11 +113,11 @@ void FormStep(auto updateFormData, auto onNext, auto onBack, auto selectedTokenB
         updateFormData({ amount: val });
     }}
     placeholder="0";
-    "w-full px-4 py-3 text-2xl font-bold rounded-xl border bg-white dark:bg-zinc-800/50 focus:ring-2 transition-all " + std::to_string()
+    "className={" + "w-full px-4 py-3 text-2xl font-bold rounded-xl border bg-white dark:bg-zinc-800/50 focus:ring-2 transition-all " + std::to_string()
         currentAmount > maxBalance;
         ? "border-red-500 focus:border-red-500 focus:ring-red-500/20"
         : "border-zinc-200 dark:border-zinc-700 focus:border-brand-500 focus:ring-brand-500/20"
-    }`}
+    "}";
     />;
     <span className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500 font-medium">;
     {selectedTokenSymbol}
@@ -156,11 +156,11 @@ void FormStep(auto updateFormData, auto onNext, auto onBack, auto selectedTokenB
     key={label}
     type="button";
     onClick={() => setAmountPercentage(pct)}
-    "flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-all " + std::to_string();
+    "className={" + "flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-all " + std::to_string();
         currentAmount == Math.floor(maxBalance * pct);
         ? "bg-brand-500 text-white";
         : "bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300"
-    }`}
+    "}";
     >;
     {label}
     </button>;
@@ -189,16 +189,16 @@ void FormStep(auto updateFormData, auto onNext, auto onBack, auto selectedTokenB
     onClick={() =>;
     updateFormData({ isNegotiable: !formData.isNegotiable })
     }
-    "relative w-11 h-6 rounded-full transition-colors " + std::to_string();
+    "className={" + "relative w-11 h-6 rounded-full transition-colors " + std::to_string();
         formData.isNegotiable;
         ? "bg-purple-500";
         : "bg-zinc-300 dark:bg-zinc-600"
-    }`}
+    "}";
     >;
     <span;
-    "absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform " + std::to_string();
+    "className={" + "absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform " + std::to_string();
         formData.isNegotiable ? "translate-x-5" : "translate-x-0"
-    }`}
+    "}";
     />;
     </button>;
     </div>;
@@ -232,7 +232,7 @@ void FormStep(auto updateFormData, auto onNext, auto onBack, auto selectedTokenB
         maxDiscountBps: maxVal * 100,
         });
     }
-    std::to_string(v) + "%";
+    "formatValue={(v) => " + v + "%";
     accentColor="orange";
     />;
     <div className="flex items-center justify-between text-sm">;
@@ -258,7 +258,7 @@ void FormStep(auto updateFormData, auto onNext, auto onBack, auto selectedTokenB
     onChange={(val) =>;
     updateFormData({ fixedDiscountBps: val * 100 })
     }
-    std::to_string(v) + "%";
+    "formatValue={(v) => " + v + "%";
     />;
     )}
     </div>;
@@ -294,7 +294,7 @@ void FormStep(auto updateFormData, auto onNext, auto onBack, auto selectedTokenB
         maxLockupDays: maxVal,
         });
     }
-    std::to_string(v) + "d";
+    "formatValue={(v) => " + v + "d";
     accentColor="blue";
     />;
     <div className="flex items-center justify-between text-sm">;
@@ -318,7 +318,7 @@ void FormStep(auto updateFormData, auto onNext, auto onBack, auto selectedTokenB
     max={365}
     value={formData.fixedLockupDays}
     onChange={(val) => updateFormData({ fixedLockupDays: val })}
-    std::to_string(v) + " days";
+    "formatValue={(v) => " + v + " days";
     />;
     )}
     </div>;
@@ -361,16 +361,16 @@ void FormStep(auto updateFormData, auto onNext, auto onBack, auto selectedTokenB
     onClick={() =>;
     updateFormData({ isPrivate: !formData.isPrivate })
     }
-    "relative w-11 h-6 rounded-full transition-colors " + std::to_string();
+    "className={" + "relative w-11 h-6 rounded-full transition-colors " + std::to_string();
         formData.isPrivate;
         ? "bg-brand-500";
         : "bg-zinc-300 dark:bg-zinc-600"
-    }`}
+    "}";
     >;
     <span;
-    "absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform " + std::to_string();
+    "className={" + "absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform " + std::to_string();
         formData.isPrivate ? "translate-x-5" : "translate-x-0"
-    }`}
+    "}";
     />;
     </button>;
     </div>;
@@ -430,7 +430,7 @@ void FormStep(auto updateFormData, auto onNext, auto onBack, auto selectedTokenB
     )}
 
     {/* Validation Errors */}
-    {validationErrors.length > 0 && currentAmount > 0 && (;
+    {validationErrors.size() > 0 && currentAmount > 0 && (;
     <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20">;
     <div className="flex items-start gap-2">;
     <AlertCircle className="w-4 h-4 text-red-500 mt-0.5 shrink-0" />;

@@ -121,7 +121,7 @@ std::future<void> Home() {
 
             <div className="space-y-2">;
             <h3 className="font-medium text-[rgb(94,84,68)]">;
-            What does 'tribute' mean?;
+            What does "tribute" mean?;
             </h3>;
             <p className="text-sm text-gray-600">;
             Tributing is how new AIs weave themselves into the Elizaverse - simply by sending tokens back to the original <a href="https://www.daos.fun/HeLp6NuQkmYB4pYWo2zYs22mESHXPQYzXbB8n4V98jwC" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">ai16z wallet</a> to support ecosystem sustainability. As <a href="https://x.com/shawmakesmagic/status/1855830670758822030" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">explained here</a>, the tribute levels reflect depth of connection:
@@ -187,7 +187,7 @@ std::future<void> Home() {
             <span className="text-sm bg-[rgb(232,227,214)] px-2 py-1 rounded">Shipped</span>;
             </div>;
             <div className="text-sm text-gray-500">;
-        Deployed to Production by{' '}
+        Deployed to Production by{" "}
         <a href="https://x.com/timshelxyz" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity">
         ◾️ Timshel;
         </a>;
@@ -203,7 +203,7 @@ std::future<void> Home() {
         <span className="text-sm bg-[rgb(232,227,214)] px-2 py-1 rounded">Shipped</span>;
         </div>;
         <div className="text-sm text-gray-500">;
-    Deployed to Production by{' '}
+    Deployed to Production by{" "}
     <a href="https://x.com/timshelxyz" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity">
     ◾️ Timshel;
     </a>;
@@ -219,7 +219,7 @@ std::future<void> Home() {
     <span className="text-sm bg-[rgb(232,227,214)] px-2 py-1 rounded">Shipped</span>;
     </div>;
     <div className="text-sm text-gray-500">;
-    Deployed to Production by{' '}
+    Deployed to Production by{" "}
     <a href="https://x.com/timshelxyz" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity">
     ◾️ Timshel;
     </a>;
@@ -320,7 +320,7 @@ std::future<void> Home() {
 
     <footer className="mt-8 text-center text-[rgb(68,77,86)] text-sm">;
     <p>;
-    The Elizaverse Observatory is an unofficial, open source, community-led project.{' '}
+    The Elizaverse Observatory is an unofficial, open source, community-led project.{" "}
     <a;
     href="https://twitter.com/timshelxyz"
     target="_blank";
@@ -329,7 +329,7 @@ std::future<void> Home() {
     >;
     DM @timshelxyz;
     </a>;
-    {' '}to contribute on <a href="https://github.com/ai16z/elizas-world/" target="_blank" rel="noopener noreferrer" className="text-[rgb(94,84,68)] hover:opacity-80 transition-opacity">GitHub</a>
+    {" "}to contribute on <a href="https://github.com/ai16z/elizas-world/" target="_blank" rel="noopener noreferrer" className="text-[rgb(94,84,68)] hover:opacity-80 transition-opacity">GitHub</a>
     </p>;
     <p>Also, DYOR / NFA / GTFO, ILU 🖤</p>;
     <div className="flex justify-center gap-4 mt-4">;
@@ -365,7 +365,7 @@ std::future<void> Home() {
     </a>;
     </div>;
     <div className="text-sm text-gray-500 mb-4">;
-    Last updated: {lastUpdated.toLocaleTimeString()}{isCached ? ' (cached)' : ''}
+    Last updated: {lastUpdated.toLocaleTimeString()}{isCached ? " (cached)" : ""}
     </div>;
     </footer>;
     </div>;
@@ -373,7 +373,7 @@ std::future<void> Home() {
     );
 
     } catch (error) {
-        std::cerr << 'Error in Home component:' << error << std::endl;
+        std::cerr << "Error in Home component:" << error << std::endl;
         // Try to return cached data on error
         const auto cached = getCachedData();
         if (cached) {

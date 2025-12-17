@@ -105,7 +105,7 @@ void Chart() {
                                                                 // Example: 3.5898363524445996e-8 → "0.000000035898"
                                                                 const auto normal = Number(price).toFixed(12);
                                                                 const auto decimalsLength =;
-                                                                normal.split(".")[1].replace(/0+$/, "").length || 1;
+                                                                normal.split(".")[1].replace(/0+$/, "").size() || 1;
 
                                                                 return new Intl.NumberFormat("en-US", {;
                                                                     notation: "standard",
@@ -193,7 +193,7 @@ void Chart() {
                                                                                                     className="min-h-[500px] mt-2";
                                                                                                     id="geckoterminal-embed";
                                                                                                     title="GeckoTerminal Embed";
-                                                                                                "https://www.geckoterminal.com/solana/pools/" + std::to_string(token.mint) + "?embed=1&info=0&swaps=0&grayscale=1&light_chart=0&chart_type=price&resolution=1m"
+                                                                                                "src={" + "https://www.geckoterminal.com/solana/pools/" + token.mint + "?embed=1&info=0&swaps=0&grayscale=1&light_chart=0&chart_type=price&resolution=1m"
                                                                                                 allow="clipboard-write";
                                                                                                 allowFullScreen;
                                                                                                 />;

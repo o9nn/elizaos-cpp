@@ -23,12 +23,12 @@ JSX::Element ShowcaseCards() {
 
     return (;
     <section className="container margin-top--lg margin-bottom--xl">;
-    <div className={clsx('margin-bottom--md')}>;
+    <div className={clsx("margin-bottom--md")}>;
     <h2>;
-    {uniqueUsers.length} {uniqueUsers.length == 1 ? 'Site'  = 'Packages'}
+    {uniqueUsers.size()} {uniqueUsers.size() == 1 ? "Site"  = "Packages"}
     </h2>;
     </div>;
-    <ul className={clsx('clean-list', styles.showcaseList)}>;
+    <ul className={clsx("clean-list", styles.showcaseList)}>;
     {uniqueUsers.map((user) => (;
     <ShowcaseCard key={user.title + user.source} user={user} />;
     ))}

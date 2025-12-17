@@ -1,12 +1,15 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".hooks/useGithubReleases.hpp"
-#include ".utils/repository.hpp"
+#include "hooks/useGithubReleases.hpp"
+#include "utils/repository.hpp"
 
 namespace elizaos {
 

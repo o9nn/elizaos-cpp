@@ -16,7 +16,7 @@ std::future<void> startAgents(ServerStartOptions options) {
         // Load @elizaos/server from the project's node_modules
         // Use monorepo root when available to ensure proper module resolution
         const auto moduleLoader = getModuleLoader();
-        const auto serverModule = moduleLoader.load('@elizaos/server');
+        const auto serverModule = moduleLoader.load("@elizaos/server");
 
         const auto { AgentServer, jsonToCharacter, loadCharacterTryPath } = serverModule;
 
@@ -27,20 +27,20 @@ std::future<void> startAgents(ServerStartOptions options) {
         // Calculate the CLI dist path more reliably
         // In development/monorepo: packages/cli/dist/commands/start/actions -> packages/cli/dist
         // In production/global: node_modules/@elizaos/cli/dist/commands/start/actions -> node_modules/@elizaos/cli/dist
-        auto cliDistPath = path.resolve(__dirname, '../../../');
+        auto cliDistPath = path.resolve(__dirname, "../../../");
 
         // Verify the path contains index.html, if not try alternative resolution
-        const auto indexPath = path.join(cliDistPath, 'index.html');
+        const auto indexPath = path.join(cliDistPath, "index.html");
         if (!existsSync(indexPath)) {
             // Try to find the dist directory by looking for package.json and then dist
             auto currentDir = __dirname;
             while (currentDir != path.dirname(currentDir)) {
-                const auto packageJsonPath = path.join(currentDir, 'package.json');
+                const auto packageJsonPath = path.join(currentDir, "package.json");
                 if (existsSync(packageJsonPath)) {
                     try {
-                        const auto packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
+                        const auto packageJson = /* JSON.parse */ readFileSync(packageJsonPath, "utf-8");
                         if (packageJson.name == '@elizaos/cli') {
-                            const auto distPath = path.join(currentDir, 'dist');
+                            const auto distPath = path.join(currentDir, "dist");
                             if (existsSync(path.join(distPath, 'index.html'))) {
                                 cliDistPath = distPath;
                                 break;
@@ -65,16 +65,16 @@ std::future<void> startAgents(ServerStartOptions options) {
                 server.loadCharacterTryPath = loadCharacterTryPath;
                 server.jsonToCharacter = jsonToCharacter;
 
-                const auto desiredPort = options.port || Number.parseInt(process.env.SERVER_PORT || '3000');
+                const auto desiredPort = options.port || Number.parseInt(process.env.SERVER_PORT || "3000");
                 const auto serverPort = findNextAvailablePort(desiredPort);
                 if (serverPort != desiredPort) {
-                    std::cout << "Port " + std::to_string(desiredPort) << using port ${serverPort} instead` << std::endl;
+                    std::cout << "Port " + desiredPort << "using port ${serverPort} instead" << std::endl;
                 }
-                process.env.SERVER_PORT = serverPort.toString();
+                process.env.SERVER_PORT = std::to_string(serverPort);
                 try {
                     server.start(serverPort);
                     } catch (error) {
-                        std::cerr << "Failed to start server on port " + std::to_string(serverPort) + ":" << error << std::endl;
+                        std::cerr << "Failed to start server on port " + serverPort + ":" << error << std::endl;
                         throw;
                     }
 
@@ -90,7 +90,7 @@ std::future<void> startAgents(ServerStartOptions options) {
                         }
                     }
                     // If we have standalone characters, start them
-                    else if (options.characters && options.characters.length > 0) {
+                    else if (options.characters && options.characters.size() > 0) {
                         for (const auto& character : options.characters)
                             startAgent(character, server);
                         }

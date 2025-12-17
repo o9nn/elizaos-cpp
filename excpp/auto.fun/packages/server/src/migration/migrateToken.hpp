@@ -1,17 +1,20 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
-#include ".db.hpp"
-#include ".env.hpp"
-#include ".redis.hpp"
+#include "db.hpp"
+#include "env.hpp"
 #include "migrations.hpp"
+#include "redis.hpp"
 
 namespace elizaos {
 

@@ -1,12 +1,15 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include "..assets/left.png.hpp"
-#include "..assets/right.png.hpp"
+#include "assets/left.png.hpp"
+#include "assets/right.png.hpp"
 #include "types.hpp"
 
 namespace elizaos {

@@ -7,7 +7,7 @@ namespace elizaos {
 std::future<void> storeDailySummary(const std::string& username, const std::string& date, const std::string& summary, IntervalType intervalType) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto id = std::to_string(username) + "_" + std::to_string(intervalType) + "_" + std::to_string(date);
+    const auto id = username + "_" + intervalType + "_" + date;
 
     db;
     .insert(userSummaries);
@@ -32,7 +32,7 @@ std::future<void> storeDailySummary(const std::string& username, const std::stri
 std::future<void> storeRepoSummary(const std::string& repoId, const std::string& date, const std::string& summary, IntervalType intervalType) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto id = std::to_string(repoId) + "_" + std::to_string(intervalType) + "_" + std::to_string(date);
+    const auto id = repoId + "_" + intervalType + "_" + date;
 
     db;
     .insert(repoSummaries);

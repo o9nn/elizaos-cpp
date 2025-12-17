@@ -8,19 +8,19 @@ void getExplorerUrl(const std::string& endpoint, const std::variant<std::string,
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto getClusterUrlParam = [&]() {;
-        auto cluster = '';
+        auto cluster = "";
         if (endpoint == 'localnet') {
-            "custom&customUrl=" + std::to_string(encodeURIComponent);
-            'http://127.0.0.1:8899'
-            )}`;
-            } else if (endpoint == 'https://api.devnet.solana.com') {
-                cluster = 'devnet';
+            "cluster = " + "custom&customUrl=" + encodeURIComponent;
+            "http://127.0.0.1:8899"
+            ")}";
+            } else if (endpoint == "https://api.devnet.solana.com") {
+                cluster = "devnet";
             }
 
-            return "?cluster=" + std::to_string(cluster);
+            return "cluster ? " + "?cluster=" + cluster;
         }
 
-        return "https://explorer.solana.com/" + std::to_string(itemType) + "/" + std::to_string(viewTypeOrItemAddress) + std::to_string(getClusterUrlParam());
+        return "https://explorer.solana.com/" + itemType + "/" + viewTypeOrItemAddress + std::to_string(getClusterUrlParam());
 
 }
 

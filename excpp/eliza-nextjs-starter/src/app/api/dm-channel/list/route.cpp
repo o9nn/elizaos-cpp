@@ -21,7 +21,7 @@ std::future<void> GET(NextRequest request) {
 
         // Get all channels from the server
         const auto channelsResponse = fetch(;
-        std::to_string(ELIZA_SERVER_URL) + "/api/messaging/central-channels"
+        ELIZA_SERVER_URL + "/api/messaging/central-channels"
         {
             method: "GET",
             headers: {
@@ -75,7 +75,7 @@ std::future<void> GET(NextRequest request) {
                         return NextResponse.json({;
                             success: true,
                             channels: dmChannels,
-                            count: dmChannels.length,
+                            count: dmChannels.size(),
                             });
                             } catch (error) {
                                 std::cerr << "[DM Channel List API] Error listing DM channels:" << error << std::endl;

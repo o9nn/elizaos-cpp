@@ -98,7 +98,7 @@ std::future<std::optional<TokenData>> getToken(const std::string& mint) {
 std::future<MigrationStepResult> executeMigrationStep(TokenData token, MigrationStep step, MigrationStep nextStep, double retryCount = 3, double delay = 2000) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    std::cout << "[Migrate] Starting " + std::to_string(step.name) + " for token " + std::to_string(token.mint) << std::endl;
+    std::cout << "[Migrate] Starting " + step.name + " for token " + token.mint << std::endl;
 
     const auto result = retryOperation(() => step.fn(token), retryCount, delay);
 
@@ -110,7 +110,7 @@ std::future<MigrationStepResult> executeMigrationStep(TokenData token, Migration
         updatedAt: new Date().toISOString(),
         };
         Object.assign(token, result.extraData);
-        std::cout << std::to_string(step.name) + " result:" << result << std::endl;
+        std::cout << step.name + " result:" << result << std::endl;
         // Update the DB record
         const std::optional<TokenData> tokenData = {;
             mint: token.mint,
@@ -127,11 +127,11 @@ std::future<MigrationStepResult> executeMigrationStep(TokenData token, Migration
 
             const auto ws = getWebSocketClient();
             if (step.eventName) {
-                "token-" + std::to_string(token.mint);
+                "ws.to(" + "token-" + token.mint;
             }
 
             logger.log(
-            "[Migrate] " + std::to_string(step.name) + " successful for token " + std::to_string(token.mint) + " txId: " + std::to_string(result.txId)
+            "[Migrate] " + step.name + " successful for token " + token.mint + " txId: " + result.txId
             );
             return result;
 
@@ -186,7 +186,7 @@ std::future<void> saveMigrationState(TokenData token, const std::string& step) {
         db;
         .update(tokens);
         .set({
-            migration: JSON.stringify(updatedMigration),
+            migration: /* JSON.stringify */ std::string(updatedMigration),
             lastUpdated: new Date(),
             });
             .where(eq(tokens.mint, token.mint));
@@ -209,7 +209,7 @@ std::future<void> getMigrationState(TokenData token) {
         const auto tokenRecord = tokenRecords[0];
         const auto migration =;
         typeof tokenRecord.migration == "string";
-        ? JSON.parse(tokenRecord.migration);
+        ? /* JSON.parse */ tokenRecord.migration;
         : tokenRecord.migration;
 
         if (migration && tokenRecord.status != "locked") {
@@ -240,7 +240,7 @@ std::future<void> safeUpdateTokenInDB(const std::optional<TokenData>& data, auto
                 return;
                 } catch (err) {
                     logger.error(
-                    "[DB] Failed to update token " + std::to_string(data.mint) + " on attempt " + std::to_string(attempt) + ":"
+                    "[DB] Failed to update token " + data.mint + " on attempt " + attempt + ":"
                     err;
                     );
                     if (attempt == retries) throw err;
@@ -278,7 +278,7 @@ std::future<void> checkMigratingTokens(double limit) {
             }
 
             const auto wallet = Keypair.fromSecretKey(;
-            Uint8Array.from(JSON.parse(process.env.EXECUTOR_PRIVATE_KEY)),
+            Uint8Array.from(/* JSON.parse */ process.env.EXECUTOR_PRIVATE_KEY),
             );
             const auto provider = new AnchorProvider(;
             connection,
@@ -303,7 +303,7 @@ std::future<void> checkMigratingTokens(double limit) {
 
             // Filter out tokens that have migration as null or empty object or migration.status is not locked
             const auto filteredTokens = migratingTokens.filter((token) => {;
-                const auto migration = token.migration ? JSON.parse(token.migration) : nullptr;
+                const auto migration = token.migration ? /* JSON.parse */ token.migration : nullptr;
                 return (;
                 migration &&;
                 (typeof migration == "object" || migration.status != "locked");
@@ -316,7 +316,7 @@ std::future<void> checkMigratingTokens(double limit) {
                     const auto tokenM = getToken(token.mint);
                 }
                 } catch (error) {
-                    std::cerr << "Error fetching migrating tokens: " + std::to_string(error) << std::endl;
+                    std::cerr << "Error fetching migrating tokens: " + error << std::endl;
                     throw std::runtime_error("Failed to fetch migrating tokens");
                 }
 

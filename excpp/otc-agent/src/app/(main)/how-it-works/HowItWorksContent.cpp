@@ -13,15 +13,15 @@ void HowItWorksContent() {
     // Simple wallet connect - just use Privy login
     const auto handleOpenConsignmentForm = useCallback(() => {;
         // navigate to /consign
-        router.push("/consign");
+        router.push_back("/consign");
         }, [router]);
 
         const auto handleOpenTradingDesk = useCallback(() => {;
-            router.push("/");
+            router.push_back("/");
             }, [router]);
 
             const auto handleViewDeals = useCallback(() => {;
-                router.push("/my-deals");
+                router.push_back("/my-deals");
                 }, [router]);
 
                 return (;
@@ -94,7 +94,7 @@ void HowItWorksContent() {
     <div;
     className="absolute bottom-0 right-0 w-full h-2/3 z-20 pointer-events-none";
     style={{
-        "radial-gradient(ellipse 80% 100% at 100% 100%, var(--brand-primary) 0%, rgba(247, 91, 30, 0.6) 0%, rgba(247, 91, 30, 0.3) 0%, transparent 75%)"
+        "background: " + "radial-gradient(ellipse 80% 100% at 100% 100%, var(--brand-primary) 0%, rgba(247, 91, 30, 0.6) 0%, rgba(247, 91, 30, 0.3) 0%, transparent 75%)"
         filter: "blur(2px)",
     }}
     />;

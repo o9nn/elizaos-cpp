@@ -27,11 +27,11 @@ std::future<void> setLastProcessedSlot(double slot) {
 
 
     const auto db = getDB();
-    db.insert(metadata).values({ key: "lastProcessedSlot", value: slot.toString() }).onConflictDoUpdate({
+    db.insert(metadata).values({ key: "lastProcessedSlot", value: std::to_string(slot) }).onConflictDoUpdate({
         target: [metadata.key],
-        set: { value: slot.toString() },
+        set: { value: std::to_string(slot) },
         });
-        std::cout << "Updated last processed slot to " + std::to_string(slot) << std::endl;
+        std::cout << "Updated last processed slot to " + slot << std::endl;
 
 }
 
@@ -58,9 +58,9 @@ std::future<void> processSlot(double slot, Connection connection) {
 
     try {
         const auto block = connection.getBlock(slot, {;
-            transactionDetails: 'full',
+            transactionDetails: "full",
             rewards: false,
-            commitment: 'confirmed',
+            commitment: "confirmed",
             maxSupportedTransactionVersion: 0,
             });
             if (!block) return logger.log(`Slot ${slot} empty, skipping`);
@@ -74,7 +74,7 @@ std::future<void> processSlot(double slot, Connection connection) {
                 }
             }
             } catch (err) {
-                std::cerr << "Error processing slot " + std::to_string(slot) + ":" << err << std::endl;
+                std::cerr << "Error processing slot " + slot + ":" << err << std::endl;
             }
 
 }
@@ -101,23 +101,23 @@ std::future<void> processMissedEvents(Connection connection) {
                 } else {
                     startSlot = Math.max(0, currentSlot - 500);
                 }
-                std::cout << "No lastProcessedSlot found. Falling back to slot " + std::to_string(startSlot) << std::endl;
+                std::cout << "No lastProcessedSlot found. Falling back to slot " + startSlot << std::endl;
                 } else {
-                    std::cout << "Resuming from lastProcessedSlot = " + std::to_string(startSlot) << std::endl;
+                    std::cout << "Resuming from lastProcessedSlot = " + startSlot << std::endl;
                 }
                 const auto slots = connection.getBlocks(startSlot + 1, currentSlot);
                 logger.log(
-                "Processing " + std::to_string(slots.length) + " slots from " + std::to_string(startSlot + 1) + " to " + std::to_string(currentSlot);
+                "Processing " + slots.size() + " slots from " + std::to_string(startSlot + 1) + " to " + currentSlot;
                 );
                 // 2) Now process every slot from startSlot to currentSlot
-                std::cout << "Scanning events from slot " + std::to_string(startSlot + 1) + " to " + std::to_string(currentSlot) << std::endl;
+                std::cout << "Scanning events from slot " + std::to_string(startSlot + 1) + " to " + currentSlot << std::endl;
                 const auto queue = new PQueue({ concurrency: 20 });
                 for (const auto& slot : slots)
                     queue.add(() => processSlot(slot, connection));
                 }
                 queue.onIdle();
                 setLastProcessedSlot(currentSlot);
-                std::cout << "✅ Updated lastProcessedSlot → " + std::to_string(currentSlot) << std::endl;
+                std::cout << "✅ Updated lastProcessedSlot → " + currentSlot << std::endl;
                 } catch (error) {
                     std::cerr << "Error processing missed events:" << error << std::endl;
                 }

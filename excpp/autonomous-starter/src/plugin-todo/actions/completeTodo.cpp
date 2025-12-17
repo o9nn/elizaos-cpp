@@ -11,7 +11,7 @@ std::future<TaskCompletion> extractTaskCompletion(IAgentRuntime runtime, Memory 
         // Format available tasks for the prompt
         const auto tasksText = availableTasks;
         .map((task) => {
-            return "ID: " + std::to_string(task.id) + "\nName: " + std::to_string(task.name) + "\nDescription: " + std::to_string(task.description || task.name) + "\nTags: " + std::to_string(task.tags.join(", ") || "none") + "\n";
+            return "ID: " + task.id + "\nName: " + task.name + "\nDescription: " + std::to_string(task.description || task.name) + "\nTags: " + std::to_string(task.tags.join(", ") || "none") + "\n";
             });
             .join("\n---\n");
 

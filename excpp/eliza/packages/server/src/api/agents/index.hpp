@@ -1,15 +1,18 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".memory/agents.hpp"
-#include ".memory/rooms.hpp"
 #include "crud.hpp"
 #include "lifecycle.hpp"
 #include "logs.hpp"
+#include "memory/agents.hpp"
+#include "memory/rooms.hpp"
 #include "panels.hpp"
 #include "worlds.hpp"
 

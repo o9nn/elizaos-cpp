@@ -29,20 +29,20 @@ std::future<void> copyDir(const std::string& src, const std::string& dest, std::
 
         // Skip node_modules, .git directories and other build artifacts
         if (
-        entry.name == 'node_modules' ||;
-        entry.name == '.git' ||;
-        entry.name == 'cache' ||;
-        entry.name == 'data' ||;
-        entry.name == 'generatedImages' ||;
-        entry.name == '.turbo';
+        entry.name == "node_modules" ||;
+        entry.name == ".git" ||;
+        entry.name == "cache" ||;
+        entry.name == "data" ||;
+        entry.name == "generatedImages" ||;
+        entry.name == ".turbo";
         ) {
             continue;
         }
 
         if (entry.isDirectory()) {
-            directories.push(entry);
+            directories.push_back(entry);
             } else {
-                files.push(entry);
+                files.push_back(entry);
             }
         }
 
@@ -57,7 +57,7 @@ std::future<void> copyDir(const std::string& src, const std::string& dest, std::
                 const auto destPath = path.join(resolvedDest, entry.name);
                 fs.copyFile(srcPath, destPath);
                 });
-                filePromises.push(...batchPromises);
+                filePromises.push_back(...batchPromises);
             }
 
             // Wait for all file copies to complete
@@ -77,14 +77,14 @@ std::string getPackageName(const std::string& templateType) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     switch (templateType) {
-        case 'project-tee-starter':
-        return 'project-tee-starter';
-        case 'plugin':
-        return 'plugin-starter';
-        case 'project':
-        case 'project-starter':
-        default:
-        return 'project-starter';
+        // case "project-tee-starter":
+        return "project-tee-starter";
+        // case "plugin":
+        return "plugin-starter";
+        // case "project":
+        // case "project-starter":
+        // default:
+        return "project-starter";
     }
 
 }
@@ -98,24 +98,24 @@ std::future<void> copyTemplate(const std::string& templateType, const std::strin
         // Try multiple locations to find templates, handling different runtime environments
         const auto possibleTemplatePaths = [;
         // 1. Direct path from source directory (for tests and development)
-        path.resolve(__dirname, '../../templates', packageName),
+        path.resolve(__dirname, "../../templates", packageName),
         // 2. Production: templates bundled with the CLI dist
         path.resolve(;
-        path.dirname(require.resolve('@elizaos/cli/package.json')),
-        'dist',
-        'templates',
+        path.dirname(require.resolve("@elizaos/cli/package.json")),
+        "dist",
+        "templates",
         packageName;
         ),
         // 3. Development/Test: templates in the CLI package root
         path.resolve(;
-        path.dirname(require.resolve('@elizaos/cli/package.json')),
-        'templates',
+        path.dirname(require.resolve("@elizaos/cli/package.json")),
+        "templates",
         packageName;
         ),
         // 4. Fallback: relative to current module (for built dist)
-        path.resolve(__dirname, '..', 'templates', packageName),
+        path.resolve(__dirname, "..", "templates", packageName),
         // 5. Additional fallback: relative to dist directory
-        path.resolve(__dirname, '..', '..', 'templates', packageName),
+        path.resolve(__dirname, "..", "..", "templates", packageName),
         ];
 
         std::string templateDir = nullptr;
@@ -128,7 +128,7 @@ std::future<void> copyTemplate(const std::string& templateType, const std::strin
 
         if (!templateDir) {
             throw new Error(
-            "Template '" + std::to_string(packageName) + "' not found. Searched in:\n" + std::to_string(possibleTemplatePaths.join('\n'))
+            "Template "" + packageName + "" not found. Searched in:\n" + std::to_string(possibleTemplatePaths.join("\n"))
             );
         }
 
@@ -144,19 +144,19 @@ std::future<void> copyTemplate(const std::string& templateType, const std::strin
         }
 
         // Update package.json with dependency versions only (leave placeholders intact)
-        const auto packageJsonPath = path.join(targetDir, 'package.json');
+        const auto packageJsonPath = path.join(targetDir, "package.json");
 
         try {
             // Get the CLI package version for dependency updates
             const auto cliPackageJsonPath = path.resolve(;
-            path.dirname(require.resolve('@elizaos/cli/package.json')),
-            'package.json';
+            path.dirname(require.resolve("@elizaos/cli/package.json")),
+            "package.json";
             );
 
-            const auto cliPackageJson = JSON.parse(fs.readFile(cliPackageJsonPath, 'utf8'));
+            const auto cliPackageJson = /* JSON.parse */ fs.readFile(cliPackageJsonPath, "utf8");
             const auto cliPackageVersion = cliPackageJson.version;
 
-            const auto packageJson = JSON.parse(fs.readFile(packageJsonPath, 'utf8'));
+            const auto packageJson = /* JSON.parse */ fs.readFile(packageJsonPath, "utf8");
 
             // Remove private field from template package.json since templates should be usable by users
             if (packageJson.private) {
@@ -168,8 +168,8 @@ std::future<void> copyTemplate(const std::string& templateType, const std::strin
             if (packageJson.dependencies) {
                 for (const auto& depName : Object.keys(packageJson.dependencies)
                     if (depName.startsWith('@elizaos/')) {
-                        std::cout << "Setting " + std::to_string(depName) + " to use version " + std::to_string(cliPackageVersion) << std::endl;
-                        packageJson.dependencies[depName] = 'latest';
+                        std::cout << "Setting " + depName + " to use version " + cliPackageVersion << std::endl;
+                        packageJson.dependencies[depName] = "latest";
                     }
                 }
             }
@@ -177,8 +177,8 @@ std::future<void> copyTemplate(const std::string& templateType, const std::strin
             if (packageJson.devDependencies) {
                 for (const auto& depName : Object.keys(packageJson.devDependencies)
                     if (depName.startsWith('@elizaos/')) {
-                        std::cout << "Setting dev dependency " + std::to_string(depName) + " to use version " + std::to_string(cliPackageVersion) << std::endl;
-                        packageJson.devDependencies[depName] = 'latest';
+                        std::cout << "Setting dev dependency " + depName + " to use version " + cliPackageVersion << std::endl;
+                        packageJson.devDependencies[depName] = "latest";
                     }
                 }
             }
@@ -188,14 +188,14 @@ std::future<void> copyTemplate(const std::string& templateType, const std::strin
 
             if (packageJson.name != projectNameFromPath) {
                 packageJson.name = projectNameFromPath;
-                std::cout << "Setting package name to " + std::to_string(projectNameFromPath) << std::endl;
+                std::cout << "Setting package name to " + projectNameFromPath << std::endl;
             }
 
             // Write the updated package.json (dependency versions and plugin name changed)
-            fs.writeFile(packageJsonPath, JSON.stringify(packageJson, nullptr, 2));
+            fs.writeFile(packageJsonPath, /* JSON.stringify */ std::string(packageJson, nullptr, 2));
             logger.debug('Updated package.json with latest dependency versions');
             } catch (error) {
-                std::cerr << "Error updating package.json: " + std::to_string(error) << std::endl;
+                std::cerr << "Error updating package.json: " + error << std::endl;
             }
 
             logger.debug(`${templateType} template copied successfully`);
@@ -210,10 +210,10 @@ std::future<void> replacePluginNameInFiles(const std::string& targetDir, const s
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto filesToProcess = [;
-    'src/index.ts',
-    '__tests__/plugin.test.ts',
-    'e2e/starter-plugin.test.ts',
-    'README.md',
+    "src/index.ts",
+    "__tests__/plugin.test.ts",
+    "e2e/starter-plugin.test.ts",
+    "README.md",
     // package.json name is handled by the publish command
     ];
 
@@ -228,17 +228,17 @@ std::future<void> replacePluginNameInFiles(const std::string& targetDir, const s
             .then(() => true);
             .catch(() => false);
             ) {
-                auto content = fs.readFile(fullPath, 'utf8');
+                auto content = fs.readFile(fullPath, "utf8");
 
                 // Replace the hardcoded plugin name in source files
                 content = content.replace(/plugin-starter/g, pluginName);
 
-                fs.writeFile(fullPath, content, 'utf8');
+                fs.writeFile(fullPath, content, "utf8");
                 logger.debug(`Updated plugin name in ${filePath}`);
             }
             } catch (error) {
                 logger.warn(
-                "Could not update " + std::to_string(filePath) + ": " + std::to_string(true /* instanceof check */ ? error.message : std::to_string(error))
+                "Could not update " + filePath + ": " + std::to_string(true /* instanceof check */ ? error.message : std::to_string(error))
                 );
             }
             });
@@ -253,10 +253,10 @@ std::future<void> copyClientDist() {
 
         logger.debug('Copying client dist files to CLI package');
 
-        const auto srcClientDist = path.resolve(process.cwd(), '../client/dist');
-        const auto destClientDist = path.resolve(process.cwd(), './dist');
-        const auto indexSrc = path.join(srcClientDist, 'index.html');
-        const auto indexDest = path.join(destClientDist, 'index.html');
+        const auto srcClientDist = path.resolve(process.cwd(), "../client/dist");
+        const auto destClientDist = path.resolve(process.cwd(), "./dist");
+        const auto indexSrc = path.join(srcClientDist, "index.html");
+        const auto indexDest = path.join(destClientDist, "index.html");
 
         fs.mkdir(destClientDist, { recursive: true });
 
@@ -268,14 +268,14 @@ std::future<void> copyClientDist() {
             if (existsSync(indexSrc)) {
                 break;
             }
-            std::cout << "Waiting for client index.html (attempt " + std::to_string(retries + 1) + "/" + std::to_string(maxRetries) + ")…" << std::endl;
+            std::cout << "Waiting for client index.html (attempt " + std::to_string(retries + 1) + "/" + maxRetries + ")…" << std::endl;
             new Promise((r) => setTimeout(r, retryDelay));
             retries++;
         }
 
         if (!existsSync(indexSrc)) {
-            std::cerr << "index.html not found at " + std::to_string(indexSrc) + " after " + std::to_string(maxRetries) + " attempts" << std::endl;
-            std::cerr << 'Client package must be built before CLI package. Run: bun run build:client' << std::endl;
+            std::cerr << "index.html not found at " + indexSrc + " after " + maxRetries + " attempts" << std::endl;
+            std::cerr << "Client package must be built before CLI package. Run: bun run build:client" << std::endl;
             throw std::runtime_error('Client dist files not found - build the client package first');
         }
 
@@ -284,11 +284,11 @@ std::future<void> copyClientDist() {
 
         // Verify it made it into CLI dist
         if (!existsSync(indexDest)) {
-            std::cerr << "index.html missing in CLI dist at " + std::to_string(indexDest) << std::endl;
+            std::cerr << "index.html missing in CLI dist at " + indexDest << std::endl;
             throw std::runtime_error('Failed to copy client files to CLI dist directory');
         }
 
-        std::cout << '✅ Client files successfully copied to CLI package' << std::endl;
+        std::cout << "✅ Client files successfully copied to CLI package" << std::endl;
 
         logger.success('Client dist files copied successfully');
 

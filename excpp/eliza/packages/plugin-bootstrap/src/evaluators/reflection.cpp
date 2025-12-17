@@ -22,7 +22,7 @@ UUID resolveEntity(UUID entityId, const std::vector<Entity>& entities) {
         }
 
         // Try partial UUID match with entityId
-        entity = entities.find((a) => a.id.includes(entityId));
+        entity = entities.find((a) => a.(std::find(id.begin(), id.end(), entityId) != id.end()));
         if (entity.id) {
             return entity.id;
         }
@@ -49,7 +49,7 @@ std::future<void> handler(IAgentRuntime runtime, Memory message, std::optional<S
     const auto { agentId, roomId } = message;
 
     if (!agentId || !roomId) {
-        std::cout << 'Missing agentId or roomId in message' << message << std::endl;
+        std::cout << "Missing agentId or roomId in message" << message << std::endl;
         return;
     }
 
@@ -60,7 +60,7 @@ std::future<void> handler(IAgentRuntime runtime, Memory message, std::optional<S
         }),
         getEntityDetails({ runtime, roomId }),
         runtime.getMemories({
-            tableName: 'facts',
+            tableName: "facts",
             roomId,
             count: 30,
             unique: true,
@@ -72,8 +72,8 @@ std::future<void> handler(IAgentRuntime runtime, Memory message, std::optional<S
                     ...(state.values || {}),
                     knownFacts: formatFacts(knownFacts),
                     roomType: message.content.channelType,
-                    entitiesInRoom: JSON.stringify(entities),
-                    existingRelationships: JSON.stringify(existingRelationships),
+                    entitiesInRoom: /* JSON.stringify */ std::string(entities),
+                    existingRelationships: /* JSON.stringify */ std::string(existingRelationships),
                     senderId: message.entityId,
                     },
                     template: runtime.character.templates.reflectionTemplate || reflectionTemplate,
@@ -87,18 +87,18 @@ std::future<void> handler(IAgentRuntime runtime, Memory message, std::optional<S
                             });
 
                             if (!reflection) {
-                                std::cout << 'Getting reflection failed - empty response' << prompt << std::endl;
+                                std::cout << "Getting reflection failed - empty response" << prompt << std::endl;
                                 return;
                             }
 
                             // Perform basic structure validation instead of using zod
                             if (!reflection.facts || !Array.isArray(reflection.facts)) {
-                                std::cout << 'Getting reflection failed - invalid facts structure' << reflection << std::endl;
+                                std::cout << "Getting reflection failed - invalid facts structure" << reflection << std::endl;
                                 return;
                             }
 
                             if (!reflection.relationships || !Array.isArray(reflection.relationships)) {
-                                std::cout << 'Getting reflection failed - invalid relationships structure' << reflection << std::endl;
+                                std::cout << "Getting reflection failed - invalid relationships structure" << reflection << std::endl;
                                 return;
                             }
 
@@ -107,12 +107,12 @@ std::future<void> handler(IAgentRuntime runtime, Memory message, std::optional<S
                             reflection.facts.filter(;
                             (fact) =>;
                             fact &&;
-                            typeof fact == 'object' &&;
+                            typeof fact == "object" &&;
                             !fact.already_known &&;
                             !fact.in_bio &&;
                             fact.claim &&;
-                            typeof fact.claim == 'string' &&;
-                            fact.claim.trim() != '';
+                            typeof fact.claim == "string" &&;
+                            fact.claim.trim() != "";
                             ) || [];
 
                             Promise.all(;
@@ -124,7 +124,7 @@ std::future<void> handler(IAgentRuntime runtime, Memory message, std::optional<S
                                     roomId,
                                     createdAt: Date.now(),
                                     });
-                                    return runtime.createMemory(factMemory, 'facts', true);
+                                    return runtime.createMemory(factMemory, "facts", true);
                                     });
                                     );
 
@@ -137,8 +137,8 @@ std::future<void> handler(IAgentRuntime runtime, Memory message, std::optional<S
                                             sourceId = resolveEntity(relationship.sourceEntityId, entities);
                                             targetId = resolveEntity(relationship.targetEntityId, entities);
                                             } catch (error) {
-                                                std::cout << 'Failed to resolve relationship entities:' << error << std::endl;
-                                                std::cout << 'relationship:\n' << relationship << std::endl;
+                                                std::cout << "Failed to resolve relationship entities:" << error << std::endl;
+                                                std::cout << "relationship:\n" << relationship << std::endl;
                                                 continue; // Skip this relationship if we can't resolve the IDs;
                                             }
 
@@ -176,13 +176,13 @@ std::future<void> handler(IAgentRuntime runtime, Memory message, std::optional<S
                                                                 }
 
                                                                 runtime.setCache<string>(;
-                                                                std::to_string(message.roomId) + "-reflection-last-processed"
-                                                                message.id || '';
+                                                                message.roomId + "-reflection-last-processed"
+                                                                message.id || "";
                                                                 );
 
                                                                 return reflection;
                                                                 } catch (error) {
-                                                                    std::cerr << 'Error in reflection handler:' << error << std::endl;
+                                                                    std::cerr << "Error in reflection handler:" << error << std::endl;
                                                                     return;
                                                                 }
 
@@ -194,7 +194,7 @@ void formatFacts(const std::vector<Memory>& facts) {
     return facts;
     .reverse();
     .map((fact: Memory) => fact.content.text)
-    .join('\n');
+    .join("\n");
 
 }
 

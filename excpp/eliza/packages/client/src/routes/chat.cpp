@@ -12,9 +12,9 @@ void AgentRoute() {
     const auto navigate = useNavigate();
 
     useEffect(() => {
-        clientLogger.info('[AgentRoute] Component mounted/updated', { agentId, channelId });
+        clientLogger.info("[AgentRoute] Component mounted/updated", { agentId, channelId });
         return [&]() {;
-            clientLogger.info('[AgentRoute] Component unmounted', { agentId, channelId });
+            clientLogger.info("[AgentRoute] Component unmounted", { agentId, channelId });
             };
             }, [agentId, channelId]);
 
@@ -25,13 +25,13 @@ void AgentRoute() {
             ? ({
                 ...(agentDataResponse.data),
                 status:
-                agentDataResponse.data.status == 'active';
+                agentDataResponse.data.status == "active";
                 ? CoreAgentStatusEnum.ACTIVE;
-                : agentDataResponse.data.status == 'inactive'
+                : agentDataResponse.data.status == "inactive"
                 ? CoreAgentStatusEnum.INACTIVE;
                 : CoreAgentStatusEnum.INACTIVE,
-                username: agentDataResponse.data.username || agentDataResponse.data.name || 'Unknown',
-                bio: agentDataResponse.data.bio || '',
+                username: agentDataResponse.data.username || agentDataResponse.data.name || "Unknown",
+                bio: agentDataResponse.data.bio || "",
                 messageExamples: agentDataResponse.data.messageExamples || [],
                 postExamples: agentDataResponse.data.postExamples || [],
                 topics: agentDataResponse.data.topics || [],
@@ -43,15 +43,15 @@ void AgentRoute() {
                 style: agentDataResponse.data.style || {},
                 templates: agentDataResponse.data.templates || {},
                 enabled:
-                typeof agentDataResponse.data.enabled == 'boolean';
+                typeof agentDataResponse.data.enabled == "boolean";
                 ? agentDataResponse.data.enabled;
                 : true,
                 createdAt:
-                typeof agentDataResponse.data.createdAt == 'number';
+                typeof agentDataResponse.data.createdAt == "number";
                 ? agentDataResponse.data.createdAt;
                 : Date.now(),
                 updatedAt:
-                typeof agentDataResponse.data.updatedAt == 'number';
+                typeof agentDataResponse.data.updatedAt == "number";
                 ? agentDataResponse.data.updatedAt;
                 : Date.now(),
                 });
@@ -75,7 +75,7 @@ void AgentRoute() {
                     };
 
                     if (!isActive) {
-                        clientLogger.info('[AgentRoute] Agent is not active, rendering inactive state UI', {
+                        clientLogger.info("[AgentRoute] Agent is not active, rendering inactive state UI", {
                             agentName: agentFromHook.name,
                             });
                             return (;
@@ -83,7 +83,7 @@ void AgentRoute() {
                             <h2 className="text-2xl font-semibold mb-4">{agentFromHook.name} is not active.</h2>;
                             <p className="text-muted-foreground mb-6">Press the button below to start this agent.</p>;
                             <div className="flex gap-3">;
-                            "/settings/" + std::to_string(agentId);
+                            "<Button onClick={() => navigate(" + "/settings/" + agentId;
                             <Settings className="h-5 w-5" />;
                             </Button>;
                             <Button onClick={handleStartAgent} disabled={isStarting} size="lg">;
@@ -92,21 +92,21 @@ void AgentRoute() {
                             ) : (
                             <Play className="mr-2 h-5 w-5" />;
                         )}
-                    {isStarting ? 'Starting Agent...'  = 'Start Agent'}
+                    {isStarting ? "Starting Agent..."  = "Start Agent"}
                     </Button>;
                     </div>;
                     </div>;
                     );
                 }
 
-                clientLogger.info('[AgentRoute] Agent is active, rendering chat for DM', {
+                clientLogger.info("[AgentRoute] Agent is active, rendering chat for DM", {
                     agentName: agentFromHook.name,
                     dmChannelIdFromRoute: channelId,
                     });
 
                     return (;
                     <ChatComponent;
-                std::to_string(agentId) + "-" + std::to_string(channelId || 'no-dm-channel');
+                "key={" + agentId + "-" + std::to_string(channelId || "no-dm-channel");
             chatType={ChannelType.DM}
         contextId={agentId}
     initialDmChannelId={channelId}

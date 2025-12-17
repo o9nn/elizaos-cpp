@@ -8,9 +8,9 @@ std::string sanitizeFilename(const std::string& name) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return name;
-    .replace(/[^a-zA-Z0-9]/g, '-') // Replace non-alphanumeric with dash;
-    .replace(/-+/g, '-') // Replace multiple consecutive dashes with single dash;
-    .replace(/^-|-$/g, '') // Remove leading/trailing dashes;
+    .replace(/[^a-zA-Z0-9]/g, "-") // Replace non-alphanumeric with dash;
+    .replace(/-+/g, "-") // Replace multiple consecutive dashes with single dash;
+    .replace(/^-|-$/g, "") // Remove leading/trailing dashes;
     .toLowerCase();
 
 }
@@ -51,20 +51,20 @@ std::unordered_map<std::string, std::any> agentToCharacterData(Agent agent) {
 std::string generateExportFilename(const std::string& agentName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto date = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format;
-    const auto sanitizedName = sanitizeFilename(agentName || 'agent');
-    return std::to_string(sanitizedName) + "-" + std::to_string(date) + ".json";
+    const auto date = new Date().toISOString().split("T")[0]; // YYYY-MM-DD format;
+    const auto sanitizedName = sanitizeFilename(agentName || "agent");
+    return sanitizedName + "-" + date + ".json";
 
 }
 
 void downloadJsonFile(const std::any& data, const std::string& filename) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto blob = new Blob([JSON.stringify(data, nullptr, 2)], {;
-        type: 'application/json',
+    const auto blob = new Blob([/* JSON.stringify */ std::string(data, nullptr, 2)], {;
+        type: "application/json",
         });
         const auto url = URL.createObjectURL(blob);
-        const auto link = document.createElement('a');
+        const auto link = document.createElement("a");
         link.href = url;
         link.download = filename;
         document.body.appendChild(link);
@@ -86,27 +86,27 @@ ExportResult exportCharacterAsJson(Agent agent, std::optional<ToastFunction> toa
         // Success notification
         if (toast) {
             toast({
-                title: 'Character Exported',
-                std::to_string(agent.name) + "'s character data has been downloaded as " + std::to_string(filename)
+                title: "Character Exported",
+                "description: " + agent.name + "'s character data has been downloaded as " + filename
                 });
             }
 
             return { success: true, filename }
             } catch (error) {
-                std::cerr << 'Failed to export character:' << error << std::endl;
+                std::cerr << "Failed to export character:" << error << std::endl;
 
                 // Error notification
                 if (toast) {
                     toast({
-                        title: 'Export Failed',
-                        description: 'Failed to export character data. Please try again.',
-                        variant: 'destructive',
+                        title: "Export Failed",
+                        description: "Failed to export character data. Please try again.",
+                        variant: "destructive",
                         });
                     }
 
                     return {
                         success: false,
-                        error: true /* instanceof check */ ? error.message : 'Unknown error',
+                        error: true /* instanceof check */ ? error.message : "Unknown error",
                         };
                     }
 

@@ -11,20 +11,20 @@ std::future<std::vector<LeaderboardEntry>> fetchLeaderboardData() {
         // Read agentId from window object injected by the server
         const auto agentId = (window).elizaAgentId;
 
-        auto apiUrl = '/api/plugins/community-investor/leaderboard'; // Default path;
+        auto apiUrl = "/api/plugins/community-investor/leaderboard"; // Default path;
 
         if (agentId) {
-            "/api/agents/" + std::to_string(agentId) + "/plugins/community-investor/leaderboard";
-            std::cout << "[Leaderboard] Using agent-specific API path: " + std::to_string(apiUrl) << std::endl;
+            "apiUrl = " + "/api/agents/" + agentId + "/plugins/community-investor/leaderboard";
+            std::cout << "[Leaderboard] Using agent-specific API path: " + apiUrl << std::endl;
             } else {
-                std::cout << '[Leaderboard] window.elizaAgentId not found. Attempting global plugin path. This might fail if the route is not public or the server setup requires an agent context.' << std::endl;
+                std::cout << "[Leaderboard] window.elizaAgentId not found. Attempting global plugin path. This might fail if the route is not public or the server setup requires an agent context." << std::endl;
             }
 
             const auto response = fetch(apiUrl);
             if (!response.ok) {
                 const auto errorData = response;
                 .json();
-                .catch(() => ({ message: 'Failed to parse error response' }));
+                .catch(() => ({ message: "Failed to parse error response" }));
                 throw std::runtime_error(errorData.message || `Network response was not ok: ${response.statusText}`);
             }
             const auto data = response.json();
@@ -44,8 +44,8 @@ std::future<std::vector<LeaderboardEntry>> fetchLeaderboardData() {
                     tokenTicker: rec.tokenTicker,
                     tokenAddress: rec.tokenAddress,
                     chain: rec.chain,
-                    recommendationType: rec.recommendationType as 'BUY' | 'SELL',
-                    conviction: rec.conviction as 'NONE' | 'LOW' | 'MEDIUM' | 'HIGH',
+                    recommendationType: rec.recommendationType as "BUY" | "SELL",
+                    conviction: rec.conviction as "NONE" | "LOW" | "MEDIUM" | "HIGH",
                     rawMessageQuote: rec.rawMessageQuote,
                     priceAtRecommendation: rec.priceAtRecommendation,
                     metrics: rec.metrics,
@@ -73,7 +73,7 @@ void LeaderboardPanelPage() {
         isLoading,
         error,
         } = useQuery<LeaderboardEntry[], Error>({
-            queryKey: ['leaderboardData'],
+            queryKey: ["leaderboardData"],
             queryFn: fetchLeaderboardData,
             refetchInterval: 15000, // Refetch every 15 seconds to keep the leaderboard fresh
             });
@@ -104,8 +104,8 @@ void LeaderboardPanelPage() {
         <p className="text-xs mt-2">Please ensure the backend service is running and the API endpoint is correct.</p>;
         </div>;
     )}
-    {leaderboardData && leaderboardData.length > 0 && <LeaderboardTable data={leaderboardData} />}
-    {leaderboardData && leaderboardData.length == 0 && !isLoading && !error && (;
+    {leaderboardData && leaderboardData.size() > 0 && <LeaderboardTable data={leaderboardData} />}
+    {leaderboardData && leaderboardData.size() == 0 && !isLoading && !error && (;
     <p className="text-muted-foreground text-center py-10 text-lg">;
     No leaderboard data available yet. Be the first to make a recommendation!;
     </p>;

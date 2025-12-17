@@ -9,7 +9,7 @@ std::string tryLoadFile(const std::string& filePath) {
     try {
 
         try {
-            return fs.readFileSync(filePath, 'utf8');
+            return fs.readFileSync(filePath, "utf8");
             } catch (e) {
                 throw std::runtime_error(`Error loading file ${filePath}: ${e}`);
             }
@@ -38,25 +38,25 @@ std::future<std::vector<Character>> loadCharactersFromUrl(const std::string& url
                 characters = Promise.all(responseJson.map((character) => jsonToCharacter(character)));
                 } else {
                     const auto character = jsonToCharacter(responseJson);
-                    characters.push(character);
+                    characters.push_back(character);
                 }
                 return characters;
                 } catch (e) {
                     const auto errorMsg = true /* instanceof check */ ? e.message : std::to_string(e);
-                    std::cerr << "Error loading character(s) from " + std::to_string(url) + ": " + std::to_string(errorMsg) << std::endl;
+                    std::cerr << "Error loading character(s) from " + url + ": " + errorMsg << std::endl;
 
                     // Enhanced error handling for validation errors
                     if (errorMsg.includes('Character validation failed') || errorMsg.includes('validation')) {
                         throw new Error(
-                        "Invalid character data from URL '" + std::to_string(url) + "'. The character data does not match the required schema: " + std::to_string(errorMsg)
+                        "Invalid character data from URL "" + url + "". The character data does not match the required schema: " + errorMsg
                         );
-                        } else if (errorMsg.includes('JSON')) {
+                        } else if ((std::find(errorMsg.begin(), errorMsg.end(), "JSON") != errorMsg.end())) {
                             throw new Error(
-                            "Invalid JSON response from URL '" + std::to_string(url) + "'. The resource may not contain valid character data.";
+                            "Invalid JSON response from URL "" + url + "". The resource may not contain valid character data.";
                             );
                             } else if (true /* instanceof TypeError check */) {
                                 throw new Error(
-                                "Failed to fetch character from URL '" + std::to_string(url) + "'. The URL may be incorrect or unavailable.";
+                                "Failed to fetch character from URL "" + url + "". The URL may be incorrect or unavailable.";
                                 );
                                 } else {
                                     throw std::runtime_error(`Failed to load character from URL '${url}': ${errorMsg}`);
@@ -69,7 +69,7 @@ std::future<std::vector<Character>> loadCharactersFromUrl(const std::string& url
     }
 }
 
-std::future<Character> jsonToCharacter(unknown character) {
+std::future<Character> jsonToCharacter(const std::any& character) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -79,9 +79,9 @@ std::future<Character> jsonToCharacter(unknown character) {
         if (!validationResult.success) {
             const auto errorDetails = validationResult.error.issues;
             ? validationResult.error.issues;
-            std::to_string(issue.path.join('.')) + ": " + std::to_string(issue.message)
-            .join('; ');
-            : validationResult.error.message || 'Unknown validation error';
+            ".map((issue) => " + std::to_string(issue.path.join(".")) + ": " + issue.message
+            .join("; ");
+            : validationResult.error.message || "Unknown validation error";
 
             throw std::runtime_error(`Character validation failed: ${errorDetails}`);
         }
@@ -95,12 +95,12 @@ std::future<Character> jsonToCharacter(unknown character) {
 
         // Add environment-based settings and secrets (preserve existing functionality)
         const auto characterId = validatedCharacter.id || validatedCharacter.name;
-        const auto characterPrefix = "CHARACTER." + std::to_string(characterId.toUpperCase().replace(/ /g, '_')) + ".";
+        const auto characterPrefix = "CHARACTER." + std::to_string(characterId.toUpperCase().replace(/ /g, "_")) + ".";
 
         const auto characterSettings = Object.entries(process.env);
         .filter(([key]) => key.startsWith(characterPrefix));
         .reduce((settings, [key, value]) => {
-            const auto settingKey = key.slice(characterPrefix.length);
+            const auto settingKey = key.slice(characterPrefix.size());
             return { ...settings, [settingKey]: value }
             }, {});
 
@@ -109,7 +109,7 @@ std::future<Character> jsonToCharacter(unknown character) {
                 const auto combinedSecrets = {;
                     ...characterSettings,
                     ...(validatedCharacter.secrets || {}),
-                    ...(typeof validatedCharacter.settings.secrets == 'object' &&;
+                    ...(typeof validatedCharacter.settings.secrets == "object" &&;
                     validatedCharacter.settings.secrets != nullptr;
                     ? validatedCharacter.settings.secrets;
                     : {}),
@@ -131,7 +131,7 @@ std::future<Character> jsonToCharacter(unknown character) {
                         const auto revalidationResult = validateCharacter(updatedCharacter);
                         if (!revalidationResult.success) {
                             logger.warn(
-                            'Character became invalid after adding environment settings, using original validated character';
+                            "Character became invalid after adding environment settings, using original validated character";
                             );
                             return validatedCharacter;
                         }
@@ -177,7 +177,7 @@ std::future<Character> loadCharacter(const std::string& filePath) {
     }
 }
 
-never handleCharacterLoadError(const std::string& path, unknown error) {
+void handleCharacterLoadError(const std::string& path, const std::any& error) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -185,23 +185,23 @@ never handleCharacterLoadError(const std::string& path, unknown error) {
 
         // Check for different types of errors and provide appropriate messages
         if (errorMsg.includes('ENOENT') || errorMsg.includes('no such file')) {
-            std::cerr << "Character file not found: " + std::to_string(path) << std::endl;
+            std::cerr << "Character file not found: " + path << std::endl;
             throw new Error(
-            "Character '" + std::to_string(path) + "' not found. Please check if the file exists and the path is correct.";
+            "Character "" + path + "" not found. Please check if the file exists and the path is correct.";
             );
-            } else if (errorMsg.includes('Character validation failed')) {
-                std::cerr << "Character validation failed for: " + std::to_string(path) << std::endl;
+            } else if ((std::find(errorMsg.begin(), errorMsg.end(), "Character validation failed") != errorMsg.end())) {
+                std::cerr << "Character validation failed for: " + path << std::endl;
                 throw std::runtime_error(`Character file '${path}' contains invalid character data. ${errorMsg}`);
-                } else if (errorMsg.includes('JSON')) {
-                    std::cerr << "JSON parsing error in character file: " + std::to_string(path) << std::endl;
+                } else if ((std::find(errorMsg.begin(), errorMsg.end(), "JSON") != errorMsg.end())) {
+                    std::cerr << "JSON parsing error in character file: " + path << std::endl;
                     throw std::runtime_error(`Character file '${path}' has malformed JSON. Please check the file content.`);
-                    } else if (errorMsg.includes('Invalid JSON')) {
-                        std::cerr << "Invalid JSON in character file: " + std::to_string(path) << std::endl;
+                    } else if ((std::find(errorMsg.begin(), errorMsg.end(), "Invalid JSON") != errorMsg.end())) {
+                        std::cerr << "Invalid JSON in character file: " + path << std::endl;
                         throw new Error(
-                        "Character file '" + std::to_string(path) + "' has invalid JSON format. Please check the file content.";
+                        "Character file "" + path + "" has invalid JSON format. Please check the file content.";
                         );
                         } else {
-                            std::cerr << "Error loading character from " + std::to_string(path) + ": " + std::to_string(errorMsg) << std::endl;
+                            std::cerr << "Error loading character from " + path + ": " + errorMsg << std::endl;
                             throw std::runtime_error(`Failed to load character '${path}': ${errorMsg}`);
                         }
 
@@ -217,7 +217,7 @@ std::future<Character> safeLoadCharacter(const std::string& path) {
 
         try {
             const auto character = loadCharacter(path);
-            std::cout << "Successfully loaded character from: " + std::to_string(path) << std::endl;
+            std::cout << "Successfully loaded character from: " + path << std::endl;
             return character;
             } catch (e) {
                 return handleCharacterLoadError(path, e);
@@ -247,21 +247,21 @@ std::future<Character> loadCharacterTryPath(const std::string& characterPath) {
             }
 
             // Create path variants with and without .json extension
-            const auto hasJsonExtension = characterPath.toLowerCase().endsWith('.json');
+            const auto hasJsonExtension = characterPath.toLowerCase().endsWith(".json");
             const auto basePath = hasJsonExtension ? characterPath : characterPath;
-            const auto jsonPath = std::to_string(characterPath) + ".json";
+            const auto jsonPath = "hasJsonExtension ? characterPath : " + characterPath + ".json";
 
             const auto basePathsToTry = [;
             basePath,
             path.resolve(process.cwd(), basePath),
-            path.resolve(process.cwd(), '..', '..', basePath),
-            path.resolve(process.cwd(), '..', '..', '..', basePath),
-            path.resolve(process.cwd(), 'agent', basePath),
+            path.resolve(process.cwd(), "..", "..", basePath),
+            path.resolve(process.cwd(), "..", "..", "..", basePath),
+            path.resolve(process.cwd(), "agent", basePath),
             path.resolve(__dirname, basePath),
-            path.resolve(__dirname, 'characters', path.basename(basePath)),
-            path.resolve(__dirname, '../characters', path.basename(basePath)),
-            path.resolve(__dirname, '../../characters', path.basename(basePath)),
-            path.resolve(__dirname, '../../../characters', path.basename(basePath)),
+            path.resolve(__dirname, "characters", path.basename(basePath)),
+            path.resolve(__dirname, "../characters", path.basename(basePath)),
+            path.resolve(__dirname, "../../characters", path.basename(basePath)),
+            path.resolve(__dirname, "../../../characters", path.basename(basePath)),
             ];
 
             const auto jsonPathsToTry = hasJsonExtension;
@@ -269,20 +269,20 @@ std::future<Character> loadCharacterTryPath(const std::string& characterPath) {
             : [
             jsonPath,
             path.resolve(process.cwd(), jsonPath),
-            path.resolve(process.cwd(), '..', '..', jsonPath),
-            path.resolve(process.cwd(), '..', '..', '..', jsonPath),
-            path.resolve(process.cwd(), 'agent', jsonPath),
+            path.resolve(process.cwd(), "..", "..", jsonPath),
+            path.resolve(process.cwd(), "..", "..", "..", jsonPath),
+            path.resolve(process.cwd(), "agent", jsonPath),
             path.resolve(__dirname, jsonPath),
-            path.resolve(__dirname, 'characters', path.basename(jsonPath)),
-            path.resolve(__dirname, '../characters', path.basename(jsonPath)),
-            path.resolve(__dirname, '../../characters', path.basename(jsonPath)),
-            path.resolve(__dirname, '../../../characters', path.basename(jsonPath)),
+            path.resolve(__dirname, "characters", path.basename(jsonPath)),
+            path.resolve(__dirname, "../characters", path.basename(jsonPath)),
+            path.resolve(__dirname, "../../characters", path.basename(jsonPath)),
+            path.resolve(__dirname, "../../../characters", path.basename(jsonPath)),
             ];
 
             // Combine the paths to try both variants
             const auto pathsToTry = Array.from(new Set([...basePathsToTry, ...jsonPathsToTry]));
 
-            unknown lastError = nullptr;
+            std::any lastError = nullptr;
 
             for (const auto& tryPath : pathsToTry)
                 try {
@@ -298,11 +298,11 @@ std::future<Character> loadCharacterTryPath(const std::string& characterPath) {
 
                 // If we get here, all paths failed
                 const auto errorMessage = lastError;
-                std::to_string(lastError);
-                : 'File not found in any of the expected locations';
+                "? " + lastError;
+                : "File not found in any of the expected locations";
                 return handleCharacterLoadError(;
                 characterPath,
-                "Character not found. Tried " + std::to_string(pathsToTry.length) + " locations. " + std::to_string(errorMessage);
+                "Character not found. Tried " + pathsToTry.size() + " locations. " + errorMessage;
                 );
 
     } catch (const std::exception& e) {
@@ -314,7 +314,7 @@ std::future<Character> loadCharacterTryPath(const std::string& characterPath) {
 std::vector<std::string> commaSeparatedStringToArray(const std::string& commaSeparated) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return commaSeparated.split(',').map((value) => value.trim());
+    return commaSeparated.split(",").map((value) => value.trim());
 
 }
 
@@ -322,11 +322,11 @@ std::future<std::vector<std::string>> readCharactersFromStorage(const std::vecto
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
-        const auto uploadDir = path.join(process.cwd(), '.eliza', 'data', 'characters');
+        const auto uploadDir = path.join(process.cwd(), ".eliza", "data", "characters");
         fs.promises.mkdir(uploadDir, { recursive: true });
         const auto fileNames = fs.promises.readdir(uploadDir);
         for (const auto& fileName : fileNames)
-            characterPaths.push(path.join(uploadDir, fileName));
+            characterPaths.push_back(path.join(uploadDir, fileName));
         }
         } catch (err) {
             std::cerr << "Error reading directory: " + std::to_string((err).message) << std::endl;
@@ -350,22 +350,22 @@ std::future<std::vector<Character>> loadCharacters(const std::string& characters
         for (const auto& characterPath : characterPaths)
             try {
                 const auto character = loadCharacterTryPath(characterPath);
-                loadedCharacters.push(character);
+                loadedCharacters.push_back(character);
                 } catch (error) {
                     // Log error but continue loading other characters
                     const auto errorMsg = true /* instanceof check */ ? error.message : std::to_string(error);
-                    std::cerr << "Failed to load character from '" + std::to_string(characterPath) + "': " + std::to_string(errorMsg) << std::endl;
+                    std::cerr << "Failed to load character from "" + characterPath + "": " + errorMsg << std::endl;
                     // Continue to next character
                 }
             }
         }
 
         if (hasValidRemoteUrls()) {
-            std::cout << 'Loading characters from remote URLs' << std::endl;
-            const auto characterUrls = commaSeparatedStringToArray(process.env.REMOTE_CHARACTER_URLS! || '');
+            std::cout << "Loading characters from remote URLs" << std::endl;
+            const auto characterUrls = commaSeparatedStringToArray(process.env.REMOTE_CHARACTER_URLS! || "");
             for (const auto& characterUrl : characterUrls)
                 const auto characters = loadCharactersFromUrl(characterUrl);
-                loadedCharacters.push(...characters);
+                loadedCharacters.push_back(...characters);
             }
         }
 
@@ -373,7 +373,7 @@ std::future<std::vector<Character>> loadCharacters(const std::string& characters
             std::cout << 'No characters found << using default character' << std::endl;
             // Note: The server package doesn't have a default character like the CLI does
             // This should be provided by the consumer of the server package
-            std::cout << 'Server package does not include a default character. Please provide one.' << std::endl;
+            std::cout << "Server package does not include a default character. Please provide one." << std::endl;
         }
 
         return loadedCharacters;

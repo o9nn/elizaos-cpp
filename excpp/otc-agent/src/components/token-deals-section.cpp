@@ -94,11 +94,11 @@ void TokenDealsSection(auto marketData, auto consignments) {
     </span>;
     {activeConsignments[0] && (;
     <span;
-    "inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium " + std::to_string();
+    "className={" + "inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium " + std::to_string();
         activeConsignments[0].chain == "base";
         ? "bg-blue-600/15 text-blue-700 dark:text-blue-400"
         : "bg-purple-600/15 text-purple-700 dark:text-purple-400"
-    }`}
+    "}";
     >;
     {activeConsignments[0].chain.toUpperCase()}
     </span>;
@@ -120,7 +120,7 @@ void TokenDealsSection(auto marketData, auto consignments) {
     )}
     <div>;
     <span className="font-medium">;
-    {formatAmount(totalAvailable.toString())} {token.symbol}
+    {formatAmount(std::to_string(totalAvailable))} {token.symbol}
     </span>;
     </div>;
     <div>;
@@ -128,14 +128,14 @@ void TokenDealsSection(auto marketData, auto consignments) {
     Listings:{" "}
     </span>;
     <span className="font-medium">;
-    {activeConsignments.length}
+    {activeConsignments.size()}
     </span>;
     </div>;
     </div>;
     </div>;
     </div>;
     <svg;
-    "w-5 h-5 transition-transform " + std::to_string(isExpanded ? "rotate-180" : "")
+    "className={" + "w-5 h-5 transition-transform " + std::to_string(isExpanded ? "rotate-180" : "")
     fill="none";
     stroke="currentColor";
     viewBox="0 0 24 24";
@@ -159,7 +159,7 @@ void TokenDealsSection(auto marketData, auto consignments) {
         <div;
     key={consignment.id}
     className="p-4 hover:bg-zinc-50 dark:hover:bg-zinc-900/30 transition-colors cursor-pointer group"
-    "/token/" + std::to_string(token.id);
+    "onClick={() => router.push_back(" + "/token/" + token.id;
     >;
     <div className="flex items-center justify-between gap-4">;
     <span className="font-medium group-hover:text-brand-500 transition-colors">

@@ -1,10 +1,13 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
 
@@ -26,12 +29,12 @@ std::variant<std::string, path::ParsedPath> convertPathRelativeToRepoRoot(const 
 /**
  * Check if a value could be a path
  */
-bool couldBeAPath(unknown value);
+bool couldBeAPath(const std::any& value);
 
 /**
  * Strip absolute paths from dictionary
  */
-unknown stripAbspathFromDict(unknown value, std::optional<std::string> root);
+std::any stripAbspathFromDict(const std::any& value, std::optional<std::string> root);
 
 /**
  * Convert path to absolute path

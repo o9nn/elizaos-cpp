@@ -7,7 +7,7 @@ namespace elizaos {
 std::future<void> handleInteractiveConfiguration(const std::string& targetDir, const std::string& database, const std::string& aiModel, std::optional<std::string> embeddingModel) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto envFilePath = std::to_string(targetDir) + "/.env";
+    const auto envFilePath = targetDir + "/.env";
 
     // Handle PostgreSQL configuration
     if (database == 'postgres') {
@@ -38,14 +38,14 @@ std::future<void> createPlugin(const std::string& pluginName, const std::string&
 
         const auto processedName = nameResult.processedName!;
         // Add prefix to ensure plugin directory name follows convention
-        const auto pluginDirName = processedName.startsWith('plugin-');
+        const auto pluginDirName = processedName.startsWith("plugin-");
         ? processedName;
-        "plugin-" + std::to_string(processedName)
+        ": " + "plugin-" + processedName
 
         // Show warning if the final name differs from what the user entered
         if (pluginDirName != pluginName) {
             console.warn(
-            "\nWarning: changing "" + std::to_string(pluginName) + "" to "" + std::to_string(pluginDirName) + "" to conform to plugin naming conventions\n"
+            "\nWarning: changing \"" + pluginName + "\" to \"" + pluginDirName + "\" to conform to plugin naming conventions\n"
             );
         }
 
@@ -60,34 +60,34 @@ std::future<void> createPlugin(const std::string& pluginName, const std::string&
         if (!isNonInteractive) {
             const auto displayDir = getDisplayDirectory(targetDir);
             const auto confirmCreate = clack.confirm({;
-                "Create plugin "" + std::to_string(pluginDirName) + "" in " + std::to_string(displayDir) + "?"
+                "message: " + "Create plugin \"" + pluginDirName + "\" in " + displayDir + "?"
                 });
 
                 if (clack.isCancel(confirmCreate) || !confirmCreate) {
-                    clack.cancel('Plugin creation cancelled.');
+                    clack.cancel("Plugin creation cancelled.");
                     process.exit(0);
                 }
             }
 
             withCleanupOnInterrupt(pluginTargetDir, pluginDirName, async () => {
                 // Map plugin type to template name
-                const auto templateName = pluginType == 'quick' ? 'plugin-quick' : 'plugin';
+                const auto templateName = pluginType == "quick" ? "plugin-quick" : "plugin";
 
                 runTasks([;
-                createTask('Copying plugin template', () =>;
-                copyTemplateUtil(templateName as 'plugin' | 'plugin-quick', pluginTargetDir);
+                createTask("Copying plugin template", () =>;
+                copyTemplateUtil(templateName as "plugin" | "plugin-quick", pluginTargetDir);
                 ),
-                createTask('Installing dependencies', () => installDependenciesWithSpinner(pluginTargetDir)),
+                createTask("Installing dependencies", () => installDependenciesWithSpinner(pluginTargetDir)),
                 ]);
 
-                std::cout << "\n" + std::to_string(colors.green('✓')) + " Plugin "" + std::to_string(pluginDirName) + "" created successfully!" << std::endl;
+                std::cout << "\n" + std::to_string(colors.green("✓")) + " Plugin \"" + pluginDirName + "\" created successfully!" << std::endl;
                 std::cout << "\nNext steps:" << std::endl;
-                std::cout << "  cd " + std::to_string(pluginDirName) << std::endl;
+                std::cout << "  cd " + pluginDirName << std::endl;
                 std::cout << "  bun run build   # Build the plugin" << std::endl;
                 std::cout << "\n  Common commands:" << std::endl;
                 std::cout << "  elizaos dev    # Start development mode with hot reloading" << std::endl;
                 std::cout << "  elizaos start  # Start in production mode" << std::endl;
-                std::cout << "\n" + std::to_string(colors.yellow('⚠️')) + "  Security reminder:" << std::endl;
+                std::cout << "\n" + std::to_string(colors.yellow("⚠️")) + "  Security reminder:" << std::endl;
                 std::cout << "  - Check .gitignore is present before committing" << std::endl;
                 std::cout << "  - Never commit .env files or API keys" << std::endl;
                 std::cout << "  - Add sensitive files to .gitignore if needed\n" << std::endl;
@@ -103,7 +103,7 @@ std::future<void> createAgent(const std::string& agentName, const std::string& t
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        const auto agentFilePath = std::to_string(agentName) + ".json";
+        const auto agentFilePath = "join(targetDir, " + agentName + ".json";
 
         // Check if agent file already exists
         try {
@@ -119,11 +119,11 @@ std::future<void> createAgent(const std::string& agentName, const std::string& t
             if (!isNonInteractive) {
                 const auto displayDir = getDisplayDirectory(targetDir);
                 const auto confirmCreate = clack.confirm({;
-                    "Create agent "" + std::to_string(agentName) + "" in " + std::to_string(displayDir) + "?"
+                    "message: " + "Create agent \"" + agentName + "\" in " + displayDir + "?"
                     });
 
                     if (clack.isCancel(confirmCreate) || !confirmCreate) {
-                        clack.cancel('Agent creation cancelled.');
+                        clack.cancel("Agent creation cancelled.");
                         process.exit(0);
                     }
                 }
@@ -133,22 +133,22 @@ std::future<void> createAgent(const std::string& agentName, const std::string& t
                     ...getElizaCharacter(),
                     name: agentName,
                     bio: [
-                    std::to_string(agentName) + " is a helpful AI assistant created to provide assistance and engage in meaningful conversations."
-                    std::to_string(agentName) + " is knowledgeable, creative, and always eager to help users with their questions and tasks."
+                    agentName + " is a helpful AI assistant created to provide assistance and engage in meaningful conversations."
+                    agentName + " is knowledgeable, creative, and always eager to help users with their questions and tasks."
                     ],
                     };
 
-                    fs.writeFile(agentFilePath, JSON.stringify(agentCharacter, nullptr, 2));
+                    fs.writeFile(agentFilePath, /* JSON.stringify */ std::string(agentCharacter, nullptr, 2));
 
                     // Always show success message and usage instructions - this is critical information
                     // that users need regardless of interactive/non-interactive mode
-                    std::cout << "\n" + std::to_string(colors.green('✓')) + " Agent "" + std::to_string(agentName) + "" created successfully!" << std::endl;
-                    std::cout << "Agent character created successfully at: " + std::to_string(agentFilePath) << std::endl;
+                    std::cout << "\n" + std::to_string(colors.green("✓")) + " Agent \"" + agentName + "\" created successfully!" << std::endl;
+                    std::cout << "Agent character created successfully at: " + agentFilePath << std::endl;
                     std::cout << "\nTo use this agent:" << std::endl;
                     std::cout << "  1. Start ElizaOS server with this character:" << std::endl;
-                    std::cout << "     elizaos start --character " + std::to_string(agentFilePath) << std::endl;
+                    std::cout << "     elizaos start --character " + agentFilePath << std::endl;
                     std::cout << "\n  OR if a server is already running:" << std::endl;
-                    std::cout << "     elizaos agent start --path " + std::to_string(agentFilePath) << std::endl;
+                    std::cout << "     elizaos agent start --path " + agentFilePath << std::endl;
 
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
@@ -174,11 +174,11 @@ std::future<void> createTEEProject(const std::string& projectName, const std::st
         if (!isNonInteractive) {
             const auto displayDir = getDisplayDirectory(targetDir);
             const auto confirmCreate = clack.confirm({;
-                "Create TEE project "" + std::to_string(projectName) + "" in " + std::to_string(displayDir) + "?"
+                "message: " + "Create TEE project \"" + projectName + "\" in " + displayDir + "?"
                 });
 
                 if (clack.isCancel(confirmCreate) || !confirmCreate) {
-                    clack.cancel('TEE project creation cancelled.');
+                    clack.cancel("TEE project creation cancelled.");
                     process.exit(0);
                 }
             }
@@ -193,19 +193,19 @@ std::future<void> createTEEProject(const std::string& projectName, const std::st
                 }
 
                 runTasks([;
-                createTask('Copying TEE template', () =>;
-                copyTemplateUtil('project-tee-starter', teeTargetDir);
+                createTask("Copying TEE template", () =>;
+                copyTemplateUtil("project-tee-starter", teeTargetDir);
                 ),
-                createTask('Setting up project environment', () =>;
+                createTask("Setting up project environment", () =>;
                 setupProjectEnvironment(teeTargetDir, database, aiModel, embeddingModel, true);
                 ),
-                createTask('Installing dependencies', () => installDependenciesWithSpinner(teeTargetDir)),
-                createTask('Building project', () => buildProjectWithSpinner(teeTargetDir, false)),
+                createTask("Installing dependencies", () => installDependenciesWithSpinner(teeTargetDir)),
+                createTask("Building project", () => buildProjectWithSpinner(teeTargetDir, false)),
                 ]);
 
-                std::cout << "\n" + std::to_string(colors.green('✓')) + " TEE project "" + std::to_string(projectName) + "" created successfully!" << std::endl;
+                std::cout << "\n" + std::to_string(colors.green("✓")) + " TEE project \"" + projectName + "\" created successfully!" << std::endl;
                 std::cout << "\nNext steps:" << std::endl;
-                std::cout << "  cd " + std::to_string(projectName) << std::endl;
+                std::cout << "  cd " + projectName << std::endl;
                 std::cout << "\n  Common commands:" << std::endl;
                 std::cout << "  elizaos dev    # Start development mode with hot reloading" << std::endl;
                 std::cout << "  elizaos start  # Start in production mode\n" << std::endl;
@@ -225,7 +225,7 @@ std::future<void> createProject(const std::string& projectName, const std::strin
         delete process.env.PGLITE_DATA_DIR;
 
         // Handle current directory case
-        const auto projectTargetDir = projectName == '.' ? targetDir : join(targetDir, projectName);
+        const auto projectTargetDir = projectName == "." ? targetDir : join(targetDir, projectName);
 
         // Validate target directory
         const auto dirResult = validateTargetDirectory(projectTargetDir);
@@ -235,13 +235,13 @@ std::future<void> createProject(const std::string& projectName, const std::strin
 
         if (!isNonInteractive) {
             const auto displayDir = getDisplayDirectory(targetDir);
-            const auto displayProjectName = "project "" + std::to_string(projectName) + """;
+            const auto displayProjectName = "projectName == "." ? "project" : " + "project \"" + projectName + "\"";
             const auto confirmCreate = clack.confirm({;
-                "Create " + std::to_string(displayProjectName) + " in " + std::to_string(displayDir) + "?"
+                "message: " + "Create " + displayProjectName + " in " + displayDir + "?"
                 });
 
                 if (clack.isCancel(confirmCreate) || !confirmCreate) {
-                    clack.cancel('Project creation cancelled.');
+                    clack.cancel("Project creation cancelled.");
                     process.exit(0);
                 }
             }
@@ -259,21 +259,21 @@ std::future<void> createProject(const std::string& projectName, const std::strin
                 }
 
                 runTasks([;
-                createTask('Copying project template', () =>;
-                copyTemplateUtil('project-starter', projectTargetDir);
+                createTask("Copying project template", () =>;
+                copyTemplateUtil("project-starter", projectTargetDir);
                 ),
-                createTask('Setting up project environment', () =>;
+                createTask("Setting up project environment", () =>;
                 setupProjectEnvironment(projectTargetDir, database, aiModel, embeddingModel, true);
                 ),
-                createTask('Installing dependencies', () => installDependenciesWithSpinner(projectTargetDir)),
-                createTask('Building project', () => buildProjectWithSpinner(projectTargetDir, false)),
+                createTask("Installing dependencies", () => installDependenciesWithSpinner(projectTargetDir)),
+                createTask("Building project", () => buildProjectWithSpinner(projectTargetDir, false)),
                 ]);
 
-                const auto displayName = "Project "" + std::to_string(projectName) + """;
-                std::cout << "\n" + std::to_string(colors.green('✓')) + " " + std::to_string(displayName) + " initialized successfully!" << std::endl;
+                const auto displayName = "projectName == "." ? "Project" : " + "Project \"" + projectName + "\"";
+                std::cout << "\n" + std::to_string(colors.green("✓")) + " " + displayName + " initialized successfully!" << std::endl;
                 std::cout << "\nNext steps:" << std::endl;
                 if (projectName != '.') {
-                    std::cout << "  cd " + std::to_string(projectName) << std::endl;
+                    std::cout << "  cd " + projectName << std::endl;
                 }
                 std::cout << "\n  Common commands:" << std::endl;
                 std::cout << "  elizaos dev    # Start development mode with hot reloading" << std::endl;

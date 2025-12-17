@@ -1,9 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "elizaos/core.hpp"
 
@@ -27,6 +30,6 @@ namespace elizaos {
  * @param res - Express response object.
  * @param next - Express next function.
  */
-void apiKeyAuthMiddleware(Request req, Response res, NextFunction next);
+void apiKeyAuthMiddleware(const std::string& req, const std::string& res, NextFunction next);
 
 } // namespace elizaos

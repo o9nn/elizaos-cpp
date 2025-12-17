@@ -8,10 +8,10 @@ void Trending() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto query = useQuery({;
-        queryKey: ['trending'],
+        queryKey: ["trending"],
         queryFn: async () => {
-            const auto response = std::to_string(import.meta.env.VITE_API_URL) + "/trending";
-                method: 'POST',
+            const auto response = "fetch(" + import.meta.env.VITE_API_URL + "/trending";
+                method: "POST",
                 });
                 const auto data = response.json();
                 return data;
@@ -20,12 +20,12 @@ void Trending() {
                 });
 
                 const auto logos = {;
-                    ethereum: '/logos/ethereum.png',
-                    base: '/logos/base.jpeg',
-                    solana: '/logos/solana.png',
-                    birdeye: '/logos/birdeye.png',
-                    coinmarketcap: '/logos/coinmarketcap.png',
-                    L1: '/logos/l1.png',
+                    ethereum: "/logos/ethereum.png",
+                    base: "/logos/base.jpeg",
+                    solana: "/logos/solana.png",
+                    birdeye: "/logos/birdeye.png",
+                    coinmarketcap: "/logos/coinmarketcap.png",
+                    L1: "/logos/l1.png",
                     };
 
                     if (query.isPending) {
@@ -50,7 +50,7 @@ void Trending() {
                     </TableHeader>;
                     <TableBody>;
                     {query.data.map((item) => (;
-                    std::to_string(item._id) + "_" + std::to_string(item.price);
+                    "<TableRow key={" + item._id + "_" + item.price;
                     <TableCell>;
                     <img;
                 src={logos[item.provider]}
@@ -98,8 +98,8 @@ void Trending() {
     {item.price24hChangePercent ? (;
     <span;
     className={cn([;
-    item.price24hChangePercent.toFixed(2) > 0 ? 'text-green-500' : 'text-red-500',
-    'font-semibold',
+    item.price24hChangePercent.toFixed(2) > 0 ? "text-green-500" : "text-red-500",
+    "font-semibold",
     ])}
     >;
     {item.price24hChangePercent.toFixed(2)}%;
@@ -107,41 +107,41 @@ void Trending() {
     ) : nullptr}
     </TableCell>;
     <TableCell>{formatUSD(item.volume24hUSD)}</TableCell>;
-    <TableCell>{item.liquidity ? formatUSD(item.liquidity) : '-'}</TableCell>
+    <TableCell>{item.liquidity ? formatUSD(item.liquidity) : "-"}</TableCell>
     <TableCell>;
     <div className="flex flex-wrap gap-2 items-center">;
     {[;
     {
-        provider: 'coinmarketcap',
-        "https://coinmarketcap.com/currencies/" + std::to_string(item.name.toLowerCase())
+        provider: "coinmarketcap",
+        "href: " + "https://coinmarketcap.com/currencies/" + std::to_string(item.name.toLowerCase())
         disabled: false,
         },
 
         {
-            provider: 'birdeye',
-            "https://www.birdeye.so/token/" + std::to_string(item.address) + "?chain=" + std::to_string(item.chain)
-            disabled: item.chain == 'L1',
+            provider: "birdeye",
+            "href: " + "https://www.birdeye.so/token/" + item.address + "?chain=" + item.chain
+            disabled: item.chain == "L1",
             },
             {
-                provider: 'base',
-                "https://basescan.org/address/" + std::to_string(item.address)
-                disabled: item.chain != 'base',
+                provider: "base",
+                "href: " + "https://basescan.org/address/" + item.address
+                disabled: item.chain != "base",
                 },
                 {
-                    provider: 'solana',
-                    "https://solscan.io/token/" + std::to_string(item.address)
-                    disabled: item.chain != 'solana',
+                    provider: "solana",
+                    "href: " + "https://solscan.io/token/" + item.address
+                    disabled: item.chain != "solana",
                     },
                     ].map((item, _) => (;
                     <a;
-                href={item.disabled ? '#' : item.href}
+                href={item.disabled ? "#" : item.href}
                 target="_blank";
             key={_}
             rel="noreferrer";
         aria-disabled={item.disabled}
         className={cn([;
-        'rounded-md size-5',
-        item.disabled ? 'opacity-50' : 'opacity-100',
+        "rounded-md size-5",
+        item.disabled ? "opacity-50" : "opacity-100",
     ])}
     >;
     <img;

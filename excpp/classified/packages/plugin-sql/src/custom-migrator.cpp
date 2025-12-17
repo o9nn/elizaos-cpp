@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::string extractErrorMessage(unknown error) {
+std::string extractErrorMessage(const std::any& error) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (error instanceof Error && 'cause' in error && error.cause) {
@@ -12,11 +12,11 @@ std::string extractErrorMessage(unknown error) {
         } else if (true /* instanceof check */) {
             return error.message;
         }
-        return 'Unknown error';
+        return "Unknown error";
 
 }
 
-void extractErrorDetails(unknown error) {
+void extractErrorDetails(const std::any& error) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     message: string; stack?: string
 }
@@ -24,7 +24,7 @@ void extractErrorDetails(unknown error) {
 std::string camelToSnakeCase(const std::string& str) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return "_" + std::to_string(letter.toLowerCase());
+    return "str.replace(/[A-Z]/g, (letter) => " + "_" + std::to_string(letter.toLowerCase());
 
 }
 
@@ -37,7 +37,7 @@ std::vector<std::string> topologicalSort(const std::unordered_map<std::string, T
 
     function visit(tableName: string) {
         if (visiting.has(tableName)) {
-            std::cout << "Circular dependency detected involving table: " + std::to_string(tableName) << std::endl;
+            std::cout << "Circular dependency detected involving table: " + tableName << std::endl;
             return;
         }
 
@@ -59,7 +59,7 @@ std::vector<std::string> topologicalSort(const std::unordered_map<std::string, T
 
         visiting.delete(tableName);
         visited.add(tableName);
-        sorted.push(tableName);
+        sorted.push_back(tableName);
     }
 
     // Visit all tables
@@ -75,24 +75,24 @@ std::future<void> runPluginMigrations(DrizzleDB db, const std::string& pluginNam
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        std::cout << "[CUSTOM MIGRATOR] Starting migration for plugin: " + std::to_string(pluginName) << std::endl;
+        std::cout << "[CUSTOM MIGRATOR] Starting migration for plugin: " + pluginName << std::endl;
         std::cout << "[CUSTOM MIGRATOR] Schema type:" << typeof schema << std::endl;
         console.log(
         "[CUSTOM MIGRATOR] Schema keys:"
-        schema ? Object.keys(schema) : 'schema is nullptr/std::nullopt'
+        schema ? Object.keys(schema) : "schema is nullptr/std::nullopt"
         );
         logger.debug(`[CUSTOM MIGRATOR] Starting migration for plugin: ${pluginName}`);
 
         // Test database connection first
         try {
-            db.execute(sql.raw('SELECT 1'));
-            std::cout << '[CUSTOM MIGRATOR] Database connection verified' << std::endl;
+            db.execute(sql.raw("SELECT 1"));
+            std::cout << "[CUSTOM MIGRATOR] Database connection verified" << std::endl;
             logger.debug('[CUSTOM MIGRATOR] Database connection verified');
             } catch (error) {
                 const auto errorDetails = extractErrorDetails(error);
-                std::cerr << "[CUSTOM MIGRATOR] Database connection failed: " + std::to_string(errorDetails.message) << std::endl;
+                std::cerr << "[CUSTOM MIGRATOR] Database connection failed: " + errorDetails.message << std::endl;
                 if (errorDetails.stack) {
-                    std::cerr << "[CUSTOM MIGRATOR] Stack trace: " + std::to_string(errorDetails.stack) << std::endl;
+                    std::cerr << "[CUSTOM MIGRATOR] Stack trace: " + errorDetails.stack << std::endl;
                 }
                 throw std::runtime_error(`Database connection failed: ${errorDetails.message}`);
             }
@@ -101,13 +101,13 @@ std::future<void> runPluginMigrations(DrizzleDB db, const std::string& pluginNam
             const auto introspector = new DrizzleSchemaIntrospector();
             const auto extensionManager = new ExtensionManager(db);
 
-            extensionManager.installRequiredExtensions(['vector', 'fuzzystrmatch']);
+            extensionManager.installRequiredExtensions(["vector", "fuzzystrmatch"]);
             const auto schemaName = namespaceManager.getPluginSchema(pluginName);
-            std::cout << "[CUSTOM MIGRATOR] Using schema: " + std::to_string(schemaName) << std::endl;
+            std::cout << "[CUSTOM MIGRATOR] Using schema: " + schemaName << std::endl;
             namespaceManager.ensureNamespace(schemaName);
             const auto existingTables = namespaceManager.introspectExistingTables(schemaName);
 
-            std::cout << "[CUSTOM MIGRATOR] Schema name: " + std::to_string(schemaName) << std::endl;
+            std::cout << "[CUSTOM MIGRATOR] Schema name: " + schemaName << std::endl;
             std::cout << "[CUSTOM MIGRATOR] Existing tables:" << existingTables << std::endl;
 
             // logger.debug(`[CUSTOM MIGRATOR] Schema name: ${schemaName}`);
@@ -117,14 +117,14 @@ std::future<void> runPluginMigrations(DrizzleDB db, const std::string& pluginNam
             const auto tableEntries = Object.entries(schema).filter(([key, v]) => {;
                 const auto isDrizzleTable =;
                 v &&;
-                (((v)._ && typeof (v)._.name == 'string') ||;
-                (typeof v == 'object' &&;
+                (((v)._ && typeof (v)._.name == "string") ||;
+                (typeof v == "object" &&;
                 v != nullptr &&;
-                ('tableName' in v || 'dbName' in v || key.toLowerCase().includes('table'))));
+                ("tableName" in v || "dbName" in v || key.toLowerCase().includes("table"))));
                 return isDrizzleTable;
                 });
 
-                std::cout << "[CUSTOM MIGRATOR] Found " + std::to_string(tableEntries.length) + " table entries in schema" << std::endl;
+                std::cout << "[CUSTOM MIGRATOR] Found " + tableEntries.size() + " table entries in schema" << std::endl;
                 console.log(
                 "[CUSTOM MIGRATOR] Table keys:"
                 tableEntries.map(([key]) => key);
@@ -157,7 +157,7 @@ std::future<void> runPluginMigrations(DrizzleDB db, const std::string& pluginNam
                         const auto tableDef = tableDefinitions.get(tableName);
                         if (!tableDef) continue;
 
-                        const auto tableExists = existingTables.includes(tableDef.name);
+                        const auto tableExists = (std::find(existingTables.begin(), existingTables.end(), tableDef.name) != existingTables.end());
                         logger.debug(`[CUSTOM MIGRATOR] Table ${tableDef.name} exists: ${tableExists}`);
 
                         if (!tableExists) {
@@ -165,8 +165,8 @@ std::future<void> runPluginMigrations(DrizzleDB db, const std::string& pluginNam
                             if (tableDef.name == 'embeddings') {
                                 // Check if pgvector extension is available
                                 try {
-                                    db.execute(sql.raw("SELECT 1 FROM pg_extension WHERE extname = 'vector'"));
-                                    std::cout << `[CUSTOM MIGRATOR] pgvector extension found << creating embeddings table` << std::endl;
+                                    db.execute(sql.raw("SELECT 1 FROM pg_extension WHERE extname = "vector""));
+                                    std::cout << `[CUSTOM MIGRATOR] pgvector extension found << "creating embeddings table" << std::endl;
                                     } catch (extensionError) {
                                         console.warn(
                                         "[CUSTOM MIGRATOR] Skipping embeddings table - pgvector extension not available";
@@ -178,27 +178,27 @@ std::future<void> runPluginMigrations(DrizzleDB db, const std::string& pluginNam
                                     }
                                 }
 
-                                std::cout << "[CUSTOM MIGRATOR] Creating table: " + std::to_string(tableDef.name) << std::endl;
+                                std::cout << "[CUSTOM MIGRATOR] Creating table: " + tableDef.name << std::endl;
                                 logger.debug(`[CUSTOM MIGRATOR] Creating table: ${tableDef.name}`);
                                 try {
                                     namespaceManager.createTable(tableDef, schemaName);
-                                    std::cout << "[CUSTOM MIGRATOR] Successfully created table: " + std::to_string(tableDef.name) << std::endl;
+                                    std::cout << "[CUSTOM MIGRATOR] Successfully created table: " + tableDef.name << std::endl;
                                     } catch (error) {
                                         const auto errorDetails = extractErrorDetails(error);
                                         console.error(
-                                        "[CUSTOM MIGRATOR] Failed to create table " + std::to_string(tableDef.name) + ":"
+                                        "[CUSTOM MIGRATOR] Failed to create table " + tableDef.name + ":"
                                         errorDetails.message;
                                         );
                                         logger.error(
-                                        "[CUSTOM MIGRATOR] Failed to create table " + std::to_string(tableDef.name) + ": " + std::to_string(errorDetails.message)
+                                        "[CUSTOM MIGRATOR] Failed to create table " + tableDef.name + ": " + errorDetails.message
                                         );
                                         if (errorDetails.stack) {
-                                            std::cerr << "[CUSTOM MIGRATOR] Table creation stack trace: " + std::to_string(errorDetails.stack) << std::endl;
+                                            std::cerr << "[CUSTOM MIGRATOR] Table creation stack trace: " + errorDetails.stack << std::endl;
                                         }
                                         throw std::runtime_error(`Failed to create table ${tableDef.name}: ${errorDetails.message}`);
                                     }
                                     } else {
-                                        std::cout << "[CUSTOM MIGRATOR] Table " + std::to_string(tableDef.name) << skipping` << std::endl;
+                                        std::cout << "[CUSTOM MIGRATOR] Table " + tableDef.name << "skipping" << std::endl;
                                         logger.debug(`[CUSTOM MIGRATOR] Table ${tableDef.name} already exists, skipping creation`);
                                     }
                                 }
@@ -212,8 +212,8 @@ std::future<void> runPluginMigrations(DrizzleDB db, const std::string& pluginNam
                                     // Add constraints if table has foreign keys OR check constraints
                                     if (tableDef.foreignKeys.length > 0 || tableDef.checkConstraints.length > 0) {
                                         logger.debug(`[CUSTOM MIGRATOR] Adding constraints for table: ${tableDef.name}`, {
-                                            foreignKeys: tableDef.foreignKeys.length,
-                                            checkConstraints: tableDef.checkConstraints.length,
+                                            foreignKeys: tableDef.foreignKeys.size(),
+                                            checkConstraints: tableDef.checkConstraints.size(),
                                             });
                                             namespaceManager.addConstraints(tableDef, schemaName);
                                         }
@@ -223,10 +223,10 @@ std::future<void> runPluginMigrations(DrizzleDB db, const std::string& pluginNam
                                     } catch (error) {
                                         const auto errorDetails = extractErrorDetails(error);
                                         logger.error(
-                                        "[CUSTOM MIGRATOR] Migration failed for plugin " + std::to_string(pluginName) + ": " + std::to_string(errorDetails.message)
+                                        "[CUSTOM MIGRATOR] Migration failed for plugin " + pluginName + ": " + errorDetails.message
                                         );
                                         if (errorDetails.stack) {
-                                            std::cerr << "[CUSTOM MIGRATOR] Migration stack trace: " + std::to_string(errorDetails.stack) << std::endl;
+                                            std::cerr << "[CUSTOM MIGRATOR] Migration stack trace: " + errorDetails.stack << std::endl;
                                         }
                                         throw std::runtime_error(`Migration failed for plugin ${pluginName}: ${errorDetails.message}`);
                                     }

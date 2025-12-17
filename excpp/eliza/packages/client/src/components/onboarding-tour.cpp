@@ -15,107 +15,107 @@ void OnboardingTour() {
     // Home page tour steps
     const auto homeSteps = [;
     {
-        target: '.sidebar-logo',
+        target: ".sidebar-logo",
         content:
-        'Welcome to ElizaOS! This is your gateway to creating and managing intelligent AI agents.',
+        "Welcome to ElizaOS! This is your gateway to creating and managing intelligent AI agents.",
         disableBeacon: true,
-        title: 'Welcome to ElizaOS',
+        title: "Welcome to ElizaOS",
         },
         {
-            target: '.sidebar-create-button',
+            target: ".sidebar-create-button",
             content:
-            'This is your main creation button. Click here to create new agents or rooms quickly.',
-            title: 'Create Button',
+            "This is your main creation button. Click here to create new agents or rooms quickly.",
+            title: "Create Button",
             },
             {
-                target: '.sidebar-online-section, .sidebar-offline-section',
+                target: ".sidebar-online-section, .sidebar-offline-section",
                 content:
-                'Your agents are organized here. Online agents (green dot) are ready to chat, while offline agents need to be activated first.',
-                title: 'Your Agents',
+                "Your agents are organized here. Online agents (green dot) are ready to chat, while offline agents need to be activated first.",
+                title: "Your Agents",
                 },
                 {
-                    target: '.sidebar-groups-section',
+                    target: ".sidebar-groups-section",
                     content:
-                    'Access your agent groups from here to see collaborative conversations between multiple agents.',
-                    title: 'Groups Navigation',
+                    "Access your agent groups from here to see collaborative conversations between multiple agents.",
+                    title: "Groups Navigation",
                     },
                     {
-                        target: '.sidebar-docs-button, .sidebar-logs-button, .sidebar-settings-button',
-                        content: 'Access documentation, system logs, and global settings from these utility buttons.',
-                        title: 'System Utilities',
+                        target: ".sidebar-docs-button, .sidebar-logs-button, .sidebar-settings-button",
+                        content: "Access documentation, system logs, and global settings from these utility buttons.",
+                        title: "System Utilities",
                         },
                         {
-                            target: '.sidebar-connection-status',
-                            content: 'This indicator shows your connection status to the ElizaOS server.',
-                            title: 'Connection Status',
+                            target: ".sidebar-connection-status",
+                            content: "This indicator shows your connection status to the ElizaOS server.",
+                            title: "Connection Status",
                             },
                             {
-                                target: '.agents-section',
+                                target: ".agents-section",
                                 content:
-                                'This is your main workspace showing all your agents. Active agents have a green dot, while inactive ones appear grayed out with an "Offline" label.',
-                                title: 'Agent Dashboard',
+                                "This is your main workspace showing all your agents. Active agents have a green dot, while inactive ones appear grayed out with an "Offline" label.",
+                                title: "Agent Dashboard",
                                 },
                                 {
-                                    target: '.message-button, .start-button',
+                                    target: ".message-button, .start-button",
                                     content:
-                                    'Click "Message" to chat with active agents, or "Start" to activate offline agents first.',
-                                    title: 'Agent Interaction',
+                                    "Click "Message" to chat with active agents, or "Start" to activate offline agents first.",
+                                    title: "Agent Interaction",
                                     },
                                     {
-                                        target: '.agent-info-button, .agent-settings-button',
-                                        content: 'View agent details or configure settings using these buttons on each agent card.',
-                                        title: 'Agent Management',
+                                        target: ".agent-info-button, .agent-settings-button",
+                                        content: "View agent details or configure settings using these buttons on each agent card.",
+                                        title: "Agent Management",
                                         },
                                         {
-                                            target: '.groups-section',
+                                            target: ".groups-section",
                                             content:
-                                            'This section displays your agent groups for collaborative interactions between multiple agents.',
-                                            title: 'Agent Groups',
+                                            "This section displays your agent groups for collaborative interactions between multiple agents.",
+                                            title: "Agent Groups",
                                             },
                                             {
-                                                target: '.groups-create-button',
+                                                target: ".groups-create-button",
                                                 content:
-                                                'Create a new group by clicking this button. Groups allow multiple agents to interact together.',
-                                                title: 'Create New Group',
+                                                "Create a new group by clicking this button. Groups allow multiple agents to interact together.",
+                                                title: "Create New Group",
                                                 },
                                                 {
-                                                    target: '.create-agent-button',
+                                                    target: ".create-agent-button",
                                                     content: "Let's create your first agent! Click this button to get started.",
-                                                    title: 'Create Your First Agent',
+                                                    title: "Create Your First Agent",
                                                     spotlightClicks: true,
                                                     },
                                                     ];
 
                                                     const auto createAgentSteps = [;
                                                     {
-                                                        target: '.agent-form-name',
-                                                        content: 'Give your agent a name that reflects its purpose or personality.',
-                                                        title: 'Name Your Agent',
+                                                        target: ".agent-form-name",
+                                                        content: "Give your agent a name that reflects its purpose or personality.",
+                                                        title: "Name Your Agent",
                                                         disableBeacon: true,
                                                         },
                                                         {
-                                                            target: '.agent-form-system-prompt',
+                                                            target: ".agent-form-system-prompt",
                                                             content:
                                                             "The system prompt defines your agent's behavior and capabilities. This is the most important field for shaping how your agent will respond.",
-                                                            title: 'Define Agent Behavior',
+                                                            title: "Define Agent Behavior",
                                                             },
                                                             {
-                                                                target: '.tabs-list',
+                                                                target: ".tabs-list",
                                                                 content:
-                                                                'Switch between these tabs to configure different aspects of your agent such, style, plugins, and appearance.',
-                                                                title: 'Configuration Tabs',
+                                                                "Switch between these tabs to configure different aspects of your agent such, style, plugins, and appearance.",
+                                                                title: "Configuration Tabs",
                                                                 },
                                                                 {
-                                                                    target: '.agent-form-submit',
-                                                                    content: 'Click Save to create your agent and return to the dashboard.',
-                                                                    title: 'Save Your Agent',
+                                                                    target: ".agent-form-submit",
+                                                                    content: "Click Save to create your agent and return to the dashboard.",
+                                                                    title: "Save Your Agent",
                                                                     spotlightClicks: true,
                                                                     },
                                                                     ];
 
                                                                     // Select which steps to show based on current route
                                                                     const auto steps =;
-                                                                    location.pathname == '/' ? homeSteps : location.pathname == '/create' ? createAgentSteps : [];
+                                                                    location.pathname == "/" ? homeSteps : location.pathname == "/create" ? createAgentSteps : [];
 
                                                                     // Start the tour when on the home page and not completed
                                                                     useEffect(() => {
@@ -126,7 +126,7 @@ void OnboardingTour() {
                                                                                 }, 1000);
 
                                                                                 return [&]() { return clearTimeout(timer); };
-                                                                                } else if (location.pathname == '/create' && !onboardingCompleted && tourStep == 1) {
+                                                                                } else if (location.pathname == "/create" && !onboardingCompleted && tourStep == 1) {
                                                                                     // Continue the tour on the create page
                                                                                     const auto timer = setTimeout(() => {;
                                                                                         setRun(true);
@@ -173,76 +173,76 @@ void OnboardingTour() {
                                                                                     disableAnimation: false,
                                                                                     styles: {
                                                                                         floater: {
-                                                                                            filter: 'drop-shadow(0 10px 15px rgba(0, 0, 0, 0.25))',
+                                                                                            filter: "drop-shadow(0 10px 15px rgba(0, 0, 0, 0.25))",
                                                                                             },
                                                                                             },
                                                                                         }}
                                                                                         styles={{
                                                                                             options: {
-                                                                                                primaryColor: '#3b82f6',
-                                                                                                backgroundColor: '#1f2937',
-                                                                                                textColor: '#f3f4f6',
-                                                                                                overlayColor: 'rgba(0, 0, 0, 0.6)',
+                                                                                                primaryColor: "#3b82f6",
+                                                                                                backgroundColor: "#1f2937",
+                                                                                                textColor: "#f3f4f6",
+                                                                                                overlayColor: "rgba(0, 0, 0, 0.6)",
                                                                                                 zIndex: 9999,
-                                                                                                arrowColor: '#1f2937',
+                                                                                                arrowColor: "#1f2937",
                                                                                                 beaconSize: 36,
                                                                                                 },
                                                                                                 tooltip: {
-                                                                                                    fontSize: '14px',
-                                                                                                    padding: '16px',
-                                                                                                    borderRadius: '10px',
-                                                                                                    boxShadow: '0 10px 25px rgba(0, 0, 0, 0.3)',
+                                                                                                    fontSize: "14px",
+                                                                                                    padding: "16px",
+                                                                                                    borderRadius: "10px",
+                                                                                                    boxShadow: "0 10px 25px rgba(0, 0, 0, 0.3)",
                                                                                                     },
                                                                                                     tooltipContainer: {
-                                                                                                        textAlign: 'left',
+                                                                                                        textAlign: "left",
                                                                                                         },
                                                                                                         tooltipTitle: {
-                                                                                                            fontSize: '16px',
-                                                                                                            fontWeight: '600',
-                                                                                                            marginBottom: '8px',
+                                                                                                            fontSize: "16px",
+                                                                                                            fontWeight: "600",
+                                                                                                            marginBottom: "8px",
                                                                                                             },
                                                                                                             tooltipContent: {
-                                                                                                                padding: '5px 0',
-                                                                                                                fontSize: '14px',
-                                                                                                                lineHeight: '1.5',
+                                                                                                                padding: "5px 0",
+                                                                                                                fontSize: "14px",
+                                                                                                                lineHeight: "1.5",
                                                                                                                 },
                                                                                                                 buttonClose: {
-                                                                                                                    color: '#9ca3af',
+                                                                                                                    color: "#9ca3af",
                                                                                                                     opacity: 0.8,
                                                                                                                     },
                                                                                                                     buttonBack: {
-                                                                                                                        color: '#9ca3af',
-                                                                                                                        fontSize: '14px',
-                                                                                                                        fontWeight: '500',
-                                                                                                                        padding: '8px 12px',
-                                                                                                                        borderRadius: '6px',
-                                                                                                                        marginRight: '8px',
-                                                                                                                        transition: 'background-color 0.2s ease',
+                                                                                                                        color: "#9ca3af",
+                                                                                                                        fontSize: "14px",
+                                                                                                                        fontWeight: "500",
+                                                                                                                        padding: "8px 12px",
+                                                                                                                        borderRadius: "6px",
+                                                                                                                        marginRight: "8px",
+                                                                                                                        transition: "background-color 0.2s ease",
                                                                                                                         },
                                                                                                                         buttonNext: {
-                                                                                                                            backgroundColor: '#3b82f6',
-                                                                                                                            fontSize: '14px',
-                                                                                                                            fontWeight: '500',
-                                                                                                                            padding: '8px 16px',
-                                                                                                                            borderRadius: '6px',
-                                                                                                                            color: 'white',
-                                                                                                                            border: 'none',
-                                                                                                                            boxShadow: '0 4px 6px rgba(59, 130, 246, 0.3)',
-                                                                                                                            transition: 'all 0.2s ease',
+                                                                                                                            backgroundColor: "#3b82f6",
+                                                                                                                            fontSize: "14px",
+                                                                                                                            fontWeight: "500",
+                                                                                                                            padding: "8px 16px",
+                                                                                                                            borderRadius: "6px",
+                                                                                                                            color: "white",
+                                                                                                                            border: "none",
+                                                                                                                            boxShadow: "0 4px 6px rgba(59, 130, 246, 0.3)",
+                                                                                                                            transition: "all 0.2s ease",
                                                                                                                             },
                                                                                                                             buttonSkip: {
-                                                                                                                                color: '#9ca3af',
-                                                                                                                                fontSize: '14px',
-                                                                                                                                padding: '8px 12px',
-                                                                                                                                borderRadius: '6px',
-                                                                                                                                transition: 'background-color 0.2s ease',
+                                                                                                                                color: "#9ca3af",
+                                                                                                                                fontSize: "14px",
+                                                                                                                                padding: "8px 12px",
+                                                                                                                                borderRadius: "6px",
+                                                                                                                                transition: "background-color 0.2s ease",
                                                                                                                                 },
                                                                                                                                 spotlight: {
-                                                                                                                                    borderRadius: '8px',
-                                                                                                                                    backgroundColor: 'transparent',
+                                                                                                                                    borderRadius: "8px",
+                                                                                                                                    backgroundColor: "transparent",
                                                                                                                                     },
                                                                                                                                     overlay: {
-                                                                                                                                        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                                                                                                                                        backgroundColor: "rgba(0, 0, 0, 0.7)",
                                                                                                                                         },
                                                                                                                                     }}
                                                                                                                                     />;

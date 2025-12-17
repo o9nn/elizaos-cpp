@@ -36,10 +36,10 @@ std::future<AgentConfig> loadConfig() {
                 };
             }
 
-            const auto content = fs.readFile(configPath, 'utf8');
-            return JSON.parse(content);
+            const auto content = fs.readFile(configPath, "utf8");
+            return /* JSON.parse */ content;
             } catch (error) {
-                std::cout << "Error loading configuration: " + std::to_string(error) << std::endl;
+                std::cout << "Error loading configuration: " + error << std::endl;
                 // Return default configuration on error
                 return {
                     lastUpdated: new Date().toISOString(),
@@ -65,10 +65,10 @@ std::future<void> saveConfig(AgentConfig config) {
         config.lastUpdated = new Date().toISOString();
 
         // Write config to file
-        fs.writeFile(configPath, JSON.stringify(config, nullptr, 2), 'utf8');
-        std::cout << "Configuration saved to " + std::to_string(configPath) << std::endl;
+        fs.writeFile(configPath, /* JSON.stringify */ std::string(config, nullptr, 2), "utf8");
+        std::cout << "Configuration saved to " + configPath << std::endl;
         } catch (error) {
-            std::cerr << "Error saving configuration: " + std::to_string(error) << std::endl;
+            std::cerr << "Error saving configuration: " + error << std::endl;
         }
 
 }
@@ -90,8 +90,8 @@ std::future<std::unordered_map<std::string, bool>> getPluginStatus() {
     }
 
     try {
-        const auto configContent = fs.readFile(configPath, 'utf-8');
-        const auto config = JSON.parse(configContent);
+        const auto configContent = fs.readFile(configPath, "utf-8");
+        const auto config = /* JSON.parse */ configContent;
         const std::unordered_map<std::string, bool> status = {};
 
         // Check each plugin's environment variables
@@ -102,7 +102,7 @@ std::future<std::unordered_map<std::string, bool>> getPluginStatus() {
 
         return status;
         } catch (error) {
-            std::cerr << "Error reading config file: " + std::to_string(error) << std::endl;
+            std::cerr << "Error reading config file: " + error << std::endl;
             return {}
         }
 

@@ -1,10 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 #include "bonding-curve-bar.hpp"
 #include "copy-button.hpp"
@@ -18,7 +20,7 @@ namespace elizaos {
 
 
 
-using SortOrderType = std::variant<"asc", "desc">;
+using SortOrderType = std::string;
 
 struct TableViewProps {
     std::vector<IToken> data;

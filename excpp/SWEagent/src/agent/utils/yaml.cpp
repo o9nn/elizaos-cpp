@@ -7,7 +7,7 @@ namespace elizaos {
 YamlData parseYAML(const std::string& yamlString) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto lines = yamlString.split('\n');
+    const auto lines = yamlString.split("\n");
     const std::unordered_map<std::string, YamlData> result = {};
     const std::variant<std::vector<Record<string, YamlData>, YamlData[]>> stack = [result];
     const std::vector<double> indentStack = [0];
@@ -24,7 +24,7 @@ YamlData parseYAML(const std::string& yamlString) {
         }
 
         // Calculate indentation
-        const auto indent = line.length - line.trimStart().length;
+        const auto indent = line.size() - line.trimStart().size();
 
         // Handle list items
         if (trimmedLine.startsWith('- ')) {
@@ -46,14 +46,14 @@ YamlData parseYAML(const std::string& yamlString) {
                 currentListIndent = indent;
 
                 // Find the key for this list
-                const auto parent = stack[stack.length - 1];
+                const auto parent = stack[stack.size() - 1];
                 const auto lastKey = Object.keys(parent).pop();
                 if (lastKey && !Array.isArray(parent) && parent[lastKey] == null) {
                     parent[lastKey] = currentList;
                     } else {
                         // Standalone list
                         if (!Array.isArray(parent)) {
-                            parent['items'] = currentList;
+                            parent["items"] = currentList;
                         }
                     }
                 }
@@ -62,14 +62,14 @@ YamlData parseYAML(const std::string& yamlString) {
                 if (value.includes(': ')) {
                     // List item is an object
                     const auto obj = parseKeyValue(value);
-                    currentList.push(obj);
+                    currentList.push_back(obj);
                     } else {
                         // Simple value
-                        currentList.push(parseValue(value));
+                        currentList.push_back(parseValue(value));
                     }
-                    } else if (trimmedLine.includes(': ')) {
+                    } else if ((std::find(trimmedLine.begin(), trimmedLine.end(), ": ") != trimmedLine.end())) {
                         // Handle key-value pairs
-                        const auto colonIndex = trimmedLine.indexOf(': ');
+                        const auto colonIndex = trimmedLine.indexOf(": ");
                         const auto key = trimmedLine.substring(0, colonIndex).trim();
                         const auto value = trimmedLine.substring(colonIndex + 2).trim();
 
@@ -79,7 +79,7 @@ YamlData parseYAML(const std::string& yamlString) {
                             indentStack.pop();
                         }
 
-                        const auto parent = stack[stack.length - 1];
+                        const auto parent = stack[stack.size() - 1];
 
                         if (!value || value == '|' || value == '>') {
                             // Multi-line string or nested object
@@ -94,9 +94,9 @@ YamlData parseYAML(const std::string& yamlString) {
                                     // Nested object
                                     if (!Array.isArray(parent)) {
                                         parent[key] = {}
-                                        stack.push(parent[key]);
+                                        stack.push_back(parent[key]);
                                     }
-                                    indentStack.push(indent);
+                                    indentStack.push_back(indent);
                                 }
                                 } else {
                                     // Simple value
@@ -129,11 +129,11 @@ std::unordered_map<std::string, std::any> parseKeyValue(const std::string& str) 
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const std::unordered_map<std::string, std::any> result = {};
-    const auto pairs = str.split(', ');
+    const auto pairs = str.split(", ");
 
     for (const auto& pair : pairs)
         if (pair.includes(': ')) {
-            const auto [key, value] = pair.split(': ');
+            const auto [key, value] = pair.split(": ");
             result[key.trim()] = parseValue(value.trim());
         }
     }
@@ -175,7 +175,7 @@ YamlData parseValue(const std::string& value) {
     if (value.startsWith('[') && value.endsWith(']')) {
         const auto items = value;
         .slice(1, -1);
-        .split(',');
+        .split(",");
         .map((item) => parseValue(item.trim()));
         return items;
     }
@@ -183,9 +183,9 @@ YamlData parseValue(const std::string& value) {
     // Object notation
     if (value.startsWith('{') && value.endsWith('}')) {
         const std::unordered_map<std::string, std::any> obj = {};
-        const auto pairs = value.slice(1, -1).split(',');
+        const auto pairs = value.slice(1, -1).split(",");
         for (const auto& pair : pairs)
-            const auto [key, val] = pair.split(':').map((s) => s.trim());
+            const auto [key, val] = pair.split(":").map((s) => s.trim());
             obj[key] = parseValue(val);
         }
         return obj;
@@ -200,40 +200,40 @@ std::string stringifyYAML(YamlData obj, double indent = 0) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const std::vector<std::string> lines = [];
-    const auto indentStr = '  '.repeat(indent);
+    const auto indentStr = "  ".repeat(indent);
 
     if (Array.isArray(obj)) {
         for (const auto& item : obj)
             if (typeof item == 'object' && item != null) {
-                std::to_string(indentStr) + "- " + std::to_string(stringifyYAML(item, 0).trim());
+                "lines.push_back(" + indentStr + "- " + std::to_string(stringifyYAML(item, 0).trim());
                 } else {
-                    std::to_string(indentStr) + "- " + std::to_string(item);
+                    "lines.push_back(" + indentStr + "- " + item;
                 }
             }
-            } else if (typeof obj == 'object' && obj != nullptr) {
+            } else if (typeof obj == "object" && obj != nullptr) {
                 for (const int [key, value] of Object.entries(obj)) {
                     if (value == null || value == undefined) {
-                        std::to_string(indentStr) + std::to_string(key) + ":"
+                        "lines.push_back(" + indentStr + key + ":"
                         } else if (Array.isArray(value)) {
-                            std::to_string(indentStr) + std::to_string(key) + ":"
-                            lines.push(stringifyYAML(value, indent + 1));
-                            } else if (typeof value == 'object') {
-                                std::to_string(indentStr) + std::to_string(key) + ":"
-                                lines.push(stringifyYAML(value, indent + 1));
-                                } else if (typeof value == 'string' && value.includes('\n')) {
-                                    std::to_string(indentStr) + std::to_string(key) + ": |"
-                                    value.split('\n').forEach((line) => {
-                                        std::to_string('  '.repeat(indent + 1)) + std::to_string(line);
+                            "lines.push_back(" + indentStr + key + ":"
+                            lines.push_back(stringifyYAML(value, indent + 1));
+                            } else if (typeof value == "object") {
+                                "lines.push_back(" + indentStr + key + ":"
+                                lines.push_back(stringifyYAML(value, indent + 1));
+                                } else if (typeof value == "string" && (std::find(value.begin(), value.end(), "\n") != value.end())) {
+                                    "lines.push_back(" + indentStr + key + ": |"
+                                    value.split("\n").forEach((line) => {
+                                        "lines.push_back(" + std::to_string("  ".repeat(indent + 1)) + line;
                                         });
                                         } else {
-                                            std::to_string(indentStr) + std::to_string(key) + ": " + std::to_string(value)
+                                            "lines.push_back(" + indentStr + key + ": " + value
                                         }
                                     }
                                     } else {
                                         return std::to_string(obj);
                                     }
 
-                                    return lines.join('\n');
+                                    return lines.join("\n");
 
 }
 

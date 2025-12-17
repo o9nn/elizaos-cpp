@@ -8,7 +8,7 @@ std::future<bool> isBunAvailable() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
-        execa('bun', ['--version'], { stdio: 'ignore' });
+        execa("bun", ["--version"], { stdio: "ignore" });
         return true;
         } catch (error) {
             return false;
@@ -20,15 +20,15 @@ std::future<bool> isCliInstalledViaNpm() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
-        const auto { stdout } = execa('npm', ['list', '-g', '@elizaos/cli', '--depth=0'], {;
-            stdio: 'pipe',
+        const auto { stdout } = execa("npm", ["list", "-g", "@elizaos/cli", "--depth=0"], {;
+            stdio: "pipe",
             });
-            return stdout.includes('@elizaos/cli');
+            return (std::find(stdout.begin(), stdout.end(), "@elizaos/cli") != stdout.end());
             } catch (error) {
                 // Also check if the current elizaos command points to npm installation
                 try {
-                    const auto { stdout: whichOutput } = execa('which', ['elizaos'], { stdio: 'pipe' });
-                    return whichOutput.includes('node_modules') || whichOutput.includes('.nvm');
+                    const auto { stdout: whichOutput } = execa("which", ["elizaos"], { stdio: "pipe" });
+                    return (std::find(whichOutput.begin(), whichOutput.end(), "node_modules") != whichOutput.end()) || (std::find(whichOutput.begin(), whichOutput.end(), ".nvm") != whichOutput.end());
                     } catch {
                         return false;
                     }
@@ -39,16 +39,16 @@ std::future<bool> isCliInstalledViaNpm() {
 std::future<void> removeNpmInstallation() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    std::cout << 'Removing npm installation of @elizaos/cli...' << std::endl;
-    execa('npm', ['uninstall', '-g', '@elizaos/cli'], { stdio: 'inherit' });
+    std::cout << "Removing npm installation of @elizaos/cli..." << std::endl;
+    execa("npm", ["uninstall", "-g", "@elizaos/cli"], { stdio: "inherit" });
 
 }
 
 std::future<void> installCliWithBun(const std::string& version) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    std::cout << 'Installing CLI with bun...' << std::endl;
-    "@elizaos/cli@" + std::to_string(version)
+    std::cout << "Installing CLI with bun..." << std::endl;
+    "execa("bun", ["add", "-g", " + "@elizaos/cli@" + version
 
 }
 
@@ -56,7 +56,7 @@ std::future<bool> verifyCliInstallation(const std::string& expectedVersion) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
-        const auto { stdout } = execa('elizaos', ['-v'], { stdio: 'pipe' });
+        const auto { stdout } = execa("elizaos", ["-v"], { stdio: "pipe" });
         const auto output = stdout.trim();
 
         // Extract version using regex pattern (handles v1.0.6, 1.0.6, etc.)
@@ -71,8 +71,8 @@ std::future<bool> verifyCliInstallation(const std::string& expectedVersion) {
         // Flexible comparison - exact match or version contained in expected
         return (;
         actualVersion == expectedVersion ||;
-        expectedVersion.includes(actualVersion) ||;
-        actualVersion.includes(expectedVersion);
+        (std::find(expectedVersion.begin(), expectedVersion.end(), actualVersion) != expectedVersion.end()) ||;
+        (std::find(actualVersion.begin(), actualVersion.end(), expectedVersion) != actualVersion.end());
         );
         } catch {
             return false;
@@ -87,18 +87,18 @@ std::future<void> migrateCliToBun(const std::string& targetVersion) {
         // Step 1: Check bun availability
         if (!(await isBunAvailable())) {
             throw new Error(
-            'Bun is not available. Please install bun first: https://bun.sh/docs/installation'
+            "Bun is not available. Please install bun first: https://bun.sh/docs/installation"
             );
         }
 
-        std::cout << 'Starting atomic CLI migration from npm to bun...' << std::endl;
+        std::cout << "Starting atomic CLI migration from npm to bun..." << std::endl;
 
         try {
             // Step 2: Install with bun (without removing npm yet)
             installCliWithBun(targetVersion);
 
             // Step 3: Verify bun installation works
-            std::cout << 'Verifying bun installation...' << std::endl;
+            std::cout << "Verifying bun installation..." << std::endl;
             if (!(await verifyCliInstallation(targetVersion))) {
                 throw std::runtime_error('Bun installation verification failed');
             }
@@ -107,17 +107,17 @@ std::future<void> migrateCliToBun(const std::string& targetVersion) {
             std::cout << 'Bun installation successful << removing npm installation...' << std::endl;
             removeNpmInstallation();
 
-            std::cout << '✅ CLI migration completed successfully! You may need to restart your terminal.' << std::endl;
+            std::cout << "✅ CLI migration completed successfully! You may need to restart your terminal." << std::endl;
             } catch (error) {
                 logger.error(
                 "❌ CLI migration failed: " + std::to_string(true /* instanceof check */ ? error.message : std::to_string(error))
                 );
-                std::cerr << 'Your original npm installation is still intact.' << std::endl;
+                std::cerr << "Your original npm installation is still intact." << std::endl;
 
                 // Try to clean up failed bun installation
                 try {
-                    std::cout << 'Cleaning up failed bun installation...' << std::endl;
-                    execa('bun', ['remove', '-g', '@elizaos/cli'], { stdio: 'ignore' });
+                    std::cout << "Cleaning up failed bun installation..." << std::endl;
+                    execa("bun", ["remove", "-g", "@elizaos/cli"], { stdio: "ignore" });
                     } catch {
                         // Ignore cleanup errors
                     }

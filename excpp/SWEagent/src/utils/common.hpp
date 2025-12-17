@@ -1,9 +1,13 @@
 #pragma once
+#include <algorithm>
+#include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -28,7 +32,7 @@ std::string truncateString(const std::string& str, double maxLength);
 /**
  * Calculate hash of data
  */
-std::string calculateHash(unknown data);
+std::string calculateHash(const std::any& data);
 
 /**
  * Retry options interface

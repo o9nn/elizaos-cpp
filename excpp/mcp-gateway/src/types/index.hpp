@@ -1,9 +1,14 @@
 #pragma once
+#include <algorithm>
+#include <chrono>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
+#include <stdexcept>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -31,8 +36,8 @@ struct ServerConnection {
     McpServerConfig config;
     std::optional<Client> client;
     std::string status;
-    std::optional<Error> lastError;
-    std::optional<Date> lastHealthCheck;
+    std::optional<std::runtime_error> lastError;
+    std::optional<std::chrono::system_clock::time_point> lastHealthCheck;
     std::optional<bool> tools;
     std::optional<bool> resources;
     std::optional<bool> prompts;

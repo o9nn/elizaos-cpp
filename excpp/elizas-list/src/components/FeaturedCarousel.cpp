@@ -30,10 +30,10 @@ void FeaturedCarousel() {
                     useEffect(() => {
                         const auto timer = setInterval(() => {;
                             setDirection(1);
-                            setCurrentIndex((prev) => (prev + 1) % projects.length);
+                            setCurrentIndex((prev) => (prev + 1) % projects.size());
                             }, 5000);
                             return [&]() { return clearInterval(timer); };
-                            }, [projects.length]);
+                            }, [projects.size()]);
 
                             const auto project = projects[currentIndex];
 
@@ -70,7 +70,7 @@ void FeaturedCarousel() {
     <button;
     onClick={() => {
         setDirection(-1);
-        setCurrentIndex((prev) => (prev - 1 + projects.length) % projects.length);
+        setCurrentIndex((prev) => (prev - 1 + projects.size()) % projects.size());
     }}
     className="absolute left-4 top-1/2 transform -translate-y-1/2 p-2 bg-white/20 rounded-full backdrop-blur-sm hover:bg-white/40 transition-colors"
     >;
@@ -80,7 +80,7 @@ void FeaturedCarousel() {
     <button;
     onClick={() => {
         setDirection(1);
-        setCurrentIndex((prev) => (prev + 1) % projects.length);
+        setCurrentIndex((prev) => (prev + 1) % projects.size());
     }}
     className="absolute right-4 top-1/2 transform -translate-y-1/2 p-2 bg-white/20 rounded-full backdrop-blur-sm hover:bg-white/40 transition-colors"
     >;

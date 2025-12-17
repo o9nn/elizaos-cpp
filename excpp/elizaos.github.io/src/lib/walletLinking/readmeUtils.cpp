@@ -15,12 +15,12 @@ std::optional<WalletLinkingData> parseWalletLinkingDataFromReadme(const std::str
     }
 
     const auto walletSectionContent = readmeContent;
-    .substring(startIndex + WALLET_SECTION_BEGIN_MARKER.length, endIndex);
+    .substring(startIndex + WALLET_SECTION_BEGIN_MARKER.size(), endIndex);
     .trim();
 
     try {
         // Parse the JSON directly from the comment content
-        const auto rawData = JSON.parse(walletSectionContent);
+        const auto rawData = /* JSON.parse */ walletSectionContent;
 
         // Validate the data structure using Zod
         const auto result = WalletLinkingDataSchema.safeParse(rawData);
@@ -35,7 +35,7 @@ std::optional<WalletLinkingData> parseWalletLinkingDataFromReadme(const std::str
             lastUpdated: result.data.lastUpdated,
             wallets: result.data.wallets.filter(
             (wallet) =>;
-            SUPPORTED_CHAINS_NAMES.includes(wallet.chain.toLowerCase()) &&;
+            (std::find(SUPPORTED_CHAINS_NAMES.begin(), SUPPORTED_CHAINS_NAMES.end(), wallet.chain.toLowerCase() != SUPPORTED_CHAINS_NAMES.end())) &&;
             validateAddress(wallet.address, wallet.chain),
             ),
             };
@@ -71,9 +71,9 @@ std::string generateReadmeWalletSection(const std::vector<LinkedWallet>& wallets
             // Validate the complete data structure
             const auto validatedData = WalletLinkingDataSchema.parse(walletData);
 
-        return std::to_string(WALLET_SECTION_BEGIN_MARKER);
-    ${JSON.stringify(validatedData, nullptr, 2)}
-    ${WALLET_SECTION_END_MARKER}`;
+        return WALLET_SECTION_BEGIN_MARKER;
+    ${/* JSON.stringify */ std::string(validatedData, nullptr, 2)}
+    "${WALLET_SECTION_END_MARKER}";
 
 }
 

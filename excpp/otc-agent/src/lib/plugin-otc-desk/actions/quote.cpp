@@ -35,7 +35,7 @@ std::future<std::string> extractTokenContext(const std::string& text) {
     // Try to find a token symbol mentioned in the text
     // Sort by symbol length descending to match longer symbols first (e.g., "ELIZA" before "ELI")
     const auto sortedTokens = [...allTokens].sort(;
-    [&](a, b) { return b.symbol.length - a.symbol.length,; }
+    [&](a, b) { return b.symbol.size() - a.symbol.size(),; }
     );
 
     for (const auto& token : sortedTokens)

@@ -1,11 +1,12 @@
 #pragma once
-#include <any>
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -17,12 +18,12 @@ namespace elizaos {
 
 // Interface compatible with @solana/wallet-adapter-react for downstream components
 struct SolanaTransaction {
-    std::optional<Uint8Array> signature;
+    std::optional<std::vector<uint8_t>> signature;
 };
 
-using SolanaWalletAdapter = std::variant<std::any, nullptr>;
+using SolanaWalletAdapter = std::function<void()>;
 
-using MultiWalletContextValue = std::variant<{
+using MultiWalletContextValue = std::optional<{
   // Active chain family - derived from connection state + user preference
   // null when no wallet is connected
 
@@ -51,7 +52,7 @@ struct PrivySolanaWallet {
 };
 
 // Window type extension for Phantom wallet detection
-using PhantomWindow = Window;
+using PhantomWindow = void*;
 
 void MultiWalletProvider();
 

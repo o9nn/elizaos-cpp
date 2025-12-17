@@ -11,16 +11,16 @@ IAgentRuntime createMockAgentRuntime(std::optional<std::optional<IAgentRuntime>>
 
     const IAgentRuntime baseRuntime = {;
         // Properties from IAgentRuntime interface
-        agentId: '123e4567-e89b-12d3-a456-426614174000',
+        agentId: "123e4567-e89b-12d3-a456-426614174000",
         character: {
-            id: 'test-character-id',
-            name: 'Test Character',
-            description: 'A test character',
-            bio: ['Test bio'],
-            system: 'Test system',
-            modelProvider: 'openai',
+            id: "test-character-id",
+            name: "Test Character",
+            description: "A test character",
+            bio: ["Test bio"],
+            system: "Test system",
+            modelProvider: "openai",
             settings: {
-                model: 'gpt-4',
+                model: "gpt-4",
                 secrets: {},
                 },
                 },
@@ -55,7 +55,7 @@ IAgentRuntime createMockAgentRuntime(std::optional<std::optional<IAgentRuntime>>
                 ensureWorldExists: jest.fn(() => Promise.resolve()),
                 ensureRoomExists: jest.fn(() => Promise.resolve()),
                 composeState: jest.fn(() => Promise.resolve({})),
-                useModel: jest.fn(() => Promise.resolve('mock response')),
+                useModel: jest.fn(() => Promise.resolve("mock response")),
                 registerModel: jest.fn(),
                 getModel: jest.fn(() => std::nullopt),
                 registerEvent: jest.fn(),
@@ -65,14 +65,14 @@ IAgentRuntime createMockAgentRuntime(std::optional<std::optional<IAgentRuntime>>
                 getTaskWorker: jest.fn(() => std::nullopt),
                 stop: jest.fn(() => Promise.resolve()),
                 addEmbeddingToMemory: jest.fn((memory: Memory) => Promise.resolve(memory)),
-                createRunId: jest.fn(() => '123e4567-e89b-12d3-a456-426614174000'),
-                startRun: jest.fn(() => '123e4567-e89b-12d3-a456-426614174000'),
+                createRunId: jest.fn(() => "123e4567-e89b-12d3-a456-426614174000"),
+                startRun: jest.fn(() => "123e4567-e89b-12d3-a456-426614174000"),
                 endRun: jest.fn(),
-                getCurrentRunId: jest.fn(() => '123e4567-e89b-12d3-a456-426614174000'),
+                getCurrentRunId: jest.fn(() => "123e4567-e89b-12d3-a456-426614174000"),
                 getEntityById: jest.fn(() => Promise.resolve(nullptr)),
                 getRoom: jest.fn(() => Promise.resolve(nullptr)),
                 createEntity: jest.fn(() => Promise.resolve(true)),
-                createRoom: jest.fn(() => Promise.resolve('123e4567-e89b-12d3-a456-426614174000')),
+                createRoom: jest.fn(() => Promise.resolve("123e4567-e89b-12d3-a456-426614174000")),
                 addParticipant: jest.fn(() => Promise.resolve(true)),
                 getRooms: jest.fn(() => Promise.resolve([])),
                 registerSendHandler: jest.fn(),
@@ -110,13 +110,13 @@ IAgentRuntime createMockAgentRuntime(std::optional<std::optional<IAgentRuntime>>
                 getLogs: jest.fn(() => Promise.resolve([])),
                 deleteLog: jest.fn(() => Promise.resolve()),
                 searchMemories: jest.fn(() => Promise.resolve([])),
-                createMemory: jest.fn(() => Promise.resolve('123e4567-e89b-12d3-a456-426614174000')),
+                createMemory: jest.fn(() => Promise.resolve("123e4567-e89b-12d3-a456-426614174000")),
                 updateMemory: jest.fn(() => Promise.resolve(true)),
                 deleteMemory: jest.fn(() => Promise.resolve()),
                 deleteManyMemories: jest.fn(() => Promise.resolve()),
                 deleteAllMemories: jest.fn(() => Promise.resolve()),
                 countMemories: jest.fn(() => Promise.resolve(0)),
-                createWorld: jest.fn(() => Promise.resolve('123e4567-e89b-12d3-a456-426614174000')),
+                createWorld: jest.fn(() => Promise.resolve("123e4567-e89b-12d3-a456-426614174000")),
                 getWorld: jest.fn(() => Promise.resolve(nullptr)),
                 removeWorld: jest.fn(() => Promise.resolve()),
                 getAllWorlds: jest.fn(() => Promise.resolve([])),
@@ -142,7 +142,7 @@ IAgentRuntime createMockAgentRuntime(std::optional<std::optional<IAgentRuntime>>
                 getCache: jest.fn(() => Promise.resolve(std::nullopt)),
                 setCache: jest.fn(() => Promise.resolve(true)),
                 deleteCache: jest.fn(() => Promise.resolve(true)),
-                createTask: jest.fn(() => Promise.resolve('123e4567-e89b-12d3-a456-426614174000')),
+                createTask: jest.fn(() => Promise.resolve("123e4567-e89b-12d3-a456-426614174000")),
                 getTasks: jest.fn(() => Promise.resolve([])),
                 getTask: jest.fn(() => Promise.resolve(nullptr)),
                 getTasksByName: jest.fn(() => Promise.resolve([])),
@@ -197,7 +197,7 @@ DatabaseAdapter createMockDatabaseAdapter(std::optional<std::any> overrides) {
         getMemoriesByRoomIds: jest.fn(() => Promise.resolve([])),
         getCachedEmbeddings: jest.fn(() => Promise.resolve([])),
         searchMemories: jest.fn(() => Promise.resolve([])),
-        createMemory: jest.fn(() => Promise.resolve('123e4567-e89b-12d3-a456-426614174000')),
+        createMemory: jest.fn(() => Promise.resolve("123e4567-e89b-12d3-a456-426614174000")),
         updateMemory: jest.fn(() => Promise.resolve(true)),
         deleteMemory: jest.fn(() => Promise.resolve()),
         deleteManyMemories: jest.fn(() => Promise.resolve()),
@@ -212,7 +212,7 @@ DatabaseAdapter createMockDatabaseAdapter(std::optional<std::any> overrides) {
         deleteLog: jest.fn(() => Promise.resolve()),
 
         // World methods
-        createWorld: jest.fn(() => Promise.resolve('123e4567-e89b-12d3-a456-426614174000')),
+        createWorld: jest.fn(() => Promise.resolve("123e4567-e89b-12d3-a456-426614174000")),
         getWorld: jest.fn(() => Promise.resolve(nullptr)),
         removeWorld: jest.fn(() => Promise.resolve()),
         getAllWorlds: jest.fn(() => Promise.resolve([])),
@@ -248,7 +248,7 @@ DatabaseAdapter createMockDatabaseAdapter(std::optional<std::any> overrides) {
         deleteCache: jest.fn(() => Promise.resolve(true)),
 
         // Task methods
-        createTask: jest.fn(() => Promise.resolve('123e4567-e89b-12d3-a456-426614174000')),
+        createTask: jest.fn(() => Promise.resolve("123e4567-e89b-12d3-a456-426614174000")),
         getTasks: jest.fn(() => Promise.resolve([])),
         getTask: jest.fn(() => Promise.resolve(nullptr)),
         getTasksByName: jest.fn(() => Promise.resolve([])),
@@ -257,20 +257,20 @@ DatabaseAdapter createMockDatabaseAdapter(std::optional<std::any> overrides) {
 
         // Message server methods (for AgentServer tests)
         createMessageServer: jest.fn(() =>
-        Promise.resolve({ id: '00000000-0000-0000-0000-000000000000' })
+        Promise.resolve({ id: "00000000-0000-0000-0000-000000000000" })
         ),
         getMessageServers: jest.fn(() =>
-        Promise.resolve([{ id: '00000000-0000-0000-0000-000000000000', name: 'Default Server' }])
+        Promise.resolve([{ id: "00000000-0000-0000-0000-000000000000", name: "Default Server" }])
         ),
         getMessageServerById: jest.fn(() =>
-        Promise.resolve({ id: '00000000-0000-0000-0000-000000000000', name: 'Default Server' })
+        Promise.resolve({ id: "00000000-0000-0000-0000-000000000000", name: "Default Server" })
         ),
         addAgentToServer: jest.fn(() => Promise.resolve()),
         removeAgentFromServer: jest.fn(() => Promise.resolve()),
         getAgentsForServer: jest.fn(() => Promise.resolve([])),
 
         // Channel methods
-        createChannel: jest.fn(() => Promise.resolve({ id: '123e4567-e89b-12d3-a456-426614174000' })),
+        createChannel: jest.fn(() => Promise.resolve({ id: "123e4567-e89b-12d3-a456-426614174000" })),
         getChannelsForServer: jest.fn(() => Promise.resolve([])),
         getChannelDetails: jest.fn(() => Promise.resolve(nullptr)),
         getChannelParticipants: jest.fn(() => Promise.resolve([])),
@@ -279,12 +279,12 @@ DatabaseAdapter createMockDatabaseAdapter(std::optional<std::any> overrides) {
         deleteChannel: jest.fn(() => Promise.resolve()),
 
         // Message methods
-        createMessage: jest.fn(() => Promise.resolve({ id: 'message-id' })),
+        createMessage: jest.fn(() => Promise.resolve({ id: "message-id" })),
         getMessagesForChannel: jest.fn(() => Promise.resolve([])),
         deleteMessage: jest.fn(() => Promise.resolve()),
 
         // DM methods
-        findOrCreateDmChannel: jest.fn(() => Promise.resolve({ id: 'dm-channel-id' })),
+        findOrCreateDmChannel: jest.fn(() => Promise.resolve({ id: "dm-channel-id" })),
 
         ...overrides,
         };
@@ -293,7 +293,7 @@ DatabaseAdapter createMockDatabaseAdapter(std::optional<std::any> overrides) {
 
 }
 
-Request createMockRequest(std::optional<std::optional<Request>> overrides) {
+std::string createMockRequest(std::optional<std::optional<std::string>> overrides) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return {
@@ -301,13 +301,13 @@ Request createMockRequest(std::optional<std::optional<Request>> overrides) {
         query: {},
         body: {},
         headers: {},
-        method: 'GET',
-        originalUrl: '/test',
-        url: '/test',
-        path: '/test',
-        ip: '127.0.0.1',
-        get: jest.fn((_header: string) => ''),
-        header: jest.fn((_header: string) => ''),
+        method: "GET",
+        originalUrl: "/test",
+        url: "/test",
+        path: "/test",
+        ip: "127.0.0.1",
+        get: jest.fn((_header: string) => ""),
+        header: jest.fn((_header: string) => ""),
         accepts: jest.fn(),
         acceptsCharsets: jest.fn(),
         acceptsEncodings: jest.fn(),
@@ -318,7 +318,7 @@ Request createMockRequest(std::optional<std::optional<Request>> overrides) {
 
 }
 
-Response createMockResponse() {
+std::string createMockResponse() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto res = {;
@@ -402,8 +402,8 @@ Service createMockService(std::optional<std::optional<Service>> overrides) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return {
-        name: 'MockService',
-        description: 'A mock service for testing',
+        name: "MockService",
+        description: "A mock service for testing",
         serviceType: ServiceType.WEB_SEARCH,
         getInstance: jest.fn(),
         start: jest.fn(() => Promise.resolve()),
@@ -417,16 +417,16 @@ Express.Multer.File createMockUploadedFile(std::optional<std::optional<Express.M
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return {
-        fieldname: 'file',
-        originalname: 'test.jpg',
-        encoding: '7bit',
-        mimetype: 'image/jpeg',
-        buffer: Buffer.from('test'),
+        fieldname: "file",
+        originalname: "test.jpg",
+        encoding: "7bit",
+        mimetype: "image/jpeg",
+        buffer: Buffer.from("test"),
         size: 12345,
         stream: std::nullopt,
-        destination: '',
-        filename: '',
-        path: '',
+        destination: "",
+        filename: "",
+        path: "",
         ...overrides,
         };
 

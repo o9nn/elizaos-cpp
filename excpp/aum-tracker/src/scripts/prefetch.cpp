@@ -35,13 +35,13 @@ std::future<void> main() {
                     const auto prefetchService = new PrefetchService(config);
 
                     switch (command) {
-                        case "run":
+                        // case "run":
                         prefetchService.run();
                         break;
-                        case "health":
+                        // case "health":
                         prefetchService.runHealthCheck();
                         break;
-                        case "help":
+                        // case "help":
                         console.log(`
                         🚀 Solana Portfolio Prefetch Script;
 
@@ -67,9 +67,9 @@ std::future<void> main() {
                         bun run src/scripts/prefetch.ts health;
                         `);
                         break;
-                        default:
-                        std::cerr << "Unknown command: " + std::to_string(command) << std::endl;
-                        std::cout << 'Use "help" command for usage information' << std::endl;
+                        // default:
+                        std::cerr << "Unknown command: " + command << std::endl;
+                        std::cout << "Use "help" command for usage information" << std::endl;
                         process.exit(1);
                     }
 

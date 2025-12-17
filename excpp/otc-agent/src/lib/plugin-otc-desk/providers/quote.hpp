@@ -1,15 +1,18 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include "..agent-runtime.hpp"
-#include "..entityId.hpp"
-#include ".services/priceFeed.hpp"
+#include "agent-runtime.hpp"
 #include "elizaos/core.hpp"
+#include "entityId.hpp"
+#include "services/priceFeed.hpp"
 
 namespace elizaos {
 

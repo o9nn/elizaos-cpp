@@ -26,7 +26,7 @@ void ProjectSupport() {
     {/* More contribution steps */}
     </div>;
     <a;
-    std::to_string(project.github) + "/contribute";
+    "href={" + project.github + "/contribute";
     className="mt-6 inline-block px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
     >;
     View Contribution Guide;

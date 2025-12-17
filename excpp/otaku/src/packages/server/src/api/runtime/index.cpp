@@ -10,13 +10,13 @@ express::Router runtimeRouter(ElizaOS elizaOS, AgentServer serverInstance) {
     const auto router = express.Router();
 
     // Mount health endpoints at root level
-    router.use('/', createHealthRouter(elizaOS, serverInstance));
+    router.use("/", createHealthRouter(elizaOS, serverInstance));
 
     // Mount logging endpoints
-    router.use('/', createLoggingRouter());
+    router.use("/", createLoggingRouter());
 
     // Mount debug endpoints under /debug
-    router.use('/debug', createDebugRouter(serverInstance));
+    router.use("/debug", createDebugRouter(serverInstance));
 
     return router;
 

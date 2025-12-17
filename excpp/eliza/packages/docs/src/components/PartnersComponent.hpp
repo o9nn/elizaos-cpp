@@ -1,12 +1,15 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".data/partners.hpp"
 #include "PartnersComponent/styles.module.css.hpp"
+#include "data/partners.hpp"
 
 namespace elizaos {
 

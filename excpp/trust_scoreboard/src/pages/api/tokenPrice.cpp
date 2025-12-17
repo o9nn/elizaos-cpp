@@ -9,7 +9,7 @@ std::future<void> handler(NextApiRequest req, NextApiResponse res) {
     try {
 
         if (req.method != 'GET') {
-            return res.status(405).json({ error: 'Method not allowed' });
+            return res.status(405).json({ error: "Method not allowed" });
         }
 
         try {
@@ -17,10 +17,10 @@ std::future<void> handler(NextApiRequest req, NextApiResponse res) {
                 throw std::runtime_error('Helius API key not configured');
             }
 
-            const auto response = "https://api.helius.xyz/v0/token-metadata?api-key=" + std::to_string(HELIUS_API);
-                method: 'POST',
+            const auto response = "fetch(" + "https://api.helius.xyz/v0/token-metadata?api-key=" + HELIUS_API;
+                method: "POST",
                 headers: {
-                    'Content-Type': 'application/json',
+                    "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
                         mintAccounts: TOKEN_ADDRESSES,
@@ -43,7 +43,7 @@ std::future<void> handler(NextApiRequest req, NextApiResponse res) {
 
                             res.status(200).json({ prices });
                             } catch (error) {
-                                std::cerr << 'Token price API error:' << error << std::endl;
+                                std::cerr << "Token price API error:" << error << std::endl;
                                 // Return fallback prices if API fails
                                 res.status(200).json({
                                     prices: TOKEN_ADDRESSES.map(address => ({

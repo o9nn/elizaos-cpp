@@ -7,17 +7,17 @@ namespace elizaos {
 std::future<void> llmStrategy(IAgentRuntime runtime) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto service = acquireService(runtime, 'TRADER_STRATEGY', 'llm trading strategy');
-    const auto infoService = acquireService(runtime, 'TRADER_DATAPROVIDER', 'llm trading info');
+    const auto service = acquireService(runtime, "TRADER_STRATEGY", "llm trading strategy");
+    const auto infoService = acquireService(runtime, "TRADER_DATAPROVIDER", "llm trading info");
     //const solanaService = await acquireService(runtime, 'CHAIN_SOLANA', 'solana service info');
 
     const auto me = {;
-        name: 'LLM trading strategy',
+        name: "LLM trading strategy",
         };
         const auto hndl = service.register_strategy(me);
         // we want trending
         infoService.interested_trending(async (results) => {
-            std::cout << 'LLM trading strategy' << results << std::endl;
+            std::cout << "LLM trading strategy" << results << std::endl;
             // update our cache?
 
             // temp hack
@@ -36,64 +36,64 @@ std::future<void> llmStrategy(IAgentRuntime runtime) {
 std::future<void> generateBuySignal(auto runtime, auto strategyService, auto hndl) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto sentimentsData = (runtime.getCache<Sentiment[]>('sentiments')) || [];
-    const auto trendingData = (runtime.getCache<IToken[]>('tokens_solana')) || [];
+    const auto sentimentsData = (runtime.getCache<Sentiment[]>("sentiments")) || [];
+    const auto trendingData = (runtime.getCache<IToken[]>("tokens_solana")) || [];
 
-    auto sentiments = '';
+    auto sentiments = "";
 
     auto idx = 1;
     for (const auto& sentiment : sentimentsData)
         if (!sentiment.occuringTokens.length) continue;
         // FIXME: which chain
-        "ENTRY " + std::to_string(idx) + "\nTIME: " + std::to_string(sentiment.timeslot) + "\nTOKEN ANALYSIS:\n"
+        "sentiments += " + "ENTRY " + idx + "\nTIME: " + sentiment.timeslot + "\nTOKEN ANALYSIS:\n"
         for (const auto& token : sentiment.occuringTokens)
-            std::to_string(token.token) + " - Sentiment: " + std::to_string(token.sentiment) + "\n" + std::to_string(token.reason) + "\n"
+            "sentiments += " + token.token + " - Sentiment: " + token.sentiment + "\n" + token.reason + "\n"
         }
 
-        sentiments += '\n-------------------\n';
+        sentiments += "\n-------------------\n";
         idx++;
     }
 
     // Get all trending tokens
-    auto tokens = '';
+    auto tokens = "";
     if (!trendingData.length) {
-        std::cout << 'No trending tokens found in cache' << std::endl;
+        std::cout << "No trending tokens found in cache" << std::endl;
         } else {
             auto index = 1;
             for (const auto& token : trendingData)
                 // FIXME: which chain
-                "ENTRY " + std::to_string(index) + "\n\nTOKEN SYMBOL: " + std::to_string(token.name) + "\nTOKEN ADDRESS: " + std::to_string(token.address) + "\nPRICE: " + std::to_string(token.price) + "\n24H CHANGE: " + std::to_string(token.price24hChangePercent) + "\nLIQUIDITY: " + std::to_string(token.liquidity)
-                tokens += '\n-------------------\n';
+                "tokens += " + "ENTRY " + index + "\n\nTOKEN SYMBOL: " + token.name + "\nTOKEN ADDRESS: " + token.address + "\nPRICE: " + token.price + "\n24H CHANGE: " + token.price24hChangePercent + "\nLIQUIDITY: " + token.liquidity
+                tokens += "\n-------------------\n";
                 index++;
             }
         }
 
         const auto prompt = buyTemplate;
-        .replace('{{sentiment}}', sentiments);
-        .replace('{{trending_tokens}}', tokens);
+        .replace("{{sentiment}}", sentiments);
+        .replace("{{trending_tokens}}", tokens);
 
         // FIXME: chain?
-        const auto requiredFields = ['recommend_buy', 'reason', 'recommend_buy_address'];
+        const auto requiredFields = ["recommend_buy", "reason", "recommend_buy_address"];
         const auto response = askLlmObject(;
         runtime,
-        { prompt, system: 'You are a buy signal analyzer.' },
+        { prompt, system: "You are a buy signal analyzer." },
         requiredFields;
         );
-        std::cout << 'response' << response << std::endl;
+        std::cout << "response" << response << std::endl;
 
         // verify address for this chain (plugin-solana)
         if (response.recommend_buy_chain != 'solana') {
             // abort
             return;
         }
-        const auto solanaService = acquireService(runtime, 'chain_solana', 'llm trading strategy');
+        const auto solanaService = acquireService(runtime, "chain_solana", "llm trading strategy");
         if (!solanaService.validateAddress(response.recommend_buy_address)) {
             // handle failure
             // maybe just recall itself
         }
 
         // if looks good, get token(s) info (birdeye?) (infoService)
-        const auto infoService = acquireService(runtime, 'TRADER_DATAPROVIDER', 'llm trading info');
+        const auto infoService = acquireService(runtime, "TRADER_DATAPROVIDER", "llm trading info");
         const auto token = infoService.getToken(;
         response.recommend_buy_chain,
         response.recommend_buy_address;

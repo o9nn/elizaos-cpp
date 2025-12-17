@@ -7,7 +7,7 @@ namespace elizaos {
 std::optional<GoalService> getGoalsService(IAgentRuntime runtime) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return (runtime.getService('goals') || runtime.getService('goals'));
+    return (runtime.getService("goals") || runtime.getService("goals"));
 
 }
 

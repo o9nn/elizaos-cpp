@@ -1,10 +1,13 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
 
@@ -238,7 +241,7 @@ struct PatchInfo {
 /**
  * File data type that can be JSON, YAML, or raw text
  */
-using FileData = std::variant<std::unordered_map<std::string, unknown>, std::string, std::vector<unknown>>;
+using FileData = std::variant<std::unordered_map<std::string, std::any>, std::string, std::vector<std::any>>;
 
 /**
  * GitHub API issue response
@@ -273,12 +276,12 @@ using TemplateContext = std::variant<Record<
 /**
  * Serializable data structure
  */
-using SerializableData = std::variant<, std::string, double, bool, nullptr, std::nullopt, std::vector<SerializableData>, std::any>;
+using SerializableData = std::variant<, std::string, double, bool, std::vector<SerializableData>, std::any>;
 
 /**
  * Command line argument value
  */
-using ArgValue = std::variant<std::string, double, bool, std::vector<std::string>, std::nullopt>;
+using ArgValue = std::variant<std::string, double, bool, std::vector<std::string>>;
 
 /**
  * Parsed command line arguments

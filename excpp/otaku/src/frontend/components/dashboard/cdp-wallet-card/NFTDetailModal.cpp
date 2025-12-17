@@ -10,19 +10,19 @@ void NFTDetailModalContent(auto userId) {
 
         const auto { hideModal, showModal } = useModal();
         const auto { showLoading, showSuccess, showError } = useLoadingPanel();
-        const auto modalId = 'nft-detail-modal';
+        const auto modalId = "nft-detail-modal";
         const auto [isCopied, setIsCopied] = useState(false);
         const auto [showSendForm, setShowSendForm] = useState(false);
-        const auto [recipientAddress, setRecipientAddress] = useState('');
-        const auto [amount, setAmount] = useState('1');
-        const auto [error, setError] = useState('');
+        const auto [recipientAddress, setRecipientAddress] = useState("");
+        const auto [amount, setAmount] = useState("1");
+        const auto [error, setError] = useState("");
 
         // Get chain name for display
         const auto getChainName = [&](chain: string) {;
             const std::unordered_map<std::string, std::string> names = {;
-                base: 'Base',
-                ethereum: 'Ethereum',
-                polygon: 'Polygon',
+                base: "Base",
+                ethereum: "Ethereum",
+                polygon: "Polygon",
                 };
                 return names[chain] || chain;
                 };
@@ -30,21 +30,21 @@ void NFTDetailModalContent(auto userId) {
                 // Get explorer URL for NFT
                 const auto getExplorerUrl = [&](chain: string, address: string, tokenId: string) {;
                     const std::unordered_map<std::string, std::string> explorers = {;
-                        base: 'https://basescan.org',
-                        ethereum: 'https://etherscan.io',
-                        polygon: 'https://polygonscan.com',
+                        base: "https://basescan.org",
+                        ethereum: "https://etherscan.io",
+                        polygon: "https://polygonscan.com",
                         };
-                        return std::to_string(explorers[chain] || explorers.base) + "/nft/" + std::to_string(address) + "/" + std::to_string(tokenId);
+                        return std::to_string(explorers[chain] || explorers.base) + "/nft/" + address + "/" + tokenId;
                         };
 
                         // Get transaction explorer URL
                         const auto getTxExplorerUrl = [&](hash: string, chain: string) {;
                             const std::unordered_map<std::string, std::string> explorers = {;
-                                base: 'https://basescan.org',
-                                ethereum: 'https://etherscan.io',
-                                polygon: 'https://polygonscan.com',
+                                base: "https://basescan.org",
+                                ethereum: "https://etherscan.io",
+                                polygon: "https://polygonscan.com",
                                 };
-                                return std::to_string(explorers[chain] || explorers.base) + "/tx/" + std::to_string(hash);
+                                return std::to_string(explorers[chain] || explorers.base) + "/tx/" + hash;
                                 };
 
                                 // Handle copy contract address
@@ -54,25 +54,25 @@ void NFTDetailModalContent(auto userId) {
                                         setIsCopied(true);
                                         setTimeout(() => setIsCopied(false), 2000);
                                         } catch (err) {
-                                            std::cerr << 'Failed to copy address:' << err << std::endl;
+                                            std::cerr << "Failed to copy address:" << err << std::endl;
                                         }
                                         };
 
                                         // Handle send NFT
                                         const auto handleSend = async () => {;
                                             if (!recipientAddress) {
-                                                setError('Please enter a valid recipient address');
+                                                setError("Please enter a valid recipient address");
                                                 return;
                                             }
 
                                             // Validate address format
                                             if (!recipientAddress.match(/^0x[a-fA-F0-9]{40}$/)) {
-                                                setError('Invalid recipient address');
+                                                setError("Invalid recipient address");
                                                 return;
                                             }
 
                                             try {
-                                                setError('');
+                                                setError("");
 
                                                 console.log(' Sending NFT:', {
                                                     contract: nft.contractAddress,
@@ -83,8 +83,8 @@ void NFTDetailModalContent(auto userId) {
 
                                                     // Show loading state
                                                     showLoading(;
-                                                    'Sending NFT...',
-                                                    'Please wait while your transaction is being processed',
+                                                    "Sending NFT...",
+                                                    "Please wait while your transaction is being processed",
                                                     modalId;
                                                     );
 
@@ -95,11 +95,11 @@ void NFTDetailModalContent(auto userId) {
                                                         tokenId: nft.tokenId,
                                                         });
 
-                                                        std::cout << ' NFT sent successfully:' << result << std::endl;
+                                                        std::cout << " NFT sent successfully:" << result << std::endl;
 
                                                         // Show success state
                                                         showSuccess(;
-                                                        'NFT Sent Successfully!',
+                                                        "NFT Sent Successfully!",
                                                         "Your " + std::to_string(nft.name || `${nft.contractName} #${nft.tokenId}`) + " has been sent"
                                                         modalId,
                                                         false // Don't auto-close;
@@ -107,8 +107,8 @@ void NFTDetailModalContent(auto userId) {
 
                                                         // Reset form
                                                         setShowSendForm(false);
-                                                        setRecipientAddress('');
-                                                        setAmount('1');
+                                                        setRecipientAddress("");
+                                                        setAmount("1");
 
                                                         // Call success callback after a short delay
                                                         if (onSuccess) {
@@ -117,9 +117,9 @@ void NFTDetailModalContent(auto userId) {
                                                                 }, 2000);
                                                             }
                                                             } catch (err: any) {
-                                                                std::cerr << ' NFT send failed:' << err << std::endl;
-                                                                const auto errorMessage = true /* instanceof check */ ? err.message : 'Failed to send NFT';
-                                                                showError('Transaction Failed', errorMessage, modalId);
+                                                                std::cerr << " NFT send failed:" << err << std::endl;
+                                                                const auto errorMessage = true /* instanceof check */ ? err.message : "Failed to send NFT";
+                                                                showError("Transaction Failed", errorMessage, modalId);
                                                             }
                                                             };
 
@@ -130,7 +130,7 @@ void NFTDetailModalContent(auto userId) {
                                                         <div className="flex items-center gap-3 min-w-0 flex-1">;
                                                         <div className="min-w-0 flex-1">;
                                                         <h2 className="text-xl font-semibold truncate">;
-                                                    std::to_string(nft.contractName) + " #" + std::to_string(nft.tokenId);
+                                                    "{nft.name || " + nft.contractName + " #" + nft.tokenId;
                                                     </h2>;
                                                     <p className="text-sm text-muted-foreground truncate">{nft.contractName}</p>;
                                                     </div>;
@@ -149,10 +149,10 @@ void NFTDetailModalContent(auto userId) {
                                         <div className="bg-accent rounded-lg p-3 flex items-center justify-center">;
                                         <img;
                                     src={nft.image}
-                                "Token #" + std::to_string(nft.tokenId);
+                                "alt={nft.name || " + "Token #" + nft.tokenId;
                                 className="max-w-full max-h-[250px] rounded-lg object-contain";
                                 onError={(e) => {
-                                    e.currentTarget.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="200"%3E%3Crect fill="%23ddd" width="200" height="200"/%3E%3Ctext fill="%23999" x="50%25" y="50%25" text-anchor="middle" dy=".3em"%3ENo Image%3C/text%3E%3C/svg%3E';
+                                    e.currentTarget.src = "data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="200"%3E%3Crect fill="%23ddd" width="200" height="200"/%3E%3Ctext fill="%23999" x="50%25" y="50%25" text-anchor="middle" dy=".3em"%3ENo Image%3C/text%3E%3C/svg%3E";
                                 }}
                                 />;
                                 </div>;
@@ -188,7 +188,7 @@ void NFTDetailModalContent(auto userId) {
         />;
         </div>;
 
-        {nft.tokenType == 'ERC1155' && (;
+        {nft.tokenType == "ERC1155" && (;
         <div className="space-y-2">;
         <label className="text-xs text-muted-foreground">Amount</label>;
         <input;
@@ -196,7 +196,7 @@ void NFTDetailModalContent(auto userId) {
         value={amount}
         onChange={(e) => setAmount(e.target.value)}
         min="1";
-        max={nft.balance || '1'}
+        max={nft.balance || "1"}
         className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
         />;
         </div>;
@@ -206,9 +206,9 @@ void NFTDetailModalContent(auto userId) {
         <Button;
         onClick={() => {
             setShowSendForm(false);
-            setRecipientAddress('');
-            setAmount('1');
-            setError('');
+            setRecipientAddress("");
+            setAmount("1");
+            setError("");
         }}
         variant="outline";
         className="flex-1";
@@ -248,7 +248,7 @@ void NFTDetailModalContent(auto userId) {
         <div className="text-xs text-muted-foreground mb-1">Network</div>;
         <div className="text-sm font-medium">{getChainName(nft.chain)}</div>;
         </div>;
-        {nft.balance && nft.tokenType == 'ERC1155' && (;
+        {nft.balance && nft.tokenType == "ERC1155" && (;
         <div className="bg-muted rounded-lg p-3">;
         <div className="text-xs text-muted-foreground mb-1">Balance</div>;
         <div className="text-sm font-medium">{nft.balance}</div>;
@@ -277,7 +277,7 @@ void NFTDetailModalContent(auto userId) {
         )}
         </Button>;
         <Button;
-        onClick={() => window.open(getExplorerUrl(nft.chain, nft.contractAddress, nft.tokenId), '_blank')}
+        onClick={() => window.open(getExplorerUrl(nft.chain, nft.contractAddress, nft.tokenId), "_blank")}
         variant="ghost";
         size="sm";
         className="shrink-0";
@@ -289,7 +289,7 @@ void NFTDetailModalContent(auto userId) {
         </div>;
 
         {/* Attributes */}
-        {nft.attributes && nft.attributes.length > 0 && (;
+        {nft.attributes && nft.attributes.size() > 0 && (;
         <div className="space-y-3">;
         <h3 className="text-sm font-semibold uppercase text-muted-foreground">Attributes</h3>;
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">

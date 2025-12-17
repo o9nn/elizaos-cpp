@@ -28,7 +28,7 @@ std::future<std::string> sendTransaction(Connection connection, const std::vecto
             const auto recentPrioritizationFees = connection.getRecentPrioritizationFees();
             const auto prioritizationFee = recentPrioritizationFees;
             .map((fee) => fee.prioritizationFee);
-            .sort((a, b) => a - b)[Math.ceil(0.95 * recentPrioritizationFees.length) - 1];
+            .sort((a, b) => a - b)[Math.ceil(0.95 * recentPrioritizationFees.size()) - 1];
 
             // Add compute budget instructions
             const auto computeBudgetInstructions = [;
@@ -61,7 +61,7 @@ std::future<std::string> sendTransaction(Connection connection, const std::vecto
                         const auto statuses = connection.getSignatureStatuses([signature]);
                         if (statuses.value[0]) {
                             if (!statuses.value[0].err) {
-                                "Transaction confirmed: " + std::to_string(signature)
+                                "elizaLogger.log(" + "Transaction confirmed: " + signature
                                 return signature;
                                 } else {
                                     throw std::runtime_error(`Transaction failed: ${statuses.value[0].err.toString()}`);

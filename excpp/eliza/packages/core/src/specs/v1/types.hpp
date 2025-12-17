@@ -1,11 +1,14 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
 
@@ -200,7 +203,7 @@ struct MessageExample {
 /**
  * Handler function type for processing messages
  */
-using Handler = std::function<std::future<unknown>(IAgentRuntime, Memory, State, std::any, HandlerCallback)>;
+using Handler = std::function<std::future<std::any>(IAgentRuntime, Memory, State, std::any, HandlerCallback)>;
 
 /**
  * Callback function type for handlers
@@ -398,7 +401,7 @@ struct ModelConfiguration {
     std::optional<TelemetrySettings> experimental_telemetry;
 };
 
-using TemplateType = std::variant<std::string, std::function<string)(std::any)>>;
+using TemplateType = std::function<void()>;
 
 /**
  * Configuration for an agent character
@@ -525,7 +528,7 @@ struct IDatabaseAdapter {
     std::optional<std::string> query;
     std::optional<std::string> conversationContext;
     UUID agentId;
-    Float32Array embedding;
+    std::vector<float> embedding;
     double match_threshold;
     double match_count;
     std::optional<std::string> searchText;
@@ -560,7 +563,7 @@ struct IRAGKnowledgeManager {
     std::optional<std::string> conversationContext;
     std::optional<UUID> agentId;
     UUID agentId;
-    std::variant<Float32Array, std::vector<double>> embedding;
+    std::variant<std::vector<float>, std::vector<double>> embedding;
     std::optional<double> match_threshold;
     std::optional<double> match_count;
     std::optional<std::string> searchText;
@@ -654,7 +657,7 @@ struct RAGKnowledgeItem {
     std::optional<std::string> source;
     std::optional<std::string> type;
     std::optional<bool> isShared;
-    std::optional<Float32Array> embedding;
+    std::optional<std::vector<float>> embedding;
     std::optional<double> createdAt;
     std::optional<double> similarity;
     std::optional<double> score;

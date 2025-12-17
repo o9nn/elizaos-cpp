@@ -1,17 +1,20 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".export/queries.hpp"
-#include ".generateTimeIntervals.hpp"
-#include ".types.hpp"
 #include "aiProjectSummary.hpp"
 #include "context.hpp"
+#include "export/queries.hpp"
+#include "generateTimeIntervals.hpp"
 #include "mutations.hpp"
+#include "types.hpp"
 
 namespace elizaos {
 

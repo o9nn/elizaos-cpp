@@ -1,10 +1,14 @@
 #pragma once
+#include <algorithm>
+#include <chrono>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "AuthenticationService.js.hpp"
 #include "elizaos/core.hpp"
@@ -31,7 +35,7 @@ struct ClientSession {
     std::string clientType;
     std::string platformId;
     std::optional<AuthStatus> authStatus;
-    Date lastActivity;
+    std::chrono::system_clock::time_point lastActivity;
     std::vector<std::string> validatedKeys;
 };
 
@@ -47,7 +51,7 @@ struct KeyDistributionResponse {
     std::optional<std::string> apiKey;
     std::string keyType;
     std::vector<std::string> capabilities;
-    std::optional<Date> expiresAt;
+    std::optional<std::chrono::system_clock::time_point> expiresAt;
     std::optional<std::string> error;
 };
 
@@ -71,7 +75,7 @@ public:
 private:
     IAgentRuntime runtime_;
     AuthenticationService authService_;
-    Date timestamp_;
+    std::chrono::system_clock::time_point timestamp_;
     std::string sessionId_;
     std::string provider_;
     std::string keyType_;

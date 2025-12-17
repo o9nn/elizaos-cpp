@@ -15,7 +15,7 @@ void notify(std::optional<std::any> newNotification) {
         setNotificationStore((state: { notifications: any[] }) => {
             state.notifications = [;
             ...notifications,
-            { type: 'success', ...newNotification },
+            { type: "success", ...newNotification },
             ];
             });
 

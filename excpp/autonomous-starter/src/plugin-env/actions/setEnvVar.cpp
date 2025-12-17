@@ -17,7 +17,7 @@ std::future<std::vector<EnvVarUpdate>> extractEnvVarValues(IAgentRuntime runtime
         );
         .map(([varName, config]) => {
             const auto requiredStr = config.required ? "Required." : "Optional.";
-            return std::to_string(pluginName) + "." + std::to_string(varName) + ": " + std::to_string(config.description) + " " + std::to_string(requiredStr);
+            return pluginName + "." + varName + ": " + config.description + " " + requiredStr;
             });
             .join("\n");
             });
@@ -44,13 +44,13 @@ std::future<std::vector<EnvVarUpdate>> extractEnvVarValues(IAgentRuntime runtime
 
                             // Custom parsing for arrays since parseJSONObjectFromText only handles objects
                             auto parsed: any;
-                            const auto jsonBlockMatch = "json\n([\s\S]*?)\n";
+                            const auto jsonBlockMatch = "result.match(/" + "json\n([\s\S]*?)\n";
 
                             try {
                                 if (jsonBlockMatch) {
-                                    parsed = JSON.parse(jsonBlockMatch[1].trim());
+                                    parsed = /* JSON.parse */ jsonBlockMatch[1].trim();
                                     } else {
-                                        parsed = JSON.parse(result.trim());
+                                        parsed = /* JSON.parse */ result.trim();
                                     }
                                     } catch (parseError) {
                                         std::cerr << "Error parsing JSON from model response:" << parseError << std::endl;
@@ -72,7 +72,7 @@ std::future<std::vector<EnvVarUpdate>> extractEnvVarValues(IAgentRuntime runtime
                                         ) {
                                             // Check if the variable exists in our metadata
                                             if (envVars[assignment.pluginName].[assignment.variableName]) {
-                                                validAssignments.push({
+                                                validAssignments.push_back({
                                                     pluginName: assignment.pluginName,
                                                     variableName: assignment.variableName,
                                                     value: assignment.value,

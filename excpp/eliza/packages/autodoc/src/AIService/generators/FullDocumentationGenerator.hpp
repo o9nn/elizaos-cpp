@@ -1,17 +1,20 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include "..TypeScriptParser.js.hpp"
-#include "..utils/prompts.hpp"
-#include ".AIService.js.hpp"
-#include ".utils/CodeFormatter.js.hpp"
-#include ".utils/DocumentOrganizer.js.hpp"
+#include "AIService.js.hpp"
+#include "TypeScriptParser.js.hpp"
+#include "utils/CodeFormatter.js.hpp"
+#include "utils/DocumentOrganizer.js.hpp"
+#include "utils/prompts.hpp"
 
 namespace elizaos {
 

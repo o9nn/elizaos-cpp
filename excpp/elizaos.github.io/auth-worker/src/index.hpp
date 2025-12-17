@@ -1,10 +1,13 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -25,13 +28,13 @@ struct Env {
         return handleStatus(env);
 
 // Handler for the GitHub OAuth callback
-std::future<Response> handleCallback(Request request, Env env);
+std::future<std::string> handleCallback(const std::string& request, Env env);
 
 // Handler for status checks
-Response handleStatus(Env env);
+std::string handleStatus(Env env);
 
 // Helper to handle CORS preflight requests
-Response handleCors(Request request, Env env);
+std::string handleCors(const std::string& request, Env env);
 
 // Helper to get CORS headers for responses
 HeadersInit getCorsHeaders(Env env);

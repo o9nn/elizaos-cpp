@@ -1,11 +1,14 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "elizaos/core.hpp"
 
@@ -21,7 +24,7 @@ namespace elizaos {
  * Supports DOCX, plain text, and provides a fallback for unknown types.
  * PDF should be handled by `convertPdfToTextFromBuffer`.
  */
-std::future<std::string> extractTextFromFileBuffer(Buffer fileBuffer, const std::string& contentType, string // For logging and context originalFilename);
+std::future<std::string> extractTextFromFileBuffer(const std::vector<uint8_t>& fileBuffer, const std::string& contentType, string // For logging and context originalFilename);
 
 /**
  * Converts a PDF file buffer to text content.
@@ -34,7 +37,7 @@ std::future<std::string> extractTextFromFileBuffer(Buffer fileBuffer, const std:
  * @param {string} [filename] - Optional filename for logging purposes
  * @returns {Promise<string>} Text content of the PDF
  */
-std::future<std::string> convertPdfToTextFromBuffer(Buffer pdfBuffer, std::optional<std::string> filename);
+std::future<std::string> convertPdfToTextFromBuffer(const std::vector<uint8_t>& pdfBuffer, std::optional<std::string> filename);
 
 /**
  * Determines if a file should be treated as binary based on its content type and filename

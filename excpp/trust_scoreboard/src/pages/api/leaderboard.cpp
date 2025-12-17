@@ -9,12 +9,12 @@ std::future<double> getTokenPrice(const std::string& address) {
 
     try {
         const auto response = fetch(HELIUS_API, {;
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                jsonrpc: '2.0',
-                id: 'price-fetch',
-                method: 'getAsset',
+                jsonrpc: "2.0",
+                id: "price-fetch",
+                method: "getAsset",
                 params: {
                     id: address,
                 displayOptions: { showFungible: true }
@@ -25,7 +25,7 @@ std::future<double> getTokenPrice(const std::string& address) {
             const auto { result } = response.json();
             return result.token_info.price_info.price_per_token || 0;
             } catch (error) {
-                std::cerr << "Error fetching price for " + std::to_string(address) + ":" << error << std::endl;
+                std::cerr << "Error fetching price for " + address + ":" << error << std::endl;
                 return 0;
             }
 
@@ -36,13 +36,13 @@ std::future<void> handler(NextApiRequest req, const std::variant<NextApiResponse
 
     try {
         if (req.method != 'GET') {
-            return res.status(405).json({ message: 'Method not allowed', statusCode: 405 });
+            return res.status(405).json({ message: "Method not allowed", statusCode: 405 });
         }
 
         // Get partners first with error handling
         const auto partners = getAllPartners();
         if (!partners) {
-            return res.status(500).json({ message: 'Failed to fetch partners', statusCode: 500 });
+            return res.status(500).json({ message: "Failed to fetch partners", statusCode: 500 });
         }
 
         // Fetch token prices from CoinGecko
@@ -55,7 +55,7 @@ std::future<void> handler(NextApiRequest req, const std::variant<NextApiResponse
 
             return res.status(200).json({ partners, prices });
             } catch (error) {
-                return res.status(500).json({ message: 'Internal server error', statusCode: 500 });
+                return res.status(500).json({ message: "Internal server error", statusCode: 500 });
             }
 
 }

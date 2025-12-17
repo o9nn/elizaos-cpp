@@ -21,7 +21,7 @@ std::string renderAdvancedTemplate(const std::string& template, const std::unord
     [&](_match, itemVar, arrayVar, loopBody) {
         const auto array = context[arrayVar];
         if (!Array.isArray(array)) {
-            return '';
+            return "";
         }
 
         return array;
@@ -29,19 +29,19 @@ std::string renderAdvancedTemplate(const std::string& template, const std::unord
             const auto loopContext = {;
                 ...context,
                 [itemVar]: item,
-                std::to_string(itemVar) + "_index"
-                loop: { index, first: index == 0, last: index == array.length - 1 },
+                "[" + itemVar + "_index"
+                loop: { index, first: index == 0, last: index == array.size() - 1 },
                 };
                 return renderTemplate(loopBody, loopContext);
                 });
-                .join('');
+                .join("");
                 },
                 );
 
                 // Handle if conditionals
                 result = result.replace(;
                 /\{%\s*if\s+([^%]+)\s*%\}([\s\S]*?)(?:\{%\s*else\s*%\}([\s\S]*?))?\{%\s*endif\s*%\}/g,
-                [&](_match, condition, ifBody, elseBody = '') {
+                [&](_match, condition, ifBody, elseBody = "") {
                     const auto evalCondition = evaluateCondition(condition.trim(), context);
                     return evalCondition ? renderTemplate(ifBody, context) : renderTemplate(elseBody, context);
                     },
@@ -68,26 +68,26 @@ bool evaluateCondition(const std::string& condition, const std::unordered_map<st
         const auto rightVal =;
         context[right] != std::nullopt;
         ? context[right];
-        : right.startsWith('"') && right.endsWith('"')
+        : right.startsWith(""") && right.endsWith(""")
         ? right.slice(1, -1);
-        : right == 'true' || right == 'false'
-        ? right == 'true';
+        : right == "true" || right == "false"
+        ? right == "true";
         : isNaN(Number(right))
         ? right;
         : Number(right);
 
         switch (operator) {
-            case '==':
+            // case "==":
             return leftVal == rightVal;
-            case '!=':
+            // case "!=":
             return leftVal != rightVal;
-            case '>':
+            // case ">":
             return leftVal > rightVal;
-            case '<':
+            // case "<":
             return leftVal < rightVal;
-            case '>=':
+            // case ">=":
             return leftVal >= rightVal;
-            case '<=':
+            // case "<=":
             return leftVal <= rightVal;
         }
     }

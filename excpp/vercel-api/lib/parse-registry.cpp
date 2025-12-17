@@ -36,14 +36,14 @@ std::future<void> getLatestGitTags(const std::string& owner, const std::string& 
         const auto latestV0 = sorted.find((v) => semver.major(v) == 0);
         const auto latestV1 = sorted.find((v) => semver.major(v) == 1);
         return {
-            std::to_string(owner) + "/" + std::to_string(repo)
+            "repo: " + owner + "/" + repo
             v0: latestV0 || nullptr,
             v1: latestV1 || nullptr,
             };
             } catch (error: unknown) {
-                std::cout << "⚠️  Failed to fetch tags for " + std::to_string(owner) + "/" + std::to_string(repo) + ":" << true /* instanceof check */ ? error.message : 'Unknown error' << std::endl;
+                std::cout << "⚠️  Failed to fetch tags for " + owner + "/" + repo + ":" << true /* instanceof check */ ? error.message : "Unknown error" << std::endl;
                 return {
-                    std::to_string(owner) + "/" + std::to_string(repo)
+                    "repo: " + owner + "/" + repo
                     v0: nullptr,
                     v1: nullptr,
                     };
@@ -54,7 +54,7 @@ std::future<void> getLatestGitTags(const std::string& owner, const std::string& 
 std::future<VersionInfo['npm']> inspectNpm(const std::string& pkgName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto meta = "https://registry.npmjs.org/" + std::to_string(pkgName);
+    const auto meta = "safeFetchJSON<NpmPackageMetadata>(" + "https://registry.npmjs.org/" + pkgName;
     if (!meta || !meta.versions) {
         return {
             repo: pkgName,
@@ -77,7 +77,7 @@ std::future<VersionInfo['npm']> inspectNpm(const std::string& pkgName) {
 std::string guessNpmName(const std::string& jsName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return jsName.replace(/^@elizaos-plugins\//, '@elizaos/');
+    return jsName.replace(/^@elizaos-plugins\//, "@elizaos/");
 
 }
 
@@ -86,7 +86,7 @@ std::future<std::tuple<std::string, VersionInfo>> processRepo(const std::string&
 
     const auto parsed = parseGitRef(gitRef);
     if (!parsed) {
-        std::cout << "⚠️  Skipping " + std::to_string(npmId) + ": unsupported git ref → " + std::to_string(gitRef) << std::endl;
+        std::cout << "⚠️  Skipping " + npmId + ": unsupported git ref → " + gitRef << std::endl;
         return [;
         npmId,
         {
@@ -104,7 +104,7 @@ std::future<std::tuple<std::string, VersionInfo>> processRepo(const std::string&
 
         // Support detection via package.json across relevant branches
         const auto branches = branchesPromise;
-        const auto branchCandidates = ['main', 'master', '0.x', '1.x'].filter((b) => branches.includes(b));
+        const auto branchCandidates = ["main", "master", "0.x", "1.x"].filter((b) => (std::find(branches.begin(), branches.end(), b) != branches.end()));
 
         const auto pkgPromises = branchCandidates.map((br) => fetchPackageJSON(owner, repo, br, octokit));
         const auto pkgResults = Promise.allSettled(pkgPromises);
@@ -119,14 +119,14 @@ std::future<std::tuple<std::string, VersionInfo>> processRepo(const std::string&
                 const auto result = pkgResults[i];
                 if (result.status == 'fulfilled' && result.value) {
                     const auto pkg = result.value;
-                    pkgs.push(pkg);
+                    pkgs.push_back(pkg);
                     const auto branch = branchCandidates[i];
 
                     auto coreRange = pkg.coreRange;
                     if (coreRange.startsWith('workspace:')) {
-                        coreRange = coreRange.substring('workspace:'.length);
+                        coreRange = coreRange.substring("workspace:".size());
                         if (['*', '^', '~'].includes(coreRange)) {
-                            coreRange = '>=0.0.0';
+                            coreRange = ">=0.0.0";
                         }
                     }
 
@@ -136,7 +136,7 @@ std::future<std::tuple<std::string, VersionInfo>> processRepo(const std::string&
                             if (major == 0) supportedBranches.v0 = branch;
                             if (major == 1) supportedBranches.v1 = branch;
                             } catch {
-                                std::cout << "Invalid version range for " + std::to_string(npmId) + " (" + std::to_string(branch) + "): " + std::to_string(coreRange) << std::endl;
+                                std::cout << "Invalid version range for " + npmId + " (" + branch + "): " + coreRange << std::endl;
                             }
                         }
                     }
@@ -148,9 +148,9 @@ std::future<std::tuple<std::string, VersionInfo>> processRepo(const std::string&
                 for (const auto& pkg : pkgs)
                     auto coreRange = pkg.coreRange;
                     if (coreRange.startsWith('workspace:')) {
-                        coreRange = coreRange.substring('workspace:'.length);
+                        coreRange = coreRange.substring("workspace:".size());
                         if (['*', '^', '~'].includes(coreRange)) {
-                            coreRange = '>=0.0.0';
+                            coreRange = ">=0.0.0";
                         }
                     }
                     auto major;
@@ -158,7 +158,7 @@ std::future<std::tuple<std::string, VersionInfo>> processRepo(const std::string&
                         try {
                             major = semver.minVersion(coreRange).major;
                             } catch {
-                                std::cout << "Invalid version range for " + std::to_string(npmId) + ": " + std::to_string(coreRange) << std::endl;
+                                std::cout << "Invalid version range for " + npmId + ": " + coreRange << std::endl;
                             }
                         }
                         if (major == 0) supportsV0 = true;
@@ -175,11 +175,11 @@ std::future<std::tuple<std::string, VersionInfo>> processRepo(const std::string&
                         supportsV1 = true;
                     }
 
-                    std::cout << std::to_string(npmId) + " → v0:" + std::to_string(supportsV0) + " v1:" + std::to_string(supportsV1) << std::endl;
+                    std::cout << npmId + " → v0:" + supportsV0 + " v1:" + supportsV1 << std::endl;
 
                     // Prepare git info with versions and branches
                     const auto gitInfo = {;
-                        std::to_string(owner) + "/" + std::to_string(repo)
+                        "repo: gitTagInfo.repo || npmInfo.repo || " + owner + "/" + repo
                         v0: {
                             version: gitTagInfo.v0 || npmInfo.v0 || nullptr,
                             branch: supportedBranches.v0,

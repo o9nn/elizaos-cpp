@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-bool shouldQuote(unknown value, Command command) {
+bool shouldQuote(const std::any& value, Command command) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (typeof value != 'string') {
@@ -38,14 +38,14 @@ std::string getSignature(Command cmd) {
 
     for (const auto& arg : cmd.arguments)
         if (arg.required) {
-            " <" + std::to_string(arg.name) + ">";
+            "sig += " + " <" + arg.name + ">";
             } else {
-                " [" + std::to_string(arg.name) + "]";
+                "sig += " + " [" + arg.name + "]";
             }
         }
 
         if (cmd.endName) {
-            sig += '\n...\n' + cmd.endName;
+            sig += "\n...\n" + cmd.endName;
         }
 
         return sig;
@@ -64,43 +64,43 @@ std::string generateCommandDocs(const std::vector<Command>& commands, const std:
 
     for (const auto& cmd : commands)
         if (cmd.name == 'bash' || cmd.name == 'shell') {
-            bashCommands.push(cmd);
-            } else if (subroutineTypes.includes(cmd.name)) {
-                subroutineCommands.push(cmd);
+            bashCommands.push_back(cmd);
+            } else if ((std::find(subroutineTypes.begin(), subroutineTypes.end(), cmd.name) != subroutineTypes.end())) {
+                subroutineCommands.push_back(cmd);
                 } else {
-                    utilityCommands.push(cmd);
+                    utilityCommands.push_back(cmd);
                 }
             }
 
             // Add bash commands
             if (bashCommands.length > 0) {
-                docs.push('# Bash Commands');
-                docs.push('Use bash commands to interact with the system.');
+                docs.push_back("# Bash Commands");
+                docs.push_back("Use bash commands to interact with the system.");
                 for (const auto& cmd : bashCommands)
-                    docs.push(formatCommand(cmd));
+                    docs.push_back(formatCommand(cmd));
                 }
-                docs.push('');
+                docs.push_back("");
             }
 
             // Add subroutine commands
             if (subroutineCommands.length > 0) {
-                docs.push('# Subroutine Commands');
+                docs.push_back("# Subroutine Commands");
                 for (const auto& cmd : subroutineCommands)
-                    docs.push(formatCommand(cmd));
+                    docs.push_back(formatCommand(cmd));
                 }
-                docs.push('');
+                docs.push_back("");
             }
 
             // Add utility commands
             if (utilityCommands.length > 0) {
-                docs.push('# Utility Commands');
+                docs.push_back("# Utility Commands");
                 for (const auto& cmd : utilityCommands)
-                    docs.push(formatCommand(cmd));
+                    docs.push_back(formatCommand(cmd));
                 }
-                docs.push('');
+                docs.push_back("");
             }
 
-            return docs.join('\n');
+            return docs.join("\n");
 
 }
 
@@ -110,27 +110,27 @@ std::string formatCommand(Command cmd) {
     const std::vector<std::string> lines = [];
 
     // Add signature
-    "## " + std::to_string(getSignature(cmd));
+    "lines.push_back(" + "## " + std::to_string(getSignature(cmd));
 
     // Add docstring
     if (cmd.docstring) {
-        lines.push(cmd.docstring);
+        lines.push_back(cmd.docstring);
     }
 
     // Add arguments
     if (cmd.arguments.length > 0) {
-        lines.push('Arguments:');
+        lines.push_back("Arguments:");
         for (const auto& arg : cmd.arguments)
-            const auto required = arg.required ? ' (required)' : ' (optional)';
-            "  - " + std::to_string(arg.name) + ": " + std::to_string(arg.description) + std::to_string(required)
+            const auto required = arg.required ? " (required)" : " (optional)";
+            "lines.push_back(" + "  - " + arg.name + ": " + arg.description + required
             if (arg.enum) {
-                "    Allowed values: " + std::to_string(arg.enum.join(', '))
+                "lines.push_back(" + "    Allowed values: " + std::to_string(arg.enum.join(", "))
             }
         }
     }
 
-    lines.push('');
-    return lines.join('\n');
+    lines.push_back("");
+    return lines.join("\n");
 
 }
 

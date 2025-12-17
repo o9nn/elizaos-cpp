@@ -26,11 +26,11 @@ std::future<void> GET(NextRequest request) {
             );
         }
 
-        std::cout << "[API] Fetching session: " + std::to_string(sessionId) + " for user: " + std::to_string(userId) << std::endl;
+        std::cout << "[API] Fetching session: " + sessionId + " for user: " + userId << std::endl;
 
         // Get all channels from the correct ElizaOS API endpoint
         const auto channelsResponse = fetch(;
-        std::to_string(API_BASE_URL) + "/api/messaging/central-servers/00000000-0000-0000-0000-000000000000/channels"
+        API_BASE_URL + "/api/messaging/central-servers/00000000-0000-0000-0000-000000000000/channels"
         {
             method: "GET",
             headers: {
@@ -64,7 +64,7 @@ std::future<void> GET(NextRequest request) {
 
                     try {
                         const auto messagesResponse = fetch(;
-                        std::to_string(API_BASE_URL) + "/api/messaging/central-channels/" + std::to_string(sessionChannel.id) + "/messages?limit=100"
+                        API_BASE_URL + "/api/messaging/central-channels/" + sessionChannel.id + "/messages?limit=100"
                         {
                             method: "GET",
                             headers: { "Content-Type": "application/json" },
@@ -74,11 +74,11 @@ std::future<void> GET(NextRequest request) {
                             if (messagesResponse.ok) {
                                 const auto messagesData = messagesResponse.json();
                                 messages = messagesData.data.messages || messagesData.messages || [];
-                                messageCount = messages.length;
+                                messageCount = messages.size();
                             }
                             } catch (error) {
                                 console.error(
-                                "[API] Error fetching messages for session " + std::to_string(sessionId) + ":"
+                                "[API] Error fetching messages for session " + sessionId + ":"
                                 error,
                                 );
                             }
@@ -94,7 +94,7 @@ std::future<void> GET(NextRequest request) {
                             msg.authorId == userId || msg.rawMessage.senderId == userId,
                             );
 
-                            const auto lastMessage = messages[messages.length - 1];
+                            const auto lastMessage = messages[messages.size() - 1];
 
                             const auto sessionData = {;
                                 id: sessionId,

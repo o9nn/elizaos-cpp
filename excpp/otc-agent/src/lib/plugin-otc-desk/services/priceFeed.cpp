@@ -9,7 +9,7 @@ std::future<std::optional<PriceCache>> getCachedPrice(const std::string& key) {
 
     const auto { agentRuntime } = import("../../agent-runtime");
     const auto runtime = agentRuntime.getRuntime();
-    return "price:" + std::to_string(key);
+    return "(runtime.getCache<PriceCache>(" + "price:" + key;
 
 }
 
@@ -18,7 +18,7 @@ std::future<void> setCachedPrice(const std::string& key, PriceCache value) {
 
     const auto { agentRuntime } = import("../../agent-runtime");
     const auto runtime = agentRuntime.getRuntime();
-    "price:" + std::to_string(key)
+    "runtime.setCache(" + "price:" + key
 
 }
 

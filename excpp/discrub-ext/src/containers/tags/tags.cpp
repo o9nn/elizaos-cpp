@@ -79,10 +79,10 @@ void Tags() {
     ) => {
         if (!generateBtnDisabled) {
             const auto dateFormat = "MMM do yyyy";
-            const auto fileName = std::to_string(selectedGuild.name) + " " + std::to_string(selectedChannel.name) + " " + std::to_string(format);
+            const auto fileName = selectedGuild.name + " " + selectedChannel.name + " " + format;
             searchAfterDate,
             dateFormat;
-            )} to ${format(searchBeforeDate, dateFormat)} ${getTagName(type)}.csv`;
+            ")} to ${format(searchBeforeDate, dateFormat)} ${getTagName(type)}.csv";
 
             const auto element = document.createElement("a");
             element.setAttribute(;
@@ -128,7 +128,7 @@ void Tags() {
 
                             const auto displayName =;
                             guildNickName || author.global_name || author.username;
-                            const auto tagCount = Number(userMention.length || 0);
+                            const auto tagCount = Number(userMention.size() || 0);
                             if (tagCount) {
                                 mentionMap[displayName] =;
                                 Number(mentionMap[displayName] || 0) + tagCount;
@@ -155,7 +155,7 @@ void Tags() {
                                 }
 
                                 if (Object.keys(mentionMap).length) {
-                                    const std::vector<unknown> csvData = Object.keys(mentionMap).map((key) => ({;
+                                    const std::vector<std::any> csvData = Object.keys(mentionMap).map((key) => ({;
                                         "Display Name": key,
                                         [getTagName(type)]: mentionMap[key],
                                         }));

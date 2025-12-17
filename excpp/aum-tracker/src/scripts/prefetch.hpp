@@ -1,15 +1,19 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <chrono>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".services/csv.hpp"
-#include ".services/database.hpp"
-#include ".services/solana.hpp"
+#include "services/csv.hpp"
+#include "services/database.hpp"
+#include "services/solana.hpp"
 
 namespace elizaos {
 
@@ -33,8 +37,8 @@ struct PrefetchStats {
     double successful;
     double failed;
     double skipped;
-    Date startTime;
-    std::optional<Date> endTime;
+    std::chrono::system_clock::time_point startTime;
+    std::optional<std::chrono::system_clock::time_point> endTime;
     std::vector<std::string> errors;
 };
 

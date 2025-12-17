@@ -1,12 +1,16 @@
 #pragma once
+#include <algorithm>
+#include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
-#include "..utils.hpp"
+#include "utils.hpp"
 
 namespace elizaos {
 
@@ -21,7 +25,7 @@ namespace elizaos {
  * @param {unknown} value - The value to be validated.
  * @returns {UUID | null} The validated UUID value or null if validation fails.
  */
-std::optional<UUID> validateUuid(unknown value);
+std::optional<UUID> validateUuid(const std::any& value);
 
 /**
  * Converts a string or number to a UUID.

@@ -12,7 +12,7 @@ std::any safeStringify(const std::any& obj) {
     }
 
     if (typeof obj == "bigint") {
-        return obj.toString();
+        return std::to_string(obj);
     }
 
     if (Array.isArray(obj)) {

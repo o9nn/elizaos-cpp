@@ -24,14 +24,14 @@ std::future<std::string> generateProjectSummary(RepositoryMetrics metrics, AISum
 
             // Calculate token length based on prompt content and interval type
             const auto maxTokens = calculateMaxTokens(prompt, intervalType, config);
-            std::cout << "Max tokens: " + std::to_string(maxTokens) << intervalType: ${intervalType}` << std::endl;
+            std::cout << "Max tokens: " + maxTokens << "intervalType: ${intervalType}" << std::endl;
             // Get analysis from AI model
             return callAIService(prompt, config, {;
                 maxTokens,
                 model: config.models[intervalType],
                 });
                 } catch (error) {
-                    std::cerr << "Error generating " + std::to_string(intervalType) + " project analysis:" << error << std::endl;
+                    std::cerr << "Error generating " + intervalType + " project analysis:" << error << std::endl;
                     return nullptr;
                 }
 
@@ -55,7 +55,7 @@ double calculateMaxTokens(const std::string& prompt, IntervalType intervalType, 
         const auto baseTokens = baseTokensByInterval[intervalType] || 600;
 
         // Simple estimation: 1 token ≈ 4 characters in English
-        const auto estimatedPromptTokens = prompt.length / 4;
+        const auto estimatedPromptTokens = prompt.size() / 4;
         // Add 20% more tokens for every 400 estimated tokens in the prompt
         const auto scalingFactor = 1 + Math.floor(estimatedPromptTokens / 400) * 0.2;
 
@@ -79,13 +79,13 @@ std::string formatAnalysisPrompt(RepositoryMetrics metrics, const std::any& date
     const auto topActiveAreas = metrics.focusAreas;
     .sort((a, b) => b.count - a.count);
     .slice(0, 5);
-    std::to_string(area.area) + ": " + std::to_string(area.count) + " changes"
+    ".map((area) => " + area.area + ": " + area.count + " changes"
 
     const auto formatCompletedItems = (type: WorkItemType) =>;
     metrics.completedItems;
     .filter((item) => item.type == type);
     .map(;
-    " (PR #" + std::to_string(item.prNumber) + ") " + std::to_string(item.title) + ". BODY: " + std::to_string(item.body)
+    "(item) => " + " (PR #" + item.prNumber + ") " + item.title + ". BODY: " + item.body
     );
     .join("\n- ") || "None";
 
@@ -124,10 +124,10 @@ std::string formatAnalysisPrompt(RepositoryMetrics metrics, const std::any& date
     - ${topActiveAreas.join("\n- ")}
 
     NEW ISSUES:
-    "[#" + std::to_string(issue.number) + "] " + std::to_string(issue.title) + ". BODY: " + std::to_string(issue.body.slice(0, 240))
+    "- ${newIssues.map((issue) => " + "[#" + issue.number + "] " + issue.title + ". BODY: " + std::to_string(issue.body.slice(0, 240))
 
     CLOSED ISSUES:
-    "[#" + std::to_string(issue.number) + "] " + std::to_string(issue.title) + ". BODY: " + std::to_string(issue.body.slice(0, 240))
+    "- ${closedIssues.map((issue) => " + "[#" + issue.number + "] " + issue.title + ". BODY: " + std::to_string(issue.body.slice(0, 240))
 
     Format the report with the following sections:
 
@@ -154,7 +154,7 @@ std::string formatAnalysisPrompt(RepositoryMetrics metrics, const std::any& date
 
     ${
         intervalType == "month";
-        ? `;
+        "? ";
         ## SUMMARY;
         Close with a short summary of the months achievements;
         `;

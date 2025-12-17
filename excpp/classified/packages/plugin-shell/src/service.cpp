@@ -14,57 +14,57 @@ std::variant<Omit<FileOperationEntry, 'timestamp', std::string, 'cwd'>> parseFil
     std::string secondaryTarget = std::nullopt;
 
     // Simple keywords for operations
-    const auto readCmds = ['cat', 'less', 'more', 'head', 'tail', 'type']; // 'type' is Windows equivalent of 'cat';
-    const auto writeCmds = ['touch']; // 'echo >'/'>>' are harder to parse simply, vim/nano are "edit";
+    const auto readCmds = ["cat", "less", "more", "head", "tail", "type"]; // "type" is Windows equivalent of "cat";
+    const auto writeCmds = ["touch"]; // "echo >"/">>" are harder to parse simply, vim/nano are "edit";
     const auto editCmds = [;
-    'vim',
-    'nano',
-    'vi',
-    'code',
-    'subl',
-    'pico',
-    'notepad',
-    'notepad++',
+    "vim",
+    "nano",
+    "vi",
+    "code",
+    "subl",
+    "pico",
+    "notepad",
+    "notepad++",
     ]; // Common editors including Windows;
-    const auto deleteCmds = ['rm', 'unlink', 'del', 'erase']; // 'del' and 'erase' are Windows;
-    const auto createDirCmds = ['mkdir', 'md']; // 'md' is Windows short form;
-    const auto deleteDirCmds = ['rmdir', 'rd']; // 'rd' is Windows short form;
-    const auto moveCmds = ['mv', 'move']; // 'move' is Windows;
-    const auto copyCmds = ['cp', 'copy', 'xcopy']; // 'copy' and 'xcopy' are Windows;
+    const auto deleteCmds = ["rm", "unlink", "del", "erase"]; // "del" and "erase" are Windows;
+    const auto createDirCmds = ["mkdir", "md"]; // "md" is Windows short form;
+    const auto deleteDirCmds = ["rmdir", "rd"]; // "rd" is Windows short form;
+    const auto moveCmds = ["mv", "move"]; // "move" is Windows;
+    const auto copyCmds = ["cp", "copy", "xcopy"]; // "copy" and "xcopy" are Windows;
 
     if (readCmds.includes(cmd) && parts.length > 1) {
-        operationType = 'read';
+        operationType = "read";
         target = parts[1];
-        } else if (writeCmds.includes(cmd) && parts.length > 1) {
-            operationType = 'write';
+        } else if ((std::find(writeCmds.begin(), writeCmds.end(), cmd) != writeCmds.end()) && parts.size() > 1) {
+            operationType = "write";
             target = parts[1];
-            } else if (editCmds.includes(cmd) && parts.length > 1) {
-                operationType = 'edit';
+            } else if ((std::find(editCmds.begin(), editCmds.end(), cmd) != editCmds.end()) && parts.size() > 1) {
+                operationType = "edit";
                 target = parts[1];
-                } else if (deleteCmds.includes(cmd) && parts.length > 1) {
-                    operationType = 'delete';
+                } else if ((std::find(deleteCmds.begin(), deleteCmds.end(), cmd) != deleteCmds.end()) && parts.size() > 1) {
+                    operationType = "delete";
                     target = parts[1];
-                    } else if (createDirCmds.includes(cmd) && parts.length > 1) {
-                        operationType = 'create_dir';
+                    } else if ((std::find(createDirCmds.begin(), createDirCmds.end(), cmd) != createDirCmds.end()) && parts.size() > 1) {
+                        operationType = "create_dir";
                         target = parts[1];
-                        } else if (deleteDirCmds.includes(cmd) && parts.length > 1) {
-                            operationType = 'delete_dir';
+                        } else if ((std::find(deleteDirCmds.begin(), deleteDirCmds.end(), cmd) != deleteDirCmds.end()) && parts.size() > 1) {
+                            operationType = "delete_dir";
                             target = parts[1];
-                            } else if (moveCmds.includes(cmd) && parts.length > 2) {
-                                operationType = 'move';
+                            } else if ((std::find(moveCmds.begin(), moveCmds.end(), cmd) != moveCmds.end()) && parts.size() > 2) {
+                                operationType = "move";
                                 target = parts[1];
                                 secondaryTarget = parts[2];
-                                } else if (copyCmds.includes(cmd) && parts.length > 2) {
-                                    operationType = 'copy';
+                                } else if ((std::find(copyCmds.begin(), copyCmds.end(), cmd) != copyCmds.end()) && parts.size() > 2) {
+                                    operationType = "copy";
                                     target = parts[1];
                                     secondaryTarget = parts[2];
                                     } else if (;
-                                    cmd == 'echo' &&;
-                                    parts.length > 2 &&;
-                                    (parts[parts.length - 2] == '>' || parts[parts.length - 2] == '>>');
+                                    cmd == "echo" &&;
+                                    parts.size() > 2 &&;
+                                    (parts[parts.size() - 2] == ">" || parts[parts.size() - 2] == ">>");
                                     ) {
-                                        operationType = 'write'; // or 'append';
-                                        target = parts[parts.length - 1];
+                                        operationType = "write"; // or "append";
+                                        target = parts[parts.size() - 1];
                                     }
                                     // Add more complex parsing for grep, find, etc. if needed
 

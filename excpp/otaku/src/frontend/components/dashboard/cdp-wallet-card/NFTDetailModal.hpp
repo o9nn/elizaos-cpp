@@ -1,15 +1,18 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
-#include "...contexts/LoadingPanelContext.hpp"
-#include "...contexts/ModalContext.hpp"
-#include "...lib/elizaClient.hpp"
-#include "..ui/button.hpp"
+#include "contexts/LoadingPanelContext.hpp"
+#include "contexts/ModalContext.hpp"
+#include "lib/elizaClient.hpp"
+#include "ui/button.hpp"
 
 namespace elizaos {
 

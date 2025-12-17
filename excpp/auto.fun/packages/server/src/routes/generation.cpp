@@ -21,7 +21,7 @@ std::future<void> generatePromptMetadata(auto maxRetries) {
         while (retryCount < maxRetries) {
             try {
                 logger.log(
-                "Generating token metadata (attempt " + std::to_string(retryCount + 1) + "/" + std::to_string(maxRetries) + ")...";
+                "Generating token metadata (attempt " + std::to_string(retryCount + 1) + "/" + maxRetries + ")...";
                 );
 
                 const auto systemPromptContent = createTokenPrompt({ prompt: prompt }); // Removed validatedData argument;
@@ -34,7 +34,7 @@ std::future<void> generatePromptMetadata(auto maxRetries) {
                     // Assuming the model's default or configured temperature is used.
                     };
 
-                    std::cout << "Fal AI Input:" << JSON.stringify(falInput) << std::endl;
+                    std::cout << "Fal AI Input:" << /* JSON.stringify */ std::string(falInput) << std::endl;
 
                     // Use fal.subscribe
                     const std::any response = fal.subscribe("fal-ai/any-llm", {;
@@ -55,7 +55,7 @@ std::future<void> generatePromptMetadata(auto maxRetries) {
                             "[Endpoint - Attempt " + std::to_string(retryCount + 1) + "] Raw Fal AI output:"
                             typeof rawOutput == "string";
                             ? rawOutput.substring(0, 100) + "...";
-                            : JSON.stringify(rawOutput)
+                            : /* JSON.stringify */ std::string(rawOutput)
                             );
 
                             std::cout << "rawOutput is" << rawOutput << std::endl;
@@ -83,7 +83,7 @@ std::future<void> generatePromptMetadata(auto maxRetries) {
 
                             try {
                                 // Try to parse the extracted JSON
-                                metadata = JSON.parse(jsonString);
+                                metadata = /* JSON.parse */ jsonString;
                                 } catch (parseError) {
                                     // If the first extraction fails, try a more aggressive approach
                                     // Look for individual fields and construct a JSON object
@@ -135,7 +135,7 @@ std::future<void> generatePromptMetadata(auto maxRetries) {
                                         metadata.symbol = metadata.symbol.toUpperCase();
 
                                         logger.log(
-                                        "Successfully generated metadata on attempt " + std::to_string(retryCount + 1) + "/" + std::to_string(maxRetries);
+                                        "Successfully generated metadata on attempt " + std::to_string(retryCount + 1) + "/" + maxRetries;
                                         );
                                         return metadata;
                                         } catch (error) {
@@ -154,7 +154,7 @@ std::future<void> generatePromptMetadata(auto maxRetries) {
 
                                     // All retries failed
                                     logger.error(
-                                    "Failed to generate metadata after " + std::to_string(maxRetries) + " attempts in endpoint";
+                                    "Failed to generate metadata after " + maxRetries + " attempts in endpoint";
                                     );
                                     return nullptr;
 

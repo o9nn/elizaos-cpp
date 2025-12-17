@@ -8,7 +8,7 @@ std::future<void> waitForTxConfirmation(PublicClient publicClient, `0x${string}`
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        std::cout << "[Transaction Confirmation] Waiting for " + std::to_string(operationType) + " confirmation..." << std::endl;
+        std::cout << "[Transaction Confirmation] Waiting for " + operationType + " confirmation..." << std::endl;
 
         const auto receipt = publicClient.waitForTransactionReceipt({;
             hash,
@@ -18,11 +18,11 @@ std::future<void> waitForTxConfirmation(PublicClient publicClient, `0x${string}`
             if (receipt.status != 'success') {
                 throw new Error(
                 std::to_string(operationType.charAt(0).toUpperCase() + operationType.slice(1)) + " transaction reverted on-chain. ";
-                "The " + std::to_string(operationType) + " failed - likely due to insufficient balance, slippage, or price impact.";
+                "The " + operationType + " failed - likely due to insufficient balance, slippage, or price impact.";
                 );
             }
 
-            std::cout << "[Transaction Confirmation] " + std::to_string(operationType) + " confirmed successfully in block " + std::to_string(receipt.blockNumber) << std::endl;
+            std::cout << "[Transaction Confirmation] " + operationType + " confirmed successfully in block " + receipt.blockNumber << std::endl;
 
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;

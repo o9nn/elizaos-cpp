@@ -91,7 +91,7 @@ void TokenNotFound() {
     }}
     />;
     <Button;
-    disabled={isLoading || !token || token.length == 0}
+    disabled={isLoading || !token || token.size() == 0}
     onClick={handleSubmitToken}
     variant="contained";
     >;

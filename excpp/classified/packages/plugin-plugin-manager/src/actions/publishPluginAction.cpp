@@ -25,7 +25,7 @@ std::string extractPluginInfo(const std::string& text) {
 
     // Try to extract from natural language
     const auto words = text.toLowerCase().split(/\s+/);
-    const auto publishIndex = words.findIndex((w) => w == 'publish');
+    const auto publishIndex = words.findIndex((w) => w == "publish");
 
     if (publishIndex != -1) {
         // Look for plugin indicator
@@ -33,7 +33,7 @@ std::string extractPluginInfo(const std::string& text) {
             if (words[i] == 'plugin' && i - 1 >= 0 && words[i - 1] != 'the') {
                 // Get the word before "plugin"
                 return "plugin-" + std::to_string(words[i - 1]);
-                } else if (words[i].includes('plugin')) {
+                } else if (words[i].includes("plugin")) {
                     return words[i];
                 }
             }
@@ -53,7 +53,7 @@ std::future<std::string> resolvePluginPath(const std::string& pluginInfo) {
             const auto stat = fs.stat(absolutePath);
             if (stat.isDirectory()) {
                 // Check for package.json
-                fs.access(path.join(absolutePath, 'package.json'));
+                fs.access(path.join(absolutePath, "package.json"));
                 return absolutePath;
             }
             } catch {
@@ -64,9 +64,9 @@ std::future<std::string> resolvePluginPath(const std::string& pluginInfo) {
         // Check common locations
         const auto possiblePaths = [;
         path.join(process.cwd(), pluginInfo),
-        path.join(process.cwd(), 'packages', pluginInfo),
-        path.join(process.cwd(), 'cloned-plugins', pluginInfo),
-        path.join(process.cwd(), '..', pluginInfo),
+        path.join(process.cwd(), "packages", pluginInfo),
+        path.join(process.cwd(), "cloned-plugins", pluginInfo),
+        path.join(process.cwd(), "..", pluginInfo),
         ];
 
         for (const auto& possiblePath : possiblePaths)
@@ -74,7 +74,7 @@ std::future<std::string> resolvePluginPath(const std::string& pluginInfo) {
                 const auto stat = fs.stat(possiblePath);
                 if (stat.isDirectory()) {
                     // Check for package.json
-                    fs.access(path.join(possiblePath, 'package.json'));
+                    fs.access(path.join(possiblePath, "package.json"));
                     return possiblePath;
                 }
                 } catch {

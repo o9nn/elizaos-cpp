@@ -1,21 +1,24 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".types/trading.hpp"
-#include ".utils/cacheManager.hpp"
-#include ".utils/wallet.hpp"
 #include "analyticsService.hpp"
 #include "calculation/birdeye.hpp"
 #include "calculation/scoring.hpp"
 #include "calculation/technicalAnalysis.hpp"
 #include "calculation/tradeCalculation.hpp"
 #include "elizaos/core.hpp"
+#include "types/trading.hpp"
+#include "utils/cacheManager.hpp"
+#include "utils/wallet.hpp"
 #include "validation/tokenSecurity.hpp"
 #include "walletService.hpp"
 

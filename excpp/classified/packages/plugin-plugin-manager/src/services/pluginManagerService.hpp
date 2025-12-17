@@ -1,15 +1,19 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <chrono>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".coreExtensions.hpp"
-#include ".types.hpp"
+#include "coreExtensions.hpp"
 #include "elizaos/core.hpp"
+#include "types.hpp"
 
 namespace elizaos {
 
@@ -40,8 +44,8 @@ struct DynamicPluginInfo {
     bool sensitive;
     bool isSet;
     std::optional<std::string> errorDetails;
-    Date installedAt;
-    std::optional<Date> lastActivated;
+    std::chrono::system_clock::time_point installedAt;
+    std::optional<std::chrono::system_clock::time_point> lastActivated;
 };
 
 // Function to reset cache for testing

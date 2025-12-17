@@ -1,11 +1,14 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "elizaos/core.hpp"
 
@@ -50,7 +53,7 @@ private:
     SharedArrayBuffer screenBuffer_;
     SharedArrayBuffer florence2ResultsBuffer_;
     SharedArrayBuffer ocrResultsBuffer_;
-    Int32Array screenAtomicState_;
+    std::vector<int32_t> screenAtomicState_;
     DataView screenDataView_;
     DataView florence2ResultsView_;
     DataView ocrResultsView_;

@@ -32,10 +32,10 @@ std::future<ProjectInfo> getProjectInfo(const std::string& projectPath) {
 
                     try {
                         const auto stats = fs.stat(fullPath);
-                        const auto content = fs.readFile(fullPath, 'utf-8');
-                        const auto lines = content.split('\n').length;
+                        const auto content = fs.readFile(fullPath, "utf-8");
+                        const auto lines = content.split("\n").size();
 
-                        files.push({
+                        files.push_back({
                             path: relativePath,
                             lines,
                             size: stats.size,
@@ -50,17 +50,17 @@ std::future<ProjectInfo> getProjectInfo(const std::string& projectPath) {
                 scanDirectory(projectPath);
 
                 // Generate tree structure using the tree command if available
-                auto structure = '';
+                auto structure = "";
                 try {
-                    "tree -I 'node_modules|.git|dist|build|coverage' -L 3 "" + std::to_string(projectPath) + """;
-                        encoding: 'utf-8',
+                    "structure = execSync(" + "tree -I "node_modules|.git|dist|build|coverage" -L 3 \"" + projectPath + "\"";
+                        encoding: "utf-8",
                         });
                         } catch {
                             // Fallback to simple listing if tree is not available
                             structure = files;
                             .map((f) => f.path);
                             .sort();
-                            .join('\n');
+                            .join("\n");
                         }
 
                         const auto totalLines = files.reduce((sum, file) => sum + file.lines, 0);

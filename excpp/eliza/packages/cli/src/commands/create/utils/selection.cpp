@@ -8,7 +8,7 @@ std::future<std::vector<std::string>> getLocalAvailableDatabases() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Hard-coded list of available databases to avoid GitHub API calls
-    return ['pglite', 'postgres'];
+    return ["pglite", "postgres"];
 
 }
 
@@ -17,34 +17,34 @@ std::vector<AIModelOption> getAvailableAIModels() {
 
     return [;
     {
-        title: 'Local AI',
-        value: 'local',
-        description: 'Local models, no API required',
+        title: "Local AI",
+        value: "local",
+        description: "Local models, no API required",
         },
         {
-            title: 'OpenAI',
-            value: 'openai',
-            description: 'GPT-4 models',
+            title: "OpenAI",
+            value: "openai",
+            description: "GPT-4 models",
             },
             {
-                title: 'Anthropic',
-                value: 'claude',
-                description: 'Claude models',
+                title: "Anthropic",
+                value: "claude",
+                description: "Claude models",
                 },
                 {
-                    title: 'OpenRouter',
-                    value: 'openrouter',
-                    description: 'Access multiple AI models',
+                    title: "OpenRouter",
+                    value: "openrouter",
+                    description: "Access multiple AI models",
                     },
                     {
-                        title: 'Ollama',
-                        value: 'ollama',
-                        description: 'Self-hosted models',
+                        title: "Ollama",
+                        value: "ollama",
+                        description: "Self-hosted models",
                         },
                         {
-                            title: 'Google Generative AI',
-                            value: 'google',
-                            description: 'Gemini models',
+                            title: "Google Generative AI",
+                            value: "google",
+                            description: "Gemini models",
                             },
                             ];
 
@@ -55,14 +55,14 @@ std::vector<DatabaseOption> getAvailableDatabases() {
 
     return [;
     {
-        title: 'Pglite (Pglite)',
-        value: 'pglite',
-        description: 'Local development',
+        title: "Pglite (Pglite)",
+        value: "pglite",
+        description: "Local development",
         },
         {
-            title: 'PostgreSQL',
-            value: 'postgres',
-            description: 'Production database',
+            title: "PostgreSQL",
+            value: "postgres",
+            description: "Production database",
             },
             ];
 
@@ -74,17 +74,17 @@ std::future<std::string> selectDatabase() {
     const auto availableDatabases = getAvailableDatabases();
 
     const auto database = clack.select({;
-        message: 'Which database would you like to use?',
+        message: "Which database would you like to use?",
         options: availableDatabases.map((db) => ({
             label: db.title,
             value: db.value,
             hint: db.description,
             })),
-            initialValue: 'pglite',
+            initialValue: "pglite",
             });
 
             if (clack.isCancel(database)) {
-                clack.cancel('Operation cancelled.');
+                clack.cancel("Operation cancelled.");
                 process.exit(0);
             }
 
@@ -98,17 +98,17 @@ std::future<std::string> selectAIModel() {
     const auto availableModels = getAvailableAIModels();
 
     const auto aiModel = clack.select({;
-        message: 'Which AI model would you like to use?',
+        message: "Which AI model would you like to use?",
         options: availableModels.map((model) => ({
             label: model.title,
             value: model.value,
             hint: model.description,
             })),
-            initialValue: 'local',
+            initialValue: "local",
             });
 
             if (clack.isCancel(aiModel)) {
-                clack.cancel('Operation cancelled.');
+                clack.cancel("Operation cancelled.");
                 process.exit(0);
             }
 
@@ -121,24 +121,24 @@ std::vector<AIModelOption> getAvailableEmbeddingModels() {
 
     return [;
     {
-        title: 'Local AI',
-        value: 'local',
-        description: 'Local embeddings, no API required',
+        title: "Local AI",
+        value: "local",
+        description: "Local embeddings, no API required",
         },
         {
-            title: 'OpenAI',
-            value: 'openai',
-            description: 'OpenAI text-embedding-ada-002',
+            title: "OpenAI",
+            value: "openai",
+            description: "OpenAI text-embedding-ada-002",
             },
             {
-                title: 'Ollama',
-                value: 'ollama',
-                description: 'Self-hosted embedding models',
+                title: "Ollama",
+                value: "ollama",
+                description: "Self-hosted embedding models",
                 },
                 {
-                    title: 'Google Generative AI',
-                    value: 'google',
-                    description: 'Google embedding models',
+                    title: "Google Generative AI",
+                    value: "google",
+                    description: "Google embedding models",
                     },
                     ];
 
@@ -156,11 +156,11 @@ std::future<std::string> selectEmbeddingModel() {
             value: model.value,
             hint: model.description,
             })),
-            initialValue: 'local',
+            initialValue: "local",
             });
 
             if (clack.isCancel(embeddingModel)) {
-                clack.cancel('Operation cancelled.');
+                clack.cancel("Operation cancelled.");
                 process.exit(0);
             }
 

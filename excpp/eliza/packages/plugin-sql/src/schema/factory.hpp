@@ -1,11 +1,13 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -15,7 +17,7 @@ namespace elizaos {
 
 
 
-using DatabaseType = std::variant<std::string, std::string>;
+using DatabaseType = std::string;
 
 // Type helpers for cross-database compatibility
 // Since Pglite uses PostgreSQL dialect, we use the same types for both

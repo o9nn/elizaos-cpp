@@ -4,12 +4,12 @@
 
 namespace elizaos {
 
-Uint8Array decodeBase58(const std::string& str) {
+std::vector<uint8_t> decodeBase58(const std::string& str) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        const auto ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
-        const auto ALPHABET_MAP = new Map(ALPHABET.split('').map((c, i) => [c, BigInt(i)]));
+        const auto ALPHABET = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
+        const auto ALPHABET_MAP = new Map(ALPHABET.split("").map((c, i) => [c, BigInt(i)]));
 
         auto result = BigInt(0);
         for (const auto& char : str)

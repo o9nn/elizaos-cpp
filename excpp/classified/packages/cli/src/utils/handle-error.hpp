@@ -1,12 +1,16 @@
 #pragma once
+#include <algorithm>
+#include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".commands/agent.hpp"
+#include "commands/agent.hpp"
 #include "elizaos/core.hpp"
 
 namespace elizaos {
@@ -23,7 +27,7 @@ namespace elizaos {
  * it logs a default error message and exits.
  * @param {unknown} error - The error to be handled.
  */
-void handleError(unknown error);
+void handleError(const std::any& error);
 
 std::future<void> checkServer(OptionValues opts);
 

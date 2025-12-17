@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::future<void> GET(Request request) {
+std::future<void> GET(const std::string& request) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -14,8 +14,8 @@ std::future<void> GET(Request request) {
         realtimeStats;
         ] = Promise.all([;
         EnhancedAnalytics.getProjectInsights(params.id),
-        ABTestingService.getResults('project-layout-test'),
-        "realtime:" + std::to_string(params.id)
+        ABTestingService.getResults("project-layout-test"),
+        "redis.hgetall(" + "realtime:" + params.id
         ]);
 
         const auto visualizations = {;
@@ -41,7 +41,7 @@ std::future<void> GET(Request request) {
                         });
 
                         return NextResponse.json(;
-                        { error: 'Failed to generate insights' },
+                        { error: "Failed to generate insights" },
                     { status = 500 }
                     );
                 }

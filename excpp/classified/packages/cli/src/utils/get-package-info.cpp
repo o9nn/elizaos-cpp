@@ -24,10 +24,10 @@ std::future<PackageJson> getPackageInfo() {
 
         const auto { packageJsonPath } = UserEnvironment.getInstance().getPathInfo();
         try {
-            const auto fileContent = import('node:fs/promises').then((fs) =>;
-            fs.readFile(packageJsonPath, 'utf8');
+            const auto fileContent = import("node:fs/promises").then((fs) =>;
+            fs.readFile(packageJsonPath, "utf8");
             );
-            return JSON.parse(fileContent);
+            return /* JSON.parse */ fileContent;
             } catch (error) {
                 if (error instanceof Error) {
                     // Check for file not found error (ENOENT)
@@ -37,17 +37,17 @@ std::future<PackageJson> getPackageInfo() {
                     // Check for JSON parsing error
                     if (error instanceof SyntaxError) {
                         throw new Error(
-                        "Error: Invalid JSON in package.json at " + std::to_string(packageJsonPath) + ". Details: " + std::to_string(error.message)
+                        "Error: Invalid JSON in package.json at " + packageJsonPath + ". Details: " + error.message
                         );
                     }
                     // Rethrow other errors
                     throw new Error(
-                    "Error reading or parsing package.json at " + std::to_string(packageJsonPath) + ": " + std::to_string(error.message)
+                    "Error reading or parsing package.json at " + packageJsonPath + ": " + error.message
                     );
                 }
                 // Fallback for non-Error objects thrown
                 throw new Error(
-                "An unexpected error occurred while reading or parsing package.json at " + std::to_string(packageJsonPath);
+                "An unexpected error occurred while reading or parsing package.json at " + packageJsonPath;
                 );
             }
 

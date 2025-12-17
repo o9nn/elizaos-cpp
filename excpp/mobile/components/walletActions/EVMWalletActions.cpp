@@ -40,7 +40,7 @@ void EVMWalletActions() {
                             });
                             setResult(signature);
                             } catch (error) {
-                                setResult(JSON.stringify(error));
+                                setResult(/* JSON.stringify */ std::string(error));
                             }
                             };
                             const auto signAndSendTransaction = async () => {;
@@ -56,7 +56,7 @@ void EVMWalletActions() {
                                         },
                                         ],
                                         });
-                                        setResult(JSON.stringify(response));
+                                        setResult(/* JSON.stringify */ std::string(response));
                                         };
                                         return (;
                                         <View>;

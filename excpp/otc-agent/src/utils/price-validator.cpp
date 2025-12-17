@@ -18,8 +18,8 @@ std::future<PriceValidationResult> checkPriceDivergence(const std::string& token
 
     try {
         // Fetch price from CoinGecko with retry and caching
-        const auto url = "https://api.coingecko.com/api/v3/simple/token_price/" + std::to_string(platformId) + "?contract_addresses=" + std::to_string(tokenAddress) + "&vs_currencies=usd";
-        const auto cacheKey = "coingecko:" + std::to_string(platformId) + ":" + std::to_string(tokenAddress.toLowerCase());
+        const auto url = "https://api.coingecko.com/api/v3/simple/token_price/" + platformId + "?contract_addresses=" + tokenAddress + "&vs_currencies=usd";
+        const auto cacheKey = "coingecko:" + platformId + ":" + std::to_string(tokenAddress.toLowerCase());
 
         const auto data = fetchJsonWithRetryAndCache<CoinGeckoPriceResponse>(;
         url,
@@ -47,7 +47,7 @@ std::future<PriceValidationResult> checkPriceDivergence(const std::string& token
             if (divergencePercent > 10) {
                 return {
                     valid: false,
-                    "Price Warning: Pool price ($" + std::to_string(poolPriceUsd.toFixed(4)) + ") diverges by " + std::to_string(divergencePercent.toFixed(1)) + "% from market price ($" + std::to_string(aggregatedPrice.toFixed(4)) + ")."
+                    "warning: " + "Price Warning: Pool price ($" + std::to_string(poolPriceUsd.toFixed(4)) + ") diverges by " + std::to_string(divergencePercent.toFixed(1)) + "% from market price ($" + std::to_string(aggregatedPrice.toFixed(4)) + ")."
                     aggregatedPrice,
                     poolPrice: poolPriceUsd,
                     divergencePercent,

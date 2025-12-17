@@ -64,12 +64,12 @@ std::future<void> startAgent(Character character, DirectClient directClient) {
             directClient.registerAgent(runtime);
 
             // report to console
-            "Started " + std::to_string(character.name) + " as " + std::to_string(runtime.agentId);
+            "elizaLogger.debug(" + "Started " + character.name + " as " + runtime.agentId;
 
             return runtime;
             } catch (error) {
                 elizaLogger.error(;
-                "Error starting agent for character " + std::to_string(character.name) + ":"
+                "Error starting agent for character " + character.name + ":"
                 error,
                 );
                 std::cerr << error << std::endl;
