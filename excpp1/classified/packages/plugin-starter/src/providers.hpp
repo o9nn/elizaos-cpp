@@ -1,0 +1,39 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
+#include "elizaos/core.hpp"
+
+namespace elizaos {
+
+// NOTE: This is auto-generated approximate C++ code
+// Manual refinement required for production use
+
+
+
+/**
+ * Example Hello World Provider
+ * This demonstrates the simplest possible provider implementation
+ */
+// const helloWorldProvider: Provider = {
+//     name: 'HELLO_WORLD_PROVIDER',
+//     description: 'A simple example provider',
+
+//     get: async (
+//       _runtime: IAgentRuntime,
+//       _message: Memory,
+//       _state: State | undefined
+//         text: 'I am a provider',
+//         values: {},
+//         data: {},
+//       };
+//     },
+//   };
+
+  // add providers here
+
+
+} // namespace elizaos
