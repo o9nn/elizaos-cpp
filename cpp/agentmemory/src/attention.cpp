@@ -662,8 +662,8 @@ std::vector<std::string> AttentionAllocator::extractFeatures(const std::string& 
         // Remove punctuation and convert to lowercase
         std::string cleanWord;
         for (char c : word) {
-            if (std::isalnum(c)) {
-                cleanWord += std::tolower(c);
+            if (std::isalnum(static_cast<unsigned char>(c))) {
+                cleanWord += static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
             }
         }
         
