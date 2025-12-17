@@ -1,9 +1,14 @@
 #include "toaster.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+void Toaster() {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    return <SonnerToaster theme="system" />;
+
+}
 
 } // namespace elizaos

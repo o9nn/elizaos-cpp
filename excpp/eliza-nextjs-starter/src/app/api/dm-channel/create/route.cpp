@@ -1,9 +1,115 @@
 #include "route.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+std::future<void> POST(NextRequest request) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    try {
+        const CreateDMChannelRequest body = request.json();
+        const auto { userId, agentId, channelId, title } = body;
+
+        if (!userId || !agentId) {
+            return NextResponse.json(;
+            { error: "userId and agentId are required" },
+            { status: 400 },
+            );
+        }
+
+        // Generate channel ID if not provided
+        const auto finalChannelId = "dm-" + std::to_string(userId) + "-" + std::to_string(agentId) + "-" + std::to_string(Date.now());
+        const auto channelName = "Chat - " + std::to_string(new Date().toLocaleString());
+
+        // Create DM channel metadata following official client pattern
+        const DMChannelMetadata metadata = {;
+            isDm: true,
+            user1: userId,
+            user2: agentId,
+            forAgent: agentId,
+            createdAt: new Date().toISOString(),
+            };
+
+            if (title) {
+                metadata.title = title;
+            }
+
+            // Create the DM channel via ElizaOS API
+            const auto createChannelResponse = fetch(;
+            std::to_string(ELIZA_SERVER_URL) + "/api/messaging/central-channels"
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        id: finalChannelId,
+                        name: channelName,
+                        server_id: "00000000-0000-0000-0000-000000000000", // Required server ID
+                        participantCentralUserIds: [userId, agentId],
+                        type: "DM", // Channel type
+                        metadata: metadata,
+                        }),
+                        },
+                        );
+
+                        if (!createChannelResponse.ok) {
+                            const auto errorText = createChannelResponse.text();
+                            std::cerr << "[DM Channel API] Failed to create channel:" << errorText << std::endl;
+                            return NextResponse.json(;
+                            { error: "Failed to create DM channel", details: errorText },
+                            { status: 500 },
+                            );
+                        }
+
+                        const auto channelData = createChannelResponse.json();
+
+                        // Add agent to the channel as a participant
+                        const auto addAgentResponse = fetch(;
+                        std::to_string(ELIZA_SERVER_URL) + "/api/messaging/central-channels/" + std::to_string(finalChannelId) + "/agents"
+                        {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify({
+                                    agentId: agentId,
+                                    }),
+                                    },
+                                    );
+
+                                    if (!addAgentResponse.ok) {
+                                        const auto errorText = addAgentResponse.text();
+                                        console.warn(
+                                        "[DM Channel API] Failed to add agent to channel:",
+                                        errorText,
+                                        );
+                                        // Continue anyway - agent might already be a participant
+                                    }
+
+                                    return NextResponse.json({;
+                                        success: true,
+                                        channel: {
+                                            id: finalChannelId,
+                                            name: channelName,
+                                            type: "DM",
+                                            metadata: metadata,
+                                            participants: [userId, agentId],
+                                            ...channelData,
+                                            },
+                                            });
+                                            } catch (error) {
+                                                std::cerr << "[DM Channel API] Error creating DM channel:" << error << std::endl;
+                                                return NextResponse.json(;
+                                                {
+                                                    error: "Internal server error",
+                                                    details: true /* instanceof check */ ? error.message : "Unknown error",
+                                                    },
+                                                    { status: 500 },
+                                                    );
+                                                }
+
+}
 
 } // namespace elizaos

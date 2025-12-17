@@ -1,0 +1,32 @@
+#pragma once
+#include <any>
+#include <functional>
+#include <future>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
+#include "elizaos/core.hpp"
+
+namespace elizaos {
+
+// NOTE: This is auto-generated approximate C++ code
+// Manual refinement required for production use
+
+
+
+// Define interfaces for Discord component types
+struct DiscordComponent {
+    double type;
+};
+
+/**
+ * Sends a check-in report form to Discord
+ * @param callback - The callback function to handle form submission
+ * @param channels - Optional array of Discord text channels to display in the form
+ * @param serverInfo - Server information containing serverId and serverName
+ */
+std::future<void> sendCheckInReportForm(HandlerCallback callback, std::optional<std::vector<std::any>> channels, std::optional<std::any> serverInfo);
+
+} // namespace elizaos

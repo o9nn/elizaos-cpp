@@ -1,9 +1,23 @@
 #include "scam-flag.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+void Verified(std::optional<std::any> { isHidden }) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    if (!isHidden) return null;
+    return (;
+    <Fragment>;
+    <Tooltip anchorSelect="#verified">;
+    <span>Scam</span>;
+    </Tooltip>;
+
+    <img src="/warning.svg" id="verified" className="size-5 select-none" />;
+    </Fragment>;
+    );
+
+}
 
 } // namespace elizaos

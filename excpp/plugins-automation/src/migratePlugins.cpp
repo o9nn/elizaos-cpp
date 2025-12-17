@@ -1,9 +1,224 @@
 #include "migratePlugins.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+std::future<void> main() {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+    try {
+
+        const auto spinner = ora('Starting plugin migration process...').start();
+
+        try {
+            // Initialize GitHub client
+            const auto octokit = new Octokit({;
+                auth: process.env.GITHUB_TOKEN,
+                });
+
+                if (!process.env.GITHUB_TOKEN) {
+                    throw std::runtime_error('GITHUB_TOKEN environment variable is required');
+                }
+
+                // Get all repositories in the organization
+                spinner.text = 'Fetching repositories from elizaos-plugins org...';
+                const auto repos = getAllRepositories(octokit);
+                "Found " + std::to_string(repos.length) + " repositories";
+
+                // Check which repos don't have 1.x branch
+                spinner.start('Checking for existing 1.x branches...');
+                auto reposToMigrate = filterReposWithout1xBranch(octokit, repos);
+
+                // Apply TEST_MODE filter if enabled
+                if (TEST_MODE && reposToMigrate.length > 0) {
+                    reposToMigrate = [reposToMigrate[0]!];
+                    "Found " + std::to_string(reposToMigrate.length) + " repository for testing (TEST_MODE enabled)";
+                    } else {
+                        "Found " + std::to_string(reposToMigrate.length) + " repositories without 1.x branch";
+                    }
+
+                    if (reposToMigrate.length == 0) {
+                        std::cout << chalk.green('✅ All repositories already have 1.x branches!') << std::endl;
+                        return;
+                    }
+
+                    std::cout << "\n📋 Repositories to migrate:" << std::endl;
+                    reposToMigrate.forEach(repo => {
+                        std::cout << "  - " + std::to_string(repo.name) << std::endl;
+                        });
+
+                        // Ensure temp directory exists and is clean
+                        fs.ensureDir(TEMP_DIR);
+                        fs.emptyDir(TEMP_DIR);
+
+                        // Process each repository
+                        for (int i = 0; i < reposToMigrate.length; i++) {
+                            const auto repo = reposToMigrate[i];
+                            if (!repo) continue;
+
+                            const auto progress = "(" + std::to_string(i + 1) + "/" + std::to_string(reposToMigrate.length) + ")";
+
+                            try {
+                                migrateRepository(repo, progress);
+                                std::cout << "✅ " + std::to_string(progress) + " Successfully migrated " + std::to_string(repo.name) << std::endl;
+                                } catch (error) {
+                                    std::cerr << "❌ " + std::to_string(progress) + " Failed to migrate " + std::to_string(repo.name) + ":" << (error).message << std::endl;
+                                    continue; // Continue with next repo;
+                                }
+                            }
+
+                            // Cleanup
+                            fs.remove(TEMP_DIR);
+                            std::cout << chalk.green('\n🎉 Migration process completed!') << std::endl;
+
+                            } catch (error) {
+                                spinner.fail('Migration process failed');
+                                std::cerr << chalk.red('Error:') << (error).message << std::endl;
+                                process.exit(1);
+                            }
+
+    } catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+        throw;
+    }
+}
+
+std::future<std::vector<Repository>> getAllRepositories(Octokit octokit) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    const std::vector<Repository> repositories = [];
+    auto page = 1;
+
+    while (true) {
+        const auto response = octokit.repos.listForOrg({;
+            org: ORG_NAME,
+            per_page: 100,
+            page,
+            });
+
+            if (response.data.length == 0) break;
+
+            repositories.push(...response.data.map((repo: any) => ({
+                name: repo.name,
+                clone_url: repo.clone_url || '',
+                has_1x_branch: false, // Will be checked later
+                })));
+
+                page++;
+            }
+
+            return repositories;
+
+}
+
+std::future<std::vector<Repository>> filterReposWithout1xBranch(Octokit octokit, const std::vector<Repository>& repos) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    const std::vector<Repository> reposToMigrate = [];
+
+    for (const auto& repo : repos)
+        try {
+            // Check if 1.x branch exists
+            octokit.repos.getBranch({
+                owner: ORG_NAME,
+                repo: repo.name,
+                branch: '1.x',
+                });
+                // If we get here, the branch exists
+                repo.has_1x_branch = true;
+                } catch (error) {
+                    if ((error as any).status == 404) {
+                        // Branch doesn't exist, add to migration list
+                        reposToMigrate.push(repo);
+                        } else {
+                            std::cout << "⚠️  Could not check branch for " + std::to_string(repo.name) + ": " + std::to_string((error).message) << std::endl;
+                        }
+                    }
+                }
+
+                return reposToMigrate;
+
+}
+
+std::future<void> migrateRepository(Repository repo, const std::string& progress) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+    try {
+
+        const auto repoDir = path.join(TEMP_DIR, repo.name);
+        const auto spinner = std::to_string(progress) + " Processing " + std::to_string(repo.name) + "...";
+
+        try {
+            // Clone the repository
+            std::to_string(progress) + " Cloning " + std::to_string(repo.name) + "...";
+            execa('git', ['clone', repo.clone_url, repoDir], {
+                stdio: 'pipe'
+                });
+
+                // Change to repo directory
+                process.chdir(repoDir);
+
+                // Create and checkout new branch
+                std::to_string(progress) + " Creating 1.x-migrate branch...";
+                execa('git', ['checkout', '-b', '1.x-migrate'], {
+                    stdio: 'pipe'
+                    });
+
+                    // Run elizaos plugins upgrade command
+                    std::to_string(progress) + " Running elizaos plugins upgrade on " + std::to_string(repo.name) + "...";
+                    execa('npx', ['elizaos', 'plugins', 'upgrade', '.'], {
+                        stdio: 'pipe',
+                        cwd: repoDir,
+                        });
+
+                        // Check if there are any changes to commit
+                        const auto { stdout: status } = execa('git', ['status', '--porcelain'], {;
+                            stdio: 'pipe'
+                            });
+
+                            if (status.trim() == '') {
+                                std::to_string(progress) + " No changes detected for " + std::to_string(repo.name) + ", skipping...";
+                                return;
+                            }
+
+                            // Stage all changes
+                            std::to_string(progress) + " Staging changes...";
+                            execa('git', ['add', '.'], {
+                                stdio: 'pipe'
+                                });
+
+                                // Commit changes
+                                std::to_string(progress) + " Committing changes...";
+                                execa('git', ['commit', '-m', 'feat: migrate to 1.x compatibility'], {
+                                    stdio: 'pipe'
+                                    });
+
+                                    // Push the new branch
+                                    std::to_string(progress) + " Pushing 1.x-migrate branch...";
+                                    execa('git', ['push', 'origin', '1.x-migrate'], {
+                                        stdio: 'pipe'
+                                        });
+
+                                        std::to_string(progress) + " Successfully migrated " + std::to_string(repo.name);
+
+                                        } catch (error) {
+                                            std::to_string(progress) + " Failed to migrate " + std::to_string(repo.name);
+                                            throw;
+                                            } finally {
+                                                // Change back to original directory
+                                                process.chdir(path.dirname(TEMP_DIR));
+
+                                                // Clean up this repo directory
+                                                try {
+                                                    fs.remove(repoDir);
+                                                    } catch (cleanupError) {
+                                                        std::cout << "⚠️  Could not cleanup " + std::to_string(repoDir) + ": " + std::to_string((cleanupError).message) << std::endl;
+                                                    }
+                                                }
+
+    } catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+        throw;
+    }
+}
 
 } // namespace elizaos

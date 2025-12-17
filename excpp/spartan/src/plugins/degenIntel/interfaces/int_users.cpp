@@ -1,9 +1,14 @@
 #include "int_users.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+void interface_list_users(auto runtime) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+
+
+}
 
 } // namespace elizaos

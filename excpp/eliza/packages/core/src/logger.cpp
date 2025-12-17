@@ -1,9 +1,16 @@
 #include "logger.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+bool parseBooleanFromText(const std::optional<std::string>& value) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    if (!value) return false;
+    const auto normalized = value.toLowerCase().trim();
+    return normalized == 'true' || normalized == '1' || normalized == 'yes' || normalized == 'on';
+
+}
 
 } // namespace elizaos

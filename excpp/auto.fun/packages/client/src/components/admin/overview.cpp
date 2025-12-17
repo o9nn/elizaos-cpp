@@ -1,9 +1,63 @@
 #include "overview.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+void AdminOverview() {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    // Fetch admin stats
+    const auto statsQuery = useQuery<AdminStats>({;
+        queryKey: ["admin-stats"],
+        queryFn: async () => {
+            const auto response = (fetcher("/api/admin/stats", "GET")) as {;
+                stats: AdminStats;
+                };
+                return response.stats;
+                },
+                refetchInterval: 60000, // Refetch every minute
+                });
+
+                if (statsQuery.isLoading) {
+                    return <Loader />;
+                }
+
+                const auto stats = statsQuery.data || {;
+                    userCount: 0,
+                    tokenCount: 0,
+                    volume24h: 0,
+                    };
+
+                    return (;
+                    <div className="p-4 bg-autofun-background-input ">;
+                    <h2 className="text-xl font-bold mb-4">Admin Overview</h2>;
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="p-4 bg-autofun-background-primary ">;
+                    <h3 className="text-lg font-medium mb-2">Users</h3>;
+                    <p className="text-2xl font-bold text-autofun-text-highlight">;
+                {stats.userCount.toLocaleString()}
+                </p>;
+                <p className="text-sm text-autofun-text-secondary">Total users</p>;
+                </div>;
+                <div className="p-4 bg-autofun-background-primary ">;
+                <h3 className="text-lg font-medium mb-2">Tokens</h3>;
+                <p className="text-2xl font-bold text-autofun-text-highlight">;
+            {stats.tokenCount.toLocaleString()}
+            </p>;
+            <p className="text-sm text-autofun-text-secondary">Total tokens</p>;
+            </div>;
+            <div className="p-4 bg-autofun-background-primary ">;
+            <h3 className="text-lg font-medium mb-2">Volume</h3>;
+            <p className="text-2xl font-bold text-autofun-text-highlight">;
+        {formatNumber(stats.volume24h)}
+        </p>;
+        <p className="text-sm text-autofun-text-secondary">24h volume</p>;
+        </div>;
+        </div>;
+        </div>;
+        );
+
+}
 
 } // namespace elizaos

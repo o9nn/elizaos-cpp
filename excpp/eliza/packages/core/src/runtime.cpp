@@ -1,9 +1,22 @@
 #include "runtime.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+void if(auto this.adapter && 'runMigrations' in this.adapter) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    (this.adapter).runMigrations(p.schema, p.name);
+    this.logger.info(`Successfully migrated plugin: ${p.name}`);
+
+}
+
+void normalizeAction(const std::string& actionString) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    return actionString.toLowerCase().replace('_', '');
+
+}
 
 } // namespace elizaos

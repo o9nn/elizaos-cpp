@@ -1,0 +1,21 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
+
+namespace elizaos {
+
+// NOTE: This is auto-generated approximate C++ code
+// Manual refinement required for production use
+
+
+
+struct FilterBarProps {
+    std::vector<std::string> tags;
+};
+
+void FilterBar(auto { tags, FilterBarProps onFilterChange }); 
+} // namespace elizaos

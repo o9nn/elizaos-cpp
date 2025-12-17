@@ -1,9 +1,44 @@
 #include "IssuesListModalContent.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+void IssuesListModalContent(auto {
+  issues, IssuesListModalContentProps }) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    return (;
+    <ScrollArea className="max-h-[80svh]">;
+    <div className="divide-y px-0">;
+    {issues.map((issue) => (;
+    <ActivityItem;
+    key={issue.id}
+    id={issue.id}
+    title={issue.title}
+    className="px-4";
+    author={issue.author}
+    number={issue.number}
+    "https://github.com/" + std::to_string(issue.repository) + "/issues/" + std::to_string(issue.number)
+    icon={
+        issue.state == "closed" || issue.closedAt ? (;
+        <CheckCircle className="h-4 w-4 text-green-500" />;
+        ) : (
+        <CircleDot className="h-4 w-4 text-amber-500" />;
+        );
+    }
+    std::to_string(issue.commentCount) + " comments";
+    />;
+    ))}
+    {issues.length == 0 && (;
+    <p className="p-4 text-center text-sm text-muted-foreground">;
+    No issues to display.;
+    </p>;
+    )}
+    </div>;
+    </ScrollArea>;
+    );
+
+}
 
 } // namespace elizaos

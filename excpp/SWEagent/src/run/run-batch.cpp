@@ -1,9 +1,15 @@
 #include "run-batch.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+std::future<void> runBatchFromConfig(RunBatchConfig config) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    const auto runner = RunBatch.fromConfig(config);
+    runner.main();
+
+}
 
 } // namespace elizaos

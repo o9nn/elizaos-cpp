@@ -1,9 +1,15 @@
 #include "page.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+void Homepage() {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    // Default to the daily view
+    redirect("/day");
+
+}
 
 } // namespace elizaos

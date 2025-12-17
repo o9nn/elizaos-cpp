@@ -1,9 +1,56 @@
 #include "ShareButton.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+void ShareButton(ShareButtonProps { project }) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    const auto [shared, setShared] = useState(false);
+
+    const auto handleShare = async () => {;
+        const auto shareData = {;
+            "Check out " + std::to_string(project.name) + " on ELIZAS LIST"
+            "I found this awesome project on ELIZAS LIST: " + std::to_string(project.name)
+            url: project.github,
+            };
+
+            try {
+                if (navigator.share) {
+                    navigator.share(shareData);
+                    } else {
+                        navigator.clipboard.writeText(project.github);
+                        setShared(true);
+                        setTimeout(() => setShared(false), 2000);
+                    }
+                    } catch (err) {
+                        std::cerr << 'Error sharing:' << err << std::endl;
+                    }
+                    };
+
+                    return (;
+                    <button;
+                onClick={handleShare}
+                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                aria-label="Share project";
+                >;
+                <AnimatePresence>;
+                {shared ? (;
+                <motion.span;
+            initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+    exit={{ scale: 0 }}
+    >;
+    <FaCheck className="text-green-500" />;
+    </motion.span>;
+    ) : (
+    <FaShare />;
+    )}
+    </AnimatePresence>;
+    </button>;
+    );
+
+}
 
 } // namespace elizaos

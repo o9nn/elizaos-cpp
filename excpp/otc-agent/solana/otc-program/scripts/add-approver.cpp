@@ -1,9 +1,35 @@
 #include "add-approver.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+std::future<void> addApprover() {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    const auto provider = AnchorProvider.env();
+    setProvider(provider);
+    const auto program = workspace.Otc<Otc>;
+
+    const auto ownerData = JSON.parse(fs.readFileSync("./id.json", "utf8"));
+    const auto owner = Keypair.fromSecretKey(Uint8Array.from(ownerData));
+    const auto desk = new PublicKey("7EN1rubej95WmoyupRXQ78PKU2hTCspKn2mVKN1vxuPp");
+
+    std::cout << "Adding owner..." << std::endl;
+    std::cout << "  Owner:" << owner.publicKey.toString() << std::endl;
+    std::cout << "  Desk:" << desk.toString() << std::endl;
+
+    const auto tx = program.methods;
+    .setApprover(owner.publicKey, true);
+    .accountsPartial({
+        desk,
+        owner: owner.publicKey,
+        });
+        .signers([owner]);
+        .rpc();
+
+        std::cout << "✅ Owner added << tx:" << tx << std::endl;
+
+}
 
 } // namespace elizaos

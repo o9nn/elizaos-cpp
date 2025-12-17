@@ -1,9 +1,14 @@
 #include "userSessionStorage.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+UserSessionStorageService getUserSessionStorageService(IAgentRuntime runtime) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    return new UserSessionStorageService(runtime);
+
+}
 
 } // namespace elizaos

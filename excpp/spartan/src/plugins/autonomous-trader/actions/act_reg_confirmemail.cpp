@@ -1,9 +1,16 @@
 #include "act_reg_confirmemail.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+void findGeneratedCode(auto message, auto length) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    const auto pattern = "\\b[A-Za-z0-9]{" + std::to_string(length) + "}\\b";
+    const auto match = message.match(pattern);
+    return match ? match[0] : nullptr;
+
+}
 
 } // namespace elizaos

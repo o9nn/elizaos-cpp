@@ -1,9 +1,17 @@
 #include "websocket-client.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+WebSocketClient getWebSocketClient() {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    if (!wsClient) {
+        wsClient = new WebSocketClient();
+    }
+    return wsClient;
+
+}
 
 } // namespace elizaos

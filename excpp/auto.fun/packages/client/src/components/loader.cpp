@@ -1,9 +1,31 @@
 #include "loader.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+void Loader(auto {
+  className, auto isFullscreen, std::optional<std::any> }) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    return (;
+    <div;
+    className={twMerge([;
+    "flex items-center justify-center h-[50vh]",
+    isFullscreen;
+    ? "fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2";
+    : "",
+    className ? className : "",
+    ])}
+    >;
+    <img;
+    className="h-[60px] w-auto select-none animate-wiggle animate-infinite animate-duration-[400ms] animate-ease-linear";
+    alt="logo";
+    src="/dice.svg";
+    />;
+    </div>;
+    );
+
+}
 
 } // namespace elizaos

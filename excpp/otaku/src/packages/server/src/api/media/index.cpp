@@ -1,9 +1,22 @@
 #include "index.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+express::Router mediaRouter() {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    const auto router = express.Router();
+
+    // Mount agent media uploads under /agents
+    router.use('/agents', createAgentMediaRouter());
+
+    // Mount channel media uploads under /channels
+    router.use('/channels', createChannelMediaRouter());
+
+    return router;
+
+}
 
 } // namespace elizaos

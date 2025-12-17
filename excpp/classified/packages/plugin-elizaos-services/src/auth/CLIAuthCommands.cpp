@@ -1,9 +1,15 @@
 #include "CLIAuthCommands.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+std::vector<CLICommand> registerAuthCommands(IAgentRuntime runtime) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    const auto authCommands = new CLIAuthCommands(runtime);
+    return authCommands.getCommands();
+
+}
 
 } // namespace elizaos

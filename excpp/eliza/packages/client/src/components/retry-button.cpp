@@ -1,9 +1,30 @@
 #include "retry-button.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+void RetryButton(auto { onClick, RetryButtonProps className }) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    return (;
+    <Tooltip>;
+    <TooltipTrigger asChild>;
+    <Button;
+    variant="ghost";
+    size="icon";
+    "text-muted-foreground " + std::to_string(className);
+    onClick={onClick}
+    >;
+    <RotateCcw className="size-3" />;
+    </Button>;
+    </TooltipTrigger>;
+    <TooltipContent side="bottom">;
+    <p>Retry message</p>;
+    </TooltipContent>;
+    </Tooltip>;
+    );
+
+}
 
 } // namespace elizaos

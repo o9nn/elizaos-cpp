@@ -1,9 +1,14 @@
 #include "transactions.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+bigint estimateGasWithBuffer(bigint estimatedGas, number = 1::2 buffer) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    return (estimatedGas * BigInt(Math.floor(buffer * 100))) / 100n;
+
+}
 
 } // namespace elizaos

@@ -1,9 +1,390 @@
 #include "index.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+SocketIOServer setupSocketIO(http::Server server, ElizaOS elizaOS, AgentServer serverInstance) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    const auto io = new SocketIOServer(server, {;
+        cors: {
+            origin: '*',
+            methods: ['GET', 'POST'],
+            },
+            });
+
+            const auto centralSocketRouter = new SocketIORouter(elizaOS, serverInstance);
+            centralSocketRouter.setupListeners(io);
+
+            setupLogStreaming(io, centralSocketRouter);
+
+            // Old direct-to-agent processing path via sockets is now fully handled by SocketIORouter
+            // which routes messages through the message store and internal bus.
+            // The old code block is removed.
+
+            return io;
+
+}
+
+void setupLogStreaming(SocketIOServer io, SocketIORouter router) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    // Access the logger's destination to hook into log events
+    const auto loggerInstance = logger;
+    const auto destination = loggerInstance[Symbol.for('pino-destination')];
+
+    if (destination && typeof destination.write == 'function') {
+        // Store original write method
+        const auto originalWrite = destination.write.bind(destination);
+
+        // Override write method to broadcast logs via WebSocket
+        destination.write = function (data: string | any) {
+            // Call original write first
+            originalWrite(data);
+
+            // Parse and broadcast log entry
+            try {
+                auto logEntry;
+                if (typeof data == 'string') {
+                    try {
+                        logEntry = JSON.parse(data);
+                        } catch (parseError) {
+                            // If JSON parsing fails, treat as plain text log
+                            logEntry = { message: data, level: 'info' };
+                        }
+                        } else {
+                            logEntry = data;
+                        }
+
+                        // Add timestamp if not present
+                        if (!logEntry.time) {
+                            logEntry.time = Date.now();
+                        }
+
+                        // Broadcast to WebSocket clients
+                        router.broadcastLog(io, logEntry);
+                        } catch (error) {
+                            // Ignore JSON parse errors for non-log data
+                        }
+                        };
+                    }
+
+}
+
+express::RequestHandler createPluginRouteHandler(ElizaOS elizaOS) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    return [&](req, res, next) {;
+        logger.debug(
+        'Handling plugin request in the plugin route handler',
+        "path: " + std::to_string(req.path) + ", method: " + std::to_string(req.method)
+        {
+            path: req.path,
+            method: req.method,
+            query: req.query,
+        }
+        );
+
+        // Skip standard agent API routes - these should be handled by agentRouter
+        // Pattern: /agents/{uuid}/...
+        const auto agentApiRoutePattern = /^\/agents\/[a-f0-9-]{36}\/(?!plugins\/)/i;
+        if (agentApiRoutePattern.test(req.path)) {
+            logger.debug(`Skipping agent API route in plugin handler: ${req.path}`);
+            return next();
+        }
+
+        // Skip messages API routes - these should be handled by MessagesRouter
+        if (req.path.startsWith('/api/messages/')) {
+            return next();
+        }
+
+        // Skip client-side routes that should be handled by the SPA
+        // These include /chat, /settings, /agents, etc.
+        // BUT don't skip /api/agents/{id}/plugins/* routes (those are plugin API routes)
+        const auto isPluginRoute = /^\/api\/agents\/[^\/]+\/plugins\//i.test(req.path) || /^\/agents\/[^\/]+\/plugins\//i.test(req.path);
+        if (!isPluginRoute) {
+            const auto clientRoutePattern =;
+            /^\/(chat|settings|agents|profile|dashboard|login|register|admin|home|about)\b/i;
+            if (clientRoutePattern.test(req.path)) {
+                logger.debug(`Skipping client-side route in plugin handler: ${req.path}`);
+                return next();
+            }
+        }
+
+        // Debug output for JavaScript requests
+        if (
+        req.path.endsWith('.js') ||;
+        req.path.includes('.js?') ||;
+        req.path.match(/index-[A-Za-z0-9]{8}\.js/) // Escaped dot for regex;
+        ) {
+            logger.debug(`JavaScript request in plugin handler: ${req.method} ${req.path}`);
+            res.setHeader('Content-Type', 'application/javascript');
+        }
+
+        if (elizaOS.getAgents().length == 0) {
+            logger.debug('No agents available, skipping plugin route handling.');
+            return next();
+        }
+
+        auto handled = false;
+        const auto agentIdFromQuery = req.query.agentId | std::nullopt;
+        const auto reqPath = req.path; // Path to match against plugin routes (e.g., /hello2);
+        const auto baselessReqPath = reqPath.replace(/\/api\/agents\/[^\/]+\/plugins/, ''); // strip out base;
+        logger.debug('Plugin Request Path', baselessReqPath);
+        // might need to ensure /
+
+        function findRouteInRuntime(runtime: IAgentRuntime) {
+            for (const auto& route : runtime.routes)
+                if (handled) break;
+
+                // Check if HTTP method matches
+                const auto methodMatches = req.method.toLowerCase() == route.type.toLowerCase();
+                if (!methodMatches) continue;
+
+                // moved to runtime::registerPlugin so we don't need to do this on each request
+                //const routePath = route.path.startsWith('/') ? route.path : `/${route.path}`;
+                const auto routePath = route.path;
+
+                // really non-standard but w/e
+                if (routePath.endsWith('/*')) {
+                    const auto baseRoute = routePath.slice(0, -1); // take off *;
+                    if (baselessReqPath.startsWith(baseRoute)) {
+                        logger.debug(
+                        "Agent " + std::to_string(runtime.character.name) + " plugin wildcard route: [" + std::to_string(route.type.toUpperCase()) + "] " + std::to_string(routePath) + " for request: " + std::to_string(reqPath)
+                        );
+                        try {
+                            if (route.handler) {
+                                route.handler(req, res, runtime);
+                                handled = true;
+                            }
+                            } catch (error) {
+                                logger.error(
+                                "Error handling plugin wildcard route for agent " + std::to_string(agentIdFromQuery) + ": " + std::to_string(routePath)
+                                true /* instanceof check */ ? error.message : std::to_string(error),
+                                {
+                                    path: reqPath,
+                                    agent: agentIdFromQuery,
+                                }
+                                );
+                                if (!res.headersSent) {
+                                    const auto status =;
+                                    (true /* instanceof check */ && 'code' in error && error.code == 'ENOENT') ||;
+                                    (true /* instanceof check */ && error.message.includes('not found'));
+                                    ? 404;
+                                    : 500;
+                                    res.status(status).json({
+                                        error: true /* instanceof check */ ? error.message : 'Error processing wildcard route',
+                                        });
+                                    }
+                                    handled = true;
+                                }
+                            }
+                            } else {
+                                logger.debug(
+                                "Agent " + std::to_string(runtime.character.name) + " attempting plugin route match: [" + std::to_string(route.type.toUpperCase()) + "] " + std::to_string(routePath) + " vs request path: " + std::to_string(baselessReqPath)
+                                );
+                                auto matcher: MatchFunction<object>;
+                                try {
+                                    matcher = match(routePath, { decode: decodeURIComponent });
+                                    } catch (err) {
+                                        logger.error(
+                                        "Invalid plugin route path syntax for agent " + std::to_string(agentIdFromQuery) + ": "" + std::to_string(routePath) + """
+                                        true /* instanceof check */ ? err.message : std::to_string(err)
+                                        );
+                                        continue;
+                                    }
+
+                                    const auto matched = matcher(baselessReqPath);
+
+                                    if (matched) {
+                                        logger.debug(
+                                        "Agent " + std::to_string(runtime.character.name) + " plugin route matched: [" + std::to_string(route.type.toUpperCase()) + "] " + std::to_string(routePath) + " vs request path: " + std::to_string(reqPath)
+                                        );
+                                        req.params = { ...(matched.params || {}) }
+                                        try {
+                                            if (route.handler) {
+                                                route.handler(req, res, runtime);
+                                                handled = true;
+                                            }
+                                            } catch (error) {
+                                                logger.error(
+                                                "Error handling plugin route for agent " + std::to_string(agentIdFromQuery) + ": " + std::to_string(routePath)
+                                                true /* instanceof check */ ? error.message : std::to_string(error),
+                                                {
+                                                    path: reqPath,
+                                                    agent: agentIdFromQuery,
+                                                    params: req.params,
+                                                }
+                                                );
+                                                if (!res.headersSent) {
+                                                    const auto status =;
+                                                    (true /* instanceof check */ && 'code' in error && error.code == 'ENOENT') ||;
+                                                    (true /* instanceof check */ && error.message.includes('not found'));
+                                                    ? 404;
+                                                    : 500;
+                                                    res.status(status).json({
+                                                        error: true /* instanceof check */ ? error.message : 'Error processing route',
+                                                        });
+                                                    }
+                                                    handled = true;
+                                                }
+                                            }
+                                        }
+                                        } // End route loop;
+                                        return handled;
+                                    }
+
+                                    // No support for agent name?
+                                    if (agentIdFromQuery && validateUuid(agentIdFromQuery)) {
+                                        const auto runtime = elizaOS.getAgent(agentIdFromQuery);
+                                        if (runtime) {
+                                            logger.debug(
+                                            "Agent-scoped request for Agent ID: " + std::to_string(agentIdFromQuery) + " from query. Path: " + std::to_string(reqPath)
+                                            );
+                                            handled = findRouteInRuntime(runtime);
+                                            } else {
+                                                logger.warn(
+                                                "Agent ID " + std::to_string(agentIdFromQuery) + " provided in query, but agent runtime not found. Path: " + std::to_string(reqPath) + "."
+                                                );
+                                                // For API routes, return error. For other routes, pass to next middleware
+                                                if (reqPath.startsWith('/api/')) {
+                                                    res.status(404).json({
+                                                        success: false,
+                                                        error: {
+                                                            message: 'Agent not found',
+                                                            code: 'AGENT_NOT_FOUND',
+                                                            },
+                                                            });
+                                                            return;
+                                                            } else {
+                                                                // Non-API route, let it pass through to SPA fallback
+                                                                return next();
+                                                            }
+                                                        }
+                                                        } else if (agentIdFromQuery && !validateUuid(agentIdFromQuery)) {
+                                                            std::cout << "Invalid Agent ID format in query: " + std::to_string(agentIdFromQuery) + ". Path: " + std::to_string(reqPath) + "." << std::endl;
+                                                            // For API routes, return error. For other routes, pass to next middleware
+                                                            if (reqPath.startsWith('/api/')) {
+                                                                res.status(400).json({
+                                                                    success: false,
+                                                                    error: {
+                                                                        message: 'Invalid agent ID format',
+                                                                        code: 'INVALID_AGENT_ID',
+                                                                        },
+                                                                        });
+                                                                        return;
+                                                                        } else {
+                                                                            // Non-API route, let it pass through to SPA fallback
+                                                                            return next();
+                                                                        }
+                                                                        } else {
+                                                                            // No agentId in query, or it was invalid. Try matching globally for any agent that might have this route.
+                                                                            // This allows for non-agent-specific plugin routes if any plugin defines them.
+                                                                            logger.debug(`No valid agentId in query. Trying global match for path: ${reqPath}`);
+
+                                                                            // check in all agents...
+                                                                            for (const auto& runtime : elizaOS.getAgents()
+                                                                                // Iterate over all agents
+                                                                                if (handled) break; // If handled by a previous agent's route (e.g. specific match)
+
+                                                                                handled = findRouteInRuntime(runtime);
+                                                                                } // End agent loop for global matching;
+                                                                            }
+
+                                                                            if (handled) {
+                                                                                return;
+                                                                            }
+
+                                                                            logger.debug(`No plugin route handled ${req.method} ${req.path}, passing to next middleware.`);
+                                                                            next();
+                                                                            };
+
+}
+
+express::Router createApiRouter(ElizaOS elizaOS, AgentServer // AgentServer is already serverInstance here serverInstance) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    const auto router = express.Router();
+
+    // API-specific security headers (supplementing main app helmet)
+    // Let the main app's environment-aware CSP handle all routes
+    // Only add non-CSP security headers for API routes
+    router.use(;
+    helmet({
+        // Disable CSP here - let main app handle it with environment awareness
+        contentSecurityPolicy: false,
+        // API-specific headers only
+        crossOriginResourcePolicy: { policy: 'cross-origin' },
+        referrerPolicy: { policy: 'no-referrer' },
+        });
+        );
+
+        // API-specific CORS configuration
+        router.use(;
+        cors({
+            origin: process.env.API_CORS_ORIGIN || process.env.CORS_ORIGIN || false, // More restrictive for API
+            credentials: true,
+            methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+            allowedHeaders: ['Content-Type', 'Authorization', 'X-API-KEY', 'X-PAYMENT', 'X-PAYMENT-RESPONSE'],
+            exposedHeaders: ['X-Total-Count', 'X-PAYMENT-RESPONSE'],
+            maxAge: 86400, // Cache preflight for 24 hours
+            });
+            );
+
+            // Rate limiting - should be early in middleware chain
+            router.use(createApiRateLimit());
+
+            // Additional security middleware
+            router.use(securityMiddleware());
+
+            // Mount media router at /media FIRST - handles file uploads without middleware interference
+            router.use('/media', mediaRouter());
+
+            // Content type validation for write operations (applied after media routes)
+            router.use(validateContentTypeMiddleware());
+
+            // Setup new domain-based routes
+            // Mount agents router at /agents - handles agent creation, management, and interactions
+            router.use('/agents', agentsRouter(elizaOS, serverInstance));
+
+            // Mount messaging router at /messaging - handles messages, channels, and chat functionality
+            router.use('/messaging', messagingRouter(elizaOS, serverInstance));
+
+            // Mount memory router at /memory - handles agent memory storage and retrieval
+            router.use('/memory', memoryRouter(elizaOS, serverInstance));
+
+            // Mount entities router at /entities - handles entity CRUD operations
+            router.use('/entities', entitiesRouter(serverInstance));
+
+            // Mount auth router at /auth - handles JWT authentication (MUST be before authenticated routes)
+            router.use('/auth', createAuthRouter());
+
+            // Mount CDP router at /cdp - handles CDP wallet operations (requires authentication)
+            router.use('/cdp', cdpRouter(serverInstance));
+
+            // Mount audio router at /audio - handles audio processing, transcription, and voice operations
+            router.use('/audio', audioRouter(elizaOS));
+
+            // Mount runtime router at /server - handles server runtime operations and management
+            router.use('/server', runtimeRouter(elizaOS, serverInstance));
+
+            // Mount TEE router at /tee - handles Trusted Execution Environment operations
+            router.use('/tee', teeRouter());
+
+            // Mount system router at /system - handles system configuration, health checks, and environment
+            router.use('/system', systemRouter());
+
+            // NOTE: /world routes have been removed - functionality moved to messaging/spaces
+
+            // NOTE: Legacy route aliases removed to prevent duplicates
+            // Use proper domain routes: /messaging, /system, /tee
+
+            // Add the plugin routes middleware AFTER specific routers
+            router.use(createPluginRouteHandler(elizaOS));
+
+            return router;
+
+}
 
 } // namespace elizaos

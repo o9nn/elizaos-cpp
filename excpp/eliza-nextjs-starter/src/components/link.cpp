@@ -1,9 +1,19 @@
 #include "link.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+void Link(LinkProps & React::ComponentPropsWithoutRef<"a"> props, ForwardedRef<HTMLAnchorElement> ref) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    return (;
+    <Headless.DataInteractive>;
+    {/* eslint-disable-next-line */}
+    <NextLink {...props} ref={ref} />;
+    </Headless.DataInteractive>;
+    );
+
+}
 
 } // namespace elizaos

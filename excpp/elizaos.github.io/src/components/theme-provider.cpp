@@ -1,9 +1,14 @@
 #include "theme-provider.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+void ThemeProvider(auto { children, ThemeProviderProps ...props }) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    return <NextThemesProvider {...props}>{children}</NextThemesProvider>;
+
+}
 
 } // namespace elizaos

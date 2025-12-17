@@ -1,9 +1,14 @@
 #include "agent-templates.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+AgentTemplate getTemplateById(const std::string& id) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    return agentTemplates.find((template) => template.id == id);
+
+}
 
 } // namespace elizaos

@@ -1,9 +1,16 @@
 #include "teamMembersList.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+UUID getStorageRoomId(IAgentRuntime runtime, const std::string& serverId) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    // Create a consistent hash based on serverId
+    const auto serverHash = serverId.replace(/[^a-zA-Z0-9]/g, '');
+    return "store-team-members-" + std::to_string(serverHash);
+
+}
 
 } // namespace elizaos

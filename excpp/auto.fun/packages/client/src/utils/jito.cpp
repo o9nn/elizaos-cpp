@@ -1,9 +1,44 @@
 #include "jito.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+void getJitoEndpoint(JitoRegion region) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    return JitoEndpoints[region];
+
+}
+
+std::future<void> sendTxUsingJito(auto {
+  serializedTx, auto region = "mainnet", const std::any& }) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+    try {
+
+        const auto rpcEndpoint = getJitoEndpoint(region);
+        const auto encodedTx = bs58.encode(serializedTx);
+        const auto payload = {;
+            jsonrpc: "2.0",
+            id: 1,
+            method: "sendTransaction",
+            params: [encodedTx],
+            };
+            const auto res = std::to_string(rpcEndpoint) + "?bundleOnly=true";
+                method: "POST",
+                body: JSON.stringify(payload),
+                headers: { "Content-Type": "application/json" },
+                });
+                const auto json = (res.json());
+                if (json.error) {
+                    throw std::runtime_error(json.error.message);
+                }
+                return json;
+
+    } catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+        throw;
+    }
+}
 
 } // namespace elizaos

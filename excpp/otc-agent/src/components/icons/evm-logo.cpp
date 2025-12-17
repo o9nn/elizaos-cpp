@@ -1,9 +1,26 @@
 #include "evm-logo.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+void EVMLogo(auto {
+  className, SVGProps<SVGSVGElement> ...props
+}) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    return (;
+    <svg;
+    viewBox="0 0 24 24";
+    xmlns="http://www.w3.org/2000/svg"
+    fill="currentColor";
+    className={className}
+    {...props}
+    >;
+    <path d="M11.944 17.97L4.58 13.62 11.943 24l7.37-10.38-7.372 4.35h.003zM12.056 0L4.69 12.223l7.365 4.354 7.365-4.35L12.056 0z" />;
+    </svg>;
+    );
+
+}
 
 } // namespace elizaos

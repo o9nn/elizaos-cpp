@@ -1,9 +1,25 @@
 #include "service.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+ServiceError createServiceError(unknown error, auto code = 'UNKNOWN_ERROR') {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    if (error instanceof Error) {
+        return {
+            code,
+            message: error.message,
+            cause: error,
+            };
+        }
+
+        return {
+            code,
+            message: std::to_string(error),
+            };
+
+}
 
 } // namespace elizaos

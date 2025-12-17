@@ -1,9 +1,14 @@
 #include "runtime.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+void normalizeAction(const std::string& actionString) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    return actionString.toLowerCase().replace(/_/g, '');
+
+}
 
 } // namespace elizaos

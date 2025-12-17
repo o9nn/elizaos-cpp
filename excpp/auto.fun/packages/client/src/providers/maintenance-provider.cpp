@@ -1,9 +1,35 @@
 #include "maintenance-provider.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+void MainentenaceProvider() {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    const auto isEnabled = import.meta.env.VITE_MAINTENANCE_MODE;
+    ? Boolean(import.meta.env.VITE_MAINTENANCE_MODE);
+    : false;
+
+    if (isEnabled)
+    return (;
+    <div className="fixed w-screen h-screen bg-autofun-background-action-primary z-[1000] flex items-center justify-center text-white">;
+    <div className="flex items-center flex-col gap-4 p-4">;
+    <img;
+    src="/logo.png";
+    height={128}
+    width={128}
+    alt="logo";
+    className="size-24";
+    />;
+    <h2 className="text-base text-center whitespace-pre-line">;
+    We are undergoing maintenance.{"\n"}Will be back soon.;
+    </h2>;
+    </div>;
+    </div>;
+    );
+    return nullptr;
+
+}
 
 } // namespace elizaos

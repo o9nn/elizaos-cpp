@@ -1,9 +1,54 @@
 #include "group-new.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+void GroupNew() {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    const auto navigate = useNavigate();
+    // const [open, setOpen] = useState(true); // GroupPanel typically manages its own visibility or is used as a page component
+    // const { data: serversData } = useServers();
+    // const { data: agentsData, isLoading: isLoadingAgents } = useAgentsWithDetails(); // GroupPanel fetches its own agents
+    // const [selectedServerId, setSelectedServerId] = useState<UUID | null>(null); // GroupPanel will use DEFAULT_SERVER_ID
+
+    // useEffect(() => {
+    //   // Use the first available server or create one if needed
+    //   if (serversData?.data?.servers && serversData.data.servers.length > 0) {
+    //     setSelectedServerId(serversData.data.servers[0].id);
+    //   }
+    // }, [serversData]);
+
+    // const handleOpenChange = (open: boolean) => {
+    //   setOpen(open);
+    //   if (!open) {
+    //     // Navigate back to home when dialog is closed
+    //     navigate('/');
+    //   }
+    // };
+
+    // if (!selectedServerId) { // GroupPanel handles server ID internally or gets it via props if needed for specific server contexts
+    //   return (
+    //     <div className="flex items-center justify-center h-screen">
+    //       <p>Loading servers...</p>
+    //     </div>
+    //   );
+    // }
+
+    return (;
+    // <CreateGroupDialog open={open} onOpenChange={handleOpenChange} serverId={selectedServerId} />
+    // Render GroupPanel directly as the route's content
+    // GroupPanel will handle its own logic for fetching serverId (default) or if it were to be passed.
+    <div className="pt-4 md:pt-8">
+    <GroupPanel;
+    // agents={agents} // Removed prop
+    onClose={() => navigate(-1)} // Navigate back on close;
+    // channelId is undefined, so it's in "create" mode
+    />;
+    </div>;
+    );
+
+}
 
 } // namespace elizaos

@@ -1,9 +1,49 @@
 #include "index.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+void Index() {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    const auto { user } = usePrivy();
+    if ((Constants.expoConfig.extra.privyAppId as string).length != 25) {
+        return (;
+        <SafeAreaView>;
+        <View;
+        style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+        }}
+        >;
+        "privyAppId";
+        </View>;
+        </SafeAreaView>;
+        );
+    }
+    if (
+    !(Constants.expoConfig.extra.privyClientId).startsWith(;
+    "client-";
+    );
+    ) {
+        return (;
+        <SafeAreaView>;
+        <View;
+        style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+        }}
+        >;
+        "privyClientId";
+        </View>;
+        </SafeAreaView>;
+        );
+    }
+    return !user ? <LoginScreen /> : <UserScreen />;
+
+}
 
 } // namespace elizaos

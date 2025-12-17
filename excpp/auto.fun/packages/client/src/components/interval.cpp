@@ -1,9 +1,16 @@
 #include "interval.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+void Interval(auto {
+  ms, auto resolver, const std::any& }) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    const auto value = useInterval({ ms, resolver });
+    return value;
+
+}
 
 } // namespace elizaos

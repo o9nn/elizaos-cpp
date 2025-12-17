@@ -1,9 +1,12 @@
 #include "monitoring.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+std::future<> startMonitoringBatch(auto batchSize = 10) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+    processed: number; total: number
+}
 
 } // namespace elizaos

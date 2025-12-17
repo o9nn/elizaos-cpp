@@ -1,0 +1,61 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
+#include ".services/todoService.hpp"
+#include "elizaos/core.hpp"
+
+namespace elizaos {
+
+// NOTE: This is auto-generated approximate C++ code
+// Manual refinement required for production use
+
+
+
+/**
+ * The TodosProvider fetches and formats information about a user's tasks and points.
+ */
+
+      // Fetch room details directly to get worldId
+
+      // Get data service
+
+      // Get ALL tasks for THIS ENTITY across all rooms/worlds
+
+      // Filter out completed tasks from active
+
+      // Get completed tasks in the last 7 days
+
+        // Check completion date if available
+
+        // If no completedAt, use updatedAt as fallback
+
+      // --- Format different types of tasks ---
+
+      // Daily recurring tasks
+
+      // One-off tasks with due dates
+
+      // Aspirational goals (no due date)
+
+      // Recently completed tasks
+
+      // Build the provider output
+
+      // Daily tasks
+
+      // One-off tasks
+
+      // Aspirational tasks
+
+      // Recently completed tasks
+
+      // Construct response object
+
+      // Return a simple error message if something goes wrong
+
+
+} // namespace elizaos

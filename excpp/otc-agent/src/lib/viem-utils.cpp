@@ -1,9 +1,24 @@
 #include "viem-utils.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+std::future<> readERC20Info(PublicClient client, Address tokenAddress) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+    symbol: string; name: string; decimals: number
+}
+
+std::future<bigint> readERC20Balance(PublicClient client, Address tokenAddress, Address account) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    return safeReadContract<bigint>(client, {;
+        address: tokenAddress,
+        abi: ERC20_ABI,
+        functionName: "balanceOf",
+        args: [account],
+        });
+
+}
 
 } // namespace elizaos
