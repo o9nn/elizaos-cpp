@@ -717,6 +717,463 @@ class TypeScriptToCppTranspiler:
         
         return header
     
+    def convert_statement(self, stmt: str, indent_level: int = 0) -> str:
+        """Convert a single TypeScript statement to C++"""
+        indent = '    ' * indent_level
+        stmt = stmt.strip()
+        
+        if not stmt:
+            return ''
+        
+        # Skip lines that are just braces
+        if stmt in ['{', '}']:
+            return indent + stmt
+        
+        # Handle closing braces with semicolons (end of return statement with object literal)
+        if stmt in ['};', '}']:
+            return indent + '};'
+        
+        # Skip lines that are just closing with comma (part of object literal)
+        if stmt in ['},', '];', '),']:
+            return indent + stmt
+        
+        # Handle try-catch blocks
+        if stmt == 'try {':
+            return indent + stmt
+        if stmt.startswith('catch '):
+            return indent + self.convert_catch_statement(stmt)
+        
+        # Convert variable declarations
+        if stmt.startswith('const ') or stmt.startswith('let ') or stmt.startswith('var '):
+            return self.convert_variable_declaration(stmt, indent)
+        
+        # Convert return statements
+        if stmt.startswith('return '):
+            return self.convert_return_statement(stmt, indent)
+        
+        # Convert if statements
+        if stmt.startswith('if '):
+            return indent + self.convert_if_statement(stmt)
+        
+        # Convert for loops
+        if stmt.startswith('for '):
+            return indent + self.convert_for_loop(stmt)
+        
+        # Convert while loops
+        if stmt.startswith('while '):
+            return indent + stmt.replace('===', '==').replace('!==', '!=')
+        
+        # Convert throw statements
+        if stmt.startswith('throw '):
+            return indent + self.convert_throw_statement(stmt)
+        
+        # Convert logger/console statements
+        if 'logger.' in stmt or 'console.' in stmt:
+            return indent + self.convert_log_statement(stmt)
+        
+        # Check if this is part of an object/array literal (contains : or just ,)
+        if (':' in stmt or stmt.endswith(',')) and not stmt.startswith('//'):
+            # This is likely a property in an object literal
+            converted = self.convert_expression(stmt)
+            # Don't add semicolon for object properties
+            return indent + converted
+        
+        # Default: return with basic conversions
+        converted = self.convert_expression(stmt)
+        
+        # Remove trailing semicolons if present, we'll add them back
+        converted = converted.rstrip(';')
+        
+        # Add semicolon if this is a statement (not a brace, not ending in comma)
+        if converted and not converted.endswith(('{', '}', ',', ';')):
+            converted += ';'
+        
+        return indent + converted
+    
+    def convert_catch_statement(self, stmt: str) -> str:
+        """Convert catch (error) to catch (const std::exception& e)"""
+        # catch (error) -> catch (const std::exception& e)
+        match = re.match(r'catch\s*\((\w+)\)', stmt)
+        if match:
+            var_name = match.group(1)
+            return f'catch (const std::exception& {var_name})'
+        return stmt
+    
+    def convert_throw_statement(self, stmt: str) -> str:
+        """Convert throw statement to C++"""
+        # throw new Error("message") -> throw std::runtime_error("message")
+        match = re.match(r'throw\s+new\s+Error\s*\(\s*(.+)\s*\);?', stmt)
+        if match:
+            message = match.group(1).strip()
+            return f'throw std::runtime_error({message});'
+        
+        # throw error; -> throw;
+        if stmt.strip() == 'throw error;' or stmt.strip() == 'throw;':
+            return 'throw;'
+        
+        return stmt
+    
+    def convert_log_statement(self, stmt: str) -> str:
+        """Convert logger/console statements to C++"""
+        # logger.error("msg", var) -> std::cerr << "msg" << var << std::endl;
+        # console.log("msg") -> std::cout << "msg" << std::endl;
+        
+        # Extract the log call
+        match = re.match(r'(?:logger|console)\.(log|error|warn|info)\s*\((.+)\);?', stmt)
+        if match:
+            level = match.group(1)
+            args = match.group(2)
+            
+            # Split arguments by comma (respecting nested parens/brackets)
+            arg_list = self.split_args(args)
+            
+            # Convert each argument
+            cpp_args = []
+            for arg in arg_list:
+                cpp_args.append(self.convert_expression(arg.strip()))
+            
+            # Choose output stream
+            if level == 'error':
+                stream = 'std::cerr'
+            else:
+                stream = 'std::cout'
+            
+            # Build output statement
+            result = f'{stream}'
+            for arg in cpp_args:
+                result += f' << {arg}'
+            result += ' << std::endl;'
+            
+            return result
+        
+        return stmt
+    
+    def split_args(self, args_str: str) -> List[str]:
+        """Split function arguments by comma, respecting nested parens/brackets"""
+        args = []
+        current = []
+        depth = 0
+        
+        for char in args_str:
+            if char in '({[':
+                depth += 1
+            elif char in ')}]':
+                depth -= 1
+            elif char == ',' and depth == 0:
+                args.append(''.join(current))
+                current = []
+                continue
+            current.append(char)
+        
+        if current:
+            args.append(''.join(current))
+        
+        return args
+    
+    def convert_variable_declaration(self, stmt: str, indent: str) -> str:
+        """Convert const/let/var declarations to C++"""
+        # Pattern: const varName: Type = value;
+        # Pattern: const varName = value;
+        
+        # Extract variable name and value
+        match = re.match(r'(const|let|var)\s+(\w+)(?::\s*([^=]+))?\s*=\s*(.+);?', stmt)
+        if match:
+            var_type = match.group(1)
+            var_name = match.group(2)
+            type_hint = match.group(3)
+            value = match.group(4).strip().rstrip(';')
+            
+            # Determine C++ type
+            if type_hint:
+                cpp_type = self.convert_type(type_hint.strip())
+            else:
+                # Try to infer type from value
+                cpp_type = 'auto'
+            
+            # Convert value expression
+            cpp_value = self.convert_expression(value)
+            
+            # Use const for const declarations
+            if var_type == 'const':
+                return f'{indent}const {cpp_type} {var_name} = {cpp_value};'
+            else:
+                return f'{indent}{cpp_type} {var_name} = {cpp_value};'
+        
+        # Fallback - basic replacement
+        converted = stmt.replace('const ', 'const auto ').replace('let ', 'auto ').replace('var ', 'auto ')
+        converted = self.convert_expression(converted)
+        if not converted.endswith(';'):
+            converted += ';'
+        return indent + converted
+    
+    def convert_return_statement(self, stmt: str, indent: str) -> str:
+        """Convert return statement to C++"""
+        # Extract the return value
+        match = re.match(r'return\s+(.+);?', stmt)
+        if match:
+            value = match.group(1).strip().rstrip(';')
+            
+            # If returning an object literal, handle specially
+            if value.startswith('{'):
+                # Don't add semicolon yet, it will be added on closing brace line
+                return f'{indent}return {value}'
+            
+            cpp_value = self.convert_expression(value)
+            return f'{indent}return {cpp_value};'
+        
+        # Just return; (no value)
+        if stmt.strip() == 'return;':
+            return f'{indent}return;'
+        
+        return indent + stmt
+    
+    def convert_expression(self, expr: str) -> str:
+        """Convert a TypeScript expression to C++"""
+        expr = expr.strip()
+        
+        if not expr:
+            return expr
+        
+        # Remove type assertions like "as any" or "as string"
+        expr = re.sub(r'\s+as\s+\w+', '', expr)
+        
+        # Convert instanceof checks
+        # error instanceof Error -> dynamic_cast or typeid check (simplified)
+        expr = re.sub(r'(\w+)\s+instanceof\s+Error', r'true /* instanceof check */', expr)
+        expr = re.sub(r'(\w+)\s+instanceof\s+(\w+)', r'true /* instanceof \2 check */', expr)
+        
+        # Convert new Error() to std::runtime_error
+        expr = re.sub(r'new\s+Error\s*\(([^)]*)\)', r'std::runtime_error(\1)', expr)
+        
+        # Convert String() to std::to_string or similar
+        expr = re.sub(r'String\(([^)]+)\)', r'std::to_string(\1)', expr)
+        
+        # Convert await expressions
+        expr = re.sub(r'\bawait\s+', '', expr)  # Remove await, assume sync for now
+        
+        # Convert object literals { key: value } - try to convert to struct init
+        if expr.startswith('{') and expr.endswith('}') and ':' in expr:
+            expr = self.convert_object_literal(expr)
+        
+        # Convert array literals
+        if expr.startswith('[') and expr.endswith(']'):
+            # Leave as is, C++ uses same syntax
+            pass
+        
+        # Convert string templates `text ${var}` to string concatenation
+        if '`' in expr:
+            expr = self.convert_template_string(expr)
+        
+        # Convert null to nullptr
+        expr = re.sub(r'\bnull\b', 'nullptr', expr)
+        
+        # Convert undefined to std::nullopt
+        expr = re.sub(r'\bundefined\b', 'std::nullopt', expr)
+        
+        # Convert strict equality
+        expr = expr.replace('===', '==').replace('!==', '!=')
+        
+        # Convert optional chaining (simplified - just remove ?)
+        expr = expr.replace('?.', '.')
+        
+        # Convert nullish coalescing (simplified)
+        expr = expr.replace('??', '||')
+        
+        # Convert arrow functions (simple cases)
+        if '=>' in expr and not any(kw in expr for kw in ['===', '!==']):
+            expr = self.convert_arrow_function(expr)
+        
+        return expr
+    
+    def convert_object_literal(self, obj_str: str) -> str:
+        """Convert object literal to C++ struct initialization"""
+        # For now, keep structure but change syntax slightly
+        # { key: value } -> { .key = value } for designated initializers (C++20)
+        # Or just return as-is for simpler conversion
+        
+        # Simple approach: change : to =
+        # This works for simple struct initialization
+        result = obj_str.replace(': ', ' = ')
+        
+        # Handle shorthand properties like { walletAddress } -> { .walletAddress = walletAddress }
+        # This is complex, so for now just add comment
+        if '{' in result and '=' not in result:
+            return obj_str + ' /* TODO: Convert object literal */'
+        
+        return result
+    
+    def convert_template_string(self, expr: str) -> str:
+        """Convert template strings to string concatenation"""
+        # Pattern: `text ${var} more text`
+        # Convert to: "text " + std::to_string(var) + " more text"
+        
+        result = []
+        i = 0
+        in_template = False
+        current_part = []
+        
+        while i < len(expr):
+            if expr[i] == '`':
+                in_template = not in_template
+                if current_part:
+                    result.append('"' + ''.join(current_part) + '"')
+                    current_part = []
+                i += 1
+            elif in_template and expr[i:i+2] == '${':
+                # Found interpolation start
+                if current_part:
+                    result.append('"' + ''.join(current_part) + '"')
+                    current_part = []
+                
+                # Find matching }
+                j = i + 2
+                brace_count = 1
+                while j < len(expr) and brace_count > 0:
+                    if expr[j] == '{':
+                        brace_count += 1
+                    elif expr[j] == '}':
+                        brace_count -= 1
+                    j += 1
+                
+                # Extract variable and convert
+                var_expr = expr[i+2:j-1]
+                result.append(f'std::to_string({var_expr})')
+                i = j
+            elif in_template:
+                current_part.append(expr[i])
+                i += 1
+            else:
+                i += 1
+        
+        if not result:
+            return expr
+        
+        return ' + '.join(result)
+    
+    def convert_arrow_function(self, expr: str) -> str:
+        """Convert arrow function to C++ lambda (simplified)"""
+        # Pattern: (params) => expr
+        # Pattern: param => expr
+        
+        # Simple single-param case
+        match = re.match(r'(\w+)\s*=>\s*(.+)', expr)
+        if match:
+            param = match.group(1)
+            body = match.group(2)
+            return f'[&]({param}) {{ return {body}; }}'
+        
+        # Multi-param case
+        match = re.match(r'\(([^)]*)\)\s*=>\s*(.+)', expr)
+        if match:
+            params = match.group(1)
+            body = match.group(2)
+            if body.strip().startswith('{'):
+                # Block body
+                return f'[&]({params}) {body}'
+            else:
+                # Expression body
+                return f'[&]({params}) {{ return {body}; }}'
+        
+        return expr
+    
+    def convert_if_statement(self, stmt: str) -> str:
+        """Convert if statement to C++"""
+        # Basic conversion
+        stmt = stmt.replace('===', '==').replace('!==', '!=')
+        stmt = stmt.replace('?.', '.')
+        return stmt
+    
+    def convert_for_loop(self, stmt: str) -> str:
+        """Convert for loop to C++"""
+        # for (const item of array) -> for (const auto& item : array)
+        match = re.match(r'for\s*\(\s*(?:const|let)\s+(\w+)\s+of\s+([^)]+)\)', stmt)
+        if match:
+            var_name = match.group(1)
+            iterable = match.group(2).strip()
+            return f'for (const auto& {var_name} : {iterable})'
+        
+        # for (let i = 0; i < n; i++) -> for (int i = 0; i < n; i++)
+        stmt = stmt.replace('let ', 'int ').replace('const ', 'const int ')
+        return stmt
+    
+    def convert_function_body(self, body: str, indent_level: int = 1) -> str:
+        """Convert a function body from TypeScript to C++"""
+        lines = body.split('\n')
+        converted_lines = []
+        current_indent = indent_level
+        
+        for line in lines:
+            # Preserve leading whitespace structure
+            stripped = line.strip()
+            
+            # Skip empty lines
+            if not stripped:
+                converted_lines.append('')
+                continue
+            
+            # Keep comments as-is
+            if stripped.startswith('//') or stripped.startswith('/*') or stripped.startswith('*'):
+                converted_lines.append('    ' * current_indent + stripped)
+                continue
+            
+            # Track brace depth for indentation
+            if stripped == '}' or stripped.endswith('}'):
+                current_indent = max(indent_level, current_indent - 1)
+            
+            # Convert the statement
+            converted = self.convert_statement(stripped, current_indent)
+            if converted.strip():
+                converted_lines.append(converted)
+            
+            # Increase indent after opening braces
+            if stripped.endswith('{') or stripped == '{':
+                current_indent += 1
+        
+        return '\n'.join(converted_lines)
+    
+    def extract_function_with_body(self, content: str, pos: int, match: re.Match) -> Tuple[str, str, int]:
+        """Extract function signature and body, return (signature, body, end_pos)"""
+        is_async = match.group(2) is not None
+        func_name = match.group(3)
+        params = match.group(4)
+        return_type = match.group(5).strip() if match.group(5) else None
+        
+        # Convert to C++ signature
+        cpp_params = self.convert_params(params)
+        
+        # Handle return type
+        if return_type:
+            if is_async and return_type.startswith('Promise<'):
+                inner_type = return_type[8:-1]
+                cpp_return = self.convert_type(inner_type)
+                cpp_return = f'std::future<{cpp_return}>'
+            else:
+                cpp_return = self.convert_type(return_type)
+                if is_async:
+                    cpp_return = f'std::future<{cpp_return}>'
+        else:
+            cpp_return = 'void'
+            if is_async:
+                cpp_return = 'std::future<void>'
+        
+        signature = f'{cpp_return} {func_name}({cpp_params})'
+        
+        # Extract function body
+        brace_start = pos + match.end() - 1
+        brace_count = 1
+        i = brace_start + 1
+        
+        while i < len(content) and brace_count > 0:
+            if content[i] == '{':
+                brace_count += 1
+            elif content[i] == '}':
+                brace_count -= 1
+            i += 1
+        
+        body = content[brace_start+1:i-1]
+        
+        return signature, body, i
+    
     def _extract_function_declarations(self, content: str) -> str:
         """Extract function declarations while removing implementations.
         Uses proper brace matching to avoid code leakage."""
@@ -870,16 +1327,62 @@ class TypeScriptToCppTranspiler:
         return ', '.join(cpp_params)
     
     def generate_implementation(self, ts_content: str, namespace: str = 'elizaos') -> str:
-        """Generate C++ implementation file from TypeScript content"""
-        # Extract function implementations
-        impl = f'#include "{{header_name}}"\n\n'
+        """Generate C++ implementation file from TypeScript content with converted function bodies"""
+        impl = f'#include "{{header_name}}"\n'
+        impl += '#include <iostream>\n'
+        impl += '#include <stdexcept>\n\n'
         impl += f'namespace {namespace} {{\n\n'
         
-        # Convert function bodies (simplified)
-        # In a real transpiler, this would parse and convert function logic
-        impl += '// TODO: Implement function bodies\n'
-        impl += '// Original TypeScript code has been analyzed\n'
-        impl += '// Manual implementation required for complete functionality\n\n'
+        # Extract and convert function implementations
+        func_pattern = r'(export\s+)?(async\s+)?function\s+(\w+)\s*\(([^)]*)\)\s*(?::\s*([^{]+))?\s*\{'
+        pos = 0
+        functions_found = False
+        
+        while pos < len(ts_content):
+            match = re.search(func_pattern, ts_content[pos:])
+            if not match:
+                break
+            
+            functions_found = True
+            
+            # Extract function signature and body
+            signature, body, end_pos = self.extract_function_with_body(ts_content, pos, match)
+            
+            # Convert function body
+            try:
+                converted_body = self.convert_function_body(body, indent_level=1)
+                
+                impl += f'{signature} {{\n'
+                impl += '    // NOTE: Auto-converted from TypeScript - may need refinement\n'
+                
+                # Add try-catch for functions that might throw
+                if 'throw ' in body or 'Error(' in body:
+                    impl += '    try {\n'
+                    # Indent converted body further
+                    indented_body = '\n'.join('    ' + line if line.strip() else line 
+                                              for line in converted_body.split('\n'))
+                    impl += indented_body + '\n'
+                    impl += '    } catch (const std::exception& e) {\n'
+                    impl += '        std::cerr << "Error: " << e.what() << std::endl;\n'
+                    impl += '        throw;\n'
+                    impl += '    }\n'
+                else:
+                    impl += converted_body + '\n'
+                
+                impl += '}\n\n'
+            except Exception as e:
+                # If conversion fails, add TODO
+                impl += f'{signature} {{\n'
+                impl += '    // TODO: Auto-conversion failed - manual implementation required\n'
+                impl += f'    // Error: {str(e)}\n'
+                impl += '    throw std::runtime_error("Not implemented");\n'
+                impl += '}\n\n'
+            
+            pos = end_pos
+        
+        if not functions_found:
+            impl += '// No function implementations found to convert\n'
+            impl += '// Original TypeScript may contain only interfaces/types\n\n'
         
         impl += f'}} // namespace {namespace}\n'
         
