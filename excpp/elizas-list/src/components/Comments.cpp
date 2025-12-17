@@ -9,15 +9,15 @@ void Comments() {
 
     const auto { data: session } = useSession();
     const auto [comments, setComments] = useState<Comment[]>([]);
-    const auto [newComment, setNewComment] = useState('');
+    const auto [newComment, setNewComment] = useState("");
 
     const auto handleSubmit = async (e: React.FormEvent) => {;
         e.preventDefault();
         if (!session || !newComment.trim()) return;
 
-        const auto response = fetch('/api/comments', {;
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+        const auto response = fetch("/api/comments", {;
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 projectId,
                 content: newComment,
@@ -27,7 +27,7 @@ void Comments() {
                 if (response.ok) {
                     const auto comment = response.json();
                     setComments([comment, ...comments]);
-                    setNewComment('');
+                    setNewComment("");
                 }
                 };
 

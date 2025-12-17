@@ -9,7 +9,7 @@ std::future<void> initializeCanvas() {
     try {
 
         try {
-            const auto canvas = import('canvas');
+            const auto canvas = import("canvas");
             Canvas = canvas.Canvas;
             Image = canvas.Image;
             ImageData = canvas.ImageData;
@@ -17,9 +17,9 @@ std::future<void> initializeCanvas() {
             // Polyfill for face-api.js
             faceapi.env.monkeyPatch({ Canvas, Image, ImageData });
             } catch (error) {
-                std::cerr << '[FaceRecognition] Canvas module not available:' << error << std::endl;
+                std::cerr << "[FaceRecognition] Canvas module not available:" << error << std::endl;
                 throw new Error(
-                'Canvas module is required for face recognition. Install with: npm install canvas'
+                "Canvas module is required for face recognition. Install with: npm install canvas"
                 );
             }
 

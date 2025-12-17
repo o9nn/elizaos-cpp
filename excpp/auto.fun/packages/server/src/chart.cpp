@@ -37,7 +37,7 @@ std::future<void> getLatestCandle(const std::string& tokenMint, const std::any& 
             );
 
             if (candles.length > 0) {
-                const auto idx = candles.length - 1;
+                const auto idx = candles.size() - 1;
                 const auto lastRaw = candles[idx];
 
                 const auto lastCandle = {;
@@ -61,7 +61,7 @@ std::future<void> getLatestCandle(const std::string& tokenMint, const std::any& 
             tokenMint;
             );
 
-            return latestCandle && latestCandle.length > 0 ? latestCandle[0] : nullptr; // Return the single candle;
+            return latestCandle && latestCandle.size() > 0 ? latestCandle[0] : nullptr; // Return the single candle;
 
 }
 
@@ -76,7 +76,7 @@ std::future<void> fetchPriceChartData(double start, double end, double range, co
     .limit(1);
 
     if (!tokenInfo) {
-        std::cerr << "Token " + std::to_string(tokenMint) + " not found" << std::endl;
+        std::cerr << "Token " + tokenMint + " not found" << std::endl;
         return [];
     }
 
@@ -85,15 +85,15 @@ std::future<void> fetchPriceChartData(double start, double end, double range, co
         std::vector<std::any> swapRecordsRaw = [];
         try {
             const auto redisCache = getGlobalRedisCache();
-            const auto listKey = "swapsList:" + std::to_string(tokenMint);
+            const auto listKey = "swapsList:" + tokenMint;
             const auto swapStrings = redisCache.lrange(listKey, 0, -1); // Fetch all swaps;
-            swapRecordsRaw = swapStrings.map((s) => JSON.parse(s));
+            swapRecordsRaw = swapStrings.map((s) => /* JSON.parse */ s);
             logger.log(
-            "Chart: Retrieved " + std::to_string(swapRecordsRaw.length) + " raw swaps from Redis list " + std::to_string(listKey)
+            "Chart: Retrieved " + swapRecordsRaw.size() + " raw swaps from Redis list " + listKey
             );
             } catch (redisError) {
                 logger.error(
-                "Chart: Failed to read swaps from Redis list swapsList:" + std::to_string(tokenMint) + ":"
+                "Chart: Failed to read swaps from Redis list swapsList:" + tokenMint + ":"
                 redisError;
                 );
                 return []; // Return empty if cache fails;
@@ -176,7 +176,7 @@ std::future<void> fetchPriceChartData(double start, double end, double range, co
                                         case 120:
                                         resolution = "60";
                                         break; // Use 60m and group if needed;
-                                        default:
+                                        // default:
                                         resolution = "1";
                                     }
 
@@ -206,7 +206,7 @@ std::future<void> fetchPriceChartData(double start, double end, double range, co
                                                     price: candles[i].close,
                                                     timestamp: new Date(candles[i].time * 1000),
                                                     };
-                                                    combined.push(out);
+                                                    combined.push_back(out);
                                                     } else {
                                                         // Add the last odd candle if there is one
                                                         const auto lastCandle = {;
@@ -214,7 +214,7 @@ std::future<void> fetchPriceChartData(double start, double end, double range, co
                                                             price: candles[i].close,
                                                             timestamp: new Date(candles[i].time * 1000),
                                                             };
-                                                            combined.push(lastCandle);
+                                                            combined.push_back(lastCandle);
                                                         }
                                                     }
                                                     return combined;
@@ -267,14 +267,14 @@ std::future<std::vector<std::any>> fetchLockedTokenChartData(const std::string& 
 
         try {
             // Construct Codex API URL for the token chart data
-            const auto codexApiUrl = "https://api.dexscreener.com/latest/dex/tokens/" + std::to_string(token);
+            const auto codexApiUrl = "https://api.dexscreener.com/latest/dex/tokens/" + token;
 
             // Fetch data from Codex API
             const auto response = fetch(codexApiUrl);
 
             if (!response.ok) {
                 throw new Error(
-                "Codex API error: " + std::to_string(response.status) + " " + std::to_string(response.statusText)
+                "Codex API error: " + response.status + " " + response.statusText
                 );
             }
 
@@ -282,7 +282,7 @@ std::future<std::vector<std::any>> fetchLockedTokenChartData(const std::string& 
 
             // Check if we have valid data
             if (!data || !data.pairs || data.pairs.length == 0) {
-                std::cerr << "No pairs found for token " + std::to_string(token) << std::endl;
+                std::cerr << "No pairs found for token " + token << std::endl;
                 return [];
             }
 
@@ -297,17 +297,17 @@ std::future<std::vector<std::any>> fetchLockedTokenChartData(const std::string& 
             const auto mainPair = pairs[0];
 
             if (!mainPair || !mainPair.priceUsd) {
-                std::cerr << "No price data found for token " + std::to_string(token) << std::endl;
+                std::cerr << "No price data found for token " + token << std::endl;
                 return [];
             }
 
             // For Codex API, we need to make a separate call to get the chart data
-            const auto chartApiUrl = "https://api.dexscreener.com/latest/dex/charts/solana/" + std::to_string(mainPair.pairAddress);
+            const auto chartApiUrl = "https://api.dexscreener.com/latest/dex/charts/solana/" + mainPair.pairAddress;
             const auto chartResponse = fetch(chartApiUrl);
 
             if (!chartResponse.ok) {
                 throw new Error(
-                "Chart API error: " + std::to_string(chartResponse.status) + " " + std::to_string(chartResponse.statusText)
+                "Chart API error: " + chartResponse.status + " " + chartResponse.statusText
                 );
             }
 
@@ -316,9 +316,9 @@ std::future<std::vector<std::any>> fetchLockedTokenChartData(const std::string& 
             if (
             !chartData ||;
             !chartData.priceCandles ||;
-            chartData.priceCandles.length == 0;
+            chartData.priceCandles.size() == 0;
             ) {
-                std::cerr << "No candle data found for pair " + std::to_string(mainPair.pairAddress) << std::endl;
+                std::cerr << "No candle data found for pair " + mainPair.pairAddress << std::endl;
                 return [];
             }
 
@@ -346,7 +346,7 @@ std::future<std::vector<std::any>> fetchLockedTokenChartData(const std::string& 
 
                     return candles;
                     } catch (error) {
-                        std::cerr << "Error fetching locked token chart data: " + std::to_string(error) << std::endl;
+                        std::cerr << "Error fetching locked token chart data: " + error << std::endl;
                         return [];
                     }
 
@@ -378,11 +378,11 @@ std::vector<Candle> groupCandlesByRange(const std::vector<Candle>& candles, doub
 
         if (candleRangeStart == currentRangeStart) {
             // Add to current group
-            currentGroup.push(candle);
+            currentGroup.push_back(candle);
             } else {
                 // Process current group and start a new one
                 if (currentGroup.length > 0) {
-                    groupedCandles.push(;
+                    groupedCandles.push_back(;
                     createCandleFromGroup(currentGroup, currentRangeStart);
                     );
                 }
@@ -390,8 +390,8 @@ std::vector<Candle> groupCandlesByRange(const std::vector<Candle>& candles, doub
                 // Handle potential gaps in data
                 while (candleRangeStart > currentRangeStart + rangeMs / 1000) {
                     currentRangeStart += rangeMs / 1000;
-                    const auto previousCandle = groupedCandles[groupedCandles.length - 1];
-                    groupedCandles.push({
+                    const auto previousCandle = groupedCandles[groupedCandles.size() - 1];
+                    groupedCandles.push_back({
                         open: previousCandle.close,
                         high: previousCandle.close,
                         low: previousCandle.close,
@@ -408,7 +408,7 @@ std::vector<Candle> groupCandlesByRange(const std::vector<Candle>& candles, doub
 
             // Process the last group
             if (currentGroup.length > 0) {
-                groupedCandles.push(createCandleFromGroup(currentGroup, currentRangeStart));
+                groupedCandles.push_back(createCandleFromGroup(currentGroup, currentRangeStart));
             }
 
             return groupedCandles;
@@ -419,7 +419,7 @@ Candle createCandleFromGroup(const std::vector<Candle>& group, double rangeStart
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto open = group[0].open;
-    const auto close = group[group.length - 1].close;
+    const auto close = group[group.size() - 1].close;
     const auto high = Math.max(...group.map((c) => c.high));
     const auto low = Math.min(...group.map((c) => c.low));
     const auto volume = group.reduce((sum, c) => sum + c.volume, 0);

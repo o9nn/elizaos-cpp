@@ -22,20 +22,20 @@ std::future<void> scanDirectory(const std::string& dir, std::string baseDir = di
             } else if (entry.isFile()) {
                 // Skip hidden files except important ones
                 if (
-                entry.name.startsWith('.') &&;
+                entry.name.startsWith(".") &&;
                 !entry.name.match(/^\.(gitignore|eslintrc|prettierrc|env\.example)/);
                 ) {
                     continue;
                 }
 
                 try {
-                    const auto content = fs.readFile(fullPath, 'utf-8');
-                    files.push({
+                    const auto content = fs.readFile(fullPath, "utf-8");
+                    files.push_back({
                         path: relativePath,
                         content,
                         });
                         } catch (error) {
-                            "Could not read file " + std::to_string(relativePath) + ":"
+                            "elizaLogger.warn(" + "Could not read file " + relativePath + ":"
                         }
                     }
                 }

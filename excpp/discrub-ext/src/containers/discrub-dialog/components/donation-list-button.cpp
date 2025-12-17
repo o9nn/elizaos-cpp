@@ -10,7 +10,7 @@ void DonationListButton() {
     const auto [collapsed, setCollapsed] = useState(true);
     const auto days = differenceInDays(new Date(), parseISO(donation.date));
     const auto ago =;
-    std::to_string(days) + " day" + std::to_string(days == 1 ? "" : "s") + " ago"
+    "days > 0 ? " + days + " day" + std::to_string(days == 1 ? "" : "s") + " ago"
 
     const auto handleClick = [&]() {;
         if (donation.message) {
@@ -77,7 +77,7 @@ void DonationListButton() {
         padding: "5px 10px 5px 10px",
         backgroundColor: "rgb(30, 33, 36)",
         borderRadius: "5px",
-        opacity: donation.message.length,
+        opacity: donation.message.size(),
     }}
     >;
     <Typography variant="caption">{donation.message}</Typography>;

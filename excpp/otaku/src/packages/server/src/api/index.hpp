@@ -1,12 +1,13 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".middleware.hpp"
-#include ".socketio.hpp"
 #include "agents.hpp"
 #include "audio.hpp"
 #include "auth.hpp"
@@ -16,7 +17,9 @@
 #include "media.hpp"
 #include "memory.hpp"
 #include "messaging.hpp"
+#include "middleware.hpp"
 #include "runtime.hpp"
+#include "socketio.hpp"
 #include "system.hpp"
 #include "tee.hpp"
 

@@ -34,7 +34,7 @@ void initSolanaConfig() {
 
         try {
             wallet = Keypair.fromSecretKey(;
-            Uint8Array.from(JSON.parse(process.env.EXECUTOR_PRIVATE_KEY)),
+            Uint8Array.from(/* JSON.parse */ process.env.EXECUTOR_PRIVATE_KEY),
             );
             std::cout << "Created wallet from process.env.EXECUTOR_PRIVATE_KEY" << std::endl;
             } catch (error) {

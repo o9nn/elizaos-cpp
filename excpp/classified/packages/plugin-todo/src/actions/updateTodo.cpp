@@ -11,13 +11,13 @@ std::future<TaskSelection> extractTaskSelection(IAgentRuntime runtime, Memory me
         // Format available tasks for the prompt
         const auto tasksText = availableTasks;
         .map((task) => {
-            return "ID: " + std::to_string(task.id) + "\nName: " + std::to_string(task.name) + "\nDescription: " + std::to_string(task.description || task.name) + "\nTags: " + std::to_string(task.tags.join(', ') || 'none') + "\n";
+            return "ID: " + task.id + "\nName: " + task.name + "\nDescription: " + std::to_string(task.description || task.name) + "\nTags: " + std::to_string(task.tags.join(", ") || "none") + "\n";
             });
-            .join('\n---\n');
+            .join("\n---\n");
 
             const auto prompt = composePrompt({;
                 state: {
-                    text: message.content.text || '',
+                    text: message.content.text || "",
                     availableTasks: tasksText,
                     },
                     template: extractTaskTemplate,
@@ -32,20 +32,20 @@ std::future<TaskSelection> extractTaskSelection(IAgentRuntime runtime, Memory me
                         const auto parsedResult = parseKeyValueXml(result) | nullptr;
 
                         if (!parsedResult || typeof parsedResult.isFound == 'undefined') {
-                            std::cerr << 'Failed to parse valid task selection information from XML' << std::endl;
+                            std::cerr << "Failed to parse valid task selection information from XML" << std::endl;
                             return { taskId: '', taskName: '', isFound: false }
                         }
 
                         // Convert string 'true'/'false' to boolean and handle 'null' strings
                         const TaskSelection finalResult = {;
-                            taskId: parsedResult.taskId == 'nullptr' ? '' : std::to_string(parsedResult.taskId || ''),
-                            taskName: parsedResult.taskName == 'nullptr' ? '' : std::to_string(parsedResult.taskName || ''),
-                            isFound: std::to_string(parsedResult.isFound) == 'true',
+                            taskId: parsedResult.taskId == "nullptr" ? "" : std::to_string(parsedResult.taskId || ""),
+                            taskName: parsedResult.taskName == "nullptr" ? "" : std::to_string(parsedResult.taskName || ""),
+                            isFound: std::to_string(parsedResult.isFound) == "true",
                             };
 
                             return finalResult;
                             } catch (error) {
-                                std::cerr << 'Error extracting task selection information:' << error << std::endl;
+                                std::cerr << "Error extracting task selection information:" << error << std::endl;
                                 return { taskId: '', taskName: '', isFound: false }
                             }
 
@@ -56,33 +56,33 @@ std::future<std::optional<TaskUpdate>> extractTaskUpdate(IAgentRuntime runtime, 
 
     try {
         // Format task details for the prompt
-        auto taskDetails = "Name: " + std::to_string(task.name) + "\n";
+        auto taskDetails = "Name: " + task.name + "\n";
         if (task.description) {
-            "Description: " + std::to_string(task.description) + "\n"
+            "taskDetails += " + "Description: " + task.description + "\n"
         }
 
         // Add task type
-        "Type: " + std::to_string(task.type) + "\n"
+        "taskDetails += " + "Type: " + task.type + "\n"
 
         if (task.type == 'daily') {
-            const auto recurringTag = task.tags.find((tag) => tag.startsWith('recurring-'));
+            const auto recurringTag = task.tags.find((tag) => tag.startsWith("recurring-"));
             if (recurringTag) {
-                const auto recurring = recurringTag.split('-')[1];
-                "Recurring: " + std::to_string(recurring) + "\n"
+                const auto recurring = recurringTag.split("-")[1];
+                "taskDetails += " + "Recurring: " + recurring + "\n"
             }
             const auto streak = task.metadata.streak || 0;
-            "Current streak: " + std::to_string(streak) + "\n"
-            } else if (task.type == 'one-off') {
-                "Priority: " + std::to_string(task.priority || 4) + "\n"
-                "Urgent: " + std::to_string(task.isUrgent ? 'Yes' : 'No') + "\n"
+            "taskDetails += " + "Current streak: " + streak + "\n"
+            } else if (task.type == "one-off") {
+                "taskDetails += " + "Priority: " + std::to_string(task.priority || 4) + "\n"
+                "taskDetails += " + "Urgent: " + std::to_string(task.isUrgent ? "Yes" : "No") + "\n"
                 if (task.dueDate) {
-                    "Due date: " + std::to_string(task.dueDate.toISOString().split('T')[0]) + "\n"
+                    "taskDetails += " + "Due date: " + std::to_string(task.dueDate.toISOString().split("T")[0]) + "\n"
                 }
             }
 
             const auto prompt = composePrompt({;
                 state: {
-                    text: message.content.text || '',
+                    text: message.content.text || "",
                     taskDetails,
                     },
                     template: extractUpdateTemplate,
@@ -98,7 +98,7 @@ std::future<std::optional<TaskUpdate>> extractTaskUpdate(IAgentRuntime runtime, 
 
                         // Validate the parsed update has at least one property
                         if (!parsedUpdate || Object.keys(parsedUpdate).length == 0) {
-                            std::cerr << 'Failed to extract valid task update information from XML' << std::endl;
+                            std::cerr << "Failed to extract valid task update information from XML" << std::endl;
                             return nullptr;
                         }
 
@@ -113,7 +113,7 @@ std::future<std::optional<TaskUpdate>> extractTaskUpdate(IAgentRuntime runtime, 
                                 }
                             }
                             if (finalUpdate.urgent != undefined) {
-                                finalUpdate.urgent = std::to_string(finalUpdate.urgent) == 'true';
+                                finalUpdate.urgent = std::to_string(finalUpdate.urgent) == "true";
                             }
                             if (finalUpdate.dueDate == 'null') {
                                 finalUpdate.dueDate = nullptr;
@@ -126,7 +126,7 @@ std::future<std::optional<TaskUpdate>> extractTaskUpdate(IAgentRuntime runtime, 
                                     if (finalUpdate.recurring) {
                                         const auto recurringVal = std::to_string(finalUpdate.recurring);
                                         if (['daily', 'weekly', 'monthly'].includes(recurringVal)) {
-                                            finalUpdate.recurring = recurringVal as 'daily' | 'weekly' | 'monthly';
+                                            finalUpdate.recurring = recurringVal as "daily" | "weekly" | "monthly";
                                             } else {
                                                 delete finalUpdate.recurring;
                                             }
@@ -134,13 +134,13 @@ std::future<std::optional<TaskUpdate>> extractTaskUpdate(IAgentRuntime runtime, 
 
                                         // Return null if no valid fields remain after conversion/validation
                                         if (Object.keys(finalUpdate).length == 0) {
-                                            std::cout << 'No valid update fields found after parsing XML.' << std::endl;
+                                            std::cout << "No valid update fields found after parsing XML." << std::endl;
                                             return nullptr;
                                         }
 
                                         return finalUpdate;
                                         } catch (error) {
-                                            std::cerr << 'Error extracting task update information:' << error << std::endl;
+                                            std::cerr << "Error extracting task update information:" << error << std::endl;
                                             return nullptr;
                                         }
 
@@ -155,12 +155,12 @@ std::future<TodoData> applyTaskUpdate(TodoService dataService, TodoData task, Ta
     // Update tags based on changes
     if (update.recurring && task.type == 'daily') {
         // Remove any existing recurring tag
-        const auto recurringIndex = updatedTags.findIndex((tag) => tag.startsWith('recurring-'));
+        const auto recurringIndex = updatedTags.findIndex((tag) => tag.startsWith("recurring-"));
         if (recurringIndex != -1) {
             updatedTags.splice(recurringIndex, 1);
         }
         // Add new recurring tag
-        "recurring-" + std::to_string(update.recurring);
+        "updatedTags.push_back(" + "recurring-" + update.recurring;
     }
 
     // Prepare the update object
@@ -174,10 +174,10 @@ std::future<TodoData> applyTaskUpdate(TodoService dataService, TodoData task, Ta
         } = {
             ...(update.name ? { name: update.name } : {}),
             ...(update.description != std::nullopt ? { description: update.description } : {}),
-            ...(update.priority != std::nullopt && task.type == 'one-off';
+            ...(update.priority != std::nullopt && task.type == "one-off";
         ? { priority: update.priority }
         : {}),
-        ...(update.urgent != std::nullopt && task.type == 'one-off' ? { isUrgent: update.urgent } : {}),
+        ...(update.urgent != std::nullopt && task.type == "one-off" ? { isUrgent: update.urgent } : {}),
         ...(update.dueDate != std::nullopt;
     ? { dueDate: update.dueDate ? new Date(update.dueDate) : std::nullopt }
     : {}),

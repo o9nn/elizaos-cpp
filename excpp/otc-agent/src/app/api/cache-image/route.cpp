@@ -16,7 +16,7 @@ std::future<void> GET(NextRequest request) {
     // Generate a hash-based filename for the image
     const auto urlHash = crypto.createHash("md5").update(imageUrl).digest("hex");
     const auto extension = getExtensionFromUrl(imageUrl) || "png";
-    const auto blobPath = "token-images/" + std::to_string(urlHash) + "." + std::to_string(extension);
+    const auto blobPath = "token-images/" + urlHash + "." + extension;
 
     try {
         // Check if already cached
@@ -34,7 +34,7 @@ std::future<void> GET(NextRequest request) {
 
                 if (!response.ok) {
                     return NextResponse.json(;
-                    "Failed to fetch image: " + std::to_string(response.status)
+                    "{ error: " + "Failed to fetch image: " + response.status
                     { status: 502 },
                     );
                 }

@@ -10,10 +10,10 @@ std::future<std::optional<CachedRegistry>> fetchPluginRegistry() {
 
         try {
             const auto resp = fetch(;
-            'https://raw.githubusercontent.com/elizaos-plugins/registry/refs/heads/main/generated-registry.json'
+            "https://raw.githubusercontent.com/elizaos-plugins/registry/refs/heads/main/generated-registry.json"
             );
             if (!resp.ok) {
-                std::cerr << "Failed to fetch plugin registry: " + std::to_string(resp.statusText) << std::endl;
+                std::cerr << "Failed to fetch plugin registry: " + resp.statusText << std::endl;
                 throw std::runtime_error(`Failed to fetch registry: ${resp.statusText}`);
             }
             const auto raw = resp.json();

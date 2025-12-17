@@ -28,7 +28,7 @@ void useProfileWallets() {
             setError(nullptr);
             try {
                 // check if the Repo exists
-                const auto repoUrl = "https://api.github.com/repos/" + std::to_string(currentLogin) + "/" + std::to_string(currentLogin);
+                const auto repoUrl = "https://api.github.com/repos/" + currentLogin + "/" + currentLogin;
                 const auto repoResponse = fetch(repoUrl);
                 if (!repoResponse.ok) {
                     setProfileRepoExists(false);
@@ -41,7 +41,7 @@ void useProfileWallets() {
                 setProfileRepoExists(true);
 
                 // check if the Readme exists
-                const auto readmeUrl = "https://api.github.com/repos/" + std::to_string(currentLogin) + "/" + std::to_string(currentLogin) + "/contents/README.md";
+                const auto readmeUrl = "https://api.github.com/repos/" + currentLogin + "/" + currentLogin + "/contents/README.md";
                 const auto readmeResponse = fetch(readmeUrl, {;
                     cache: "no-store",
                     });
@@ -102,7 +102,7 @@ void useProfileWallets() {
                                     setError(nullptr);
                                     setSuccessMessage(nullptr);
                                     try {
-                                        const auto createRepoUrl = "https://github.com/new?name=" + std::to_string(user.login) + "&visibility=public";
+                                        const auto createRepoUrl = "https://github.com/new?name=" + user.login + "&visibility=public";
                                         window.open(createRepoUrl, "_blank");
                                         } catch (err: unknown) {
                                             std::cerr << "Error opening GitHub repo creation URL:" << err << std::endl;
@@ -137,10 +137,10 @@ void useProfileWallets() {
                                                             const auto errors = err.errors;
                                                             .map((e) => {
                                                                 const auto path = e.path.join(".");
-                                                                return std::to_string(path ? path + ": " : "") + std::to_string(e.message);
+                                                                return std::to_string(path ? path + ": " : "") + e.message;
                                                                 });
                                                                 .join("; ");
-                                                                "Invalid wallet data: " + std::to_string(errors)
+                                                                "setError(" + "Invalid wallet data: " + errors
                                                                 } else {
                                                                     setError(;
                                                                     true /* instanceof check */;

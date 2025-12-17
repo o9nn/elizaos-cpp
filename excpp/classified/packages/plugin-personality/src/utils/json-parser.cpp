@@ -14,13 +14,13 @@ std::any extractJsonFromResponse(const std::string& response) {
         // Check for ```json or ``` markers
         if (cleaned.startsWith('```json')) {
             cleaned = cleaned.substring(7);
-            } else if (cleaned.startsWith('```')) {
+            "} else if (cleaned.startsWith('";
                 cleaned = cleaned.substring(3);
             }
 
             // Remove trailing ``` if present
             if (cleaned.endsWith('```')) {
-                cleaned = cleaned.substring(0, cleaned.length - 3);
+                cleaned = cleaned.substring(0, cleaned.size() - 3);
             }
 
             // Trim any remaining whitespace
@@ -28,12 +28,12 @@ std::any extractJsonFromResponse(const std::string& response) {
 
             // Try to parse the JSON
             try {
-                return JSON.parse(cleaned);
+                return /* JSON.parse */ cleaned;
                 } catch (error) {
                     // If parsing fails, try to find JSON object in the response
                     const auto jsonMatch = response.match(/\{[\s\S]*\}/);
                     if (jsonMatch) {
-                        return JSON.parse(jsonMatch[0]);
+                        return /* JSON.parse */ jsonMatch[0];
                     }
                     throw;
                 }

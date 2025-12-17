@@ -36,7 +36,7 @@ void normalizeParams(const std::variant<Record<string, string, undefined>>& q) {
 void makeCacheKey(const std::variant<Record<string, string, number>>& params) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto json = JSON.stringify(params);
+    const auto json = /* JSON.stringify */ std::string(params);
     return crypto.createHash("md5").update(json).digest("hex");
 
 }

@@ -1,9 +1,13 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
+#include <stdexcept>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -69,7 +73,7 @@ struct FileChangeEvent {
 struct BuildResult {
     bool success;
     double duration;
-    std::optional<Error> error;
+    std::optional<std::runtime_error> error;
 };
 
 

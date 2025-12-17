@@ -34,13 +34,13 @@ std::future<void> getContributorPRMetrics(const std::string& username, QueryPara
 
     const auto metrics = db;
     .select({
-        "COUNT(*)"
-        "SUM(CASE WHEN " + std::to_string(rawPullRequests.merged) + " = 1 THEN 1 ELSE 0 END)"
-        "SUM(CASE WHEN UPPER(" + std::to_string(rawPullRequests.state) + ") = 'OPEN' THEN 1 ELSE 0 END)"
-        "SUM(CASE WHEN UPPER(" + std::to_string(rawPullRequests.state) + ") = 'CLOSED' AND " + std::to_string(rawPullRequests.merged) + " = 0 THEN 1 ELSE 0 END)"
-        "SUM(" + std::to_string(rawPullRequests.additions) + ")"
-        "SUM(" + std::to_string(rawPullRequests.deletions) + ")"
-        "SUM(" + std::to_string(rawPullRequests.changedFiles) + ")"
+        "total: sql" + "COUNT(*)"
+        "merged: sql" + "SUM(CASE WHEN " + rawPullRequests.merged + " = 1 THEN 1 ELSE 0 END)"
+        "open: sql" + "SUM(CASE WHEN UPPER(" + rawPullRequests.state + ") = "OPEN" THEN 1 ELSE 0 END)"
+        "closed: sql" + "SUM(CASE WHEN UPPER(" + rawPullRequests.state + ") = "CLOSED" AND " + rawPullRequests.merged + " = 0 THEN 1 ELSE 0 END)"
+        "additions: sql" + "SUM(" + rawPullRequests.additions + ")"
+        "deletions: sql" + "SUM(" + rawPullRequests.deletions + ")"
+        "changedFiles: sql" + "SUM(" + rawPullRequests.changedFiles + ")"
         });
         .from(rawPullRequests);
         .where(and(...whereConditions));
@@ -69,9 +69,9 @@ std::future<void> getContributorIssueMetrics(const std::string& username, QueryP
 
     const auto issueMetrics = db;
     .select({
-        "COUNT(*)"
-        "SUM(CASE WHEN UPPER(" + std::to_string(rawIssues.state) + ") = 'OPEN' THEN 1 ELSE 0 END)"
-        "SUM(CASE WHEN UPPER(" + std::to_string(rawIssues.state) + ") = 'CLOSED' THEN 1 ELSE 0 END)"
+        "total: sql" + "COUNT(*)"
+        "open: sql" + "SUM(CASE WHEN UPPER(" + rawIssues.state + ") = "OPEN" THEN 1 ELSE 0 END)"
+        "closed: sql" + "SUM(CASE WHEN UPPER(" + rawIssues.state + ") = "CLOSED" THEN 1 ELSE 0 END)"
         });
         .from(rawIssues);
         .where(and(...whereConditions));
@@ -80,7 +80,7 @@ std::future<void> getContributorIssueMetrics(const std::string& username, QueryP
         // Get comment count
         const auto commentCount = db;
         .select({
-            "COUNT(DISTINCT " + std::to_string(issueComments.id) + ")"
+            "count: sql" + "COUNT(DISTINCT " + issueComments.id + ")"
             });
             .from(issueComments);
             .innerJoin(rawIssues, eq(issueComments.issueId, rawIssues.id));
@@ -105,17 +105,17 @@ std::future<void> getContributorReviewMetrics(const std::string& username, Query
     ...buildCommonWhereConditions(params, prReviews, ["createdAt"]),
     ];
     if (params.repository) {
-        whereConditions.push(;
-        std::to_string(rawPullRequests.repository) + " = " + std::to_string(params.repository)
+        whereConditions.push_back(;
+        "sql" + rawPullRequests.repository + " = " + params.repository
         );
     }
 
     const auto reviewMetrics = db;
     .select({
-        "COUNT(*)"
-        "SUM(CASE WHEN UPPER(" + std::to_string(prReviews.state) + ") = 'APPROVED' THEN 1 ELSE 0 END)"
-        "SUM(CASE WHEN UPPER(" + std::to_string(prReviews.state) + ") = 'COMMENTED' THEN 1 ELSE 0 END)"
-        "SUM(CASE WHEN UPPER(" + std::to_string(prReviews.state) + ") = 'CHANGES_REQUESTED' THEN 1 ELSE 0 END)"
+        "total: sql" + "COUNT(*)"
+        "approved: sql" + "SUM(CASE WHEN UPPER(" + prReviews.state + ") = "APPROVED" THEN 1 ELSE 0 END)"
+        "commented: sql" + "SUM(CASE WHEN UPPER(" + prReviews.state + ") = "COMMENTED" THEN 1 ELSE 0 END)"
+        "changesRequested: sql" + "SUM(CASE WHEN UPPER(" + prReviews.state + ") = "CHANGES_REQUESTED" THEN 1 ELSE 0 END)"
         });
         .from(prReviews);
         .innerJoin(rawPullRequests, eq(prReviews.prId, rawPullRequests.id));
@@ -141,15 +141,15 @@ std::future<void> getContributorCommentMetrics(const std::string& username, Quer
     ];
 
     if (params.repository) {
-        prCommentsWhereConditions.push(;
-        std::to_string(rawPullRequests.repository) + " = " + std::to_string(params.repository)
+        prCommentsWhereConditions.push_back(;
+        "sql" + rawPullRequests.repository + " = " + params.repository
         );
     }
 
     // Get PR comment count
     const auto prCommentCount = db;
     .select({
-        "COUNT(*)"
+        "count: sql" + "COUNT(*)"
         });
         .from(prComments);
         .innerJoin(rawPullRequests, eq(prComments.prId, rawPullRequests.id));
@@ -163,15 +163,15 @@ std::future<void> getContributorCommentMetrics(const std::string& username, Quer
         ];
 
         if (params.repository) {
-            issueCommentsWhereConditions.push(;
-            std::to_string(rawIssues.repository) + " = " + std::to_string(params.repository)
+            issueCommentsWhereConditions.push_back(;
+            "sql" + rawIssues.repository + " = " + params.repository
             );
         }
 
         // Get issue comment count
         const auto issueCommentCount = db;
         .select({
-            "COUNT(*)"
+            "count: sql" + "COUNT(*)"
             });
             .from(issueComments);
             .innerJoin(rawIssues, eq(issueComments.issueId, rawIssues.id));

@@ -12,27 +12,27 @@ express::Router createServersRouter(AgentServer serverInstance) {
     // NOTE: Do NOT apply global auth here. Keep read-only endpoints public for UI and services.
 
     // GET /central-servers
-    (router).get('/central-servers', async (_req: AuthenticatedRequest, res: express.Response) => {
+    (router).get("/central-servers", async (_req: AuthenticatedRequest, res: express.Response) => {
         try {
             const auto servers = serverInstance.getServers();
             res.json({ success: true, data: { servers } });
             } catch (error) {
                 logger.error(
-                '[Messages Router /central-servers] Error fetching servers:',
+                "[Messages Router /central-servers] Error fetching servers:",
                 true /* instanceof check */ ? error.message : std::to_string(error)
                 );
-                res.status(500).json({ success: false, error: 'Failed to fetch servers' });
+                res.status(500).json({ success: false, error: "Failed to fetch servers" });
             }
             });
 
             // POST /servers - Create a new server
-            (router).post('/servers', requireAuthOrApiKey, async (req: AuthenticatedRequest, res: express.Response) => {
+            (router).post("/servers", requireAuthOrApiKey, async (req: AuthenticatedRequest, res: express.Response) => {
                 const auto { id, name, sourceType, sourceId, metadata } = req.body;
 
                 if (!name || !sourceType) {
                     return res.status(400).json({;
                         success: false,
-                        error: 'Missing required fields: name, sourceType',
+                        error: "Missing required fields: name, sourceType",
                         });
                     }
 
@@ -47,10 +47,10 @@ express::Router createServersRouter(AgentServer serverInstance) {
                             res.status(201).json({ success: true, data: { server } });
                             } catch (error) {
                                 logger.error(
-                                '[Messages Router /servers] Error creating server:',
+                                "[Messages Router /servers] Error creating server:",
                                 true /* instanceof check */ ? error.message : std::to_string(error)
                                 );
-                                res.status(500).json({ success: false, error: 'Failed to create server' });
+                                res.status(500).json({ success: false, error: "Failed to create server" });
                             }
                             });
 
@@ -60,7 +60,7 @@ express::Router createServersRouter(AgentServer serverInstance) {
 
                             // POST /servers/:serverId/agents - Add agent to server
                             (router).post(;
-                            '/servers/:serverId/agents',
+                            "/servers/:serverId/agents",
                             requireAuthOrApiKey,
                             async (req: AuthenticatedRequest, res: express.Response) => {
                                 const auto serverId =;
@@ -72,7 +72,7 @@ express::Router createServersRouter(AgentServer serverInstance) {
                                 if (!serverId || !validateUuid(agentId)) {
                                     return res.status(400).json({;
                                         success: false,
-                                        error: 'Invalid serverId or agentId format',
+                                        error: "Invalid serverId or agentId format",
                                         });
                                     }
 
@@ -82,33 +82,33 @@ express::Router createServersRouter(AgentServer serverInstance) {
 
                                         // Notify the agent's message bus service to start listening for this server
                                         const auto messageForBus = {;
-                                            type: 'agent_added_to_server',
+                                            type: "agent_added_to_server",
                                             serverId,
                                             agentId,
                                             };
-                                            internalMessageBus.emit('server_agent_update', messageForBus);
+                                            internalMessageBus.emit("server_agent_update", messageForBus);
 
                                             res.status(201).json({
                                                 success: true,
                                                 data: {
                                                     serverId,
                                                     agentId,
-                                                    message: 'Agent added to server successfully',
+                                                    message: "Agent added to server successfully",
                                                     },
                                                     });
                                                     } catch (error) {
                                                         logger.error(
-                                                        "[MessagesRouter] Error adding agent " + std::to_string(agentId) + " to server " + std::to_string(serverId) + ":"
+                                                        "[MessagesRouter] Error adding agent " + agentId + " to server " + serverId + ":"
                                                         true /* instanceof check */ ? error.message : std::to_string(error)
                                                         );
-                                                        res.status(500).json({ success: false, error: 'Failed to add agent to server' });
+                                                        res.status(500).json({ success: false, error: "Failed to add agent to server" });
                                                     }
                                                 }
                                                 );
 
                                                 // DELETE /servers/:serverId/agents/:agentId - Remove agent from server
                                                 (router).delete(;
-                                                '/servers/:serverId/agents/:agentId',
+                                                "/servers/:serverId/agents/:agentId",
                                                 requireAuthOrApiKey,
                                                 async (req: AuthenticatedRequest, res: express.Response) => {
                                                     const auto serverId =;
@@ -120,7 +120,7 @@ express::Router createServersRouter(AgentServer serverInstance) {
                                                     if (!serverId || !agentId) {
                                                         return res.status(400).json({;
                                                             success: false,
-                                                            error: 'Invalid serverId or agentId format',
+                                                            error: "Invalid serverId or agentId format",
                                                             });
                                                         }
 
@@ -130,33 +130,33 @@ express::Router createServersRouter(AgentServer serverInstance) {
 
                                                             // Notify the agent's message bus service to stop listening for this server
                                                             const auto messageForBus = {;
-                                                                type: 'agent_removed_from_server',
+                                                                type: "agent_removed_from_server",
                                                                 serverId,
                                                                 agentId,
                                                                 };
-                                                                internalMessageBus.emit('server_agent_update', messageForBus);
+                                                                internalMessageBus.emit("server_agent_update", messageForBus);
 
                                                                 res.status(200).json({
                                                                     success: true,
                                                                     data: {
                                                                         serverId,
                                                                         agentId,
-                                                                        message: 'Agent removed from server successfully',
+                                                                        message: "Agent removed from server successfully",
                                                                         },
                                                                         });
                                                                         } catch (error) {
                                                                             logger.error(
-                                                                            "[MessagesRouter] Error removing agent " + std::to_string(agentId) + " from server " + std::to_string(serverId) + ":"
+                                                                            "[MessagesRouter] Error removing agent " + agentId + " from server " + serverId + ":"
                                                                             true /* instanceof check */ ? error.message : std::to_string(error)
                                                                             );
-                                                                            res.status(500).json({ success: false, error: 'Failed to remove agent from server' });
+                                                                            res.status(500).json({ success: false, error: "Failed to remove agent from server" });
                                                                         }
                                                                     }
                                                                     );
 
                                                                     // GET /servers/:serverId/agents - List agents in server
                                                                     (router).get(;
-                                                                    '/servers/:serverId/agents',
+                                                                    "/servers/:serverId/agents",
                                                                     async (req: express.Request, res: express.Response) => {
                                                                         const auto serverId =;
                                                                         req.params.serverId == DEFAULT_SERVER_ID;
@@ -166,7 +166,7 @@ express::Router createServersRouter(AgentServer serverInstance) {
                                                                         if (!serverId) {
                                                                             return res.status(400).json({;
                                                                                 success: false,
-                                                                                error: 'Invalid serverId format',
+                                                                                error: "Invalid serverId format",
                                                                                 });
                                                                             }
 
@@ -181,24 +181,24 @@ express::Router createServersRouter(AgentServer serverInstance) {
                                                                                         });
                                                                                         } catch (error) {
                                                                                             logger.error(
-                                                                                            "[MessagesRouter] Error fetching agents for server " + std::to_string(serverId) + ":"
+                                                                                            "[MessagesRouter] Error fetching agents for server " + serverId + ":"
                                                                                             true /* instanceof check */ ? error.message : std::to_string(error)
                                                                                             );
-                                                                                            res.status(500).json({ success: false, error: 'Failed to fetch server agents' });
+                                                                                            res.status(500).json({ success: false, error: "Failed to fetch server agents" });
                                                                                         }
                                                                                     }
                                                                                     );
 
                                                                                     // GET /agents/:agentId/servers - List servers agent belongs to
                                                                                     (router).get(;
-                                                                                    '/agents/:agentId/servers',
+                                                                                    "/agents/:agentId/servers",
                                                                                     async (req: express.Request, res: express.Response) => {
                                                                                         const auto agentId = validateUuid(req.params.agentId);
 
                                                                                         if (!agentId) {
                                                                                             return res.status(400).json({;
                                                                                                 success: false,
-                                                                                                error: 'Invalid agentId format',
+                                                                                                error: "Invalid agentId format",
                                                                                                 });
                                                                                             }
 
@@ -213,10 +213,10 @@ express::Router createServersRouter(AgentServer serverInstance) {
                                                                                                         });
                                                                                                         } catch (error) {
                                                                                                             logger.error(
-                                                                                                            "[MessagesRouter] Error fetching servers for agent " + std::to_string(agentId) + ":"
+                                                                                                            "[MessagesRouter] Error fetching servers for agent " + agentId + ":"
                                                                                                             true /* instanceof check */ ? error.message : std::to_string(error)
                                                                                                             );
-                                                                                                            res.status(500).json({ success: false, error: 'Failed to fetch agent servers' });
+                                                                                                            res.status(500).json({ success: false, error: "Failed to fetch agent servers" });
                                                                                                         }
                                                                                                     }
                                                                                                     );

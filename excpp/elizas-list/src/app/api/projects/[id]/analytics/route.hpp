@@ -1,10 +1,13 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -14,5 +17,5 @@ namespace elizaos {
 
 
 
-std::future<void> GET(Request request); 
+std::future<void> GET(const std::string& request); 
 } // namespace elizaos

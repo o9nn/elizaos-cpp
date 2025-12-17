@@ -28,11 +28,11 @@ std::future<void> main() {
         if (!fs.existsSync(walletPath!)) {
             throw std::runtime_error(`Wallet not found at ${walletPath}`);
         }
-        const auto walletData = JSON.parse(fs.readFileSync(walletPath!, "utf8"));
+        const auto walletData = /* JSON.parse */ fs.readFileSync(walletPath!, "utf8");
         const auto owner = Keypair.fromSecretKey(Uint8Array.from(walletData));
 
-        std::cout << "📋 Program ID:" << program.programId.toString() << std::endl;
-        std::cout << "👤 Owner:" << owner.publicKey.toString() << std::endl;
+        std::cout << "📋 Program ID:" << program.std::to_string(programId) << std::endl;
+        std::cout << "👤 Owner:" << owner.std::to_string(publicKey) << std::endl;
 
         // Check balance
         const auto balance = provider.connection.getBalance(owner.publicKey);
@@ -44,15 +44,15 @@ std::future<void> main() {
 
         // Use mainnet USDC
         const auto usdcMint = new PublicKey("EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v");
-        std::cout << "💵 USDC Mint:" << usdcMint.toString() << std::endl;
+        std::cout << "💵 USDC Mint:" << std::to_string(usdcMint) << std::endl;
 
         // Generate agent keypair (can be same as owner for now)
         const auto agent = owner; // Using owner for simplicity;
-        std::cout << "🤖 Agent:" << agent.publicKey.toString() << std::endl;
+        std::cout << "🤖 Agent:" << agent.std::to_string(publicKey) << std::endl;
 
         // Generate desk keypair
         const auto desk = Keypair.generate();
-        std::cout << "🏦 Desk:" << desk.publicKey.toString() << std::endl;
+        std::cout << "🏦 Desk:" << desk.std::to_string(publicKey) << std::endl;
 
         // Create USDC account for desk (token accounts created per-token via TokenRegistry)
         std::cout << "\n📦 Creating desk USDC account..." << std::endl;
@@ -69,7 +69,7 @@ std::future<void> main() {
         desk.publicKey,
         true;
         );
-        std::cout << "✅ Desk USDC ATA:" << deskUsdcAta.toString() << std::endl;
+        std::cout << "✅ Desk USDC ATA:" << std::to_string(deskUsdcAta) << std::endl;
 
         // Initialize desk (no token_mint required - all tokens are equal)
         std::cout << "\n⚙️  Initializing desk..." << std::endl;
@@ -91,31 +91,31 @@ std::future<void> main() {
             .rpc({ skipPreflight: false });
 
             std::cout << "✅ Desk initialized. Tx:" << tx << std::endl;
-            std::cout << "   View on Solscan: https://solscan.io/tx/" + std::to_string(tx) << std::endl;
+            std::cout << "   View on Solscan: https://solscan.io/tx/" + tx << std::endl;
 
             // Save desk keypair
             const auto deskKeypairPath = path.join(__dirname, "../desk-mainnet-keypair.json");
-            fs.writeFileSync(deskKeypairPath, JSON.stringify(Array.from(desk.secretKey)));
-            std::cout << "\n✅ Desk keypair saved to " + std::to_string(deskKeypairPath) << std::endl;
+            fs.writeFileSync(deskKeypairPath, /* JSON.stringify */ std::string(Array.from(desk.secretKey)));
+            std::cout << "\n✅ Desk keypair saved to " + deskKeypairPath << std::endl;
 
             // Save config
             const auto configData = {;
                 NEXT_PUBLIC_SOLANA_RPC: "https://api.mainnet-beta.solana.com",
-                NEXT_PUBLIC_SOLANA_PROGRAM_ID: program.programId.toString(),
-                NEXT_PUBLIC_SOLANA_DESK: desk.publicKey.toString(),
-                NEXT_PUBLIC_SOLANA_DESK_OWNER: owner.publicKey.toString(),
-                NEXT_PUBLIC_SOLANA_USDC_MINT: usdcMint.toString(),
+                NEXT_PUBLIC_SOLANA_PROGRAM_ID: program.std::to_string(programId),
+                NEXT_PUBLIC_SOLANA_DESK: desk.std::to_string(publicKey),
+                NEXT_PUBLIC_SOLANA_DESK_OWNER: owner.std::to_string(publicKey),
+                NEXT_PUBLIC_SOLANA_USDC_MINT: std::to_string(usdcMint),
                 };
 
                 const auto deploymentPath = path.join(__dirname, "../../../src/config/deployments/mainnet-solana.json");
-                fs.writeFileSync(deploymentPath, JSON.stringify(configData, nullptr, 2));
-                std::cout << "✅ Config saved to " + std::to_string(deploymentPath) << std::endl;
+                fs.writeFileSync(deploymentPath, /* JSON.stringify */ std::string(configData, nullptr, 2));
+                std::cout << "✅ Config saved to " + deploymentPath << std::endl;
 
                 // Output for .env
                 std::cout << "\n" + "=".repeat(80) << std::endl;
                 std::cout << "🎉 SUCCESS. Update your .env with:" << std::endl;
                 std::cout << "=".repeat(80) << std::endl;
-                std::cout << "NEXT_PUBLIC_SOLANA_DESK=" + std::to_string(desk.publicKey.toString()) << std::endl;
+                std::cout << "NEXT_PUBLIC_SOLANA_DESK=" + std::to_string(desk.std::to_string(publicKey)) << std::endl;
                 std::cout << "=".repeat(80) << std::endl;
 
     } catch (const std::exception& e) {

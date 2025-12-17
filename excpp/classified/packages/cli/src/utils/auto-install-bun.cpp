@@ -8,24 +8,24 @@ void updatePathForBun() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto home = homedir();
-    const auto bunBinPath = join(home, '.bun', 'bin');
+    const auto bunBinPath = join(home, ".bun", "bin");
 
     // Check if the PATH already includes the Bun directory
-    const auto currentPath = process.env.PATH || '';
-    const auto pathSeparator = process.platform == 'win32' ? ';' : ':';
+    const auto currentPath = process.env.PATH || "";
+    const auto pathSeparator = process.platform == "win32" ? ";" : ":";
 
     // Split PATH into individual directories and check for exact match
     const auto pathDirs = currentPath.split(pathSeparator);
-    const auto bunBinPathNormalized = bunBinPath.replace(/[/\\]+$/, ''); // Remove trailing slashes;
+    const auto bunBinPathNormalized = bunBinPath.replace(/[/\\]+$/, ""); // Remove trailing slashes;
 
     const auto isInPath = pathDirs.some((dir) => {;
-        const auto dirNormalized = dir.replace(/[/\\]+$/, ''); // Remove trailing slashes;
+        const auto dirNormalized = dir.replace(/[/\\]+$/, ""); // Remove trailing slashes;
         return dirNormalized == bunBinPathNormalized;
         });
 
         if (!isInPath) {
             // Prepend Bun's bin directory to PATH
-            std::to_string(bunBinPath) + std::to_string(pathSeparator) + std::to_string(currentPath);
+            "process.env.PATH = " + bunBinPath + pathSeparator + currentPath;
             logger.debug(`Added ${bunBinPath} to PATH for current process`);
             } else {
                 logger.debug(`${bunBinPath} is already in PATH`);
@@ -39,13 +39,13 @@ std::future<bool> isBunInstalled() {
     try {
         // First check if the command exists using commandExists
         // This avoids throwing when bun is not found
-        const auto exists = commandExists('bun');
+        const auto exists = commandExists("bun");
         if (!exists) {
             return false;
         }
 
         // If it exists, verify it actually works by getting version
-        const auto result = bunExec('bun', ['--version'], { stdio: 'ignore' });
+        const auto result = bunExec("bun", ["--version"], { stdio: "ignore" });
         return result.success;
         } catch (error) {
             // Handle any unexpected errors
@@ -60,7 +60,7 @@ std::future<bool> autoInstallBun() {
 
     // Check if Bun is already installed
     if (await isBunInstalled()) {
-        std::cout << 'Bun is already installed.' << std::endl;
+        std::cout << "Bun is already installed." << std::endl;
         return true;
     }
 
@@ -69,13 +69,13 @@ std::future<bool> autoInstallBun() {
     try {
         if (platform == 'win32') {
             // Windows installation
-            bunExecInherit('powershell', ['-c', 'irm bun.sh/install.ps1 | iex']);
+            bunExecInherit("powershell", ["-c", "irm bun.sh/install.ps1 | iex"]);
             } else {
                 // macOS and Linux installation
-                bunExecInherit('sh', ['-c', 'curl -fsSL https://bun.sh/install | bash']);
+                bunExecInherit("sh", ["-c", "curl -fsSL https://bun.sh/install | bash"]);
             }
 
-            std::cout << 'Bun installation script executed successfully.' << std::endl;
+            std::cout << "Bun installation script executed successfully." << std::endl;
 
             // Update PATH for the current process
             updatePathForBun();
@@ -89,8 +89,8 @@ std::future<bool> autoInstallBun() {
                 logger.success('Bun has been successfully installed!');
                 return true;
                 } else {
-                    std::cerr << 'Bun installation completed but the command is not available in PATH.' << std::endl;
-                    std::cerr << 'Please restart your terminal or source your shell profile.' << std::endl;
+                    std::cerr << "Bun installation completed but the command is not available in PATH." << std::endl;
+                    std::cerr << "Please restart your terminal or source your shell profile." << std::endl;
                     return false;
                 }
                 } catch (error) {

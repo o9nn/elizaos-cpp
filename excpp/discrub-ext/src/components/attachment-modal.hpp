@@ -1,16 +1,19 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".app/guards.hpp"
-#include ".classes/attachment.hpp"
-#include ".common-components/tooltip/tooltip.hpp"
-#include ".features/app/app-types.hpp"
-#include ".utils.hpp"
+#include "app/guards.hpp"
+#include "classes/attachment.hpp"
+#include "common-components/tooltip/tooltip.hpp"
+#include "features/app/app-types.hpp"
 #include "modal-debug-message.hpp"
+#include "utils.hpp"
 
 namespace elizaos {
 

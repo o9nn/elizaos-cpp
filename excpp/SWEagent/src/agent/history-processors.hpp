@@ -1,12 +1,16 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
+#include <regex>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".types.hpp"
+#include "types.hpp"
 
 namespace elizaos {
 
@@ -107,7 +111,7 @@ public:
     History process(History history);
 
 private:
-    std::vector<RegExp> patterns_;
+    std::vector<std::regex> patterns_;
 };
 
 /**
@@ -120,7 +124,7 @@ public:
     Array< parseImageContent(const std::string& content);
 
 private:
-    RegExp pattern_;
+    std::regex pattern_;
     std::unordered_set<std::string> allowedMimeTypes_;
 };
 

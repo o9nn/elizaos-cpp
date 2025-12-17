@@ -1,10 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 #include "use-pagination.hpp"
 
@@ -17,13 +19,13 @@ namespace elizaos {
 
 using Token = z::infer<typeof TokenSchema>;
 
-using SortOrderType = std::variant<"asc", "desc">;
+using SortOrderType = std::string;
 
 struct UseTokensParams {
-    std::variant<keyof IToken, "featured"> sortBy;
+    keyof IToken sortBy;
     SortOrderType sortOrder;
     std::optional<double> hideImported;
-    std::optional<std::variant<"all", "active", "locked">> status;
+    std::optional<std::string> status;
     std::optional<double> pageSize;
     std::optional<bool> enabled;
 };

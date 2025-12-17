@@ -10,11 +10,11 @@ void SendModalContent(auto userId) {
 
         const auto { showLoading, showSuccess, showError } = useLoadingPanel();
         const auto { hideModal } = useModal();
-        const auto modalId = 'send-modal';
+        const auto modalId = "send-modal";
 
         const auto [selectedToken, setSelectedToken] = useState<Token | nullptr>(nullptr);
-        const auto [recipientAddress, setRecipientAddress] = useState('');
-        const auto [amount, setAmount] = useState('');
+        const auto [recipientAddress, setRecipientAddress] = useState("");
+        const auto [amount, setAmount] = useState("");
         const auto [isDropdownOpen, setIsDropdownOpen] = useState(false);
         const auto dropdownRef = useRef<HTMLDivElement>(nullptr);
 
@@ -27,11 +27,11 @@ void SendModalContent(auto userId) {
                 };
 
                 if (isDropdownOpen) {
-                    document.addEventListener('mousedown', handleClickOutside);
+                    document.addEventListener("mousedown", handleClickOutside);
                 }
 
                 return [&]() {;
-                    document.removeEventListener('mousedown', handleClickOutside);
+                    document.removeEventListener("mousedown", handleClickOutside);
                     };
                     }, [isDropdownOpen]);
 
@@ -75,17 +75,17 @@ void SendModalContent(auto userId) {
                                     // Handle send
                                     const auto handleSend = async () => {;
                                         if (!selectedToken || !recipientAddress || !amount) {
-                                            showError('Validation Error', 'Please fill in all fields', modalId);
+                                            showError("Validation Error", "Please fill in all fields", modalId);
                                             return;
                                         }
 
                                         if (!isValidAddress || !isValidAmount) {
-                                            showError('Validation Error', 'Invalid address or amount', modalId);
+                                            showError("Validation Error", "Invalid address or amount", modalId);
                                             return;
                                         }
 
                                         try {
-                                            showLoading('Sending Transaction', 'Please wait while we process your transaction...', modalId);
+                                            showLoading("Sending Transaction", "Please wait while we process your transaction...", modalId);
 
                                             const auto amountNum = parseFloat(amount);
 
@@ -103,11 +103,11 @@ void SendModalContent(auto userId) {
                                             if (!selectedToken.contractAddress) {
                                                 // Native token - use specific symbol for each chain
                                                 const std::unordered_map<std::string, std::string> nativeTokenMap = {;
-                                                    'base': 'eth',
-                                                    'ethereum': 'eth',
-                                                    'polygon': 'pol',
+                                                    "base": "eth",
+                                                    "ethereum": "eth",
+                                                    "polygon": "pol",
                                                     };
-                                                    tokenParam = nativeTokenMap[selectedToken.chain.toLowerCase()] || 'eth';
+                                                    tokenParam = nativeTokenMap[selectedToken.chain.toLowerCase()] || "eth";
                                                     } else {
                                                         // ERC20 token - use contract address
                                                         tokenParam = selectedToken.contractAddress;
@@ -128,36 +128,36 @@ void SendModalContent(auto userId) {
                                                             amount: amountInBaseUnits,
                                                             });
 
-                                                            std::cout << ' Transaction sent:' << data << std::endl;
+                                                            std::cout << " Transaction sent:" << data << std::endl;
 
                                                             // Show success and trigger wallet refresh
                                                             showSuccess(;
-                                                            'Transaction Successful!',
-                                                            "Successfully sent " + std::to_string(amount) + " " + std::to_string(selectedToken.symbol)
+                                                            "Transaction Successful!",
+                                                            "Successfully sent " + amount + " " + selectedToken.symbol
                                                             modalId,
                                                             false // Don't auto-close;
                                                             );
 
                                                             // Reset form
                                                             setSelectedToken(tokens[0] || nullptr);
-                                                            setRecipientAddress('');
-                                                            setAmount('');
+                                                            setRecipientAddress("");
+                                                            setAmount("");
 
                                                             // Trigger parent to refresh wallet data
                                                             onSuccess();
 
                                                             } catch (err: any) {
-                                                                std::cerr << ' Send failed:' << err << std::endl;
-                                                                const auto errorMessage = true /* instanceof check */ ? err.message : 'Failed to send transaction';
-                                                                showError('Transaction Failed', errorMessage, modalId);
+                                                                std::cerr << " Send failed:" << err << std::endl;
+                                                                const auto errorMessage = true /* instanceof check */ ? err.message : "Failed to send transaction";
+                                                                showError("Transaction Failed", errorMessage, modalId);
                                                             }
                                                             };
 
                                                             // Handle close
                                                             const auto handleClose = [&]() {;
                                                                 setSelectedToken(tokens[0] || nullptr);
-                                                                setRecipientAddress('');
-                                                                setAmount('');
+                                                                setRecipientAddress("");
+                                                                setAmount("");
                                                                 hideModal(modalId);
                                                                 };
 
@@ -174,7 +174,7 @@ void SendModalContent(auto userId) {
                                                                     </div>;
 
                                                                 {/* Token Selection */}
-                                                                <div className="space-y-2" style={{ overflow: 'visible' }}>
+                                                                <div className="space-y-2" style={{ overflow: "visible" }}>
                                                                 <label className="text-sm font-medium">Select Token</label>;
                                                                 <div className="relative" ref={dropdownRef} style={{ zIndex: 60 }}>
                                                             {/* Dropdown Button */}
@@ -210,16 +210,16 @@ void SendModalContent(auto userId) {
                                             <div className="absolute z-50 w-full mt-1 bg-popover border border-border rounded-lg shadow-lg max-h-[35vh] overflow-y-auto">;
                                             {tokens.map((token, index) => (;
                                             <button;
-                                        std::to_string(token.chain) + "-" + std::to_string(token.contractAddress || token.symbol) + "-" + std::to_string(index);
+                                        "key={" + token.chain + "-" + std::to_string(token.contractAddress || token.symbol) + "-" + index;
                                         type="button";
                                         onClick={() => {
                                             setSelectedToken(token);
-                                            setAmount('');
+                                            setAmount("");
                                             setIsDropdownOpen(false);
                                         }}
-                                        "w-full p-3 flex items-center justify-between hover:bg-accent transition-colors " + std::to_string()
-                                            selectedToken == token ? 'bg-accent' : ''
-                                        }`}
+                                        "className={" + "w-full p-3 flex items-center justify-between hover:bg-accent transition-colors " + std::to_string()
+                                            selectedToken == token ? "bg-accent" : ""
+                                        "}";
                                         >;
                                         <div className="flex items-center gap-2">;
                                         <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center overflow-hidden">;
@@ -236,7 +236,7 @@ void SendModalContent(auto userId) {
                                     </div>;
                                     <div className="text-right">;
                                     <p className="text-sm font-mono">{parseFloat(token.balanceFormatted).toFixed(6)}</p>;
-                                    <p className="text-xs text-muted-foreground">${token.usdValue.toFixed(2) || '0.00'}</p>;
+                                    <p className="text-xs text-muted-foreground">${token.usdValue.toFixed(2) || "0.00"}</p>;
                                     </div>;
                                     </button>;
                                 ))}
@@ -253,9 +253,9 @@ void SendModalContent(auto userId) {
                         placeholder="0x...";
                     value={recipientAddress}
                 onChange={(e) => setRecipientAddress(e.target.value)}
-                "font-mono text-sm " + std::to_string();
-                    recipientAddress && !isValidAddress ? 'border-red-500' : ''
-                }`}
+                "className={" + "font-mono text-sm " + std::to_string();
+                    recipientAddress && !isValidAddress ? "border-red-500" : ""
+                "}";
                 />;
                 {recipientAddress && !isValidAddress && (;
                 <p className="text-xs text-red-500">Invalid address</p>;
@@ -271,9 +271,9 @@ void SendModalContent(auto userId) {
         placeholder="0.0";
         value={amount}
         onChange={(e) => setAmount(e.target.value)}
-        "font-mono pr-16 " + std::to_string();
-            amount && !isValidAmount ? 'border-red-500' : ''
-        }`}
+        "className={" + "font-mono pr-16 " + std::to_string();
+            amount && !isValidAmount ? "border-red-500" : ""
+        "}";
         />;
         <button;
         onClick={handleMaxClick}

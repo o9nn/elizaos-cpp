@@ -1,9 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -16,7 +19,7 @@ namespace elizaos {
 // Required setup for noble libraries
 
 // --- Validation Function ---
-bool validateKeypair(Uint8Array privateKey, Uint8Array publicKey, Uint8Array secretKey);
+bool validateKeypair(const std::vector<uint8_t>& privateKey, const std::vector<uint8_t>& publicKey, const std::vector<uint8_t>& secretKey);
 
 // --- Worker Message Handler ---
   // Handle potential 'stop' string message

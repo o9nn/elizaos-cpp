@@ -8,7 +8,7 @@ void useAgentUpdate(Agent initialAgent) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Keep reference to the initial state for comparison
-    const auto initialAgentRef = useRef<Agent>(JSON.parse(JSON.stringify(initialAgent)));
+    const auto initialAgentRef = useRef<Agent>(/* JSON.parse */ /* JSON.stringify */ std::string(initialAgent));
 
     const auto {;
         value: agent,
@@ -35,9 +35,9 @@ void useAgentUpdate(Agent initialAgent) {
                         ...agent.settings,
                         ...value,
                         });
-                        } else if (key == 'style' && value) {
+                        } else if (key == "style" && value) {
                             // Handle style object specially - it's nested but needs direct update
-                            updateField('style', {
+                            updateField("style", {
                                 all: value.all || [],
                                 chat: value.chat || [],
                                 post: value.post || [],
@@ -63,7 +63,7 @@ void useAgentUpdate(Agent initialAgent) {
                                     */
                                     const auto updateSetting = useCallback(;
                                     <T>(path: string, value: T) => {
-                                        "settings." + std::to_string(path);
+                                        "updateField(" + "settings." + path;
                                         },
                                         [updateField];
                                         );
@@ -87,7 +87,7 @@ void useAgentUpdate(Agent initialAgent) {
                                             */
                                             const auto updateSystemPrompt = useCallback(;
                                             [&](systemPrompt: string) {
-                                                updateField('system', systemPrompt);
+                                                updateField("system", systemPrompt);
                                                 },
                                                 [updateField];
                                                 );
@@ -154,7 +154,7 @@ void useAgentUpdate(Agent initialAgent) {
                                                                     * @param item The item to add
                                                                     */
                                                                     const auto addContentItem = useCallback(;
-                                                                    [&](arrayName: 'bio' | 'topics' | 'adjectives', item: string) {
+                                                                    [&](arrayName: "bio" | "topics" | "adjectives", item: string) {
                                                                         addArrayItem(arrayName, item);
                                                                         },
                                                                         [addArrayItem];
@@ -167,7 +167,7 @@ void useAgentUpdate(Agent initialAgent) {
                                                                         * @param index The index of the item to remove
                                                                         */
                                                                         const auto removeContentItem = useCallback(;
-                                                                        [&](arrayName: 'bio' | 'topics' | 'adjectives', index: number) {
+                                                                        [&](arrayName: "bio" | "topics" | "adjectives", index: number) {
                                                                             removeArrayItem(arrayName, index);
                                                                             },
                                                                             [removeArrayItem];
@@ -181,8 +181,8 @@ void useAgentUpdate(Agent initialAgent) {
                                                                             * @param value The new value
                                                                             */
                                                                             const auto updateContentItem = useCallback(;
-                                                                            [&](arrayName: 'bio' | 'topics' | 'adjectives', index: number, value: string) {
-                                                                                std::to_string(arrayName) + "." + std::to_string(index);
+                                                                            [&](arrayName: "bio" | "topics" | "adjectives", index: number, value: string) {
+                                                                                "updateField(" + arrayName + "." + index;
                                                                                 },
                                                                                 [updateField];
                                                                                 );
@@ -195,8 +195,8 @@ void useAgentUpdate(Agent initialAgent) {
                                                                                 * @param rule The style rule to add
                                                                                 */
                                                                                 const auto addStyleRule = useCallback(;
-                                                                                [&](styleType: 'all' | 'chat' | 'post', rule: string) {
-                                                                                    "style." + std::to_string(styleType);
+                                                                                [&](styleType: "all" | "chat" | "post", rule: string) {
+                                                                                    "addArrayItem(" + "style." + styleType;
                                                                                     },
                                                                                     [addArrayItem];
                                                                                     );
@@ -208,8 +208,8 @@ void useAgentUpdate(Agent initialAgent) {
                                                                                     * @param index The index of the rule to remove
                                                                                     */
                                                                                     const auto removeStyleRule = useCallback(;
-                                                                                    [&](styleType: 'all' | 'chat' | 'post', index: number) {
-                                                                                        "style." + std::to_string(styleType);
+                                                                                    [&](styleType: "all" | "chat" | "post", index: number) {
+                                                                                        "removeArrayItem(" + "style." + styleType;
                                                                                         },
                                                                                         [removeArrayItem];
                                                                                         );
@@ -222,8 +222,8 @@ void useAgentUpdate(Agent initialAgent) {
                                                                                         * @param value The new rule value
                                                                                         */
                                                                                         const auto updateStyleRule = useCallback(;
-                                                                                        [&](styleType: 'all' | 'chat' | 'post', index: number, value: string) {
-                                                                                            "style." + std::to_string(styleType) + "." + std::to_string(index);
+                                                                                        [&](styleType: "all" | "chat" | "post", index: number, value: string) {
+                                                                                            "updateField(" + "style." + styleType + "." + index;
                                                                                             },
                                                                                             [updateField];
                                                                                             );
@@ -235,8 +235,8 @@ void useAgentUpdate(Agent initialAgent) {
                                                                                             * @param values Array of style values
                                                                                             */
                                                                                             const auto setStyleArray = useCallback(;
-                                                                                            [&](styleType: 'all' | 'chat' | 'post', values: string[]) {
-                                                                                                "style." + std::to_string(styleType);
+                                                                                            [&](styleType: "all" | "chat" | "post", values: string[]) {
+                                                                                                "updateField(" + "style." + styleType;
                                                                                                 },
                                                                                                 [updateField];
                                                                                                 );
@@ -249,7 +249,7 @@ void useAgentUpdate(Agent initialAgent) {
                                                                                                 */
                                                                                                 const auto addPlugin = useCallback(;
                                                                                                 [&](pluginId: string) {
-                                                                                                    addArrayItem('plugins', pluginId);
+                                                                                                    addArrayItem("plugins", pluginId);
                                                                                                     },
                                                                                                     [addArrayItem];
                                                                                                     );
@@ -261,7 +261,7 @@ void useAgentUpdate(Agent initialAgent) {
                                                                                                     */
                                                                                                     const auto removePlugin = useCallback(;
                                                                                                     [&](index: number) {
-                                                                                                        removeArrayItem('plugins', index);
+                                                                                                        removeArrayItem("plugins", index);
                                                                                                         },
                                                                                                         [removeArrayItem];
                                                                                                         );
@@ -273,7 +273,7 @@ void useAgentUpdate(Agent initialAgent) {
                                                                                                         */
                                                                                                         const auto setPlugins = useCallback(;
                                                                                                         [&](plugins: string[]) {
-                                                                                                            updateField('plugins', plugins);
+                                                                                                            updateField("plugins", plugins);
                                                                                                             },
                                                                                                             [updateField];
                                                                                                             );
@@ -286,7 +286,7 @@ void useAgentUpdate(Agent initialAgent) {
                                                                                                             */
                                                                                                             const auto updateAvatar = useCallback(;
                                                                                                             [&](avatarUrl: string) {
-                                                                                                                updateSetting('avatar', avatarUrl);
+                                                                                                                updateSetting("avatar", avatarUrl);
                                                                                                                 },
                                                                                                                 [updateSetting];
                                                                                                                 );
@@ -301,7 +301,7 @@ void useAgentUpdate(Agent initialAgent) {
                                                                                                                     const auto initial = initialAgentRef.current;
 
                                                                                                                     // Compare scalar properties
-                                                                                                                    const auto scalarProps = ['name', 'username', 'system'];
+                                                                                                                    const auto scalarProps = ["name", "username", "system"];
                                                                                                                     scalarProps.forEach((prop) => {
                                                                                                                         if (current[prop] != initial[prop]) {
                                                                                                                             changedFields[prop] = current[prop];

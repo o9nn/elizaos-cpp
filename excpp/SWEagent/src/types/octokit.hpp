@@ -1,10 +1,13 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -15,7 +18,7 @@ namespace elizaos {
   class Octokit {
 public:
     Promise< get(const std::any& params);
-    Promise< create(const std::unordered_map<std::string, unknown>& params);
+    Promise< create(const std::unordered_map<std::string, std::any>& params);
 };
 
 

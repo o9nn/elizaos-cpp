@@ -8,7 +8,7 @@ void usePlugins() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return useQuery({;
-        queryKey: ['plugins'],
+        queryKey: ["plugins"],
         queryFn: async () => {
             try {
                 // Fetch plugins from registry and agent data in parallel
@@ -25,14 +25,14 @@ void usePlugins() {
                 const auto registryPlugins = Object.entries(registryData.registry || {});
                 .filter(([name, data]: [string, PluginInfo]) => {
                     // Check if it's a plugin and has v1 support
-                    const auto isPlugin = name.includes('plugin');
+                    const auto isPlugin = (std::find(name.begin(), name.end(), "plugin") != name.end());
                     const auto hasV1Support = data.supports.v1 == true;
                     const auto hasV1Version =;
                     data.npm.v1 != nullptr || (data.git.v1.version != nullptr && data.git.v1.branch != nullptr);
 
                     return isPlugin && hasV1Support && hasV1Version;
                     });
-                    .map(([name]) => name.replace(/^@elizaos-plugins\//, '@elizaos/'));
+                    .map(([name]) => name.replace(/^@elizaos-plugins\//, "@elizaos/"));
                     .sort();
 
                     // Process agent plugins from the parallel fetch
@@ -40,7 +40,7 @@ void usePlugins() {
                     try {
                         if (agentsResponse.length > 0) {
                             // Get plugins from the first active agent
-                            const auto activeAgent = agentsResponse.find((agent) => agent.status == 'active');
+                            const auto activeAgent = agentsResponse.find((agent) => agent.status == "active");
                             if (activeAgent && activeAgent.id) {
                                 const auto agentDetailResponse = elizaClient.agents.getAgent(activeAgent.id);
 
@@ -50,27 +50,27 @@ void usePlugins() {
                             }
                         }
                         } catch (agentError) {
-                            clientLogger.warn('Could not fetch agent plugins:', agentError);
+                            clientLogger.warn("Could not fetch agent plugins:", agentError);
                         }
 
                         // Merge registry plugins with agent plugins and remove duplicates
                         const auto allPlugins = [...new Set([...registryPlugins, ...agentPlugins])];
                         return allPlugins.sort();
                         } catch (error) {
-                            clientLogger.error('Failed to fetch from registry, falling back to basic list:', error);
+                            clientLogger.error("Failed to fetch from registry, falling back to basic list:", error);
 
                             // Return fallback plugins with basic info
                             return [;
-                            '@elizaos/plugin-bootstrap',
-                            '@elizaos/plugin-evm',
-                            '@elizaos/plugin-discord',
-                            '@elizaos/plugin-elevenlabs',
-                            '@elizaos/plugin-anthropic',
-                            '@elizaos/plugin-browser',
-                            '@elizaos/plugin-farcaster',
-                            '@elizaos/plugin-groq',
+                            "@elizaos/plugin-bootstrap",
+                            "@elizaos/plugin-evm",
+                            "@elizaos/plugin-discord",
+                            "@elizaos/plugin-elevenlabs",
+                            "@elizaos/plugin-anthropic",
+                            "@elizaos/plugin-browser",
+                            "@elizaos/plugin-farcaster",
+                            "@elizaos/plugin-groq",
                             ];
-                            .filter((name) => name.includes('plugin'));
+                            .filter((name) => (std::find(name.begin(), name.end(), "plugin") != name.end()));
                             .sort();
                         }
                         },

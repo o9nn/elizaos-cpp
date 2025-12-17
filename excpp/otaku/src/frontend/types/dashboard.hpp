@@ -1,10 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -16,10 +18,10 @@ struct DashboardStat {
     std::string label;
     std::string value;
     std::string description;
-    std::variant<"positive", "negative", "neutral"> intent;
+    std::string intent;
     std::string icon;
     std::optional<std::string> tag;
-    std::optional<std::variant<"up", "down">> direction;
+    std::optional<std::string> direction;
 };
 
 struct ChartDataPoint {
@@ -50,7 +52,7 @@ struct SecurityStatus {
     std::string title;
     std::string value;
     std::string status;
-    std::variant<"success", "warning", "destructive"> variant;
+    std::string variant;
 };
 
 struct Notification {
@@ -58,9 +60,9 @@ struct Notification {
     std::string title;
     std::string message;
     std::string timestamp;
-    std::variant<"info", "warning", "success", "error"> type;
+    std::string type;
     bool read;
-    std::variant<"low", "medium", "high"> priority;
+    std::string priority;
 };
 
 struct WidgetData {
@@ -80,6 +82,6 @@ struct MockData {
     WidgetData widgetData;
 };
 
-using TimePeriod = std::variant<"week", "month", "year">;
+using TimePeriod = std::string;
 
 } // namespace elizaos

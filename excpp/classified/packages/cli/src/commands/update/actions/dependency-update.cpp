@@ -9,9 +9,9 @@ std::future<void> updateDependencies(const std::string& cwd, bool isPlugin, Upda
 
     const auto { dryRun = false, skipBuild = false } = options;
 
-    const auto packageJsonPath = path.join(cwd, 'package.json');
-    const auto content = fs.readFile(packageJsonPath, 'utf8');
-    const auto packageJson = JSON.parse(content);
+    const auto packageJsonPath = path.join(cwd, "package.json");
+    const auto content = fs.readFile(packageJsonPath, "utf8");
+    const auto packageJson = /* JSON.parse */ content;
 
     const auto allDependencies = {;
         ...packageJson.dependencies,
@@ -22,7 +22,7 @@ std::future<void> updateDependencies(const std::string& cwd, bool isPlugin, Upda
         const auto { hasUpdates, updates } = checkForUpdates(allDependencies);
 
         if (!hasUpdates) {
-            std::cout << 'All ElizaOS packages are up to date! [✓]' << std::endl;
+            std::cout << "All ElizaOS packages are up to date! [✓]" << std::endl;
             return;
         }
 
@@ -40,17 +40,17 @@ std::future<void> updateDependencies(const std::string& cwd, bool isPlugin, Upda
 
         if (hasMajorUpdates) {
             const auto confirmMajor = clack.confirm({;
-                message: 'This update includes major version changes. Continue?',
+                message: "This update includes major version changes. Continue?",
                 initialValue: false,
                 });
 
                 if (clack.isCancel(confirmMajor)) {
-                    clack.cancel('Operation cancelled.');
+                    clack.cancel("Operation cancelled.");
                     process.exit(0);
                 }
 
                 if (!confirmMajor) {
-                    std::cout << 'Update cancelled' << std::endl;
+                    std::cout << "Update cancelled" << std::endl;
                     return;
                 }
             }
@@ -63,9 +63,9 @@ std::future<void> updateDependencies(const std::string& cwd, bool isPlugin, Upda
 
             // Build if not skipped
             if (!skipBuild) {
-                std::cout << '\nBuilding project...' << std::endl;
+                std::cout << "\nBuilding project..." << std::endl;
                 buildProject(cwd, isPlugin);
-                std::cout << 'Build completed successfully [✓]' << std::endl;
+                std::cout << "Build completed successfully [✓]" << std::endl;
             }
 
 }

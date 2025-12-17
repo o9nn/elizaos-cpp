@@ -34,26 +34,26 @@ UseTauriChatReturn useTauriChat() {
                     // Auto-send greeting message after confirming services are ready
                     setTimeout(async () => {
                         try {
-                            std::cout << '[AUTO-GREETING] Checking if agent and Ollama are ready...' << std::endl;
+                            std::cout << "[AUTO-GREETING] Checking if agent and Ollama are ready..." << std::endl;
 
                             // Check agent health
                             const auto agentHealth = TauriService.checkAgentHealth();
-                            std::cout << '[AUTO-GREETING] Agent health:' << agentHealth << std::endl;
+                            std::cout << "[AUTO-GREETING] Agent health:" << agentHealth << std::endl;
 
                             // If agent is healthy, send greeting
                             if (agentHealth && (agentHealth.status == 'healthy' || agentHealth.success)) {
-                                std::cout << '[AUTO-GREETING] Sending hello message to Eliza...' << std::endl;
-                                TauriService.sendMessage('hello eliza');
-                                std::cout << '[AUTO-GREETING] Greeting sent successfully' << std::endl;
+                                std::cout << "[AUTO-GREETING] Sending hello message to Eliza..." << std::endl;
+                                TauriService.sendMessage("hello eliza");
+                                std::cout << "[AUTO-GREETING] Greeting sent successfully" << std::endl;
                                 } else {
                                     std::cout << '[AUTO-GREETING] Agent not ready << skipping auto-greeting' << std::endl;
                                 }
                                 } catch (error) {
-                                    std::cout << '[AUTO-GREETING] Failed to send auto-greeting:' << error << std::endl;
+                                    std::cout << "[AUTO-GREETING] Failed to send auto-greeting:" << error << std::endl;
                                 }
                                 }, 2000); // Wait 2 seconds for services to be fully ready;
                                 } else {
-                                    setError('Not running in Tauri environment');
+                                    setError("Not running in Tauri environment");
                                 }
 
                                 setIsLoading(false);

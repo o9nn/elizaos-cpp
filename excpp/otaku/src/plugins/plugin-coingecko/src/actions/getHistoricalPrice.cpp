@@ -31,7 +31,7 @@ std::string parseDateToApiFormat(const std::string& dateStr) {
         // Parse common formats
         if (normalized == 'today') {
             date = new Date();
-            } else if (normalized == 'yesterday') {
+            } else if (normalized == "yesterday") {
                 date = new Date();
                 date.setDate(date.getDate() - 1);
                 } else if (/^(\d+)\s*days?\s*ago$/.test(normalized)) {
@@ -63,11 +63,11 @@ std::string parseDateToApiFormat(const std::string& dateStr) {
                                 }
 
                                 // Convert to dd-mm-yyyy format
-                                const auto day = std::to_string(date.getDate()).padStart(2, '0');
-                                const auto month = std::to_string(date.getMonth() + 1).padStart(2, '0');
+                                const auto day = std::to_string(date.getDate()).padStart(2, "0");
+                                const auto month = std::to_string(date.getMonth() + 1).padStart(2, "0");
                                 const auto year = date.getFullYear();
 
-                                return std::to_string(day) + "-" + std::to_string(month) + "-" + std::to_string(year);
+                                return day + "-" + month + "-" + year;
 
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;

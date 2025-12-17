@@ -14,7 +14,7 @@ std::string getPlatformId(const std::string& network) {
 std::string getCacheKey(const std::string& network, const std::string& address) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return std::to_string(network) + ":" + std::to_string(address.toLowerCase());
+    return network + ":" + std::to_string(address.toLowerCase());
 
 }
 
@@ -46,7 +46,7 @@ std::future<std::optional<TokenMetadata>> getTokenMetadata(const std::string& ad
         const auto platformId = getPlatformId(network);
         const auto apiKey = process.env.COINGECKO_API_KEY;
         const auto baseUrl = apiKey ? "https://pro-api.coingecko.com/api/v3" : "https://api.coingecko.com/api/v3";
-        const auto url = std::to_string(baseUrl) + "/coins/" + std::to_string(platformId) + "/contract/" + std::to_string(normalizedAddress);
+        const auto url = baseUrl + "/coins/" + platformId + "/contract/" + normalizedAddress;
         logger.debug(`Fetching token metadata from CoinGecko: ${url}`);
 
         const auto response = fetch(url, {;
@@ -58,14 +58,14 @@ std::future<std::optional<TokenMetadata>> getTokenMetadata(const std::string& ad
 
                 if (!response.ok) {
                     if (response.status == 404) {
-                        std::cout << "Token not found on CoinGecko: " + std::to_string(address) + " on " + std::to_string(network) << std::endl;
+                        std::cout << "Token not found on CoinGecko: " + address + " on " + network << std::endl;
                         return nullptr;
                     }
                     if (response.status == 429) {
                         std::cerr << "CoinGecko rate limit exceeded" << std::endl;
                         return nullptr;
                     }
-                    std::cerr << "CoinGecko API error: " + std::to_string(response.status) + " " + std::to_string(response.statusText) << std::endl;
+                    std::cerr << "CoinGecko API error: " + response.status + " " + response.statusText << std::endl;
                     return nullptr;
                 }
 
@@ -81,10 +81,10 @@ std::future<std::optional<TokenMetadata>> getTokenMetadata(const std::string& ad
 
                     tokenCache.set(cacheKey, metadata);
                     cacheTimestamps.set(cacheKey, Date.now());
-                    std::cout << "Successfully fetched token metadata: " + std::to_string(metadata.symbol) + " (" + std::to_string(metadata.name) + ") - " + std::to_string(decimals) + " decimals" << std::endl;
+                    std::cout << "Successfully fetched token metadata: " + metadata.symbol + " (" + metadata.name + ") - " + decimals + " decimals" << std::endl;
                     return metadata;
                     } catch (error) {
-                        std::cerr << "Error fetching token metadata from CoinGecko: " + std::to_string(error) << std::endl;
+                        std::cerr << "Error fetching token metadata from CoinGecko: " + error << std::endl;
                         return nullptr;
                     }
 
@@ -96,7 +96,7 @@ std::future<std::string> resolveTokenSymbol(const std::string& symbol, const std
     const auto lowerSymbol = symbol.toLowerCase();
     const auto hardcodedAddress = HARDCODED_TOKEN_ADDRESSES[network].[lowerSymbol];
     if (hardcodedAddress) {
-        std::cout << "Using hardcoded address for " + std::to_string(symbol) + " on " + std::to_string(network) + ": " + std::to_string(hardcodedAddress) << std::endl;
+        std::cout << "Using hardcoded address for " + symbol + " on " + network + ": " + hardcodedAddress << std::endl;
         return hardcodedAddress.toLowerCase();
     }
 
@@ -104,7 +104,7 @@ std::future<std::string> resolveTokenSymbol(const std::string& symbol, const std
         const auto platformId = getPlatformId(network);
         const auto apiKey = process.env.COINGECKO_API_KEY;
         const auto baseUrl = apiKey ? "https://pro-api.coingecko.com/api/v3" : "https://api.coingecko.com/api/v3";
-        const auto url = std::to_string(baseUrl) + "/search?query=" + std::to_string(encodeURIComponent(symbol));
+        const auto url = baseUrl + "/search?query=" + std::to_string(encodeURIComponent(symbol));
         logger.debug(`Searching token by symbol: ${symbol}`);
         const auto response = fetch(url, {;
             headers: {
@@ -114,16 +114,16 @@ std::future<std::string> resolveTokenSymbol(const std::string& symbol, const std
                 });
 
                 if (!response.ok) {
-                    std::cerr << "CoinGecko search API error: " + std::to_string(response.status) << std::endl;
+                    std::cerr << "CoinGecko search API error: " + response.status << std::endl;
                     return nullptr;
                 }
                 const auto data = response.json();
                 const auto coin = data.coins.find((c) => c.symbol.toLowerCase() == symbol.toLowerCase());
                 if (!coin) {
-                    std::cout << "Token symbol not found: " + std::to_string(symbol) << std::endl;
+                    std::cout << "Token symbol not found: " + symbol << std::endl;
                     return nullptr;
                 }
-                const auto coinUrl = std::to_string(baseUrl) + "/coins/" + std::to_string(coin.id);
+                const auto coinUrl = baseUrl + "/coins/" + coin.id;
                 const auto coinResponse = fetch(coinUrl, {;
                     headers: {
                         "Accept": "application/json",
@@ -137,13 +137,13 @@ std::future<std::string> resolveTokenSymbol(const std::string& symbol, const std
                         const auto coinData = coinDataRaw;
                         const auto address = coinData.platforms.[platformId];
                         if (address) {
-                            std::cout << "Resolved " + std::to_string(symbol) + " to " + std::to_string(address) + " on " + std::to_string(network) << std::endl;
+                            std::cout << "Resolved " + symbol + " to " + address + " on " + network << std::endl;
                             return address.toLowerCase();
                         }
-                        std::cout << "Token " + std::to_string(symbol) + " not found on network " + std::to_string(network) << std::endl;
+                        std::cout << "Token " + symbol + " not found on network " + network << std::endl;
                         return nullptr;
                         } catch (error) {
-                            std::cerr << "Error resolving token symbol: " + std::to_string(error) << std::endl;
+                            std::cerr << "Error resolving token symbol: " + error << std::endl;
                             return nullptr;
                         }
 
@@ -165,7 +165,7 @@ std::future<double> getTokenDecimals(const std::string& address, const std::stri
     if (lowerSymbol == "usdc" || lowerSymbol == "usdt") {
         return 6;
     }
-    std::cout << "Could not determine decimals for " + std::to_string(address) << defaulting to 18` << std::endl;
+    std::cout << "Could not determine decimals for " + address << "defaulting to 18" << std::endl;
     return 18;
 
 }
@@ -191,7 +191,7 @@ void addHardcodedTokenAddress(const std::string& network, const std::string& sym
         HARDCODED_TOKEN_ADDRESSES[network] = {}
     }
     HARDCODED_TOKEN_ADDRESSES[network][symbol.toLowerCase()] = address.toLowerCase();
-    std::cout << "Added hardcoded token address: " + std::to_string(symbol) + " on " + std::to_string(network) + " -> " + std::to_string(address) << std::endl;
+    std::cout << "Added hardcoded token address: " + symbol + " on " + network + " -> " + address << std::endl;
 
 }
 

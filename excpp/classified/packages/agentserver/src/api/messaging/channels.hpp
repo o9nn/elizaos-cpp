@@ -1,14 +1,17 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include "..bus.hpp"
-#include ".shared/constants.hpp"
-#include ".shared/middleware.hpp"
+#include "bus.hpp"
 #include "elizaos/core.hpp"
+#include "shared/constants.hpp"
+#include "shared/middleware.hpp"
 
 namespace elizaos {
 

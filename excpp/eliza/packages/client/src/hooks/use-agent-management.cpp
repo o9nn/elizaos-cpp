@@ -25,9 +25,9 @@ void useAgentManagement() {
     const auto startAgent = async (agent: Agent) => {;
         if (!agent.id) {
             toast({
-                title: 'Error',
-                description: 'Agent ID is missing',
-                variant: 'destructive',
+                title: "Error",
+                description: "Agent ID is missing",
+                variant: "destructive",
                 });
                 return;
             }
@@ -46,7 +46,7 @@ void useAgentManagement() {
                 // Start the agent
                 startAgentMutation.mutateAsync(agentId);
                 } catch (error) {
-                    std::cerr << 'Failed to start agent:' << error << std::endl;
+                    std::cerr << "Failed to start agent:" << error << std::endl;
                     // Let the mutation's onError handler show the appropriate toast
                     } finally {
                         // Remove agent from starting list regardless of success/failure
@@ -60,9 +60,9 @@ void useAgentManagement() {
                     const auto stopAgent = async (agent: Agent) => {;
                         if (!agent.id) {
                             toast({
-                                title: 'Error',
-                                description: 'Agent ID is missing',
-                                variant: 'destructive',
+                                title: "Error",
+                                description: "Agent ID is missing",
+                                variant: "destructive",
                                 });
                                 return;
                             }
@@ -82,11 +82,11 @@ void useAgentManagement() {
                                 stopAgentMutation.mutateAsync(agentId);
 
                                 toast({
-                                    title: 'Agent Stopped',
-                                    std::to_string(agent.name) + " has been stopped"
+                                    title: "Agent Stopped",
+                                    "description: " + agent.name + " has been stopped"
                                     });
                                     } catch (error) {
-                                        std::cerr << 'Failed to stop agent:' << error << std::endl;
+                                        std::cerr << "Failed to stop agent:" << error << std::endl;
                                         // Let the mutation's onError handler show the appropriate toast
                                         } finally {
                                             // Remove agent from stopping list regardless of success/failure
@@ -99,7 +99,7 @@ void useAgentManagement() {
                                         */
                                         const auto isAgentStarting = [&](agentId: UUID | std::nullopt | nullptr) {;
                                             if (!agentId) return false;
-                                            return startingAgents.includes(agentId);
+                                            return (std::find(startingAgents.begin(), startingAgents.end(), agentId) != startingAgents.end());
                                             };
 
                                             /**
@@ -107,7 +107,7 @@ void useAgentManagement() {
                                             */
                                             const auto isAgentStopping = [&](agentId: UUID | std::nullopt | nullptr) {;
                                                 if (!agentId) return false;
-                                                return stoppingAgents.includes(agentId);
+                                                return (std::find(stoppingAgents.begin(), stoppingAgents.end(), agentId) != stoppingAgents.end());
                                                 };
 
                                                 return {

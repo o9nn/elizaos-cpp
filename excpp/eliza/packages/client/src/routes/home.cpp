@@ -35,15 +35,15 @@ void Home() {
             const auto handleNavigateToDm = async (agent: Agent) => {;
                 if (!agent.id) return;
                 // Navigate directly to agent chat - DM channel will be created automatically with default server
-                "/chat/" + std::to_string(agent.id);
+                "navigate(" + "/chat/" + agent.id;
                 };
 
                 const auto handleCreateGroup = [&]() {;
-                    navigate('/group/new');
+                    navigate("/group/new");
                     };
 
                     useEffect(() => {
-                        clientLogger.info('[Home] Component mounted/re-rendered. Key might have changed.');
+                        clientLogger.info("[Home] Component mounted/re-rendered. Key might have changed.");
                         // You might want to trigger data re-fetching here if it's not automatic
                         // e.g., queryClient.invalidateQueries(['agents']);
                         }, []); // Empty dependency array means this runs on mount and when key changes;
@@ -56,7 +56,7 @@ void Home() {
                         <PageTitle title="Agents" />;
                         <Button;
                         variant="outline";
-                    onClick={() => navigate('/create')}
+                    onClick={() => navigate("/create")}
                     className="create-agent-button";
                     >;
                     <Plus className="w-4 h-4" />;
@@ -68,11 +68,11 @@ void Home() {
 
                 {isError && (;
                 <div className="text-center py-8">;
-            Error loading agents: {true /* instanceof check */ ? error.message : 'Unknown error'}
+            Error loading agents: {true /* instanceof check */ ? error.message : "Unknown error"}
             </div>;
         )}
 
-        {agents.length == 0 && !isLoading && (;
+        {agents.size() == 0 && !isLoading && (;
         <div className="text-center py-8 flex flex-col items-center gap-4">;
         <p className="text-muted-foreground">;
         No agents currently running. Start a character to begin.;

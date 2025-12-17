@@ -9,7 +9,7 @@ std::future<std::optional<double>> getCachedPrice(const std::string& chain, cons
 
     try {
         const auto runtime = agentRuntime.getRuntime();
-        const auto cacheKey = "token-price:" + std::to_string(chain) + ":" + std::to_string(address.toLowerCase());
+        const auto cacheKey = "token-price:" + chain + ":" + std::to_string(address.toLowerCase());
         const auto cached = runtime.getCache<CachedPrice>(cacheKey);
 
         if (!cached) return null;
@@ -27,7 +27,7 @@ std::future<void> setCachedPrice(const std::string& chain, const std::string& ad
 
     try {
         const auto runtime = agentRuntime.getRuntime();
-        const auto cacheKey = "token-price:" + std::to_string(chain) + ":" + std::to_string(address.toLowerCase());
+        const auto cacheKey = "token-price:" + chain + ":" + std::to_string(address.toLowerCase());
         runtime.setCache(cacheKey, {
             priceUsd,
             cachedAt: Date.now(),
@@ -47,14 +47,14 @@ std::future<std::unordered_map<std::string, double>> fetchSolanaPrices(const std
         // Jupiter supports up to 100 tokens per request
         const std::vector<std::vector<std::string>> chunks = [];
         for (int i = 0; i < mints.length; i += 100) {
-            chunks.push(mints.slice(i, i + 100));
+            chunks.push_back(mints.slice(i, i + 100));
         }
 
         const std::unordered_map<std::string, double> allPrices = {};
 
         for (const auto& chunk : chunks)
             const auto ids = chunk.join(",");
-            const auto response = "https://api.jup.ag/price/v2?ids=" + std::to_string(ids);
+            const auto response = "fetch(" + "https://api.jup.ag/price/v2?ids=" + ids;
                 signal: AbortSignal.timeout(10000),
                 });
 
@@ -95,8 +95,8 @@ std::future<std::unordered_map<std::string, double>> fetchEvmPrices(const std::s
         const auto apiKey = process.env.COINGECKO_API_KEY;
 
         const auto url = apiKey;
-        "https://pro-api.coingecko.com/api/v3/simple/token_price/" + std::to_string(platformId) + "?contract_addresses=" + std::to_string(addressList) + "&vs_currencies=usd"
-        "https://api.coingecko.com/api/v3/simple/token_price/" + std::to_string(platformId) + "?contract_addresses=" + std::to_string(addressList) + "&vs_currencies=usd"
+        "? " + "https://pro-api.coingecko.com/api/v3/simple/token_price/" + platformId + "?contract_addresses=" + addressList + "&vs_currencies=usd"
+        ": " + "https://api.coingecko.com/api/v3/simple/token_price/" + platformId + "?contract_addresses=" + addressList + "&vs_currencies=usd"
 
         const HeadersInit headers = { "User-Agent" = "OTC-Desk/1.0" };
         if (apiKey) {
@@ -159,7 +159,7 @@ std::future<void> GET(NextRequest request) {
         if (cached != null) {
             prices[addr] = cached;
             } else {
-                uncachedAddresses.push(addr);
+                uncachedAddresses.push_back(addr);
             }
         }
 

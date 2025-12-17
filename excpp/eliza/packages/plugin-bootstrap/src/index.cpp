@@ -8,10 +8,10 @@ std::string escapeForJson(const std::string& input) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return input;
-    .replace(/\\/g, '\\\\');
-    .replace(/"/g, '\\"');
-    .replace(/\n/g, '\\n');
-    "/g, '\\" + "\\";
+    .replace(/\\/g, "\\\\");
+    .replace(/"/g, "\\"");
+    .replace(/\n/g, "\\n");
+    ".replace(/" + "/g, '\\" + "\\" + "\\";
 
 }
 
@@ -21,7 +21,7 @@ std::string sanitizeJson(const std::string& rawJson) {
 
         try {
             // Try parsing directly
-            JSON.parse(rawJson);
+            /* JSON.parse */ rawJson;
             return rawJson; // Already valid;
             } catch {
                 // Continue to sanitization
@@ -29,20 +29,20 @@ std::string sanitizeJson(const std::string& rawJson) {
 
             // first, replace all newlines with \n
             const auto sanitized = rawJson;
-            .replace(/\n/g, '\\n');
+            .replace(/\n/g, "\\n");
 
             // then, replace all backticks with \\\`
-            "/g, '\\\";
+            ".replace(/" + "/g, '\\\";
 
             // Regex to find and escape the "text" field
             const auto fixed = sanitized.replace(/"text"\s*:\s*"([\s\S]*?)"\s*,\s*"simple"/, (_match, group) => {;
                 const auto escapedText = escapeForJson(group);
-                return ""text": "" + std::to_string(escapedText) + "", "simple"";
+                return "\"text\": \"" + escapedText + "\", \"simple\"";
                 });
 
                 // Validate that the result is actually parseable
                 try {
-                    JSON.parse(fixed);
+                    /* JSON.parse */ fixed;
                     return fixed;
                     } catch (e) {
                         throw std::runtime_error(`Failed to sanitize JSON: ${e.message}`);
@@ -67,7 +67,7 @@ std::future<std::vector<MediaData>> fetchMediaData(const std::vector<Media>& att
                     throw std::runtime_error(`Failed to fetch file: ${attachment.url}`);
                 }
                 const auto mediaBuffer = Buffer.from(response.arrayBuffer());
-                const auto mediaType = attachment.contentType || 'image/png';
+                const auto mediaType = attachment.contentType || "image/png";
                 return { data: mediaBuffer, mediaType }
             }
             // if (fs.existsSync(attachment.url)) {
@@ -116,8 +116,8 @@ std::future<std::vector<Media>> processAttachments(const std::vector<Media>& att
                         if (!res.ok) throw new Error(`Failed to fetch image: ${res.statusText}`);
 
                         const auto buffer = res.buffer();
-                        const auto contentType = res.headers.get('content-type') || 'application/octet-stream';
-                        "data:" + std::to_string(contentType) + ";base64," + std::to_string(buffer.tostd::to_string('base64'))
+                        const auto contentType = res.headers.get("content-type") || "application/octet-stream";
+                        "imageUrl = " + "data:" + contentType + ";base64," + std::to_string(buffer.tostd::to_string("base64"))
                     }
 
                     try {
@@ -132,7 +132,7 @@ std::future<std::vector<Media>> processAttachments(const std::vector<Media>& att
 
                                 if (parsedXml.description && parsedXml.text) {
                                     processedAttachment.description = parsedXml.description;
-                                    processedAttachment.title = parsedXml.title || 'Image';
+                                    processedAttachment.title = parsedXml.title || "Image";
                                     processedAttachment.text = parsedXml.text;
 
                                     logger.debug(
@@ -141,10 +141,10 @@ std::future<std::vector<Media>> processAttachments(const std::vector<Media>& att
                                     } else {
                                         std::cout << "[Bootstrap] Failed to parse XML response for image description" << std::endl;
                                     }
-                                    } else if (response && typeof response == 'object' && 'description' in response) {
+                                    } else if (response && typeof response == "object" && "description" in response) {
                                         // Handle object responses for backwards compatibility
                                         processedAttachment.description = response.description;
-                                        processedAttachment.title = response.title || 'Image';
+                                        processedAttachment.title = response.title || "Image";
                                         processedAttachment.text = response.description;
 
                                         logger.debug(
@@ -161,29 +161,29 @@ std::future<std::vector<Media>> processAttachments(const std::vector<Media>& att
                                             const auto res = fetch(url);
                                             if (!res.ok) throw new Error(`Failed to fetch document: ${res.statusText}`);
 
-                                            const auto contentType = res.headers.get('content-type') || '';
-                                            const auto isPlainText = contentType.startsWith('text/plain');
+                                            const auto contentType = res.headers.get("content-type") || "";
+                                            const auto isPlainText = contentType.startsWith("text/plain");
 
                                             if (isPlainText) {
                                                 logger.debug(`[Bootstrap] Processing plain text document: ${attachment.url}`);
 
                                                 const auto textContent = res.text();
                                                 processedAttachment.text = textContent;
-                                                processedAttachment.title = processedAttachment.title || 'Text File';
+                                                processedAttachment.title = processedAttachment.title || "Text File";
 
                                                 logger.debug(
                                                 "[Bootstrap] Extracted text content (first 100 chars): " + std::to_string(processedAttachment.text.substring(0, 100)) + "..."
                                                 );
                                                 } else {
-                                                    std::cout << "[Bootstrap] Skipping non-plain-text document: " + std::to_string(contentType) << std::endl;
+                                                    std::cout << "[Bootstrap] Skipping non-plain-text document: " + contentType << std::endl;
                                                 }
                                             }
 
-                                            processedAttachments.push(processedAttachment);
+                                            processedAttachments.push_back(processedAttachment);
                                             } catch (error) {
-                                                std::cerr << "[Bootstrap] Failed to process attachment " + std::to_string(attachment.url) + ":" << error << std::endl;
+                                                std::cerr << "[Bootstrap] Failed to process attachment " + attachment.url + ":" << error << std::endl;
                                                 // Add the original attachment if processing fails
-                                                processedAttachments.push(attachment);
+                                                processedAttachments.push_back(attachment);
                                             }
                                         }
 
@@ -203,9 +203,9 @@ bool shouldBypassShouldRespond(IAgentRuntime runtime, std::optional<Room> room, 
     function normalizeEnvList(value: unknown): string[] {
         if (!value || typeof value != 'string') return [];
 
-        const auto cleaned = value.trim().replace(/^\[|\]$/g, '');
+        const auto cleaned = value.trim().replace(/^\[|\]$/g, "");
         return cleaned;
-        .split(',');
+        .split(",");
         .map((v) => v.trim());
         .filter(Boolean);
     }
@@ -217,15 +217,15 @@ bool shouldBypassShouldRespond(IAgentRuntime runtime, std::optional<Room> room, 
     ChannelType.API,
     ];
 
-    const auto defaultBypassSources = ['client_chat'];
+    const auto defaultBypassSources = ["client_chat"];
 
-    const auto bypassTypesSetting = normalizeEnvList(runtime.getSetting('SHOULD_RESPOND_BYPASS_TYPES'));
+    const auto bypassTypesSetting = normalizeEnvList(runtime.getSetting("SHOULD_RESPOND_BYPASS_TYPES"));
     const auto bypassSourcesSetting = normalizeEnvList(;
-    runtime.getSetting('SHOULD_RESPOND_BYPASS_SOURCES');
+    runtime.getSetting("SHOULD_RESPOND_BYPASS_SOURCES");
     );
 
     const auto bypassTypes = new Set(;
-    [...defaultBypassTypes.map((t) => t.toString()), ...bypassTypesSetting].map((s: string) =>
+    [...defaultBypassTypes.map((t) => std::to_string(t)), ...bypassTypesSetting].map((s: string) =>
     s.trim().toLowerCase();
     );
     );
@@ -234,10 +234,10 @@ bool shouldBypassShouldRespond(IAgentRuntime runtime, std::optional<Room> room, 
     s.trim().toLowerCase();
     );
 
-    const auto roomType = room.type.toString().toLowerCase();
-    const auto sourceStr = source.toLowerCase() || '';
+    const auto roomType = room.std::to_string(type).toLowerCase();
+    const auto sourceStr = source.toLowerCase() || "";
 
-    return bypassTypes.has(roomType) || bypassSources.some((pattern) => sourceStr.includes(pattern));
+    return bypassTypes.has(roomType) || bypassSources.some((pattern) => (std::find(sourceStr.begin(), sourceStr.end(), pattern) != sourceStr.end()));
 
 }
 
@@ -245,10 +245,10 @@ std::string cleanupPostText(const std::string& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Remove quotes
-    auto cleanedText = text.replace(/^['"](.*)['"]$/, '$1');
+    auto cleanedText = text.replace(/^[""](.*)[""]$/, "$1");
     // Fix newlines
-    cleanedText = cleanedText.replaceAll(/\\n/g, '\n\n');
-    cleanedText = cleanedText.replace(/([^\n])\n([^\n])/g, '$1\n\n$2');
+    cleanedText = cleanedText.replaceAll(/\\n/g, "\n\n");
+    cleanedText = cleanedText.replace(/([^\n])\n([^\n])/g, "$1\n\n$2");
 
     return cleanedText;
 

@@ -1,14 +1,17 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include "..app/hooks.hpp"
-#include "..app/store.hpp"
-#include "..classes/channel.hpp"
-#include "..classes/message.hpp"
+#include "app/hooks.hpp"
+#include "app/store.hpp"
+#include "classes/channel.hpp"
+#include "classes/message.hpp"
 #include "thread-slice.hpp"
 
 namespace elizaos {

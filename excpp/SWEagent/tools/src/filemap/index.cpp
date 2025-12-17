@@ -9,12 +9,12 @@ void createFilemap(const std::string& filePath) {
 
     // Check if file exists
     if (!fs.existsSync(filePath)) {
-        std::cerr << "File not found: " + std::to_string(filePath) << std::endl;
+        std::cerr << "File not found: " + filePath << std::endl;
         process.exit(1);
     }
 
     // Read file content
-    const auto fileContent = fs.readFileSync(filePath, 'utf-8');
+    const auto fileContent = fs.readFileSync(filePath, "utf-8");
 
     // Initialize parser
     const auto parser = new Parser();
@@ -38,12 +38,12 @@ void createFilemap(const std::string& filePath) {
         const auto endLine = node.endPosition.row;
 
         if (endLine - startLine >= 5) {
-            elideRanges.push({ start: startLine, end: endLine });
+            elideRanges.push_back({ start: startLine, end: endLine });
         }
     }
 
     // Build output with elided ranges
-    const auto lines = fileContent.split('\n');
+    const auto lines = fileContent.split("\n");
     const auto elidedLines = new Set<number>();
     const std::vector<std::any> elideMessages = [];
 
@@ -51,9 +51,9 @@ void createFilemap(const std::string& filePath) {
         for (int i = range.start; i <= range.end; i++) {
             elidedLines.add(i);
         }
-        elideMessages.push({
+        elideMessages.push_back({
             line: range.start,
-            "... eliding lines " + std::to_string(range.start + 1) + "-" + std::to_string(range.end + 1) + " ..."
+            "message: " + "... eliding lines " + std::to_string(range.start + 1) + "-" + std::to_string(range.end + 1) + " ..."
             });
         }
 
@@ -62,20 +62,20 @@ void createFilemap(const std::string& filePath) {
 
         lines.forEach((line, index) => {
             if (!elidedLines.has(index)) {
-                output.push({ line: index, content: line });
+                output.push_back({ line: index, content: line });
             }
             });
 
             elideMessages.forEach(msg => {
-                output.push({ line: msg.line, content: msg.message });
+                output.push_back({ line: msg.line, content: msg.message });
                 });
 
                 // Sort by line number and print
                 output.sort((a, b) => a.line - b.line);
 
                 output.forEach(item => {
-                    const auto lineNum = (item.line + 1).toString().padStart(6, ' ');
-                    std::cout << std::to_string(lineNum) + " " + std::to_string(item.content) << std::endl;
+                    const auto lineNum = (item.line + 1).toString().padStart(6, " ");
+                    std::cout << lineNum + " " + item.content << std::endl;
                     });
 
 }

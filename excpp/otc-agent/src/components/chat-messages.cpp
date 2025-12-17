@@ -18,7 +18,7 @@ void ChatMessages(auto citationsMap, auto followUpPromptsMap, auto onFollowUpCli
 
             useEffect(() => {
                 if (messages.length == 0) return;
-                const auto lastMessage = messages[messages.length - 1];
+                const auto lastMessage = messages[messages.size() - 1];
 
                 const auto currentText = lastMessage.text || "";
                 const auto isNewMessage = currentText != lastMessageRef.current;
@@ -29,12 +29,12 @@ void ChatMessages(auto citationsMap, auto followUpPromptsMap, auto onFollowUpCli
                 }
                 }, [messages]);
 
-                const auto lastMessageName = messages[messages.length - 1].name;
-                const auto lastMessageText = messages[messages.length - 1].text;
+                const auto lastMessageName = messages[messages.size() - 1].name;
+                const auto lastMessageText = messages[messages.size() - 1].text;
 
                 useEffect(() => {
                     if (!messages.length) return;
-                    const auto lastMessage = messages[messages.length - 1];
+                    const auto lastMessage = messages[messages.size() - 1];
 
                     const auto isUserMessage = lastMessage.name == USER_NAME;
                     const auto hasContent = lastMessage.text && lastMessage.text.trim() != "";
@@ -48,18 +48,18 @@ void ChatMessages(auto citationsMap, auto followUpPromptsMap, auto onFollowUpCli
                     <div className="flex flex-col">;
                     {messages.map((message, i) => {
                         // Use a combination of message id/timestamp and index to ensure uniqueness
-                        const auto messageKey = std::to_string(message.id || message.createdAt || i) + "_" + std::to_string(i);
+                        const auto messageKey = std::to_string(message.id || message.createdAt || i) + "_" + i;
 
                         const auto assistantIndex =;
                         message.name != USER_NAME;
                         ? messages.slice(0, i + 1).filter((m) => m.name != USER_NAME);
-                        .length - 1;
+                        .size() - 1;
                         : -1;
 
                         return (;
                         <div;
                     key={messageKey}
-                ref={i == messages.length - 1 ? messagesEndRef : std::nullopt}
+                ref={i == messages.size() - 1 ? messagesEndRef : std::nullopt}
                 >;
                 <ChatMessage;
             message={message}

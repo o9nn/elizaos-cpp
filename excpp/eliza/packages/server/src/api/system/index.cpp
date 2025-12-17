@@ -10,7 +10,7 @@ express::Router systemRouter() {
     const auto router = express.Router();
 
     // Mount environment management under /env
-    router.use('/env', createEnvironmentRouter());
+    router.use("/env", createEnvironmentRouter());
 
     return router;
 

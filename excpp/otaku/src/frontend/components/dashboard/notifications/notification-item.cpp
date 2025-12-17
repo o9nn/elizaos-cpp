@@ -15,9 +15,9 @@ void NotificationItem(auto onMarkAsRead, auto onDelete) {
         const auto hours = Math.floor(diff / 3600000);
 
         if (minutes < 60) {
-            return std::to_string(minutes) + "m ago";
+            return minutes + "m ago";
             } else if (hours < 24) {
-                return std::to_string(hours) + "h ago";
+                return hours + "h ago";
                 } else {
                     return date.toLocaleDateString();
                 }
@@ -25,32 +25,32 @@ void NotificationItem(auto onMarkAsRead, auto onDelete) {
 
                 const auto getTypeColor = [&](type: Notification["type"]) {;
                     switch (type) {
-                        case "success":
+                        // case "success":
                         return "bg-green-500";
-                        case "warning":
+                        // case "warning":
                         return "bg-yellow-500";
-                        case "error":
+                        // case "error":
                         return "bg-red-500";
-                        default:
+                        // default:
                         return "bg-blue-500";
                     }
                     };
 
                     const auto getPriorityBadge = [&](priority: Notification["priority"]) {;
                         switch (priority) {
-                            case "high":
+                            // case "high":
                             return (;
                             <Badge variant="destructive" className="text-xs">;
                             HIGH;
                             </Badge>;
                             );
-                            case "medium":
+                            // case "medium":
                             return (;
                             <Badge variant="secondary" className="text-xs">;
                             MED;
                             </Badge>;
                             );
-                            default:
+                            // default:
                             return nullptr;
                         }
                         };

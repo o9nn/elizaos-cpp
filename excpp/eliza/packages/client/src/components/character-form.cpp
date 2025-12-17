@@ -10,8 +10,8 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
     const auto { toast } = useToast();
     const auto { data: elevenlabsVoices, isLoading: isLoadingVoices } = useElevenLabsVoices();
     const auto [isSubmitting, setIsSubmitting] = useState(false);
-    const auto [selectedTemplate, setSelectedTemplate] = useState<string>('none');
-    const auto [activeTab, setActiveTab] = useState('basic');
+    const auto [selectedTemplate, setSelectedTemplate] = useState<string>("none");
+    const auto [activeTab, setActiveTab] = useState("basic");
     const auto tabsContainerRef = useRef<HTMLDivElement>(nullptr);
     const auto [showLeftScroll, setShowLeftScroll] = useState(false);
     const auto [showRightScroll, setShowRightScroll] = useState(false);
@@ -40,23 +40,23 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
             if (!container) return;
 
             checkScrollButtons();
-            container.addEventListener('scroll', checkScrollButtons);
-            window.addEventListener('resize', checkScrollButtons);
+            container.addEventListener("scroll", checkScrollButtons);
+            window.addEventListener("resize", checkScrollButtons);
 
             return [&]() {;
-                container.removeEventListener('scroll', checkScrollButtons);
-                window.removeEventListener('resize', checkScrollButtons);
+                container.removeEventListener("scroll", checkScrollButtons);
+                window.removeEventListener("resize", checkScrollButtons);
                 };
-                }, [checkScrollButtons, customComponents.length]);
+                }, [checkScrollButtons, customComponents.size()]);
 
-                const auto scrollTabs = [&](direction: 'left' | 'right') {;
+                const auto scrollTabs = [&](direction: "left" | "right") {;
                     const auto container = tabsContainerRef.current;
                     if (!container) return;
 
                     const auto scrollAmount = container.clientWidth * 0.8;
                     container.scrollBy({
-                        left: direction == 'left' ? -scrollAmount : scrollAmount,
-                        behavior: 'smooth',
+                        left: direction == "left" ? -scrollAmount : scrollAmount,
+                        behavior: "smooth",
                         });
                         };
 
@@ -67,7 +67,7 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                             // If we have dynamically loaded ElevenLabs voices, replace the static ones
                             if (elevenlabsVoices && !isLoadingVoices) {
                                 // Filter out the static ElevenLabs voices
-                                const auto nonElevenLabsModels = staticModels.filter((model) => model.provider != 'elevenlabs');
+                                const auto nonElevenLabsModels = staticModels.filter((model) => model.provider != "elevenlabs");
                                 // Return combined models with dynamic ElevenLabs voices
                                 return [...nonElevenLabsModels, ...elevenlabsVoices];
                             }
@@ -80,42 +80,42 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                             const auto AGENT_FORM_SCHEMA = useMemo(;
                             [&]() { return [; }
                             {
-                                sectionTitle: 'Basic Info',
-                                sectionValue: 'basic',
+                                sectionTitle: "Basic Info",
+                                sectionValue: "basic",
                                 sectionType: SECTION_TYPE.INPUT,
                                 fields: [
                                 {
-                                    title: 'Name',
-                                    name: 'name',
-                                    description: 'The primary identifier for this agent',
-                                    fieldType: 'text',
-                                    getValue: (char) => char.name || '',
+                                    title: "Name",
+                                    name: "name",
+                                    description: "The primary identifier for this agent",
+                                    fieldType: "text",
+                                    getValue: (char) => char.name || "",
                                     tooltip:
-                                    'Display name that will be visible to users. Required for identification purposes.',
+                                    "Display name that will be visible to users. Required for identification purposes.",
                                     },
                                     {
-                                        title: 'Username',
-                                        name: 'username',
-                                        description: 'Used in URLs and API endpoints',
-                                        fieldType: 'text',
-                                        getValue: (char) => char.username || '',
-                                        tooltip: 'Unique identifier for your agent. Used in APIs/URLs and Rooms.',
+                                        title: "Username",
+                                        name: "username",
+                                        description: "Used in URLs and API endpoints",
+                                        fieldType: "text",
+                                        getValue: (char) => char.username || "",
+                                        tooltip: "Unique identifier for your agent. Used in APIs/URLs and Rooms.",
                                         },
                                         {
-                                            title: 'System',
-                                            name: 'system',
-                                            description: 'System prompt defining agent behavior',
-                                            fieldType: 'textarea',
-                                            getValue: (char) => char.system || '',
+                                            title: "System",
+                                            name: "system",
+                                            description: "System prompt defining agent behavior",
+                                            fieldType: "textarea",
+                                            getValue: (char) => char.system || "",
                                             tooltip:
-                                            'Instructions for the AI model that establish core behavior patterns and personality traits.',
+                                            "Instructions for the AI model that establish core behavior patterns and personality traits.",
                                             },
                                             {
-                                                title: 'Voice Model',
-                                                name: 'settings.voice.model',
-                                                description: 'Voice model for audio synthesis',
-                                                fieldType: 'select',
-                                                getValue: (char) => (char.settings<string, any>).voice.model || '',
+                                                title: "Voice Model",
+                                                name: "settings.voice.model",
+                                                description: "Voice model for audio synthesis",
+                                                fieldType: "select",
+                                                getValue: (char) => (char.settings<string, any>).voice.model || "",
                                                 options: allVoiceModels.map((model) => ({
                                                     value: model.value,
                                                     label: model.label,
@@ -125,58 +125,58 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                                                     ][],
                                                     },
                                                     {
-                                                        sectionTitle: 'Content',
-                                                        sectionValue: 'content',
+                                                        sectionTitle: "Content",
+                                                        sectionValue: "content",
                                                         sectionType: SECTION_TYPE.ARRAY,
                                                         fields: [
                                                         {
-                                                            title: 'Bio',
-                                                            description: 'Bio data for this agent',
-                                                            path: 'bio',
+                                                            title: "Bio",
+                                                            description: "Bio data for this agent",
+                                                            path: "bio",
                                                             getData: (char) => (Array.isArray(char.bio) ? char.bio : []),
                                                             tooltip: "Biographical details that establish the agent's background and context.",
                                                             },
                                                             {
-                                                                title: 'Topics',
-                                                                description: 'Topics this agent can talk about',
-                                                                path: 'topics',
+                                                                title: "Topics",
+                                                                description: "Topics this agent can talk about",
+                                                                path: "topics",
                                                                 getData: (char) => char.topics || [],
-                                                                tooltip: 'Subject domains the agent can discuss with confidence.',
+                                                                tooltip: "Subject domains the agent can discuss with confidence.",
                                                                 },
                                                                 {
-                                                                    title: 'Adjectives',
-                                                                    description: 'Descriptive personality traits',
-                                                                    path: 'adjectives',
+                                                                    title: "Adjectives",
+                                                                    description: "Descriptive personality traits",
+                                                                    path: "adjectives",
                                                                     getData: (char) => char.adjectives || [],
                                                                     tooltip: "Key personality attributes that define the agent's character.",
                                                                     },
                                                                     ][],
                                                                     },
                                                                     {
-                                                                        sectionTitle: 'Style',
-                                                                        sectionValue: 'style',
+                                                                        sectionTitle: "Style",
+                                                                        sectionValue: "style",
                                                                         sectionType: SECTION_TYPE.ARRAY,
                                                                         fields: [
                                                                         {
-                                                                            title: 'All Styles',
-                                                                            description: 'Writing style for all content types',
-                                                                            path: 'style.all',
+                                                                            title: "All Styles",
+                                                                            description: "Writing style for all content types",
+                                                                            path: "style.all",
                                                                             getData: (char) => char.style.all || [],
-                                                                            tooltip: 'Core writing style guidelines applied across all content formats.',
+                                                                            tooltip: "Core writing style guidelines applied across all content formats.",
                                                                             },
                                                                             {
-                                                                                title: 'Chat Style',
-                                                                                description: 'Style specific to chat interactions',
-                                                                                path: 'style.chat',
+                                                                                title: "Chat Style",
+                                                                                description: "Style specific to chat interactions",
+                                                                                path: "style.chat",
                                                                                 getData: (char) => char.style.chat || [],
-                                                                                tooltip: 'Writing style specific to conversational exchanges.',
+                                                                                tooltip: "Writing style specific to conversational exchanges.",
                                                                                 },
                                                                                 {
-                                                                                    title: 'Post Style',
-                                                                                    description: 'Style for long-form content',
-                                                                                    path: 'style.post',
+                                                                                    title: "Post Style",
+                                                                                    description: "Style for long-form content",
+                                                                                    path: "style.post",
                                                                                     getData: (char) => char.style.post || [],
-                                                                                    tooltip: 'Writing style for structured content such or posts.',
+                                                                                    tooltip: "Writing style for structured content such or posts.",
                                                                                     },
                                                                                     ][],
                                                                                     },
@@ -190,9 +190,9 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
 
                                                                                         if (type == 'checkbox') {
                                                                                             setCharacterValue.updateField(name, checked);
-                                                                                            } else if (name.startsWith('settings.')) {
+                                                                                            } else if (name.startsWith("settings.")) {
                                                                                                 // Handle nested settings fields like settings.voice.model
-                                                                                                const auto path = name.substring(9); // Remove 'settings.' prefix;
+                                                                                                const auto path = name.substring(9); // Remove "settings." prefix;
 
                                                                                                 if (setCharacterValue.updateSetting) {
                                                                                                     // Use the specialized method if available
@@ -208,7 +208,7 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
 
                                                                                                     const auto handleVoiceModelChange = [&](value: string, name: string) {;
                                                                                                         if (name.startsWith('settings.')) {
-                                                                                                            const auto path = name.substring(9); // Remove 'settings.' prefix;
+                                                                                                            const auto path = name.substring(9); // Remove "settings." prefix;
 
                                                                                                             if (setCharacterValue.updateSetting) {
                                                                                                                 // Use the specialized method if available
@@ -231,21 +231,21 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                                                                                                                         // Add the required plugin for the selected voice model
                                                                                                                         const auto newPlugins = [...currentPlugins];
                                                                                                                         if (requiredPlugin && !currentPlugins.includes(requiredPlugin)) {
-                                                                                                                            newPlugins.push(requiredPlugin);
+                                                                                                                            newPlugins.push_back(requiredPlugin);
                                                                                                                         }
 
                                                                                                                         // Update the plugins
                                                                                                                         if (setCharacterValue.setPlugins) {
                                                                                                                             setCharacterValue.setPlugins(newPlugins);
                                                                                                                             } else if (setCharacterValue.updateField) {
-                                                                                                                                setCharacterValue.updateField('plugins', newPlugins);
+                                                                                                                                setCharacterValue.updateField("plugins", newPlugins);
                                                                                                                             }
 
                                                                                                                             // Show toast notification
                                                                                                                             if (previousVoiceModel.provider != voiceModel.provider) {
                                                                                                                                 toast({
-                                                                                                                                    title: 'Plugin Updated',
-                                                                                                                                    std::to_string(requiredPlugin) + " plugin has been set for the selected voice model."
+                                                                                                                                    title: "Plugin Updated",
+                                                                                                                                    "description: " + requiredPlugin + " plugin has been set for the selected voice model."
                                                                                                                                     });
                                                                                                                                 }
                                                                                                                             }
@@ -267,11 +267,11 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                                                                                                                             }
 
                                                                                                                             // Handle nested paths (e.g. style.all)
-                                                                                                                            const auto parts = path.split('.');
+                                                                                                                            const auto parts = path.split(".");
                                                                                                                             if (parts.length == 2 && parts[0] == 'style') {
                                                                                                                                 // For style arrays, use the setStyleArray method if available
                                                                                                                                 if (setCharacterValue.setStyleArray) {
-                                                                                                                                    setCharacterValue.setStyleArray(parts[1] as 'all' | 'chat' | 'post', newData);
+                                                                                                                                    setCharacterValue.setStyleArray(parts[1] as "all" | "chat" | "post", newData);
                                                                                                                                     } else {
                                                                                                                                         setCharacterValue.updateField(path, newData);
                                                                                                                                     }
@@ -291,7 +291,7 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                                                                                                                                         if (img.width > AVATAR_IMAGE_MAX_SIZE || img.height > AVATAR_IMAGE_MAX_SIZE) {
                                                                                                                                             const auto response = fetch(char.settings.avatar);
                                                                                                                                             const auto blob = response.blob();
-                                                                                                                                            const auto file = new File([blob], 'avatar.jpg', { type: blob.type });
+                                                                                                                                            const auto file = new File([blob], "avatar.jpg", { type: blob.type });
                                                                                                                                             const auto compressedImage = compressImage(file);
                                                                                                                                             return {
                                                                                                                                                 ...char,
@@ -323,14 +323,14 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                                                                                                                                                             // Secret panel not mounted - validate based on current character settings
                                                                                                                                                             const auto secretsObj = updatedCharacter.settings.secrets;
                                                                                                                                                             const auto currentSecrets =;
-                                                                                                                                                            secretsObj && typeof secretsObj == 'object' && !Array.isArray(secretsObj);
+                                                                                                                                                            secretsObj && typeof secretsObj == "object" && !Array.isArray(secretsObj);
                                                                                                                                                             ? (secretsObj<string, any>);
                                                                                                                                                             : {};
 
                                                                                                                                                             missingSecrets = requiredSecrets;
                                                                                                                                                             .filter((secret) => {
                                                                                                                                                                 const auto value = currentSecrets[secret.name];
-                                                                                                                                                                return !value || (typeof value == 'string' && value.trim() == '');
+                                                                                                                                                                return !value || (typeof value == "string" && value.trim() == "");
                                                                                                                                                                 });
                                                                                                                                                                 .map((secret) => secret.name);
                                                                                                                                                             }
@@ -346,9 +346,9 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                                                                                                                                                             onSubmit(updatedCharacter);
                                                                                                                                                             } catch (error) {
                                                                                                                                                                 toast({
-                                                                                                                                                                    title: 'Error',
-                                                                                                                                                                    description: true /* instanceof check */ ? error.message : 'Failed to update agent',
-                                                                                                                                                                    variant: 'destructive',
+                                                                                                                                                                    title: "Error",
+                                                                                                                                                                    description: true /* instanceof check */ ? error.message : "Failed to update agent",
+                                                                                                                                                                    variant: "destructive",
                                                                                                                                                                     });
                                                                                                                                                                     } finally {
                                                                                                                                                                         setIsSubmitting(false);
@@ -364,9 +364,9 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                                                                                                                                                                                 onSubmit(pendingSubmit);
                                                                                                                                                                                 } catch (error) {
                                                                                                                                                                                     toast({
-                                                                                                                                                                                        title: 'Error',
-                                                                                                                                                                                        description: true /* instanceof check */ ? error.message : 'Failed to update agent',
-                                                                                                                                                                                        variant: 'destructive',
+                                                                                                                                                                                        title: "Error",
+                                                                                                                                                                                        description: true /* instanceof check */ ? error.message : "Failed to update agent",
+                                                                                                                                                                                        variant: "destructive",
                                                                                                                                                                                         });
                                                                                                                                                                                         } finally {
                                                                                                                                                                                             setIsSubmitting(false);
@@ -380,13 +380,13 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                                                                                                                                                                                         setShowMissingSecretsDialog(false);
                                                                                                                                                                                         setPendingSubmit(nullptr);
                                                                                                                                                                                         // Switch to the Secret tab to show the user what's missing
-                                                                                                                                                                                        setActiveTab('custom-Secret');
+                                                                                                                                                                                        setActiveTab("custom-Secret");
                                                                                                                                                                                         };
 
                                                                                                                                                                                         const auto renderInputField = [&](field: InputField) { return (; };
                                                                                                                                                                                         <div;
                                                                                                                                                                                     key={field.name}
-                                                                                                                                                                                "space-y-2 w-full " + std::to_string(field.name == 'name' ? 'agent-form-name' : '') + " " + std::to_string(field.name == 'system' ? 'agent-form-system-prompt' : '')
+                                                                                                                                                                                "className={" + "space-y-2 w-full " + std::to_string(field.name == "name" ? "agent-form-name" : "") + " " + std::to_string(field.name == "system" ? "agent-form-system-prompt" : "")
                                                                                                                                                                                 >;
                                                                                                                                                                                 <div className="flex items-center gap-2">;
                                                                                                                                                                                 <TooltipProvider>;
@@ -410,7 +410,7 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
 
                                                                                                                                                                 {field.description && <p className="text-sm text-muted-foreground">{field.description}</p>}
 
-                                                                                                                                                                {field.fieldType == 'textarea' ? (;
+                                                                                                                                                                {field.fieldType == "textarea" ? (;
                                                                                                                                                                 <Textarea;
                                                                                                                                                             id={field.name}
                                                                                                                                                         name={field.name}
@@ -418,15 +418,15 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                                                                                                                                                 onChange={handleChange}
                                                                                                                                                 className="min-h-[120px] resize-y";
                                                                                                                                                 />;
-                                                                                                                                                ) : field.fieldType == 'checkbox' ? (
+                                                                                                                                                ) : field.fieldType == "checkbox" ? (
                                                                                                                                                 <Input;
                                                                                                                                             id={field.name}
                                                                                                                                         name={field.name}
                                                                                                                                         type="checkbox";
-                                                                                                                                    checked={(characterValue<string, any>)[field.name] == 'true'}
+                                                                                                                                    checked={(characterValue<string, any>)[field.name] == "true"}
                                                                                                                                 onChange={handleChange}
                                                                                                                                 />;
-                                                                                                                                ) : field.fieldType == 'select' ? (
+                                                                                                                                ) : field.fieldType == "select" ? (
                                                                                                                                 <Select;
                                                                                                                             name={field.name}
                                                                                                                         value={field.getValue(characterValue)}
@@ -435,9 +435,9 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                                                                                                                     <SelectTrigger>;
                                                                                                                     <SelectValue;
                                                                                                                     placeholder={
-                                                                                                                        field.name.includes('voice.model') && isLoadingVoices;
-                                                                                                                        ? 'Loading voice models...';
-                                                                                                                        : 'Select a voice model'
+                                                                                                                        field.(std::find(name.begin(), name.end(), "voice.model") != name.end()) && isLoadingVoices;
+                                                                                                                        ? "Loading voice models...";
+                                                                                                                        : "Select a voice model"
                                                                                                                     }
                                                                                                                     />;
                                                                                                                     </SelectTrigger>;
@@ -500,7 +500,7 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
 
                                                                     try {
                                                                         const auto text = file.text();
-                                                                        const Agent json = JSON.parse(text);
+                                                                        const Agent json = /* JSON.parse */ text;
 
                                                                         // Check for required fields using FIELD_REQUIREMENTS
                                                                         const auto missingFields = (;
@@ -509,7 +509,7 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                                                                             if (FIELD_REQUIREMENTS[field] != FIELD_REQUIREMENT_TYPE.REQUIRED) return false;
 
                                                                             // Handle nested fields like style.all
-                                                                            const auto parts = field.split('.');
+                                                                            const auto parts = field.split(".");
                                                                             std::any current = json;
 
                                                                             for (const auto& part : parts)
@@ -522,9 +522,9 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
 
                                                                             if (missingFields.length > 0) {
                                                                                 toast({
-                                                                                    title: 'Import Failed',
-                                                                                    "Missing required fields: " + std::to_string(missingFields.join(', '))
-                                                                                    variant: 'destructive',
+                                                                                    title: "Import Failed",
+                                                                                    "description: " + "Missing required fields: " + std::to_string(missingFields.join(", "))
+                                                                                    variant: "destructive",
                                                                                     });
                                                                                     return;
                                                                                 }
@@ -532,21 +532,21 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                                                                                 if (setCharacterValue.importAgent) {
                                                                                     setCharacterValue.importAgent(json);
                                                                                     } else {
-                                                                                        std::cout << 'Missing importAgent method' << std::endl;
+                                                                                        std::cout << "Missing importAgent method" << std::endl;
                                                                                     }
 
                                                                                     toast({
-                                                                                        title: 'Agent Imported',
-                                                                                        description: 'Agent data has been successfully loaded.',
+                                                                                        title: "Agent Imported",
+                                                                                        description: "Agent data has been successfully loaded.",
                                                                                         });
                                                                                         } catch (error) {
                                                                                             toast({
-                                                                                                title: 'Import Failed',
-                                                                                                description: true /* instanceof check */ ? error.message : 'Invalid JSON file',
-                                                                                                variant: 'destructive',
+                                                                                                title: "Import Failed",
+                                                                                                description: true /* instanceof check */ ? error.message : "Invalid JSON file",
+                                                                                                variant: "destructive",
                                                                                                 });
                                                                                                 } finally {
-                                                                                                    event.target.value = '';
+                                                                                                    event.target.value = "";
                                                                                                 }
                                                                                                 };
 
@@ -562,17 +562,17 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                                                                                                         const auto options = [];
 
                                                                                                         if (onStopAgent) {
-                                                                                                            options.push({
-                                                                                                                label: 'Stop Agent',
-                                                                                                                description: 'Stop running',
+                                                                                                            options.push_back({
+                                                                                                                label: "Stop Agent",
+                                                                                                                description: "Stop running",
                                                                                                                 onClick: onStopAgent,
                                                                                                                 });
                                                                                                             }
 
                                                                                                             if (onDelete) {
-                                                                                                                options.push({
-                                                                                                                    label: 'Delete Agent',
-                                                                                                                    description: 'Delete permanently',
+                                                                                                                options.push_back({
+                                                                                                                    label: "Delete Agent",
+                                                                                                                    description: "Delete permanently",
                                                                                                                     onClick: () => onDelete(),
                                                                                                                     });
                                                                                                                 }
@@ -610,12 +610,12 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                                                                                                                     ...AGENT_FORM_SCHEMA.map((section) => ({
                                                                                                                         value: section.sectionValue,
                                                                                                                         label: section.sectionTitle,
-                                                                                                                        shortLabel: section.sectionTitle.split(' ')[0], // Use first word for mobile
+                                                                                                                        shortLabel: section.sectionTitle.split(" ")[0], // Use first word for mobile
                                                                                                                         })),
                                                                                                                         ...customComponents.map((component) => ({
-                                                                                                                            "custom-" + std::to_string(component.name)
+                                                                                                                            "value: " + "custom-" + component.name
                                                                                                                             label: component.name,
-                                                                                                                            shortLabel: (component).shortLabel || component.name.split(' ')[0], // Use first word
+                                                                                                                            shortLabel: (component).shortLabel || component.name.split(" ")[0], // Use first word
                                                                                                                             })),
                                                                                                                             ];
 
@@ -623,9 +623,9 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                                                                                                                             <div ref={containerRef} className="w-full max-w-full mx-auto p-4 sm:p-6 h-full overflow-y-auto">
                                                                                                                             <div className="flex items-center justify-between mb-6">;
                                                                                                                             <div>;
-                                                                                                                            <h1 className="text-3xl font-bold">{title || 'Agent Settings'}</h1>;
+                                                                                                                            <h1 className="text-3xl font-bold">{title || "Agent Settings"}</h1>;
                                                                                                                             <p className="text-muted-foreground mt-1">;
-                                                                                                                        {description || 'Configure your agent settings'}
+                                                                                                                        {description || "Configure your agent settings"}
                                                                                                                         </p>;
                                                                                                                         </div>;
                                                                                                                         </div>;
@@ -668,7 +668,7 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                                                                                                             variant="ghost";
                                                                                                             size="sm";
                                                                                                             className="absolute left-0 top-1/2 -translate-y-1/2 z-10 h-8 w-8 p-0 bg-background/80 backdrop-blur-sm shadow-md";
-                                                                                                        onClick={() => scrollTabs('left')}
+                                                                                                        onClick={() => scrollTabs("left")}
                                                                                                         >;
                                                                                                         <ChevronLeft className="h-4 w-4" />;
                                                                                                         </Button>;
@@ -682,8 +682,8 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                                                                                             key={tab.value}
                                                                                         value={tab.value}
                                                                                         className={cn(;
-                                                                                        'whitespace-nowrap px-3 py-1.5 text-sm font-medium data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:rounded-md data-[state=active]:border-0',
-                                                                                        !showLabels && 'px-2 text-xs' // Smaller padding and text on mobile;
+                                                                                        "whitespace-nowrap px-3 py-1.5 text-sm font-medium data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:rounded-md data-[state=active]:border-0",
+                                                                                        !showLabels && "px-2 text-xs" // Smaller padding and text on mobile;
                                                                                     )}
                                                                                     >;
                                                                                 {showLabels ? tab.label  = tab.shortLabel}
@@ -699,7 +699,7 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                                                                         variant="ghost";
                                                                         size="sm";
                                                                         className="absolute right-0 top-1/2 -translate-y-1/2 z-10 h-8 w-8 p-0 bg-background/80 backdrop-blur-sm shadow-md";
-                                                                    onClick={() => scrollTabs('right')}
+                                                                    onClick={() => scrollTabs("right")}
                                                                     >;
                                                                     <ChevronRight className="h-4 w-4" />;
                                                                     </Button>;
@@ -721,8 +721,8 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                                                 ))}
                                                 {customComponents.map((component) => (;
                                                 <TabsContent;
-                                            "custom-" + std::to_string(component.name);
-                                        "custom-" + std::to_string(component.name);
+                                            "key={" + "custom-" + component.name;
+                                        "value={" + "custom-" + component.name;
                                         className="mt-0 focus:outline-none"
                                         >;
                                         <div className="h-full">{component.component}</div>;
@@ -734,16 +734,16 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
 
                                     <div className="flex flex-col gap-3 mt-6">;
                                 {/* Stop/Delete Split Button - only show if we have options */}
-                                {stopDeleteOptions.length > 0 && (;
+                                {stopDeleteOptions.size() > 0 && (;
                                 <SplitButton;
                                 mainAction={{
                                     label:
-                                    stopDeleteOptions[0].label == 'Stop Agent' && isStopping;
-                                    ? 'Stopping...';
+                                    stopDeleteOptions[0].label == "Stop Agent" && isStopping;
+                                    ? "Stopping...";
                                     : stopDeleteOptions[0].label,
                                     onClick: stopDeleteOptions[0].onClick,
                                     icon:
-                                    stopDeleteOptions[0].label == 'Stop Agent' ? (;
+                                    stopDeleteOptions[0].label == "Stop Agent" ? (;
                                     isStopping ? (;
                                     <Loader2 className="h-4 w-4 animate-spin" />;
                                     ) : (
@@ -752,13 +752,13 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                                     ) : (
                                     <Trash className="h-4 w-4" />;
                                     ),
-                                    disabled: stopDeleteOptions[0].label == 'Stop Agent' ? isStopping : false,
+                                    disabled: stopDeleteOptions[0].label == "Stop Agent" ? isStopping : false,
                                 }}
                                 actions={stopDeleteOptions.slice(1).map((option) => ({
-                                    label: option.label == 'Stop Agent' && isStopping ? 'Stopping...' : option.label,
+                                    label: option.label == "Stop Agent" && isStopping ? "Stopping..." : option.label,
                                     onClick: option.onClick,
                                     icon:
-                                    option.label == 'Stop Agent' ? (;
+                                    option.label == "Stop Agent" ? (;
                                     isStopping ? (;
                                     <Loader2 className="h-4 w-4 animate-spin" />;
                                     ) : (
@@ -767,8 +767,8 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                                     ) : (
                                     <Trash className="h-4 w-4" />;
                                     ),
-                                    variant: 'destructive',
-                                    disabled: option.label == 'Stop Agent' ? isStopping : false,
+                                    variant: "destructive",
+                                    disabled: option.label == "Stop Agent" ? isStopping : false,
                                 }))}
                                 variant="destructive";
                             disabled={isDeleting}
@@ -800,13 +800,13 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                     {/* Import/Export Split Button */}
                     <SplitButton;
                     mainAction={{
-                        label: 'Export JSON',
+                        label: "Export JSON",
                         onClick: handleExportJSON,
                         icon: <Download className="h-4 w-4" />,
                     }}
                     actions={[;
                     {
-                        label: 'Import JSON',
+                        label: "Import JSON",
                         onClick: handleImportClick,
                         icon: <Upload className="h-4 w-4" />,
                         },
@@ -864,14 +864,14 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                 // Secret panel not mounted - calculate based on character value
                 const auto secretsObj = characterValue.settings.secrets;
                 const auto currentSecrets =;
-                secretsObj && typeof secretsObj == 'object' && !Array.isArray(secretsObj);
+                secretsObj && typeof secretsObj == "object" && !Array.isArray(secretsObj);
                 ? (secretsObj<string, any>);
                 : {};
 
                 missingSecretNames = requiredSecrets;
                 .filter((secret) => {
                     const auto value = currentSecrets[secret.name];
-                    return !value || (typeof value == 'string' && value.trim() == '');
+                    return !value || (typeof value == "string" && value.trim() == "");
                     });
                     .map((secret) => secret.name);
                 }

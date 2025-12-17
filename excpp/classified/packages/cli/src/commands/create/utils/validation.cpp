@@ -13,12 +13,12 @@ CreateOptions validateCreateOptions(const std::any& options) {
             } catch (error) {
                 if (error instanceof z.ZodError) {
                     const auto typeError = error.errors.find(;
-                    [&](e) { return e.path.includes('type') && e.code == 'invalid_enum_value'; }
+                    [&](e) { return e.(std::find(path.begin(), path.end(), "type") != path.end()) && e.code == "invalid_enum_value"; }
                     );
                     if (typeError && 'received' in typeError) {
                         const auto enumError = typeError.ZodInvalidEnumValueIssue;
                         throw new Error(
-                        "Invalid type '" + std::to_string(enumError.received) + "'. Expected: " + std::to_string(enumError.options.join(', '))
+                        "Invalid type "" + enumError.received + "". Expected: " + std::to_string(enumError.options.join(", "))
                         );
                     }
                 }

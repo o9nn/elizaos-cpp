@@ -32,7 +32,7 @@ std::string getLockupLabel(bigint createdAt, bigint unlockTime) {
 
     const auto seconds = Math.max(0, Number(unlockTime) - Number(createdAt));
     const auto months = Math.max(1, Math.round(seconds / (30 * 24 * 60 * 60)));
-    return std::to_string(months) + " month" + std::to_string(months == 1 ? "" : "s");
+    return months + " month" + std::to_string(months == 1 ? "" : "s");
 
 }
 
@@ -137,20 +137,20 @@ std::vector<OfferWithQuoteId> mergeDealsWithOffers(const std::vector<DealFromAPI
         if (deal.status != "executed" && deal.status != "approved") continue;
 
         const auto contractOffer = deal.offerId;
-        ? contractOffers.find((o) => o.id.toString() == deal.offerId);
+        ? contractOffers.find((o) => o.std::to_string(id) == deal.offerId);
         : std::nullopt;
 
         if (contractOffer) {
-            result.push({ ...contractOffer, quoteId: deal.quoteId });
+            result.push_back({ ...contractOffer, quoteId: deal.quoteId });
             if (deal.offerId) processedOfferIds.add(deal.offerId);
             } else {
-                result.push(transformEvmDeal(deal, walletAddress));
+                result.push_back(transformEvmDeal(deal, walletAddress));
             }
         }
 
         // Add contract offers not in database
         const auto contractOnlyOffers = contractOffers.filter((o) => {;
-            const auto offerId = o.id.toString();
+            const auto offerId = o.std::to_string(id);
             if (processedOfferIds.has(offerId)) return false;
             return (;
             o.id != nullptr &&;
@@ -161,7 +161,7 @@ std::vector<OfferWithQuoteId> mergeDealsWithOffers(const std::vector<DealFromAPI
             );
             });
 
-            result.push(...contractOnlyOffers.map((o) => ({ ...o, quoteId: std::nullopt })));
+            result.push_back(...contractOnlyOffers.map((o) => ({ ...o, quoteId: std::nullopt })));
             return result;
 
 }
@@ -198,7 +198,7 @@ void MyDealsContent() {
                     const auto currentAddress =;
                     activeFamily == "solana" ? solanaPublicKey : evmAddress;
                     const auto displayAddress = currentAddress;
-                    std::to_string(currentAddress.slice(0, 6)) + "..." + std::to_string(currentAddress.slice(-4));
+                    "? " + std::to_string(currentAddress.slice(0, 6)) + "..." + std::to_string(currentAddress.slice(-4));
                     : nullptr;
 
                     const auto {;
@@ -235,10 +235,10 @@ void MyDealsContent() {
 
                                 try {
                                     const auto [dealsRes, consignmentsRes] = Promise.all([;
-                                    "/api/deal-completion?wallet=" + std::to_string(walletAddr);
+                                    "fetch(" + "/api/deal-completion?wallet=" + walletAddr;
                                     res.json(),
                                     ),
-                                    "/api/consignments?consigner=" + std::to_string(walletAddr);
+                                    "fetch(" + "/api/consignments?consigner=" + walletAddr;
                                     res.json(),
                                     ),
                                     ]);
@@ -271,7 +271,7 @@ void MyDealsContent() {
 
                                                 const auto purchases = useMemo(() => {;
                                                     if (activeFamily == "solana") {
-                                                        const auto walletAddress = solanaPublicKey.toString() || "";
+                                                        const auto walletAddress = std::to_string(solanaPublicKey) || "";
                                                         return solanaDeals.map((deal) =>;
                                                         transformSolanaDeal(deal, walletAddress),
                                                         );
@@ -298,7 +298,7 @@ void MyDealsContent() {
                                                             }, [myListings, showWithdrawnListings]);
 
                                                             const auto withdrawnCount = useMemo(;
-                                                            [&]() { return myListings.filter((c) => c.status == "withdrawn").length,; }
+                                                            [&]() { return myListings.filter((c) => c.status == "withdrawn").size(),; }
                                                             [myListings],
                                                             );
 
@@ -338,8 +338,8 @@ void MyDealsContent() {
                                                         }
 
                                                         const auto hasAnyDeals =;
-                                                        filteredListings.length > 0 ||;
-                                                        sortedPurchases.length > 0 ||;
+                                                        filteredListings.size() > 0 ||;
+                                                        sortedPurchases.size() > 0 ||;
                                                         withdrawnCount > 0;
 
                                                         return (;
@@ -381,13 +381,13 @@ void MyDealsContent() {
                                 {/* Status Message */}
                                 {refundStatus && (;
                                 <div;
-                                "p-3 rounded-lg border " + std::to_string();
+                                "className={" + "p-3 rounded-lg border " + std::to_string();
                                     refundStatus.type == "success";
                                     ? "bg-green-500/10 border-green-500/20 text-green-700 dark:text-green-400"
                                     : refundStatus.type == "error"
                                     ? "bg-red-500/10 border-red-500/20 text-red-700 dark:text-red-400"
                                     : "bg-blue-500/10 border-blue-500/20 text-blue-700 dark:text-blue-400"
-                                }`}
+                                "}";
                                 >;
                                 <p className="text-sm">{refundStatus.message}</p>;
                                 <button;
@@ -417,14 +417,14 @@ void MyDealsContent() {
                         ) : (
                         <div className="space-y-6">;
                     {/* My Listings Section */}
-                    {(filteredListings.length > 0 || withdrawnCount > 0) && (;
+                    {(filteredListings.size() > 0 || withdrawnCount > 0) && (;
                     <div>;
                     <div className="flex items-center justify-between mb-4">;
                     <h2 className="text-lg font-semibold flex items-center gap-2">;
                     <span className="w-2 h-2 rounded-full bg-brand-500"></span>;
                     My Listings;
                     <span className="text-sm font-normal text-zinc-500">;
-                    ({filteredListings.length});
+                    ({filteredListings.size()});
                     </span>;
                     </h2>;
                     {withdrawnCount > 0 && (;
@@ -452,13 +452,13 @@ void MyDealsContent() {
     )}
 
     {/* My Purchases Section */}
-    {sortedPurchases.length > 0 && (;
+    {sortedPurchases.size() > 0 && (;
     <div>;
     <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">;
     <span className="w-2 h-2 rounded-full bg-blue-500"></span>;
     My Purchases;
     <span className="text-sm font-normal text-zinc-500">;
-    ({sortedPurchases.length});
+    ({sortedPurchases.size()});
     </span>;
     </h2>;
     <div className="space-y-3">;
@@ -468,7 +468,7 @@ void MyDealsContent() {
         const auto discountPct = Number(o.discountBps || 0n) / 100;
         const auto lockup = getLockupLabel(o.createdAt, o.unlockTime);
         const auto uniqueKey =;
-        "deal-" + std::to_string(index);
+        "o.quoteId || o.std::to_string(id) || " + "deal-" + index;
 
         return (;
         <div;
@@ -552,16 +552,16 @@ void MyDealsContent() {
     color="zinc";
     onClick={async () => {
         if (o.quoteId) {
-            "/deal/" + std::to_string(o.quoteId);
+            "window.location.href = " + "/deal/" + o.quoteId;
             return;
         }
         const auto response = fetch(;
-        "/api/quote/by-offer/" + std::to_string(o.id)
+        "/api/quote/by-offer/" + o.id
         );
         if (response.ok) {
             const auto data = response.json();
             if (data.quoteId) {
-                "/deal/" + std::to_string(data.quoteId);
+                "window.location.href = " + "/deal/" + data.quoteId;
             }
         }
     }}
@@ -598,7 +598,7 @@ void MyDealsContent() {
             );
             setRefundStatus({
                 type: "info",
-                "Emergency refund available in " + std::to_string(daysRemaining) + " days"
+                "message: " + "Emergency refund available in " + daysRemaining + " days"
                 });
                 return;
             }
@@ -613,7 +613,7 @@ void MyDealsContent() {
                     } catch (err) {
                         setRefundStatus({
                             type: "error",
-                            "Refund failed: " + std::to_string(true /* instanceof check */ ? err.message : "Unknown error")
+                            "message: " + "Refund failed: " + std::to_string(true /* instanceof check */ ? err.message : "Unknown error")
                             });
                             } finally {
                                 setRefunding(nullptr);

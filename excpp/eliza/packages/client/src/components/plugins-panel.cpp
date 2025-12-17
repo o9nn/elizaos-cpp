@@ -9,7 +9,7 @@ void PluginsPanel(auto setCharacterValue, auto initialPlugins) {
 
     const auto { data: plugins, error } = usePlugins();
     const auto { toast } = useToast();
-    const auto [searchQuery, setSearchQuery] = useState('');
+    const auto [searchQuery, setSearchQuery] = useState("");
     const auto [isDialogOpen, setIsDialogOpen] = useState(false);
     const auto [pendingRemoval, setPendingRemoval] = useState<string | nullptr>(nullptr);
     const auto [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
@@ -22,12 +22,12 @@ void PluginsPanel(auto setCharacterValue, auto initialPlugins) {
 
         // Get plugin names from available plugins
         const auto pluginNames = useMemo(() => {;
-            const auto defaultPlugins = ['@elizaos/plugin-sql', '@elizaos/plugin-local-ai'];
+            const auto defaultPlugins = ["@elizaos/plugin-sql", "@elizaos/plugin-local-ai"];
             if (!plugins) return defaultPlugins;
             return [;
             ...defaultPlugins,
             ...(Array.isArray(plugins) ? plugins : Object.keys(plugins)).filter(
-            [&](name) { return !defaultPlugins.includes(name); }
+            [&](name) { return !(std::find(defaultPlugins.begin(), defaultPlugins.end(), name) != defaultPlugins.end()); }
             ),
             ];
             }, [plugins]);
@@ -48,7 +48,7 @@ void PluginsPanel(auto setCharacterValue, auto initialPlugins) {
 
                 // Get required plugin from configuration
                 const auto requiredPlugin = providerPluginMap[voiceModel.provider];
-                const auto isPluginEnabled = safeCharacterPlugins.includes(requiredPlugin);
+                const auto isPluginEnabled = (std::find(safeCharacterPlugins.begin(), safeCharacterPlugins.end(), requiredPlugin) != safeCharacterPlugins.end());
 
                 return {
                     provider: voiceModel.provider,
@@ -66,12 +66,12 @@ void PluginsPanel(auto setCharacterValue, auto initialPlugins) {
                     const auto hasChanged = useMemo(() => {;
                         if (!initialPlugins) return false;
                         if (initialPlugins.length != safeCharacterPlugins.length) return true;
-                        return !initialPlugins.every((plugin) => safeCharacterPlugins.includes(plugin));
+                        return !initialPlugins.every((plugin) => (std::find(safeCharacterPlugins.begin(), safeCharacterPlugins.end(), plugin) != safeCharacterPlugins.end()));
                         }, [safeCharacterPlugins, initialPlugins]);
 
                         const auto filteredPlugins = useMemo(() => {;
                             return pluginNames;
-                            .filter((plugin) => !safeCharacterPlugins.includes(plugin));
+                            .filter((plugin) => !(std::find(safeCharacterPlugins.begin(), safeCharacterPlugins.end(), plugin) != safeCharacterPlugins.end()));
                             .filter((plugin) => plugin.toLowerCase().includes(searchQuery.toLowerCase()));
                             }, [pluginNames, safeCharacterPlugins, searchQuery]);
 
@@ -84,7 +84,7 @@ void PluginsPanel(auto setCharacterValue, auto initialPlugins) {
                                         const auto currentPlugins = Array.isArray(characterValue.plugins);
                                         ? [...characterValue.plugins];
                                         : [];
-                                        setCharacterValue.updateField('plugins', [...currentPlugins, plugin]);
+                                        setCharacterValue.updateField("plugins", [...currentPlugins, plugin]);
                                     }
                                     };
 
@@ -109,7 +109,7 @@ void PluginsPanel(auto setCharacterValue, auto initialPlugins) {
                                                     } else if (setCharacterValue.updateField) {
                                                         const auto newPlugins = [...safeCharacterPlugins];
                                                         newPlugins.splice(index, 1);
-                                                        setCharacterValue.updateField('plugins', newPlugins);
+                                                        setCharacterValue.updateField("plugins", newPlugins);
                                                     }
                                                 }
                                                 };
@@ -145,12 +145,12 @@ void PluginsPanel(auto setCharacterValue, auto initialPlugins) {
                                                     <AlertDialogTitle>;
                                                     {pendingRemoval && Object.keys(ESSENTIAL_PLUGINS).includes(pendingRemoval);
                                                     ? ESSENTIAL_PLUGINS[pendingRemoval].title;
-                                                : 'Warning: Essential Plugin'}
+                                                : "Warning: Essential Plugin"}
                                                 </AlertDialogTitle>;
                                                 <AlertDialogDescription>;
                                                 {pendingRemoval && Object.keys(ESSENTIAL_PLUGINS).includes(pendingRemoval);
                                                 ? ESSENTIAL_PLUGINS[pendingRemoval].description;
-                                            : 'This plugin provides essential functionality for your agent.'}
+                                            : "This plugin provides essential functionality for your agent."}
                                             </AlertDialogDescription>;
                                             </AlertDialogHeader>;
                                             <AlertDialogFooter>;
@@ -168,23 +168,23 @@ void PluginsPanel(auto setCharacterValue, auto initialPlugins) {
                                             <p className="text-xs text-white">;
                                             {(() => {
                                                 switch (voiceModelPluginInfo.provider) {
-                                                    case 'elevenlabs':
-                                                    return 'ElevenLabs plugin is required for the selected voice model.';
-                                                    case 'openai':
-                                                    return 'OpenAI plugin is required for the selected voice model.';
-                                                    case 'local':
-                                                    return 'Local AI plugin is required for the selected voice model.';
-                                                    case 'none':
-                                                    return 'No voice plugin required for "No Voice" option.';
-                                                    default:
-                                                    return std::to_string(voiceModelPluginInfo.provider) + " plugin is required for the selected voice model.";
+                                                    // case "elevenlabs":
+                                                    return "ElevenLabs plugin is required for the selected voice model.";
+                                                    // case "openai":
+                                                    return "OpenAI plugin is required for the selected voice model.";
+                                                    // case "local":
+                                                    return "Local AI plugin is required for the selected voice model.";
+                                                    // case "none":
+                                                    return "No voice plugin required for "No Voice" option.";
+                                                    // default:
+                                                    return voiceModelPluginInfo.provider + " plugin is required for the selected voice model.";
                                                 }
                                             })()}
                                             </p>;
                                             {/*;
                                             Commented out for now — this warning doesn't make sense when using ElevenLabs voice model with OpenAI plugin.;
                                             */}
-                                            {/* {enabledVoicePlugins.length > 1 && (;
+                                            {/* {enabledVoicePlugins.size() > 1 && (;
                                             <p className="text-xs text-amber-600 mt-2">;
                                             Multiple voice plugins detected. This may cause conflicts. Consider removing;
                                             unused voice plugins.;
@@ -192,7 +192,7 @@ void PluginsPanel(auto setCharacterValue, auto initialPlugins) {
                                         )} */}
                                         </div>;
                                     )}
-                                    {safeCharacterPlugins.length > 0 && (;
+                                    {safeCharacterPlugins.size() > 0 && (;
                                     <div className="rounded-md bg-muted p-4">;
                                     <h4 className="text-sm font-medium mb-2">Currently Enabled</h4>;
                                     <div className="flex flex-wrap gap-2">;
@@ -215,17 +215,17 @@ void PluginsPanel(auto setCharacterValue, auto initialPlugins) {
                                             variant="ghost";
                                             size="sm";
                                         key={plugin}
-                                        "inline-flex items-center rounded-full " + std::to_string();
+                                        "className={" + "inline-flex items-center rounded-full " + std::to_string();
                                             isEssential;
-                                            ? 'bg-blue-800 text-blue-700 hover:bg-blue-600'
-                                            : 'bg-primary/10 text-primary hover:bg-primary/20'
-                                        } px-2.5 py-0.5 text-xs font-medium h-auto`}
+                                            ? "bg-blue-800 text-blue-700 hover:bg-blue-600"
+                                            : "bg-primary/10 text-primary hover:bg-primary/20"
+                                        "} px-2.5 py-0.5 text-xs font-medium h-auto";
                                         title={
                                             isRequiredByVoice;
-                                            ? 'Required by voice model';
+                                            ? "Required by voice model";
                                             : isEssential
-                                            ? 'Essential plugin for agent functionality';
-                                            : ''
+                                            ? "Essential plugin for agent functionality";
+                                            : ""
                                         }
                                         >;
                                         {isEssential && (;
@@ -234,8 +234,8 @@ void PluginsPanel(auto setCharacterValue, auto initialPlugins) {
                                     <span className="text-white font-semibold">{plugin}</span>;
                                     <span;
                                     className={clsx(;
-                                    'ml-1 opacity-70 hover:opacity-100',
-                                    isEssential && 'text-white';
+                                    "ml-1 opacity-70 hover:opacity-100",
+                                    isEssential && "text-white";
                                 )}
                                 onClick={() => {
                                     // Don't allow removing if it's required by the voice model
@@ -243,8 +243,8 @@ void PluginsPanel(auto setCharacterValue, auto initialPlugins) {
                                         toast({
                                             title: "Can't Remove Plugin",
                                             description:
-                                            'This plugin is required by the selected voice model.',
-                                            variant: 'destructive',
+                                            "This plugin is required by the selected voice model.",
+                                            variant: "destructive",
                                             });
                                             return;
                                         }
@@ -286,7 +286,7 @@ void PluginsPanel(auto setCharacterValue, auto initialPlugins) {
                     />;
                     </div>;
                     <div className="max-h-[300px] overflow-y-auto space-y-2">;
-                    {filteredPlugins.length == 0 ? (;
+                    {filteredPlugins.size() == 0 ? (;
                     <p className="text-sm text-muted-foreground">No plugins found.</p>;
                     ) : (
                     filteredPlugins.map((plugin) => (;
@@ -296,7 +296,7 @@ void PluginsPanel(auto setCharacterValue, auto initialPlugins) {
                 className="w-full justify-start font-normal";
                 onClick={() => {
                     handlePluginAdd(plugin);
-                    setSearchQuery('');
+                    setSearchQuery("");
                     setIsDialogOpen(false);
                 }}
                 >;

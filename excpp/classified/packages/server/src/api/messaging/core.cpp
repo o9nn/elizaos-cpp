@@ -10,7 +10,7 @@ express::Router createMessagingCoreRouter(AgentServer serverInstance) {
     const auto router = express.Router();
 
     // Endpoint for AGENT REPLIES or direct submissions to the central bus FROM AGENTS/SYSTEM
-    (router).post('/submit', async (req: express.Request, res: express.Response) => {
+    (router).post("/submit", async (req: express.Request, res: express.Response) => {
         const auto {;
             channel_id,
             server_id, // This is the server_id;
@@ -36,7 +36,7 @@ express::Router createMessagingCoreRouter(AgentServer serverInstance) {
                 return res.status(400).json({;
                     success: false,
                     error:
-                    'Missing required fields: channel_id, server_id, author_id, content, source_type, raw_message',
+                    "Missing required fields: channel_id, server_id, author_id, content, source_type, raw_message",
                     });
                 }
 
@@ -44,7 +44,7 @@ express::Router createMessagingCoreRouter(AgentServer serverInstance) {
                 if (in_reply_to_message_id && !validateUuid(in_reply_to_message_id)) {
                     return res.status(400).json({;
                         success: false,
-                        error: 'Invalid in_reply_to_message_id format',
+                        error: "Invalid in_reply_to_message_id format",
                         });
                     }
 
@@ -54,7 +54,7 @@ express::Router createMessagingCoreRouter(AgentServer serverInstance) {
                             authorId: validateUuid(author_id)!,
                             content: content,
                             rawMessage: raw_message,
-                            sourceType: source_type || 'agent_response',
+                            sourceType: source_type || "agent_response",
                             inReplyToRootMessageId: in_reply_to_message_id
                             ? validateUuid(in_reply_to_message_id) || std::nullopt;
                             : std::nullopt,
@@ -65,9 +65,9 @@ express::Router createMessagingCoreRouter(AgentServer serverInstance) {
 
                             // Emit to SocketIO for real-time GUI updates
                             if (serverInstance.socketIO) {
-                                serverInstance.socketIO.to(channel_id).emit('messageBroadcast', {
+                                serverInstance.socketIO.to(channel_id).emit("messageBroadcast", {
                                     senderId: author_id, // This is the agent's ID
-                                    senderName: metadata.agentName || 'Agent',
+                                    senderName: metadata.agentName || "Agent",
                                     text: content,
                                     roomId: channel_id, // For SocketIO, room is the central channel_id
                                     serverId: server_id, // Client layer uses serverId
@@ -84,39 +84,39 @@ express::Router createMessagingCoreRouter(AgentServer serverInstance) {
 
                                 res.status(201).json({ success: true, data: createdMessage });
                                 } catch (error) {
-                                    std::cerr << '[Messages Router /submit] Error submitting agent message:' << error << std::endl;
-                                    res.status(500).json({ success: false, error: 'Failed to submit agent message' });
+                                    std::cerr << "[Messages Router /submit] Error submitting agent message:" << error << std::endl;
+                                    res.status(500).json({ success: false, error: "Failed to submit agent message" });
                                 }
                                 });
 
                                 // Endpoint to notify that a message is complete (e.g., agent finished responding)
-                                (router).post('/complete', async (req: express.Request, res: express.Response) => {
+                                (router).post("/complete", async (req: express.Request, res: express.Response) => {
                                     const auto { channel_id, server_id } = req.body;
 
                                     if (!validateUuid(channel_id) || !validateUuid(server_id)) {
                                         return res.status(400).json({;
                                             success: false,
-                                            error: 'Missing or invalid fields: channel_id, server_id',
+                                            error: "Missing or invalid fields: channel_id, server_id",
                                             });
                                         }
 
                                         try {
                                             if (serverInstance.socketIO) {
-                                                serverInstance.socketIO.to(channel_id).emit('messageComplete', {
+                                                serverInstance.socketIO.to(channel_id).emit("messageComplete", {
                                                     channelId: channel_id,
                                                     serverId: server_id,
                                                     });
                                                 }
 
-                                                res.status(200).json({ success: true, message: 'Completion event emitted' });
+                                                res.status(200).json({ success: true, message: "Completion event emitted" });
                                                 } catch (error) {
-                                                    std::cerr << '[Messages Router /notify-complete] Error notifying message complete:' << error << std::endl;
-                                                    res.status(500).json({ success: false, error: 'Failed to notify message completion' });
+                                                    std::cerr << "[Messages Router /notify-complete] Error notifying message complete:" << error << std::endl;
+                                                    res.status(500).json({ success: false, error: "Failed to notify message completion" });
                                                 }
                                                 });
 
                                                 // Endpoint for INGESTING messages from EXTERNAL platforms (e.g., Discord plugin)
-                                                (router).post('/ingest-external', async (req: express.Request, res: express.Response) => {
+                                                (router).post("/ingest-external", async (req: express.Request, res: express.Response) => {
                                                     const auto messagePayload = req.body<MessageService>; // Partial because ID, created_at will be generated;
 
                                                     if (
@@ -125,7 +125,7 @@ express::Router createMessagingCoreRouter(AgentServer serverInstance) {
                                                     !messagePayload.author_id ||;
                                                     !messagePayload.content;
                                                     ) {
-                                                        return res.status(400).json({ success: false, error: 'Invalid external message payload' });
+                                                        return res.status(400).json({ success: false, error: "Invalid external message payload" });
                                                     }
 
                                                     try {
@@ -159,17 +159,17 @@ express::Router createMessagingCoreRouter(AgentServer serverInstance) {
                                                                 metadata: createdRootMessage.metadata,
                                                                 };
 
-                                                                internalMessageBus.emit('new_message', messageForBus);
+                                                                internalMessageBus.emit("new_message", messageForBus);
                                                                 logger.info(
-                                                                '[Messages Router /ingest-external] Published to internal message bus:',
+                                                                "[Messages Router /ingest-external] Published to internal message bus:",
                                                                 createdRootMessage.id;
                                                                 );
 
                                                                 // Also emit to SocketIO for real-time GUI updates if anyone is watching this channel
                                                                 if (serverInstance.socketIO) {
-                                                                    serverInstance.socketIO.to(messageForBus.channel_id).emit('messageBroadcast', {
+                                                                    serverInstance.socketIO.to(messageForBus.channel_id).emit("messageBroadcast", {
                                                                         senderId: messageForBus.author_id,
-                                                                        senderName: messageForBus.author_display_name || 'User',
+                                                                        senderName: messageForBus.author_display_name || "User",
                                                                         text: messageForBus.content,
                                                                         roomId: messageForBus.channel_id,
                                                                         serverId: messageForBus.server_id, // Client layer uses serverId
@@ -181,12 +181,12 @@ express::Router createMessagingCoreRouter(AgentServer serverInstance) {
 
                                                                     res.status(202).json({
                                                                         success: true,
-                                                                        message: 'Message ingested and published to bus',
+                                                                        message: "Message ingested and published to bus",
                                                                         data: { messageId: createdRootMessage.id },
                                                                         });
                                                                         } catch (error) {
-                                                                            std::cerr << '[Messages Router /ingest-external] Error ingesting external message:' << error << std::endl;
-                                                                            res.status(500).json({ success: false, error: 'Failed to ingest message' });
+                                                                            std::cerr << "[Messages Router /ingest-external] Error ingesting external message:" << error << std::endl;
+                                                                            res.status(500).json({ success: false, error: "Failed to ingest message" });
                                                                         }
                                                                         });
 

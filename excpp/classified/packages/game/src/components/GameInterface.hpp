@@ -1,20 +1,24 @@
 #pragma once
+#include <algorithm>
+#include <chrono>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".hooks/useTauriChat.hpp"
-#include ".services/TauriService.hpp"
-#include ".utils/SecurityUtils.hpp"
-#include ".utils/screenCapture.hpp"
 #include "AgentLogs.hpp"
 #include "BackupSettings.hpp"
 #include "ContainerLogs.hpp"
 #include "OllamaModelSelector.hpp"
 #include "ProviderSelector.hpp"
 #include "SecurityWarning.hpp"
+#include "hooks/useTauriChat.hpp"
+#include "services/TauriService.hpp"
+#include "utils/SecurityUtils.hpp"
+#include "utils/screenCapture.hpp"
 
 namespace elizaos {
 
@@ -31,7 +35,7 @@ namespace elizaos {
 struct OutputLine {
     std::string type;
     std::string content;
-    Date timestamp;
+    std::chrono::system_clock::time_point timestamp;
 };
 
 struct PluginToggleState {
@@ -53,7 +57,7 @@ struct SecurityWarningState {
 struct CapabilityUsageState {
     bool hasBeenUsed;
     bool warningAcknowledged;
-    std::optional<Date> firstSeenAt;
+    std::optional<std::chrono::system_clock::time_point> firstSeenAt;
 };
 
 struct MediaStreams {

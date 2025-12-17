@@ -11,17 +11,17 @@ void TechnicalDocs() {
 
     const std::vector<DocSection> sections = [;
     {
-        title: 'Getting Started',
-        "Clone the repository and install dependencies:"
-        "git clone " + std::to_string(project.github) + "\ncd " + std::to_string(project.github.split('/').pop()) + "\nnpm install"
+        title: "Getting Started",
+        "content: " + "Clone the repository and install dependencies:"
+        "code: " + "git clone " + project.github + "\ncd " + std::to_string(project.github.split("/").pop()) + "\nnpm install"
         },
         {
-            title: 'Architecture',
-            content: project.documentation.architecture || ''
+            title: "Architecture",
+            content: project.documentation.architecture || ""
             },
             {
-                title: 'API Reference',
-                content: project.documentation.api || ''
+                title: "API Reference",
+                content: project.documentation.api || ""
             }
             ];
 
@@ -34,11 +34,11 @@ void TechnicalDocs() {
             <button;
         key={section.title}
     onClick={() => setActiveSection(index)}
-    "w-full text-left px-4 py-2 rounded-lg " + std::to_string();
+    "className={" + "w-full text-left px-4 py-2 rounded-lg " + std::to_string();
         activeSection == index;
-        ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100'
-        : 'hover:bg-gray-100 dark:hover:bg-gray-700'
-    }`}
+        ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100"
+        : "hover:bg-gray-100 dark:hover:bg-gray-700"
+    "}";
     >;
     {section.title}
     </button>;

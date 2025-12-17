@@ -11,7 +11,7 @@ std::future<void> getDiscordJs() {
         if (!discordJsImport) {
             try {
                 // Try to import discord.js normally
-                discordJsImport = import('discord.js');
+                discordJsImport = import("discord.js");
                 } catch (error) {
                     std::cerr << 'Error importing discord.js << trying fallback method:' << error << std::endl;
 
@@ -19,11 +19,11 @@ std::future<void> getDiscordJs() {
                     // This assumes the discord.js package is installed in node_modules
                     try {
                         // Use the 'module' package to create a require function
-                        const auto { createRequire } = import('module');
+                        const auto { createRequire } = import("module");
                         const auto require = createRequire(import.meta.url);
-                        discordJsImport = require('discord.js');
+                        discordJsImport = require("discord.js");
                         } catch (fallbackError) {
-                            std::cerr << 'Discord.js fallback import also failed:' << fallbackError << std::endl;
+                            std::cerr << "Discord.js fallback import also failed:" << fallbackError << std::endl;
                             throw std::runtime_error('Failed to import discord.js: ' + fallbackError);
                         }
                     }

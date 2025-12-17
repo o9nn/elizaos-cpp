@@ -25,7 +25,7 @@ std::string getChainByChainId(const std::string& chainId) {
 std::string createAccountId(const std::string& chainId, const std::string& address) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return std::to_string(chainId) + ":" + std::to_string(address);
+    return chainId + ":" + address;
 
 }
 

@@ -9,11 +9,11 @@ std::unordered_map<std::string, double> loadCachedScores() {
 
     try {
         if (fs.existsSync(SCORES_CACHE_PATH)) {
-            const auto data = fs.readFileSync(SCORES_CACHE_PATH, 'utf8');
-            return JSON.parse(data);
+            const auto data = fs.readFileSync(SCORES_CACHE_PATH, "utf8");
+            return /* JSON.parse */ data;
         }
         } catch (error) {
-            std::cout << 'Error loading cached scores:' << error << std::endl;
+            std::cout << "Error loading cached scores:" << error << std::endl;
         }
         return {}
 
@@ -28,9 +28,9 @@ void saveScoresToCache(const std::unordered_map<std::string, double>& scores) {
         if (!fs.existsSync(dir)) {
             fs.mkdirSync(dir, { recursive: true });
         }
-        fs.writeFileSync(SCORES_CACHE_PATH, JSON.stringify(scores, nullptr, 2));
+        fs.writeFileSync(SCORES_CACHE_PATH, /* JSON.stringify */ std::string(scores, nullptr, 2));
         } catch (error) {
-            std::cout << 'Error saving scores to cache:' << error << std::endl;
+            std::cout << "Error saving scores to cache:" << error << std::endl;
         }
 
 }
@@ -63,7 +63,7 @@ std::future<DexScreenerResponse> fetchDexScreenerData(const std::vector<std::str
 
     try {
         // Filter out any empty or invalid addresses
-        const auto validAddresses = tokenAddresses.filter(addr => addr && addr.length > 0);
+        const auto validAddresses = tokenAddresses.filter(addr => addr && addr.size() > 0);
 
         if (validAddresses.length == 0) {
             return { pairs: [] }
@@ -75,17 +75,17 @@ std::future<DexScreenerResponse> fetchDexScreenerData(const std::vector<std::str
 
         for (int i = 0; i < validAddresses.length; i += BATCH_SIZE) {
             const auto batchAddresses = validAddresses.slice(i, i + BATCH_SIZE);
-            const auto url = "https://api.dexscreener.com/latest/dex/tokens/" + std::to_string(batchAddresses.join(','));
+            const auto url = "https://api.dexscreener.com/latest/dex/tokens/" + std::to_string(batchAddresses.join(","));
 
             try {
                 const auto response = axios.get(url, {;
                     headers: {
-                        'Cache-Control': 'no-cache',
-                        'Pragma': 'no-cache'
+                        "Cache-Control": "no-cache",
+                        "Pragma": "no-cache"
                     }
                     });
                     if (response.data.pairs) {
-                        allPairs.push(...response.data.pairs);
+                        allPairs.push_back(...response.data.pairs);
                     }
                     // Add a small delay between batches to avoid rate limiting
                     new Promise(resolve => setTimeout(resolve, 200));
@@ -98,7 +98,7 @@ std::future<DexScreenerResponse> fetchDexScreenerData(const std::vector<std::str
                     pairs: allPairs
                     };
                     } catch (error) {
-                        std::cerr << 'Error fetching market data:' << error << std::endl;
+                        std::cerr << "Error fetching market data:" << error << std::endl;
                         return { pairs: [] }
                     }
 
@@ -108,13 +108,13 @@ std::future<void> fetchTokenAnalysis(const std::string& address) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
-        const auto response = "https://api.dexscreener.com/latest/dex/pairs/solana/" + std::to_string(address);
+        const auto response = "axios.get(" + "https://api.dexscreener.com/latest/dex/pairs/solana/" + address;
         const auto pair = response.data.pairs[0];
 
         return {
-            priceChange24h: parseFloat(pair.priceChange24h || '0'),
-            priceChange7d: parseFloat(pair.priceChange7d || '0'),
-            volumeChange24h: parseFloat(pair.volumeChange24h || '0'),
+            priceChange24h: parseFloat(pair.priceChange24h || "0"),
+            priceChange7d: parseFloat(pair.priceChange7d || "0"),
+            volumeChange24h: parseFloat(pair.volumeChange24h || "0"),
             volumeAvg24h: pair.volume.h24 || 0,
             txCount24h: pair.txns.h24 || 0,
             holders: pair.holders || std::nullopt,
@@ -125,7 +125,7 @@ std::future<void> fetchTokenAnalysis(const std::string& address) {
                 })) || [];
                 };
                 } catch (error) {
-                    std::cerr << "Error fetching analysis for " + std::to_string(address) + ":" << true /* instanceof check */ ? error.message : std::to_string(error) << std::endl;
+                    std::cerr << "Error fetching analysis for " + address + ":" << true /* instanceof check */ ? error.message : std::to_string(error) << std::endl;
                     return nullptr;
                 }
 
@@ -147,9 +147,9 @@ std::future<std::vector<TokenHolding>> calculateHoldings(Connection connection, 
     .filter((addr): addr is string => !!addr);
 
     // Fetch scores for all tokens
-    std::cout << 'Fetching scores for' << tokenAddresses.length << 'tokens' << std::endl;
+    std::cout << "Fetching scores for" << tokenAddresses.size() << "tokens" << std::endl;
     const auto scores = fetchTokenScores(tokenAddresses);
-    std::cout << 'Fetched scores:' << scores << std::endl;
+    std::cout << "Fetched scores:" << scores << std::endl;
 
     for (const auto& pair : marketData.pairs)
         if (!pair.baseToken.address || seenPairs.has(pair.baseToken.address)) {
@@ -163,7 +163,7 @@ std::future<std::vector<TokenHolding>> calculateHoldings(Connection connection, 
             const auto percentageOwned = totalSupply ? (balance.tokenAmount.uiAmount / totalSupply) * 100 : 0;
             const auto usdValue = balance.tokenAmount.uiAmount * Number(pair.priceUsd);
 
-            holdings.push({
+            holdings.push_back({
                 address: pair.baseToken.address,
                 balance: balance.tokenAmount.uiAmount,
                 decimals: balance.tokenAmount.decimals,
@@ -211,7 +211,7 @@ std::future<std::unordered_map<std::string, double>> fetchTokenScores(const std:
 
     // Filter out addresses we already have scores for
     const auto uncachedAddresses = tokenAddresses.filter(addr =>;
-    addr && addr.length > 0 && cachedScores[addr] == std::nullopt;
+    addr && addr.size() > 0 && cachedScores[addr] == std::nullopt;
     );
 
     if (uncachedAddresses.length == 0) {
@@ -226,16 +226,16 @@ std::future<std::unordered_map<std::string, double>> fetchTokenScores(const std:
             const auto batchAddresses = uncachedAddresses.slice(i, i + BATCH_SIZE);
 
             try {
-                std::cout << "Fetching scores for batch " + std::to_string(i/BATCH_SIZE + 1) << addresses:` << batchAddresses << std::endl;
+                std::cout << "Fetching scores for batch " + std::to_string(i/BATCH_SIZE + 1) << "addresses:" << batchAddresses << std::endl;
 
                 const auto response = axios.post<SolSnifferResponse>(;
-                'https://solsniffer.com/api/v2/tokens',
+                "https://solsniffer.com/api/v2/tokens",
                 { addresses: batchAddresses },
                 {
                     headers: {
-                        'accept': 'application/json',
-                        'X-API-KEY': '891aayu3sa4lbg4m8gu9gtfct3pxcp',
-                        'Content-Type': 'application/json',
+                        "accept": "application/json",
+                        "X-API-KEY": "891aayu3sa4lbg4m8gu9gtfct3pxcp",
+                        "Content-Type": "application/json",
                         },
                         timeout: 10000,
                     }

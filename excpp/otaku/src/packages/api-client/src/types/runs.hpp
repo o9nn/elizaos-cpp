@@ -1,9 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
 #include "elizaos/core.hpp"
@@ -15,7 +18,7 @@ namespace elizaos {
 
 
 
-using RunStatus = std::variant<std::string, std::string, std::string, std::string>;
+using RunStatus = std::string;
 
 struct RunCounts {
     double actions;
@@ -36,7 +39,7 @@ struct RunSummary {
     std::optional<RunCounts> counts;
 };
 
-using RunEventType = std::variant<, std::string, std::string, std::string, std::string, std::string, std::string, std::string>;
+using RunEventType = std::variant<, std::string>;
 
 struct RunEvent {
     RunEventType type;

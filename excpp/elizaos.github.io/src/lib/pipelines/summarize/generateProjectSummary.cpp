@@ -9,7 +9,7 @@ std::future<bool> checkExistingSummary(const std::string& repoId, const std::str
 
     if (!outputDir) return false;
 
-    const auto filename = std::to_string(date) + ".md";
+    const auto filename = date + ".md";
     const auto summaryPath = getRepoFilePath(;
     outputDir,
     repoId,

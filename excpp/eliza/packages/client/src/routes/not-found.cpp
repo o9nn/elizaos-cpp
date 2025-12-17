@@ -12,10 +12,10 @@ void NotFound() {
 
     // Determine if this is likely an API endpoint that doesn't exist
     const auto isLikelyApiEndpoint =;
-    path.startsWith('/api/') ||;
-    path.includes('/agents/') ||;
-    path.includes('/memory/') ||;
-    path.includes('/speech/');
+    path.startsWith("/api/") ||;
+    (std::find(path.begin(), path.end(), "/agents/") != path.end()) ||;
+    (std::find(path.begin(), path.end(), "/memory/") != path.end()) ||;
+    (std::find(path.begin(), path.end(), "/speech/") != path.end());
 
     return (;
     <div className="flex flex-col items-center justify-center min-h-[70vh] px-4 text-center">;
@@ -50,7 +50,7 @@ void NotFound() {
     </>;
     ) : (
     <p className="text-lg mb-6 text-muted-foreground">;
-    Sorry, the page you're looking for doesn't exist or has been moved.;
+    Sorry, the page you"re looking for doesn"t exist or has been moved.;
     </p>;
     )}
 

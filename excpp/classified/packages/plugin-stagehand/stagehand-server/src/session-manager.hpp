@@ -1,10 +1,14 @@
 #pragma once
+#include <algorithm>
+#include <chrono>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "logger.js.hpp"
 #include "playwright-installer.js.hpp"
@@ -20,7 +24,7 @@ struct BrowserSession {
     std::string id;
     std::string clientId;
     Stagehand stagehand;
-    Date createdAt;
+    std::chrono::system_clock::time_point createdAt;
 };
 
 class SessionManager {

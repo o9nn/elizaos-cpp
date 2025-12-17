@@ -1,10 +1,14 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
+#include <stdexcept>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "types.hpp"
 
@@ -56,7 +60,7 @@ public:
      extractExports(const std::string& file);
     std::optional<ActionBounds> findActionBounds(const std::any& ast);
     std::string extractActionCode(const std::string& filePath, ActionBounds bounds);
-    void handleParseError(Error error);
+    void handleParseError(const std::runtime_error& error);
 };
 
 

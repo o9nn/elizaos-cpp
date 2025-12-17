@@ -1,9 +1,13 @@
 #pragma once
+#include <algorithm>
+#include <chrono>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "service.hpp"
 
@@ -22,7 +26,7 @@ struct VideoInfo {
     std::optional<std::string> description;
     std::optional<std::string> uploader;
     std::optional<double> viewCount;
-    std::optional<Date> uploadDate;
+    std::optional<std::chrono::system_clock::time_point> uploadDate;
     std::optional<std::vector<VideoFormat>> formats;
 };
 

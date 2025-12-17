@@ -1,10 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -16,7 +18,7 @@ namespace elizaos {
 // 
 
 struct SolanaOracleInfo {
-    std::variant<"pyth", "jupiter", "raydium", "orca", "pumpswap"> type;
+    std::string type;
     std::string address;
     std::optional<std::string> feedId;
     std::optional<std::string> poolAddress;

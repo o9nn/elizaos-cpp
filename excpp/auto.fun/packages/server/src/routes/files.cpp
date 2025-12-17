@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::future<std::string> uploadToStorage(Buffer buffer, { contentType: string options, string } key) {
+std::future<std::string> uploadToStorage(const std::vector<uint8_t>& buffer, { contentType: string options, string } key) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -21,11 +21,11 @@ std::future<std::string> uploadToStorage(Buffer buffer, { contentType: string op
 
             try {
                 s3Client.send(putCmd);
-                std::cout << "Successfully uploaded to Storage: " + std::to_string(options.key) << std::endl;
-                const auto finalPublicUrl = std::to_string(publicBaseUrl) + "/" + std::to_string(options.key);
+                std::cout << "Successfully uploaded to Storage: " + options.key << std::endl;
+                const auto finalPublicUrl = publicBaseUrl + "/" + options.key;
                 return finalPublicUrl;
                 } catch (error) {
-                    std::cerr << "Failed to upload " + std::to_string(options.key) + " to Storage:" << error << std::endl;
+                    std::cerr << "Failed to upload " + options.key + " to Storage:" << error << std::endl;
                     throw std::runtime_error(`Failed to upload ${options.key}`);
                 }
 

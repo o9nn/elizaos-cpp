@@ -17,19 +17,19 @@ void useAddAgentToServer() {
             },
             onSuccess: (_data, variables) => {
                 // Invalidate server agents query
-                queryClient.invalidateQueries({ queryKey: ['serverAgents', variables.serverId] });
-                queryClient.invalidateQueries({ queryKey: ['agentServers', variables.agentId] });
+                queryClient.invalidateQueries({ queryKey: ["serverAgents", variables.serverId] });
+                queryClient.invalidateQueries({ queryKey: ["agentServers", variables.agentId] });
 
                 toast({
-                    title: 'Agent Added',
-                    description: 'Agent has been successfully added to the server',
+                    title: "Agent Added",
+                    description: "Agent has been successfully added to the server",
                     });
                     },
                     onError: (error) => {
                         toast({
-                            title: 'Error',
-                            description: true /* instanceof check */ ? error.message : 'Failed to add agent to server',
-                            variant: 'destructive',
+                            title: "Error",
+                            description: true /* instanceof check */ ? error.message : "Failed to add agent to server",
+                            variant: "destructive",
                             });
                             },
                             });
@@ -49,19 +49,19 @@ void useRemoveAgentFromServer() {
             },
             onSuccess: (_data, variables) => {
                 // Invalidate server agents query
-                queryClient.invalidateQueries({ queryKey: ['serverAgents', variables.serverId] });
-                queryClient.invalidateQueries({ queryKey: ['agentServers', variables.agentId] });
+                queryClient.invalidateQueries({ queryKey: ["serverAgents", variables.serverId] });
+                queryClient.invalidateQueries({ queryKey: ["agentServers", variables.agentId] });
 
                 toast({
-                    title: 'Agent Removed',
-                    description: 'Agent has been successfully removed from the server',
+                    title: "Agent Removed",
+                    description: "Agent has been successfully removed from the server",
                     });
                     },
                     onError: (error) => {
                         toast({
-                            title: 'Error',
-                            description: true /* instanceof check */ ? error.message : 'Failed to remove agent from server',
-                            variant: 'destructive',
+                            title: "Error",
+                            description: true /* instanceof check */ ? error.message : "Failed to remove agent from server",
+                            variant: "destructive",
                             });
                             },
                             });

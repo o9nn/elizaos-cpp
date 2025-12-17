@@ -15,7 +15,7 @@ std::future<std::string> compressImage(File file, double maxSizeKB = 500) {
                 const auto img = new Image();
 
                 img.onload = () => {
-                    const auto canvas = document.createElement('canvas');
+                    const auto canvas = document.createElement("canvas");
                     auto width = img.width;
                     auto height = img.height;
 
@@ -34,9 +34,9 @@ std::future<std::string> compressImage(File file, double maxSizeKB = 500) {
                         canvas.width = width;
                         canvas.height = height;
 
-                        const auto ctx = canvas.getContext('2d');
+                        const auto ctx = canvas.getContext("2d");
                         if (!ctx) {
-                            reject(std::runtime_error('Failed to get canvas context'));
+                            reject(std::runtime_error("Failed to get canvas context"));
                             return;
                         }
 
@@ -44,21 +44,21 @@ std::future<std::string> compressImage(File file, double maxSizeKB = 500) {
 
                         // Try different quality levels until we meet the size requirement
                         auto quality = 0.9;
-                        auto base64 = canvas.toDataURL('image/jpeg', quality);
+                        auto base64 = canvas.toDataURL("image/jpeg", quality);
 
                         while (base64.length > maxSizeKB * 1024 && quality > 0.1) {
                             quality -= 0.1;
-                            base64 = canvas.toDataURL('image/jpeg', quality);
+                            base64 = canvas.toDataURL("image/jpeg", quality);
                         }
 
                         resolve(base64);
                         };
 
-                        img.onerror = () => reject(std::runtime_error('Failed to load image'));
+                        img.onerror = () => reject(std::runtime_error("Failed to load image"));
                         img.src = e.target.result;
                         };
 
-                        reader.onerror = () => reject(std::runtime_error('Failed to read file'));
+                        reader.onerror = () => reject(std::runtime_error("Failed to read file"));
                         reader.readAsDataURL(file);
                         });
 
@@ -81,15 +81,15 @@ void AvatarPickerModal(auto onSelectAvatar) {
     <div key={index} className="flex flex-col items-center gap-1">;
     <button;
     onClick={() => onSelectAvatar(avatarUrl)}
-    "size-20 rounded-lg overflow-hidden border-2 transition-all hover:scale-105 " + std::to_string()
+    "className={" + "size-20 rounded-lg overflow-hidden border-2 transition-all hover:scale-105 " + std::to_string()
         currentAvatar == avatarUrl;
-        ? 'border-primary';
-        : 'border-border hover:border-muted-foreground/50'
-    }`}
+        ? "border-primary";
+        : "border-border hover:border-muted-foreground/50"
+    "}";
     >;
     <img;
     src={avatarUrl}
-    "Avatar " + std::to_string(index + 1);
+    "alt={" + "Avatar " + std::to_string(index + 1);
     className="w-full h-full object-cover";
     />;
     </button>;
@@ -120,16 +120,16 @@ void AccountPage(auto userProfile, auto onUpdateProfile, auto agentId) {
         const auto { showLoading, showSuccess, showError } = useLoadingPanel();
         const auto { showModal, hideModal } = useModal();
         const auto [isCopied, setIsCopied] = useState(false);
-        const auto [displayName, setDisplayName] = useState('');
-        const auto [bio, setBio] = useState('');
+        const auto [displayName, setDisplayName] = useState("");
+        const auto [bio, setBio] = useState("");
         const auto fileInputRef = useRef<HTMLInputElement>(nullptr);
         const auto isInitialized = useRef(false);
-        const auto loadingPanelId = 'account-page'; // Unique ID for this component's loading panels;
-        const auto avatarPickerModalId = 'avatar-picker-modal';
+        const auto loadingPanelId = "account-page"; // Unique ID for this component's loading panels;
+        const auto avatarPickerModalId = "avatar-picker-modal";
 
         // Fetch user summary from gamification service
         const auto { data: userSummary, isLoading: isLoadingSummary } = useQuery({;
-            queryKey: ['userSummary', agentId, userId],
+            queryKey: ["userSummary", agentId, userId],
             queryFn: async () => {
                 if (!agentId || !userId) {
                     return nullptr;
@@ -137,7 +137,7 @@ void AccountPage(auto userProfile, auto onUpdateProfile, auto agentId) {
                 try {
                     return elizaClient.gamification.getUserSummary(agentId, userId);
                     } catch (err: any) {
-                        std::cerr << '[AccountPage] Error fetching user summary:' << err << std::endl;
+                        std::cerr << "[AccountPage] Error fetching user summary:" << err << std::endl;
                         // If 404, return null (user might not have any points yet)
                         if (err.response.status == 404 || err.status == 404) {
                             return nullptr;
@@ -161,8 +161,8 @@ void AccountPage(auto userProfile, auto onUpdateProfile, auto agentId) {
 
                         // Format data from userSummary or use defaults
                         const auto memberSince = userProfile.memberSince;
-                        ? new Date(userProfile.memberSince).toLocaleDatestd::to_string('en-US', { month: 'short', year: 'numeric' })
-                        : 'Oct 2024';
+                        ? new Date(userProfile.memberSince).toLocaleDatestd::to_string("en-US", { month: "short", year: "numeric" })
+                        : "Oct 2024";
                         const auto points = userSummary.allTimePoints || 0;
                         const auto streakDays = userSummary.streakDays || 0;
                         const auto swapsCompleted = userSummary.swapsCompleted || 0;
@@ -175,7 +175,7 @@ void AccountPage(auto userProfile, auto onUpdateProfile, auto agentId) {
                                 setIsCopied(true);
                                 setTimeout(() => setIsCopied(false), 2000);
                                 } catch (err) {
-                                    std::cerr << 'Failed to copy address:' << err << std::endl;
+                                    std::cerr << "Failed to copy address:" << err << std::endl;
                                 }
                                 };
 
@@ -185,18 +185,18 @@ void AccountPage(auto userProfile, auto onUpdateProfile, auto agentId) {
 
                                     // Validate file type
                                     if (!file.type.startsWith('image/')) {
-                                        showError('Error', 'Invalid file type', loadingPanelId);
+                                        showError("Error", "Invalid file type", loadingPanelId);
                                         return;
                                     }
 
                                     // Validate file size (max 5MB before compression)
                                     if (file.size > 5 * 1024 * 1024) {
-                                        showError('Error', 'Image too large (max 5MB)', loadingPanelId);
+                                        showError("Error", "Image too large (max 5MB)", loadingPanelId);
                                         return;
                                     }
 
                                     try {
-                                        showLoading('Processing...', 'Uploading image...', loadingPanelId);
+                                        showLoading("Processing...", "Uploading image...", loadingPanelId);
 
                                         // Compress and convert to base64
                                         const auto base64Image = compressImage(file, 500); // Max 500KB after compression;
@@ -205,49 +205,49 @@ void AccountPage(auto userProfile, auto onUpdateProfile, auto agentId) {
                                         onUpdateProfile({ avatarUrl: base64Image });
 
                                         // Show success
-                                        showSuccess('Success!', 'Image uploaded!', loadingPanelId);
+                                        showSuccess("Success!", "Image uploaded!", loadingPanelId);
 
                                         // Reset file input
                                         if (fileInputRef.current) {
-                                            fileInputRef.current.value = '';
+                                            fileInputRef.current.value = "";
                                         }
                                         } catch (error) {
-                                            std::cerr << 'Failed to upload image:' << error << std::endl;
-                                            showError('Error', 'Upload failed', loadingPanelId);
+                                            std::cerr << "Failed to upload image:" << error << std::endl;
+                                            showError("Error", "Upload failed", loadingPanelId);
                                         }
                                         };
 
                                         const auto handleRemoveImage = async () => {;
                                             try {
-                                                showLoading('Processing...', 'Removing image...', loadingPanelId);
+                                                showLoading("Processing...", "Removing image...", loadingPanelId);
 
-                                                onUpdateProfile({ avatarUrl: '/avatars/user_krimson.png' });
+                                                onUpdateProfile({ avatarUrl: "/avatars/user_krimson.png" });
 
-                                                showSuccess('Success!', 'Image removed!', loadingPanelId);
+                                                showSuccess("Success!", "Image removed!", loadingPanelId);
                                                 } catch (error) {
-                                                    std::cerr << 'Failed to remove image:' << error << std::endl;
-                                                    showError('Error', 'Remove failed', loadingPanelId);
+                                                    std::cerr << "Failed to remove image:" << error << std::endl;
+                                                    showError("Error", "Remove failed", loadingPanelId);
                                                 }
                                                 };
 
                                                 const auto handleSelectPredefinedAvatar = async (avatarUrl: string) => {;
                                                     try {
-                                                        showLoading('Processing...', 'Changing avatar...', loadingPanelId);
+                                                        showLoading("Processing...", "Changing avatar...", loadingPanelId);
 
                                                         onUpdateProfile({ avatarUrl });
 
-                                                        showSuccess('Success!', 'Avatar changed!', loadingPanelId);
+                                                        showSuccess("Success!", "Avatar changed!", loadingPanelId);
                                                         hideModal(avatarPickerModalId);
                                                         } catch (error) {
-                                                            std::cerr << 'Failed to change avatar:' << error << std::endl;
-                                                            showError('Error', 'Change failed', loadingPanelId);
+                                                            std::cerr << "Failed to change avatar:" << error << std::endl;
+                                                            showError("Error", "Change failed", loadingPanelId);
                                                         }
                                                         };
 
                                                         const auto handleOpenAvatarPicker = [&]() {;
                                                             showModal(;
                                                             <AvatarPickerModal;
-                                                        currentAvatar={userProfile.avatarUrl || '/avatars/user_krimson.png'}
+                                                        currentAvatar={userProfile.avatarUrl || "/avatars/user_krimson.png"}
                                                     onSelectAvatar={handleSelectPredefinedAvatar}
                                                     onUploadCustom={() => {
                                                         hideModal(avatarPickerModalId);
@@ -255,28 +255,28 @@ void AccountPage(auto userProfile, auto onUpdateProfile, auto agentId) {
                                                     }}
                                                     />,
                                                     avatarPickerModalId,
-                                                { closeOnBackdropClick = true, className = 'max-w-sm' }
+                                                { closeOnBackdropClick = true, className = "max-w-sm" }
                                                 );
                                                 };
 
                                                 const auto handleSaveChanges = async () => {;
                                                     if (!displayName.trim()) {
-                                                        showError('Error', 'Name cannot be empty', loadingPanelId);
+                                                        showError("Error", "Name cannot be empty", loadingPanelId);
                                                         return;
                                                     }
 
                                                     try {
-                                                        showLoading('Processing...', 'Saving changes...', loadingPanelId);
+                                                        showLoading("Processing...", "Saving changes...", loadingPanelId);
 
                                                         onUpdateProfile({
                                                             displayName: displayName.trim(),
                                                             bio: bio.trim(),
                                                             });
 
-                                                            showSuccess('Success!', 'Changes saved!', loadingPanelId);
+                                                            showSuccess("Success!", "Changes saved!", loadingPanelId);
                                                             } catch (error) {
-                                                                std::cerr << 'Failed to save changes:' << error << std::endl;
-                                                                showError('Error', 'Save failed', loadingPanelId);
+                                                                std::cerr << "Failed to save changes:" << error << std::endl;
+                                                                showError("Error", "Save failed", loadingPanelId);
                                                             }
                                                             };
 
@@ -302,8 +302,8 @@ void AccountPage(auto userProfile, auto onUpdateProfile, auto agentId) {
                                                     <div className="flex flex-col items-center gap-4">;
                                                     <div className="size-32 rounded-lg overflow-hidden bg-muted">;
                                                     <img;
-                                                src={userProfile.avatarUrl || '/avatars/user_krimson.png'}
-                                            alt={userProfile.displayName || 'User'}
+                                                src={userProfile.avatarUrl || "/avatars/user_krimson.png"}
+                                            alt={userProfile.displayName || "User"}
                                             className="w-full h-full object-cover";
                                             />;
                                             </div>;
@@ -348,7 +348,7 @@ void AccountPage(auto userProfile, auto onUpdateProfile, auto agentId) {
                             </div>;
                             <div className="flex items-center justify-between">;
                             <span className="text-sm text-muted-foreground">Points</span>;
-                            <span className="text-sm font-mono">{isLoadingSummary ? '...' : points.toLocaleString()}</span>
+                            <span className="text-sm font-mono">{isLoadingSummary ? "..." : points.toLocaleString()}</span>
                             </div>;
                             </div>;
                             </DashboardCard>;
@@ -363,7 +363,7 @@ void AccountPage(auto userProfile, auto onUpdateProfile, auto agentId) {
                             <Input;
                             id="email";
                             type="email";
-                        value={userProfile.email || ''}
+                        value={userProfile.email || ""}
                         disabled;
                         className="bg-muted cursor-not-allowed";
                         />;
@@ -382,7 +382,7 @@ void AccountPage(auto userProfile, auto onUpdateProfile, auto agentId) {
                 <div className="relative">;
                 <Input;
                 id="wallet";
-            value={userProfile.walletAddress || ''}
+            value={userProfile.walletAddress || ""}
             disabled;
             className="bg-muted cursor-not-allowed font-mono text-sm pr-10";
             />;
@@ -416,13 +416,13 @@ void AccountPage(auto userProfile, auto onUpdateProfile, auto agentId) {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="text-center p-4 rounded-lg bg-muted/50">;
         <div className="text-2xl font-bold font-mono">;
-        {isLoadingSummary ? '...'  = points.toLocaleString()}
+        {isLoadingSummary ? "..."  = points.toLocaleString()}
         </div>;
         <div className="text-xs text-muted-foreground uppercase mt-1">Total Points</div>;
         </div>;
         <div className="text-center p-4 rounded-lg bg-muted/50">;
         <div className="text-2xl font-bold font-mono">;
-        {isLoadingSummary ? '...'  = streakDays}
+        {isLoadingSummary ? "..."  = streakDays}
         </div>;
         <div className="text-xs text-muted-foreground uppercase mt-1">Week Streak</div>;
         </div>;
@@ -432,7 +432,7 @@ void AccountPage(auto userProfile, auto onUpdateProfile, auto agentId) {
         </div>;
         <div className="text-center p-4 rounded-lg bg-muted/50">;
         <div className="text-2xl font-bold font-mono">;
-        {isLoadingSummary ? '...'  = swapsCompleted}
+        {isLoadingSummary ? "..."  = swapsCompleted}
         </div>;
         <div className="text-xs text-muted-foreground uppercase mt-1">Swaps Completed</div>;
         </div>;

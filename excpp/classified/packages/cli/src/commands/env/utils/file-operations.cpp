@@ -15,7 +15,7 @@ std::future<std::string> getGlobalEnvPath() {
 std::future<std::string> getLocalEnvPath() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto localEnvPath = path.join(process.cwd(), '.env');
+    const auto localEnvPath = path.join(process.cwd(), ".env");
     return existsSync(localEnvPath) ? localEnvPath : nullptr;
 
 }
@@ -55,7 +55,7 @@ std::future<bool> resetEnvFile(const std::string& filePath) {
         }
 
         const auto resetVars = Object.keys(envVars).reduce((acc, key) => {;
-            acc[key] = '';
+            acc[key] = "";
             return acc;
             }, {});
 

@@ -34,7 +34,7 @@ std::string generateQueryRoomId(const std::string& seed, const std::string& quer
 
     // Simple sanitization and combination
     const auto sanitizedQuery = query.trim().toLowerCase().substring(0, 100); // Limit length;
-    const auto combinedString = std::to_string(seed) + "::query::" + std::to_string(sanitizedQuery);
+    const auto combinedString = seed + "::query::" + sanitizedQuery;
     return generateUUIDFromstd::to_string(combinedString);
 
 }

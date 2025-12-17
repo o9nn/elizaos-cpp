@@ -12,11 +12,11 @@ std::string getDefaultOutputDir(const std::string& outputDir, ProblemStatement p
     }
 
     // Generate default based on problem statement and agent
-    const auto timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-    const auto psId = problemStatement.id || 'unknown';
-    const auto agentName = agent.type || 'agent';
+    const auto timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+    const auto psId = problemStatement.id || "unknown";
+    const auto agentName = agent.type || "agent";
 
-    return std::to_string(psId) + "_" + std::to_string(agentName) + "_" + std::to_string(timestamp);
+    return "path.join("trajectories", " + psId + "_" + agentName + "_" + timestamp;
 
 }
 

@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-ErrorResponse handleError(unknown error) {
+ErrorResponse handleError(const std::any& error) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -31,8 +31,8 @@ ErrorResponse handleError(unknown error) {
             }
 
             if (
-            error.message.includes("network") ||;
-            error.message.includes("connection");
+            error.(std::find(message.begin(), message.end(), "network") != message.end()) ||;
+            error.(std::find(message.begin(), message.end(), "connection") != message.end());
             ) {
                 return new ClankerError(;
                 ErrorCode.NETWORK_ERROR,

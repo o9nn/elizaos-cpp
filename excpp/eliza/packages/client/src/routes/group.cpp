@@ -9,10 +9,10 @@ void GroupRoute() {
 
     const auto { channelId: channelIdFromPath } = useParams<{ channelId: string }>();
     const auto [searchParams] = useSearchParams();
-    const auto serverIdFromQuery = searchParams.get('serverId');
+    const auto serverIdFromQuery = searchParams.get("serverId");
 
     const auto channelId = validateUuid(channelIdFromPath);
-    const auto serverId = validateUuid(serverIdFromQuery || '');
+    const auto serverId = validateUuid(serverIdFromQuery || "");
 
     if (!channelId || !serverId) {
         return (;

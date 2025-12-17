@@ -34,7 +34,7 @@ std::future<std::optional<SolanaOracleInfo>> findPythFeed(const std::string& tok
 
     // Query Pyth API for price feed
     const auto response = fetch(;
-    "https://hermes.pyth.network/api/latest_price_feeds?ids[]=" + std::to_string(tokenMint)
+    "https://hermes.pyth.network/api/latest_price_feeds?ids[]=" + tokenMint
     );
 
     if (!response.ok) {
@@ -64,7 +64,7 @@ std::future<std::optional<SolanaOracleInfo>> findJupiterPool(const std::string& 
 
     // Query Jupiter API for available routes
     const auto response = fetch(;
-    "https://quote-api.jup.ag/v6/quote?inputMint=" + std::to_string(tokenMint) + "&outputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&amount=1000000"
+    "https://quote-api.jup.ag/v6/quote?inputMint=" + tokenMint + "&outputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&amount=1000000"
     );
 
     if (!response.ok) {
@@ -123,7 +123,7 @@ std::future<std::optional<SolanaOracleInfo>> findRaydiumPool(const std::string& 
                 poolAddress: pool.ammId,
                 liquidity,
                 valid: false,
-                "Low liquidity: $" + std::to_string(liquidity.toLocaleString()) + ". Minimum recommended: $50,000"
+                "warning: " + "Low liquidity: $" + std::to_string(liquidity.toLocaleString()) + ". Minimum recommended: $50,000"
                 };
             }
 
@@ -152,21 +152,21 @@ std::string formatOracleInfo(SolanaOracleInfo oracle) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto tvl = oracle.liquidity;
-    " - TVL: $" + std::to_string(oracle.liquidity.toLocaleString())
+    "? " + " - TVL: $" + std::to_string(oracle.liquidity.toLocaleString())
     : "";
 
     switch (oracle.type) {
-        case "pyth":
+        // case "pyth":
         return "Pyth Price Feed (Most Reliable)";
-        case "jupiter":
+        // case "jupiter":
         return "Jupiter Aggregator";
-        case "raydium":
-        return "Raydium Pool" + std::to_string(tvl);
-        case "orca":
-        return "Orca Whirlpool" + std::to_string(tvl);
-        case "pumpswap":
-        return "PumpSwap Bonding Curve" + std::to_string(tvl);
-        default:
+        // case "raydium":
+        return "Raydium Pool" + tvl;
+        // case "orca":
+        return "Orca Whirlpool" + tvl;
+        // case "pumpswap":
+        return "PumpSwap Bonding Curve" + tvl;
+        // default:
         return "Unknown Oracle";
     }
 

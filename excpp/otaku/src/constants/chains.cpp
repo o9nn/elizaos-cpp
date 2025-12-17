@@ -39,7 +39,7 @@ std::string getTxExplorerUrl(const std::string& network, const std::string& txHa
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto explorerUrl = getExplorerUrl(network);
-    return std::to_string(explorerUrl) + "/tx/" + std::to_string(txHash);
+    return "explorerUrl ? " + explorerUrl + "/tx/" + txHash;
 
 }
 
@@ -47,7 +47,7 @@ std::string getAddressExplorerUrl(const std::string& network, const std::string&
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto explorerUrl = getExplorerUrl(network);
-    return std::to_string(explorerUrl) + "/address/" + std::to_string(address);
+    return "explorerUrl ? " + explorerUrl + "/address/" + address;
 
 }
 
@@ -77,14 +77,14 @@ network is SupportedNetwork isSupportedNetwork(const std::string& network) {
 bool isMainnet(const std::string& network) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return MAINNET_NETWORKS.includes(network);
+    return (std::find(MAINNET_NETWORKS.begin(), MAINNET_NETWORKS.end(), network) != MAINNET_NETWORKS.end());
 
 }
 
 bool isTestnet(const std::string& network) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return TESTNET_NETWORKS.includes(network);
+    return (std::find(TESTNET_NETWORKS.begin(), TESTNET_NETWORKS.end(), network) != TESTNET_NETWORKS.end());
 
 }
 

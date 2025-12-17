@@ -1,11 +1,16 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <chrono>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
+#include <stdexcept>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
 
@@ -163,7 +168,7 @@ enum MemoryType {
  * - `room`: The memory is scoped to a specific room or channel.
  * This is used in `MemoryMetadata` to control how memories are stored and retrieved based on context.
  */
-using MemoryScope = std::variant<std::string, std::string, std::string>;
+using MemoryScope = std::string;
 
 /**
  * Base interface for all memory metadata types.
@@ -212,7 +217,7 @@ struct Log {
     UUID entityId;
     std::optional<UUID> roomId;
     std::string type;
-    Date createdAt;
+    std::chrono::system_clock::time_point createdAt;
 };
 
 /**
@@ -226,7 +231,7 @@ struct MessageExample {
 /**
  * Handler function type for processing messages
  */
-using Handler = std::function<std::future<unknown>(IAgentRuntime, Memory, State, std::any, HandlerCallback, std::vector<Memory>)>;
+using Handler = std::function<std::future<std::any>(IAgentRuntime, Memory, State, std::any, HandlerCallback, std::vector<Memory>)>;
 
 /**
  * Callback function type for handlers
@@ -392,7 +397,7 @@ struct Project {
     std::vector<ProjectAgent> agents;
 };
 
-using TemplateType = std::variant<, std::string, ((options: { state: State, std::function<void()>>;
+using TemplateType = std::function<void()>;
 
 /**
  * Configuration for an agent's character, defining its personality, knowledge, and capabilities.
@@ -1137,8 +1142,8 @@ enum SOCKET_MESSAGE_TYPE {
 struct ServiceError {
     std::string code;
     std::string message;
-    std::optional<unknown> details;
-    std::optional<Error> cause;
+    std::optional<std::any> details;
+    std::optional<std::runtime_error> cause;
 };
 
 /**
@@ -1160,7 +1165,7 @@ std::string getMemoryText(Memory memory, auto defaultValue);
 /**
  * Safely create a ServiceError from any caught error
  */
-ServiceError createServiceError(unknown error, auto code);
+ServiceError createServiceError(const std::any& error, auto code);
 
 /**
  * Replace 'any' types with more specific types
@@ -1172,7 +1177,7 @@ ServiceError createServiceError(unknown error, auto code);
  * This type is used to provide more specific typing for properties within `StateObject` and `StateArray`,
  * moving away from a generic 'any' type for better type safety and clarity in state management.
  */
-using StateValue = std::variant<std::string, double, bool, nullptr, StateObject, StateArray>;
+using StateValue = std::variant<std::string, double, bool, StateObject, StateArray>;
 /**
  * Represents a generic object structure within the agent's state, where keys are strings
  * and values can be any `StateValue`. This allows for nested objects within the state.
@@ -1208,7 +1213,7 @@ struct EnhancedState {
  * to define more specific types for component data where possible to improve type safety
  * and code maintainability. This type serves as a base for various component implementations.
  */
-using ComponentData = std::unordered_map<std::string, unknown>;
+using ComponentData = std::unordered_map<std::string, std::any>;
 
 // Replace 'any' in event handlers
 /**
@@ -1217,7 +1222,7 @@ using ComponentData = std::unordered_map<std::string, unknown>;
  * structured way to handle event data. Specific event handlers might cast this to a
  * more concrete type based on the event being processed.
  */
-using EventDataObject = std::unordered_map<std::string, unknown>;
+using EventDataObject = std::unordered_map<std::string, std::any>;
 
 /**
  * Defines a more specific type for event handlers, expecting an `EventDataObject`.
@@ -1225,7 +1230,7 @@ using EventDataObject = std::unordered_map<std::string, unknown>;
  * for functions that respond to events emitted within the agent runtime (see `emitEvent` in `AgentRuntime`).
  * Handlers can be synchronous or asynchronous.
  */
-using TypedEventHandler = std::variant<std::function<std::future<void>(EventDataObject)>, void>;
+using TypedEventHandler = std::function<std::variant<std::future<void>, void>(EventDataObject)>;
 
 // Replace 'any' in database adapter
 /**
@@ -1234,7 +1239,7 @@ using TypedEventHandler = std::variant<std::function<std::future<void>(EventData
  * (e.g., a connection pool object for PostgreSQL, a client instance for a NoSQL database).
  * This `unknown` type serves as a placeholder in the abstract `IDatabaseAdapter`.
  */
-using DbConnection = unknown;
+using DbConnection = std::any;
 
 /**
  * A generic type for metadata objects, often used in various parts of the system like
@@ -1242,7 +1247,7 @@ using DbConnection = unknown;
  * It allows for arbitrary key-value pairs where values are of `unknown` type,
  * encouraging consumers to perform type checking or casting.
  */
-using MetadataObject = std::unordered_map<std::string, unknown>;
+using MetadataObject = std::unordered_map<std::string, std::any>;
 
 // Replace 'any' in model handlers
 /**
@@ -1266,7 +1271,7 @@ struct ModelHandler {
  * structures. This type allows for a flexible way to pass configuration objects,
  * typically used during service initialization within a plugin or the `AgentRuntime`.
  */
-using ServiceConfig = std::unordered_map<std::string, unknown>;
+using ServiceConfig = std::unordered_map<std::string, std::any>;
 
 // Allowable vector dimensions
 

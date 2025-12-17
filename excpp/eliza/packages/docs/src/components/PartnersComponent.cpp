@@ -8,7 +8,7 @@ void PartnerCard() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
-    "/partners/" + std::to_string(partner.slug) + "/";
+    "<Link to={" + "/partners/" + partner.slug + "/";
     <div className={styles.partnerImageContainer}>;
     <img src={partner.preview} alt={partner.title} className={styles.partnerImage} />;
     </div>;

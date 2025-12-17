@@ -10,9 +10,9 @@ bool isPlugin(const std::any& module) {
     // Check for direct export of a plugin
     if (
     module &&;
-    typeof module == 'object' &&;
-    typeof module.name == 'string' &&;
-    typeof module.description == 'string';
+    typeof module == "object" &&;
+    typeof module.name == "string" &&;
+    typeof module.description == "string";
     ) {
         return true;
     }
@@ -20,11 +20,11 @@ bool isPlugin(const std::any& module) {
     // Check for default export of a plugin
     if (
     module &&;
-    typeof module == 'object' &&;
+    typeof module == "object" &&;
     module.default &&;
-    typeof module.default == 'object' &&;
-    typeof module.default.name == 'string' &&;
-    typeof module.default.description == 'string';
+    typeof module.default == "object" &&;
+    typeof module.default.name == "string" &&;
+    typeof module.default.description == "string";
     ) {
         return true;
     }
@@ -32,11 +32,11 @@ bool isPlugin(const std::any& module) {
     // Check for named export of a plugin
     for (const int key in module) {
         if (
-        key != 'default' &&;
+        key != "default" &&;
         module[key] &&;
-        typeof module[key] == 'object' &&;
-        typeof module[key].name == 'string' &&;
-        typeof module[key].description == 'string';
+        typeof module[key] == "object" &&;
+        typeof module[key].name == "string" &&;
+        typeof module[key].description == "string";
         ) {
             return true;
         }
@@ -53,9 +53,9 @@ Plugin extractPlugin(const std::any& module) {
         // Direct export
         if (
         module &&;
-        typeof module == 'object' &&;
-        typeof module.name == 'string' &&;
-        typeof module.description == 'string';
+        typeof module == "object" &&;
+        typeof module.name == "string" &&;
+        typeof module.description == "string";
         ) {
             return module;
         }
@@ -63,11 +63,11 @@ Plugin extractPlugin(const std::any& module) {
         // Default export
         if (
         module &&;
-        typeof module == 'object' &&;
+        typeof module == "object" &&;
         module.default &&;
-        typeof module.default == 'object' &&;
-        typeof module.default.name == 'string' &&;
-        typeof module.default.description == 'string';
+        typeof module.default == "object" &&;
+        typeof module.default.name == "string" &&;
+        typeof module.default.description == "string";
         ) {
             return module.default;
         }
@@ -75,11 +75,11 @@ Plugin extractPlugin(const std::any& module) {
         // Named export
         for (const int key in module) {
             if (
-            key != 'default' &&;
+            key != "default" &&;
             module[key] &&;
-            typeof module[key] == 'object' &&;
-            typeof module[key].name == 'string' &&;
-            typeof module[key].description == 'string';
+            typeof module[key] == "object" &&;
+            typeof module[key].name == "string" &&;
+            typeof module[key].description == "string";
             ) {
                 return module[key];
             }
@@ -105,14 +105,14 @@ std::future<Project> loadProject(const std::string& dir) {
             }
 
             // TODO: Get the package.json and get the main field
-            const auto packageJson = JSON.parse(fs.readFileSync(path.join(dir, 'package.json'), 'utf8'));
+            const auto packageJson = /* JSON.parse */ fs.readFileSync(path.join(dir, "package.json", "utf8"));
             const auto main = packageJson.main;
             if (!main) {
                 std::cout << 'No main field found in package.json << using default character' << std::endl;
 
                 // Create a fallback project with the default Eliza character
                 // Use deterministic UUID based on character name to match runtime behavior
-                const auto defaultCharacterName = 'Eliza (Default)';
+                const auto defaultCharacterName = "Eliza (Default)";
                 const auto elizaCharacter = getElizaCharacter(); // Get the filtered character based on env vars;
                 const ProjectAgent defaultAgent = {;
                     character: {
@@ -121,7 +121,7 @@ std::future<Project> loadProject(const std::string& dir) {
                         name: defaultCharacterName,
                         },
                         init: async () => {
-                            std::cout << 'Initializing default Eliza character' << std::endl;
+                            std::cout << "Initializing default Eliza character" << std::endl;
                             },
                             };
 
@@ -134,11 +134,11 @@ std::future<Project> loadProject(const std::string& dir) {
                             // Try to find the project's entry point
                             const auto entryPoints = [;
                             path.join(dir, main),
-                            path.join(dir, 'dist/index.js'),
-                            path.join(dir, 'src/index.ts'),
-                            path.join(dir, 'src/index.js'),
-                            path.join(dir, 'index.ts'),
-                            path.join(dir, 'index.js'),
+                            path.join(dir, "dist/index.js"),
+                            path.join(dir, "src/index.ts"),
+                            path.join(dir, "src/index.js"),
+                            path.join(dir, "index.ts"),
+                            path.join(dir, "index.js"),
                             ];
 
                             std::optional<ProjectModule> projectModule = nullptr;
@@ -148,11 +148,11 @@ std::future<Project> loadProject(const std::string& dir) {
                                         const auto importPath = path.resolve(entryPoint);
                                         // Convert to file URL for ESM import
                                         const auto importUrl =;
-                                        process.platform == 'win32';
-                                        ? 'file:///' + importPath.replace(/\\/g, '/')
-                                        : 'file://' + importPath;
+                                        process.platform == "win32";
+                                        ? "file:///" + importPath.replace(/\\/g, "/")
+                                        : "file://" + importPath;
                                         projectModule = (import(importUrl));
-                                        std::cout << "Loaded project from " + std::to_string(entryPoint) << std::endl;
+                                        std::cout << "Loaded project from " + entryPoint << std::endl;
 
                                         // Debug the module structure
                                         const auto exportKeys = Object.keys(projectModule);
@@ -167,7 +167,7 @@ std::future<Project> loadProject(const std::string& dir) {
 
                                         break;
                                         } catch (error) {
-                                            std::cout << "Failed to import project from " + std::to_string(entryPoint) + ":" << error << std::endl;
+                                            std::cout << "Failed to import project from " + entryPoint + ":" << error << std::endl;
                                         }
                                     }
                                 }
@@ -181,7 +181,7 @@ std::future<Project> loadProject(const std::string& dir) {
                                 logger.debug(`Is this a plugin? ${moduleIsPlugin}`);
 
                                 if (moduleIsPlugin) {
-                                    std::cout << 'Detected plugin module instead of project' << std::endl;
+                                    std::cout << "Detected plugin module instead of project" << std::endl;
 
                                     try {
                                         // Extract the plugin object
@@ -196,34 +196,34 @@ std::future<Project> loadProject(const std::string& dir) {
                                             // Copy all other properties from the original plugin first
                                             ...plugin,
                                             // Then override with defaults if needed
-                                            name: plugin.name || 'unknown-plugin',
-                                            description: plugin.description || 'No description',
+                                            name: plugin.name || "unknown-plugin",
+                                            description: plugin.description || "No description",
                                             init:
                                             plugin.init ||;
                                             [&](async () {
-                                                std::cout << "Dummy init for plugin: " + std::to_string(plugin.name) << std::endl;
+                                                std::cout << "Dummy init for plugin: " + plugin.name << std::endl;
                                                 }),
                                                 };
 
                                                 // Use the Eliza character as our test agent
                                                 // Use deterministic UUID based on character name to match runtime behavior
-                                                const auto characterName = 'Eliza (Test Mode)';
+                                                const auto characterName = "Eliza (Test Mode)";
                                                 const auto elizaCharacter = getElizaCharacter(); // Get the filtered character based on env vars;
                                                 const Character testCharacter = {;
                                                     ...elizaCharacter,
                                                     id: stringToUuid(characterName),
                                                     name: characterName,
-                                                    std::to_string(elizaCharacter.system) + " Testing the plugin: " + std::to_string(completePlugin.name) + "."
+                                                    "system: " + elizaCharacter.system + " Testing the plugin: " + completePlugin.name + "."
                                                     };
 
-                                                    std::cout << "Using Eliza character agent for plugin: " + std::to_string(completePlugin.name) << std::endl;
+                                                    std::cout << "Using Eliza character agent for plugin: " + completePlugin.name << std::endl;
 
                                                     // Create a test agent with the plugin included
                                                     const ProjectAgent testAgent = {;
                                                         character: testCharacter,
                                                         plugins: [completePlugin], // Only include the plugin being tested
                                                         init: async () => {
-                                                            std::cout << "Initializing Eliza test agent for plugin: " + std::to_string(completePlugin.name) << std::endl;
+                                                            std::cout << "Initializing Eliza test agent for plugin: " + completePlugin.name << std::endl;
                                                             // The plugin will be registered automatically in runtime.initialize()
                                                             },
                                                             };
@@ -240,7 +240,7 @@ std::future<Project> loadProject(const std::string& dir) {
                                                                 pluginModule: completePlugin,
                                                                 };
                                                                 } catch (error) {
-                                                                    std::cerr << 'Error extracting plugin from module:' << error << std::endl;
+                                                                    std::cerr << "Error extracting plugin from module:" << error << std::endl;
                                                                     throw;
                                                                 }
                                                             }
@@ -251,11 +251,11 @@ std::future<Project> loadProject(const std::string& dir) {
                                                             // First check if the default export has an agents array
                                                             if (
                                                             projectModule.default &&;
-                                                            typeof projectModule.default == 'object' &&;
+                                                            typeof projectModule.default == "object" &&;
                                                             Array.isArray(projectModule.default.agents);
                                                             ) {
                                                                 // Use the agents from the default export
-                                                                agents.push(...(projectModule.default.agents[]));
+                                                                agents.push_back(...(projectModule.default.agents[]));
                                                                 logger.debug(`Found ${agents.length} agents in default export's agents array`);
                                                             }
                                                             // Only if we didn't find agents in the default export, look for other exports
@@ -266,17 +266,17 @@ std::future<Project> loadProject(const std::string& dir) {
                                                                         // If it's a default export but doesn't have agents array, check if it's a single agent
                                                                         if ((value as ProjectModule).character && (value as ProjectModule).init) {
                                                                             // If it's a single agent, add it
-                                                                            agents.push(value);
+                                                                            agents.push_back(value);
                                                                             logger.debug(`Found agent in default export (single agent)`);
                                                                         }
                                                                         } else if (;
                                                                         value &&;
-                                                                        typeof value == 'object' &&;
+                                                                        typeof value == "object" &&;
                                                                         (value).character &&;
                                                                         (value).init;
                                                                         ) {
                                                                             // If it's a named export that looks like an agent, add it
-                                                                            agents.push(value);
+                                                                            agents.push_back(value);
                                                                             logger.debug(`Found agent in named export: ${key}`);
                                                                         }
                                                                     }
@@ -294,7 +294,7 @@ std::future<Project> loadProject(const std::string& dir) {
 
                                                                     return project;
                                                                     } catch (error) {
-                                                                        std::cerr << 'Error loading project:' << error << std::endl;
+                                                                        std::cerr << "Error loading project:" << error << std::endl;
                                                                         throw;
                                                                     }
 

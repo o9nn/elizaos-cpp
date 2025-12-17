@@ -9,7 +9,7 @@ bool parseBooleanFromText(const std::string& value) {
 
     if (!value) return false;
     const auto normalized = value.toLowerCase().trim();
-    return normalized == 'true' || normalized == '1' || normalized == 'yes' || normalized == 'on';
+    return normalized == "true" || normalized == "1" || normalized == "yes" || normalized == "on";
 
 }
 
@@ -22,7 +22,7 @@ void captureLogEntry(const std::string& level, const std::vector<std::any>& args
     const LogEntry entry = {;
         time: Date.now(),
         level: levelValues[level typeof levelValues] || 30,
-        msg: typeof message == 'string' ? message : JSON.stringify(message),
+        msg: typeof message == "string" ? message : /* JSON.stringify */ std::string(message),
         };
 
         // Extract context data

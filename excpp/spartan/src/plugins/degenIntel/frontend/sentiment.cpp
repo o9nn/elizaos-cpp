@@ -8,10 +8,10 @@ void Sentiment() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto query = useQuery({;
-        queryKey: ['sentiment'],
+        queryKey: ["sentiment"],
         queryFn: async () => {
-            const auto response = std::to_string(import.meta.env.VITE_API_URL) + "/sentiment";
-                method: 'POST',
+            const auto response = "fetch(" + import.meta.env.VITE_API_URL + "/sentiment";
+                method: "POST",
                 });
                 const auto data = response.json();
                 return data;
@@ -36,7 +36,7 @@ void Sentiment() {
                 {query.data.map((item) => (;
                 <TableRow key={item._id}>;
                 <TableCell className="font-medium text-muted-foreground">;
-            {moment(item.timeslot).format('LLL')}
+            {moment(item.timeslot).format("LLL")}
             </TableCell>;
             <TableCell>{item.text}</TableCell>;
             <TableCell>;
@@ -45,7 +45,7 @@ void Sentiment() {
             <div className="flex items-center gap-2 w-full" key={item.token}>;
             <div className="w-24">{token.token}</div>;
             <div className="w-16">;
-            <Badge variant={token.sentiment >= 0 ? 'success' : 'destructive'}>
+            <Badge variant={token.sentiment >= 0 ? "success" : "destructive"}>
         {token.sentiment}
         </Badge>;
         </div>;

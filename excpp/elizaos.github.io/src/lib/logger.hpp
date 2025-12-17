@@ -1,10 +1,13 @@
 #pragma once
+#include <algorithm>
+#include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -19,7 +22,7 @@ namespace elizaos {
 /**
  * Log levels
  */
-using LogLevel = std::variant<"error", "warn", "info", "debug", "trace">;
+using LogLevel = std::string;
 
 /**
  * Logger interface
@@ -60,6 +63,6 @@ Logger createLogger(LoggerConfig config);
 /**
  * Limit object depth for logging
  */
-unknown limitObjectDepth(unknown obj, double depth = 0, double maxDepth = 3);
+std::any limitObjectDepth(const std::any& obj, double depth = 0, double maxDepth = 3);
 
 } // namespace elizaos

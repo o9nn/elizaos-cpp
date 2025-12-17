@@ -1,10 +1,13 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "actions/getLeaderboard.hpp"
 #include "actions/getPointsSummary.hpp"
@@ -26,13 +29,13 @@ namespace elizaos {
 
 
 // Leaderboard route handlers
-std::future<void> handleGetLeaderboard(Request req, Response res, IAgentRuntime runtime);
+std::future<void> handleGetLeaderboard(const std::string& req, const std::string& res, IAgentRuntime runtime);
 
 // User summary route handler
-std::future<void> handleGetUserSummary(Request req, Response res, IAgentRuntime runtime);
+std::future<void> handleGetUserSummary(const std::string& req, const std::string& res, IAgentRuntime runtime);
 
 // Referral code route handler
-std::future<void> handleGetReferralCode(Request req, Response res, IAgentRuntime runtime);
+std::future<void> handleGetReferralCode(const std::string& req, const std::string& res, IAgentRuntime runtime);
 
   // Note: Plugin routes are automatically protected by the general API rate limit middleware
   // (1000 requests per 15 minutes per IP) applied in createApiRouter.

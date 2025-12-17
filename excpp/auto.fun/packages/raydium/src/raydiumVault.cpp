@@ -151,7 +151,7 @@ std::future<void> claim(Program<RaydiumVault> program, anchor.web3.Keypair signe
             // Parse poolInfo if it's a string
             if (typeof poolInfo == "string") {
                 try {
-                    poolInfo = JSON.parse(poolInfo);
+                    poolInfo = /* JSON.parse */ poolInfo;
                     } catch (e) {
                         std::cerr << "Failed to parse poolInfo string:" << e << std::endl;
                         throw std::runtime_error("Invalid poolInfo format");
@@ -159,7 +159,7 @@ std::future<void> claim(Program<RaydiumVault> program, anchor.web3.Keypair signe
                 }
 
                 if (!poolInfo || !poolInfo.lpMint || !poolInfo.lpMint.address || !poolInfo.mintA || !poolInfo.mintB ) {
-                    poolInfo = (raydium.api.fetchPoolById({ ids: poolId.toString() }))[0];
+                    poolInfo = (raydium.api.fetchPoolById({ ids: std::to_string(poolId) }))[0];
                     if (!poolInfo) {
                         throw std::runtime_error("Pool info not found");
                     }
@@ -167,11 +167,11 @@ std::future<void> claim(Program<RaydiumVault> program, anchor.web3.Keypair signe
                     const auto db = getDB();
                     db;
                     .update(tokens);
-                    .set({ poolInfo: JSON.stringify(poolInfo) })
+                    .set({ poolInfo: /* JSON.stringify */ std::string(poolInfo) })
                     .where(eq(tokens.mint, token.mint));
                 }
 
-                const auto pool_state = new anchor.web3.PublicKey(poolId.toString());
+                const auto pool_state = new anchor.web3.PublicKey(std::to_string(poolId));
 
                 // Safer access to lpMint address
                 if (!poolInfo.lpMint.address) {
@@ -180,24 +180,24 @@ std::future<void> claim(Program<RaydiumVault> program, anchor.web3.Keypair signe
                 }
 
                 const auto lp_mint = new anchor.web3.PublicKey(poolInfo.lpMint.address);
-                std::cout << "lp_mint" << lp_mint.toString() << std::endl;
+                std::cout << "lp_mint" << std::to_string(lp_mint) << std::endl;
 
                 // // Debug logging for other mints
                 // console.log("mintA:", poolInfo.mintA);
                 // console.log("mintB:", poolInfo.mintB);
 
                 const auto vault0_mint = new anchor.web3.PublicKey(;
-                poolInfo.mintA.address.toString();
+                poolInfo.mintA.std::to_string(address);
                 );
                 const auto vault1_mint = new anchor.web3.PublicKey(;
-                poolInfo.mintB.address.toString();
+                poolInfo.mintB.std::to_string(address);
                 );
-                const auto cpmm_pool_key = raydium.cpmm.getCpmmPoolKeys(poolId.toString());
+                const auto cpmm_pool_key = raydium.cpmm.getCpmmPoolKeys(std::to_string(poolId));
                 const auto token0_vault = new anchor.web3.PublicKey(;
-                cpmm_pool_key.vault.A.toString();
+                cpmm_pool_key.vault.std::to_string(A);
                 );
                 const auto token1_vault = new anchor.web3.PublicKey(;
-                cpmm_pool_key.vault.B.toString();
+                cpmm_pool_key.vault.std::to_string(B);
                 );
 
                 // Ensure associated token accounts exist
@@ -307,7 +307,7 @@ std::future<void> claim(Program<RaydiumVault> program, anchor.web3.Keypair signe
                                                 if (error instanceof anchor.web3.SendTransactionError) {
                                                     std::cerr << "Transaction failed with logs:" << error.logs << std::endl;
                                                     throw new Error(
-                                                    "Transaction failed: " + std::to_string(error.message) + "\nLogs: " + std::to_string(JSON.stringify(error.logs, nullptr, 2))
+                                                    "Transaction failed: " + error.message + "\nLogs: " + std::to_string(/* JSON.stringify */ std::string(error.logs, nullptr, 2))
                                                     );
                                                 }
                                                 std::cerr << "Error in claim:" << error << std::endl;

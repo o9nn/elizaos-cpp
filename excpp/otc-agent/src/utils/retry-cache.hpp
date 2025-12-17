@@ -1,11 +1,14 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -36,7 +39,7 @@ double calculateDelay(double attempt);
 /**
  * Check if an error is retryable (rate limit, network error, etc.)
  */
-bool isRetryableError(unknown error);
+bool isRetryableError(const std::any& error);
 
 /**
  * Execute a function with exponential retry and caching
@@ -57,7 +60,7 @@ bool isRetryableError(unknown error);
  * Fetch with exponential retry (for HTTP requests)
  * Automatically handles 429 and network errors
  */
-std::future<Response> fetchWithRetry(const std::string& url, std::optional<RequestInit> options, std::optional<std::any> retryOptions);
+std::future<std::string> fetchWithRetry(const std::string& url, std::optional<RequestInit> options, std::optional<std::any> retryOptions);
 
 /**
  * Fetch JSON with retry and caching

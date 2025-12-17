@@ -17,7 +17,7 @@ void DealPage() {
             async function loadDeal() {
                 const auto quoteId = params.id;
                 if (!quoteId) {
-                    router.push("/");
+                    router.push_back("/");
                     return;
                 }
 
@@ -28,7 +28,7 @@ void DealPage() {
                 while (retries > 0) {
                     std::cout << "[DealPage] Fetching deal (" + std::to_string(4 - retries) + "/3):" << quoteId << std::endl;
 
-                    const auto response = "/api/quote/executed/" + std::to_string(quoteId);
+                    const auto response = "fetch(" + "/api/quote/executed/" + quoteId;
                         cache: "no-store",
                         });
 

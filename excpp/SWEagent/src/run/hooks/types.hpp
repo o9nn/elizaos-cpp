@@ -1,15 +1,18 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
-#include "..agent/problem-statement.hpp"
-#include "..environment/swe-env.hpp"
-#include "..types.hpp"
+#include "agent/problem-statement.hpp"
+#include "environment/swe-env.hpp"
+#include "types.hpp"
 
 namespace elizaos {
 
@@ -32,7 +35,7 @@ struct RunHook {
 /**
  * Abstract base class for run hooks
  */
-    void onInit(const std::unordered_map<std::string, unknown>& _run);
+    void onInit(const std::unordered_map<std::string, std::any>& _run);
     void onStart();
     void onEnd();
     void onInstanceStart(const std::any& _params);
@@ -46,7 +49,7 @@ class CombinedRunHooks {
 public:
     void addHook(RunHook hook);
     std::vector<RunHook> hooks() const;
-    void onInit(const std::unordered_map<std::string, unknown>& run);
+    void onInit(const std::unordered_map<std::string, std::any>& run);
     void onStart();
     void onEnd();
     void onInstanceStart(const std::any& params);

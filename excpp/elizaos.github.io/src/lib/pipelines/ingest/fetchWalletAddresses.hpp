@@ -1,15 +1,17 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
-#include "..walletLinking/fetchWalletDataFromGithub.hpp"
-#include ".getActiveContributors.hpp"
-#include ".types.hpp"
 #include "context.hpp"
+#include "getActiveContributors.hpp"
+#include "types.hpp"
+#include "walletLinking/fetchWalletDataFromGithub.hpp"
 
 namespace elizaos {
 
@@ -20,7 +22,7 @@ namespace elizaos {
 
 struct WalletAddressIngestResult {
     std::string username;
-    std::variant<"updated", "no-wallets", "failed"> status;
+    std::string status;
 };
 
 

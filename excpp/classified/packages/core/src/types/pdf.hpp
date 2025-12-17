@@ -1,9 +1,13 @@
 #pragma once
+#include <algorithm>
+#include <chrono>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "service.hpp"
 
@@ -19,8 +23,8 @@ struct PdfExtractionResult {
     double pageCount;
     std::optional<std::string> title;
     std::optional<std::string> author;
-    std::optional<Date> createdAt;
-    std::optional<Date> modifiedAt;
+    std::optional<std::chrono::system_clock::time_point> createdAt;
+    std::optional<std::chrono::system_clock::time_point> modifiedAt;
 };
 
 struct PdfGenerationOptions {

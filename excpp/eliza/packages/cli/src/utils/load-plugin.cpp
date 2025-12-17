@@ -12,10 +12,10 @@ std::string getGlobalNodeModulesPath() {
 
     if (process.platform == 'win32') {
         // On Windows, node_modules is typically in the same directory as node.exe
-        return path.join(nodeDir, 'node_modules');
+        return path.join(nodeDir, "node_modules");
         } else {
             // On Unix systems, we go up one level from bin directory
-            return path.join(nodeDir, '..', 'lib', 'node_modules');
+            return path.join(nodeDir, "..", "lib", "node_modules");
         }
 
 }
@@ -23,17 +23,17 @@ std::string getGlobalNodeModulesPath() {
 std::string resolveNodeModulesPath(const std::string& repository) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return path.resolve(process.cwd(), 'node_modules', repository, ...segments);
+    return path.resolve(process.cwd(), "node_modules", repository, ...segments);
 
 }
 
 std::future<std::optional<PackageJson>> readPackageJson(const std::string& repository) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto packageJsonPath = resolveNodeModulesPath(repository, 'package.json');
+    const auto packageJsonPath = resolveNodeModulesPath(repository, "package.json");
     try {
         if (existsSync(packageJsonPath)) {
-            return JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
+            return /* JSON.parse */ readFileSync(packageJsonPath, "utf-8");
         }
         } catch (error) {
             logger.debug(`Failed to read package.json for '${repository}':`, error);
@@ -59,7 +59,7 @@ std::future<std::optional<std::any>> tryImporting(const std::string& importPath,
 bool isElizaOSPackageName(const std::string& repository) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return repository.startsWith('@elizaos/') || repository.startsWith('@elizaos-plugins/');
+    return repository.startsWith("@elizaos/") || repository.startsWith("@elizaos-plugins/");
 
 }
 
@@ -75,9 +75,9 @@ std::vector<ImportStrategy> getStrategiesForPlugin(const std::string& repository
             // Third-party plugins: only try relevant strategies
             return importStrategies.filter(;
             (strategy) =>;
-            strategy.name == 'local development plugin' ||;
-            strategy.name == 'package.json entry' ||;
-            strategy.name == 'common dist pattern';
+            strategy.name == "local development plugin" ||;
+            strategy.name == "package.json entry" ||;
+            strategy.name == "common dist pattern";
             );
         }
 
@@ -90,7 +90,7 @@ std::future<std::optional<std::any>> loadPluginModule(const std::string& reposit
     const auto strategies = getStrategiesForPlugin(repository);
 
     logger.debug(
-    "Loading " + std::to_string(isElizaOS ? 'ElizaOS' : 'third-party') + " plugin: " + std::to_string(repository) + " (" + std::to_string(strategies.length) + " strategies)"
+    "Loading " + std::to_string(isElizaOS ? "ElizaOS" : "third-party") + " plugin: " + repository + " (" + strategies.size() + " strategies)"
     );
 
     for (const auto& strategy : strategies)
@@ -98,7 +98,7 @@ std::future<std::optional<std::any>> loadPluginModule(const std::string& reposit
         if (result) return result;
     }
 
-    std::cout << "Failed to load plugin module '" + std::to_string(repository) + "' using all relevant strategies." << std::endl;
+    std::cout << "Failed to load plugin module "" + repository + "" using all relevant strategies." << std::endl;
     return nullptr;
 
 }

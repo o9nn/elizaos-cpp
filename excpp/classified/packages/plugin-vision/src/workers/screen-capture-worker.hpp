@@ -1,10 +1,13 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "worker-logger.hpp"
 
@@ -46,7 +49,7 @@ private:
     WorkerConfig config_;
     SharedArrayBuffer sharedBuffer_;
     DataView dataView_;
-    Int32Array atomicState_;
+    std::vector<int32_t> atomicState_;
 };
 
 // Worker entry point

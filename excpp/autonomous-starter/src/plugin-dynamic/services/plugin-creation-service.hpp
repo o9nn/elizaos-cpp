@@ -1,15 +1,18 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <chrono>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
-#include ".utils/plugin-templates.hpp"
 #include "elizaos/core.hpp"
+#include "utils/plugin-templates.hpp"
 
 namespace elizaos {
 
@@ -46,15 +49,15 @@ struct PluginSpecification {
 struct PluginCreationJob {
     std::string id;
     PluginSpecification specification;
-    std::variant<"pending", "running", "completed", "failed", "cancelled"> status;
+    std::string status;
     std::string currentPhase;
     double progress;
     std::vector<std::string> logs;
     std::optional<std::string> error;
     std::optional<std::string> result;
     std::string outputPath;
-    Date startedAt;
-    std::optional<Date> completedAt;
+    std::chrono::system_clock::time_point startedAt;
+    std::optional<std::chrono::system_clock::time_point> completedAt;
     double currentIteration;
     double maxIterations;
     double passed;
@@ -65,7 +68,7 @@ struct PluginCreationJob {
     double iteration;
     std::string phase;
     std::string error;
-    Date timestamp;
+    std::chrono::system_clock::time_point timestamp;
 };
 
 class PluginCreationService {

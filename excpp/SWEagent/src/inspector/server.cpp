@@ -7,7 +7,7 @@ namespace elizaos {
 TrajectoryContent addProblemStatement(TrajectoryContent content) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    auto problemStatement = '';
+    auto problemStatement = "";
 
     for (const auto& item : content.history || [])
         if (item.role == 'user') {
@@ -18,11 +18,11 @@ TrajectoryContent addProblemStatement(TrajectoryContent content) {
 
     if (problemStatement) {
         content.trajectory.unshift({
-            thought: '',
-            action: '',
-            response: '',
+            thought: "",
+            action: "",
+            response: "",
             observation: problemStatement,
-            messages: [{ role: 'system', content: 'Problem Statement placeholder' }],
+            messages: [{ role: "system", content: "Problem Statement placeholder" }],
             });
         }
 
@@ -41,38 +41,38 @@ TrajectoryContent appendExit(TrajectoryContent content) {
 
     if (exitStatus.startsWith('submitted')) {
         if (content.info.submission) {
-            content.trajectory.push({
-                thought: 'Submitting solution',
-                action: 'Model Submission',
-                response: 'Submitting solution',
+            content.trajectory.push_back({
+                thought: "Submitting solution",
+                action: "Model Submission",
+                response: "Submitting solution",
                 observation: content.info.submission,
                 messages: [],
                 });
             }
-            } else if (exitStatus == 'exit_cost' || exitStatus == 'exit_context') {
-                const auto observation = exitStatus == 'exit_cost' ? 'Exit due to cost limit' : 'Exit due to context limit';
+            } else if (exitStatus == "exit_cost" || exitStatus == "exit_context") {
+                const auto observation = exitStatus == "exit_cost" ? "Exit due to cost limit" : "Exit due to context limit";
 
-                content.trajectory.push({
-                    thought: 'Exit',
-                    action: 'Exit',
-                    response: '',
+                content.trajectory.push_back({
+                    thought: "Exit",
+                    action: "Exit",
+                    response: "",
                     observation,
                     messages: [],
                     });
-                    } else if (exitStatus == 'exit_error') {
-                        content.trajectory.push({
-                            thought: 'Exit',
-                            action: 'Exit due to error',
-                            response: '',
-                            observation: 'Exit due to error',
+                    } else if (exitStatus == "exit_error") {
+                        content.trajectory.push_back({
+                            thought: "Exit",
+                            action: "Exit due to error",
+                            response: "",
+                            observation: "Exit due to error",
                             messages: [],
                             });
-                            } else if (exitStatus == 'exit_format') {
-                                content.trajectory.push({
-                                    thought: 'Exit',
-                                    action: 'Exit due to format error',
-                                    response: '',
-                                    observation: 'Exit due to format error',
+                            } else if (exitStatus == "exit_format") {
+                                content.trajectory.push_back({
+                                    thought: "Exit",
+                                    action: "Exit due to format error",
+                                    response: "",
+                                    observation: "Exit due to format error",
                                     messages: [],
                                     });
                                 }
@@ -92,12 +92,12 @@ TrajectoryContent addModelStats(TrajectoryContent content) {
     Total Cost: $${modelStats.totalCost.toFixed(4) || 0}
     Input Tokens: ${modelStats.instanceInputTokens || 0}
     Output Tokens: ${modelStats.instanceOutputTokens || 0}
-    API Calls: ${modelStats.instanceCallCount || 0}`;
+    "API Calls: ${modelStats.instanceCallCount || 0}"
 
-    content.trajectory.push({
-        thought: '',
-        action: 'Model Stats',
-        response: '',
+    content.trajectory.push_back({
+        thought: "",
+        action: "Model Stats",
+        response: "",
         observation: statsText,
         messages: [],
         });
@@ -111,12 +111,12 @@ std::optional<TrajectoryContent> getTrajectory(const std::string& filePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
-        const auto fileContent = fs.readFileSync(filePath, 'utf-8');
+        const auto fileContent = fs.readFileSync(filePath, "utf-8");
         auto content: TrajectoryContent;
 
         // Try parsing as JSON first, then YAML
         try {
-            content = JSON.parse(fileContent);
+            content = /* JSON.parse */ fileContent;
             } catch {
                 content = yaml.load(fileContent);
             }
@@ -128,10 +128,10 @@ std::optional<TrajectoryContent> getTrajectory(const std::string& filePath) {
 
             // Add environment information if available
             if (content.environment) {
-                content.trajectory.push({
-                    thought: '',
-                    action: 'Environment',
-                    response: '',
+                content.trajectory.push_back({
+                    thought: "",
+                    action: "Environment",
+                    response: "",
                     observation: content.environment,
                     messages: [],
                     });
@@ -139,7 +139,7 @@ std::optional<TrajectoryContent> getTrajectory(const std::string& filePath) {
 
                 return content;
                 } catch (error) {
-                    std::cerr << "Error reading trajectory file " + std::to_string(filePath) + ":" << error << std::endl;
+                    std::cerr << "Error reading trajectory file " + filePath + ":" << error << std::endl;
                     return nullptr;
                 }
 
@@ -150,8 +150,8 @@ void startInspectorServer(std::optional<std::any> options) {
 
     const auto app = express();
     const auto port = options.port || 8000;
-    const auto trajectoryDir = options.trajectoryDir || './trajectories';
-    const auto staticDir = options.staticDir || path.join(__dirname, '../../sweagent/inspector');
+    const auto trajectoryDir = options.trajectoryDir || "./trajectories";
+    const auto staticDir = options.staticDir || path.join(__dirname, "../../sweagent/inspector");
 
     // Ensure trajectory directory exists
     if (!fs.existsSync(trajectoryDir)) {
@@ -162,11 +162,11 @@ void startInspectorServer(std::optional<std::any> options) {
     app.use(express.static(staticDir));
 
     // API endpoint to list trajectory files
-    app.get('/api/trajectories', (_req, res) => {
+    app.get("/api/trajectories", (_req, res) => {
         try {
             const auto files = fs;
             .readdirSync(trajectoryDir);
-            .filter((file) => file.endsWith('.traj') || file.endsWith('.yaml') || file.endsWith('.json'));
+            .filter((file) => file.endsWith(".traj") || file.endsWith(".yaml") || file.endsWith(".json"));
             .map((file) => ({
                 name: file,
                 path: path.join(trajectoryDir, file),
@@ -176,44 +176,44 @@ void startInspectorServer(std::optional<std::any> options) {
 
                 res.json(files);
                 } catch (error) {
-                    std::cerr << 'Error listing trajectories:' << error << std::endl;
-                    res.status(500).json({ error: 'Failed to list trajectories' });
+                    std::cerr << "Error listing trajectories:" << error << std::endl;
+                    res.status(500).json({ error: "Failed to list trajectories" });
                 }
                 });
 
                 // API endpoint to get a specific trajectory
-                app.get('/api/trajectory/:filename', (req, res) => {
+                app.get("/api/trajectory/:filename", (req, res) => {
                     const auto filename = req.params.filename;
                     const auto filePath = path.join(trajectoryDir, filename);
 
                     if (!fs.existsSync(filePath)) {
-                        return res.status(404).json({ error: 'Trajectory not found' });
+                        return res.status(404).json({ error: "Trajectory not found" });
                     }
 
                     const auto trajectory = getTrajectory(filePath);
 
                     if (!trajectory) {
-                        return res.status(500).json({ error: 'Failed to parse trajectory' });
+                        return res.status(500).json({ error: "Failed to parse trajectory" });
                     }
 
                     return res.json(trajectory);
                     });
 
                     // API endpoint to get trajectory statistics
-                    app.get('/api/stats', (_req, res) => {
+                    app.get("/api/stats", (_req, res) => {
                         try {
                             const auto files = fs;
                             .readdirSync(trajectoryDir);
-                            .filter((file) => file.endsWith('.traj') || file.endsWith('.yaml') || file.endsWith('.json'));
+                            .filter((file) => file.endsWith(".traj") || file.endsWith(".yaml") || file.endsWith(".json"));
 
                             const auto stats = {;
-                                totalTrajectories: files.length,
+                                totalTrajectories: files.size(),
                                 recentTrajectories: files.slice(0, 10).map((file) => {
                                     const auto trajectory = getTrajectory(path.join(trajectoryDir, file));
                                     return {
                                         file,
-                                        steps: trajectory.trajectory.length || 0,
-                                        exitStatus: trajectory.info.exitStatus || 'unknown',
+                                        steps: trajectory.trajectory.size() || 0,
+                                        exitStatus: trajectory.info.exitStatus || "unknown",
                                         cost: trajectory.info.modelStats.instanceCost || 0,
                                         };
                                         }),
@@ -221,16 +221,16 @@ void startInspectorServer(std::optional<std::any> options) {
 
                                         res.json(stats);
                                         } catch (error) {
-                                            std::cerr << 'Error computing statistics:' << error << std::endl;
-                                            res.status(500).json({ error: 'Failed to compute statistics' });
+                                            std::cerr << "Error computing statistics:" << error << std::endl;
+                                            res.status(500).json({ error: "Failed to compute statistics" });
                                         }
                                         });
 
                                         // Start the server
                                         app.listen(port, () => {
-                                            std::cout << "Inspector server running at http://localhost:" + std::to_string(port) << std::endl;
-                                            std::cout << "Serving trajectories from: " + std::to_string(trajectoryDir) << std::endl;
-                                            std::cout << "Static files from: " + std::to_string(staticDir) << std::endl;
+                                            std::cout << "Inspector server running at http://localhost:" + port << std::endl;
+                                            std::cout << "Serving trajectories from: " + trajectoryDir << std::endl;
+                                            std::cout << "Static files from: " + staticDir << std::endl;
                                             });
 
 }

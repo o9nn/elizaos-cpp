@@ -1,10 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -14,9 +16,9 @@ namespace elizaos {
 
 // Shared types for OTC Desk plugin - for external use only
 
-using QuoteStatus = std::variant<, "active", "expired", "executed", "rejected", "approved">;
-using PaymentCurrency = std::variant<"ETH", "USDC">;
-using ChainType = std::variant<"evm", "solana">;
+using QuoteStatus = ;
+using PaymentCurrency = std::string;
+using ChainType = std::string;
 
 struct QuoteMemory {
     std::string id;

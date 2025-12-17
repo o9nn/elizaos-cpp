@@ -17,7 +17,7 @@ void upgradeDoubleToTriple(auto tpl) {
         [&](_match, inner) {
             // keep the block keyword {{else}} unchanged
             if (inner.trim() == 'else') return `{{${inner}}}`;
-            return "{{{" + std::to_string(inner) + "}}}";
+            return "{{{" + inner + "}}}";
         }
         );
         }
@@ -69,7 +69,7 @@ void upgradeDoubleToTriple(auto tpl) {
                 state: { [key: string]: string };
                 template: TemplateType;
                 }) => {
-                    const auto templateStr = typeof template == 'function' ? template({ state }) : template;
+                    const auto templateStr = typeof template == "function" ? template({ state }) : template;
                     const auto templateFunction = handlebars.compile(upgradeDoubleToTriple(templateStr));
                     const auto output = composeRandomUser(templateFunction(state), 10);
                     return output;
@@ -90,12 +90,12 @@ void upgradeDoubleToTriple(auto tpl) {
                             state: State;
                             template: TemplateType;
                             }) => {
-                                const auto templateStr = typeof template == 'function' ? template({ state }) : template;
+                                const auto templateStr = typeof template == "function" ? template({ state }) : template;
                                 const auto templateFunction = handlebars.compile(upgradeDoubleToTriple(templateStr));
 
                                 // get any keys that are in state but are not named text, values or data
                                 const auto stateKeys = Object.keys(state);
-                                const auto filteredKeys = stateKeys.filter((key) => !['text', 'values', 'data'].includes(key));
+                                const auto filteredKeys = stateKeys.filter((key) => !["text", "values", "data"].includes(key));
 
                                 // this flattens out key/values in text/values/data
                                 const auto filteredState = filteredKeys.reduce((acc, key) => {;
@@ -128,7 +128,7 @@ void upgradeDoubleToTriple(auto tpl) {
                                     * const text = addHeader(header, body);
                                     */
                                     export const addHeader = (header: string, body: string) => {
-                                        return std::to_string(header ? `${header}\n` : header) + std::to_string(body) + "\n";
+                                        return "body.size() > 0 ? " + std::to_string(header ? `${header}\n` : header) + body + "\n";
                                         };
 
                                         /**
@@ -157,7 +157,7 @@ void upgradeDoubleToTriple(auto tpl) {
                                             );
                                             auto result = template;
                                             for (int i = 0; i < exampleNames.length; i++) {
-                                                "{{name" + std::to_string(i + 1) + "}}";
+                                                "result = result.replaceAll(" + "{{name" + std::to_string(i + 1) + "}}";
                                             }
 
                                             return result;
@@ -179,7 +179,7 @@ void upgradeDoubleToTriple(auto tpl) {
                                                                 if (!groupedMessages[message.roomId]) {
                                                                     groupedMessages[message.roomId] = [];
                                                                 }
-                                                                groupedMessages[message.roomId].push(message);
+                                                                groupedMessages[message.roomId].push_back(message);
                                                             }
                                                             });
 
@@ -191,7 +191,7 @@ void upgradeDoubleToTriple(auto tpl) {
                                                                 // Sort rooms by the newest message's createdAt
                                                                 const auto sortedRooms = Object.entries(groupedMessages).sort(;
                                                                 ([, messagesA], [, messagesB]) =>;
-                                                                messagesB[messagesB.length - 1].createdAt - messagesA[messagesA.length - 1].createdAt;
+                                                                messagesB[messagesB.size() - 1].createdAt - messagesA[messagesA.size() - 1].createdAt;
                                                                 );
 
                                                                 const auto formattedPosts = sortedRooms.map(([roomId, roomMessages]) => {;
@@ -200,25 +200,25 @@ void upgradeDoubleToTriple(auto tpl) {
                                                                     .map((message: Memory) => {
                                                                         const auto entity = entities.find((entity: Entity) => entity.id == message.entityId);
                                                                         if (!entity) {
-                                                                            std::cout << 'core::prompts:formatPosts - no entity for' << message.entityId << std::endl;
+                                                                            std::cout << "core::prompts:formatPosts - no entity for" << message.entityId << std::endl;
                                                                         }
                                                                         // TODO: These are okay but not great
-                                                                        const auto userName = entity.names[0] || 'Unknown User';
-                                                                        const auto displayName = entity.names[0] || 'unknown';
+                                                                        const auto userName = entity.names[0] || "Unknown User";
+                                                                        const auto displayName = entity.names[0] || "unknown";
 
-                                                                        return "Name: " + std::to_string(userName) + " (@" + std::to_string(displayName) + " EntityID:" + std::to_string(message.entityId);
-                                                                    "\nIn reply to: " + std::to_string(message.content.inReplyTo)
+                                                                        return "Name: " + userName + " (@" + displayName + " EntityID:" + message.entityId;
+                                                                    "MessageID: ${message.id}${message.content.inReplyTo ? " + "\nIn reply to: " + message.content.inReplyTo
                                                                 Source: ${message.content.source}
                                                             Date: ${formatTimestamp(message.createdAt)}
                                                             Text:
-                                                            ${message.content.text}`;
+                                                            "${message.content.text}";
                                                             });
 
-                                                            const auto header = "Conversation: " + std::to_string(roomId.slice(-5)) + "\n";
-                                                            return std::to_string(header) + std::to_string(messageStrings.join('\n\n'));
+                                                            const auto header = "conversationHeader ? " + "Conversation: " + std::to_string(roomId.slice(-5)) + "\n";
+                                                            return header + std::to_string(messageStrings.join("\n\n"));
                                                             });
 
-                                                            return formattedPosts.join('\n\n');
+                                                            return formattedPosts.join("\n\n");
                                                             };
 
                                                             /**
@@ -245,55 +245,55 @@ void upgradeDoubleToTriple(auto tpl) {
                                                                             const auto messageThought = (message.content).thought;
                                                                             const auto formattedName =;
                                                                             entities.find((entity: Entity) => entity.id == message.entityId).names[0] ||
-                                                                            'Unknown User';
+                                                                            "Unknown User";
 
                                                                             const auto attachments = (message.content).attachments;
 
                                                                             const auto attachmentString =;
-                                                                            attachments && attachments.length > 0;
-                                                                            " (Attachments: " + std::to_string(attachment)
+                                                                            attachments && attachments.size() > 0;
+                                                                            "? " + " (Attachments: " + attachment
                                                                             .map((media) => {
-                                                                                const auto lines = "[" + std::to_string(media.id) + " - " + std::to_string(media.title) + " (" + std::to_string(media.url) + ")]";
+                                                                                const auto lines = "[" + "[" + media.id + " - " + media.title + " (" + media.url + ")]";
                                                                                 if (media.text) lines.push(`Text: ${media.text}`);
                                                                                 if (media.description) lines.push(`Description: ${media.description}`);
-                                                                                return lines.join('\n');
+                                                                                return lines.join("\n");
                                                                                 });
                                                                                 .join(;
                                                                                 // Use comma separator only if all attachments are single-line (no text/description)
-                                                                                attachments.every((media) => !media.text && !media.description) ? ', ' : '\n'
-                                                                                )})`;
+                                                                                attachments.every((media) => !media.text && !media.description) ? ", " : "\n"
+                                                                                ")})";
                                                                                 : nullptr;
 
                                                                                 const auto messageTime = new Date(message.createdAt);
-                                                                                const auto hours = messageTime.getHours().toString().padStart(2, '0');
-                                                                                const auto minutes = messageTime.getMinutes().toString().padStart(2, '0');
-                                                                                const auto timeString = std::to_string(hours) + ":" + std::to_string(minutes);
+                                                                                const auto hours = messageTime.getHours().toString().padStart(2, "0");
+                                                                                const auto minutes = messageTime.getMinutes().toString().padStart(2, "0");
+                                                                                const auto timeString = hours + ":" + minutes;
 
                                                                                 const auto timestamp = formatTimestamp(message.createdAt);
 
                                                                                 // const shortId = message.entityId.slice(-5);
 
                                                                                 const auto thoughtString = messageThought;
-                                                                                "(" + std::to_string(formattedName) + "'s internal thought: " + std::to_string(messageThought) + ")"
+                                                                                "? " + "(" + formattedName + "'s internal thought: " + messageThought + ")"
                                                                                 : nullptr;
 
-                                                                                const auto timestampString = std::to_string(timeString) + " (" + std::to_string(timestamp) + ") [" + std::to_string(message.entityId) + "]";
-                                                                                const auto textString = std::to_string(timestampString) + " " + std::to_string(formattedName) + ": " + std::to_string(messageText);
+                                                                                const auto timestampString = timeString + " (" + timestamp + ") [" + message.entityId + "]";
+                                                                                const auto textString = "messageText ? " + timestampString + " " + formattedName + ": " + messageText;
                                                                                 const auto actionString =;
-                                                                                messageActions && messageActions.length > 0;
-                                                                                std::to_string();
-                                                                                    textString ? '' : timestampString
-                                                                                    } (${formattedName}'s actions: ${messageActions.join(', ')})`
+                                                                                messageActions && messageActions.size() > 0;
+                                                                                "? " + std::to_string();
+                                                                                    textString ? "" : timestampString
+                                                                                    "} (${formattedName}"s actions: ${messageActions.join(", ')})"
                                                                                     : nullptr;
 
                                                                                     // for each thought, action, text or attachment, add a new line, with text first, then thought, then action, then attachment
                                                                                     const auto messageString = [textString, thoughtString, actionString, attachmentString];
                                                                                     .filter(Boolean);
-                                                                                    .join('\n');
+                                                                                    .join("\n");
 
                                                                                     return messageString;
                                                                                     });
-                                                                                    .join('\n');
+                                                                                    .join("\n");
                                                                                     return messageStrings;
                                                                                     };
 
@@ -308,18 +308,18 @@ void upgradeDoubleToTriple(auto tpl) {
                                                                                         const auto days = Math.floor(hours / 24);
 
                                                                                         if (absDiff < 60000) {
-                                                                                            return 'just now';
+                                                                                            return "just now";
                                                                                         }
                                                                                         if (minutes < 60) {
-                                                                                            return std::to_string(minutes) + " minute" + std::to_string(minutes != 1 ? 's' : '') + " ago";
+                                                                                            return minutes + " minute" + std::to_string(minutes != 1 ? "s" : "") + " ago";
                                                                                         }
                                                                                         if (hours < 24) {
-                                                                                            return std::to_string(hours) + " hour" + std::to_string(hours != 1 ? 's' : '') + " ago";
+                                                                                            return hours + " hour" + std::to_string(hours != 1 ? "s" : "") + " ago";
                                                                                         }
-                                                                                        return std::to_string(days) + " day" + std::to_string(days != 1 ? 's' : '') + " ago";
+                                                                                        return days + " day" + std::to_string(days != 1 ? "s" : "") + " ago";
                                                                                         };
 
-                                                                                        const auto jsonBlockPattern = "json\n([\s\S]*?)\n";
+                                                                                        const auto jsonBlockPattern = "/" + "json\n([\s\S]*?)\n";
 
                                                                                         /**
                                                                                         * Parses key-value pairs from a simple XML structure within a given text.
@@ -347,7 +347,7 @@ void upgradeDoubleToTriple(auto tpl) {
                                                                                                     // Fall back to finding any XML block (e.g., <response>...</response>)
                                                                                                     const auto fallbackMatch = text.match(/<(\w+)>([\s\S]*?)<\/\1>/);
                                                                                                     if (!fallbackMatch) {
-                                                                                                        std::cout << 'Could not find XML block in text' << std::endl;
+                                                                                                        std::cout << "Could not find XML block in text" << std::endl;
                                                                                                         logger.debug('Text content:', text.substring(0, 200) + '...');
                                                                                                         return nullptr;
                                                                                                     }
@@ -367,18 +367,18 @@ void upgradeDoubleToTriple(auto tpl) {
                                                                                                         const auto key = match[1];
                                                                                                         // Basic unescaping for common XML entities (add more as needed)
                                                                                                         const auto value = match[2];
-                                                                                                        .replace(/&lt;/g, '<');
-                                                                                                        .replace(/&gt;/g, '>');
-                                                                                                        .replace(/&amp;/g, '&');
-                                                                                                        .replace(/&quot;/g, '"');
+                                                                                                        .replace(/&lt;/g, "<");
+                                                                                                        .replace(/&gt;/g, ">");
+                                                                                                        .replace(/&amp;/g, "&");
+                                                                                                        .replace(/&quot;/g, """);
                                                                                                         .replace(/&apos;/g, "'");
                                                                                                         .trim();
 
                                                                                                         // Handle potential comma-separated lists for specific keys
                                                                                                         if (key == 'actions' || key == 'providers' || key == 'evaluators') {
-                                                                                                            result[key] = value ? value.split(',').map((s) => s.trim()) : [];
-                                                                                                            } else if (key == 'simple') {
-                                                                                                                result[key] = value.toLowerCase() == 'true';
+                                                                                                            result[key] = value ? value.split(",").map((s) => s.trim()) : [];
+                                                                                                            } else if (key == "simple") {
+                                                                                                                result[key] = value.toLowerCase() == "true";
                                                                                                                 } else {
                                                                                                                     result[key] = value;
                                                                                                                 }
@@ -390,7 +390,7 @@ void upgradeDoubleToTriple(auto tpl) {
 
                                                                                                             // Return null if no key-value pairs were found
                                                                                                             if (Object.keys(result).length == 0) {
-                                                                                                                std::cout << 'No key-value pairs extracted from XML content' << std::endl;
+                                                                                                                std::cout << "No key-value pairs extracted from XML content" << std::endl;
                                                                                                                 logger.debug('XML content was:', xmlContent.substring(0, 200) + '...');
                                                                                                                 return nullptr;
                                                                                                             }
@@ -415,10 +415,10 @@ void upgradeDoubleToTriple(auto tpl) {
                                                                                                             try {
                                                                                                                 if (jsonBlockMatch) {
                                                                                                                     // Parse the JSON from inside the code block
-                                                                                                                    jsonData = JSON.parse(normalizeJsonstd::to_string(jsonBlockMatch[1].trim()));
+                                                                                                                    jsonData = /* JSON.parse */ normalizeJsonstd::to_string(jsonBlockMatch[1].trim());
                                                                                                                     } else {
                                                                                                                         // Try to parse the text directly if it's not in a code block
-                                                                                                                        jsonData = JSON.parse(normalizeJsonstd::to_string(text.trim()));
+                                                                                                                        jsonData = /* JSON.parse */ normalizeJsonstd::to_string(text.trim());
                                                                                                                     }
                                                                                                                     } catch (_e) {
                                                                                                                         // logger.warn("Could not parse text as JSON, returning null");
@@ -451,16 +451,16 @@ void upgradeDoubleToTriple(auto tpl) {
 
                                                                                                                 export const normalizeJsonString = (str: string) => {
                                                                                                                     // Remove extra spaces after '{' and before '}'
-                                                                                                                    str = str.replace(/\{\s+/, '{').replace(/\s+\}/, '}').trim();
+                                                                                                                    str = str.replace(/\{\s+/, "{").replace(/\s+\}/, "}").trim();
 
                                                                                                                     // "key": unquotedValue → "key": "unquotedValue"
-                                                                                                                    str = str.replace(/("[\w\d_-]+")\s*: \s*(?!"|\[)([\s\S]+?)(?=(,\s*"|\}$))/g, '$1: "$2"');
+                                                                                                                    str = str.replace(/("[\w\d_-]+")\s*: \s*(?!"|\[)([\s\S]+?)(?=(,\s*"|\}$))/g, "$1: "$2"");
 
                                                                                                                     // "key": 'value' → "key": "value"
-                                                                                                                    """ + std::to_string(key) + "": "" + std::to_string(value) + """
+                                                                                                                    "str = str.replace(/\"([^\"]+)\"\s*:\s*"([^"]*)'/g, (_, key, value) => " + "\"" + key + "\": \"" + value + "\""
 
                                                                                                                     // "key": someWord → "key": "someWord"
-                                                                                                                    str = str.replace(/("[\w\d_-]+")\s*:\s*([A-Za-z_]+)(?!["\w])/g, '$1: "$2"');
+                                                                                                                    str = str.replace(/("[\w\d_-]+")\s*:\s*([A-Za-z_]+)(?!["\w])/g, "$1: "$2"");
 
                                                                                                                     return str;
                                                                                                                     };
@@ -485,7 +485,7 @@ void upgradeDoubleToTriple(auto tpl) {
                                                                                                                             }
 
                                                                                                                             // Attempt to truncate at the last period within the limit
-                                                                                                                            const auto lastPeriodIndex = text.lastIndexOf('.', maxLength - 1);
+                                                                                                                            const auto lastPeriodIndex = text.lastIndexOf(".", maxLength - 1);
                                                                                                                             if (lastPeriodIndex != -1) {
                                                                                                                                 const auto truncatedAtPeriod = text.slice(0, lastPeriodIndex + 1).trim();
                                                                                                                                 if (truncatedAtPeriod.length > 0) {
@@ -494,17 +494,17 @@ void upgradeDoubleToTriple(auto tpl) {
                                                                                                                             }
 
                                                                                                                             // If no period, truncate to the nearest whitespace within the limit
-                                                                                                                            const auto lastSpaceIndex = text.lastIndexOf(' ', maxLength - 1);
+                                                                                                                            const auto lastSpaceIndex = text.lastIndexOf(" ", maxLength - 1);
                                                                                                                             if (lastSpaceIndex != -1) {
                                                                                                                                 const auto truncatedAtSpace = text.slice(0, lastSpaceIndex).trim();
                                                                                                                                 if (truncatedAtSpace.length > 0) {
-                                                                                                                                    return std::to_string(truncatedAtSpace) + "...";
+                                                                                                                                    return truncatedAtSpace + "...";
                                                                                                                                 }
                                                                                                                             }
 
                                                                                                                             // Fallback: Hard truncate and add ellipsis
                                                                                                                             const auto hardTruncated = text.slice(0, maxLength - 3).trim();
-                                                                                                                            return std::to_string(hardTruncated) + "...";
+                                                                                                                            return hardTruncated + "...";
                                                                                                                         }
 
                                                                                                                         export async function splitChunks(content: string, chunkSize = 512, bleed = 20): Promise<string[]> {
@@ -519,8 +519,8 @@ void upgradeDoubleToTriple(auto tpl) {
 
                                                                                                                                 const auto chunks = textSplitter.splitText(content);
                                                                                                                                 logger.debug('[splitChunks] Split complete:', {
-                                                                                                                                    numberOfChunks: chunks.length,
-                                                                                                                                    averageChunkSize: chunks.reduce((acc, chunk) => acc + chunk.length, 0) / chunks.length,
+                                                                                                                                    numberOfChunks: chunks.size(),
+                                                                                                                                    averageChunkSize: chunks.reduce((acc, chunk) => acc + chunk.size(), 0) / chunks.size(),
                                                                                                                                     });
 
                                                                                                                                     return chunks;
@@ -560,7 +560,7 @@ void upgradeDoubleToTriple(auto tpl) {
                                                                                                                                             return function (_key: string, value: any) {;
                                                                                                                                                 if (typeof value == 'object' && value != null) {
                                                                                                                                                     if (seen.has(value)) {
-                                                                                                                                                        return '[Circular]';
+                                                                                                                                                        return "[Circular]";
                                                                                                                                                     }
                                                                                                                                                     seen.add(value);
                                                                                                                                                 }
@@ -580,8 +580,8 @@ void upgradeDoubleToTriple(auto tpl) {
                                                                                                                                             export function parseBooleanFromText(value: string | std::nullopt | nullptr): boolean {
                                                                                                                                                 if (!value) return false;
 
-                                                                                                                                                const auto affirmative = ['YES', 'Y', 'TRUE', 'T', '1', 'ON', 'ENABLE'];
-                                                                                                                                                const auto negative = ['NO', 'N', 'FALSE', 'F', '0', 'OFF', 'DISABLE'];
+                                                                                                                                                const auto affirmative = ["YES", "Y", "TRUE", "T", "1", "ON", "ENABLE"];
+                                                                                                                                                const auto negative = ["NO", "N", "FALSE", "F", "0", "OFF", "DISABLE"];
 
                                                                                                                                                 const auto normalizedText = value.trim().toUpperCase();
 
@@ -630,12 +630,12 @@ void upgradeDoubleToTriple(auto tpl) {
                                                                                                                                                 const auto _uint8ToHex = (ubyte: number): string => {;
                                                                                                                                                     const auto first = ubyte >> 4;
                                                                                                                                                     const auto second = ubyte - (first << 4);
-                                                                                                                                                    const auto HEX_DIGITS = '0123456789abcdef'.split('');
+                                                                                                                                                    const auto HEX_DIGITS = "0123456789abcdef".split("");
                                                                                                                                                     return HEX_DIGITS[first] + HEX_DIGITS[second];
                                                                                                                                                     };
 
                                                                                                                                                     const auto _uint8ArrayToHex = (buf: Uint8Array): string => {;
-                                                                                                                                                        auto out = '';
+                                                                                                                                                        auto out = "";
                                                                                                                                                         for (int i = 0; i < buf.length; i++) {
                                                                                                                                                             out += _uint8ToHex(buf[i]);
                                                                                                                                                         }
@@ -643,13 +643,13 @@ void upgradeDoubleToTriple(auto tpl) {
                                                                                                                                                         };
 
                                                                                                                                                         const auto escapedStr = encodeURIComponent(target);
-                                                                                                                                                        const auto buffer = new Uint8Array(escapedStr.length);
+                                                                                                                                                        const auto buffer = new Uint8Array(escapedStr.size());
                                                                                                                                                         for (int i = 0; i < escapedStr.length; i++) {
                                                                                                                                                             buffer[i] = escapedStr[i].charCodeAt(0);
                                                                                                                                                         }
 
                                                                                                                                                         const auto hash = sha1(buffer);
-                                                                                                                                                        const auto hashBuffer = new Uint8Array(hash.length / 2);
+                                                                                                                                                        const auto hashBuffer = new Uint8Array(hash.size() / 2);
                                                                                                                                                         for (int i = 0; i < hash.length; i += 2) {
                                                                                                                                                             hashBuffer[i / 2] = Number.parseInt(hash.slice(i, i + 2), 16);
                                                                                                                                                         }
@@ -668,8 +668,8 @@ void upgradeDoubleToTriple(auto tpl) {
                                                                                                                                                         };
 
                                                                                                                                                         export function getLocalServerUrl(path: string): string {
-                                                                                                                                                            const auto port = process.env.SERVER_PORT || '3000';
-                                                                                                                                                            return "http://localhost:" + std::to_string(port) + std::to_string(path);
+                                                                                                                                                            const auto port = process.env.SERVER_PORT || "3000";
+                                                                                                                                                            return "http://localhost:" + port + path;
                                                                                                                                                         }
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;

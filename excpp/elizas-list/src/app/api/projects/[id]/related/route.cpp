@@ -4,24 +4,24 @@
 
 namespace elizaos {
 
-std::future<void> GET(Request request) {
+std::future<void> GET(const std::string& request) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
         // Rate limiting
-        const auto clientIp = headers().get('x-forwarded-for') || 'unknown';
-        const auto rateLimitKey = "ratelimit:related:" + std::to_string(clientIp);
+        const auto clientIp = headers().get("x-forwarded-for") || "unknown";
+        const auto rateLimitKey = "ratelimit:related:" + clientIp;
         const auto isAllowed = RateLimiter.checkLimit(rateLimitKey);
 
         if (!isAllowed) {
             return NextResponse.json(;
-            { error: 'Too many requests', code: 'RATE_LIMIT_EXCEEDED' },
+            { error: "Too many requests", code: "RATE_LIMIT_EXCEEDED" },
         { status = 429 }
         );
     }
 
     // Check cache
-    const auto cacheKey = "related:" + std::to_string(params.id);
+    const auto cacheKey = "related:" + params.id;
     const auto cached = CacheManager.get(cacheKey);
     if (cached) {
         return NextResponse.json(cached);
@@ -30,7 +30,7 @@ std::future<void> GET(Request request) {
     const auto currentProject = projects.projects.find(p => p.id == params.id);
     if (!currentProject) {
         return NextResponse.json(;
-        { error: 'Project not found', code: 'PROJECT_NOT_FOUND' },
+        { error: "Project not found", code: "PROJECT_NOT_FOUND" },
     { status = 404 }
     );
     }
@@ -58,14 +58,14 @@ std::future<void> GET(Request request) {
         return NextResponse.json(relatedProjects);
 
         } catch (err) {
-            std::cerr << 'Error fetching related projects:' << err << std::endl;
+            std::cerr << "Error fetching related projects:" << err << std::endl;
 
             const auto error = err;
             return NextResponse.json(;
             {
-                error: 'Internal server error',
-                code: 'INTERNAL_ERROR',
-                message: process.env.NODE_ENV == 'development' ? error.message : std::nullopt
+                error: "Internal server error",
+                code: "INTERNAL_ERROR",
+                message: process.env.NODE_ENV == "development" ? error.message : std::nullopt
                 },
             { status = 500 }
             );

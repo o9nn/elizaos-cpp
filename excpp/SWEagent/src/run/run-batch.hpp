@@ -1,21 +1,24 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
+#include <stdexcept>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".agent/agents.hpp"
-#include ".environment/swe-env.hpp"
-#include ".types.hpp"
-#include ".utils/config.hpp"
-#include ".utils/log.hpp"
+#include "agent/agents.hpp"
 #include "batch-instances.hpp"
 #include "common.hpp"
+#include "environment/swe-env.hpp"
 #include "hooks.hpp"
 #include "types.hpp"
+#include "utils/config.hpp"
+#include "utils/log.hpp"
 
 namespace elizaos {
 
@@ -39,7 +42,7 @@ public:
     BatchProgressManager(double numInstances);
     void onInstanceStart(const std::string& instanceId);
     void onInstanceEnd(const std::string& instanceId, const std::string& exitStatus);
-    void onUncaughtException(const std::string& instanceId, Error error);
+    void onUncaughtException(const std::string& instanceId, const std::runtime_error& error);
     void printReport();
 
 private:

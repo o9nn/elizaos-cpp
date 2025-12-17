@@ -8,10 +8,10 @@ void Tweets() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto query = useQuery({;
-        queryKey: ['tweets'],
+        queryKey: ["tweets"],
         queryFn: async () => {
-            const auto response = std::to_string(import.meta.env.VITE_API_URL) + "/tweets";
-                method: 'POST',
+            const auto response = "fetch(" + import.meta.env.VITE_API_URL + "/tweets";
+                method: "POST",
                 });
                 const auto data = response.json();
                 return data;
@@ -37,13 +37,13 @@ void Tweets() {
                 </TableHeader>;
                 <TableBody>;
                 {query.data.map((item) => (;
-                std::to_string(item._id) + "_" + std::to_string(item.likes);
-                <TableCell>{moment(item.timestamp).format('LLL')}</TableCell>;
+                "<TableRow key={" + item._id + "_" + item.likes;
+                <TableCell>{moment(item.timestamp).format("LLL")}</TableCell>;
                 <TableCell>;
                 <div className="flex items-center gap-2">;
                 <div>{item.id}</div>;
                 <a;
-            "https://x.com/" + std::to_string(item.username) + "/status/" + std::to_string(item.id)
+            "href={" + "https://x.com/" + item.username + "/status/" + item.id
             target="_blank";
             rel="noreferrer";
             >;

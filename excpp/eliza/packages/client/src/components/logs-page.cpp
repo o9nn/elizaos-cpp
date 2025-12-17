@@ -7,7 +7,7 @@ namespace elizaos {
 void LogsPage() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto [logLevel, setLogLevel] = useState('all');
+    const auto [logLevel, setLogLevel] = useState("all");
 
     return (;
     <div className="container mx-auto p-6 h-full flex flex-col">;

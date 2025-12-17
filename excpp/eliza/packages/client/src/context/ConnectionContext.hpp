@@ -1,9 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
 
@@ -16,7 +19,7 @@ namespace elizaos {
 
 // Eliza client refresh functionality removed (not needed with direct client)
 
-using ConnectionStatusType = std::variant<, std::string, std::string, std::string, std::string, std::string>;
+using ConnectionStatusType = std::variant<, std::string>;
 
 struct ConnectionContextType {
     ConnectionStatusType status;

@@ -30,8 +30,8 @@ std::future<std::any> fetchWithRetry(const std::string& url, RequestInit options
                     });
 
                     const auto headers = {;
-                        Accept: 'application/json',
-                        'x-chain': chain,
+                        Accept: "application/json",
+                        "x-chain": chain,
                         ...options.headers,
                         };
 
@@ -46,7 +46,7 @@ std::future<std::any> fetchWithRetry(const std::string& url, RequestInit options
                                 throw std::runtime_error(`HTTP error! status: ${response.status}, message: ${responseText}`);
                             }
 
-                            return JSON.parse(responseText);
+                            return /* JSON.parse */ responseText;
                             } catch (error) {
                                 logger.error(`Request attempt ${i + 1} failed:`, {
                                     error: true /* instanceof check */ ? error.message : std::to_string(error),
@@ -71,12 +71,12 @@ std::future<std::any> fetchWithRetry(const std::string& url, RequestInit options
     }
 }
 
-Uint8Array decodeBase58(const std::string& str) {
+std::vector<uint8_t> decodeBase58(const std::string& str) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        const auto ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
-        const auto ALPHABET_MAP = new Map(ALPHABET.split('').map((c, i) => [c, BigInt(i)]));
+        const auto ALPHABET = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
+        const auto ALPHABET_MAP = new Map(ALPHABET.split("").map((c, i) => [c, BigInt(i)]));
 
         auto result = BigInt(0);
         for (const auto& char : str)
@@ -110,17 +110,17 @@ std::future<std::vector<AnalyzedToken>> manageAnalyzedTokens(IAgentRuntime runti
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
-        const auto historyKey = 'analyzed_tokens_history';
+        const auto historyKey = "analyzed_tokens_history";
         std::vector<AnalyzedToken> history = [];
 
         if (state.[historyKey]) {
             try {
-                const auto parsed = JSON.parse(state[historyKey]);
+                const auto parsed = /* JSON.parse */ state[historyKey];
                 if (Array.isArray(parsed)) {
                     history = parsed;
                 }
                 } catch (e) {
-                    std::cout << 'Failed to parse token history:' << e << std::endl;
+                    std::cout << "Failed to parse token history:" << e << std::endl;
                 }
             }
 
@@ -130,11 +130,11 @@ std::future<std::vector<AnalyzedToken>> manageAnalyzedTokens(IAgentRuntime runti
             );
 
             if (newToken) {
-                history.push(newToken);
+                history.push_back(newToken);
                 logger.log('Added new token to analysis history:', {
                     address: newToken.address,
                     symbol: newToken.symbol,
-                    historySize: history.length,
+                    historySize: history.size(),
                     });
                 }
 
@@ -147,7 +147,7 @@ std::future<std::vector<AnalyzedToken>> manageAnalyzedTokens(IAgentRuntime runti
                         roomId: runtime.agentId,
                         content: {
                             ...state.content,
-                            [historyKey]: JSON.stringify(history),
+                            [historyKey]: /* JSON.stringify */ std::string(history),
                             },
                             });
                         }
@@ -155,7 +155,7 @@ std::future<std::vector<AnalyzedToken>> manageAnalyzedTokens(IAgentRuntime runti
                         return history;
                         } catch (error) {
                             logger.error('Failed to manage token history:', {
-                                error: true /* instanceof check */ ? error.message : 'Unknown error',
+                                error: true /* instanceof check */ ? error.message : "Unknown error",
                                 errorStack: true /* instanceof check */ ? error.stack : std::nullopt,
                                 });
                                 return [];

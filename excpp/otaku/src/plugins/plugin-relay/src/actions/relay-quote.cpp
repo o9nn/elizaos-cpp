@@ -60,7 +60,7 @@ std::string getChainName(double chainId) {
         534352: "Scroll",
         59144: "Linea",
         };
-        return "Chain " + std::to_string(chainId);
+        return "chains[chainId] || " + "Chain " + chainId;
 
 }
 

@@ -18,7 +18,7 @@ void ContributorItem(auto href, auto stats, auto score, auto className, auto chi
     <div className="flex gap-3">;
     <Avatar className="h-10 w-10">;
     <AvatarImage;
-    "https://github.com/" + std::to_string(username) + ".png"
+    "src={" + "https://github.com/" + username + ".png"
     alt={username}
     />;
     <AvatarFallback>{username[0].toUpperCase()}</AvatarFallback>;

@@ -1,14 +1,17 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".types.hpp"
 #include "elizaos/core.hpp"
+#include "types.hpp"
 
 namespace elizaos {
 
@@ -38,7 +41,7 @@ struct WalletNFT {
     std::string contractName;
     std::string tokenType;
     std::optional<std::string> balance;
-    std::optional<std::vector<unknown>> attributes;
+    std::optional<std::vector<std::any>> attributes;
 };
 
 struct WalletInfo {

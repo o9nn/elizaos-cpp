@@ -32,12 +32,12 @@ std::future<std::optional<Plugin>> loadAndPreparePlugin(const std::string& plugi
         try {
             pluginModule = loadPluginModule(pluginName);
             if (!pluginModule) {
-                std::cerr << "Failed to load local plugin " + std::to_string(pluginName) + "." << std::endl;
+                std::cerr << "Failed to load local plugin " + pluginName + "." << std::endl;
                 provideLocalPluginGuidance(pluginName, context);
                 return nullptr;
             }
             } catch (error) {
-                std::cerr << "Error loading local plugin " + std::to_string(pluginName) + ": " + std::to_string(error) << std::endl;
+                std::cerr << "Error loading local plugin " + pluginName + ": " + error << std::endl;
                 provideLocalPluginGuidance(pluginName, context);
                 return nullptr;
             }
@@ -45,25 +45,25 @@ std::future<std::optional<Plugin>> loadAndPreparePlugin(const std::string& plugi
                 try {
                     pluginModule = loadPluginModule(pluginName);
                     if (!pluginModule) {
-                        std::cout << "Plugin " + std::to_string(pluginName) << installing...` << std::endl;
+                        std::cout << "Plugin " + pluginName << "installing..." << std::endl;
                         installPlugin(pluginName, process.cwd(), version);
                         pluginModule = loadPluginModule(pluginName);
                     }
                     } catch (error) {
-                        std::cerr << "Failed to process plugin " + std::to_string(pluginName) + ": " + std::to_string(error) << std::endl;
+                        std::cerr << "Failed to process plugin " + pluginName + ": " + error << std::endl;
                         return nullptr;
                     }
                 }
 
                 if (!pluginModule) {
-                    std::cerr << "Failed to load module for plugin " + std::to_string(pluginName) + "." << std::endl;
+                    std::cerr << "Failed to load module for plugin " + pluginName + "." << std::endl;
                     return nullptr;
                 }
 
-                const auto expectedFunctionName = std::to_string(pluginNam);
-                .replace(/^@elizaos\/plugin-/, '');
-                .replace(/^@elizaos\//, '');
-                .replace(/-./g, (match) => match[1].toUpperCase())}Plugin`;
+                const auto expectedFunctionName = pluginNam;
+                .replace(/^@elizaos\/plugin-/, "");
+                .replace(/^@elizaos\//, "");
+                ".replace(/-./g, (match) => match[1].toUpperCase())}Plugin";
 
                 const auto exportsToCheck = [;
                 pluginModule[expectedFunctionName],
@@ -77,7 +77,7 @@ std::future<std::optional<Plugin>> loadAndPreparePlugin(const std::string& plugi
                     }
                 }
 
-                std::cout << "Could not find a valid plugin export in " + std::to_string(pluginName) + "." << std::endl;
+                std::cout << "Could not find a valid plugin export in " + pluginName + "." << std::endl;
                 return nullptr;
 
 }

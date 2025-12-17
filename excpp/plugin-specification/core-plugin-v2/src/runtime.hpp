@@ -1,11 +1,14 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
 #include "elizaos/core.hpp"
@@ -132,8 +135,8 @@ public:
     std::future<std::vector<UUID>> getRoomsForParticipants(const std::vector<UUID>& userIds);
     std::future<std::vector<Room>> getRooms(UUID worldId);
     std::future<std::vector<Room>> getRoomsByWorld(UUID worldId);
-    std::variant<Promise<"FOLLOWED", "MUTED", null>> getParticipantUserState(UUID roomId, UUID entityId);
-    std::future<void> setParticipantUserState(UUID roomId, UUID entityId, const std::variant<"FOLLOWED", "MUTED">& state);
+    std::variant<Promise<"FOLLOWED", null>> getParticipantUserState(UUID roomId, UUID entityId);
+    std::future<void> setParticipantUserState(UUID roomId, UUID entityId, const std::string& state);
     std::future<bool> createRelationship(std::optional<std::any> params);
     std::future<void> updateRelationship(Relationship relationship);
     std::variant<Promise<Relationship, null>> getRelationship(const std::any& params);

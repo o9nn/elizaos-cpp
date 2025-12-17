@@ -1,11 +1,15 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <chrono>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "analyticsService.hpp"
 #include "base/BaseTradeService.hpp"
@@ -27,7 +31,7 @@ struct TradeMemory {
     std::string type;
     std::string amount;
     std::string price;
-    Date timestamp;
+    std::chrono::system_clock::time_point timestamp;
     std::optional<std::string> txHash;
     std::optional<double> slippage;
     std::optional<std::string> expectedAmount;

@@ -1,11 +1,14 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "loader.ts.hpp"
 
@@ -41,7 +44,7 @@ public:
 // Function to resolve plugins from their string names
 
 // Type Guard to check if plugins are strings
-std::vector<plugins is string> isStringArray(unknown plugins);
+std::vector<plugins is string> isStringArray(const std::any& plugins);
 
 std::future<void> main();
 

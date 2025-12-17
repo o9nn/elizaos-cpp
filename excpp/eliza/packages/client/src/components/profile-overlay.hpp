@@ -1,12 +1,15 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".hooks/use-query-hooks.hpp"
 #include "elizaos/core.hpp"
+#include "hooks/use-query-hooks.hpp"
 #include "stop-agent-button.hpp"
 #include "ui/button.hpp"
 #include "ui/card.hpp"

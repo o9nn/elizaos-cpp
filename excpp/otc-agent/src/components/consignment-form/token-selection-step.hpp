@@ -1,14 +1,16 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
-#include ".button.hpp"
-#include ".multiwallet.hpp"
+#include "button.hpp"
+#include "multiwallet.hpp"
 
 namespace elizaos {
 
@@ -50,7 +52,7 @@ struct LoadingState {
     bool hasLoadedOnce;
 };
 
-using LoadingAction = std::variant<std::any, std::any>;
+using LoadingAction = std::any;
 
 LoadingState loadingReducer(LoadingState state, LoadingAction action);
 

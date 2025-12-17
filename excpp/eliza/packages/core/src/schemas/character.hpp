@@ -1,9 +1,13 @@
 #pragma once
+#include <algorithm>
+#include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -46,7 +50,7 @@ struct CharacterValidationResult {
  * @param data - Raw character data to validate
  * @returns Validation result with success flag and either data or error
  */
-CharacterValidationResult validateCharacter(unknown data);
+CharacterValidationResult validateCharacter(const std::any& data);
 
 /**
  * Safely parses JSON string and validates as character

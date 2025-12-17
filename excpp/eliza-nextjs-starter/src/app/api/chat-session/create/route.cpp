@@ -29,7 +29,7 @@ std::future<void> POST(NextRequest request) {
             const auto sessionId = uuidv4();
 
             console.log(
-            "[API] Creating new chat session: " + std::to_string(sessionId) + " for user: " + std::to_string(userId)
+            "[API] Creating new chat session: " + sessionId + " for user: " + userId
             );
 
             try {
@@ -64,7 +64,7 @@ std::future<void> POST(NextRequest request) {
                             }
 
                             console.log(
-                            "[API] Created DM channel: " + std::to_string(channelId) + " for session: " + std::to_string(sessionId)
+                            "[API] Created DM channel: " + channelId + " for session: " + sessionId
                             );
 
                             return NextResponse.json({;

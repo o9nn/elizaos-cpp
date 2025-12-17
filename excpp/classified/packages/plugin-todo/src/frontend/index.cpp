@@ -7,25 +7,25 @@ namespace elizaos {
 void AddTaskForm() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto [name, setName] = useState('');
-    const auto [type, setType] = useState<'one-off' | 'daily'>('one-off');
-    const auto [priority, setPriority] = useState('4');
-    const auto [dueDate, setDueDate] = useState('');
+    const auto [name, setName] = useState("");
+    const auto [type, setType] = useState<"one-off" | "daily">("one-off");
+    const auto [priority, setPriority] = useState("4");
+    const auto [dueDate, setDueDate] = useState("");
     const auto [isUrgent, setIsUrgent] = useState(false);
-    const auto [selectedWorldId, setSelectedWorldId] = useState<string>('');
-    const auto [selectedRoomId, setSelectedRoomId] = useState<string>('');
+    const auto [selectedWorldId, setSelectedWorldId] = useState<string>("");
+    const auto [selectedRoomId, setSelectedRoomId] = useState<string>("");
     const auto addTaskMutation = useAddTask();
 
     const auto availableRooms = worlds.find((w) => w.worldId == selectedWorldId).rooms || [];
 
     useEffect(() => {
-        setSelectedRoomId('');
+        setSelectedRoomId("");
         }, [selectedWorldId]);
 
         const auto handleSubmit = [&](e: React.FormEvent) {;
             e.preventDefault();
             if (!name.trim() || !selectedRoomId) {
-                alert('Please enter a task name and select a world/room.');
+                alert("Please enter a task name and select a world/room.");
                 return;
             }
             const CreateTaskData taskData = { name = name.trim(), type, roomId = selectedRoomId };
@@ -38,14 +38,14 @@ void AddTaskForm() {
             }
             addTaskMutation.mutate(taskData, {
                 onSuccess: () => {
-                    setName('');
-                    setType('one-off');
-                    setPriority('4');
-                    setDueDate('');
+                    setName("");
+                    setType("one-off");
+                    setPriority("4");
+                    setDueDate("");
                     setIsUrgent(false);
                     },
                     onError: (error) => {
-                        "Error adding task: " + std::to_string(error.message)
+                        "alert(" + "Error adding task: " + error.message
                         },
                         });
                         };
@@ -68,7 +68,7 @@ void AddTaskForm() {
                         <SelectItem;
                     key={world.worldId}
                 value={world.worldId}
-            "world-option-" + std::to_string(index + 1);
+            "data-testid={" + "world-option-" + std::to_string(index + 1);
             >;
         {world.worldName}
         </SelectItem>;
@@ -84,11 +84,11 @@ void AddTaskForm() {
     value={selectedRoomId}
     onValueChange={setSelectedRoomId}
     required;
-    disabled={!selectedWorldId || availableRooms.length == 0}
+    disabled={!selectedWorldId || availableRooms.size() == 0}
     >;
     <SelectTrigger id="room-select" data-testid="room-select">;
     <SelectValue;
-    placeholder={availableRooms.length > 0 ? 'Select Room' : 'No rooms in world'}
+    placeholder={availableRooms.size() > 0 ? "Select Room" : "No rooms in world"}
     />;
     </SelectTrigger>;
     <SelectContent>;
@@ -96,7 +96,7 @@ void AddTaskForm() {
     <SelectItem;
     key={room.roomId}
     value={room.roomId}
-    "room-option-" + std::to_string(index + 1);
+    "data-testid={" + "room-option-" + std::to_string(index + 1);
     >;
     {room.roomName}
     </SelectItem>;
@@ -125,7 +125,7 @@ void AddTaskForm() {
     <Label htmlFor="task-type">Type</Label>;
     <Select;
     value={type}
-    onValueChange={(value) => setType(value as 'one-off' | 'daily')}
+    onValueChange={(value) => setType(value as "one-off" | "daily")}
     disabled={!selectedRoomId}
     >;
     <SelectTrigger id="task-type" data-testid="task-type">;
@@ -139,7 +139,7 @@ void AddTaskForm() {
     </Select>;
     </div>;
 
-    {type == 'one-off' && (;
+    {type == "one-off" && (;
     <div className="pl-4 border-l-2 space-y-4">;
     <div className="space-y-2">;
     <Label htmlFor="task-priority">Priority (1=High)</Label>;
@@ -191,7 +191,7 @@ void AddTaskForm() {
     data-testid="create-todo-btn";
     disabled={addTaskMutation.isPending || !selectedRoomId}
     >;
-    {addTaskMutation.isPending ? <Loader />  = 'Add Task'}
+    {addTaskMutation.isPending ? <Loader />  = "Add Task"}
     </Button>;
     {addTaskMutation.isError && (;
     <p className="text-red-500 text-sm">Error: {addTaskMutation.error.message}</p>
@@ -211,19 +211,19 @@ void App() {
 
     useEffect(() => {
         if (isSuccess) {
-            std::cout << 'Fetched Worlds Data:' << worlds << std::endl;
+            std::cout << "Fetched Worlds Data:" << worlds << std::endl;
         }
         if (error) {
-            std::cerr << 'useTodos Error:' << error << std::endl;
+            std::cerr << "useTodos Error:" << error << std::endl;
         }
         }, [worlds, isSuccess, error]);
 
         const auto handleAddRoom = [&](worldId: string) {;
-            const auto roomName = prompt('Enter the name for the new room:');
+            const auto roomName = prompt("Enter the name for the new room:");
             if (roomName && roomName.trim()) {
                 createRoomMutation.mutate({ worldId, name: roomName.trim() });
                 } else if (roomName != nullptr) {
-                    alert('Room name cannot be empty.');
+                    alert("Room name cannot be empty.");
                 }
                 };
 
@@ -246,7 +246,7 @@ void App() {
     {isLoading && <Loader data-testid="loader" />}
     {error && <p className="text-red-500">Error loading tasks = {error.message}</p>}
 
-    {!isLoading && !error && (!worlds || worlds.length == 0) && (;
+    {!isLoading && !error && (!worlds || worlds.size() == 0) && (;
     <Card>;
     <CardContent className="pt-6">;
     <p className="text-muted-foreground text-center">;
@@ -288,7 +288,7 @@ void App() {
     </Button>;
     </div>;
     <CollapsibleContent className="space-y-4 pl-4 border-l-2" data-testid="world-rooms">;
-    {world.rooms.length == 0 && (;
+    {world.rooms.size() == 0 && (;
     <p className="text-muted-foreground text-sm italic pl-2">;
     No rooms with tasks in this world yet.;
     </p>;
@@ -305,22 +305,22 @@ void App() {
     </CardTitle>;
     </CardHeader>;
     <CardContent className="space-y-1 p-2 pt-1">;
-    {room.tasks.filter((task) => !task.tags.includes('completed')).length >;
+    {room.tasks.filter((task) => !task.(std::find(tags.begin(), tags.end(), "completed") != tags.end())).size() >;
     0 ? (;
     room.tasks;
-    .filter((task) => !task.tags.includes('completed'));
+    .filter((task) => !task.(std::find(tags.begin(), tags.end(), "completed") != tags.end()));
     .map((task) => <TaskItem key={task.id} task={task} />);
     ) : (
     <p className="text-muted-foreground text-xs px-2 py-1">;
     No pending tasks in this room.;
     </p>;
     )}
-    {room.tasks.some((task) => task.tags.includes('completed')) && (;
+    {room.tasks.some((task) => task.(std::find(tags.begin(), tags.end(), "completed") != tags.end())) && (;
     <>;
     <Separator className="my-2" />;
     <div className="space-y-1" data-testid="completed-section">;
     {room.tasks;
-    .filter((task) => task.tags.includes('completed'));
+    .filter((task) => task.(std::find(tags.begin(), tags.end(), "completed") != tags.end()));
     .map((task) => (;
     <TaskItem key={task.id} task={task} />;
     ))}

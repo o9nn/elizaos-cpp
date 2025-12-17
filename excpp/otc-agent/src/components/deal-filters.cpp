@@ -32,7 +32,7 @@ void DealFilters(auto onFiltersChange) {
 
                     // Determine current type selection
                     const auto currentType: DealType =;
-                    filters.negotiableTypes.length == 2;
+                    filters.negotiableTypes.size() == 2;
                     ? "all";
                     : filters.negotiableTypes[0] || "all";
 
@@ -151,7 +151,7 @@ void DealFilters(auto onFiltersChange) {
         <button;
     key={value}
     onClick={() => handleTypeChange(value)}
-    className={`;
+    "className={";
     flex-1 px-3 py-2.5 text-xs font-medium transition-colors;
     ${
         isSelected;

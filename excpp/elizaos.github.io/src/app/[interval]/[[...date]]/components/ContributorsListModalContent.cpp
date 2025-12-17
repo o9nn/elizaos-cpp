@@ -16,11 +16,11 @@ void ContributorsListModalContent() {
     className="border-none px-4";
     username={contributor.username}
     score={contributor.totalScore}
-    "/profile/" + std::to_string(contributor.username);
+    "href={" + "/profile/" + contributor.username;
     stats={
         <p className="whitespace-pre-wrap break-words">;
         {contributor.summary.replace(;
-        std::to_string(contributor.username) + ": "
+        contributor.username + ": "
         "",
     )}
     </p>;
@@ -28,7 +28,7 @@ void ContributorsListModalContent() {
     ></ContributorItem>;
     </div>;
     ))}
-    {contributors.length == 0 && (;
+    {contributors.size() == 0 && (;
     <p className="p-4 text-center text-sm text-muted-foreground">;
     No contributors to display.;
     </p>;

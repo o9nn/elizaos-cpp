@@ -9,8 +9,8 @@ SocketIOServer setupSocketIO(http::Server server, const std::unordered_map<UUID,
 
     const auto io = new SocketIOServer(server, {;
         cors: {
-            origin: '*',
-            methods: ['GET', 'POST'],
+            origin: "*",
+            methods: ["GET", "POST"],
             },
             });
 
@@ -32,7 +32,7 @@ void setupLogStreaming(SocketIOServer io, SocketIORouter router) {
 
     // Access the logger's destination to hook into log events
     const auto loggerInstance = logger;
-    const auto destination = loggerInstance[Symbol.for('pino-destination')];
+    const auto destination = loggerInstance[Symbol.for("pino-destination")];
 
     if (destination && typeof destination.write == 'function') {
         // Store original write method
@@ -47,7 +47,7 @@ void setupLogStreaming(SocketIOServer io, SocketIORouter router) {
             try {
                 auto logEntry;
                 if (typeof data == 'string') {
-                    logEntry = JSON.parse(data);
+                    logEntry = /* JSON.parse */ data;
                     } else {
                         logEntry = data;
                     }
@@ -101,12 +101,12 @@ express::RequestHandler createPluginRouteHandler(const std::unordered_map<UUID, 
 
             // Debug output for JavaScript requests
             if (
-            req.path.endsWith('.js') ||;
-            req.path.includes('.js?') ||;
+            req.path.endsWith(".js") ||;
+            req.(std::find(path.begin(), path.end(), ".js?") != path.end()) ||;
             req.path.match(/index-[A-Za-z0-9]{8}\.js/) // Escaped dot for regex;
             ) {
                 logger.debug(`JavaScript request in plugin handler: ${req.method} ${req.path}`);
-                res.setHeader('Content-Type', 'application/javascript');
+                res.setHeader("Content-Type", "application/javascript");
             }
 
             if (agents.size == 0) {
@@ -122,7 +122,7 @@ express::RequestHandler createPluginRouteHandler(const std::unordered_map<UUID, 
                 const auto runtime = agents.get(agentIdFromQuery);
                 if (runtime) {
                     logger.debug(
-                    "Agent-scoped request for Agent ID: " + std::to_string(agentIdFromQuery) + " from query. Path: " + std::to_string(reqPath)
+                    "Agent-scoped request for Agent ID: " + agentIdFromQuery + " from query. Path: " + reqPath
                     );
                     for (const auto& route : runtime.routes)
                         if (handled) break;
@@ -130,13 +130,13 @@ express::RequestHandler createPluginRouteHandler(const std::unordered_map<UUID, 
                         const auto methodMatches = req.method.toLowerCase() == route.type.toLowerCase();
                         if (!methodMatches) continue;
 
-                        const auto routePath = "/" + std::to_string(route.path);
+                        const auto routePath = "route.path.startsWith("/") ? route.path : " + "/" + route.path;
 
                         if (routePath.endsWith('/*')) {
                             const auto baseRoute = routePath.slice(0, -1);
                             if (reqPath.startsWith(baseRoute)) {
                                 logger.debug(
-                                "Agent " + std::to_string(agentIdFromQuery) + " plugin wildcard route: [" + std::to_string(route.type.toUpperCase()) + "] " + std::to_string(routePath) + " for request: " + std::to_string(reqPath)
+                                "Agent " + agentIdFromQuery + " plugin wildcard route: [" + std::to_string(route.type.toUpperCase()) + "] " + routePath + " for request: " + reqPath
                                 );
                                 try {
                                     if (route.handler) {
@@ -145,7 +145,7 @@ express::RequestHandler createPluginRouteHandler(const std::unordered_map<UUID, 
                                     }
                                     } catch (error) {
                                         logger.error(
-                                        "Error handling plugin wildcard route for agent " + std::to_string(agentIdFromQuery) + ": " + std::to_string(routePath)
+                                        "Error handling plugin wildcard route for agent " + agentIdFromQuery + ": " + routePath
                                         {
                                             error,
                                             path: reqPath,
@@ -154,13 +154,13 @@ express::RequestHandler createPluginRouteHandler(const std::unordered_map<UUID, 
                                         );
                                         if (!res.headersSent) {
                                             const auto status =;
-                                            (true /* instanceof check */ && 'code' in error && error.code == 'ENOENT') ||;
-                                            (true /* instanceof check */ && error.message.includes('not found'));
+                                            (true /* instanceof check */ && "code" in error && error.code == "ENOENT") ||;
+                                            (true /* instanceof check */ && error.(std::find(message.begin(), message.end(), "not found") != message.end()));
                                             ? 404;
                                             : 500;
                                             res.status(status).json({
                                                 error:
-                                                true /* instanceof check */ ? error.message : 'Error processing wildcard route',
+                                                true /* instanceof check */ ? error.message : "Error processing wildcard route",
                                                 });
                                             }
                                             handled = true;
@@ -168,14 +168,14 @@ express::RequestHandler createPluginRouteHandler(const std::unordered_map<UUID, 
                                     }
                                     } else {
                                         logger.debug(
-                                        "Agent " + std::to_string(agentIdFromQuery) + " attempting plugin route match: [" + std::to_string(route.type.toUpperCase()) + "] " + std::to_string(routePath) + " vs request path: " + std::to_string(reqPath)
+                                        "Agent " + agentIdFromQuery + " attempting plugin route match: [" + std::to_string(route.type.toUpperCase()) + "] " + routePath + " vs request path: " + reqPath
                                         );
                                         auto matcher: MatchFunction<object>;
                                         try {
                                             matcher = match(routePath, { decode: decodeURIComponent });
                                             } catch (err) {
                                                 logger.error(
-                                                "Invalid plugin route path syntax for agent " + std::to_string(agentIdFromQuery) + ": "" + std::to_string(routePath) + """
+                                                "Invalid plugin route path syntax for agent " + agentIdFromQuery + ": \"" + routePath + "\""
                                                 err;
                                                 );
                                                 continue;
@@ -185,7 +185,7 @@ express::RequestHandler createPluginRouteHandler(const std::unordered_map<UUID, 
 
                                             if (matched) {
                                                 logger.debug(
-                                                "Agent " + std::to_string(agentIdFromQuery) + " plugin route matched: [" + std::to_string(route.type.toUpperCase()) + "] " + std::to_string(routePath) + " vs request path: " + std::to_string(reqPath)
+                                                "Agent " + agentIdFromQuery + " plugin route matched: [" + std::to_string(route.type.toUpperCase()) + "] " + routePath + " vs request path: " + reqPath
                                                 );
                                                 req.params = { ...(matched.params || {}) }
                                                 try {
@@ -195,7 +195,7 @@ express::RequestHandler createPluginRouteHandler(const std::unordered_map<UUID, 
                                                     }
                                                     } catch (error) {
                                                         logger.error(
-                                                        "Error handling plugin route for agent " + std::to_string(agentIdFromQuery) + ": " + std::to_string(routePath)
+                                                        "Error handling plugin route for agent " + agentIdFromQuery + ": " + routePath
                                                         {
                                                             error,
                                                             path: reqPath,
@@ -205,12 +205,12 @@ express::RequestHandler createPluginRouteHandler(const std::unordered_map<UUID, 
                                                         );
                                                         if (!res.headersSent) {
                                                             const auto status =;
-                                                            (true /* instanceof check */ && 'code' in error && error.code == 'ENOENT') ||;
-                                                            (true /* instanceof check */ && error.message.includes('not found'));
+                                                            (true /* instanceof check */ && "code" in error && error.code == "ENOENT") ||;
+                                                            (true /* instanceof check */ && error.(std::find(message.begin(), message.end(), "not found") != message.end()));
                                                             ? 404;
                                                             : 500;
                                                             res.status(status).json({
-                                                                error: true /* instanceof check */ ? error.message : 'Error processing route',
+                                                                error: true /* instanceof check */ ? error.message : "Error processing route",
                                                                 });
                                                             }
                                                             handled = true;
@@ -220,15 +220,15 @@ express::RequestHandler createPluginRouteHandler(const std::unordered_map<UUID, 
                                                 } // End route loop;
                                                 } else {
                                                     logger.warn(
-                                                    "Agent ID " + std::to_string(agentIdFromQuery) + " provided in query, but agent runtime not found. Path: " + std::to_string(reqPath) + "."
+                                                    "Agent ID " + agentIdFromQuery + " provided in query, but agent runtime not found. Path: " + reqPath + "."
                                                     );
                                                     // For API routes, return error. For other routes, pass to next middleware
                                                     if (reqPath.startsWith('/api/')) {
                                                         res.status(404).json({
                                                             success: false,
                                                             error: {
-                                                                message: 'Agent not found',
-                                                                code: 'AGENT_NOT_FOUND',
+                                                                message: "Agent not found",
+                                                                code: "AGENT_NOT_FOUND",
                                                                 },
                                                                 });
                                                                 return;
@@ -238,14 +238,14 @@ express::RequestHandler createPluginRouteHandler(const std::unordered_map<UUID, 
                                                                 }
                                                             }
                                                             } else if (agentIdFromQuery && !validateUuid(agentIdFromQuery)) {
-                                                                std::cout << "Invalid Agent ID format in query: " + std::to_string(agentIdFromQuery) + ". Path: " + std::to_string(reqPath) + "." << std::endl;
+                                                                std::cout << "Invalid Agent ID format in query: " + agentIdFromQuery + ". Path: " + reqPath + "." << std::endl;
                                                                 // For API routes, return error. For other routes, pass to next middleware
                                                                 if (reqPath.startsWith('/api/')) {
                                                                     res.status(400).json({
                                                                         success: false,
                                                                         error: {
-                                                                            message: 'Invalid agent ID format',
-                                                                            code: 'INVALID_AGENT_ID',
+                                                                            message: "Invalid agent ID format",
+                                                                            code: "INVALID_AGENT_ID",
                                                                             },
                                                                             });
                                                                             return;
@@ -267,7 +267,7 @@ express::RequestHandler createPluginRouteHandler(const std::unordered_map<UUID, 
                                                                                         const auto methodMatches = req.method.toLowerCase() == route.type.toLowerCase();
                                                                                         if (!methodMatches) continue;
 
-                                                                                        const auto routePath = "/" + std::to_string(route.path);
+                                                                                        const auto routePath = "route.path.startsWith("/") ? route.path : " + "/" + route.path;
 
                                                                                         // Do not allow agent-specific routes (containing placeholders like :id) to be matched globally
                                                                                         if (routePath.includes(':')) {
@@ -278,25 +278,25 @@ express::RequestHandler createPluginRouteHandler(const std::unordered_map<UUID, 
                                                                                             const auto baseRoute = routePath.slice(0, -1);
                                                                                             if (reqPath.startsWith(baseRoute)) {
                                                                                                 logger.debug(
-                                                                                                "Global plugin wildcard route: [" + std::to_string(route.type.toUpperCase()) + "] " + std::to_string(routePath) + " (Agent: " + std::to_string(runtime.agentId) + ") for request: " + std::to_string(reqPath)
+                                                                                                "Global plugin wildcard route: [" + std::to_string(route.type.toUpperCase()) + "] " + routePath + " (Agent: " + runtime.agentId + ") for request: " + reqPath
                                                                                                 );
                                                                                                 try {
                                                                                                     route.handler.(req, res, runtime);
                                                                                                     handled = true;
                                                                                                     } catch (error) {
                                                                                                         logger.error(
-                                                                                                        "Error handling global plugin wildcard route " + std::to_string(routePath) + " (Agent: " + std::to_string(runtime.agentId) + ")"
+                                                                                                        "Error handling global plugin wildcard route " + routePath + " (Agent: " + runtime.agentId + ")"
                                                                                                     { error, path = reqPath }
                                                                                                     );
                                                                                                     if (!res.headersSent) {
                                                                                                         const auto status =;
-                                                                                                        (true /* instanceof check */ && 'code' in error && error.code == 'ENOENT') ||;
-                                                                                                        (true /* instanceof check */ && error.message.includes('not found'));
+                                                                                                        (true /* instanceof check */ && "code" in error && error.code == "ENOENT") ||;
+                                                                                                        (true /* instanceof check */ && error.(std::find(message.begin(), message.end(), "not found") != message.end()));
                                                                                                         ? 404;
                                                                                                         : 500;
                                                                                                         res.status(status).json({
                                                                                                             error:
-                                                                                                            true /* instanceof check */ ? error.message : 'Error processing wildcard route',
+                                                                                                            true /* instanceof check */ ? error.message : "Error processing wildcard route",
                                                                                                             });
                                                                                                         }
                                                                                                         handled = true;
@@ -305,24 +305,24 @@ express::RequestHandler createPluginRouteHandler(const std::unordered_map<UUID, 
                                                                                                 } else if (reqPath == routePath) {
                                                                                                     // Exact match for global routes
                                                                                                     logger.debug(
-                                                                                                    "Global plugin route matched: [" + std::to_string(route.type.toUpperCase()) + "] " + std::to_string(routePath) + " (Agent: " + std::to_string(runtime.agentId) + ") for request: " + std::to_string(reqPath)
+                                                                                                    "Global plugin route matched: [" + std::to_string(route.type.toUpperCase()) + "] " + routePath + " (Agent: " + runtime.agentId + ") for request: " + reqPath
                                                                                                     );
                                                                                                     try {
                                                                                                         route.handler.(req, res, runtime);
                                                                                                         handled = true;
                                                                                                         } catch (error) {
                                                                                                             logger.error(
-                                                                                                            "Error handling global plugin route " + std::to_string(routePath) + " (Agent: " + std::to_string(runtime.agentId) + ")"
+                                                                                                            "Error handling global plugin route " + routePath + " (Agent: " + runtime.agentId + ")"
                                                                                                         { error, path = reqPath }
                                                                                                         );
                                                                                                         if (!res.headersSent) {
                                                                                                             const auto status =;
-                                                                                                            (true /* instanceof check */ && 'code' in error && error.code == 'ENOENT') ||;
-                                                                                                            (true /* instanceof check */ && error.message.includes('not found'));
+                                                                                                            (true /* instanceof check */ && "code" in error && error.code == "ENOENT") ||;
+                                                                                                            (true /* instanceof check */ && error.(std::find(message.begin(), message.end(), "not found") != message.end()));
                                                                                                             ? 404;
                                                                                                             : 500;
                                                                                                             res.status(status).json({
-                                                                                                                error: true /* instanceof check */ ? error.message : 'Error processing route',
+                                                                                                                error: true /* instanceof check */ ? error.message : "Error processing route",
                                                                                                                 });
                                                                                                             }
                                                                                                             handled = true;
@@ -355,8 +355,8 @@ express::Router createApiRouter(const std::unordered_map<UUID, IAgentRuntime>& a
         // Disable CSP here - let main app handle it with environment awareness
         contentSecurityPolicy: false,
         // API-specific headers only
-        crossOriginResourcePolicy: { policy: 'cross-origin' },
-        referrerPolicy: { policy: 'no-referrer' },
+        crossOriginResourcePolicy: { policy: "cross-origin" },
+        referrerPolicy: { policy: "no-referrer" },
         });
         );
 
@@ -365,9 +365,9 @@ express::Router createApiRouter(const std::unordered_map<UUID, IAgentRuntime>& a
         cors({
             origin: process.env.API_CORS_ORIGIN || process.env.CORS_ORIGIN || false, // More restrictive for API
             credentials: true,
-            methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-            allowedHeaders: ['Content-Type', 'Authorization', 'X-API-KEY'],
-            exposedHeaders: ['X-Total-Count'],
+            methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+            allowedHeaders: ["Content-Type", "Authorization", "X-API-KEY"],
+            exposedHeaders: ["X-Total-Count"],
             maxAge: 86400, // Cache preflight for 24 hours
             });
             );
@@ -379,32 +379,32 @@ express::Router createApiRouter(const std::unordered_map<UUID, IAgentRuntime>& a
             router.use(securityMiddleware());
 
             // Mount media router at /media FIRST - handles file uploads without middleware interference
-            router.use('/media', mediaRouter());
+            router.use("/media", mediaRouter());
 
             // Content type validation for write operations (applied after media routes)
             router.use(validateContentTypeMiddleware());
 
             // Setup new domain-based routes
             // Mount agents router at /agents - handles agent creation, management, and interactions
-            router.use('/agents', agentsRouter(agents, serverInstance));
+            router.use("/agents", agentsRouter(agents, serverInstance));
 
             // Mount messaging router at /messaging - handles messages, channels, and chat functionality
-            router.use('/messaging', messagingRouter(agents, serverInstance));
+            router.use("/messaging", messagingRouter(agents, serverInstance));
 
             // Mount memory router at /memory - handles agent memory storage and retrieval
-            router.use('/memory', memoryRouter(agents, serverInstance));
+            router.use("/memory", memoryRouter(agents, serverInstance));
 
             // Mount audio router at /audio - handles audio processing, transcription, and voice operations
-            router.use('/audio', audioRouter(agents));
+            router.use("/audio", audioRouter(agents));
 
             // Mount runtime router at /server - handles server runtime operations and management
-            router.use('/server', runtimeRouter(agents, serverInstance));
+            router.use("/server", runtimeRouter(agents, serverInstance));
 
             // Mount TEE router at /tee - handles Trusted Execution Environment operations
-            router.use('/tee', teeRouter());
+            router.use("/tee", teeRouter());
 
             // Mount system router at /system - handles system configuration, health checks, and environment
-            router.use('/system', systemRouter());
+            router.use("/system", systemRouter());
 
             // NOTE: /world routes have been removed - functionality moved to messaging/spaces
 

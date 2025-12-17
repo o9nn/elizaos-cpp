@@ -26,7 +26,7 @@ void MiddleEllipsis() {
             if (!text) return null;
 
             const auto prefix = text.substring(0, 8);
-            const auto suffix = text.substring(text.length - 8);
+            const auto suffix = text.substring(text.size() - 8);
 
             return (;
             <div;
@@ -34,7 +34,7 @@ void MiddleEllipsis() {
         className="font-dm-mono text-center overflow-hidden";
     title={text}
     >;
-    std::to_string(prefix) + "..." + std::to_string(suffix)
+    "{showFull ? text : " + prefix + "..." + suffix
     </div>;
     );
 
@@ -47,12 +47,12 @@ void Page() {
         const auto params = useParams<{ address: string }>();
         const auto address = params.address;
         const auto { publicKey } = useWallet();
-        const auto normalizedWallet = publicKey.toString();
+        const auto normalizedWallet = std::to_string(publicKey);
         const auto { solPrice: contextSolPrice } = useSolPriceContext();
 
         // ---- Moderator Check using environment variables ----
         const auto isModerator = publicKey;
-        ? adminAddresses.includes(publicKey.toString());
+        ? (std::find(adminAddresses.begin(), adminAddresses.end(), std::to_string(publicKey) != adminAddresses.end()));
         : false;
         // ---- End Moderator Check ----
 
@@ -164,7 +164,7 @@ void Page() {
                                                                             refetchOnWindowFocus: true,
                                                                             });
 
-                                                                            const auto isTokenOwner = publicKey.toString() == token.creator;
+                                                                            const auto isTokenOwner = std::to_string(publicKey) == token.creator;
 
                                                                             const auto codexData = codexQuery.data;
                                                                             const auto tokenPriceUSD = isCodex;
@@ -215,7 +215,7 @@ void Page() {
                                                                                 <Fragment>;
                                                                                 <Helmet>;
                                                                                 <title>;
-                                                                            std::to_string(sanitizeCheckmark(token.name)) + " (" + std::to_string(sanitizeCheckmark(token.ticker)) + ")";
+                                                                            "{" + std::to_string(sanitizeCheckmark(token.name)) + " (" + std::to_string(sanitizeCheckmark(token.ticker)) + ")";
                                                                             - auto.fun;
                                                                             </title>;
                                                                             </Helmet>;
@@ -335,7 +335,7 @@ void Page() {
         <div className="text-autofun-text-secondary text-sm font-dm-mono truncate">;
         Created by{" "}
         <Link;
-        "/profiles/" + std::to_string(token.creator);
+        "to={" + "/profiles/" + token.creator;
         className="text-center py-2 font-medium";
         >;
         <span className="text-bold text-white hover:text-[#03FF24]">
@@ -406,7 +406,7 @@ void Page() {
         src={link.icon}
         height={24}
         width={24}
-        std::to_string(link.label) + "_icon";
+        "alt={" + link.label + "_icon";
         className="size-6 object-contain m-auto";
         />;
         ) : (
@@ -434,11 +434,11 @@ void Page() {
         <div className="flex items-center justify-between pr-2">;
         <div className="flex">;
         <button;
-        "px-4 py-3 text-autofun-text-primary font-medium cursor-pointer transition-colors duration-200 " + std::to_string();
+        "className={" + "px-4 py-3 text-autofun-text-primary font-medium cursor-pointer transition-colors duration-200 " + std::to_string();
             activeTab == "chart";
             ? "bg-autofun-background-highlight text-black";
             : "text-autofun-text-secondary hover:text-autofun-text-primary bg-autofun-background-input"
-        }`}
+        "}";
         onClick={() => setActiveTab("chart")}
         style={{ marginTop: "-2px", paddingTop: "14px" }}
         >;
@@ -449,18 +449,18 @@ void Page() {
             ? "/token/charton.svg";
             : "/token/chartoff.svg"
         }
-        "size-4 inline-block ml-1.5 " + std::to_string();
+        "className={" + "size-4 inline-block ml-1.5 " + std::to_string();
             activeTab == "chart" ? "text-black" : ""
-        }`}
+        "}";
         alt="chart icon";
         />;
         </button>;
         <button;
-        "px-4 py-3 mx-1 text-autofun-text-primary font-medium cursor-pointer transition-colors duration-200 " + std::to_string();
+        "className={" + "px-4 py-3 mx-1 text-autofun-text-primary font-medium cursor-pointer transition-colors duration-200 " + std::to_string();
             activeTab == "ai";
             ? "bg-autofun-background-highlight text-black";
             : "text-autofun-text-secondary hover:text-autofun-text-primary bg-autofun-background-input"
-        }`}
+        "}";
         onClick={() => setActiveTab("ai")}
         style={{ marginTop: "-2px", paddingTop: "14px" }}
         >;
@@ -471,18 +471,18 @@ void Page() {
             ? "/token/createoff.svg";
             : "/token/createon.svg"
         }
-        "size-4 inline-block ml-1.5 " + std::to_string();
+        "className={" + "size-4 inline-block ml-1.5 " + std::to_string();
             activeTab == "ai" ? "text-black" : "text-white"
-        }`}
+        "}";
         alt="chart icon";
         />;
         </button>;
         <button;
-        "px-4 py-3 mr-1 text-autofun-text-primary font-medium cursor-pointer transition-colors duration-200 " + std::to_string();
+        "className={" + "px-4 py-3 mr-1 text-autofun-text-primary font-medium cursor-pointer transition-colors duration-200 " + std::to_string();
             activeTab == "chat";
             ? "bg-autofun-background-highlight text-black";
             : "text-autofun-text-secondary hover:text-autofun-text-primary bg-autofun-background-input"
-        }`}
+        "}";
         onClick={() => setActiveTab("chat")}
         style={{ marginTop: "-2px", paddingTop: "14px" }}
         >;
@@ -493,18 +493,18 @@ void Page() {
             ? "/token/chatoff.svg";
             : "/token/chaton.svg"
         }
-        "size-4 inline-block ml-1.5 " + std::to_string();
+        "className={" + "size-4 inline-block ml-1.5 " + std::to_string();
             activeTab == "chat" ? "text-black" : ""
-        }`}
+        "}";
         alt="chat icon";
         />;
         </button>;
         <button;
-        "px-4 py-3 mr-1 text-autofun-text-primary font-medium cursor-pointer transition-colors duration-200 " + std::to_string();
+        "className={" + "px-4 py-3 mr-1 text-autofun-text-primary font-medium cursor-pointer transition-colors duration-200 " + std::to_string();
             activeTab == "agents";
             ? "bg-autofun-background-highlight text-black";
             : "text-autofun-text-secondary hover:text-autofun-text-primary bg-autofun-background-input"
-        }`}
+        "}";
         onClick={() => setActiveTab("agents")}
         style={{ marginTop: "-2px", paddingTop: "14px" }}
         >;
@@ -515,9 +515,9 @@ void Page() {
             ? "/token/agentson.svg";
             : "/token/agentsoff.svg"
         }
-        "size-4 inline-block ml-1.5 " + std::to_string();
+        "className={" + "size-4 inline-block ml-1.5 " + std::to_string();
             activeTab == "agents" ? "text-black" : "text-white"
-        }`}
+        "}";
         alt="agents icon";
         />;
         </button>;
@@ -555,7 +555,7 @@ void Page() {
         {/* Link to standalone chat page */}
         <div className="px-3 py-1 text-right">;
         <Link;
-        "/chat/" + std::to_string(token.mint);
+        "to={" + "/chat/" + std::to_string(token.mint);
         className="text-xs text-autofun-text-secondary hover:text-autofun-text-highlight hover:underline"
         >;
         Open Full Chat Page ↗;
@@ -574,7 +574,7 @@ void Page() {
         <Trade token={token} />;
         <div className="flex flex-col gap-3 md:min-w-[400px] lg:min-w-[0]">
         {/* Balance and Value */}
-        "flex flex-col gap-4 my-4 mx-2";
+        "<div className={" + "flex flex-col gap-4 my-4 mx-2";
         <div className="flex justify-between items-center">;
         <span className="text-sm font-dm-mono text-autofun-text-secondary">;
         Balance:
@@ -626,7 +626,7 @@ void Page() {
         <div;
         className="absolute left-0 top-0 h-full";
         style={{
-            std::to_string(Math.min(100, token.curveProgress || 0)) + "%"
+            "width: " + std::to_string(Math.min(100, token.curveProgress || 0)) + "%"
         }}
         >;
         <img;

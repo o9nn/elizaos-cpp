@@ -7,11 +7,11 @@ namespace elizaos {
 std::future<void> copyStrategy(IAgentRuntime runtime) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto service = acquireService(runtime, 'TRADER_STRATEGY', 'copy trading strategy');
-    const auto infoService = acquireService(runtime, 'TRADER_DATAPROVIDER', 'copy trading info');
+    const auto service = acquireService(runtime, "TRADER_STRATEGY", "copy trading strategy");
+    const auto infoService = acquireService(runtime, "TRADER_DATAPROVIDER", "copy trading info");
 
     const auto me = {;
-        name: 'Copy trading strategy',
+        name: "Copy trading strategy",
         };
         const auto hndl = service.register_strategy(me);
 

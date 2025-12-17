@@ -1,10 +1,13 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
 
@@ -20,9 +23,9 @@ namespace elizaos {
 /// <reference lib="webworker" />
 
 // Type aliases for WebGL array types
-using _Float32List = std::variant<Float32Array, ArrayLike<number>>;
-using _Int32List = std::variant<Int32Array, ArrayLike<number>>;
-using _Uint32List = std::variant<Uint32Array, ArrayLike<number>>;
+using _Float32List = std::variant<std::vector<float>, ArrayLike<number>>;
+using _Int32List = std::variant<std::vector<int32_t>, ArrayLike<number>>;
+using _Uint32List = std::variant<std::vector<uint32_t>, ArrayLike<number>>;
 
 // Fix pg-protocol
   struct NoticeMessage {
@@ -55,7 +58,7 @@ using _Uint32List = std::variant<Uint32Array, ArrayLike<number>>;
     std::any key;
 };
 
-  using ReactNode = std::variant<ReactElement, std::string, double, bool, nullptr, std::nullopt>;
+  using ReactNode = std::variant<ReactElement, std::string, double, bool>;
 
 // Fix React Router types
 

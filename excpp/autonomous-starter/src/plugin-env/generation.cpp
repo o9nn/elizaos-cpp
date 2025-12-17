@@ -13,8 +13,8 @@ bool canGenerateEnvVar(const std::string& varName, const std::string& type, std:
     // Check for private keys
     if (
     type == "private_key" ||;
-    lowerName.includes("private_key") ||;
-    lowerDesc.includes("private key");
+    (std::find(lowerName.begin(), lowerName.end(), "private_key") != lowerName.end()) ||;
+    (std::find(lowerDesc.begin(), lowerDesc.end(), "private key") != lowerDesc.end());
     ) {
         return true;
     }
@@ -22,8 +22,8 @@ bool canGenerateEnvVar(const std::string& varName, const std::string& type, std:
     // Check for secrets
     if (
     type == "secret" ||;
-    lowerName.includes("secret") ||;
-    lowerName.includes("key");
+    (std::find(lowerName.begin(), lowerName.end(), "secret") != lowerName.end()) ||;
+    (std::find(lowerName.begin(), lowerName.end(), "key") != lowerName.end());
     ) {
         // Don't generate API keys - those need to come from external services
         if (lowerName.includes("api_key") || lowerDesc.includes("api key")) {
@@ -65,30 +65,30 @@ std::optional<GenerationScript> generateScript(const std::string& varName, const
                 script = generationTemplates.private_key.rsa; // Default to RSA;
             }
             dependencies = generationDependencies.private_key;
-            } else if (lowerName.includes("uuid") || lowerName.includes("id")) {
+            } else if ((std::find(lowerName.begin(), lowerName.end(), "uuid") != lowerName.end()) || (std::find(lowerName.begin(), lowerName.end(), "id") != lowerName.end())) {
                 script = generationTemplates.secret.uuid;
                 dependencies = generationDependencies.secret.uuid;
-                } else if (lowerName.includes("jwt") && lowerName.includes("secret")) {
+                } else if ((std::find(lowerName.begin(), lowerName.end(), "jwt") != lowerName.end()) && (std::find(lowerName.begin(), lowerName.end(), "secret") != lowerName.end())) {
                     script = generationTemplates.secret.jwt_secret;
                     dependencies = generationDependencies.secret.jwt_secret;
-                    } else if (type == "secret" || lowerName.includes("secret")) {
+                    } else if (type == "secret" || (std::find(lowerName.begin(), lowerName.end(), "secret") != lowerName.end())) {
                         if (lowerDesc.includes("base64") || lowerName.includes("base64")) {
                             script = generationTemplates.secret.base64_32;
                             } else {
                                 script = generationTemplates.secret.hex_32; // Default to hex;
                             }
                             dependencies = generationDependencies.secret.hex_32;
-                            } else if (lowerName.includes("port")) {
+                            } else if ((std::find(lowerName.begin(), lowerName.end(), "port") != lowerName.end())) {
                                 script = generationTemplates.config.port;
                                 dependencies = generationDependencies.config.port;
-                                } else if (lowerName.includes("database") && lowerName.includes("name")) {
+                                } else if ((std::find(lowerName.begin(), lowerName.end(), "database") != lowerName.end()) && (std::find(lowerName.begin(), lowerName.end(), "name") != lowerName.end())) {
                                     script = generationTemplates.config.database_name;
                                     dependencies = generationDependencies.config.database_name;
                                 }
 
                                 if (!script) {
                                     logger.warn(
-                                    "No generation script available for " + std::to_string(varName) + " of type " + std::to_string(type)
+                                    "No generation script available for " + varName + " of type " + type
                                     );
                                     return nullptr;
                                 }
@@ -116,15 +116,15 @@ std::string getGenerationDescription(const std::string& varName, const std::stri
             } else {
                 return "Generate a new RSA private key for cryptographic operations";
             }
-            } else if (lowerName.includes("uuid")) {
+            } else if ((std::find(lowerName.begin(), lowerName.end(), "uuid") != lowerName.end())) {
                 return "Generate a new UUID (Universally Unique Identifier)";
-                } else if (lowerName.includes("jwt") && lowerName.includes("secret")) {
+                } else if ((std::find(lowerName.begin(), lowerName.end(), "jwt") != lowerName.end()) && (std::find(lowerName.begin(), lowerName.end(), "secret") != lowerName.end())) {
                     return "Generate a secure secret for JWT token signing";
-                    } else if (type == "secret" || lowerName.includes("secret")) {
+                    } else if (type == "secret" || (std::find(lowerName.begin(), lowerName.end(), "secret") != lowerName.end())) {
                         return "Generate a cryptographically secure random secret";
-                        } else if (lowerName.includes("port")) {
+                        } else if ((std::find(lowerName.begin(), lowerName.end(), "port") != lowerName.end())) {
                             return "Generate a random port number for the application";
-                            } else if (lowerName.includes("database") && lowerName.includes("name")) {
+                            } else if ((std::find(lowerName.begin(), lowerName.end(), "database") != lowerName.end()) && (std::find(lowerName.begin(), lowerName.end(), "name") != lowerName.end())) {
                                 return "Generate a unique database name";
                             }
 

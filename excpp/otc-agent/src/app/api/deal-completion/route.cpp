@@ -159,7 +159,7 @@ std::future<void> POST(NextRequest request) {
                                         const auto connection = new Connection(rpcUrl, "confirmed");
 
                                         console.log(
-                                        "[DealCompletion] Verifying Solana tx: " + std::to_string(transactionHash) + " on " + std::to_string(rpcUrl)
+                                        "[DealCompletion] Verifying Solana tx: " + transactionHash + " on " + rpcUrl
                                         );
 
                                         // Fetch transaction
@@ -381,10 +381,10 @@ std::future<void> POST(NextRequest request) {
                                                                                         ] = offerData;
 
                                                                                         console.log("[DealCompletion] Offer data from contract:", {
-                                                                                            tokenAmount: tokenAmount.toString(),
-                                                                                            priceUsdPerToken: priceUsdPerToken.toString(),
-                                                                                            discountBps: discountBps.toString(),
-                                                                                            amountPaid: amountPaid.toString(),
+                                                                                            tokenAmount: std::to_string(tokenAmount),
+                                                                                            priceUsdPerToken: std::to_string(priceUsdPerToken),
+                                                                                            discountBps: std::to_string(discountBps),
+                                                                                            amountPaid: std::to_string(amountPaid),
                                                                                             currency,
                                                                                             paid,
                                                                                             });
@@ -435,7 +435,7 @@ std::future<void> POST(NextRequest request) {
                                                                                                     // VALIDATE before saving
                                                                                                     if (!tokenAmountStr || tokenAmountStr == "0") {
                                                                                                         console.warn(
-                                                                                                        "[DealCompletion] tokenAmount is " + std::to_string(tokenAmountStr) + " - quote: " + std::to_string(quoteId)
+                                                                                                        "[DealCompletion] tokenAmount is " + tokenAmountStr + " - quote: " + quoteId
                                                                                                         );
                                                                                                         // For old quotes, skip validation and just return current state
                                                                                                         if (quote.status == "executed") {
@@ -445,12 +445,12 @@ std::future<void> POST(NextRequest request) {
                                                                                                             return NextResponse.json({ success: true, quote });
                                                                                                         }
                                                                                                         throw new Error(
-                                                                                                        "CRITICAL: tokenAmount is " + std::to_string(tokenAmountStr) + " - must be > 0"
+                                                                                                        "CRITICAL: tokenAmount is " + tokenAmountStr + " - must be > 0"
                                                                                                         );
                                                                                                     }
                                                                                                     if (totalUsd == 0 && chainType == "solana") {
                                                                                                         console.warn(
-                                                                                                        "[DealCompletion] Solana deal has $0 value - quote: " + std::to_string(quoteId)
+                                                                                                        "[DealCompletion] Solana deal has $0 value - quote: " + quoteId
                                                                                                         );
                                                                                                         if (quote.status == "executed") {
                                                                                                             console.log(
@@ -495,7 +495,7 @@ std::future<void> POST(NextRequest request) {
                                                                                                             // VERIFY status changed
                                                                                                             if (updated.status != "executed") {
                                                                                                                 throw new Error(
-                                                                                                                "CRITICAL: Status is " + std::to_string(updated.status) + ", expected executed"
+                                                                                                                "CRITICAL: Status is " + updated.status + ", expected executed"
                                                                                                                 );
                                                                                                             }
 
@@ -504,26 +504,26 @@ std::future<void> POST(NextRequest request) {
                                                                                                                 ...updated,
                                                                                                                 chain: chainType == "solana" ? "solana" : "evm",
                                                                                                                 };
-                                                                                                                "quote:" + std::to_string(quoteId)
+                                                                                                                "runtime.setCache(" + "quote:" + quoteId
 
                                                                                                                 // VERIFY quote is in entity's list, and fix index if missing
                                                                                                                 const auto entityQuotes =;
-                                                                                                                "entity_quotes:" + std::to_string(updated.entityId)
+                                                                                                                "(runtime.getCache<string[]>(" + "entity_quotes:" + updated.entityId
                                                                                                                 [];
                                                                                                                 if (!entityQuotes.includes(quoteId)) {
                                                                                                                     console.warn(
-                                                                                                                    "[Deal Completion] Quote " + std::to_string(quoteId) + " not in entity " + std::to_string(updated.entityId) + " list - fixing index"
+                                                                                                                    "[Deal Completion] Quote " + quoteId + " not in entity " + updated.entityId + " list - fixing index"
                                                                                                                     );
-                                                                                                                    entityQuotes.push(quoteId);
-                                                                                                                    "entity_quotes:" + std::to_string(updated.entityId)
+                                                                                                                    entityQuotes.push_back(quoteId);
+                                                                                                                    "runtime.setCache(" + "entity_quotes:" + updated.entityId
 
                                                                                                                     // Also ensure it's in the all_quotes index
                                                                                                                     const auto allQuotes = (runtime.getCache<string[]>("all_quotes")) || [];
                                                                                                                     if (!allQuotes.includes(quoteId)) {
-                                                                                                                        allQuotes.push(quoteId);
+                                                                                                                        allQuotes.push_back(quoteId);
                                                                                                                         runtime.setCache("all_quotes", allQuotes);
                                                                                                                     }
-                                                                                                                    std::cout << "[Deal Completion] ✅ Fixed indexes for quote " + std::to_string(quoteId) << std::endl;
+                                                                                                                    std::cout << "[Deal Completion] ✅ Fixed indexes for quote " + quoteId << std::endl;
                                                                                                                 }
 
                                                                                                                 console.log("[Deal Completion] ✅ VERIFIED and completed:", {
@@ -617,12 +617,12 @@ std::future<void> GET(NextRequest request) {
 
                 // Get quotes by entityId
                 const auto quotes = quoteService.getUserQuoteHistory(entityId, 100);
-                std::cout << "[Deal Completion GET] Got quotes by entityId:" << quotes.length << std::endl;
+                std::cout << "[Deal Completion GET] Got quotes by entityId:" << quotes.size() << std::endl;
 
                 // ALSO search by beneficiary address (for quotes indexed under wrong entityId)
                 // Use beneficiary index if available, otherwise do a limited parallel search
                 const auto beneficiaryQuoteIds = getRuntime.getCache<string[]>(;
-                "beneficiary_quotes:" + std::to_string(normalizedWallet)
+                "beneficiary_quotes:" + normalizedWallet
                 );
                 const auto quotesSet = new Set(quotes.map((q) => q.quoteId));
 
@@ -631,7 +631,7 @@ std::future<void> GET(NextRequest request) {
                     const auto additionalQuotes = Promise.all(;
                     beneficiaryQuoteIds;
                     .filter((id) => !quotesSet.has(id));
-                    "quote:" + std::to_string(id)
+                    ".map((id) => getRuntime.getCache<QuoteMemory>(" + "quote:" + id
                     );
                     for (const auto& quote : additionalQuotes)
                         if (quote) quotes.push(quote);
@@ -646,17 +646,17 @@ std::future<void> GET(NextRequest request) {
 
                         if (idsToCheck.length > 0) {
                             const auto additionalQuotes = Promise.all(;
-                            "quote:" + std::to_string(id)
+                            "idsToCheck.map((id) => getRuntime.getCache<QuoteMemory>(" + "quote:" + id
                             );
                             for (const auto& quote : additionalQuotes)
                                 if (quote && quote.beneficiary == normalizedWallet) {
-                                    quotes.push(quote);
+                                    quotes.push_back(quote);
                                 }
                             }
                         }
                     }
 
-                    std::cout << "[Deal Completion GET] Total quotes found:" << quotes.length << std::endl;
+                    std::cout << "[Deal Completion GET] Total quotes found:" << quotes.size() << std::endl;
 
                     // Show active, approved, and executed deals
                     // active = quote created, approved = offer created/approved on-chain, executed = paid/fulfilled
@@ -668,7 +668,7 @@ std::future<void> GET(NextRequest request) {
                     );
                     console.log(
                     "[Deal Completion GET] Filtered deals (active + approved + executed):",
-                    deals.length,
+                    deals.size(),
                     );
 
                     // Enrich deals with token metadata - batch fetch to avoid N+1 queries

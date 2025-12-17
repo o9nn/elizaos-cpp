@@ -10,7 +10,7 @@ std::future<std::string> claimFees(PublicKey nftMint, PublicKey poolId, Connecti
 
         try {
             const auto wallet = Keypair.fromSecretKey(;
-            Uint8Array.from(JSON.parse(process.env.EXECUTOR_PRIVATE_KEY!));
+            Uint8Array.from(/* JSON.parse */ process.env.EXECUTOR_PRIVATE_KEY!);
             );
 
             // Build an Anchor provider.
@@ -48,7 +48,7 @@ std::future<std::string> claimFees(PublicKey nftMint, PublicKey poolId, Connecti
                 if (!txSignature) {
                     throw std::runtime_error("Failed to claim after multiple attempts.");
                 }
-                "claimer:" + std::to_string(claimer.toBase58())
+                "websocket.to(" + "claimer:" + std::to_string(claimer.toBase58())
                     txSignature,
                     poolId: poolId.toBase58(),
                     claimer: claimer.toBase58(),

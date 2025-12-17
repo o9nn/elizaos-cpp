@@ -1,10 +1,14 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
+#include <stdexcept>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "bun-exec.js.hpp"
 #include "elizaos/core.hpp"
@@ -33,7 +37,7 @@ struct CommandResult {
     bool success;
     std::optional<std::string> stdout;
     std::optional<std::string> stderr;
-    std::optional<Error> error;
+    std::optional<std::runtime_error> error;
 };
 
 /**

@@ -13,8 +13,8 @@ bool detectEmojiSupport() {
     }
 
     // Check environment variables that indicate emoji support
-    const auto term = process.env.TERM || '';
-    const auto termProgram = process.env.TERM_PROGRAM || '';
+    const auto term = process.env.TERM || "";
+    const auto termProgram = process.env.TERM_PROGRAM || "";
     const auto colorTerm = process.env.COLORTERM;
     const auto ciEnv = process.env.CI;
 
@@ -27,10 +27,10 @@ bool detectEmojiSupport() {
     if (process.platform == 'win32') {
         // Windows Terminal, VS Code terminal, and newer terminals support emojis
         if (
-        termProgram == 'vscode' ||;
+        termProgram == "vscode" ||;
         process.env.WT_SESSION ||;
         process.env.WT_PROFILE_ID ||;
-        termProgram == 'Windows Terminal';
+        termProgram == "Windows Terminal";
         ) {
             return true;
         }
@@ -48,11 +48,11 @@ bool detectEmojiSupport() {
     if (process.platform == 'darwin' || process.platform == 'linux') {
         // Modern terminals support emojis
         if (
-        termProgram == 'vscode' ||;
-        termProgram == 'iTerm.app' ||;
-        termProgram == 'Apple_Terminal' ||;
-        term.includes('xterm') ||;
-        term.includes('screen') ||;
+        termProgram == "vscode" ||;
+        termProgram == "iTerm.app" ||;
+        termProgram == "Apple_Terminal" ||;
+        (std::find(term.begin(), term.end(), "xterm") != term.end()) ||;
+        (std::find(term.begin(), term.end(), "screen") != term.end()) ||;
         colorTerm;
         ) {
             return true;
@@ -74,8 +74,8 @@ std::string getEmoji(EmojiKey key) {
 
     const auto emojiDef = EMOJIS[key];
     if (!emojiDef) {
-        std::cout << "Unknown emoji key: " + std::to_string(key) << std::endl;
-        return '';
+        std::cout << "Unknown emoji key: " + key << std::endl;
+        return "";
     }
 
     return config.enabled && detectEmojiSupport() ? emojiDef.emoji : emojiDef.fallback;
@@ -107,8 +107,8 @@ std::string withEmoji(EmojiKey key, const std::string& message, bool spacing = t
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto emoji = getEmoji(key);
-    const auto space = spacing && emoji ? ' ' : '';
-    return std::to_string(emoji) + std::to_string(space) + std::to_string(message);
+    const auto space = spacing && emoji ? " " : "";
+    return emoji + space + message;
 
 }
 
@@ -120,7 +120,7 @@ void initializeEmojiSupport() {
     // Log emoji support status in debug mode
     if (process.env.DEBUG || process.env.ELIZA_DEBUG) {
         logger.debug(
-        "Emoji support: " + std::to_string(supported ? 'enabled' : 'disabled') + " (platform: " + std::to_string(process.platform) + ", term: " + std::to_string(process.env.TERM || 'unknown') + ")"
+        "Emoji support: " + std::to_string(supported ? "enabled" : "disabled") + " (platform: " + process.platform + ", term: " + std::to_string(process.env.TERM || "unknown") + ")"
         );
     }
 

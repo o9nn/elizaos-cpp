@@ -1,10 +1,14 @@
 #pragma once
+#include <algorithm>
+#include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "elizaos/core.hpp"
 #include "notificationManager.hpp"
@@ -22,7 +26,7 @@ struct RolodexService {
     std::string message;
     std::string priority;
     std::optional<std::vector<std::string>> platforms;
-    std::optional<unknown> metadata;
+    std::optional<std::any> metadata;
 };
 
 /**

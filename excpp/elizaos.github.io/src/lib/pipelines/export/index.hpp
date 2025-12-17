@@ -1,14 +1,17 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".generateTimeIntervals.hpp"
-#include ".getSelectedRepositories.hpp"
-#include ".types.hpp"
 #include "exportRepoStats.hpp"
+#include "generateTimeIntervals.hpp"
+#include "getSelectedRepositories.hpp"
+#include "types.hpp"
 
 namespace elizaos {
 

@@ -1,10 +1,14 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
+#include <stdexcept>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -42,7 +46,7 @@ public:
     void updateInstanceStatus(const std::string& instanceId, const std::string& message);
     void onInstanceStart(const std::string& instanceId);
     void onInstanceEnd(const std::string& instanceId, const std::string& exitStatus);
-    void onUncaughtException(const std::string& instanceId, Error exception);
+    void onUncaughtException(const std::string& instanceId, const std::runtime_error& exception);
     void printReport();
     std::unordered_map<std::string, std::any> getOverviewData();
     void saveOverviewDataYaml(const std::string& filePath);

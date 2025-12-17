@@ -1,9 +1,13 @@
 #pragma once
+#include <algorithm>
+#include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
 #include "elizaos/core.hpp"
@@ -39,8 +43,8 @@ struct ReconstructedResponse {
  */
 struct ReflectionResponse {
     std::string thought;
-    std::vector<unknown> facts;
-    std::vector<unknown> relationships;
+    std::vector<std::any> facts;
+    std::vector<std::any> relationships;
     std::string rawContent;
 };
 
@@ -55,7 +59,7 @@ struct UnstructuredResponse {
 /**
  * Type for JSON extraction result
  */
-using ExtractedJSON = std::variant<, std::unordered_map<std::string, unknown>, ReconstructedResponse, ReflectionResponse, UnstructuredResponse>;
+using ExtractedJSON = std::variant<, std::unordered_map<std::string, std::any>, ReconstructedResponse, ReflectionResponse, UnstructuredResponse>;
 
 /**
  * Helper function to ensure reflection response has all required properties

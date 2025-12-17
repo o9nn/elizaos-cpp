@@ -1,10 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 #include "leaderboard-card.hpp"
 
@@ -17,7 +19,7 @@ namespace elizaos {
 
 void LeaderboardFallback();
 
-using LeaderboardPeriod = std::variant<"all", "weekly", "monthly">;
+using LeaderboardPeriod = std::string;
 
 struct LeaderboardUser {
     std::string username;

@@ -10,8 +10,8 @@ std::future<bool> isPortFree(double port) {
     return new Promise((resolve) => {;
         const auto server = net.createServer();
 
-        server.once('error', () => resolve(false));
-        server.once('listening', () => {
+        server.once("error", () => resolve(false));
+        server.once("listening", () => {
             server.close();
             resolve(true);
             });

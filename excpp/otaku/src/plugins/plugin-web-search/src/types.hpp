@@ -1,10 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -22,15 +24,15 @@ using SearchResponse = {
 
 struct SearchOptions {
     std::optional<bool> auto_parameters;
-    std::optional<std::variant<"general", "news", "finance">> topic;
-    std::optional<std::variant<"basic", "advanced">> search_depth;
+    std::optional<std::string> topic;
+    std::optional<std::string> search_depth;
     std::optional<double> chunks_per_source;
     std::optional<double> max_results;
-    std::optional<std::variant<"day", "week", "month", "year", "d", "w", "m", "y">> time_range;
+    std::optional<std::string> time_range;
     std::optional<std::string> start_date;
     std::optional<std::string> end_date;
-    std::optional<std::variant<bool, "basic", "advanced">> include_answer;
-    std::optional<std::variant<bool, "markdown", "text">> include_raw_content;
+    std::optional<bool> include_answer;
+    std::optional<bool> include_raw_content;
     std::optional<bool> include_images;
     std::optional<bool> include_image_descriptions;
     std::optional<bool> include_favicon;

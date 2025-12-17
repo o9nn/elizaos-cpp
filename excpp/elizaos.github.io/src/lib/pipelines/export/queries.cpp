@@ -58,12 +58,12 @@ std::future<void> getTopIssues(QueryParams params = {}, auto limit) {
     db;
     .select({
         issueId: issueComments.issueId,
-        "COUNT(*)"
+        "count: sql<number>" + "COUNT(*)"
         });
         .from(issueComments);
         .where(;
         params.dateRange;
-        std::to_string(issueComments.createdAt) + " >= " + std::to_string(params.dateRange.startDate) + " AND " + std::to_string(issueComments.createdAt) + " <= " + std::to_string(params.dateRange.endDate);
+        "? sql" + issueComments.createdAt + " >= " + params.dateRange.startDate + " AND " + issueComments.createdAt + " <= " + params.dateRange.endDate;
         : std::nullopt,
         );
         .groupBy(issueComments.issueId),
@@ -82,12 +82,12 @@ std::future<void> getTopIssues(QueryParams params = {}, auto limit) {
             createdAt: rawIssues.createdAt,
             closedAt: rawIssues.closedAt,
             state: rawIssues.state,
-            "COALESCE(comment_counts.comment_count, 0)"
+            "commentCount: sql<number>" + "COALESCE(comment_counts.comment_count, 0)"
             });
             .from(rawIssues);
             .leftJoin(commentCountQuery, eq(commentCountQuery.issueId, rawIssues.id));
             .where(and(...whereConditions));
-            "COALESCE(comment_counts.comment_count, 0)";
+            ".orderBy(desc(sql" + "COALESCE(comment_counts.comment_count, 0)";
             .limit(limit);
             .all();
 
@@ -139,7 +139,7 @@ std::future<void> getTopContributors(QueryParams params = {}, auto limit) {
 
                 return {
                     ...user,
-                    summary: summaryRecord.length > 0 ? summaryRecord[0].summary : nullptr,
+                    summary: summaryRecord.size() > 0 ? summaryRecord[0].summary : nullptr,
                     };
                     }),
                     );
@@ -208,7 +208,7 @@ std::future<void> getProjectMetrics(QueryParams params = {}) {
                                 dateRange: dateRange || { startDate: "1970-01-01", endDate: "2100-01-01" },
                                 });
 
-                                const auto uniqueContributors = activeContributors.length;
+                                const auto uniqueContributors = activeContributors.size();
 
                                 const auto commitConditions = buildCommonWhereConditions(params, rawCommits, [;
                                 "committedDate",
@@ -257,8 +257,8 @@ std::future<void> getProjectMetrics(QueryParams params = {}) {
                                             const auto codeChanges = {;
                                                 additions,
                                                 deletions,
-                                                files: filesChangedThisPeriod.length,
-                                                commitCount: commits.length,
+                                                files: filesChangedThisPeriod.size(),
+                                                commitCount: commits.size(),
                                                 };
 
                                                 // Get focus areas from PR files

@@ -11,31 +11,31 @@ std::string transformPathToApiUrl(const std::string& filePath) {
     if (
     !filePath ||;
     isExternalUrl(filePath) ||;
-    filePath.startsWith('/media/') ||;
+    filePath.startsWith("/media/") ||;
     !path.isAbsolute(filePath);
     ) {
         return filePath;
     }
 
     // Normalize path for comparison
-    const auto normalizedPath = filePath.replace(/\\/g, '/');
+    const auto normalizedPath = filePath.replace(/\\/g, "/");
 
     // Check each path configuration
     for (const auto& config : PATH_CONFIGS)
-        const auto configPathRaw = config.getPath().replace(/\\/g, '/');
-        const auto configPath = std::to_string(configPathRaw) + "/";
+        const auto configPathRaw = config.getPath().replace(/\\/g, "/");
+        const auto configPath = "configPathRaw.endsWith("/") ? configPathRaw : " + configPathRaw + "/";
 
         // Use strict boundary-aware startsWith check to prevent path traversal
         if (normalizedPath == configPathRaw || normalizedPath.startsWith(configPath)) {
             const auto relative =;
-            normalizedPath == configPathRaw ? '' : normalizedPath.slice(configPath.length);
+            normalizedPath == configPathRaw ? "" : normalizedPath.slice(configPath.size());
 
             // Only process if we have a valid relative path
             if (relative) {
                 const auto match = relative.match(config.pattern);
                 if (match) {
                     const auto [, id, filename] = match;
-                    return std::to_string(config.apiPrefix) + std::to_string(encodeURIComponent(id)) + std::to_string('/') + std::to_string(encodeURIComponent(filename));
+                    return config.apiPrefix + std::to_string(encodeURIComponent(id)) + std::to_string("/") + std::to_string(encodeURIComponent(filename));
                 }
             }
         }

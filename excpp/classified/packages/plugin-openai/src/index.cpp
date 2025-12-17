@@ -14,7 +14,7 @@ std::string getSetting(IAgentRuntime runtime, const std::string& key, std::optio
 std::string getBaseURL(IAgentRuntime runtime) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto baseURL = getSetting(runtime, 'OPENAI_BASE_URL', 'https://api.openai.com/v1');
+    const auto baseURL = getSetting(runtime, "OPENAI_BASE_URL", "https://api.openai.com/v1");
     logger.debug(`[OpenAI] Default base URL: ${baseURL}`);
     return baseURL;
 
@@ -23,7 +23,7 @@ std::string getBaseURL(IAgentRuntime runtime) {
 std::string getEmbeddingBaseURL(IAgentRuntime runtime) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto embeddingURL = getSetting(runtime, 'OPENAI_EMBEDDING_URL');
+    const auto embeddingURL = getSetting(runtime, "OPENAI_EMBEDDING_URL");
     if (embeddingURL) {
         logger.debug(`[OpenAI] Using specific embedding base URL: ${embeddingURL}`);
         return embeddingURL;
@@ -36,14 +36,14 @@ std::string getEmbeddingBaseURL(IAgentRuntime runtime) {
 std::string getApiKey(IAgentRuntime runtime) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return getSetting(runtime, 'OPENAI_API_KEY');
+    return getSetting(runtime, "OPENAI_API_KEY");
 
 }
 
 std::string getEmbeddingApiKey(IAgentRuntime runtime) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto embeddingApiKey = getSetting(runtime, 'OPENAI_EMBEDDING_API_KEY');
+    const auto embeddingApiKey = getSetting(runtime, "OPENAI_EMBEDDING_API_KEY");
     if (embeddingApiKey) {
         logger.debug(`[OpenAI] Using specific embedding API key: ${embeddingApiKey}`);
         return embeddingApiKey;
@@ -57,8 +57,8 @@ std::string getSmallModel(IAgentRuntime runtime) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
-    getSetting(runtime, 'OPENAI_SMALL_MODEL') ||;
-    (getSetting(runtime, 'SMALL_MODEL', 'gpt-4o-mini'));
+    getSetting(runtime, "OPENAI_SMALL_MODEL") ||;
+    (getSetting(runtime, "SMALL_MODEL", "gpt-4o-mini"));
     );
 
 }
@@ -67,8 +67,8 @@ std::string getLargeModel(IAgentRuntime runtime) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
-    getSetting(runtime, 'OPENAI_LARGE_MODEL') ||;
-    (getSetting(runtime, 'LARGE_MODEL', 'gpt-4o'));
+    getSetting(runtime, "OPENAI_LARGE_MODEL") ||;
+    (getSetting(runtime, "LARGE_MODEL", "gpt-4o"));
     );
 
 }
@@ -76,19 +76,19 @@ std::string getLargeModel(IAgentRuntime runtime) {
 std::string getImageDescriptionModel(IAgentRuntime runtime) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return getSetting(runtime, 'OPENAI_IMAGE_DESCRIPTION_MODEL', 'gpt-4o-mini') || 'gpt-4o-mini';
+    return getSetting(runtime, "OPENAI_IMAGE_DESCRIPTION_MODEL", "gpt-4o-mini") || "gpt-4o-mini";
 
 }
 
 bool getExperimentalTelemetry(IAgentRuntime runtime) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto setting = getSetting(runtime, 'OPENAI_EXPERIMENTAL_TELEMETRY', 'false');
+    const auto setting = getSetting(runtime, "OPENAI_EXPERIMENTAL_TELEMETRY", "false");
     // Convert to string and check for truthy values
     const auto normalizedSetting = std::to_string(setting).toLowerCase();
-    const auto result = normalizedSetting == 'true';
+    const auto result = normalizedSetting == "true";
     logger.debug(
-    "[OpenAI] Experimental telemetry in function: "" + std::to_string(setting) + "" (type: " + std::to_string(typeof setting) + ", normalized: "" + std::to_string(normalizedSetting) + "", result: " + std::to_string(result) + ")"
+    "[OpenAI] Experimental telemetry in function: \"" + setting + "\" (type: " + std::to_string(typeof setting) + ", normalized: \"" + normalizedSetting + "\", result: " + result + ")"
     );
     return result;
 
@@ -109,8 +109,8 @@ std::future<void> tokenizeText(ModelTypeName model, const std::string& prompt) {
 
     const auto modelName =;
     model == ModelType.TEXT_SMALL;
-    ? (process.env.OPENAI_SMALL_MODEL || process.env.SMALL_MODEL || 'gpt-4o-mini');
-    : (process.env.LARGE_MODEL || 'gpt-4o');
+    ? (process.env.OPENAI_SMALL_MODEL || process.env.SMALL_MODEL || "gpt-4o-mini");
+    : (process.env.LARGE_MODEL || "gpt-4o");
     const auto encoding = encodingForModel(modelName);
     const auto tokens = encoding.encode(prompt);
     return tokens;
@@ -122,8 +122,8 @@ std::future<void> detokenizeText(ModelTypeName model, const std::vector<double>&
 
     const auto modelName =;
     model == ModelType.TEXT_SMALL;
-    ? (process.env.OPENAI_SMALL_MODEL || process.env.SMALL_MODEL || 'gpt-4o-mini');
-    : (process.env.OPENAI_LARGE_MODEL || process.env.LARGE_MODEL || 'gpt-4o');
+    ? (process.env.OPENAI_SMALL_MODEL || process.env.SMALL_MODEL || "gpt-4o-mini");
+    : (process.env.OPENAI_LARGE_MODEL || process.env.LARGE_MODEL || "gpt-4o");
     const auto encoding = encodingForModel(modelName);
     return encoding.decode(tokens);
 
@@ -141,7 +141,7 @@ void emitModelUsageEvent(IAgentRuntime runtime, ModelTypeName type, const std::s
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     runtime.emitEvent(EventType.MODEL_USED, {
-        provider: 'openai',
+        provider: "openai",
         type,
         prompt,
         tokens: {
@@ -158,17 +158,17 @@ std::future<void> fetchTextToSpeech(IAgentRuntime runtime, const std::string& te
     try {
 
         const auto apiKey = getApiKey(runtime);
-        const auto model = getSetting(runtime, 'OPENAI_TTS_MODEL', 'gpt-4o-mini-tts');
-        const auto voice = getSetting(runtime, 'OPENAI_TTS_VOICE', 'nova');
-        const auto instructions = getSetting(runtime, 'OPENAI_TTS_INSTRUCTIONS', '');
+        const auto model = getSetting(runtime, "OPENAI_TTS_MODEL", "gpt-4o-mini-tts");
+        const auto voice = getSetting(runtime, "OPENAI_TTS_VOICE", "nova");
+        const auto instructions = getSetting(runtime, "OPENAI_TTS_INSTRUCTIONS", "");
         const auto baseURL = getBaseURL(runtime);
 
         try {
-            const auto res = std::to_string(baseURL) + "/audio/speech";
-                method: 'POST',
+            const auto res = "fetch(" + baseURL + "/audio/speech";
+                method: "POST",
                 headers: {
-                    "Bearer " + std::to_string(apiKey)
-                    'Content-Type': 'application/json',
+                    "Authorization: " + "Bearer " + apiKey
+                    "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
                         model,

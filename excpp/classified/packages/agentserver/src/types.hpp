@@ -1,10 +1,14 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <chrono>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -18,8 +22,8 @@ struct MessageServer {
     std::string name;
     std::string sourceType;
     std::optional<std::string> sourceId;
-    Date createdAt;
-    Date updatedAt;
+    std::chrono::system_clock::time_point createdAt;
+    std::chrono::system_clock::time_point updatedAt;
 };
 
 struct MessageChannel {
@@ -30,8 +34,8 @@ struct MessageChannel {
     std::optional<std::string> sourceType;
     std::optional<std::string> sourceId;
     std::optional<std::string> topic;
-    Date createdAt;
-    Date updatedAt;
+    std::chrono::system_clock::time_point createdAt;
+    std::chrono::system_clock::time_point updatedAt;
 };
 
 struct CentralRootMessage {
@@ -43,8 +47,8 @@ struct CentralRootMessage {
     std::optional<UUID> inReplyToRootMessageId;
     std::optional<std::string> sourceType;
     std::optional<std::string> sourceId;
-    Date createdAt;
-    Date updatedAt;
+    std::chrono::system_clock::time_point createdAt;
+    std::chrono::system_clock::time_point updatedAt;
 };
 
 // This is what goes on the internal bus and often what APIs might return for a "full" message

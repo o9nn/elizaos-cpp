@@ -10,9 +10,9 @@ std::future<void> importAWSSDK() {
 
         try {
             // Use dynamic imports that will be resolved at runtime
-            const auto s3Module = import('@aws-sdk/client-s3').catch(() => nullptr);
-            const auto presignerModule = import('@aws-sdk/s3-request-presigner').catch(() => nullptr);
-            const auto mimeModule = import('mime-types').catch(() => nullptr);
+            const auto s3Module = import("@aws-sdk/client-s3").catch(() => nullptr);
+            const auto presignerModule = import("@aws-sdk/s3-request-presigner").catch(() => nullptr);
+            const auto mimeModule = import("mime-types").catch(() => nullptr);
 
             if (!s3Module || !presignerModule || !mimeModule) {
                 throw std::runtime_error('AWS SDK modules not available');
@@ -29,7 +29,7 @@ std::future<void> importAWSSDK() {
                 lookup: mimeModule.lookup,
                 };
                 } catch (_error) {
-                    std::cout << 'AWS SDK packages not available - storage functionality will be limited' << std::endl;
+                    std::cout << "AWS SDK packages not available - storage functionality will be limited" << std::endl;
                     return nullptr;
                 }
 
@@ -50,10 +50,10 @@ void getStorageConfig(IAgentRuntime runtime) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return {
-        endpoint: getSetting(runtime, 'ELIZAOS_STORAGE_ENDPOINT'),
-        bucket: getSetting(runtime, 'ELIZAOS_STORAGE_BUCKET'),
-        accessKey: getSetting(runtime, 'ELIZAOS_STORAGE_ACCESS_KEY'),
-        secretKey: getSetting(runtime, 'ELIZAOS_STORAGE_SECRET_KEY'),
+        endpoint: getSetting(runtime, "ELIZAOS_STORAGE_ENDPOINT"),
+        bucket: getSetting(runtime, "ELIZAOS_STORAGE_BUCKET"),
+        accessKey: getSetting(runtime, "ELIZAOS_STORAGE_ACCESS_KEY"),
+        secretKey: getSetting(runtime, "ELIZAOS_STORAGE_SECRET_KEY"),
         };
 
 }
@@ -70,13 +70,13 @@ std::future<std::optional<std::any>> createS3Client(IAgentRuntime runtime) {
     try {
         const auto aws = importAWSSDK();
         if (!aws) {
-            std::cout << 'AWS SDK not available - cannot create S3 client' << std::endl;
+            std::cout << "AWS SDK not available - cannot create S3 client" << std::endl;
             return nullptr;
         }
 
         return new aws.S3Client({;
             endpoint: config.endpoint,
-            region: 'auto', // Cloudflare R2 uses 'auto' region
+            region: "auto", // Cloudflare R2 uses "auto" region
             credentials: {
                 accessKeyId: config.accessKey,
                 secretAccessKey: config.secretKey,
@@ -85,7 +85,7 @@ std::future<std::optional<std::any>> createS3Client(IAgentRuntime runtime) {
                 });
                 } catch (error) {
                     logger.error(
-                    "Failed to create S3 client: " + std::to_string(true /* instanceof check */ ? error.message : 'Unknown error')
+                    "Failed to create S3 client: " + std::to_string(true /* instanceof check */ ? error.message : "Unknown error")
                     );
                     return nullptr;
                 }

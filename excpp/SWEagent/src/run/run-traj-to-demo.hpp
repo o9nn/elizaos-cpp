@@ -1,11 +1,15 @@
 #pragma once
+#include <algorithm>
+#include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".utils/log.hpp"
+#include "utils/log.hpp"
 
 namespace elizaos {
 
@@ -21,7 +25,7 @@ namespace elizaos {
 /**
  * Save demo data as a yaml file with proper header
  */
-void saveDemo(unknown data, const std::string& file, const std::string& trajPath);
+void saveDemo(const std::any& data, const std::string& file, const std::string& trajPath);
 
 /**
  * Convert trajectory to action demo

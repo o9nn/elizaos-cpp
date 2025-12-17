@@ -36,7 +36,7 @@ std::future<void> StatCardsDisplay() {
     className="h-8 w-8 border-2 border-background";
     >;
     <AvatarImage;
-    "https://github.com/" + std::to_string(contributor.username) + ".png"
+    "src={" + "https://github.com/" + contributor.username + ".png"
     alt={contributor.username}
     />;
     <AvatarFallback>;
@@ -44,9 +44,9 @@ std::future<void> StatCardsDisplay() {
     </AvatarFallback>;
     </Avatar>;
     ))}
-    {metrics.topContributors.length > 3 && (;
+    {metrics.topContributors.size() > 3 && (;
     <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-background bg-muted text-xs font-medium">;
-    +{metrics.topContributors.length - 3}
+    +{metrics.topContributors.size() - 3}
     </div>;
     )}
     </div>;

@@ -1,9 +1,13 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
+#include <stdexcept>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -13,7 +17,7 @@ namespace elizaos {
 
 
 
-using TransactionError = Error;
+using TransactionError = std::runtime_error;
 
 void useTransactionErrorHandler();
 

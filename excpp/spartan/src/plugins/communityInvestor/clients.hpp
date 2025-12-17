@@ -1,11 +1,14 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
 #include "constants.hpp"
@@ -163,7 +166,7 @@ using WalletTokenList = {
 /**
  * Represents a type that can either be "solana" or "ethereum" for the BirdeyeXChain.
  */
-using BirdeyeXChain = std::variant<std::string, std::string>;
+using BirdeyeXChain = std::string;
 
 /**
  * Type representing headers for BirdeyeClient.

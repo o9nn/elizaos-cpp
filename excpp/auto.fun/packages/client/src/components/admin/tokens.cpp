@@ -73,7 +73,7 @@ void AdminTokensList() {
                             [&](t) { return t.mint == tokenAddress,; }
                             );
                             const auto currentHiddenStatus = token ? !!(token).hidden : false;
-                            return "/api/admin/tokens/" + std::to_string(tokenAddress) + "/hidden";
+                            return "fetcher(" + "/api/admin/tokens/" + tokenAddress + "/hidden";
                                 hidden: !currentHiddenStatus,
                                 });
                                 },
@@ -92,7 +92,7 @@ void AdminTokensList() {
                                         },
                                         onError: (error, tokenAddress) => {
                                             toast.error(;
-                                            "Failed to update hidden status for token " + std::to_string(tokenAddress) + ": " + std::to_string(true /* instanceof check */ ? error.message : "Unknown error")
+                                            "Failed to update hidden status for token " + tokenAddress + ": " + std::to_string(true /* instanceof check */ ? error.message : "Unknown error")
                                             );
                                             },
                                             });
@@ -100,7 +100,7 @@ void AdminTokensList() {
                                             // --- NEW: Mutation for deleting a token ---
                                             const auto deleteTokenMutation = useMutation({;
                                                 mutationFn: async (tokenAddress: string) => {
-                                                    return "/api/admin/tokens/" + std::to_string(tokenAddress);
+                                                    return "fetcher(" + "/api/admin/tokens/" + tokenAddress;
                                                     },
                                                     onSuccess: (_, tokenAddress) => {
                                                         toast.success(;
@@ -246,7 +246,7 @@ void AdminTokensList() {
                 </TableCell>;
                 <TableCell className="p-2">;
                 <span;
-                "px-2 py-1 rounded-full text-xs " + std::to_string();
+                "className={" + "px-2 py-1 rounded-full text-xs " + std::to_string();
                     token.status == "active";
                     ? "bg-green-900 text-green-300";
                     : token.status == "pending"
@@ -262,24 +262,24 @@ void AdminTokensList() {
                     token.status == "migration_failed";
                     ? "bg-red-900 text-red-300";
                     : "bg-gray-900 text-gray-300"
-                }`}
+                "}";
                 >;
             {token.status}
             </span>;
             </TableCell>;
             <TableCell className="p-2 flex items-center space-x-2 justify-end">;
             <Link;
-        "/admin/tokens/" + std::to_string(token.mint);
+        "to={" + "/admin/tokens/" + token.mint;
         className="text-autofun-text-highlight hover:underline p-2"
         >;
         View;
         </Link>;
         <button;
-        "px-2 py-1 text-xs " + std::to_string();
+        "className={" + "px-2 py-1 text-xs " + std::to_string();
             (token).hidden // Ensure boolean check;
             ? "bg-purple-900 text-purple-300 hover:bg-purple-800"
             : "bg-gray-900 text-gray-300 hover:bg-gray-800"
-        }`}
+        "}";
     onClick={() => toggleHiddenMutation.mutate(token.mint)}
     disabled={
         toggleHiddenMutation.isPending &&;
@@ -315,7 +315,7 @@ void AdminTokensList() {
     {/* Pagination */}
     <div className="flex justify-between items-center pt-4">;
     <div className="text-sm text-autofun-text-secondary">;
-    Showing {tokensPagination.items.length || 0} of{" "}
+    Showing {tokensPagination.items.size() || 0} of{" "}
     {tokensPagination.totalItems || 0} tokens;
     </div>;
     {tokensPagination.totalPages && tokensPagination.totalPages > 1 && (;
@@ -509,14 +509,14 @@ void AdminTokenDetails() {
                                                 const auto response = fetch(tokenQuery.data.url);
                                                 if (!response.ok) {
                                                     throw new Error(
-                                                    "Failed to fetch metadata: " + std::to_string(response.status) + " " + std::to_string(response.statusText)
+                                                    "Failed to fetch metadata: " + response.status + " " + response.statusText
                                                     );
                                                 }
                                                 const auto textContent = response.text();
                                                 // Basic check if it looks like JSON before pretty printing
                                                 auto formattedContent = textContent;
                                                 try {
-                                                    formattedContent = JSON.stringify(JSON.parse(textContent), nullptr, 2);
+                                                    formattedContent = /* JSON.stringify */ std::string(/* JSON.parse */ textContent, nullptr, 2);
                                                     } catch (e) {
                                                         // If parsing fails, use the raw text but mark as invalid
                                                         std::cout << "Fetched metadata content is not valid JSON." << std::endl;
@@ -554,7 +554,7 @@ void AdminTokenDetails() {
                                                                 return;
                                                             }
                                                             try {
-                                                                JSON.parse(metadataContent);
+                                                                /* JSON.parse */ metadataContent;
                                                                 setIsMetadataJsonValid(true);
                                                                 } catch (e) {
                                                                     setIsMetadataJsonValid(false);
@@ -587,13 +587,13 @@ void AdminTokenDetails() {
                                                                             const auto updateSocialLinksMutation = useMutation({;
                                                                                 mutationFn: async (links: SocialLinks) => {
                                                                                     return fetcher(;
-                                                                                    "/api/admin/tokens/" + std::to_string(address) + "/social"
+                                                                                    "/api/admin/tokens/" + address + "/social"
                                                                                     "POST",
                                                                                     links,
                                                                                     );
                                                                                     },
                                                                                     onSuccess: () => {
-                                                                                        "Token social links updated successfully";
+                                                                                        "toast.success(" + "Token social links updated successfully";
                                                                                         tokenQuery.refetch(); // Refetch token data after update;
                                                                                         },
                                                                                         onError: (error) => {
@@ -606,7 +606,7 @@ void AdminTokenDetails() {
                                                                                             // Mutation for toggling featured status
                                                                                             const auto toggleFeaturedMutation = useMutation({;
                                                                                                 mutationFn: async () => {
-                                                                                                    return "/api/admin/tokens/" + std::to_string(address) + "/featured";
+                                                                                                    return "fetcher(" + "/api/admin/tokens/" + address + "/featured";
                                                                                                         featured: tokenQuery.data ? !tokenQuery.data.featured : false,
                                                                                                         });
                                                                                                         },
@@ -626,7 +626,7 @@ void AdminTokenDetails() {
                                                                                                                 // Mutation for toggling verified status
                                                                                                                 const auto toggleVerifiedMutation = useMutation({;
                                                                                                                     mutationFn: async () => {
-                                                                                                                        return "/api/admin/tokens/" + std::to_string(address) + "/verified";
+                                                                                                                        return "fetcher(" + "/api/admin/tokens/" + address + "/verified";
                                                                                                                             verified: tokenQuery.data ? !tokenQuery.data.verified : false,
                                                                                                                             });
                                                                                                                             },
@@ -646,7 +646,7 @@ void AdminTokenDetails() {
                                                                                                                                     // Mutation for toggling hidden status
                                                                                                                                     const auto toggleHiddenMutation = useMutation({;
                                                                                                                                         mutationFn: async () => {
-                                                                                                                                            return "/api/admin/tokens/" + std::to_string(address) + "/hidden";
+                                                                                                                                            return "fetcher(" + "/api/admin/tokens/" + address + "/hidden";
                                                                                                                                                 hidden: tokenQuery.data ? !tokenQuery.data.hidden : false,
                                                                                                                                                 });
                                                                                                                                                 },
@@ -674,14 +674,14 @@ void AdminTokenDetails() {
                                                                                                                                                                 }) => {
                                                                                                                                                                     // Add description to type
                                                                                                                                                                     return fetcher(;
-                                                                                                                                                                    "/api/admin/tokens/" + std::to_string(address) + "/details"
+                                                                                                                                                                    "/api/admin/tokens/" + address + "/details"
                                                                                                                                                                     "PUT", // Use PUT method;
                                                                                                                                                                     details,
                                                                                                                                                                     );
                                                                                                                                                                     },
                                                                                                                                                                     onSuccess: (data) => {
                                                                                                                                                                         // data contains { success, message, token }
-                                                                                                                                                                        "Token details updated successfully";
+                                                                                                                                                                        "toast.success(data.message || " + "Token details updated successfully";
                                                                                                                                                                         // Update edit fields AND original details state to prevent immediate re-save
                                                                                                                                                                         const auto updatedToken = data.token; // Cast to ensure type;
                                                                                                                                                                         setEditName(updatedToken.name || "");
@@ -717,11 +717,11 @@ void AdminTokenDetails() {
                                                                                                                                                                                             Accept: "application/json",
                                                                                                                                                                                             };
                                                                                                                                                                                             if (authToken) {
-                                                                                                                                                                                                "Bearer " + std::to_string(JSON.parse(authToken));
+                                                                                                                                                                                                "headers[\"Authorization\"] = " + "Bearer " + std::to_string(/* JSON.parse */ authToken);
                                                                                                                                                                                             }
 
                                                                                                                                                                                             const auto response = fetch(;
-                                                                                                                                                                                            std::to_string(env.apiUrl) + "/api/admin/tokens/" + std::to_string(address) + "/metadata"
+                                                                                                                                                                                            env.apiUrl + "/api/admin/tokens/" + address + "/metadata"
                                                                                                                                                                                             {
                                                                                                                                                                                                 method: "POST",
                                                                                                                                                                                                 headers,
@@ -733,9 +733,9 @@ void AdminTokenDetails() {
                                                                                                                                                                                                 if (!response.ok) {
                                                                                                                                                                                                     const auto errorData = response;
                                                                                                                                                                                                     .json();
-                                                                                                                                                                                                    "HTTP error " + std::to_string(response.status)
+                                                                                                                                                                                                    ".catch(() => ({ error: " + "HTTP error " + response.status
                                                                                                                                                                                                     throw new Error(
-                                                                                                                                                                                                    "Failed to update metadata (" + std::to_string(response.status) + ")"
+                                                                                                                                                                                                    "errorData.error || " + "Failed to update metadata (" + response.status + ")"
                                                                                                                                                                                                     );
                                                                                                                                                                                                 }
                                                                                                                                                                                             return response.json(); // Contains { success, message, metadataUrl };
@@ -746,7 +746,7 @@ void AdminTokenDetails() {
                                                                                                                                                                                                 // Re-format potentially un-prettified input string before saving as original
                                                                                                                                                                                                 auto savedContent = metadataContent;
                                                                                                                                                                                                 try {
-                                                                                                                                                                                                    savedContent = JSON.stringify(JSON.parse(metadataContent), nullptr, 2);
+                                                                                                                                                                                                    savedContent = /* JSON.stringify */ std::string(/* JSON.parse */ metadataContent, nullptr, 2);
                                                                                                                                                                                                     setMetadataContent(savedContent); // Update editor content to formatted version;
                                                                                                                                                                                                     } catch (e) {
                                                                                                                                                                                                         /* Keep raw content if formatting fails */
@@ -767,7 +767,7 @@ void AdminTokenDetails() {
                                                                                                                                                                                                             mutationFn: async (imageBase64: string) => {
                                                                                                                                                                                                                 if (!imageBase64) throw new Error("No image data provided");
                                                                                                                                                                                                                 return fetcher(;
-                                                                                                                                                                                                                "/api/admin/tokens/" + std::to_string(address) + "/image"
+                                                                                                                                                                                                                "/api/admin/tokens/" + address + "/image"
                                                                                                                                                                                                                 "POST",
                                                                                                                                                                                                                 { imageBase64 }, // Send base64 data in the body;
                                                                                                                                                                                                                 );
@@ -867,7 +867,7 @@ void AdminTokenDetails() {
                                                                                                                                                                                                                                                 // Add delete token mutation
                                                                                                                                                                                                                                                 const auto deleteTokenMutation = useMutation({;
                                                                                                                                                                                                                                                     mutationFn: async () => {
-                                                                                                                                                                                                                                                        return "/api/admin/tokens/" + std::to_string(address);
+                                                                                                                                                                                                                                                        return "fetcher(" + "/api/admin/tokens/" + address;
                                                                                                                                                                                                                                                         },
                                                                                                                                                                                                                                                         onSuccess: () => {
                                                                                                                                                                                                                                                             toast.success("Token deleted successfully");
@@ -932,7 +932,7 @@ void AdminTokenDetails() {
                                                                                                                                                                                                                                                                     Back to Tokens;
                                                                                                                                                                                                                                                                     </Link>;
                                                                                                                                                                                                                                                                     <Link;
-                                                                                                                                                                                                                                                                "/token/" + std::to_string(address);
+                                                                                                                                                                                                                                                                "to={" + "/token/" + address;
                                                                                                                                                                                                                                                                 target="_blank";
                                                                                                                                                                                                                                                                 className="px-4 py-2 bg-autofun-background-action-primary text-autofun-text-primary  hover:bg-autofun-background-action-highlight"
                                                                                                                                                                                                                                                                 >;
@@ -984,7 +984,7 @@ void AdminTokenDetails() {
                                                                                                                                                                                                                                             <div>;
                                                                                                                                                                                                                                             <span className="text-autofun-text-secondary">Status:</span>
                                                                                                                                                                                                                                             <span;
-                                                                                                                                                                                                                                            "ml-2 px-2 py-1 rounded-full text-xs " + std::to_string();
+                                                                                                                                                                                                                                            "className={" + "ml-2 px-2 py-1 rounded-full text-xs " + std::to_string();
                                                                                                                                                                                                                                                 token.status == "active";
                                                                                                                                                                                                                                                 ? "bg-green-900 text-green-300";
                                                                                                                                                                                                                                                 : token.status == "pending"
@@ -1000,7 +1000,7 @@ void AdminTokenDetails() {
                                                                                                                                                                                                                                                 token.status == "migration_failed";
                                                                                                                                                                                                                                                 ? "bg-red-900 text-red-300";
                                                                                                                                                                                                                                                 : "bg-gray-900 text-gray-300"
-                                                                                                                                                                                                                                            }`}
+                                                                                                                                                                                                                                            "}";
                                                                                                                                                                                                                                             >;
                                                                                                                                                                                                                                         {token.status}
                                                                                                                                                                                                                                         </span>;
@@ -1014,11 +1014,11 @@ void AdminTokenDetails() {
                                                                                                                                                                                                                                     <div>;
                                                                                                                                                                                                                                     <span className="text-autofun-text-secondary">Featured:</span>
                                                                                                                                                                                                                                     <span;
-                                                                                                                                                                                                                                    "ml-2 px-2 py-1 rounded-full text-xs " + std::to_string();
+                                                                                                                                                                                                                                    "className={" + "ml-2 px-2 py-1 rounded-full text-xs " + std::to_string();
                                                                                                                                                                                                                                         token.featured;
                                                                                                                                                                                                                                         ? "bg-blue-900 text-blue-300";
                                                                                                                                                                                                                                         : "bg-gray-900 text-gray-300"
-                                                                                                                                                                                                                                    }`}
+                                                                                                                                                                                                                                    "}";
                                                                                                                                                                                                                                     >;
                                                                                                                                                                                                                                 {token.featured ? "Yes"  = "No"}
                                                                                                                                                                                                                                 </span>;
@@ -1026,11 +1026,11 @@ void AdminTokenDetails() {
                                                                                                                                                                                                                                 <div>;
                                                                                                                                                                                                                                 <span className="text-autofun-text-secondary">Verified:</span>
                                                                                                                                                                                                                                 <span;
-                                                                                                                                                                                                                                "ml-2 px-2 py-1 rounded-full text-xs " + std::to_string();
+                                                                                                                                                                                                                                "className={" + "ml-2 px-2 py-1 rounded-full text-xs " + std::to_string();
                                                                                                                                                                                                                                     token.verified;
                                                                                                                                                                                                                                     ? "bg-green-900 text-green-300";
                                                                                                                                                                                                                                     : "bg-gray-900 text-gray-300"
-                                                                                                                                                                                                                                }`}
+                                                                                                                                                                                                                                "}";
                                                                                                                                                                                                                                 >;
                                                                                                                                                                                                                             {token.verified ? "Yes"  = "No"}
                                                                                                                                                                                                                             </span>;
@@ -1038,11 +1038,11 @@ void AdminTokenDetails() {
                                                                                                                                                                                                                             <div>;
                                                                                                                                                                                                                             <span className="text-autofun-text-secondary">Hidden:</span>
                                                                                                                                                                                                                             <span;
-                                                                                                                                                                                                                            "ml-2 px-2 py-1 rounded-full text-xs " + std::to_string();
+                                                                                                                                                                                                                            "className={" + "ml-2 px-2 py-1 rounded-full text-xs " + std::to_string();
                                                                                                                                                                                                                                 token.hidden;
                                                                                                                                                                                                                                 ? "bg-purple-900 text-purple-300";
                                                                                                                                                                                                                                 : "bg-gray-900 text-gray-300"
-                                                                                                                                                                                                                            }`}
+                                                                                                                                                                                                                            "}";
                                                                                                                                                                                                                             >;
                                                                                                                                                                                                                         {token.hidden ? "Yes"  = "No"}
                                                                                                                                                                                                                         </span>;
@@ -1080,7 +1080,7 @@ void AdminTokenDetails() {
                                                                                                                                                                                                         />;
                                                                                                                                                                                                     {/* Image Preview */}
                                                                                                                                                                                                     <img;
-                                                                                                                                                                                                    "preview-" + std::to_string(editImage);
+                                                                                                                                                                                                    "key={" + "preview-" + editImage;
                                                                                                                                                                                                     src={editImage || "/placeholder.png"} // Use editImage state, fallback;
                                                                                                                                                                                                     alt="Preview";
                                                                                                                                                                                                     className="w-10 h-10 rounded-full object-cover border border-neutral-700 flex-shrink-0";
@@ -1189,7 +1189,7 @@ void AdminTokenDetails() {
                                                                                                                 </span>;
                                                                                                                 <div className="flex items-center space-x-2">;
                                                                                                                 <Link;
-                                                                                                            "/admin/users/" + std::to_string(token.creator);
+                                                                                                            "to={" + "/admin/users/" + token.creator;
                                                                                                             className="text-autofun-text-highlight hover:underline"
                                                                                                             >;
                                                                                                             View;
@@ -1226,7 +1226,7 @@ void AdminTokenDetails() {
                                                                         value={metadataContent}
                                                                     onChange={(e) => setMetadataContent(e.target.value)}
                                                                     placeholder="Enter valid JSON metadata...";
-                                                                "w-full bg-autofun-background-input p-3 border " + std::to_string(isMetadataJsonValid ? "border-neutral-800" : "border-red-700") + " text-white font-mono text-sm min-h-[400px] max-h-[600px] resize-y"
+                                                                "className={" + "w-full bg-autofun-background-input p-3 border " + std::to_string(isMetadataJsonValid ? "border-neutral-800" : "border-red-700") + " text-white font-mono text-sm min-h-[400px] max-h-[600px] resize-y"
                                                                 />;
                                                                 {!isMetadataJsonValid && metadataContent && (;
                                                                 <p className="text-xs text-red-400">;
@@ -1304,7 +1304,7 @@ void AdminTokenDetails() {
                 <div className="w-full bg-autofun-background-input rounded-full h-2.5 mb-2">;
                 <div;
                 className="bg-autofun-text-highlight h-2.5 rounded-full";
-            std::to_string(token.curveProgress) + "%"
+            "style={{ width: " + token.curveProgress + "%"
             ></div>;
             </div>;
             <p className="text-lg font-bold text-autofun-text-highlight">;
@@ -1437,11 +1437,11 @@ void AdminTokenDetails() {
 
         <div className="mt-4 flex justify-end space-x-2">;
         <button;
-        "px-4 py-2 " + std::to_string();
+        "className={" + "px-4 py-2 " + std::to_string();
             token.featured;
             ? "bg-red-900 text-red-300 hover:bg-red-800"
             : "bg-blue-900 text-blue-300 hover:bg-blue-800"
-        } `}
+        "} ";
         onClick={() => toggleFeaturedMutation.mutate()}
         disabled={toggleFeaturedMutation.isPending}
         >;
@@ -1453,11 +1453,11 @@ void AdminTokenDetails() {
         </button>;
 
         <button;
-        "px-4 py-2 " + std::to_string();
+        "className={" + "px-4 py-2 " + std::to_string();
             token.verified;
             ? "bg-red-900 text-red-300 hover:bg-red-800"
             : "bg-green-900 text-green-300 hover:bg-green-800"
-        } `}
+        "} ";
         onClick={() => toggleVerifiedMutation.mutate()}
         disabled={toggleVerifiedMutation.isPending}
         >;
@@ -1469,11 +1469,11 @@ void AdminTokenDetails() {
         </button>;
 
         <button;
-        "px-4 py-2 " + std::to_string();
+        "className={" + "px-4 py-2 " + std::to_string();
             token.hidden;
             ? "bg-purple-900 text-purple-300 hover:bg-purple-800"
             : "bg-gray-900 text-gray-300 hover:bg-gray-800"
-        } `}
+        "} ";
         onClick={() => toggleHiddenMutation.mutate()}
         disabled={toggleHiddenMutation.isPending}
         >;

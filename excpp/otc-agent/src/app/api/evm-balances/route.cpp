@@ -10,7 +10,7 @@ std::future<std::unordered_map<std::string, CachedTokenMetadata>> getBulkMetadat
     try {
         const auto runtime = agentRuntime.getRuntime();
         const auto cached = runtime.getCache<BulkMetadataCache>(;
-        "evm-metadata-bulk:" + std::to_string(chain)
+        "evm-metadata-bulk:" + chain
         );
         return cached.metadata || {};
         } catch {
@@ -24,7 +24,7 @@ std::future<void> setBulkMetadataCache(const std::string& chain, const std::unor
 
     try {
         const auto runtime = agentRuntime.getRuntime();
-        "evm-metadata-bulk:" + std::to_string(chain)
+        "runtime.setCache(" + "evm-metadata-bulk:" + chain
         } catch {
             // Ignore
         }
@@ -37,12 +37,12 @@ std::future<std::optional<std::vector<TokenBalance>>> getCachedWalletBalances(co
     try {
         const auto runtime = agentRuntime.getRuntime();
         const auto cached = runtime.getCache<CachedWalletBalances>(;
-        "evm-wallet:" + std::to_string(chain) + ":" + std::to_string(address.toLowerCase())
+        "evm-wallet:" + chain + ":" + std::to_string(address.toLowerCase())
         );
         if (!cached) return null;
         if (Date.now() - cached.cachedAt >= WALLET_CACHE_TTL_MS) return null;
         console.log(
-        "[EVM Balances] Using cached wallet data (" + std::to_string(cached.tokens.length) + " tokens)"
+        "[EVM Balances] Using cached wallet data (" + cached.tokens.size() + " tokens)"
         );
         return cached.tokens;
         } catch {
@@ -56,7 +56,7 @@ std::future<void> setCachedWalletBalances(const std::string& chain, const std::s
 
     try {
         const auto runtime = agentRuntime.getRuntime();
-        "evm-wallet:" + std::to_string(chain) + ":" + std::to_string(address.toLowerCase())
+        "runtime.setCache(" + "evm-wallet:" + chain + ":" + std::to_string(address.toLowerCase())
             tokens,
             cachedAt: Date.now(),
             });
@@ -79,7 +79,7 @@ std::future<std::string> cacheImageToBlob(const std::string& imageUrl) {
     try {
         const auto urlHash = crypto.createHash("md5").update(imageUrl).digest("hex");
         const auto extension = getExtensionFromUrl(imageUrl) || "png";
-        const auto blobPath = "token-images/" + std::to_string(urlHash) + "." + std::to_string(extension);
+        const auto blobPath = "token-images/" + urlHash + "." + extension;
 
         // Check if already cached in blob storage
         const auto existing = head(blobPath).catch(() => nullptr);
@@ -139,12 +139,12 @@ std::future<std::unordered_map<std::string, double>> getBulkPriceCache(const std
     try {
         const auto runtime = agentRuntime.getRuntime();
         const auto cached = runtime.getCache<BulkPriceCache>(;
-        "evm-prices-bulk:" + std::to_string(chain)
+        "evm-prices-bulk:" + chain
         );
         if (!cached) return {};
         if (Date.now() - cached.cachedAt >= PRICE_CACHE_TTL_MS) return {};
         console.log(
-        "[EVM Balances] Using cached prices (" + std::to_string(Object.keys(cached.prices).length) + " tokens)"
+        "[EVM Balances] Using cached prices (" + std::to_string(Object.keys(cached.prices).size()) + " tokens)"
         );
         return cached.prices;
         } catch {
@@ -158,7 +158,7 @@ std::future<void> setBulkPriceCache(const std::string& chain, const std::unorder
 
     try {
         const auto runtime = agentRuntime.getRuntime();
-        "evm-prices-bulk:" + std::to_string(chain)
+        "runtime.setCache(" + "evm-prices-bulk:" + chain
             prices,
             cachedAt: Date.now(),
             });
@@ -174,7 +174,7 @@ std::future<std::vector<TokenBalance>> fetchAlchemyBalances(const std::string& a
     const auto config = CHAIN_CONFIG[chain];
     if (!config) return [];
 
-    const auto url = "https://" + std::to_string(config.alchemyNetwork) + ".g.alchemy.com/v2/" + std::to_string(apiKey);
+    const auto url = "https://" + config.alchemyNetwork + ".g.alchemy.com/v2/" + apiKey;
 
     try {
         // Step 1: Get all token balances (fast, single call)
@@ -219,7 +219,7 @@ std::future<std::vector<TokenBalance>> fetchAlchemyBalances(const std::string& a
                     );
 
                     console.log(
-                    "[EVM Balances] Found " + std::to_string(nonZeroBalances.length) + " tokens with balance > 0"
+                    "[EVM Balances] Found " + nonZeroBalances.size() + " tokens with balance > 0"
                     );
 
                     if (nonZeroBalances.length == 0) return [];
@@ -236,12 +236,12 @@ std::future<std::vector<TokenBalance>> fetchAlchemyBalances(const std::string& a
                         t as { contractAddress: string }
                         ).contractAddress.toLowerCase();
                         if (!cachedMetadata[addr]) {
-                            needsMetadata.push(addr);
+                            needsMetadata.push_back(addr);
                         }
                     }
 
                     console.log(
-                    "[EVM Balances] " + std::to_string(Object.keys(cachedMetadata).length) + " cached, " + std::to_string(needsMetadata.length) + " need metadata"
+                    "[EVM Balances] " + std::to_string(Object.keys(cachedMetadata).size()) + " cached, " + needsMetadata.size() + " need metadata"
                     );
 
                     // Step 3: Fetch metadata for uncached tokens (parallel, fast)
@@ -350,8 +350,8 @@ std::future<std::unordered_map<std::string, double>> fetchDeFiLlamaPrices(const 
 
     try {
         // DeFiLlama accepts comma-separated list of chain:address
-        const auto coins = std::to_string(llamaChain) + ":" + std::to_string(a);
-        const auto url = "https://coins.llama.fi/prices/current/" + std::to_string(coins);
+        const auto coins = "addresses.map((a) => " + llamaChain + ":" + a;
+        const auto url = "https://coins.llama.fi/prices/current/" + coins;
 
         const auto response = fetch(url, { signal: AbortSignal.timeout(10000) });
 
@@ -375,7 +375,7 @@ std::future<std::unordered_map<std::string, double>> fetchDeFiLlamaPrices(const 
         }
 
         console.log(
-        "[EVM Balances] DeFiLlama returned " + std::to_string(Object.keys(prices).length) + " prices"
+        "[EVM Balances] DeFiLlama returned " + std::to_string(Object.keys(prices).size()) + " prices"
         );
         return prices;
         } catch (error) {
@@ -398,8 +398,8 @@ std::future<std::unordered_map<std::string, double>> fetchCoinGeckoPrices(const 
         const auto apiKey = process.env.COINGECKO_API_KEY;
 
         const auto url = apiKey;
-        "https://pro-api.coingecko.com/api/v3/simple/token_price/" + std::to_string(config.coingeckoPlatform) + "?contract_addresses=" + std::to_string(addressList) + "&vs_currencies=usd"
-        "https://api.coingecko.com/api/v3/simple/token_price/" + std::to_string(config.coingeckoPlatform) + "?contract_addresses=" + std::to_string(addressList) + "&vs_currencies=usd"
+        "? " + "https://pro-api.coingecko.com/api/v3/simple/token_price/" + config.coingeckoPlatform + "?contract_addresses=" + addressList + "&vs_currencies=usd"
+        ": " + "https://api.coingecko.com/api/v3/simple/token_price/" + config.coingeckoPlatform + "?contract_addresses=" + addressList + "&vs_currencies=usd"
 
         const HeadersInit headers = {};
         if (apiKey) {
@@ -509,12 +509,12 @@ std::future<void> GET(NextRequest request) {
                     if (cachedPrice != undefined) {
                         token.priceUsd = cachedPrice;
                         } else {
-                            uncachedAddresses.push(token.contractAddress);
+                            uncachedAddresses.push_back(token.contractAddress);
                         }
                     }
 
                     console.log(
-                    "[EVM Balances] " + std::to_string(Object.keys(cachedPrices).length) + " prices cached, " + std::to_string(uncachedAddresses.length) + " need fetch"
+                    "[EVM Balances] " + std::to_string(Object.keys(cachedPrices).size()) + " prices cached, " + uncachedAddresses.size() + " need fetch"
                     );
 
                     // Fetch uncached prices (DeFiLlama + CoinGecko)
@@ -589,7 +589,7 @@ std::future<void> GET(NextRequest request) {
                                 });
 
                                 console.log(
-                                "[EVM Balances] " + std::to_string(tokens.length) + " total -> " + std::to_string(filteredTokens.length) + " after dust filter"
+                                "[EVM Balances] " + tokens.size() + " total -> " + filteredTokens.size() + " after dust filter"
                                 );
 
                                 // Cache the result for 15 minutes

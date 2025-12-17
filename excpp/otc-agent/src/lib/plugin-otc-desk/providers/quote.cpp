@@ -37,24 +37,24 @@ std::future<void> deleteUserQuote(const std::string& walletAddress) {
         return;
     }
 
-    "quote:" + std::to_string(quote.quoteId)
+    "runtime.deleteCache(" + "quote:" + quote.quoteId
 
     const auto entityQuoteIds =;
-    "entity_quotes:" + std::to_string(entityId)
+    "(runtime.getCache<string[]>(" + "entity_quotes:" + entityId
     const auto updatedEntityQuoteIds = entityQuoteIds.filter(;
     [&](id) { return id != quote.quoteId,; }
     );
-    "entity_quotes:" + std::to_string(entityId)
+    "runtime.setCache(" + "entity_quotes:" + entityId
 
     // Also remove from beneficiary index
     const auto beneficiaryQuoteIds =;
-    "beneficiary_quotes:" + std::to_string(normalized)
+    "(runtime.getCache<string[]>(" + "beneficiary_quotes:" + normalized
     [];
     const auto updatedBeneficiaryQuoteIds = beneficiaryQuoteIds.filter(;
     [&](id) { return id != quote.quoteId,; }
     );
     runtime.setCache(;
-    "beneficiary_quotes:" + std::to_string(normalized)
+    "beneficiary_quotes:" + normalized
     updatedBeneficiaryQuoteIds,
     );
 

@@ -1,10 +1,14 @@
 #pragma once
+#include <algorithm>
+#include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -36,7 +40,7 @@ namespace elizaos {
 
 // UTILITIES
 
-void log(const std::string& category, const std::string& message, std::optional<std::unordered_map<std::string, unknown>> data);
+void log(const std::string& category, const std::string& message, std::optional<std::unordered_map<std::string, std::any>> data);
 
 void section(const std::string& title);
 

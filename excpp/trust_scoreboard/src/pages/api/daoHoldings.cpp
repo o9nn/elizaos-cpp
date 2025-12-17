@@ -9,25 +9,25 @@ std::future<void> handler(NextApiRequest req, NextApiResponse res) {
     try {
 
         if (req.method != 'GET') {
-            return res.status(405).json({ error: 'Method not allowed' });
+            return res.status(405).json({ error: "Method not allowed" });
         }
 
-        const auto url = "https://mainnet.helius-rpc.com/?api-key=" + std::to_string(process.env.NEXT_PUBLIC_SOLANA_API);
-        const auto DAO_WALLET = 'AM84n1iLdxgVTAyENBcLdjXoyvjentTbu5Q6EpKV1PeG';
+        const auto url = "https://mainnet.helius-rpc.com/?api-key=" + process.env.NEXT_PUBLIC_SOLANA_API;
+        const auto DAO_WALLET = "AM84n1iLdxgVTAyENBcLdjXoyvjentTbu5Q6EpKV1PeG";
 
         try {
             const auto response = fetch(url, {;
-                method: 'POST',
+                method: "POST",
                 headers: {
-                    'Content-Type': 'application/json',
+                    "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
-                        jsonrpc: '2.0',
-                        id: 'my-id',
-                        method: 'searchAssets',
+                        jsonrpc: "2.0",
+                        id: "my-id",
+                        method: "searchAssets",
                         params: {
                             ownerAddress: DAO_WALLET,
-                            tokenType: 'fungible',
+                            tokenType: "fungible",
                             displayOptions: {
                                 showNativeBalance: true,
                                 },
@@ -56,18 +56,18 @@ std::future<void> handler(NextApiRequest req, NextApiResponse res) {
                                     return {
                                         rank: index + 1,
                                         name: tokenInfo.symbol || tokenInfo.name,
-                                        std::to_string(formattedAmount) + " " + std::to_string(tokenInfo.symbol)
+                                        "holdings: " + formattedAmount + " " + tokenInfo.symbol
                                         value: formatCurrency(tokenValue), // Keep monetary value
                                         percentage: calculatePercentage(tokenValue, totalValue),
-                                        "/images/tokens/" + std::to_string(tokenInfo.symbol || 'default') + ".png"
+                                        "imageUrl: " + "/images/tokens/" + std::to_string(tokenInfo.symbol || "default") + ".png"
                                         };
                                         });
 
                                         return res.status(200).json({ holdings });
 
                                         } catch (error) {
-                                            std::cerr << 'Error:' << error << std::endl;
-                                            return res.status(500).json({ error: 'Failed to fetch holdings' });
+                                            std::cerr << "Error:" << error << std::endl;
+                                            return res.status(500).json({ error: "Failed to fetch holdings" });
                                         }
 
     } catch (const std::exception& e) {
@@ -79,9 +79,9 @@ std::future<void> handler(NextApiRequest req, NextApiResponse res) {
 std::string formatCurrency(double amount) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return new Intl.NumberFormat('en-US', {;
-        style: 'currency',
-        currency: 'USD'
+    return new Intl.NumberFormat("en-US", {;
+        style: "currency",
+        currency: "USD"
         }).format(amount);
 
 }

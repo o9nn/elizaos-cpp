@@ -69,7 +69,7 @@ void BondingCurveBar() {
                 <style>{pulseKeyframes}</style>;
                 <div className="h-full w-full bg-autofun-stroke-primary overflow-hidden">;
                 <div;
-                className={`;
+                "className={";
                 h-full bg-autofun-text-highlight z-20;
                 transition-all duration-[1500ms] ease-in-out;
                 flex items-center;
@@ -77,15 +77,15 @@ void BondingCurveBar() {
         ${width == 100 ? "animate-subtle-pulse" : ""}
     `}
     style={{
-        std::to_string(width) + "%"
+        "width: " + width + "%"
     }}
     >;
     <span;
-    "font-medium font-dm-mono text-sm px-1 whitespace-nowrap " + std::to_string();
+    "className={" + "font-medium font-dm-mono text-sm px-1 whitespace-nowrap " + std::to_string();
         width >= 50;
         ? "text-black pr-2";
         : "text-autofun-text-secondary pl-2"
-    }`}
+    "}";
     >;
     {displayedValue}%;
     </span>;

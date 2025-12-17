@@ -7,7 +7,7 @@ namespace elizaos {
 std::string makeBulletpointList(const std::vector<std::string>& array) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return " - " + std::to_string(a);
+    return "array.map((a) => " + " - " + a;
 
 }
 

@@ -14,28 +14,28 @@ void cn() {
 std::string characterNameToUrl(const std::string& name) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return name.replace(/\s+/g, '-');
+    return name.replace(/\s+/g, "-");
 
 }
 
 std::string urlToCharacterName(const std::string& urlName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return urlName.replace(/-+/g, ' ');
+    return urlName.replace(/-+/g, " ");
 
 }
 
 UUID randomUUID() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return URL.createObjectURL(new Blob()).split('/').pop();
+    return URL.createObjectURL(new Blob()).split("/").pop();
 
 }
 
 UUID getEntityId() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto USER_ID_KEY = 'elizaos-client-user-id';
+    const auto USER_ID_KEY = "elizaos-client-user-id";
     const auto existingUserId = localStorage.getItem(USER_ID_KEY);
 
     if (existingUserId) {

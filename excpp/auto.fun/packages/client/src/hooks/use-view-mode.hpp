@@ -1,10 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 #include "use-url-searchparams.hpp"
 
@@ -15,7 +17,7 @@ namespace elizaos {
 
 
 
-using ViewMode = std::variant<"grid", "list">;
+using ViewMode = std::string;
 
 
 } // namespace elizaos

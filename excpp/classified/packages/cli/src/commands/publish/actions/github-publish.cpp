@@ -8,7 +8,7 @@ std::future<PublishResult> publishToGitHubAction(const std::string& cwd, Package
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        std::cout << 'Publishing to GitHub and registry...' << std::endl;
+        std::cout << "Publishing to GitHub and registry..." << std::endl;
 
         const auto result = publishToGitHub(;
         cwd,
@@ -23,7 +23,7 @@ std::future<PublishResult> publishToGitHubAction(const std::string& cwd, Package
         }
 
         console.log(
-        "[√] Successfully published plugin " + std::to_string(packageJson.name) + "@" + std::to_string(packageJson.version) + " to GitHub";
+        "[√] Successfully published plugin " + packageJson.name + "@" + packageJson.version + " to GitHub";
         );
 
         return result;

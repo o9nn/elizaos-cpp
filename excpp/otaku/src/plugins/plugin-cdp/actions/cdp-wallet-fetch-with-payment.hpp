@@ -1,13 +1,17 @@
 #pragma once
+#include <algorithm>
+#include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include "...utils/entity.hpp"
-#include ".services/cdp.service.hpp"
 #include "elizaos/core.hpp"
+#include "services/cdp.service.hpp"
+#include "utils/entity.hpp"
 
 namespace elizaos {
 
@@ -57,7 +61,7 @@ namespace elizaos {
 /**
  * Helper function to format and truncate response data
  */
-std::string formatResponseData(unknown responseData, double maxLength = 500);
+std::string formatResponseData(const std::any& responseData, double maxLength = 500);
 
       // Check if CDP service is available
 

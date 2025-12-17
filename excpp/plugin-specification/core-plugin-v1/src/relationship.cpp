@@ -13,7 +13,7 @@ Relationship fromV2Relationship(RelationshipV2 relationshipV2) {
         userB: relationshipV2.targetEntityId,
         userId: relationshipV2.sourceEntityId, // Use source user
         roomId: relationshipV2.id, // V1 expects roomId, use relationship ID
-        status: relationshipV2.tags.join(','), // Convert tags array to comma-separated string
+        status: relationshipV2.tags.join(","), // Convert tags array to comma-separated string
         createdAt: relationshipV2.createdAt,
         };
 
@@ -27,7 +27,7 @@ RelationshipV2 toV2Relationship(Relationship relationship, UUID agentId) {
         sourceEntityId: relationship.userA,
         targetEntityId: relationship.userB,
         agentId: agentId,
-        tags: relationship.status ? relationship.status.split(',').map(s => s.trim()) : [],
+        tags: relationship.status ? relationship.status.split(",").map(s => s.trim()) : [],
         metadata: {
             // Preserve any V1-specific fields in metadata
             userId: relationship.userId,
@@ -59,12 +59,12 @@ std::string tagsToStatus(const std::vector<std::string>& tags) {
 
     // Map common V2 tags to V1 statuses
     const std::unordered_map<std::string, std::string> statusMap = {;
-        'friend': RELATIONSHIP_STATUSES.FRIEND,
-        'blocked': RELATIONSHIP_STATUSES.BLOCKED,
-        'muted': RELATIONSHIP_STATUSES.MUTED,
-        'following': RELATIONSHIP_STATUSES.FOLLOWING,
-        'follower': RELATIONSHIP_STATUSES.FOLLOWED_BY,
-        'acquaintance': RELATIONSHIP_STATUSES.ACQUAINTANCE,
+        "friend": RELATIONSHIP_STATUSES.FRIEND,
+        "blocked": RELATIONSHIP_STATUSES.BLOCKED,
+        "muted": RELATIONSHIP_STATUSES.MUTED,
+        "following": RELATIONSHIP_STATUSES.FOLLOWING,
+        "follower": RELATIONSHIP_STATUSES.FOLLOWED_BY,
+        "acquaintance": RELATIONSHIP_STATUSES.ACQUAINTANCE,
         };
 
         // Check for known status mappings first
@@ -76,7 +76,7 @@ std::string tagsToStatus(const std::vector<std::string>& tags) {
         }
 
         // If no known mapping, join all tags
-        return tags.join(',');
+        return tags.join(",");
 
 }
 
@@ -87,12 +87,12 @@ std::vector<std::string> statusToTags(const std::string& status) {
 
     // Map common V1 statuses to V2 tags
     const std::unordered_map<std::string, std::vector<std::string>> tagMap = {;
-        [RELATIONSHIP_STATUSES.FRIEND]: ['friend'],
-        [RELATIONSHIP_STATUSES.BLOCKED]: ['blocked'],
-        [RELATIONSHIP_STATUSES.MUTED]: ['muted'],
-        [RELATIONSHIP_STATUSES.FOLLOWING]: ['following'],
-        [RELATIONSHIP_STATUSES.FOLLOWED_BY]: ['follower'],
-        [RELATIONSHIP_STATUSES.ACQUAINTANCE]: ['acquaintance'],
+        [RELATIONSHIP_STATUSES.FRIEND]: ["friend"],
+        [RELATIONSHIP_STATUSES.BLOCKED]: ["blocked"],
+        [RELATIONSHIP_STATUSES.MUTED]: ["muted"],
+        [RELATIONSHIP_STATUSES.FOLLOWING]: ["following"],
+        [RELATIONSHIP_STATUSES.FOLLOWED_BY]: ["follower"],
+        [RELATIONSHIP_STATUSES.ACQUAINTANCE]: ["acquaintance"],
         [RELATIONSHIP_STATUSES.UNKNOWN]: [],
         };
 
@@ -102,7 +102,7 @@ std::vector<std::string> statusToTags(const std::string& status) {
         }
 
         // If no known mapping, split by comma
-        return status.split(',').map(s => s.trim()).filter(Boolean);
+        return status.split(",").map(s => s.trim()).filter(Boolean);
 
 }
 
@@ -145,7 +145,7 @@ Relationship createV1Relationship(UUID userA, UUID userB, std::string status = R
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return {
-        std::to_string(userA) + "-" + std::to_string(userB) + "-" + std::to_string(Date.now())
+        "id: " + userA + "-" + userB + "-" + std::to_string(Date.now())
         userA,
         userB,
         userId: userA,

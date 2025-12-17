@@ -67,19 +67,19 @@ void Page() {
                             params.sortOrder = tableSortOrder;
                             } else {
                                 switch (gridSortBy) {
-                                    case "newest":
+                                    // case "newest":
                                     params.sortBy = "createdAt";
                                     break;
-                                    case "all":
+                                    // case "all":
                                     params.sortBy = "featured";
                                     break;
-                                    case "marketCap":
+                                    // case "marketCap":
                                     params.sortBy = "marketCapUSD";
                                     break;
-                                    case "verified":
+                                    // case "verified":
                                     params.sortBy = "verified";
                                     break;
-                                    default:
+                                    // default:
                                     params.sortBy = "featured";
                                 }
                                 params.sortOrder = "desc";
@@ -143,7 +143,7 @@ void Page() {
                                     <FeaturedSection />;
                                 {/* Top Navigation */}
                                 <div;
-                            "flex flex-col-reverse sm:flex-row gap-1 w-full md:flex-wrap " + std::to_string(activeTab == "grid" ? "justify-between" : "justify-end")
+                            "className={" + "flex flex-col-reverse sm:flex-row gap-1 w-full md:flex-wrap " + std::to_string(activeTab == "grid" ? "justify-between" : "justify-end")
                             >;
                         {/* Grid Sort Buttons - Hide on Table View */}
                         {activeTab == "grid" && (;
@@ -273,7 +273,7 @@ void Page() {
     </div>;
     </div>;
     <div className="flex flex-col flex-1">;
-    {!query.isLoading && query.items.length == 0 ? (;
+    {!query.isLoading && query.items.size() == 0 ? (;
     <div className="text-center text-muted-foreground my-6">;
     No tokens to be displayed;
     </div>;

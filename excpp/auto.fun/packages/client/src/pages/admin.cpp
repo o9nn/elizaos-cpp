@@ -13,7 +13,7 @@ void Admin() {
     const auto { walletAddress } = useAuthentication();
 
     // Check if the user is an admin (client-side check)
-    const auto isAdmin = walletAddress && adminAddresses.includes(walletAddress);
+    const auto isAdmin = walletAddress && (std::find(adminAddresses.begin(), adminAddresses.end(), walletAddress) != adminAddresses.end());
 
     // Fetch moderator status if not an admin
     const auto moderatorQuery = useQuery({;
@@ -22,7 +22,7 @@ void Admin() {
             if (!walletAddress || isAdmin) return { isModerator: false };
             try {
                 const auto response = fetcher(;
-                "/api/admin/users/" + std::to_string(walletAddress)
+                "/api/admin/users/" + walletAddress
                 "GET",
                 );
                 return { isModerator: response.user?.isModerator === 1 }
@@ -70,52 +70,52 @@ void Admin() {
                     <div className="flex items-center gap-2 border-b border-autofun-background-action-primary pb-2 flex-wrap">;
                     <Link;
                     to="/admin";
-                    "px-4 py-2 rounded-t-md " + std::to_string();
-                        isActive("/admin") && !currentPath.includes("/admin/");
+                    "className={" + "px-4 py-2 rounded-t-md " + std::to_string();
+                        isActive("/admin") && !(std::find(currentPath.begin(), currentPath.end(), "/admin/") != currentPath.end());
                         ? "bg-autofun-background-highlight text-black";
                         : "bg-autofun-background-primary hover:bg-autofun-background-action-primary"
-                    }`}
+                    "}";
                     >;
                     Overview;
                     </Link>;
                     <Link;
                     to="/admin/users";
-                    "px-4 py-2 rounded-t-md " + std::to_string();
+                    "className={" + "px-4 py-2 rounded-t-md " + std::to_string();
                         isActive("/admin/users");
                         ? "bg-autofun-background-highlight text-black";
                         : "bg-autofun-background-primary hover:bg-autofun-background-action-primary"
-                    }`}
+                    "}";
                     >;
                     Users;
                     </Link>;
                     <Link;
                     to="/admin/tokens";
-                    "px-4 py-2 rounded-t-md " + std::to_string();
+                    "className={" + "px-4 py-2 rounded-t-md " + std::to_string();
                         isActive("/admin/tokens");
                         ? "bg-autofun-background-highlight text-black";
                         : "bg-autofun-background-primary hover:bg-autofun-background-action-primary"
-                    }`}
+                    "}";
                     >;
                     Tokens;
                     </Link>;
                     <Link;
                     to="/admin/pregenerated";
-                    "px-4 py-2 rounded-t-md " + std::to_string();
+                    "className={" + "px-4 py-2 rounded-t-md " + std::to_string();
                         isActive("/admin/pregenerated");
                         ? "bg-autofun-background-highlight text-black";
                         : "bg-autofun-background-primary hover:bg-autofun-background-action-primary"
-                    }`}
+                    "}";
                     >;
                     Pre-generated;
                     </Link>;
                     {isAdmin && (;
                     <Link;
                     to="/admin/moderators";
-                    "px-4 py-2 rounded-t-md " + std::to_string();
+                    "className={" + "px-4 py-2 rounded-t-md " + std::to_string();
                         isActive("/admin/moderators");
                         ? "bg-autofun-background-highlight text-black";
                         : "bg-autofun-background-primary hover:bg-autofun-background-action-primary"
-                    }`}
+                    "}";
                     >;
                     Moderators;
                     </Link>;

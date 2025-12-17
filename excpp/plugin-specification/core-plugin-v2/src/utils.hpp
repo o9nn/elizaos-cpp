@@ -1,9 +1,13 @@
 #pragma once
+#include <algorithm>
+#include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
 #include "elizaos/core.hpp"
@@ -16,7 +20,7 @@ namespace elizaos {
 
 
 
-Buffer getWavHeader(double audioLength, double sampleRate, auto channelCount, auto bitsPerSample);
+std::vector<uint8_t> getWavHeader(double audioLength, double sampleRate, auto channelCount, auto bitsPerSample);
 
 // Text Utils
 
@@ -95,7 +99,7 @@ void upgradeDoubleToTriple(auto tpl);
  * @param {unknown} value - The value to validate.
  * @returns {UUID | null} Returns the validated UUID value or null if validation fails.
  */
-std::optional<UUID> validateUuid(unknown value);
+std::optional<UUID> validateUuid(const std::any& value);
 
 /**
  * Converts a string or number to a UUID.

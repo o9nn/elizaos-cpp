@@ -19,18 +19,18 @@ std::string extractPluginName(const std::string& text) {
 
     // Try to extract plugin name from natural language
     const auto words = text.toLowerCase().split(/\s+/);
-    const auto cloneIndex = words.findIndex((w) => w == 'clone');
+    const auto cloneIndex = words.findIndex((w) => w == "clone");
 
     if (cloneIndex != -1) {
         // Look for plugin name after 'clone'
         for (int i = cloneIndex + 1; i < words.length; i++) {
             if (words[i] == 'plugin' && i + 1 < words.length) {
                 // Handle "clone the X plugin"
-                const auto pluginType = words[i - 1] == 'the' ? words[i + 1] : words[i - 1];
+                const auto pluginType = words[i - 1] == "the" ? words[i + 1] : words[i - 1];
                 if (pluginType && pluginType != 'the') {
-                    return "@elizaos/plugin-" + std::to_string(pluginType);
+                    return "@elizaos/plugin-" + pluginType;
                 }
-                } else if (words[i].includes('plugin')) {
+                } else if (words[i].includes("plugin")) {
                     return words[i];
                 }
             }

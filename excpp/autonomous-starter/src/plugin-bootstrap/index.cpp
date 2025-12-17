@@ -8,10 +8,10 @@ std::string escapeForJson(const std::string& input) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return input;
-    .replace(/\\/g, '\\\\');
-    .replace(/"/g, '\\"');
-    .replace(/\n/g, '\\n');
-    "/g, '\\" + "\\";
+    .replace(/\\/g, "\\\\");
+    .replace(/"/g, "\\"");
+    .replace(/\n/g, "\\n");
+    ".replace(/" + "/g, '\\" + "\\" + "\\";
 
 }
 
@@ -21,7 +21,7 @@ std::string sanitizeJson(const std::string& rawJson) {
 
         try {
             // Try parsing directly
-            JSON.parse(rawJson);
+            /* JSON.parse */ rawJson;
             return rawJson; // Already valid;
             } catch {
                 // Continue to sanitization
@@ -29,20 +29,20 @@ std::string sanitizeJson(const std::string& rawJson) {
 
             // first, replace all newlines with \n
             const auto sanitized = rawJson;
-            .replace(/\n/g, '\\n');
+            .replace(/\n/g, "\\n");
 
             // then, replace all backticks with \\\`
-            "/g, '\\\";
+            ".replace(/" + "/g, '\\\";
 
             // Regex to find and escape the "text" field
             const auto fixed = sanitized.replace(/"text"\s*:\s*"([\s\S]*?)"\s*,\s*"simple"/, (_match, group) => {;
                 const auto escapedText = escapeForJson(group);
-                return ""text": "" + std::to_string(escapedText) + "", "simple"";
+                return "\"text\": \"" + escapedText + "\", \"simple\"";
                 });
 
                 // Validate that the result is actually parseable
                 try {
-                    JSON.parse(fixed);
+                    /* JSON.parse */ fixed;
                     return fixed;
                     } catch (e) {
                         throw std::runtime_error(`Failed to sanitize JSON: ${e.message}`);
@@ -77,7 +77,7 @@ std::future<std::vector<MediaData>> fetchMediaData(const std::vector<Media>& att
             //   return { data: mediaBuffer, mediaType };
             // }
             throw new Error(
-            "File not found: " + std::to_string(attachment.url) + ". Make sure the path is correct."
+            "File not found: " + attachment.url + ". Make sure the path is correct."
             );
             }),
             );

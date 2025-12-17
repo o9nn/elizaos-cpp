@@ -8,7 +8,7 @@ void genId() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     count = (count + 1) % Number.MAX_SAFE_INTEGER;
-    return count.toString();
+    return std::to_string(count);
 
 }
 
@@ -29,13 +29,13 @@ void toast() {
 
     const auto update = (props: ToasterToast) =>;
     dispatch({
-        type: 'UPDATE_TOAST',
+        type: "UPDATE_TOAST",
         toast: { ...props, id },
         });
-        const auto dismiss = [&]() { return dispatch({ type: 'DISMISS_TOAST', toastId: id }); };
+        const auto dismiss = [&]() { return dispatch({ type: "DISMISS_TOAST", toastId: id }); };
 
         dispatch({
-            type: 'ADD_TOAST',
+            type: "ADD_TOAST",
             toast: {
                 ...props,
                 id,
@@ -60,7 +60,7 @@ void useToast() {
     const auto [state, setState] = React.useState<State>(memoryState);
 
     React.useEffect(() => {
-        listeners.push(setState);
+        listeners.push_back(setState);
         return [&]() {;
             const auto index = listeners.indexOf(setState);
             if (index > -1) {
@@ -72,7 +72,7 @@ void useToast() {
             return {
                 ...state,
                 toast,
-                dismiss: (toastId?: string) => dispatch({ type: 'DISMISS_TOAST', toastId }),
+                dismiss: (toastId?: string) => dispatch({ type: "DISMISS_TOAST", toastId }),
                 };
 
 }

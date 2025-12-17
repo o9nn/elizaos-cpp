@@ -1,14 +1,17 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include "..features/dm/use-dm-slice.hpp"
-#include "..features/guild/use-guild-slice.hpp"
-#include "..features/message/use-message-slice.hpp"
 #include "components/advanced-filter-modal.hpp"
+#include "features/dm/use-dm-slice.hpp"
+#include "features/guild/use-guild-slice.hpp"
+#include "features/message/use-message-slice.hpp"
 
 namespace elizaos {
 

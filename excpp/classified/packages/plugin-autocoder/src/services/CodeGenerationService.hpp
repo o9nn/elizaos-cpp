@@ -1,11 +1,15 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
+#include <stdexcept>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "elizaos/core.hpp"
 #include "elizaos/plugin-forms.hpp"
@@ -146,7 +150,7 @@ public:
     std::future<void> prepareFeedbackForNextIteration(const std::string& projectPath, QualityResults validationResult);
     std::future<GenerationResult> generateCode(CodeGenerationRequest request);
     std::future<GenerationResult> generateCodeWithoutSandbox(CodeGenerationRequest request);
-    bool isTimeoutError(Error error);
+    bool isTimeoutError(const std::runtime_error& error);
      getTimeoutConfig();
     std::future<std::string> generateCodeWithTimeout(const std::string& prompt, double maxTokens = 8000, std::optional<double> timeoutMs);
     std::future<GenerationResult> generateCodeInChunks(CodeGenerationRequest request);

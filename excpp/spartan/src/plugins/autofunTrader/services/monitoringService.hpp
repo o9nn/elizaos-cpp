@@ -1,18 +1,21 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".config/config.hpp"
-#include ".utils/wallet.hpp"
 #include "analyticsService.hpp"
+#include "config/config.hpp"
 #include "dataService.hpp"
 #include "elizaos/core.hpp"
 #include "execution/tradeExecutionService.hpp"
+#include "utils/wallet.hpp"
 #include "walletService.hpp"
 
 namespace elizaos {

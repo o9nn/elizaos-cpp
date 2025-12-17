@@ -31,7 +31,7 @@ std::future<std::optional<std::vector<World>>> findWorldsForOwner(IAgentRuntime 
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!entityId) {
-        std::cerr << 'User ID is required to find server' << std::endl;
+        std::cerr << "User ID is required to find server" << std::endl;
         return nullptr;
     }
 
@@ -39,7 +39,7 @@ std::future<std::optional<std::vector<World>>> findWorldsForOwner(IAgentRuntime 
     const auto worlds = runtime.getAllWorlds();
 
     if (!worlds || worlds.length == 0) {
-        std::cout << 'No worlds found for this agent' << std::endl;
+        std::cout << "No worlds found for this agent" << std::endl;
         return nullptr;
     }
 
@@ -47,11 +47,11 @@ std::future<std::optional<std::vector<World>>> findWorldsForOwner(IAgentRuntime 
     // Find world where the user is the owner
     for (const auto& world : worlds)
         if (world.metadata.ownership.ownerId == entityId) {
-            ownerWorlds.push(world);
+            ownerWorlds.push_back(world);
         }
     }
 
-    return ownerWorlds.length ? ownerWorlds : nullptr;
+    return ownerWorlds.size() ? ownerWorlds : nullptr;
 
 }
 

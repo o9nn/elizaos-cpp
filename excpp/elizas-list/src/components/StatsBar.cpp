@@ -11,9 +11,9 @@ void StatsBar() {
     const auto uniqueTags = new Set(projects.flatMap(p => p.tags)).size;
 
     const auto stats = [;
-    { icon: FaCode, label: 'Projects', value: projects.length },
-    { icon: FaUsers, label: 'Contributors', value: uniqueAuthors },
-    { icon: FaTags, label: 'Technologies', value: uniqueTags },
+    { icon: FaCode, label: "Projects", value: projects.size() },
+    { icon: FaUsers, label: "Contributors", value: uniqueAuthors },
+    { icon: FaTags, label: "Technologies", value: uniqueTags },
     ];
 
     return (;

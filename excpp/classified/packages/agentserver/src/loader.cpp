@@ -9,7 +9,7 @@ std::string tryLoadFile(const std::string& filePath) {
     try {
 
         try {
-            return fs.readFileSync(filePath, 'utf8');
+            return fs.readFileSync(filePath, "utf8");
             } catch (e) {
                 // Only catch file not found errors, let other errors propagate
                 if (e instanceof Error && 'code' in e && (e as NodeJS.ErrnoException).code == 'ENOENT') {
@@ -41,7 +41,7 @@ std::future<std::vector<Character>> loadCharactersFromUrl(const std::string& url
             characters = Promise.all(responseJson.map((character) => jsonToCharacter(character)));
             } else {
                 const auto character = jsonToCharacter(responseJson);
-                characters.push(character);
+                characters.push_back(character);
             }
             return characters;
 
@@ -51,7 +51,7 @@ std::future<std::vector<Character>> loadCharactersFromUrl(const std::string& url
     }
 }
 
-std::future<Character> jsonToCharacter(unknown character) {
+std::future<Character> jsonToCharacter(const std::any& character) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -61,9 +61,9 @@ std::future<Character> jsonToCharacter(unknown character) {
         if (!validationResult.success) {
             const auto errorDetails = validationResult.error.issues;
             ? validationResult.error.issues;
-            std::to_string(issue.path.join('.')) + ": " + std::to_string(issue.message)
-            .join('; ');
-            : validationResult.error.message || 'Unknown validation error';
+            ".map((issue) => " + std::to_string(issue.path.join(".")) + ": " + issue.message
+            .join("; ");
+            : validationResult.error.message || "Unknown validation error";
 
             throw std::runtime_error(`Character validation failed: ${errorDetails}`);
         }
@@ -77,12 +77,12 @@ std::future<Character> jsonToCharacter(unknown character) {
 
         // Add environment-based settings and secrets (preserve existing functionality)
         const auto characterId = validatedCharacter.id || validatedCharacter.name;
-        const auto characterPrefix = "CHARACTER." + std::to_string(characterId.toUpperCase().replace(/ /g, '_')) + ".";
+        const auto characterPrefix = "CHARACTER." + std::to_string(characterId.toUpperCase().replace(/ /g, "_")) + ".";
 
         const auto characterSettings = Object.entries(process.env);
         .filter(([key]) => key.startsWith(characterPrefix));
         .reduce((settings, [key, value]) => {
-            const auto settingKey = key.slice(characterPrefix.length);
+            const auto settingKey = key.slice(characterPrefix.size());
             return { ...settings, [settingKey]: value }
             }, {});
 
@@ -91,7 +91,7 @@ std::future<Character> jsonToCharacter(unknown character) {
                 const auto combinedSecrets = {;
                     ...characterSettings,
                     ...(validatedCharacter.secrets || {}),
-                    ...(typeof validatedCharacter.settings.secrets == 'object' &&;
+                    ...(typeof validatedCharacter.settings.secrets == "object" &&;
                     validatedCharacter.settings.secrets != nullptr;
                     ? validatedCharacter.settings.secrets;
                     : {}),
@@ -168,21 +168,21 @@ std::future<Character> loadCharacterTryPath(const std::string& characterPath) {
         }
 
         // Create path variants with and without .json extension
-        const auto hasJsonExtension = characterPath.toLowerCase().endsWith('.json');
+        const auto hasJsonExtension = characterPath.toLowerCase().endsWith(".json");
         const auto basePath = hasJsonExtension ? characterPath : characterPath;
-        const auto jsonPath = std::to_string(characterPath) + ".json";
+        const auto jsonPath = "hasJsonExtension ? characterPath : " + characterPath + ".json";
 
         const auto basePathsToTry = [;
         basePath,
         path.resolve(process.cwd(), basePath),
-        path.resolve(process.cwd(), '..', '..', basePath),
-        path.resolve(process.cwd(), '..', '..', '..', basePath),
-        path.resolve(process.cwd(), 'agent', basePath),
+        path.resolve(process.cwd(), "..", "..", basePath),
+        path.resolve(process.cwd(), "..", "..", "..", basePath),
+        path.resolve(process.cwd(), "agent", basePath),
         path.resolve(__dirname, basePath),
-        path.resolve(__dirname, 'characters', path.basename(basePath)),
-        path.resolve(__dirname, '../characters', path.basename(basePath)),
-        path.resolve(__dirname, '../../characters', path.basename(basePath)),
-        path.resolve(__dirname, '../../../characters', path.basename(basePath)),
+        path.resolve(__dirname, "characters", path.basename(basePath)),
+        path.resolve(__dirname, "../characters", path.basename(basePath)),
+        path.resolve(__dirname, "../../characters", path.basename(basePath)),
+        path.resolve(__dirname, "../../../characters", path.basename(basePath)),
         ];
 
         const auto jsonPathsToTry = hasJsonExtension;
@@ -190,14 +190,14 @@ std::future<Character> loadCharacterTryPath(const std::string& characterPath) {
         : [
         jsonPath,
         path.resolve(process.cwd(), jsonPath),
-        path.resolve(process.cwd(), '..', '..', jsonPath),
-        path.resolve(process.cwd(), '..', '..', '..', jsonPath),
-        path.resolve(process.cwd(), 'agent', jsonPath),
+        path.resolve(process.cwd(), "..", "..", jsonPath),
+        path.resolve(process.cwd(), "..", "..", "..", jsonPath),
+        path.resolve(process.cwd(), "agent", jsonPath),
         path.resolve(__dirname, jsonPath),
-        path.resolve(__dirname, 'characters', path.basename(jsonPath)),
-        path.resolve(__dirname, '../characters', path.basename(jsonPath)),
-        path.resolve(__dirname, '../../characters', path.basename(jsonPath)),
-        path.resolve(__dirname, '../../../characters', path.basename(jsonPath)),
+        path.resolve(__dirname, "characters", path.basename(jsonPath)),
+        path.resolve(__dirname, "../characters", path.basename(jsonPath)),
+        path.resolve(__dirname, "../../characters", path.basename(jsonPath)),
+        path.resolve(__dirname, "../../../characters", path.basename(jsonPath)),
         ];
 
         // Combine the paths to try both variants
@@ -212,7 +212,7 @@ std::future<Character> loadCharacterTryPath(const std::string& characterPath) {
                         // If it's a validation/parsing error, throw immediately (fail fast)
                         // Only continue if it's a file not found error
                         if (
-                        !(true /* instanceof check */ && 'code' in e && (e.ErrnoException).code == 'ENOENT');
+                        !(true /* instanceof check */ && "code" in e && (e.ErrnoException).code == "ENOENT");
                         ) {
                             throw e;
                         }
@@ -232,7 +232,7 @@ std::future<Character> loadCharacterTryPath(const std::string& characterPath) {
 std::vector<std::string> commaSeparatedStringToArray(const std::string& commaSeparated) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return commaSeparated.split(',').map((value) => value.trim());
+    return commaSeparated.split(",").map((value) => value.trim());
 
 }
 
@@ -240,20 +240,20 @@ std::future<std::vector<std::string>> readCharactersFromStorage(const std::vecto
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        const auto uploadDir = path.join(process.cwd(), '.eliza', 'data', 'characters');
+        const auto uploadDir = path.join(process.cwd(), ".eliza", "data", "characters");
 
         try {
             fs.promises.mkdir(uploadDir, { recursive: true });
             const auto fileNames = fs.promises.readdir(uploadDir);
             for (const auto& fileName : fileNames)
-                characterPaths.push(path.join(uploadDir, fileName));
+                characterPaths.push_back(path.join(uploadDir, fileName));
             }
             } catch (err) {
                 // Only catch expected errors like directory not existing
                 if (err instanceof Error && 'code' in err) {
                     const auto nodeErr = err.ErrnoException;
                     if (nodeErr.code == 'ENOENT' || nodeErr.code == 'EACCES') {
-                        std::cerr << "Cannot access character storage directory: " + std::to_string(nodeErr.message) << std::endl;
+                        std::cerr << "Cannot access character storage directory: " + nodeErr.message << std::endl;
                         // Return original characterPaths, don't fail the whole process
                         return characterPaths;
                     }
@@ -283,16 +283,16 @@ std::future<std::vector<Character>> loadCharacters(const std::string& characters
     if (characterPaths.length > 0) {
         for (const auto& characterPath : characterPaths)
             const auto character = loadCharacterTryPath(characterPath);
-            loadedCharacters.push(character);
+            loadedCharacters.push_back(character);
         }
     }
 
     if (hasValidRemoteUrls()) {
-        std::cout << 'Loading characters from remote URLs' << std::endl;
-        const auto characterUrls = commaSeparatedStringToArray(process.env.REMOTE_CHARACTER_URLS! || '');
+        std::cout << "Loading characters from remote URLs" << std::endl;
+        const auto characterUrls = commaSeparatedStringToArray(process.env.REMOTE_CHARACTER_URLS! || "");
         for (const auto& characterUrl : characterUrls)
             const auto characters = loadCharactersFromUrl(characterUrl);
-            loadedCharacters.push(...characters);
+            loadedCharacters.push_back(...characters);
         }
     }
 
@@ -300,7 +300,7 @@ std::future<std::vector<Character>> loadCharacters(const std::string& characters
         std::cout << 'No characters found << using default character' << std::endl;
         // Note: The server package doesn't have a default character like the CLI does
         // This should be provided by the consumer of the server package
-        std::cout << 'Server package does not include a default character. Please provide one.' << std::endl;
+        std::cout << "Server package does not include a default character. Please provide one." << std::endl;
     }
 
     return loadedCharacters;

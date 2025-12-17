@@ -1,9 +1,13 @@
 #pragma once
+#include <algorithm>
+#include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -32,12 +36,12 @@ using RenderRecord = {
 /**
  * Get a serializable summary of a value for debugging
  */
-std::string summarizeValue(unknown value);
+std::string summarizeValue(const std::any& value);
 
 /**
  * Get a props summary for debugging
  */
-std::unordered_map<std::string, std::string> getPropsSnapshot(const std::unordered_map<std::string, unknown>& props);
+std::unordered_map<std::string, std::string> getPropsSnapshot(const std::unordered_map<std::string, std::any>& props);
 
 /**
  * Find what changed between two snapshots
@@ -57,7 +61,7 @@ std::vector<std::string> findChanges(const std::unordered_map<std::string, std::
  * void MyComponent(MyProps props);
  * ```
  */
-void trackRender(const std::string& componentName, std::optional<std::unordered_map<std::string, unknown>> props, std::optional<std::unordered_map<std::string, unknown>> state);
+void trackRender(const std::string& componentName, std::optional<std::unordered_map<std::string, std::any>> props, std::optional<std::unordered_map<std::string, std::any>> state);
 
 /**
  * React hook version of trackRender for easier integration.
@@ -67,6 +71,6 @@ void trackRender(const std::string& componentName, std::optional<std::unordered_
  * void MyComponent(MyProps props);
  * ```
  */
-void useRenderTracker(const std::string& componentName, std::optional<std::unordered_map<std::string, unknown>> props, std::optional<std::unordered_map<std::string, unknown>> state);
+void useRenderTracker(const std::string& componentName, std::optional<std::unordered_map<std::string, std::any>> props, std::optional<std::unordered_map<std::string, std::any>> state);
 
 } // namespace elizaos

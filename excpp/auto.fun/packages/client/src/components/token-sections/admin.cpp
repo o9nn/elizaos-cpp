@@ -68,7 +68,7 @@ void AdminTab() {
 
                                 try {
                                     const auto response = fetch(;
-                                    std::to_string(env.apiUrl) + "/api/generation/" + std::to_string(mint) + "/settings"
+                                    env.apiUrl + "/api/generation/" + mint + "/settings"
                                     );
                                     if (!response.ok) {
                                         throw std::runtime_error("Failed to fetch generation settings");
@@ -121,7 +121,7 @@ void AdminTab() {
                                                             const auto fetchTokenData = async () => {;
                                                                 setIsLoading(true);
                                                                 try {
-                                                                    const auto response = std::to_string(env.apiUrl) + "/api/token/" + std::to_string(mint);
+                                                                    const auto response = "fetch(" + env.apiUrl + "/api/token/" + mint;
                                                                     if (!response.ok) {
                                                                         throw std::runtime_error(`Failed to fetch token data (${response.status})`);
                                                                     }
@@ -187,18 +187,18 @@ void AdminTab() {
                                                                                                         if (domain && urlObj.hostname.replace(/^www\\./, "") != domain) {
                                                                                                             // Domain mismatch, try to extract path/username
                                                                                                             const auto path = urlObj.pathname.split("/").pop() || "";
-                                                                                                            return std::to_string(prefix) + std::to_string(path);
+                                                                                                            return "path ? " + prefix + path;
                                                                                                         }
                                                                                                         urlObj.protocol = "https:";
-                                                                                                        return urlObj.toString();
+                                                                                                        return std::to_string(urlObj);
                                                                                                     }
                                                                                                     // Handle cases like domain.com/path directly
                                                                                                     if (domain && url.startsWith(domain + "/")) {
-                                                                                                        return "https://" + std::to_string(url);
+                                                                                                        return "https://" + url;
                                                                                                     }
                                                                                                     // Handle just username/path/code
                                                                                                     if (!url.includes("/") && !url.includes(".")) {
-                                                                                                        return std::to_string(prefix) + std::to_string(url);
+                                                                                                        return prefix + url;
                                                                                                     }
                                                                                                     // If it doesn't seem like a username or valid url, prepend prefix cautiously
                                                                                                     // Assume it's a path/username if no protocol and no clear domain
@@ -206,16 +206,16 @@ void AdminTab() {
                                                                                                         // Basic check for common domain patterns - might need refinement
                                                                                                         const auto domainPattern = /^[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)+/;
                                                                                                         if (!domainPattern.test(url.split("/")[0])) {
-                                                                                                            return std::to_string(prefix) + std::to_string(url);
+                                                                                                            return prefix + url;
                                                                                                         }
                                                                                                         // Otherwise, assume it's a full URL needing https
-                                                                                                        return "https://" + std::to_string(url);
+                                                                                                        return "https://" + url;
                                                                                                     }
                                                                                                     } catch (e) {
-                                                                                                        std::cout << "Could not parse or normalize URL: " + std::to_string(url) << e << std::endl;
+                                                                                                        std::cout << "Could not parse or normalize URL: " + url << e << std::endl;
                                                                                                         // Fallback: attempt basic https prefix if missing
                                                                                                         if (!url.startsWith("http://") && !url.startsWith("https://")) {
-                                                                                                            return "https://" + std::to_string(url);
+                                                                                                            return "https://" + url;
                                                                                                         }
                                                                                                     }
                                                                                                     // Return original url if normalization failed or wasn't applicable
@@ -234,9 +234,9 @@ void AdminTab() {
                                                                                                         // Assume it's just the username if no URL match
                                                                                                         const auto usernameMatch = input.match(/^[a-zA-Z0-9_]+$/);
                                                                                                         if (usernameMatch) {
-                                                                                                            return "https://x.com/" + std::to_string(input);
+                                                                                                            return "https://x.com/" + input;
                                                                                                         }
-                                                                                                        std::cout << "Could not normalize Twitter/X input: " + std::to_string(input) << std::endl;
+                                                                                                        std::cout << "Could not normalize Twitter/X input: " + input << std::endl;
                                                                                                         return input; // Return original if cannot parse;
                                                                                                         };
 
@@ -268,7 +268,7 @@ void AdminTab() {
                                                                                                                     };
 
                                                                                                                     if (authToken) {
-                                                                                                                        "Bearer " + std::to_string(JSON.parse(authToken));
+                                                                                                                        "headers[\"Authorization\"] = " + "Bearer " + std::to_string(/* JSON.parse */ authToken);
                                                                                                                     }
 
                                                                                                                     // Create request payload with development override if needed
@@ -283,11 +283,11 @@ void AdminTab() {
 
                                                                                                                         // Try admin endpoint first, fall back to owner endpoint if not admin
                                                                                                                         auto response = fetch(;
-                                                                                                                        std::to_string(env.apiUrl) + "/api/admin/tokens/" + std::to_string(mint) + "/social"
+                                                                                                                        env.apiUrl + "/api/admin/tokens/" + mint + "/social"
                                                                                                                         {
                                                                                                                             method: "POST",
                                                                                                                             headers,
-                                                                                                                            body: JSON.stringify(payload),
+                                                                                                                            body: /* JSON.stringify */ std::string(payload),
                                                                                                                             credentials: "include",
                                                                                                                             },
                                                                                                                             );
@@ -295,11 +295,11 @@ void AdminTab() {
                                                                                                                             if (response.status == 403) {
                                                                                                                                 // If not admin, try owner endpoint
                                                                                                                                 response = fetch(;
-                                                                                                                                std::to_string(env.apiUrl) + "/api/owner/tokens/" + std::to_string(mint) + "/social"
+                                                                                                                                env.apiUrl + "/api/owner/tokens/" + mint + "/social"
                                                                                                                                 {
                                                                                                                                     method: "POST",
                                                                                                                                     headers,
-                                                                                                                                    body: JSON.stringify(payload),
+                                                                                                                                    body: /* JSON.stringify */ std::string(payload),
                                                                                                                                     credentials: "include",
                                                                                                                                     },
                                                                                                                                     );
@@ -341,7 +341,7 @@ void AdminTab() {
                                                                                                                                             const auto toggleHiddenMutation = useMutation({;
                                                                                                                                                 mutationFn: async () => {
                                                                                                                                                     if (!mint) throw new Error("Mint address not found");
-                                                                                                                                                    return "/api/admin/tokens/" + std::to_string(mint) + "/hidden";
+                                                                                                                                                    return "fetcher(" + "/api/admin/tokens/" + mint + "/hidden";
                                                                                                                                                         hidden: !tokenStatus.hidden,
                                                                                                                                                         });
                                                                                                                                                         },
@@ -364,7 +364,7 @@ void AdminTab() {
                                                                                                                                                                 const auto toggleFeaturedMutation = useMutation({;
                                                                                                                                                                     mutationFn: async () => {
                                                                                                                                                                         if (!mint) throw new Error("Mint address not found");
-                                                                                                                                                                        return "/api/admin/tokens/" + std::to_string(mint) + "/featured";
+                                                                                                                                                                        return "fetcher(" + "/api/admin/tokens/" + mint + "/featured";
                                                                                                                                                                             featured: !tokenStatus.featured,
                                                                                                                                                                             });
                                                                                                                                                                             },
@@ -387,7 +387,7 @@ void AdminTab() {
                                                                                                                                                                                     const auto toggleVerifiedMutation = useMutation({;
                                                                                                                                                                                         mutationFn: async () => {
                                                                                                                                                                                             if (!mint) throw new Error("Mint address not found");
-                                                                                                                                                                                            return "/api/admin/tokens/" + std::to_string(mint) + "/verified";
+                                                                                                                                                                                            return "fetcher(" + "/api/admin/tokens/" + mint + "/verified";
                                                                                                                                                                                                 verified: !tokenStatus.verified,
                                                                                                                                                                                                 });
                                                                                                                                                                                                 },
@@ -411,7 +411,7 @@ void AdminTab() {
                                                                                                                                                                                                         // ---- Moderator Check using hardcoded list ----
                                                                                                                                                                                                         const auto { publicKey } = useWallet();
                                                                                                                                                                                                         const auto isModerator = publicKey;
-                                                                                                                                                                                                        ? adminAddresses.includes(publicKey.toString());
+                                                                                                                                                                                                        ? (std::find(adminAddresses.begin(), adminAddresses.end(), std::to_string(publicKey) != adminAddresses.end()));
                                                                                                                                                                                                         : false;
 
                                                                                                                                                                                                         // Check if user is the token owner
@@ -422,9 +422,9 @@ void AdminTab() {
                                                                                                                                                                                                             if (!mint) return;
                                                                                                                                                                                                             const auto fetchTokenData = async () => {;
                                                                                                                                                                                                                 try {
-                                                                                                                                                                                                                    const auto response = std::to_string(env.apiUrl) + "/api/token/" + std::to_string(mint);
+                                                                                                                                                                                                                    const auto response = "fetch(" + env.apiUrl + "/api/token/" + mint;
                                                                                                                                                                                                                     const auto data = (response.json()) as { creator: string };
-                                                                                                                                                                                                                    setIsTokenOwner(data.creator == publicKey.toString());
+                                                                                                                                                                                                                    setIsTokenOwner(data.creator == std::to_string(publicKey));
                                                                                                                                                                                                                     // ... rest of the fetch logic
                                                                                                                                                                                                                     } catch (error) {
                                                                                                                                                                                                                         std::cerr << "Error fetching token data:" << error << std::endl;
@@ -467,11 +467,11 @@ void AdminTab() {
 
                                                                                                                                                                                                                                 const auto authToken = localStorage.getItem("authToken");
                                                                                                                                                                                                                                 const std::unordered_map<std::string, std::string> headers = {;
-                                                                                                                                                                                                                                    "Bearer " + std::to_string(JSON.parse(authToken || "{}"))
+                                                                                                                                                                                                                                    "Authorization: " + "Bearer " + std::to_string(/* JSON.parse */ authToken || "{}")
                                                                                                                                                                                                                                     };
 
                                                                                                                                                                                                                                     const auto response = fetch(;
-                                                                                                                                                                                                                                    std::to_string(env.apiUrl) + "/api/token/" + std::to_string(mint) + "/audio-context"
+                                                                                                                                                                                                                                    env.apiUrl + "/api/token/" + mint + "/audio-context"
                                                                                                                                                                                                                                     {
                                                                                                                                                                                                                                         method: "POST",
                                                                                                                                                                                                                                         headers,
@@ -635,9 +635,9 @@ void AdminTab() {
                                                                                                 <button;
                                                                                                 type="submit";
                                                                                             disabled={isSaving || !hasChanges()}
-                                                                                            "ml-auto cursor-pointer text-white bg-transparent gap-x-3 border-2 hover:bg-autofun-background-action-highlight border-autofun-background-action-highlight flex px-8 py-1 mt-2 flex-row w-fit items-center justify-items-center " + std::to_string()
+                                                                                            "className={" + "ml-auto cursor-pointer text-white bg-transparent gap-x-3 border-2 hover:bg-autofun-background-action-highlight border-autofun-background-action-highlight flex px-8 py-1 mt-2 flex-row w-fit items-center justify-items-center " + std::to_string()
                                                                                                 isSaving || !hasChanges() ? "opacity-50 cursor-not-allowed" : ""
-                                                                                            }`}
+                                                                                            "}";
                                                                                             >;
                                                                                         {isSaving ? "Saving..."  = "Save Social Links"}
                                                                                         </button>;
@@ -651,11 +651,11 @@ void AdminTab() {
                                                                                     <div className="flex flex-wrap justify-start gap-2">;
                                                                                     <button;
                                                                                     type="button";
-                                                                                    "px-4 py-2 text-sm " + std::to_string();
+                                                                                    "className={" + "px-4 py-2 text-sm " + std::to_string();
                                                                                         tokenStatus.featured;
                                                                                         ? "bg-red-700 text-red-100 hover:bg-red-600"
                                                                                         : "bg-blue-700 text-blue-100 hover:bg-blue-600"
-                                                                                    } disabled:opacity-50 disabled:cursor-not-allowed`}
+                                                                                    "} disabled:opacity-50 disabled:cursor-not-allowed"
                                                                                 onClick={() => toggleFeaturedMutation.mutate()}
                                                                             disabled={toggleFeaturedMutation.isPending}
                                                                             >;
@@ -668,11 +668,11 @@ void AdminTab() {
 
                                                                         <button;
                                                                         type="button";
-                                                                        "px-4 py-2 text-sm " + std::to_string();
+                                                                        "className={" + "px-4 py-2 text-sm " + std::to_string();
                                                                             tokenStatus.verified;
                                                                             ? "bg-red-700 text-red-100 hover:bg-red-600"
                                                                             : "bg-green-700 text-green-100 hover:bg-green-600"
-                                                                        } disabled:opacity-50 disabled:cursor-not-allowed`}
+                                                                        "} disabled:opacity-50 disabled:cursor-not-allowed"
                                                                     onClick={() => toggleVerifiedMutation.mutate()}
                                                                 disabled={toggleVerifiedMutation.isPending}
                                                                 >;
@@ -685,11 +685,11 @@ void AdminTab() {
 
                                                             <button;
                                                             type="button";
-                                                            "px-4 py-2 text-sm " + std::to_string();
+                                                            "className={" + "px-4 py-2 text-sm " + std::to_string();
                                                                 tokenStatus.hidden;
                                                                 ? "bg-yellow-700 text-yellow-100 hover:bg-yellow-600"
                                                                 : "bg-gray-700 text-gray-100 hover:bg-gray-600"
-                                                            } disabled:opacity-50 disabled:cursor-not-allowed`}
+                                                            "} disabled:opacity-50 disabled:cursor-not-allowed"
                                                         onClick={() => toggleHiddenMutation.mutate()}
                                                     disabled={toggleHiddenMutation.isPending}
                                                     >;
@@ -702,7 +702,7 @@ void AdminTab() {
                                                 </div>;
                                                 <div className="flex justify-start mt-4">;
                                                 <Link;
-                                            "/admin/tokens/" + std::to_string(mint);
+                                            "to={" + "/admin/tokens/" + mint;
                                             className="text-sm px-3 py-1 bg-autofun-background-action-primary hover:bg-autofun-background-action-highlight text-autofun-text-primary"
                                             >;
                                             Go to Full Admin View;
@@ -739,7 +739,7 @@ void AdminTab() {
                     <div className="flex flex-col gap-2">;
                     <div className="flex flex-col gap-2 mb-4">;
                     <AudioPlayer;
-                std::to_string(existingAudioUrl) + "?t=" + std::to_string(audioTimestamp);
+                "src={" + existingAudioUrl + "?t=" + audioTimestamp;
                 />;
                 </div>;
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">

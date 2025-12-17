@@ -1,9 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -12,6 +15,13 @@ namespace elizaos {
 // Manual refinement required for production use
 
 
+
+
+} // namespace elizaos
+reference types="cypress" />
+/// <reference path="../../../cypress/support/types.d.ts" />
+
+    // Clicking the label should focus the input
 
 
 } // namespace elizaos

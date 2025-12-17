@@ -49,7 +49,7 @@ void App() {
     <p className="text-red-500">Error loading tasks: {error.message}</p>
     )}
 
-    {!isLoading && !error && (!worlds || worlds.length == 0) && (;
+    {!isLoading && !error && (!worlds || worlds.size() == 0) && (;
     <Card>;
     <CardContent className="pt-6">;
     <p className="text-muted-foreground text-center">;
@@ -92,7 +92,7 @@ void App() {
     </Button>;
     </div>;
     <CollapsibleContent className="space-y-4 pl-4 border-l-2">;
-    {world.rooms.length == 0 && (;
+    {world.rooms.size() == 0 && (;
     <p className="text-muted-foreground text-sm italic pl-2">;
     No rooms with tasks in this world yet.;
     </p>;
@@ -109,10 +109,10 @@ void App() {
     </CardHeader>;
     <CardContent className="space-y-1 p-2 pt-1">;
     {room.tasks.filter(;
-    [&](task) { return !task.tags.includes("completed"),; }
-    ).length > 0 ? (;
+    [&](task) { return !task.(std::find(tags.begin(), tags.end(), "completed") != tags.end()),; }
+    ).size() > 0 ? (;
     room.tasks;
-    .filter((task) => !task.tags.includes("completed"));
+    .filter((task) => !task.(std::find(tags.begin(), tags.end(), "completed") != tags.end()));
     .map((task) => (;
     <TaskItem key={task.id} task={task} />;
     ));
@@ -122,14 +122,14 @@ void App() {
     </p>;
     )}
     {room.tasks.some((task) =>;
-    task.tags.includes("completed"),
+    task.(std::find(tags.begin(), tags.end(), "completed") != tags.end()),
     ) && (;
     <>;
     <Separator className="my-2" />;
     <div className="space-y-1">;
     {room.tasks;
     .filter((task) =>;
-    task.tags.includes("completed"),
+    task.(std::find(tags.begin(), tags.end(), "completed") != tags.end()),
     );
     .map((task) => (;
     <TaskItem key={task.id} task={task} />;

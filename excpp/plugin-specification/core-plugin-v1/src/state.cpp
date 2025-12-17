@@ -33,7 +33,7 @@ StateV2 toV2State(State state) {
     const StateV2 stateV2 = {;
         values: {},
         data: {},
-        text: state.text || '',
+        text: state.text || "",
         };
 
         // Add any properties from v1 state as-is to preserve them

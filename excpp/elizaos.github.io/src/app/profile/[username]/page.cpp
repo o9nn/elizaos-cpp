@@ -29,7 +29,7 @@ std::future<void> generateStaticParams() {
                 limit: maxUsers,
                 });
 
-                std::cout << "Found " + std::to_string(allUsers.length) + " users for static params" << std::endl;
+                std::cout << "Found " + allUsers.size() + " users for static params" << std::endl;
 
                 return allUsers.map((user) => ({;
                     username: user.username,
@@ -49,12 +49,12 @@ std::future<Metadata> generateMetadata() {
 
     // Get the latest weekly summary for meta description if available
     const auto description =;
-    userData.weeklySummaries && userData.weeklySummaries.length > 0;
+    userData.weeklySummaries && userData.weeklySummaries.size() > 0;
     ? userData.weeklySummaries[0].summary || "Eliza OS contributor profile";
     : "Eliza OS contributor profile";
 
     return {
-        std::to_string(userData.username)
+        "title: userData ? " + userData.username
         description,
         };
 

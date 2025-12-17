@@ -7,7 +7,7 @@ namespace elizaos {
 std::string MaxTokens(const std::string& data, double maxTokens = DEFAULT_MAX_CRYPTO_NEWS_CHARS) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return data.length > maxTokens ? data.slice(0, maxTokens) : data;
+    return data.size() > maxTokens ? data.slice(0, maxTokens) : data;
 
 }
 

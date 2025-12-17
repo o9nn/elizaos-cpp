@@ -12,8 +12,8 @@ WorkItemType categorizeWorkItem(const std::string& text) {
     // Feature detection
     if (
     lowercaseText.startsWith("feat") ||;
-    lowercaseText.includes("feature") ||;
-    lowercaseText.includes("add ");
+    (std::find(lowercaseText.begin(), lowercaseText.end(), "feature") != lowercaseText.end()) ||;
+    (std::find(lowercaseText.begin(), lowercaseText.end(), "add ") != lowercaseText.end());
     ) {
         return "feature";
     }
@@ -21,8 +21,8 @@ WorkItemType categorizeWorkItem(const std::string& text) {
     // Bug fix detection
     if (
     lowercaseText.startsWith("fix") ||;
-    lowercaseText.includes("fix") ||;
-    lowercaseText.includes("bug");
+    (std::find(lowercaseText.begin(), lowercaseText.end(), "fix") != lowercaseText.end()) ||;
+    (std::find(lowercaseText.begin(), lowercaseText.end(), "bug") != lowercaseText.end());
     ) {
         return "bugfix";
     }
@@ -35,9 +35,9 @@ WorkItemType categorizeWorkItem(const std::string& text) {
     // Refactoring detection
     if (
     lowercaseText.startsWith("refactor") ||;
-    lowercaseText.includes("refactor") ||;
-    lowercaseText.includes("clean") ||;
-    lowercaseText.includes("cleanup");
+    (std::find(lowercaseText.begin(), lowercaseText.end(), "refactor") != lowercaseText.end()) ||;
+    (std::find(lowercaseText.begin(), lowercaseText.end(), "clean") != lowercaseText.end()) ||;
+    (std::find(lowercaseText.begin(), lowercaseText.end(), "cleanup") != lowercaseText.end());
     ) {
         return "refactor";
     }
@@ -65,9 +65,9 @@ std::string extractAreaFromPath(const std::string& path) {
     auto area = parts[0];
 
     if (area == "packages") {
-        std::to_string(parts[1]);
+        "area = " + std::to_string(parts[1]);
         } else {
-            std::to_string(area) + "/" + std::to_string(parts[1]);
+            "area = " + area + "/" + std::to_string(parts[1]);
         }
 
         return area;

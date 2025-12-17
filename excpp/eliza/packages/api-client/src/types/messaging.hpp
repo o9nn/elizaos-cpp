@@ -1,10 +1,14 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <chrono>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "base.hpp"
 #include "elizaos/core.hpp"
@@ -21,8 +25,8 @@ struct MessageServer {
     std::string name;
     std::string sourceType;
     std::optional<std::string> sourceId;
-    Date createdAt;
-    Date updatedAt;
+    std::chrono::system_clock::time_point createdAt;
+    std::chrono::system_clock::time_point updatedAt;
 };
 
 struct MessageChannel {
@@ -33,8 +37,8 @@ struct MessageChannel {
     std::optional<std::string> sourceType;
     std::optional<std::string> sourceId;
     std::optional<std::string> topic;
-    Date createdAt;
-    Date updatedAt;
+    std::chrono::system_clock::time_point createdAt;
+    std::chrono::system_clock::time_point updatedAt;
 };
 
 struct Message {
@@ -46,8 +50,8 @@ struct Message {
     std::optional<UUID> inReplyToRootMessageId;
     std::optional<std::string> sourceType;
     std::optional<std::string> sourceId;
-    Date createdAt;
-    Date updatedAt;
+    std::chrono::system_clock::time_point createdAt;
+    std::chrono::system_clock::time_point updatedAt;
 };
 
 struct MessageSubmitParams {
@@ -91,7 +95,7 @@ struct ChannelParticipant {
     UUID channelId;
     UUID userId;
     std::optional<std::string> role;
-    Date joinedAt;
+    std::chrono::system_clock::time_point joinedAt;
 };
 
 struct ServerCreateParams {

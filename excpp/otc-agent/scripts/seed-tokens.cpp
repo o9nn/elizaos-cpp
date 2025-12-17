@@ -23,7 +23,7 @@ std::future<void> seedTokens() {
     // === SAFETY CHECK 2: Only allow localnet ===
     const auto network = process.env.NETWORK || process.env.NEXT_PUBLIC_NETWORK || "localnet";
     if (network != "localnet") {
-        std::cout << "\n🛑 BLOCKED: Network is "" + std::to_string(network) << not "localnet"` << std::endl;
+        std::cout << "\n🛑 BLOCKED: Network is \"" + network << "not \"localnet\"" << std::endl;
         std::cout << "   Token seeding is ONLY allowed for local development." << std::endl;
         std::cout << "   Production tokens must be registered by their actual owners via the UI.\n" << std::endl;
         process.exit(0);
@@ -31,10 +31,10 @@ std::future<void> seedTokens() {
 
     // === SAFETY CHECK 3: Verify localhost API ===
     const auto apiUrl = process.env.NEXT_PUBLIC_URL || "http://localhost:4444";
-    const auto isLocalhost = apiUrl.includes("localhost") || apiUrl.includes("127.0.0.1");
+    const auto isLocalhost = (std::find(apiUrl.begin(), apiUrl.end(), "localhost") != apiUrl.end()) || (std::find(apiUrl.begin(), apiUrl.end(), "127.0.0.1") != apiUrl.end());
 
     if (!isLocalhost) {
-        std::cout << "\n🛑 BLOCKED: API URL is "" + std::to_string(apiUrl) << not localhost` << std::endl;
+        std::cout << "\n🛑 BLOCKED: API URL is \"" + apiUrl << "not localhost" << std::endl;
         std::cout << "   Token seeding is ONLY allowed when targeting localhost." << std::endl;
         std::cout << "   This prevents accidental seeding to production databases.\n" << std::endl;
         process.exit(0);
@@ -43,14 +43,14 @@ std::future<void> seedTokens() {
     // === SAFETY CHECK 4: Block if DATABASE_URL looks like production ===
     const auto dbUrl = process.env.DATABASE_URL || "";
     const auto looksLikeProduction =;
-    dbUrl.includes("neon.tech") ||;
-    dbUrl.includes("supabase") ||;
-    dbUrl.includes("planetscale") ||;
-    dbUrl.includes("railway") ||;
-    dbUrl.includes("render.com") ||;
-    dbUrl.includes("aws") ||;
-    dbUrl.includes("azure") ||;
-    dbUrl.includes("gcp");
+    (std::find(dbUrl.begin(), dbUrl.end(), "neon.tech") != dbUrl.end()) ||;
+    (std::find(dbUrl.begin(), dbUrl.end(), "supabase") != dbUrl.end()) ||;
+    (std::find(dbUrl.begin(), dbUrl.end(), "planetscale") != dbUrl.end()) ||;
+    (std::find(dbUrl.begin(), dbUrl.end(), "railway") != dbUrl.end()) ||;
+    (std::find(dbUrl.begin(), dbUrl.end(), "render.com") != dbUrl.end()) ||;
+    (std::find(dbUrl.begin(), dbUrl.end(), "aws") != dbUrl.end()) ||;
+    (std::find(dbUrl.begin(), dbUrl.end(), "azure") != dbUrl.end()) ||;
+    (std::find(dbUrl.begin(), dbUrl.end(), "gcp") != dbUrl.end());
 
     if (looksLikeProduction) {
         std::cout << "\n🛑 BLOCKED: DATABASE_URL appears to be a production database" << std::endl;
@@ -68,7 +68,7 @@ std::future<void> seedTokens() {
 
     if (!fs.existsSync(evmDeploymentPath)) {
         std::cout << "⚠️  Local contracts not deployed yet << skipping seed" << std::endl;
-        std::cout << "   Run 'npm run dev' to deploy contracts first\n" << std::endl;
+        std::cout << "   Run "npm run dev" to deploy contracts first\n" << std::endl;
         process.exit(0);
     }
 
@@ -80,7 +80,7 @@ std::future<void> seedTokens() {
             std::cout << "✅ Local frontend is ready" << std::endl;
             break;
         }
-        std::cout << "⏳ Waiting for local frontend... (" + std::to_string(retries) + " retries left)" << std::endl;
+        std::cout << "⏳ Waiting for local frontend... (" + retries + " retries left)" << std::endl;
         new Promise(r => setTimeout(r, 2000));
         retries--;
     }
@@ -93,7 +93,7 @@ std::future<void> seedTokens() {
     // --- EVM Local Seeding (Anvil only) ---
     const auto localEvmPath = "./src/config/deployments/local-evm.json";
     if (fs.existsSync(localEvmPath)) {
-        const auto evmDeployment = JSON.parse(fs.readFileSync(localEvmPath, "utf8"));
+        const auto evmDeployment = /* JSON.parse */ fs.readFileSync(localEvmPath, "utf8");
 
         if (!evmDeployment.contracts.elizaToken) {
             std::cout << "⚠️  No local EVM token deployed << skipping EVM seed" << std::endl;
@@ -101,7 +101,7 @@ std::future<void> seedTokens() {
                 const auto testTokenAddress = evmDeployment.contracts.elizaToken;
                 const auto anvilAccount = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266";
 
-                std::cout << "\n[Local EVM] Test token: " + std::to_string(testTokenAddress) << std::endl;
+                std::cout << "\n[Local EVM] Test token: " + testTokenAddress << std::endl;
 
                 // Register local test token
                 fetch("http://localhost:4444/api/tokens", {

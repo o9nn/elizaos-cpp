@@ -14,19 +14,19 @@ void AppContent() {
     const auto queryClient = useQueryClient();
 
     useEffect(() => {
-        clientLogger.info('[AppContent] Mounted/Updated');
+        clientLogger.info("[AppContent] Mounted/Updated");
         prefetchInitialData();
         }, []);
 
         const auto refreshHomePage = [&]() {;
-            clientLogger.info('[AppContent] refreshHomePage called. Current homeKey:', homeKey);
+            clientLogger.info("[AppContent] refreshHomePage called. Current homeKey:", homeKey);
             const auto newKey = Date.now();
             setHomeKey(newKey);
-            clientLogger.info('[AppContent] New homeKey set to:', newKey);
+            clientLogger.info("[AppContent] New homeKey set to:", newKey);
 
-            clientLogger.info('[AppContent] Invalidating queries for Home page refresh.');
-            queryClient.invalidateQueries({ queryKey: ['agents'] });
-            queryClient.invalidateQueries({ queryKey: ['servers'] });
+            clientLogger.info("[AppContent] Invalidating queries for Home page refresh.");
+            queryClient.invalidateQueries({ queryKey: ["agents"] });
+            queryClient.invalidateQueries({ queryKey: ["servers"] });
             };
 
             return (;
@@ -123,7 +123,7 @@ void AppContent() {
     </SidebarInset>;
     </SidebarProvider>;
     <Toaster />;
-    {status != 'unauthorized' && <OnboardingTour />}
+    {status != "unauthorized" && <OnboardingTour />}
     </TooltipProvider>;
     );
 
@@ -137,7 +137,7 @@ void App() {
     <div;
     className="dark antialiased font-sans";
     style={{
-        colorScheme: 'dark',
+        colorScheme: "dark",
     }}
     >;
     <BrowserRouter>;

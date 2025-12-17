@@ -1,11 +1,13 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -43,14 +45,14 @@ struct Agent {
     std::string id;
     std::string name;
     std::optional<std::string> bio;
-    std::optional<std::variant<"active", "inactive">> status;
+    std::optional<std::string> status;
 };
 
 // Room information
 struct Room {
     std::string id;
     std::string name;
-    std::variant<"dm", "group", "channel"> type;
+    std::string type;
     std::string agentId;
     std::optional<std::string> worldId;
     std::optional<std::string> serverId;

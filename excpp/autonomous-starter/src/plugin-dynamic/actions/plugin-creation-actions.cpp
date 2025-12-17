@@ -16,24 +16,24 @@ std::future<PluginSpecification> generatePluginSpecification(const std::string& 
     if (lowerDesc.includes("weather")) {
         pluginType = "weather";
         name += "weather";
-        } else if (lowerDesc.includes("database") || lowerDesc.includes("sql")) {
+        } else if ((std::find(lowerDesc.begin(), lowerDesc.end(), "database") != lowerDesc.end()) || (std::find(lowerDesc.begin(), lowerDesc.end(), "sql") != lowerDesc.end())) {
             pluginType = "database";
             name += "database";
-            } else if (lowerDesc.includes("api") || lowerDesc.includes("rest")) {
+            } else if ((std::find(lowerDesc.begin(), lowerDesc.end(), "api") != lowerDesc.end()) || (std::find(lowerDesc.begin(), lowerDesc.end(), "rest") != lowerDesc.end())) {
                 pluginType = "api";
                 name += "api";
-                } else if (lowerDesc.includes("todo") || lowerDesc.includes("task")) {
+                } else if ((std::find(lowerDesc.begin(), lowerDesc.end(), "todo") != lowerDesc.end()) || (std::find(lowerDesc.begin(), lowerDesc.end(), "task") != lowerDesc.end())) {
                     pluginType = "todo";
                     name += "todo";
-                    } else if (lowerDesc.includes("email") || lowerDesc.includes("mail")) {
+                    } else if ((std::find(lowerDesc.begin(), lowerDesc.end(), "email") != lowerDesc.end()) || (std::find(lowerDesc.begin(), lowerDesc.end(), "mail") != lowerDesc.end())) {
                         pluginType = "email";
                         name += "email";
-                        } else if (lowerDesc.includes("chat") || lowerDesc.includes("message")) {
+                        } else if ((std::find(lowerDesc.begin(), lowerDesc.end(), "chat") != lowerDesc.end()) || (std::find(lowerDesc.begin(), lowerDesc.end(), "message") != lowerDesc.end())) {
                             pluginType = "chat";
                             name += "chat";
                             } else {
                                 // Generate name from first significant word
-                                const auto words = description.split(/\s+/).filter((w) => w.length > 4);
+                                const auto words = description.split(/\s+/).filter((w) => w.size() > 4);
                                 name += words[0].toLowerCase() || "custom";
                             }
 
@@ -58,9 +58,9 @@ std::future<PluginSpecification> generatePluginSpecification(const std::string& 
 
                                     for (const int [actionType, keywords] of Object.entries(actionKeywords)) {
                                         if (keywords.some((kw) => lowerDesc.includes(kw))) {
-                                            specification.actions.push({
-                                                std::to_string(actionType) + std::to_string(pluginType.charAt(0).toUpperCase() + pluginType.slice(1))
-                                                std::to_string(actionType.charAt(0).toUpperCase() + actionType.slice(1)) + " operation for " + std::to_string(pluginType)
+                                            specification.actions.push_back({
+                                                "name: " + actionType + std::to_string(pluginType.charAt(0).toUpperCase() + pluginType.slice(1))
+                                                "description: " + std::to_string(actionType.charAt(0).toUpperCase() + actionType.slice(1)) + " operation for " + pluginType
                                                 parameters: {},
                                                 });
                                             }
@@ -68,57 +68,57 @@ std::future<PluginSpecification> generatePluginSpecification(const std::string& 
 
                                         // Detect if providers are needed
                                         if (
-                                        lowerDesc.includes("provide") ||;
-                                        lowerDesc.includes("information") ||;
-                                        lowerDesc.includes("data") ||;
-                                        lowerDesc.includes("context");
+                                        (std::find(lowerDesc.begin(), lowerDesc.end(), "provide") != lowerDesc.end()) ||;
+                                        (std::find(lowerDesc.begin(), lowerDesc.end(), "information") != lowerDesc.end()) ||;
+                                        (std::find(lowerDesc.begin(), lowerDesc.end(), "data") != lowerDesc.end()) ||;
+                                        (std::find(lowerDesc.begin(), lowerDesc.end(), "context") != lowerDesc.end());
                                         ) {
-                                            specification.providers.push({
-                                                std::to_string(pluginType) + "Provider"
-                                                "Provides " + std::to_string(pluginType) + " data and context"
+                                            specification.providers.push_back({
+                                                "name: " + pluginType + "Provider"
+                                                "description: " + "Provides " + pluginType + " data and context"
                                                 dataStructure: {},
                                                 });
                                             }
 
                                             // Detect if services are needed
                                             if (
-                                            lowerDesc.includes("service") ||;
-                                            lowerDesc.includes("background") ||;
-                                            lowerDesc.includes("monitor") ||;
-                                            lowerDesc.includes("watch");
+                                            (std::find(lowerDesc.begin(), lowerDesc.end(), "service") != lowerDesc.end()) ||;
+                                            (std::find(lowerDesc.begin(), lowerDesc.end(), "background") != lowerDesc.end()) ||;
+                                            (std::find(lowerDesc.begin(), lowerDesc.end(), "monitor") != lowerDesc.end()) ||;
+                                            (std::find(lowerDesc.begin(), lowerDesc.end(), "watch") != lowerDesc.end());
                                             ) {
-                                                specification.services.push({
-                                                    std::to_string(pluginType) + "Service"
-                                                    "Background service for " + std::to_string(pluginType) + " operations"
+                                                specification.services.push_back({
+                                                    "name: " + pluginType + "Service"
+                                                    "description: " + "Background service for " + pluginType + " operations"
                                                     methods: ["start", "stop", "status"],
                                                     });
                                                 }
 
                                                 // Detect if evaluators are needed
                                                 if (
-                                                lowerDesc.includes("evaluate") ||;
-                                                lowerDesc.includes("analyze") ||;
-                                                lowerDesc.includes("check") ||;
-                                                lowerDesc.includes("validate");
+                                                (std::find(lowerDesc.begin(), lowerDesc.end(), "evaluate") != lowerDesc.end()) ||;
+                                                (std::find(lowerDesc.begin(), lowerDesc.end(), "analyze") != lowerDesc.end()) ||;
+                                                (std::find(lowerDesc.begin(), lowerDesc.end(), "check") != lowerDesc.end()) ||;
+                                                (std::find(lowerDesc.begin(), lowerDesc.end(), "validate") != lowerDesc.end());
                                                 ) {
-                                                    specification.evaluators.push({
-                                                        std::to_string(pluginType) + "Evaluator"
-                                                        "Evaluates and analyzes " + std::to_string(pluginType) + " data"
+                                                    specification.evaluators.push_back({
+                                                        "name: " + pluginType + "Evaluator"
+                                                        "description: " + "Evaluates and analyzes " + pluginType + " data"
                                                         triggers: [],
                                                         });
                                                     }
 
                                                     // Ensure at least one component exists
                                                     if (
-                                                    !specification.actions.length &&;
-                                                    !specification.providers.length &&;
-                                                    !specification.services.length &&;
-                                                    !specification.evaluators.length;
+                                                    !specification.actions.size() &&;
+                                                    !specification.providers.size() &&;
+                                                    !specification.services.size() &&;
+                                                    !specification.evaluators.size();
                                                     ) {
                                                         specification.actions = [;
                                                         {
-                                                            "handle" + std::to_string(pluginType.charAt(0).toUpperCase() + pluginType.slice(1))
-                                                            "Main handler for " + std::to_string(pluginType) + " operations"
+                                                            "name: " + "handle" + std::to_string(pluginType.charAt(0).toUpperCase() + pluginType.slice(1))
+                                                            "description: " + "Main handler for " + pluginType + " operations"
                                                             },
                                                             ];
                                                         }

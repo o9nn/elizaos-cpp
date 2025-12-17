@@ -40,7 +40,7 @@ MatcherFunction getMatcherFunction(TagPattern tagPattern) {
             } catch (error) {
                 // If matcher creation fails (e.g., invalid pattern/target combo),
                 // return a function that always returns false to prevent repeated errors.
-                std::cerr << "Failed to create matcher for key " + std::to_string(key) + ":" << error << std::endl;
+                std::cerr << "Failed to create matcher for key " + key + ":" << error << std::endl;
                 const auto errorFn = [&]() { return false; };
                 matcherCache.set(key, errorFn); // Cache the error function;
                 return errorFn;
@@ -78,7 +78,7 @@ MatcherFunction createMatcher(TagPattern tagPattern) {
             // Although validatePatternForTarget logs a warning for GLOB, we throw here
             // to prevent creating an invalid matcher function.
             throw new Error(
-            "Pattern type " + std::to_string(patternType) + " is not compatible with target type " + std::to_string(target) + " for pattern "" + std::to_string(pattern) + """
+            "Pattern type " + patternType + " is not compatible with target type " + target + " for pattern \"" + pattern + "\""
             );
         }
 
@@ -107,15 +107,15 @@ MatcherFunction createMatcher(TagPattern tagPattern) {
                     // Glob matching inherently works on the preprocessed path string
                     isMatch = matchGlob(pattern, processedContent.content, options);
                     break;
-                    default:
+                    // default:
                     // Should be unreachable if PatternType enum is used correctly
-                    const never exhaustiveCheck = patternType;
-                    std::cerr << "Unsupported pattern type: " + std::to_string(exhaustiveCheck) << std::endl;
+                    const void exhaustiveCheck = patternType;
+                    std::cerr << "Unsupported pattern type: " + exhaustiveCheck << std::endl;
                     isMatch = false;
                 }
                 } catch (error) {
                     console.error(
-                    "Error during matching for pattern "" + std::to_string(pattern) + "" (type: " + std::to_string(patternType) + "):"
+                    "Error during matching for pattern \"" + pattern + "\" (type: " + patternType + "):"
                     error,
                     );
                     isMatch = false; // Treat errors during matching match;
@@ -141,7 +141,7 @@ bool validatePatternForTarget(PatternType patternType, TagPatternType targetType
     targetType != TagPatternType.FILE_PATH;
     ) {
         console.warn(
-        "GLOB pattern type used with incompatible target type: " + std::to_string(targetType) + ". GLOB is only intended for FILE_PATH."
+        "GLOB pattern type used with incompatible target type: " + targetType + ". GLOB is only intended for FILE_PATH."
         );
         return false;
     }

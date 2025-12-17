@@ -1,10 +1,14 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <chrono>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -33,7 +37,6 @@ bool isAvailableNow(const std::vector<std::string>& workDays, const std::any& wo
  * @param frequencyHours How often to check in (in hours)
  * @returns Date object for the next check-in
  */
-Date calculateNextCheckIn(const std::vector<std::string>& workDays, const std::any& workHours, const std::string& timeZone, double frequencyHours = 24);
 
 /**
  * Formats a date to a human-readable string
@@ -41,7 +44,7 @@ Date calculateNextCheckIn(const std::vector<std::string>& workDays, const std::a
  * @param timeZone Optional timezone
  * @returns Formatted date string
  */
-std::string formatDate(Date date, std::optional<std::string> timeZone);
+std::string formatDate(const std::chrono::system_clock::time_point& date, std::optional<std::string> timeZone);
 
 /**
  * Calculates if a project is on track, at risk, or delayed

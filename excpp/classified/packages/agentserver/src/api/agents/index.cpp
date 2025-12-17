@@ -10,45 +10,45 @@ express::Router agentsRouter(const std::unordered_map<UUID, IAgentRuntime>& agen
     const auto router = express.Router();
 
     // Mount CRUD operations at root level
-    router.use('/', createAgentCrudRouter(agents, serverInstance));
+    router.use("/", createAgentCrudRouter(agents, serverInstance));
 
     // Mount lifecycle operations
-    router.use('/', createAgentLifecycleRouter(agents, serverInstance));
+    router.use("/", createAgentLifecycleRouter(agents, serverInstance));
 
     // Mount world management operations
-    router.use('/', createAgentWorldsRouter(agents));
+    router.use("/", createAgentWorldsRouter(agents));
 
     // Mount panels operations
-    router.use('/', createAgentPanelsRouter(agents));
+    router.use("/", createAgentPanelsRouter(agents));
 
     // Mount logs operations
-    router.use('/', createAgentLogsRouter(agents));
+    router.use("/", createAgentLogsRouter(agents));
 
     // Mount capabilities management
-    router.use('/', createAgentCapabilitiesRouter(agents, serverInstance));
+    router.use("/", createAgentCapabilitiesRouter(agents, serverInstance));
 
     // Mount goals management
-    router.use('/', createAgentGoalsRouter(agents, serverInstance));
+    router.use("/", createAgentGoalsRouter(agents, serverInstance));
 
     // Mount todos management
-    router.use('/', createAgentTodosRouter(agents, serverInstance));
+    router.use("/", createAgentTodosRouter(agents, serverInstance));
 
     // Mount settings management
-    router.use('/', createAgentSettingsRouter(agents, serverInstance));
+    router.use("/", createAgentSettingsRouter(agents, serverInstance));
 
     // Mount knowledge management
-    router.use('/', createAgentKnowledgeRouter(agents, serverInstance));
+    router.use("/", createAgentKnowledgeRouter(agents, serverInstance));
 
     // Mount plugin management
-    router.use('/', createAgentPluginsRouter(agents, serverInstance));
+    router.use("/", createAgentPluginsRouter(agents, serverInstance));
 
     // Mount memory operations
-    router.use('/', createAgentMemoryRouter(agents));
+    router.use("/", createAgentMemoryRouter(agents));
     // Mount room management (list rooms and room details) under agents
-    router.use('/', createRoomManagementRouter(agents));
+    router.use("/", createRoomManagementRouter(agents));
 
     // Mount portability operations (export/import)
-    router.use('/', createAgentPortabilityRouter(agents, serverInstance));
+    router.use("/", createAgentPortabilityRouter(agents, serverInstance));
 
     return router;
 

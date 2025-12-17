@@ -10,13 +10,13 @@ std::future<std::vector<Plugin>> loadLocalPlugins() {
     const auto pluginsDir = path.resolve(__dirname, "../plugins");
     const std::vector<Plugin> plugins = [];
 
-    "Starting plugin loading process.";
-    std::cout << "DEBUG: Checking plugins directory: " + std::to_string(pluginsDir) << std::endl;
+    "elizaLogger.info(" + "Starting plugin loading process.";
+    std::cout << "DEBUG: Checking plugins directory: " + pluginsDir << std::endl;
 
     if (fs.existsSync(pluginsDir)) {
         const auto entries = fs.readdirSync(pluginsDir);
-        "Found entries in " + std::to_string(pluginsDir) + ": " + std::to_string(entries.join(", "))
-        std::cout << "DEBUG: Entries in " + std::to_string(pluginsDir) + ": " + std::to_string(entries.join(", ")) << std::endl;
+        "elizaLogger.info(" + "Found entries in " + pluginsDir + ": " + std::to_string(entries.join(", "))
+        std::cout << "DEBUG: Entries in " + pluginsDir + ": " + std::to_string(entries.join(", ")) << std::endl;
 
         for (const auto& entry : entries)
             const auto pluginPath = path.join(pluginsDir, entry);
@@ -24,8 +24,8 @@ std::future<std::vector<Plugin>> loadLocalPlugins() {
 
             try {
                 if (fs.statSync(pluginPath).isDirectory()) {
-                    "Checking plugin directory: " + std::to_string(pluginPath)
-                    std::cout << "DEBUG: Directory detected: " + std::to_string(pluginPath) << std::endl;
+                    "elizaLogger.info(" + "Checking plugin directory: " + pluginPath
+                    std::cout << "DEBUG: Directory detected: " + pluginPath << std::endl;
 
                     const auto indexFilePath = fs.existsSync(path.join(pluginPath, "index.js"));
                     ? path.join(pluginPath, "index.js");
@@ -33,48 +33,48 @@ std::future<std::vector<Plugin>> loadLocalPlugins() {
 
                     if (fs.existsSync(indexFilePath)) {
                         importedPlugin = import(indexFilePath);
-                        "Loaded plugin from index file: " + std::to_string(indexFilePath)
-                        std::cout << "DEBUG: Loaded plugin file: " + std::to_string(indexFilePath) << std::endl;
+                        "elizaLogger.info(" + "Loaded plugin from index file: " + indexFilePath
+                        std::cout << "DEBUG: Loaded plugin file: " + indexFilePath << std::endl;
                         } else {
                             elizaLogger.warn(;
-                            "No index file found in plugin directory: " + std::to_string(pluginPath)
+                            "No index file found in plugin directory: " + pluginPath
                             );
-                            std::cout << "DEBUG: Missing index file in " + std::to_string(pluginPath) << std::endl;
+                            std::cout << "DEBUG: Missing index file in " + pluginPath << std::endl;
                             continue;
                         }
                         } else if (pluginPath.endsWith(".js") || pluginPath.endsWith(".ts")) {
-                            "Loading plugin file: " + std::to_string(pluginPath)
-                            std::cout << "DEBUG: Loading file: " + std::to_string(pluginPath) << std::endl;
+                            "elizaLogger.info(" + "Loading plugin file: " + pluginPath
+                            std::cout << "DEBUG: Loading file: " + pluginPath << std::endl;
                             importedPlugin = import(pluginPath);
                             } else {
-                                "Skipping unsupported plugin entry: " + std::to_string(pluginPath)
-                                std::cout << "DEBUG: Skipping unsupported file: " + std::to_string(pluginPath) << std::endl;
+                                "elizaLogger.warn(" + "Skipping unsupported plugin entry: " + pluginPath
+                                std::cout << "DEBUG: Skipping unsupported file: " + pluginPath << std::endl;
                                 continue;
                             }
 
                             const auto plugin = importedPlugin.default || importedPlugin;
                             if (plugin && plugin.name && plugin.description) {
-                                plugins.push(plugin);
-                                "Successfully loaded plugin: " + std::to_string(plugin.name)
-                                std::cout << "DEBUG: Successfully loaded: " + std::to_string(plugin.name) << std::endl;
+                                plugins.push_back(plugin);
+                                "elizaLogger.info(" + "Successfully loaded plugin: " + plugin.name
+                                std::cout << "DEBUG: Successfully loaded: " + plugin.name << std::endl;
                                 } else {
-                                    "Invalid plugin structure in: " + std::to_string(entry)
-                                    std::cout << "DEBUG: Invalid plugin structure: " + std::to_string(entry) << std::endl;
+                                    "elizaLogger.warn(" + "Invalid plugin structure in: " + entry
+                                    std::cout << "DEBUG: Invalid plugin structure: " + entry << std::endl;
                                 }
                                 } catch (error) {
-                                    "Failed to load plugin from: " + std::to_string(entry)
-                                    std::cerr << "DEBUG: Error loading plugin from: " + std::to_string(entry) << error << std::endl;
+                                    "elizaLogger.error(" + "Failed to load plugin from: " + entry
+                                    std::cerr << "DEBUG: Error loading plugin from: " + entry << error << std::endl;
                                 }
                             }
 
                             return plugins;
                             } else {
-                                "Plugins directory not found: " + std::to_string(pluginsDir)
-                                std::cout << "DEBUG: Directory not found: " + std::to_string(pluginsDir) << std::endl;
+                                "elizaLogger.warn(" + "Plugins directory not found: " + pluginsDir
+                                std::cout << "DEBUG: Directory not found: " + pluginsDir << std::endl;
                             }
 
                             elizaLogger.info(;
-                            "Finished plugin loading process. Loaded plugins: " + std::to_string(plugins.length)
+                            "Finished plugin loading process. Loaded plugins: " + plugins.size()
                             );
                             console.log(
                             "DEBUG: Final loaded plugins: " + std::to_string(plugins.map((p) => p.name).join(", "))
@@ -102,7 +102,7 @@ std::future<std::vector<Plugin>> resolvePlugins(const std::vector<std::string>& 
             );
 
             if (localPlugin) {
-                "Resolved local plugin: " + std::to_string(pluginName)
+                "elizaLogger.info(" + "Resolved local plugin: " + pluginName
                 return localPlugin;
             }
 
@@ -114,11 +114,11 @@ std::future<std::vector<Plugin>> resolvePlugins(const std::vector<std::string>& 
                     paths: [process.cwd()],
                     },
                     );
-                    "Resolved node_modules plugin: " + std::to_string(pluginName)
+                    "elizaLogger.info(" + "Resolved node_modules plugin: " + pluginName
                     const auto importedPlugin = import(resolvedPath);
                     return importedPlugin.default || importedPlugin;
                     } catch (error) {
-                        "Failed to resolve plugin: " + std::to_string(pluginName)
+                        "elizaLogger.error(" + "Failed to resolve plugin: " + pluginName
                         throw;
                     }
                     }),
@@ -130,7 +130,7 @@ std::future<std::vector<Plugin>> resolvePlugins(const std::vector<std::string>& 
     }
 }
 
-std::vector<plugins is string> isStringArray(unknown plugins) {
+std::vector<plugins is string> isStringArray(const std::any& plugins) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return Array.isArray(plugins) && plugins.every((p) => typeof p == "string");
@@ -156,9 +156,9 @@ std::future<void> main() {
         const auto combinedPlugins = [...resolvedPlugins, ...localPlugins];
 
         elizaLogger.info(;
-        "Character "" + std::to_string(character.name) + "" loaded with plugins: " + std::to_string(combinedPlugins.map)
+        "Character \"" + character.name + "\" loaded with plugins: " + combinedPlugins.map
         [&](p) { return p.name,; }
-        )}`,
+        ")}"
         );
 
         const auto runtime = new AgentRuntime({;
@@ -167,14 +167,14 @@ std::future<void> main() {
             token: "dummy-token",
             agentId: stringToUuid(
             character.name,
-            std::to_string(string) + "-" + std::to_string(string) + "-" + std::to_string(string) + "-" + std::to_string(string) + "-" + std::to_string(string)
+            ") as " + string + "-" + string + "-" + string + "-" + string + "-" + string
             modelProvider: character.modelProvider,
             databaseAdapter: minimalDatabaseAdapter,
             cacheManager: new CompatibleCacheAdapter(),
             logging: true,
             });
 
-            "Agent "" + std::to_string(character.name) + "" initialized successfully!";
+            "elizaLogger.success(" + "Agent \"" + character.name + "\" initialized successfully!";
 
             const auto directClient = new DirectClient();
             directClient.registerAgent(runtime);

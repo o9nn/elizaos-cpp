@@ -33,7 +33,7 @@ MessageMemory createMessageMemory(std::optional<{
         metadata: {
             type: MemoryType.MESSAGE,
             timestamp: Date.now(),
-            scope: params.agentId ? 'private' : 'shared',
+            scope: params.agentId ? "private" : "shared",
             },
             };
 
@@ -96,7 +96,7 @@ std::string getMemoryText(Memory memory, auto defaultValue) {
 
 }
 
-ServiceError createServiceError(unknown error, auto code) {
+ServiceError createServiceError(const std::any& error, auto code) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (error instanceof Error) {

@@ -1,11 +1,13 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 #include "elizaos/core.hpp"
 
@@ -194,7 +196,7 @@ struct MatchingImpact {
  * Plugin Configuration
  */
 struct MorphoConfig {
-    std::variant<"base", "base-sepolia"> network;
+    std::string network;
     std::string rpcUrl;
     std::optional<std::string> morphoApiUrl;
     BigNumber defaultMaxGasForMatching;
@@ -374,7 +376,7 @@ struct UserRewards {
 struct LiquidationAlert {
     std::string userAddress;
     double healthFactor;
-    std::variant<"LOW", "MEDIUM", "HIGH", "CRITICAL"> riskLevel;
+    std::string riskLevel;
     std::vector<std::string> recommendedActions;
     std::optional<double> timeToLiquidation;
 };

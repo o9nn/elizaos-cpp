@@ -9,7 +9,7 @@ void findFile(const std::string& fileName, std::string dir = "./") {
 
     // Check if directory exists
     if (!fs.existsSync(dir)) {
-        std::cerr << "Directory " + std::to_string(dir) + " not found" << std::endl;
+        std::cerr << "Directory " + dir + " not found" << std::endl;
         process.exit(1);
     }
 
@@ -21,18 +21,18 @@ void findFile(const std::string& fileName, std::string dir = "./") {
 
         if (fileName.includes('*') || fileName.includes('?') || fileName.includes('[')) {
             // Use glob for patterns
-            "**/" + std::to_string(fileName);
+            "matches = glob.sync(" + "**/" + fileName;
                 cwd: absDir,
                 absolute: true,
                 nodir: true,
-                ignore: ['**/node_modules/**', '**/.git/**']
+                ignore: ["**/node_modules/**", "**/.git/**"]
                 });
                 } else {
                     // Use find command for exact names
                     try {
-                        const auto findCmd = "find "" + std::to_string(absDir) + "" -type f -name "" + std::to_string(fileName) + "" 2>/dev/nullptr";
-                        const auto result = execSync(findCmd, { encoding: 'utf-8' });
-                        matches = result.trim().split('\n').filter(line => line.length > 0);
+                        const auto findCmd = "find \"" + absDir + "\" -type f -name \"" + fileName + "\" 2>/dev/nullptr";
+                        const auto result = execSync(findCmd, { encoding: "utf-8" });
+                        matches = result.trim().split("\n").filter(line => line.size() > 0);
                         } catch (error: unknown) {
                             // find might return non-zero if no matches
                             matches = [];
@@ -40,12 +40,12 @@ void findFile(const std::string& fileName, std::string dir = "./") {
                     }
 
                     if (matches.length == 0) {
-                        std::cout << "No matches found for "" + std::to_string(fileName) + "" in " + std::to_string(absDir) << std::endl;
+                        std::cout << "No matches found for \"" + fileName + "\" in " + absDir << std::endl;
                         return;
                     }
 
                     // Print results
-                    std::cout << "Found " + std::to_string(matches.length) + " matches for "" + std::to_string(fileName) + "" in " + std::to_string(absDir) + ":" << std::endl;
+                    std::cout << "Found " + matches.size() + " matches for \"" + fileName + "\" in " + absDir + ":" << std::endl;
                     matches.forEach(file => {
                         // Show relative path for readability
                         const auto relPath = path.relative(process.cwd(), file);
@@ -53,7 +53,7 @@ void findFile(const std::string& fileName, std::string dir = "./") {
                         });
 
                         } catch (error) {
-                            std::cerr << "Error finding files: " + std::to_string(error) << std::endl;
+                            std::cerr << "Error finding files: " + error << std::endl;
                             process.exit(1);
                         }
 
@@ -63,11 +63,11 @@ void setupCLI() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     program;
-    .name('find-file');
-    .description('Find all files with a given name or pattern in a directory');
-    .version('1.0.0');
-    .argument('<file-name>', 'The name or pattern to search for (supports wildcards)');
-    .argument('[dir]', 'The directory to search in (default: current directory)', './')
+    .name("find-file");
+    .description("Find all files with a given name or pattern in a directory");
+    .version("1.0.0");
+    .argument("<file-name>", "The name or pattern to search for (supports wildcards)");
+    .argument("[dir]", "The directory to search in (default: current directory)", "./")
     .action((fileName, dir) => {
         findFile(fileName, dir);
         });

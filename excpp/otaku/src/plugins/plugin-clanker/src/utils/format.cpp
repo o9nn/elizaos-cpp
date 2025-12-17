@@ -54,34 +54,34 @@ double calculatePriceImpact(bigint inputAmount, bigint outputAmount, double inpu
 std::string formatTokenInfo(const std::any& info) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto lines = "Token: " + std::to_string(info.name) + " (" + std::to_string(info.symbol) + ")";
+    const auto lines = "[" + "Token: " + info.name + " (" + info.symbol + ")";
 
     // Only show address for non-native tokens
     const auto isNativeEth = info.address == NATIVE_TOKEN_ADDRESSES;
     if (!isNativeEth) {
-        "Address: " + std::to_string(info.address)
+        "lines.push_back(" + "Address: " + info.address
         } else {
-            "Type: Native ETH on Base"
+            "lines.push_back(" + "Type: Native ETH on Base"
         }
 
         if (info.price != undefined) {
-            "Price: " + std::to_string(formatUsd(info.price))
+            "lines.push_back(" + "Price: " + std::to_string(formatUsd(info.price))
         }
 
         if (info.marketCap != undefined) {
-            "Market Cap: " + std::to_string(formatCompactUsd(Number(info.marketCap)))
+            "lines.push_back(" + "Market Cap: " + std::to_string(formatCompactUsd(Number(info.marketCap)))
         }
 
         if (info.liquidity != undefined) {
-            "Liquidity: " + std::to_string(formatCompactUsd(Number(info.liquidity)))
+            "lines.push_back(" + "Liquidity: " + std::to_string(formatCompactUsd(Number(info.liquidity)))
         }
 
         if (info.holders != undefined) {
-            "Holders: " + std::to_string(info.holders.toLocaleString())
+            "lines.push_back(" + "Holders: " + std::to_string(info.holders.toLocaleString())
         }
 
         if (info.volume24h != undefined) {
-            "24h Volume: " + std::to_string(formatCompactUsd(Number(info.volume24h)))
+            "lines.push_back(" + "24h Volume: " + std::to_string(formatCompactUsd(Number(info.volume24h)))
         }
 
         return lines.join("\n");

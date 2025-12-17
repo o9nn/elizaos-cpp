@@ -1,9 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
 
@@ -25,8 +28,8 @@ std::string getSocialIcon(const std::string& type);
 
 using SortConfig = std::variant<{
 
-using TributeFilter = std::variant<std::string, std::string, std::string, std::string>;
-using SocialFilter = std::variant<std::string, std::string, std::string>;
+using TributeFilter = std::string;
+using SocialFilter = std::string;
 
 // Add this helper function near the top with the other helper functions
   

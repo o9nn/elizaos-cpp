@@ -11,14 +11,14 @@ void MemoryEditOverlay(auto onClose, auto memory, auto agentId) {
     const auto { mutate: updateMemory, isPending: isUpdating } = useUpdateMemory();
     const auto { mutate: deleteMemory, isPending: isDeleting } = useDeleteMemory();
 
-    const auto [editedContent, setEditedContent] = useState('');
+    const auto [editedContent, setEditedContent] = useState("");
     const auto [isValidJson, setIsValidJson] = useState(true);
     const auto [isPreviewMode, setIsPreviewMode] = useState(false);
     const auto [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
     const auto textareaRef = useRef<HTMLTextAreaElement>(nullptr);
     const auto isProcessing = isUpdating || isDeleting;
-    const auto originalContent = JSON.stringify(memory.content, nullptr, 2);
+    const auto originalContent = /* JSON.stringify */ std::string(memory.content, nullptr, 2);
 
     // Initialize content when component opens
     useEffect(() => {
@@ -46,7 +46,7 @@ void MemoryEditOverlay(auto onClose, auto memory, auto agentId) {
                     }
 
                     try {
-                        JSON.parse(editedContent);
+                        /* JSON.parse */ editedContent;
                         setIsValidJson(true);
                         } catch {
                             setIsValidJson(false);
@@ -67,31 +67,31 @@ void MemoryEditOverlay(auto onClose, auto memory, auto agentId) {
                                     }
                                     };
 
-                                    document.addEventListener('keydown', handleEscape);
-                                    return [&]() { return document.removeEventListener('keydown', handleEscape); };
+                                    document.addEventListener("keydown", handleEscape);
+                                    return [&]() { return document.removeEventListener("keydown", handleEscape); };
                                     }, [isOpen, hasUnsavedChanges, onClose]);
 
                                     const auto handleSave = useCallback(() => {;
                                         if (!editedContent.trim()) {
                                             toast({
-                                                title: 'Error',
-                                                description: 'Memory content cannot be empty',
-                                                variant: 'destructive',
+                                                title: "Error",
+                                                description: "Memory content cannot be empty",
+                                                variant: "destructive",
                                                 });
                                                 return;
                                             }
 
                                             if (!isValidJson) {
                                                 toast({
-                                                    title: 'Invalid JSON',
-                                                    description: 'Please fix JSON syntax errors before saving',
-                                                    variant: 'destructive',
+                                                    title: "Invalid JSON",
+                                                    description: "Please fix JSON syntax errors before saving",
+                                                    variant: "destructive",
                                                     });
                                                     return;
                                                 }
 
                                                 try {
-                                                    const auto parsedContent = JSON.parse(editedContent);
+                                                    const auto parsedContent = /* JSON.parse */ editedContent;
 
                                                     updateMemory(;
                                                     {
@@ -105,24 +105,24 @@ void MemoryEditOverlay(auto onClose, auto memory, auto agentId) {
                                                                 onSuccess: () => {
                                                                     onClose();
                                                                     toast({
-                                                                        title: 'Memory Updated',
-                                                                        description: 'The memory content has been successfully updated',
+                                                                        title: "Memory Updated",
+                                                                        description: "The memory content has been successfully updated",
                                                                         });
                                                                         },
                                                                         onError: (error) => {
                                                                             toast({
-                                                                                title: 'Update Failed',
-                                                                                description: error.message || 'Failed to update memory',
-                                                                                variant: 'destructive',
+                                                                                title: "Update Failed",
+                                                                                description: error.message || "Failed to update memory",
+                                                                                variant: "destructive",
                                                                                 });
                                                                                 },
                                                                             }
                                                                             );
                                                                             } catch (error) {
                                                                                 toast({
-                                                                                    title: 'Invalid JSON',
-                                                                                    description: 'Please enter valid JSON format',
-                                                                                    variant: 'destructive',
+                                                                                    title: "Invalid JSON",
+                                                                                    description: "Please enter valid JSON format",
+                                                                                    variant: "destructive",
                                                                                     });
                                                                                 }
                                                                                 }, [editedContent, isValidJson, updateMemory, agentId, memory.id, onClose, toast]);
@@ -138,15 +138,15 @@ void MemoryEditOverlay(auto onClose, auto memory, auto agentId) {
                                                                                                 onSuccess: () => {
                                                                                                     onClose();
                                                                                                     toast({
-                                                                                                        title: 'Memory Deleted',
-                                                                                                        description: 'The memory has been successfully removed',
+                                                                                                        title: "Memory Deleted",
+                                                                                                        description: "The memory has been successfully removed",
                                                                                                         });
                                                                                                         },
                                                                                                         onError: (error) => {
                                                                                                             toast({
-                                                                                                                title: 'Delete Failed',
-                                                                                                                description: error.message || 'Failed to delete memory',
-                                                                                                                variant: 'destructive',
+                                                                                                                title: "Delete Failed",
+                                                                                                                description: error.message || "Failed to delete memory",
+                                                                                                                variant: "destructive",
                                                                                                                 });
                                                                                                                 },
                                                                                                             }
@@ -156,17 +156,17 @@ void MemoryEditOverlay(auto onClose, auto memory, auto agentId) {
 
                                                                                                         const auto handlePrettyFormat = useCallback(() => {;
                                                                                                             try {
-                                                                                                                const auto parsed = JSON.parse(editedContent);
-                                                                                                                setEditedContent(JSON.stringify(parsed, nullptr, 2));
+                                                                                                                const auto parsed = /* JSON.parse */ editedContent;
+                                                                                                                setEditedContent(/* JSON.stringify */ std::string(parsed, nullptr, 2));
                                                                                                                 toast({
-                                                                                                                    title: 'Formatted',
-                                                                                                                    description: 'JSON has been formatted',
+                                                                                                                    title: "Formatted",
+                                                                                                                    description: "JSON has been formatted",
                                                                                                                     });
                                                                                                                     } catch (error) {
                                                                                                                         toast({
-                                                                                                                            title: 'Format Error',
-                                                                                                                            description: 'Cannot format invalid JSON',
-                                                                                                                            variant: 'destructive',
+                                                                                                                            title: "Format Error",
+                                                                                                                            description: "Cannot format invalid JSON",
+                                                                                                                            variant: "destructive",
                                                                                                                             });
                                                                                                                         }
                                                                                                                         }, [editedContent, toast]);
@@ -181,14 +181,14 @@ void MemoryEditOverlay(auto onClose, auto memory, auto agentId) {
                                                                                                                                 try {
                                                                                                                                     navigator.clipboard.writeText(editedContent);
                                                                                                                                     toast({
-                                                                                                                                        title: 'Copied',
-                                                                                                                                        description: 'Content copied to clipboard',
+                                                                                                                                        title: "Copied",
+                                                                                                                                        description: "Content copied to clipboard",
                                                                                                                                         });
                                                                                                                                         } catch (error) {
                                                                                                                                             toast({
-                                                                                                                                                title: 'Copy Failed',
-                                                                                                                                                description: 'Failed to copy to clipboard',
-                                                                                                                                                variant: 'destructive',
+                                                                                                                                                title: "Copy Failed",
+                                                                                                                                                description: "Failed to copy to clipboard",
+                                                                                                                                                variant: "destructive",
                                                                                                                                                 });
                                                                                                                                             }
                                                                                                                                             }, [editedContent, toast]);
@@ -271,13 +271,13 @@ void MemoryEditOverlay(auto onClose, auto memory, auto agentId) {
                                                                                                                                     <div className="flex items-center gap-2">;
                                                                                                                                     <span className="text-muted-foreground">Type:</span>
                                                                                                                                     <span;
-                                                                                                                                    "text-xs px-2 py-1 rounded-full " + std::to_string();
+                                                                                                                                    "className={" + "text-xs px-2 py-1 rounded-full " + std::to_string();
                                                                                                                                         memory.entityId == agentId;
-                                                                                                                                        ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
-                                                                                                                                        : 'bg-white-100 text-white dark:bg-white-800 dark:text-white'
-                                                                                                                                    }`}
+                                                                                                                                        ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+                                                                                                                                        : "bg-white-100 text-white dark:bg-white-800 dark:text-white"
+                                                                                                                                    "}";
                                                                                                                                     >;
-                                                                                                                                {memory.entityId == agentId ? 'Agent Message'  = 'User Message'}
+                                                                                                                                {memory.entityId == agentId ? "Agent Message"  = "User Message"}
                                                                                                                                 </span>;
                                                                                                                                 </div>;
                                                                                                                                 </div>;
@@ -295,8 +295,8 @@ void MemoryEditOverlay(auto onClose, auto memory, auto agentId) {
                                                                                                                             ) : (
                                                                                                                             <AlertTriangle className="h-3 w-3 text-red-500" />;
                                                                                                                         )}
-                                                                                                                        "text-xs " + std::to_string(isValidJson ? 'text-green-600' : 'text-red-600')
-                                                                                                                    {isValidJson ? 'Valid JSON'  = 'Invalid JSON'}
+                                                                                                                        "<span className={" + "text-xs " + std::to_string(isValidJson ? "text-green-600" : "text-red-600")
+                                                                                                                    {isValidJson ? "Valid JSON"  = "Invalid JSON"}
                                                                                                                     </span>;
                                                                                                                     </div>;
                                                                                                                     </div>;
@@ -307,7 +307,7 @@ void MemoryEditOverlay(auto onClose, auto memory, auto agentId) {
                                                                                                                     size="sm";
                                                                                                                 onClick={() => setIsPreviewMode(!isPreviewMode)}
                                                                                                             disabled={isProcessing}
-                                                                                                        title={isPreviewMode ? 'Switch to edit mode' : 'Switch to preview mode'}
+                                                                                                        title={isPreviewMode ? "Switch to edit mode" : "Switch to preview mode"}
                                                                                                         >;
                                                                                                     {isPreviewMode ? <EyeOff className="h-3 w-3" />  = <Eye className="h-3 w-3" />}
                                                                                                     </Button>;
@@ -346,7 +346,7 @@ void MemoryEditOverlay(auto onClose, auto memory, auto agentId) {
                                                                         {isPreviewMode ? (;
                                                                         <div className="flex-1 border rounded-md p-3 bg-muted/50 overflow-auto">;
                                                                         <pre className="text-sm whitespace-pre-wrap">;
-                                                                    {isValidJson ? JSON.stringify(JSON.parse(editedContent), nullptr, 2)  = editedContent}
+                                                                    {isValidJson ? /* JSON.stringify */ std::string(/* JSON.parse */ editedContent, nullptr, 2)  = editedContent}
                                                                     </pre>;
                                                                     </div>;
                                                                     ) : (
@@ -355,9 +355,9 @@ void MemoryEditOverlay(auto onClose, auto memory, auto agentId) {
                                                                 id="memory-content";
                                                             value={editedContent}
                                                         onChange={(e) => setEditedContent(e.target.value)}
-                                                        "flex-1 resize-none font-mono text-sm min-h-[300px] " + std::to_string();
-                                                            !isValidJson ? 'border-red-300 focus:border-red-500' : ''
-                                                        }`}
+                                                        "className={" + "flex-1 resize-none font-mono text-sm min-h-[300px] " + std::to_string();
+                                                            !isValidJson ? "border-red-300 focus:border-red-500" : ""
+                                                        "}";
                                                         placeholder="Memory content in JSON format...";
                                                     disabled={isProcessing}
                                                     aria-describedby="json-help";
@@ -385,7 +385,7 @@ void MemoryEditOverlay(auto onClose, auto memory, auto agentId) {
                                         disabled={isProcessing || !isValidJson || !hasUnsavedChanges}
                                         >;
                                         <Save className="mr-2 h-4 w-4" />;
-                                    {isUpdating ? 'Saving...'  = 'Save Changes'}
+                                    {isUpdating ? "Saving..."  = "Save Changes"}
                                     </Button>;
                                     </div>;
                                     </CardFooter>;

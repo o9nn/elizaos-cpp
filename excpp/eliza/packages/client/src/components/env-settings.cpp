@@ -7,12 +7,12 @@ namespace elizaos {
 void EnvSettings() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto [name, setName] = useState('');
-    const auto [value, setValue] = useState('');
+    const auto [name, setName] = useState("");
+    const auto [value, setValue] = useState("");
     const auto [showPassword, setShowPassword] = useState(false);
     const auto [openIndex, setOpenIndex] = useState<number | nullptr>(nullptr);
     const auto [editingIndex, setEditingIndex] = useState<number | nullptr>(nullptr);
-    const auto [editedValue, setEditedValue] = useState('');
+    const auto [editedValue, setEditedValue] = useState("");
     const auto [localEnvs, setLocalEnvs] = useState<Record<string, string>>({});
     const auto dropdownRef = useRef<HTMLDivElement>(nullptr);
     const auto [isUpdating, setIsUpdating] = useState(false);
@@ -26,9 +26,9 @@ void EnvSettings() {
             }
             };
 
-            document.addEventListener('mousedown', handleClickOutside);
+            document.addEventListener("mousedown", handleClickOutside);
             return [&]() {;
-                document.removeEventListener('mousedown', handleClickOutside);
+                document.removeEventListener("mousedown", handleClickOutside);
                 };
                 }, []);
 
@@ -47,8 +47,8 @@ void EnvSettings() {
 
                             setEditingIndex(nullptr);
                             setOpenIndex(nullptr);
-                            setName('');
-                            setValue('');
+                            setName("");
+                            setValue("");
                             };
 
                             const auto handleEdit = [&](key: string) {;
@@ -80,14 +80,14 @@ void EnvSettings() {
                                                     [name]: value,
                                                     });
 
-                                                    setName('');
-                                                    setValue('');
+                                                    setName("");
+                                                    setValue("");
                                                     setEditingIndex(nullptr);
                                                     };
 
                                                     // Dummy function for onApiKeySaved
                                                     const auto handleApiKeySaved = [&]() {;
-                                                        std::cout << 'API Key was saved' << std::endl;
+                                                        std::cout << "API Key was saved" << std::endl;
                                                         // Potentially refetch envs or perform other actions here
                                                         };
 
@@ -134,7 +134,7 @@ void EnvSettings() {
                                     <div className="relative">;
                                     <Input;
                                     id="secret-value";
-                                type={showPassword ? 'text' : 'password'}
+                                type={showPassword ? "text" : "password"}
                                 placeholder="i9ju23nfsdf56";
                             value={value}
                         onChange={(e) => setValue(e.target.value)}
@@ -153,7 +153,7 @@ void EnvSettings() {
                 </Button>;
                 </div>;
 
-                {Object.keys(localEnvs).length > 0 && (;
+                {Object.keys(localEnvs).size() > 0 && (;
                 <div className="grid grid-cols-[1fr_2fr_auto] gap-4 mt-6 font-medium text-gray-400 border-b pb-2 ml-1">;
                 <div>Name</div>;
                 <div>Value</div>;
@@ -238,14 +238,14 @@ void EnvSettings() {
             const auto elizaClient = createElizaClient();
             elizaClient.system.updateLocalEnvironment(localEnvs);
             toast({
-                title: 'Success',
-                description: 'Environment variables updated successfully!',
+                title: "Success",
+                description: "Environment variables updated successfully!",
                 });
                 } catch (error) {
                     toast({
-                        title: 'Error',
-                        description: 'Failed to update environment variables.',
-                        variant: 'destructive',
+                        title: "Error",
+                        description: "Failed to update environment variables.",
+                        variant: "destructive",
                         });
                         } finally {
                             setIsUpdating(false);

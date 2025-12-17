@@ -155,7 +155,7 @@ ProtocolTvlHistory shapeProtocolHistory(RawProtocolHistory raw, const std::strin
                 }
             }
 
-            const auto latestPoint = totalSeries.length > 0 ? totalSeries[totalSeries.length - 1] : std::nullopt;
+            const auto latestPoint = totalSeries.size() > 0 ? totalSeries[totalSeries.size() - 1] : std::nullopt;
 
             return {
                 slug: raw.slug || fallbackSlug,

@@ -12,7 +12,7 @@ void OAuth() {
         const auto oauth = useLoginWithOAuth({;
             onError: (err) => {
                 std::cout << err << std::endl;
-                setError(JSON.stringify(err.message));
+                setError(/* JSON.stringify */ std::string(err.message));
                 },
                 });
                 return (;
@@ -42,7 +42,7 @@ void OAuth() {
                 ].map((provider) => (;
                 <View key={provider}>;
                 <Button;
-            "Login with " + std::to_string(provider);
+            "title={" + "Login with " + provider;
         disabled={oauth.state.status == "loading"}
         onPress={() => oauth.login({ provider })}
         ></Button>;

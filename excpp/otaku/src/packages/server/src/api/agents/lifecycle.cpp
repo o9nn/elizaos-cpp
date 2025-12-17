@@ -12,13 +12,13 @@ express::Router createAgentLifecycleRouter(ElizaOS elizaOS, AgentServer serverIn
         const auto db = serverInstance.database;
 
         // Start an existing agent - ADMIN ONLY
-        router.post('/:agentId/start', requireAuth, requireAdmin, async (req: AuthenticatedRequest, res) => {
+        router.post("/:agentId/start", requireAuth, requireAdmin, async (req: AuthenticatedRequest, res) => {
             const auto agentId = validateUuid(req.params.agentId);
             if (!agentId) {
-                return sendError(res, 400, 'INVALID_ID', 'Invalid agent ID format');
+                return sendError(res, 400, "INVALID_ID", "Invalid agent ID format");
             }
             if (!db) {
-                return sendError(res, 500, 'DB_ERROR', 'Database not available');
+                return sendError(res, 500, "DB_ERROR", "Database not available");
             }
 
             try {
@@ -26,7 +26,7 @@ express::Router createAgentLifecycleRouter(ElizaOS elizaOS, AgentServer serverIn
 
                 if (!agent) {
                     logger.debug('[AGENT START] Agent not found');
-                    return sendError(res, 404, 'NOT_FOUND', 'Agent not found');
+                    return sendError(res, 404, "NOT_FOUND", "Agent not found");
                 }
 
                 const auto isActive = !!elizaOS.getAgent(agentId);
@@ -36,7 +36,7 @@ express::Router createAgentLifecycleRouter(ElizaOS elizaOS, AgentServer serverIn
                     return sendSuccess(res, {;
                         id: agentId,
                         name: agent.name,
-                        status: 'active',
+                        status: "active",
                         });
                     }
 
@@ -52,34 +52,34 @@ express::Router createAgentLifecycleRouter(ElizaOS elizaOS, AgentServer serverIn
                     sendSuccess(res, {
                         id: agentId,
                         name: agent.name,
-                        status: 'active',
+                        status: "active",
                         });
                         } catch (error) {
                             logger.error(
-                            '[AGENT START] Error starting agent:',
+                            "[AGENT START] Error starting agent:",
                             true /* instanceof check */ ? error.message : std::to_string(error)
                             );
                             sendError(;
                             res,
                             500,
-                            'START_ERROR',
-                            'Error starting agent',
+                            "START_ERROR",
+                            "Error starting agent",
                             true /* instanceof check */ ? error.message : std::to_string(error)
                             );
                         }
                         });
 
                         // Stop an existing agent - ADMIN ONLY
-                        router.post('/:agentId/stop', requireAuth, requireAdmin, async (req: AuthenticatedRequest, res) => {
+                        router.post("/:agentId/stop", requireAuth, requireAdmin, async (req: AuthenticatedRequest, res) => {
                             const auto agentId = validateUuid(req.params.agentId);
                             if (!agentId) {
                                 logger.debug('[AGENT STOP] Invalid agent ID format');
-                                return sendError(res, 400, 'INVALID_ID', 'Invalid agent ID format');
+                                return sendError(res, 400, "INVALID_ID", "Invalid agent ID format");
                             }
 
                             const auto runtime = elizaOS.getAgent(agentId);
                             if (!runtime) {
-                                return sendError(res, 404, 'NOT_FOUND', 'Agent not found');
+                                return sendError(res, 404, "NOT_FOUND", "Agent not found");
                             }
 
                             serverInstance.unregisterAgent(agentId);
@@ -87,7 +87,7 @@ express::Router createAgentLifecycleRouter(ElizaOS elizaOS, AgentServer serverIn
                             logger.debug(`[AGENT STOP] Successfully stopped agent: ${runtime.character.name} (${agentId})`);
 
                             sendSuccess(res, {
-                                message: 'Agent stopped',
+                                message: "Agent stopped",
                                 });
                                 });
 

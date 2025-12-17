@@ -10,19 +10,19 @@ std::future<void> messageReply(auto runtime, auto message, auto reply, auto resp
     const auto roomDetails = runtime.getRoom(message.roomId);
     if (message.content.source == 'discord') {
         // ServiceType.DISCORD
-        const auto discordService = runtime.getService('discord');
+        const auto discordService = runtime.getService("discord");
         if (!discordService) {
-            std::cout << 'no discord Service' << std::endl;
+            std::cout << "no discord Service" << std::endl;
             return;
         }
-        const auto isDM = roomDetails.type == 'dm';
+        const auto isDM = roomDetails.type == "dm";
         if (isDM) {
             discordService.sendDM(message.metadata.authorId, reply);
-            responses.length = 0;
+            responses.size() = 0;
             } else {
-                responses.length = 0;
+                responses.size() = 0;
                 const auto entityId = createUniqueUuid(runtime, message.metadata.authorId);
-                responses.push({
+                responses.push_back({
                     entityId,
                     agentId: runtime.agentId,
                     roomId: message.roomId,
@@ -37,7 +37,7 @@ std::future<void> messageReply(auto runtime, auto message, auto reply, auto resp
                     }
                     return true;
                 }
-                std::cout << 'unknown platform' << message.content.source << std::endl;
+                std::cout << "unknown platform" << message.content.source << std::endl;
                 return false;
 
 }
@@ -47,15 +47,15 @@ void takeItPrivate(auto runtime, auto message, auto reply) {
 
     if (message.content.source == 'discord') {
         // ServiceType.DISCORD
-        const auto discordService = runtime.getService('discord');
+        const auto discordService = runtime.getService("discord");
         if (!discordService) {
-            std::cout << 'no discord Service' << std::endl;
+            std::cout << "no discord Service" << std::endl;
             return;
         }
         discordService.sendDM(message.metadata.authorId, reply);
         return true;
     }
-    std::cout << 'unknown platform' << message.content.source << std::endl;
+    std::cout << "unknown platform" << message.content.source << std::endl;
     return false;
 
 }

@@ -15,7 +15,7 @@ std::future<std::string> getGlobalEnvPath() {
 std::future<std::string> getLocalEnvPath() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto localEnvPath = path.join(process.cwd(), '.env');
+    const auto localEnvPath = path.join(process.cwd(), ".env");
     return existsSync(localEnvPath) ? localEnvPath : nullptr;
 
 }
@@ -28,7 +28,7 @@ std::future<EnvVars> parseEnvFile(const std::string& filePath) {
             return {}
         }
 
-        const auto content = fs.readFile(filePath, 'utf-8');
+        const auto content = fs.readFile(filePath, "utf-8");
         // Handle empty file case gracefully
         if (content.trim() == '') {
             return {}
@@ -53,8 +53,8 @@ std::future<void> writeEnvFile(const std::string& filePath, EnvVars envVars) {
         }
 
         const auto content = Object.entries(envVars);
-        std::to_string(key) + "=" + std::to_string(value);
-        .join('\n');
+        ".map(([key, value]) => " + key + "=" + value;
+        .join("\n");
 
         fs.writeFile(filePath, content);
         } catch (error) {
@@ -79,7 +79,7 @@ std::future<bool> resetEnvFile(const std::string& filePath) {
         }
 
         const auto resetVars = Object.keys(envVars).reduce((acc, key) => {;
-            acc[key] = '';
+            acc[key] = "";
             return acc;
             }, {});
 

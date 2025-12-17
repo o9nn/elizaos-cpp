@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::future<Response> handleCallback(Request request, Env env) {
+std::future<std::string> handleCallback(const std::string& request, Env env) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -13,7 +13,7 @@ std::future<Response> handleCallback(Request request, Env env) {
 
         if (!code) {
             return new Response(;
-            JSON.stringify({ error: "Missing authorization code" }),
+            /* JSON.stringify */ std::string({ error: "Missing authorization code" }),
             {
                 status: 400,
                 headers: {
@@ -75,7 +75,7 @@ std::future<Response> handleCallback(Request request, Env env) {
                                                 if (!tokenData.scope.includes("read:user")) {
                                                     return new Response(;
                                                     JSON.stringify({
-                                                        error: "Insufficient permissions. The 'read:user' scope is required.",
+                                                        error: "Insufficient permissions. The "read:user" scope is required.",
                                                         }),
                                                         {
                                                             status: 403,
@@ -128,10 +128,10 @@ std::future<Response> handleCallback(Request request, Env env) {
     }
 }
 
-Response handleStatus(Env env) {
+std::string handleStatus(Env env) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return new Response(JSON.stringify({ status: "ok" }), {;
+    return new Response(/* JSON.stringify */ std::string({ status: "ok" }), {;
         status: 200,
         headers: {
             "Content-Type": "application/json",
@@ -141,7 +141,7 @@ Response handleStatus(Env env) {
 
 }
 
-Response handleCors(Request request, Env env) {
+std::string handleCors(const std::string& request, Env env) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return new Response(nullptr, {;

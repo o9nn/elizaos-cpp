@@ -1,9 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
 #include "app/guards.hpp"
@@ -115,7 +118,7 @@ using HighestRole = std::variant<{
  * @returns An ordered array of Roles, descending by position
  */
 
-using ResolvedFilePathObject = std::variant<{
+using ResolvedFilePathObject = {
 
 
 } // namespace elizaos

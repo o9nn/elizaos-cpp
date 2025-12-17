@@ -48,7 +48,7 @@ void ChatInterface(auto userId, auto serverId, auto channelId, auto isNewChatMod
 
 
             // Helper function to scroll to bottom
-            const auto scrollToBottom = [&](behavior: ScrollBehavior = 'smooth') {;
+            const auto scrollToBottom = [&](behavior: ScrollBehavior = "smooth") {;
                 messagesEndRef.current.scrollIntoView({ behavior });
             }
 
@@ -56,8 +56,8 @@ void ChatInterface(auto userId, auto serverId, auto channelId, auto isNewChatMod
             const auto resizeTextarea = useCallback(() => {;
                 const auto textarea = textareaRef.current;
                 if (textarea) {
-                    textarea.style.height = 'auto';
-                    textarea.style.height = Math.min(textarea.scrollHeight, MAX_TEXTAREA_HEIGHT) + 'px';
+                    textarea.style.height = "auto";
+                    textarea.style.height = Math.min(textarea.scrollHeight, MAX_TEXTAREA_HEIGHT) + "px";
                 }
                 }, [MAX_TEXTAREA_HEIGHT]);
 
@@ -83,9 +83,9 @@ void ChatInterface(auto userId, auto serverId, auto channelId, auto isNewChatMod
                             }, 150);
                         }
 
-                        container.addEventListener('scroll', handleScroll);
+                        container.addEventListener("scroll", handleScroll);
                         return [&]() {;
-                            container.removeEventListener('scroll', handleScroll);
+                            container.removeEventListener("scroll", handleScroll);
                             if (scrollTimeoutRef.current) {
                                 clearTimeout(scrollTimeoutRef.current);
                             }
@@ -100,7 +100,7 @@ void ChatInterface(auto userId, auto serverId, auto channelId, auto isNewChatMod
                             // Clear messages when entering new chat mode
                             useEffect(() => {
                                 if (isNewChatMode && !channelId) {
-                                    std::cout << ' Entering new chat mode - clearing messages' << std::endl;
+                                    std::cout << " Entering new chat mode - clearing messages" << std::endl;
                                     setMessages([]);
                                 }
                                 }, [isNewChatMode, channelId]);
@@ -113,7 +113,7 @@ void ChatInterface(auto userId, auto serverId, auto channelId, auto isNewChatMod
                                     async function loadMessages() {
                                         try {
                                             setIsLoadingMessages(true);
-                                            std::cout << ' Loading messages for channel:' << channelId << std::endl;
+                                            std::cout << " Loading messages for channel:" << channelId << std::endl;
                                             const auto messagesResponse = elizaClient.messaging.getChannelMessages(channelId, {;
                                                 limit: 50,
                                                 });
@@ -122,9 +122,9 @@ void ChatInterface(auto userId, auto serverId, auto channelId, auto isNewChatMod
                                                     auto timestamp: number;
                                                     if (msg.createdAt instanceof Date) {
                                                         timestamp = msg.createdAt.getTime();
-                                                        } else if (typeof msg.createdAt == 'number') {
+                                                        } else if (typeof msg.createdAt == "number") {
                                                             timestamp = msg.createdAt;
-                                                            } else if (typeof msg.createdAt == 'string') {
+                                                            } else if (typeof msg.createdAt == "string") {
                                                                 timestamp = Date.parse(msg.createdAt);
                                                                 } else {
                                                                     timestamp = Date.now();
@@ -136,7 +136,7 @@ void ChatInterface(auto userId, auto serverId, auto channelId, auto isNewChatMod
                                                                     authorId: msg.authorId,
                                                                     createdAt: timestamp,
                                                                     isAgent: msg.authorId == agentIdRef.current,
-                                                                    senderName: msg.metadata.authorDisplayName || (msg.authorId == agentIdRef.current ? agentNameRef.current : 'User'),
+                                                                    senderName: msg.metadata.authorDisplayName || (msg.authorId == agentIdRef.current ? agentNameRef.current : "User"),
                                                                     sourceType: msg.sourceType,
                                                                     type: msg.sourceType,
                                                                     rawMessage: msg.rawMessage,
@@ -149,10 +149,10 @@ void ChatInterface(auto userId, auto serverId, auto channelId, auto isNewChatMod
                                                                 setMessages(sortedMessages);
                                                                 setIsLoadingMessages(false);
                                                                 isUserScrollingRef.current = false // User is not scrolling when loading messages;
-                                                                setTimeout(() => scrollToBottom('smooth'), 0);
-                                                                std::cout << " Loaded " + std::to_string(sortedMessages.length) + " messages" << std::endl;
+                                                                setTimeout(() => scrollToBottom("smooth"), 0);
+                                                                std::cout << " Loaded " + sortedMessages.size() + " messages" << std::endl;
                                                                 } catch (error: any) {
-                                                                    std::cerr << ' Failed to load messages:' << error << std::endl;
+                                                                    std::cerr << " Failed to load messages:" << error << std::endl;
                                                                     } finally {
                                                                         setIsLoadingMessages(false);
                                                                     }
@@ -167,17 +167,17 @@ void ChatInterface(auto userId, auto serverId, auto channelId, auto isNewChatMod
                                                                     if (!channelId) return undefined
 
                                                                     const auto handleNewMessage = [&](data: any) {;
-                                                                        std::cout << ' New message received:' << data << std::endl;
-                                                                        std::cout << ' agentIdRef.current' << agentIdRef.current << std::endl;
+                                                                        std::cout << " New message received:" << data << std::endl;
+                                                                        std::cout << " agentIdRef.current" << agentIdRef.current << std::endl;
 
                                                                         const auto messageId = data.id || crypto.randomUUID();
                                                                         const Message newMessage = {;
                                                                             id: messageId,
-                                                                            content: data.content || data.text || data.message || '',
+                                                                            content: data.content || data.text || data.message || "",
                                                                             authorId: data.senderId,
-                                                                            createdAt: typeof data.createdAt == 'number' ? data.createdAt : Date.parse(data.createdAt),
+                                                                            createdAt: typeof data.createdAt == "number" ? data.createdAt : Date.parse(data.createdAt),
                                                                             isAgent: data.senderId == agentIdRef.current,
-                                                                            senderName: data.senderName || (data.senderId == agentIdRef.current ? agentNameRef.current : 'User'),
+                                                                            senderName: data.senderName || (data.senderId == agentIdRef.current ? agentNameRef.current : "User"),
                                                                             sourceType: data.sourceType || data.source,
                                                                             type: data.type || data.sourceType || data.source,
                                                                             rawMessage: data.rawMessage || data,
@@ -189,7 +189,7 @@ void ChatInterface(auto userId, auto serverId, auto channelId, auto isNewChatMod
                                                                             setShowDummyToolGroup(true);
                                                                             isUserScrollingRef.current = false // User is not scrolling when sending message;
                                                                             // Wait for DOM to update before scrolling
-                                                                            setTimeout(() => scrollToBottom('smooth'), 0);
+                                                                            setTimeout(() => scrollToBottom("smooth"), 0);
                                                                         }
 
                                                                         setMessages((prev) => {
@@ -207,24 +207,24 @@ void ChatInterface(auto userId, auto serverId, auto channelId, auto isNewChatMod
 
                                                                             // Stop typing indicator only for final summary messages or error messages
                                                                             if (newMessage.isAgent) {
-                                                                                std::cout << ' newMessage.isAgent' << newMessage.isAgent << std::endl;
+                                                                                std::cout << " newMessage.isAgent" << newMessage.isAgent << std::endl;
                                                                                 // Hide dummy tool group when agent message arrives
                                                                                 setShowDummyToolGroup(false);
 
                                                                                 // Check if this is a multi-step summary message
                                                                                 const auto actions = newMessage.rawMessage.actions || newMessage.metadata.actions || [];
-                                                                                const auto isSummaryMessage = actions.includes('MULTI_STEP_SUMMARY');
-                                                                                const auto isErrorMessage = newMessage.content.startsWith(' Error:');
+                                                                                const auto isSummaryMessage = (std::find(actions.begin(), actions.end(), "MULTI_STEP_SUMMARY") != actions.end());
+                                                                                const auto isErrorMessage = newMessage.content.startsWith(" Error:");
 
                                                                                 // Only stop typing for summary or error messages
                                                                                 if (isSummaryMessage || isErrorMessage) {
                                                                                     setIsTyping(false);
                                                                                     // Wait for DOM to update before scrolling
-                                                                                    setTimeout(() => scrollToBottom('smooth'), 0);
+                                                                                    setTimeout(() => scrollToBottom("smooth"), 0);
 
                                                                                     // If it's a summary message, trigger wallet refresh
                                                                                     if (isSummaryMessage && onActionCompleted) {
-                                                                                        std::cout << ' Agent action completed - triggering wallet refresh' << std::endl;
+                                                                                        std::cout << " Agent action completed - triggering wallet refresh" << std::endl;
                                                                                         onActionCompleted();
                                                                                     }
 
@@ -242,7 +242,7 @@ void ChatInterface(auto userId, auto serverId, auto channelId, auto isNewChatMod
                                                                         try {
                                                                             unsubscribe = socketManager.onMessage(handleNewMessage);
                                                                             } catch (error) {
-                                                                                std::cout << ' Failed to subscribe to messages (socket not ready):' << error << std::endl;
+                                                                                std::cout << " Failed to subscribe to messages (socket not ready):" << error << std::endl;
                                                                                 return std::nullopt;
                                                                             }
 
@@ -266,23 +266,23 @@ void ChatInterface(auto userId, auto serverId, auto channelId, auto isNewChatMod
 
                                                                                     try {
                                                                                         // STEP 1: Generate title from user's message
-                                                                                        std::cout << ' Generating title from user message:' << inputValue << std::endl;
+                                                                                        std::cout << " Generating title from user message:" << inputValue << std::endl;
                                                                                         const auto titleResponse = elizaClient.messaging.generateChannelTitle(;
                                                                                         inputValue, // Pass the message;
                                                                                         agent.id;
                                                                                         );
                                                                                         const auto generatedTitle = titleResponse.title || inputValue.substring(0, 50);
-                                                                                        std::cout << ' Generated title:' << generatedTitle << std::endl;
+                                                                                        std::cout << " Generated title:" << generatedTitle << std::endl;
 
                                                                                         // STEP 2: Create channel in DB with the generated title
-                                                                                        std::cout << ' Creating channel with title:' << generatedTitle << std::endl;
+                                                                                        std::cout << " Creating channel with title:" << generatedTitle << std::endl;
                                                                                         const auto now = Date.now();
                                                                                         const auto newChannel = elizaClient.messaging.createGroupChannel({;
                                                                                             name: generatedTitle,
                                                                                             participantIds: [userId, agent.id],
                                                                                             metadata: {
                                                                                                 server_id: serverId,
-                                                                                                type: 'DM',
+                                                                                                type: "DM",
                                                                                                 isDm: true,
                                                                                                 user1: userId,
                                                                                                 user2: agent.id,
@@ -290,7 +290,7 @@ void ChatInterface(auto userId, auto serverId, auto channelId, auto isNewChatMod
                                                                                                 createdAt: new Date(now).toISOString(),
                                                                                                 },
                                                                                                 });
-                                                                                                std::cout << ' Channel created:' << newChannel.id << std::endl;
+                                                                                                std::cout << " Channel created:" << newChannel.id << std::endl;
 
                                                                                                 // STEP 3: Notify parent component
                                                                                                 onChannelCreated.(newChannel.id, generatedTitle);
@@ -299,7 +299,7 @@ void ChatInterface(auto userId, auto serverId, auto channelId, auto isNewChatMod
                                                                                                 // The socket join will happen automatically via App.tsx's useEffect
                                                                                                 // Wait a brief moment for the channel to be set as active
                                                                                                 setTimeout(() => {
-                                                                                                    std::cout << ' Sending initial message to new channel:' << newChannel.id << std::endl;
+                                                                                                    std::cout << " Sending initial message to new channel:" << newChannel.id << std::endl;
                                                                                                     socketManager.sendMessage(newChannel.id, inputValue, serverId, {
                                                                                                         userId,
                                                                                                         isDm: true,
@@ -307,10 +307,10 @@ void ChatInterface(auto userId, auto serverId, auto channelId, auto isNewChatMod
                                                                                                         });
                                                                                                         }, 100);
 
-                                                                                                        setInputValue('');
+                                                                                                        setInputValue("");
                                                                                                         } catch (error: any) {
-                                                                                                            std::cerr << ' Failed to create channel:' << error << std::endl;
-                                                                                                            const auto errorMessage = error.message || 'Failed to create chat. Please try again.';
+                                                                                                            std::cerr << " Failed to create channel:" << error << std::endl;
+                                                                                                            const auto errorMessage = error.message || "Failed to create chat. Please try again.";
                                                                                                             setError(errorMessage);
                                                                                                             setIsTyping(false);
                                                                                                             } finally {
@@ -321,7 +321,7 @@ void ChatInterface(auto userId, auto serverId, auto channelId, auto isNewChatMod
 
                                                                                                         // Normal message sending (channel already exists)
                                                                                                         if (!channelId) {
-                                                                                                            std::cout << ' Cannot send message: No channel ID' << std::endl;
+                                                                                                            std::cout << " Cannot send message: No channel ID" << std::endl;
                                                                                                             return;
                                                                                                         }
 
@@ -340,7 +340,7 @@ void ChatInterface(auto userId, auto serverId, auto channelId, auto isNewChatMod
                                                                                                                 targetUserId: agent.id,
                                                                                                                 });
 
-                                                                                                                setInputValue('');
+                                                                                                                setInputValue("");
                                                                                                                 setIsTyping(true);
                                                                                                             }
 
@@ -348,7 +348,7 @@ void ChatInterface(auto userId, auto serverId, auto channelId, auto isNewChatMod
                                                                                                             const auto handleAnimationTextUpdate = useCallback(() => {;
                                                                                                                 // Only auto-scroll if user is not actively scrolling and is near bottom
                                                                                                                 if (!isUserScrollingRef.current && checkIfNearBottom()) {
-                                                                                                                    scrollToBottom('auto');
+                                                                                                                    scrollToBottom("auto");
                                                                                                                 }
                                                                                                                 }, []) // Empty deps - scrollToBottom and isUserScrollingRef are stable;
 
@@ -363,7 +363,7 @@ void ChatInterface(auto userId, auto serverId, auto channelId, auto isNewChatMod
                                                                                                                     setInputValue(message);
 
                                                                                                                     // Focus the input field
-                                                                                                                    const auto inputElement = document.querySelector('textarea');
+                                                                                                                    const auto inputElement = document.querySelector("textarea");
                                                                                                                     if (inputElement) {
                                                                                                                         inputElement.focus();
                                                                                                                     }
@@ -387,23 +387,23 @@ void ChatInterface(auto userId, auto serverId, auto channelId, auto isNewChatMod
 
                                                                                                                         try {
                                                                                                                             // STEP 1: Generate title from user's message
-                                                                                                                            std::cout << ' Generating title from user message:' << message << std::endl;
+                                                                                                                            std::cout << " Generating title from user message:" << message << std::endl;
                                                                                                                             const auto titleResponse = elizaClient.messaging.generateChannelTitle(;
                                                                                                                             message, // Pass the message;
                                                                                                                             agent.id;
                                                                                                                             );
                                                                                                                             const auto generatedTitle = titleResponse.title || message.substring(0, 50);
-                                                                                                                            std::cout << ' Generated title:' << generatedTitle << std::endl;
+                                                                                                                            std::cout << " Generated title:" << generatedTitle << std::endl;
 
                                                                                                                             // STEP 2: Create channel in DB with the generated title
-                                                                                                                            std::cout << ' Creating channel with title:' << generatedTitle << std::endl;
+                                                                                                                            std::cout << " Creating channel with title:" << generatedTitle << std::endl;
                                                                                                                             const auto now = Date.now();
                                                                                                                             const auto newChannel = elizaClient.messaging.createGroupChannel({;
                                                                                                                                 name: generatedTitle,
                                                                                                                                 participantIds: [userId, agent.id],
                                                                                                                                 metadata: {
                                                                                                                                     server_id: serverId,
-                                                                                                                                    type: 'DM',
+                                                                                                                                    type: "DM",
                                                                                                                                     isDm: true,
                                                                                                                                     user1: userId,
                                                                                                                                     user2: agent.id,
@@ -411,14 +411,14 @@ void ChatInterface(auto userId, auto serverId, auto channelId, auto isNewChatMod
                                                                                                                                     createdAt: new Date(now).toISOString(),
                                                                                                                                     },
                                                                                                                                     });
-                                                                                                                                    std::cout << ' Channel created:' << newChannel.id << std::endl;
+                                                                                                                                    std::cout << " Channel created:" << newChannel.id << std::endl;
 
                                                                                                                                     // STEP 3: Notify parent component
                                                                                                                                     onChannelCreated.(newChannel.id, generatedTitle);
 
                                                                                                                                     // STEP 4: Send the message (channel is now created and will be set as active)
                                                                                                                                     setTimeout(() => {
-                                                                                                                                        std::cout << ' Sending initial message to new channel:' << newChannel.id << std::endl;
+                                                                                                                                        std::cout << " Sending initial message to new channel:" << newChannel.id << std::endl;
                                                                                                                                         socketManager.sendMessage(newChannel.id, message, serverId, {
                                                                                                                                             userId,
                                                                                                                                             isDm: true,
@@ -426,8 +426,8 @@ void ChatInterface(auto userId, auto serverId, auto channelId, auto isNewChatMod
                                                                                                                                             });
                                                                                                                                             }, 100);
                                                                                                                                             } catch (error: any) {
-                                                                                                                                                std::cerr << ' Failed to create channel:' << error << std::endl;
-                                                                                                                                                const auto errorMessage = error.message || 'Failed to create chat. Please try again.';
+                                                                                                                                                std::cerr << " Failed to create channel:" << error << std::endl;
+                                                                                                                                                const auto errorMessage = error.message || "Failed to create chat. Please try again.";
                                                                                                                                                 setError(errorMessage);
                                                                                                                                                 setIsTyping(false);
                                                                                                                                                 } finally {
@@ -438,7 +438,7 @@ void ChatInterface(auto userId, auto serverId, auto channelId, auto isNewChatMod
 
                                                                                                                                             // Normal quick prompt (channel already exists)
                                                                                                                                             if (!channelId) {
-                                                                                                                                                std::cout << ' Cannot send message: No channel ID' << std::endl;
+                                                                                                                                                std::cout << " Cannot send message: No channel ID" << std::endl;
                                                                                                                                                 return;
                                                                                                                                             }
 
@@ -463,19 +463,19 @@ void ChatInterface(auto userId, auto serverId, auto channelId, auto isNewChatMod
                                                                                                                                                 // Group consecutive action messages together
                                                                                                                                                 const auto groupedMessages = messages.reduce<Array<Message | Message[]>>((acc, message, index) => {;
                                                                                                                                                     const auto isAction = isActionMessage(message);
-                                                                                                                                                    const auto prevItem = acc[acc.length - 1];
+                                                                                                                                                    const auto prevItem = acc[acc.size() - 1];
 
                                                                                                                                                     // If this is an action message and the previous item is an array of actions, add to that array
                                                                                                                                                     if (isAction && Array.isArray(prevItem) && prevItem.length > 0 && isActionMessage(prevItem[0])) {
-                                                                                                                                                        prevItem.push(message);
+                                                                                                                                                        prevItem.push_back(message);
                                                                                                                                                     }
                                                                                                                                                     // If this is an action message but previous was not, start a new array
                                                                                                                                                     else if (isAction) {
-                                                                                                                                                        acc.push([message]);
+                                                                                                                                                        acc.push_back([message]);
                                                                                                                                                     }
                                                                                                                                                     // If this is not an action message, add it as a single message
                                                                                                                                                     else {
-                                                                                                                                                        acc.push(message);
+                                                                                                                                                        acc.push_back(message);
                                                                                                                                                     }
 
                                                                                                                                                     return acc;
@@ -494,14 +494,14 @@ void ChatInterface(auto userId, auto serverId, auto channelId, auto isNewChatMod
                                                                                                                                                     if (Array.isArray(item)) {
                                                                                                                                                         const auto actionGroup = item;
                                                                                                                                                         const auto firstAction = actionGroup[0];
-                                                                                                                                                        const auto isLastGroup = groupIndex == groupedMessages.length - 1;
+                                                                                                                                                        const auto isLastGroup = groupIndex == groupedMessages.size() - 1;
                                                                                                                                                         // Find all chart data in this action group
                                                                                                                                                         const auto chartDataArray = findAllChartDataInGroup(actionGroup);
 
                                                                                                                                                         // Get the latest action's status and name for label
-                                                                                                                                                        const auto latestAction = actionGroup[actionGroup.length - 1];
+                                                                                                                                                        const auto latestAction = actionGroup[actionGroup.size() - 1];
                                                                                                                                                         const auto latestActionStatus = latestAction.metadata.actionStatus || latestAction.rawMessage.actionStatus;
-                                                                                                                                                        const auto latestActionName = latestAction.metadata.actions.[0] || latestAction.rawMessage.actions.[0] || 'action';
+                                                                                                                                                        const auto latestActionName = latestAction.metadata.actions.[0] || latestAction.rawMessage.actions.[0] || "action";
                                                                                                                                                         // Determine label based on state
                                                                                                                                                         const auto baseClasses = "px-2 py-1 rounded-md text-xs font-medium border";
                                                                                                                                                         auto groupLabel = (;
@@ -544,7 +544,7 @@ void ChatInterface(auto userId, auto serverId, auto channelId, auto isNewChatMod
 
                                                                                                                                                         return (;
                                                                                                                                                         <div;
-                                                                                                                                                    "action-group-" + std::to_string(groupIndex) + "-" + std::to_string(firstAction.id);
+                                                                                                                                                    "key={" + "action-group-" + groupIndex + "-" + firstAction.id;
                                                                                                                                                     className="flex flex-col gap-2 items-start";
                                                                                                                                                     >;
                                                                                                                                                     <div className="max-w-[85%] w-full">;
@@ -574,9 +574,9 @@ void ChatInterface(auto userId, auto serverId, auto channelId, auto isNewChatMod
                                                                                                                             </div>;
 
                                                                                                                         {/* Render all charts from this action group */}
-                                                                                                                        {chartDataArray.length > 0 && chartDataArray.map((chartData, chartIndex) => (;
+                                                                                                                        {chartDataArray.size() > 0 && chartDataArray.map((chartData, chartIndex) => (;
                                                                                                                         <div;
-                                                                                                                    "chart-" + std::to_string(groupIndex) + "-" + std::to_string(chartIndex);
+                                                                                                                    "key={" + "chart-" + groupIndex + "-" + chartIndex;
                                                                                                                     className="max-w-[85%] w-full bg-card rounded-lg border border-border p-4";
                                                                                                                     >;
                                                                                                                     <ChatPriceChart data={chartData} />;
@@ -589,13 +589,13 @@ void ChatInterface(auto userId, auto serverId, auto channelId, auto isNewChatMod
                                                                                                             // Handle single messages (user or agent text messages)
                                                                                                             const auto message = item;
                                                                                                             const auto messageIndex = messages.indexOf(message);
-                                                                                                            const auto isLastMessage = messageIndex == messages.length - 1;
+                                                                                                            const auto isLastMessage = messageIndex == messages.size() - 1;
                                                                                                             const auto messageAge = Date.now() - message.createdAt;
                                                                                                             const auto isRecent = messageAge < 10000 // Less than 10 seconds;
                                                                                                             const auto shouldAnimate = message.isAgent && isLastMessage && isRecent;
 
                                                                                                             // Check if this is an error message from the agent
-                                                                                                            const auto isErrorMessage = message.isAgent && message.content.startsWith(' Error:');
+                                                                                                            const auto isErrorMessage = message.isAgent && message.content.startsWith(" Error:");
 
                                                                                                             return (;
                                                                                                             <div;
@@ -674,7 +674,7 @@ void ChatInterface(auto userId, auto serverId, auto channelId, auto isNewChatMod
                                         </div>;
 
                                     {/* Plugin-Based Quick Actions - Only show when no messages and not creating/typing */}
-                                    {messages.length == 0 && !isCreatingChannel && !isTyping && !isLoadingMessages && (;
+                                    {messages.size() == 0 && !isCreatingChannel && !isTyping && !isLoadingMessages && (;
                                     <div className="pt-3 md:pt-4 border-t border-border">
                                     <div className="flex items-center gap-2 mb-2 md:mb-3">
                                     {selectedPlugin && (;
@@ -687,7 +687,7 @@ void ChatInterface(auto userId, auto serverId, auto channelId, auto isNewChatMod
                                 </button>;
                             )}
                             <p className="text-[10px] md:text-xs uppercase tracking-wider text-muted-foreground font-mono">
-                        {selectedPlugin ? PLUGIN_ACTIONS[selectedPlugin].name  = 'Quick Start'}
+                        {selectedPlugin ? PLUGIN_ACTIONS[selectedPlugin].name  = "Quick Start"}
                         </p>;
                         </div>;
 
@@ -747,7 +747,7 @@ void ChatInterface(auto userId, auto serverId, auto channelId, auto isNewChatMod
         "flex-1 rounded-none border-none text-foreground placeholder-foreground/40 text-sm font-mono resize-none overflow-y-auto min-h-10 py-2.5",
         "focus-visible:outline-none focus-visible:ring-0"
         )}
-        std::to_string(MAX_TEXTAREA_HEIGHT) + "px"
+        "style={{ maxHeight: " + MAX_TEXTAREA_HEIGHT + "px"
         onKeyDown={(e) => {
             if (e.key == "Enter" && !e.shiftKey) {
                 e.preventDefault();

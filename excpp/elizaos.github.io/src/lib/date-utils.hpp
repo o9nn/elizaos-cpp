@@ -1,10 +1,14 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <chrono>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
 
@@ -48,15 +52,15 @@ std::string extractDateFromFilename(const std::string& filename);
  * @param date - Date object, timestamp, or date string that can be parsed by new Date()
  * @returns string in YYYY-MM-DD format
  */
-std::string toDateString(const std::variant<std::string, double, Date>& date);
+std::string toDateString(const std::variant<std::string, double, std::chrono::system_clock::time_point>& date);
 
 /**
  * Converts a date to UTC midnight (00:00:00.000Z)
  * @param date - Date object, timestamp, or date string that can be parsed by new Date()
  * @returns Date object set to UTC midnight
  */
-UTCDate toUTCMidnight(const std::variant<std::string, double, Date>& date);
-using IntervalType = std::variant<"day", "week", "month">;
+UTCDate toUTCMidnight(const std::variant<std::string, double, std::chrono::system_clock::time_point>& date);
+using IntervalType = std::string;
 
 struct TimeInterval {
     UTCDate intervalStart;
@@ -108,7 +112,7 @@ DateRange calculateDateRange(DateRangeOptions options);
 
   // Sort dates if needed
 
-void formatReadableDate(const std::variant<std::string, Date>& date);
+void formatReadableDate(const std::variant<std::string, std::chrono::system_clock::time_point>& date);
 
 /**
  * Formats a date into a human-readable timeframe title based on interval type
@@ -116,7 +120,7 @@ void formatReadableDate(const std::variant<std::string, Date>& date);
  * @param intervalType - The type of interval (day, week, month)
  * @returns Formatted timeframe title
  */
-std::string formatTimeframeTitle(const std::variant<UTCDate, Date, std::string>& date, IntervalType intervalType, std::optional<std::any> formatOptions);
+std::string formatTimeframeTitle(const std::variant<UTCDate, std::chrono::system_clock::time_point, std::string>& date, IntervalType intervalType, std::optional<std::any> formatOptions);
 
 /**
  * Converts interval type to a title form

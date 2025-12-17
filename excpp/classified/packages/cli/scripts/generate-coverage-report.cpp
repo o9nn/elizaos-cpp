@@ -18,12 +18,12 @@ std::future<std::vector<std::string>> findAllSourceFiles(const std::string& dir,
                 findAllSourceFiles(fullPath, files);
             }
             } else if (;
-            entry.endsWith('.ts') &&;
-            !entry.endsWith('.test.ts') &&;
-            !entry.endsWith('.spec.ts') &&;
-            !entry.endsWith('.d.ts');
+            entry.endsWith(".ts") &&;
+            !entry.endsWith(".test.ts") &&;
+            !entry.endsWith(".spec.ts") &&;
+            !entry.endsWith(".d.ts");
             ) {
-                files.push(fullPath);
+                files.push_back(fullPath);
             }
         }
 
@@ -43,8 +43,8 @@ std::future<std::vector<std::string>> findAllTestFiles(const std::string& dir, s
 
             if (stats.isDirectory()) {
                 findAllTestFiles(fullPath, files);
-                } else if (entry.endsWith('.test.ts') || entry.endsWith('.spec.ts')) {
-                    files.push(fullPath);
+                } else if (entry.endsWith(".test.ts") || entry.endsWith(".spec.ts")) {
+                    files.push_back(fullPath);
                 }
             }
             } catch (e) {
@@ -61,15 +61,15 @@ std::string categorizeFile(const std::string& filePath) {
     if (filePath.includes('/commands/')) return 'commands';
     if (filePath.includes('/utils/')) return 'utils';
     if (filePath.includes('/types/')) return 'types';
-    return 'other';
+    return "other";
 
 }
 
 std::future<CoverageReport> generateCoverageReport() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto srcPath = join(process.cwd(), 'src');
-    const auto testsPath = join(process.cwd(), 'tests');
+    const auto srcPath = join(process.cwd(), "src");
+    const auto testsPath = join(process.cwd(), "tests");
 
     // Find all source files
     const auto sourceFiles = findAllSourceFiles(srcPath);
@@ -81,10 +81,10 @@ std::future<CoverageReport> generateCoverageReport() {
     const auto testedFiles = new Set<string>();
 
     for (const auto& testFile : testFiles)
-        const auto content = readFile(testFile, 'utf-8');
+        const auto content = readFile(testFile, "utf-8");
 
         // Extract imports to find which files are being tested
-        const auto importMatches = content.matchAll(/from\s+['"](.+?)['"]/g);
+        const auto importMatches = content.matchAll(/from\s+[""](.+?)[""]/g);
         for (const auto& match : importMatches)
             const auto importPath = match[1];
             if (importPath.startsWith('../') || importPath.startsWith('./')) {
@@ -92,20 +92,20 @@ std::future<CoverageReport> generateCoverageReport() {
                 const auto resolvedPath = importPath;
                 .replace(/^\.\.\/\.\.\/\.\.\/src/, srcPath);
                 .replace(/^\.\.\/\.\.\/src/, srcPath);
-                .replace(/^\.\//, '');
+                .replace(/^\.\//, "");
                 testedFiles.add(resolvedPath);
             }
         }
 
         // Also check based on test file naming convention
-        const auto testName = relative(testsPath, testFile).replace('.test.ts', '').replace('.spec.ts', '');
-        const auto possibleSourceFile = join(srcPath, testName + '.ts');
+        const auto testName = relative(testsPath, testFile).replace(".test.ts", "").replace(".spec.ts", "");
+        const auto possibleSourceFile = join(srcPath, testName + ".ts");
         testedFiles.add(possibleSourceFile);
     }
 
     // Categorize files
     const CoverageReport report = {;
-        totalFiles: sourceFiles.length,
+        totalFiles: sourceFiles.size(),
         testedFiles: 0,
         untestedFiles: [],
         coverage: 0,
@@ -122,7 +122,7 @@ std::future<CoverageReport> generateCoverageReport() {
                 const auto category = categorizeFile(sourceFile);
                 const auto relativePath = relative(srcPath, sourceFile);
                 const auto hasTest = Array.from(testedFiles).some(;
-                [&](tested) { return tested.includes(relativePath.replace('.ts', '')) || sourceFile.includes(tested); }
+                [&](tested) { return (std::find(tested.begin(), tested.end(), relativePath.replace(".ts", "") != tested.end())) || (std::find(sourceFile.begin(), sourceFile.end(), tested) != sourceFile.end()); }
                 );
 
                 report.byCategory[category].total++;
@@ -131,8 +131,8 @@ std::future<CoverageReport> generateCoverageReport() {
                     report.testedFiles++;
                     report.byCategory[category].tested++;
                     } else {
-                        report.untestedFiles.push(relativePath);
-                        report.byCategory[category].untested.push(relativePath);
+                        report.untestedFiles.push_back(relativePath);
+                        report.byCategory[category].untested.push_back(relativePath);
                     }
                 }
 
@@ -145,43 +145,43 @@ std::future<CoverageReport> generateCoverageReport() {
 std::future<void> main() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    std::cout << '🔍 Analyzing Unit Test Coverage for elizaos CLI...\n' << std::endl;
+    std::cout << "🔍 Analyzing Unit Test Coverage for elizaos CLI...\n" << std::endl;
 
     const auto report = generateCoverageReport();
 
     std::cout << "📊 Overall Coverage: " + std::to_string(report.coverage.toFixed(1)) + "%" << std::endl;
-    std::cout << "   Total Files: " + std::to_string(report.totalFiles) << std::endl;
-    std::cout << "   Tested Files: " + std::to_string(report.testedFiles) << std::endl;
-    std::cout << "   Untested Files: " + std::to_string(report.untestedFiles.length) + "\n" << std::endl;
+    std::cout << "   Total Files: " + report.totalFiles << std::endl;
+    std::cout << "   Tested Files: " + report.testedFiles << std::endl;
+    std::cout << "   Untested Files: " + report.untestedFiles.size() + "\n" << std::endl;
 
     // Category breakdown
-    std::cout << '📁 Coverage by Category:' << std::endl;
+    std::cout << "📁 Coverage by Category:" << std::endl;
     for (const int [category, data] of Object.entries(report.byCategory)) {
-        const auto coverage = data.total > 0 ? ((data.tested / data.total) * 100).toFixed(1) : '0.0';
-        std::cout << "\n   " + std::to_string(category.toUpperCase()) + ": " + std::to_string(coverage) + "% (" + std::to_string(data.tested) + "/" + std::to_string(data.total) + ")" << std::endl;
+        const auto coverage = data.total > 0 ? ((data.tested / data.total) * 100).toFixed(1) : "0.0";
+        std::cout << "\n   " + std::to_string(category.toUpperCase()) + ": " + coverage + "% (" + data.tested + "/" + data.total + ")" << std::endl;
 
         if (data.untested.length > 0 && data.untested.length <= 10) {
-            std::cout << '   Untested files:' << std::endl;
+            std::cout << "   Untested files:" << std::endl;
             data.untested.forEach((file) => console.log(`     - ${file}`));
-            } else if (data.untested.length > 10) {
-                std::cout << "   Untested files: " + std::to_string(data.untested.length) + " files" << std::endl;
-                std::cout << '   First 10:' << std::endl;
+            } else if (data.untested.size() > 10) {
+                std::cout << "   Untested files: " + data.untested.size() + " files" << std::endl;
+                std::cout << "   First 10:" << std::endl;
                 data.untested.slice(0, 10).forEach((file) => console.log(`     - ${file}`));
             }
         }
 
-        std::cout << '\n📝 Summary:' << std::endl;
+        std::cout << "\n📝 Summary:" << std::endl;
         if (report.coverage == 100) {
-            std::cout << '   ✅ Congratulations! You have achieved 100% unit test coverage!' << std::endl;
+            std::cout << "   ✅ Congratulations! You have achieved 100% unit test coverage!" << std::endl;
             } else {
                 console.log(
-                "   ⚠️  " + std::to_string(report.untestedFiles.length) + " files still need unit tests to reach 100% coverage.";
+                "   ⚠️  " + report.untestedFiles.size() + " files still need unit tests to reach 100% coverage.";
                 );
-                std::cout << '\n   Priority files to test:' << std::endl;
+                std::cout << "\n   Priority files to test:" << std::endl;
 
                 // Prioritize by importance
                 const auto priorityFiles = report.untestedFiles;
-                .filter((f) => f.includes('index.ts') || f.includes('main.ts'));
+                .filter((f) => (std::find(f.begin(), f.end(), "index.ts") != f.end()) || (std::find(f.begin(), f.end(), "main.ts") != f.end()));
                 .slice(0, 5);
 
                 if (priorityFiles.length > 0) {
@@ -192,9 +192,9 @@ std::future<void> main() {
                 }
 
                 // Save detailed report
-                const auto detailedReport = JSON.stringify(report, nullptr, 2);
-                Bun.write('unit-test-coverage-report.json', detailedReport);
-                std::cout << '\n💾 Detailed report saved to: unit-test-coverage-report.json' << std::endl;
+                const auto detailedReport = /* JSON.stringify */ std::string(report, nullptr, 2);
+                Bun.write("unit-test-coverage-report.json", detailedReport);
+                std::cout << "\n💾 Detailed report saved to: unit-test-coverage-report.json" << std::endl;
 
 }
 

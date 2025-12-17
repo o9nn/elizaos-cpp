@@ -1,11 +1,15 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
+#include <stdexcept>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "elizaos/core.hpp"
 #include "migration-guide-loader.hpp"
@@ -22,7 +26,7 @@ struct SimpleMigrationResult {
     std::string repoPath;
     double duration;
     double messageCount;
-    std::optional<Error> error;
+    std::optional<std::runtime_error> error;
     std::optional<std::vector<std::string>> guidesUsed;
 };
 
@@ -39,7 +43,7 @@ struct SimpleMigrationResult {
 class SimpleMigrationAgent {
 public:
     SimpleMigrationAgent(const std::string& repoPath, std::any options = {});
-    bool emit(const std::string& event, std::optional<unknown> data);
+    bool emit(const std::string& event, std::optional<std::any> data);
     void removeAllListeners(std::optional<std::string> event);
     double listenerCount(const std::string& event);
     bool isImportantUpdate(const std::string& text);

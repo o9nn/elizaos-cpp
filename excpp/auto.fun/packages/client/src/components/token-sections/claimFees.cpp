@@ -14,12 +14,12 @@ void ClaimFees() {
                     throw std::runtime_error("No token found");
                 }
 
-                const auto response = std::to_string(env.apiUrl) + "/api/claimFees";
+                const auto response = "fetchWithAuth(" + env.apiUrl + "/api/claimFees";
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
                         },
-                        body: JSON.stringify({ tokenMint }),
+                        body: /* JSON.stringify */ std::string({ tokenMint }),
                         });
 
                         if (!response.ok) {

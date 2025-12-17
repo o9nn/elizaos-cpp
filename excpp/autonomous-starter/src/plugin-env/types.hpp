@@ -1,10 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -18,7 +20,7 @@ struct EnvVarConfig {
     std::string description;
     bool canGenerate;
     std::optional<std::string> validationMethod;
-    std::variant<"missing", "generating", "validating", "invalid", "valid"> status;
+    std::string status;
     std::optional<std::string> lastError;
     double attempts;
     std::optional<double> createdAt;
@@ -37,7 +39,7 @@ struct GenerationScript {
     double attempts;
     std::optional<std::string> output;
     std::optional<std::string> error;
-    std::variant<"pending", "running", "success", "failed"> status;
+    std::string status;
     double createdAt;
 };
 

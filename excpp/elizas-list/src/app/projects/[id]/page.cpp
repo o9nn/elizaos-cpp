@@ -13,7 +13,7 @@ void ProjectPage() {
 
     useEffect(() => {
         // For now, we'll fetch from our local data
-        const auto projects = require('@/data/projects.json').projects;
+        const auto projects = require("@/data/projects.json").projects;
         const auto foundProject = projects.find((p: Project) => p.id == params.id);
         setProject(foundProject || nullptr);
         setLoading(false);
@@ -40,7 +40,7 @@ void ProjectPage() {
     <RelatedProjects;
     currentProject={project}
     onProjectClick={(relatedProject) => {
-        "/projects/" + std::to_string(relatedProject.id);
+        "router.push_back(" + "/projects/" + relatedProject.id;
     }}
     />;
     </div>;

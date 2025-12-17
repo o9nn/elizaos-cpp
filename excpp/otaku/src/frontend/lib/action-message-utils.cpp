@@ -13,17 +13,17 @@ ToolPart convertActionMessageToToolPart(const std::any& message) {
     // Map actionStatus to ToolPart state
     const auto mapActionStatusToState = (status: string): ToolPart["state"] => {;
         switch (status) {
-            case "pending":
-            case "executing":
-            case "running":
+            // case "pending":
+            // case "executing":
+            // case "running":
             return "input-streaming";
-            case "completed":
-            case "success":
+            // case "completed":
+            // case "success":
             return "output-available";
-            case "failed":
-            case "error":
+            // case "failed":
+            // case "error":
             return "output-error";
-            default:
+            // default:
             return "input-available";
         }
     }
@@ -34,11 +34,11 @@ ToolPart convertActionMessageToToolPart(const std::any& message) {
     const auto actionId = rawMessage.actionId;
 
     // Create input data from available action properties
-    const std::unordered_map<std::string, unknown> inputData = {};
+    const std::unordered_map<std::string, std::any> inputData = {};
     inputData.input = rawMessage.actionResult.input || {}
 
     // Create output data based on status and content
-    const std::unordered_map<std::string, unknown> outputData = {};
+    const std::unordered_map<std::string, std::any> outputData = {};
     if (rawMessage.text || message.content) {
         outputData.text = rawMessage.text || message.content;
     }
@@ -53,8 +53,8 @@ ToolPart convertActionMessageToToolPart(const std::any& message) {
         type: actionName,
         state: mapActionStatusToState(actionStatus),
         toolCallId: actionId,
-        input: Object.keys(inputData).length > 0 ? inputData : std::nullopt,
-        output: Object.keys(outputData).length > 0 ? outputData : std::nullopt,
+        input: Object.keys(inputData).size() > 0 ? inputData : std::nullopt,
+        output: Object.keys(outputData).size() > 0 ? outputData : std::nullopt,
         errorText,
     }
 

@@ -23,7 +23,7 @@ std::string getSolanaEndpoint() {
     // If it's a relative path (proxy), construct full URL
     if (configUrl.startsWith("/")) {
         if (typeof window != "undefined") {
-            return std::to_string(window.location.origin) + std::to_string(configUrl);
+            return window.location.origin + configUrl;
         }
         // SSR fallback - will be replaced on client
         return "https://api.mainnet-beta.solana.com";

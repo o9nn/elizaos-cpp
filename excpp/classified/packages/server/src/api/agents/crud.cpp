@@ -12,10 +12,10 @@ express::Router createAgentCrudRouter(const std::unordered_map<UUID, IAgentRunti
         const auto db = serverInstance.database;
 
         // List all agents with minimal details
-        router.get('/', async (_, res) => {
+        router.get("/", async (_, res) => {
             try {
                 if (!db) {
-                    return sendError(res, 500, 'DB_ERROR', 'Database not available');
+                    return sendError(res, 500, "DB_ERROR", "Database not available");
                 }
                 const auto allAgents = db.getAgents();
                 const auto runtimes = Array.from(agents.keys());
@@ -24,73 +24,73 @@ express::Router createAgentCrudRouter(const std::unordered_map<UUID, IAgentRunti
                 const auto response = allAgents;
                 .map((agent: Partial<Agent>) => ({
                     id: agent.id,
-                    name: agent.name || '',
-                    characterName: agent.name || '', // Since Agent extends Character, agent.name is the character name
-                    bio: agent.bio.[0] || '',
-                    status: agent.id && runtimes.includes(agent.id) ? 'active' : 'inactive',
+                    name: agent.name || "",
+                    characterName: agent.name || "", // Since Agent extends Character, agent.name is the character name
+                    bio: agent.bio.[0] || "",
+                    status: agent.id && (std::find(runtimes.begin(), runtimes.end(), agent.id) != runtimes.end()) ? "active" : "inactive",
                     }));
                     .filter((agent) => agent.id) // Filter out agents without IDs;
                     .sort((a: any, b: any) => {
                         if (a.status == b.status) {
                             return a.name.localeCompare(b.name);
                         }
-                        return a.status == 'active' ? -1 : 1;
+                        return a.status == "active" ? -1 : 1;
                         });
 
                         sendSuccess(res, { agents: response });
                         } catch (error) {
-                            std::cerr << '[AGENTS LIST] Error retrieving agents:' << error << std::endl;
+                            std::cerr << "[AGENTS LIST] Error retrieving agents:" << error << std::endl;
                             sendError(;
                             res,
                             500,
-                            '500',
-                            'Error retrieving agents',
+                            "500",
+                            "Error retrieving agents",
                             true /* instanceof check */ ? error.message : std::to_string(error)
                             );
                         }
                         });
 
                         // Get specific agent details
-                        router.get('/:agentId', async (req, res) => {
+                        router.get("/:agentId", async (req, res) => {
                             const auto agentId = validateUuid(req.params.agentId);
                             if (!agentId) {
-                                return sendError(res, 400, 'INVALID_ID', 'Invalid agent ID format');
+                                return sendError(res, 400, "INVALID_ID", "Invalid agent ID format");
                             }
                             if (!db) {
-                                return sendError(res, 500, 'DB_ERROR', 'Database not available');
+                                return sendError(res, 500, "DB_ERROR", "Database not available");
                             }
 
                             try {
                                 const auto agent = db.getAgent(agentId);
                                 if (!agent) {
-                                    return sendError(res, 404, 'NOT_FOUND', 'Agent not found');
+                                    return sendError(res, 404, "NOT_FOUND", "Agent not found");
                                 }
 
                                 const auto runtime = agents.get(agentId);
                                 const auto response = {;
                                     ...agent,
-                                    status: runtime ? 'active' : 'inactive',
+                                    status: runtime ? "active" : "inactive",
                                     };
 
                                     sendSuccess(res, response);
                                     } catch (error) {
-                                        std::cerr << '[AGENT GET] Error retrieving agent:' << error << std::endl;
+                                        std::cerr << "[AGENT GET] Error retrieving agent:" << error << std::endl;
                                         sendError(;
                                         res,
                                         500,
-                                        '500',
-                                        'Error retrieving agent',
+                                        "500",
+                                        "Error retrieving agent",
                                         true /* instanceof check */ ? error.message : std::to_string(error)
                                         );
                                     }
                                     });
 
                                     // Create new agent
-                                    router.post('/', async (req, res) => {
+                                    router.post("/", async (req, res) => {
                                         logger.debug('[AGENT CREATE] Creating new agent');
                                         const auto { characterPath, characterJson, agent } = req.body;
                                         if (!db) {
-                                            return sendError(res, 500, 'DB_ERROR', 'Database not available');
+                                            return sendError(res, 500, "DB_ERROR", "Database not available");
                                         }
 
                                         try {
@@ -144,12 +144,12 @@ express::Router createAgentCrudRouter(const std::unordered_map<UUID, IAgentRunti
                                                                     });
                                                                     logger.success(`[AGENT CREATE] Successfully created agent: ${character.name}`);
                                                                     } catch (error) {
-                                                                        std::cerr << '[AGENT CREATE] Error creating agent:' << error << std::endl;
+                                                                        std::cerr << "[AGENT CREATE] Error creating agent:" << error << std::endl;
                                                                         res.status(400).json({
                                                                             success: false,
                                                                             error: {
-                                                                                code: 'CREATE_ERROR',
-                                                                                message: true /* instanceof check */ ? error.message : 'Error creating agent',
+                                                                                code: "CREATE_ERROR",
+                                                                                message: true /* instanceof check */ ? error.message : "Error creating agent",
                                                                                 details: true /* instanceof check */ ? error.message : std::to_string(error),
                                                                                 },
                                                                                 });
@@ -157,13 +157,13 @@ express::Router createAgentCrudRouter(const std::unordered_map<UUID, IAgentRunti
                                                                             });
 
                                                                             // Update agent
-                                                                            router.patch('/:agentId', async (req, res) => {
+                                                                            router.patch("/:agentId", async (req, res) => {
                                                                                 const auto agentId = validateUuid(req.params.agentId);
                                                                                 if (!agentId) {
-                                                                                    return sendError(res, 400, 'INVALID_ID', 'Invalid agent ID format');
+                                                                                    return sendError(res, 400, "INVALID_ID", "Invalid agent ID format");
                                                                                 }
                                                                                 if (!db) {
-                                                                                    return sendError(res, 500, 'DB_ERROR', 'Database not available');
+                                                                                    return sendError(res, 500, "DB_ERROR", "Database not available");
                                                                                 }
 
                                                                                 const auto updates = req.body;
@@ -175,7 +175,7 @@ express::Router createAgentCrudRouter(const std::unordered_map<UUID, IAgentRunti
                                                                                         Object.entries(updates.settings.secrets).forEach(([key, value]) => {
                                                                                             if (value == null) {
                                                                                                 encryptedSecrets[key] = nullptr;
-                                                                                                } else if (typeof value == 'string') {
+                                                                                                } else if (typeof value == "string") {
                                                                                                     encryptedSecrets[key] = encryptStringValue(value, salt);
                                                                                                     } else {
                                                                                                         encryptedSecrets[key] = value;
@@ -197,32 +197,32 @@ express::Router createAgentCrudRouter(const std::unordered_map<UUID, IAgentRunti
                                                                                                 }
 
                                                                                                 const auto runtime = agents.get(agentId);
-                                                                                                const auto status = runtime ? 'active' : 'inactive';
+                                                                                                const auto status = runtime ? "active" : "inactive";
 
                                                                                                 sendSuccess(res, { ...updatedAgent, status });
                                                                                                 } catch (error) {
-                                                                                                    std::cerr << '[AGENT UPDATE] Error updating agent:' << error << std::endl;
+                                                                                                    std::cerr << "[AGENT UPDATE] Error updating agent:" << error << std::endl;
                                                                                                     sendError(;
                                                                                                     res,
                                                                                                     500,
-                                                                                                    'UPDATE_ERROR',
-                                                                                                    'Error updating agent',
+                                                                                                    "UPDATE_ERROR",
+                                                                                                    "Error updating agent",
                                                                                                     true /* instanceof check */ ? error.message : std::to_string(error)
                                                                                                     );
                                                                                                 }
                                                                                                 });
 
                                                                                                 // Delete agent
-                                                                                                router.delete('/:agentId', async (req, res) => {
+                                                                                                router.delete("/:agentId", async (req, res) => {
                                                                                                     logger.debug(`[AGENT DELETE] Received request to delete agent with ID: ${req.params.agentId}`);
 
                                                                                                     const auto agentId = validateUuid(req.params.agentId);
                                                                                                     if (!agentId) {
-                                                                                                        std::cerr << "[AGENT DELETE] Invalid agent ID format: " + std::to_string(req.params.agentId) << std::endl;
-                                                                                                        return sendError(res, 400, 'INVALID_ID', 'Invalid agent ID format');
+                                                                                                        std::cerr << "[AGENT DELETE] Invalid agent ID format: " + req.params.agentId << std::endl;
+                                                                                                        return sendError(res, 400, "INVALID_ID", "Invalid agent ID format");
                                                                                                     }
                                                                                                     if (!db) {
-                                                                                                        return sendError(res, 500, 'DB_ERROR', 'Database not available');
+                                                                                                        return sendError(res, 500, "DB_ERROR", "Database not available");
                                                                                                     }
 
                                                                                                     logger.debug(`[AGENT DELETE] Validated agent ID: ${agentId}, proceeding with deletion`);
@@ -230,30 +230,30 @@ express::Router createAgentCrudRouter(const std::unordered_map<UUID, IAgentRunti
                                                                                                     try {
                                                                                                         const auto agent = db.getAgent(agentId);
                                                                                                         if (!agent) {
-                                                                                                            std::cout << "[AGENT DELETE] Agent not found: " + std::to_string(agentId) << std::endl;
-                                                                                                            return sendError(res, 404, 'NOT_FOUND', 'Agent not found');
+                                                                                                            std::cout << "[AGENT DELETE] Agent not found: " + agentId << std::endl;
+                                                                                                            return sendError(res, 404, "NOT_FOUND", "Agent not found");
                                                                                                         }
 
                                                                                                         logger.debug(`[AGENT DELETE] Agent found: ${agent.name} (${agentId})`);
                                                                                                         } catch (checkError) {
-                                                                                                            std::cerr << "[AGENT DELETE] Error checking if agent exists: " + std::to_string(agentId) << checkError << std::endl;
+                                                                                                            std::cerr << "[AGENT DELETE] Error checking if agent exists: " + agentId << checkError << std::endl;
                                                                                                         }
 
                                                                                                         const auto timeoutId = setTimeout(() => {;
-                                                                                                            std::cout << "[AGENT DELETE] Operation taking longer than expected for agent: " + std::to_string(agentId) << std::endl;
+                                                                                                            std::cout << "[AGENT DELETE] Operation taking longer than expected for agent: " + agentId << std::endl;
                                                                                                             if (!res.headersSent) {
                                                                                                                 res.status(202).json({
                                                                                                                     success: true,
                                                                                                                     partial: true,
                                                                                                                     message:
-                                                                                                                    'Agent deletion initiated but taking longer than expected. The operation will continue in the background.',
+                                                                                                                    "Agent deletion initiated but taking longer than expected. The operation will continue in the background.",
                                                                                                                     });
                                                                                                                 }
                                                                                                                 }, 10000);
 
                                                                                                                 const auto MAX_RETRIES = 2;
                                                                                                                 auto retryCount = 0;
-                                                                                                                unknown lastError = nullptr;
+                                                                                                                std::any lastError = nullptr;
 
                                                                                                                 while (retryCount <= MAX_RETRIES) {
                                                                                                                     try {
@@ -264,7 +264,7 @@ express::Router createAgentCrudRouter(const std::unordered_map<UUID, IAgentRunti
                                                                                                                                 serverInstance.unregisterAgent(agentId);
                                                                                                                                 logger.debug(`[AGENT DELETE] Agent ${agentId} unregistered successfully`);
                                                                                                                                 } catch (stopError) {
-                                                                                                                                    std::cerr << "[AGENT DELETE] Error stopping agent " + std::to_string(agentId) + ":" << stopError << std::endl;
+                                                                                                                                    std::cerr << "[AGENT DELETE] Error stopping agent " + agentId + ":" << stopError << std::endl;
                                                                                                                                 }
                                                                                                                                 } else {
                                                                                                                                     logger.debug(`[AGENT DELETE] Agent ${agentId} was not running, no need to unregister`);
@@ -289,7 +289,7 @@ express::Router createAgentCrudRouter(const std::unordered_map<UUID, IAgentRunti
                                                                                                                                     retryCount++;
 
                                                                                                                                     logger.error(
-                                                                                                                                    "[AGENT DELETE] Error deleting agent " + std::to_string(agentId) + " (attempt " + std::to_string(retryCount) + "/" + std::to_string(MAX_RETRIES + 1) + "):"
+                                                                                                                                    "[AGENT DELETE] Error deleting agent " + agentId + " (attempt " + retryCount + "/" + std::to_string(MAX_RETRIES + 1) + "):"
                                                                                                                                     error;
                                                                                                                                     );
 
@@ -307,16 +307,16 @@ express::Router createAgentCrudRouter(const std::unordered_map<UUID, IAgentRunti
 
                                                                                                                             if (!res.headersSent) {
                                                                                                                                 auto statusCode = 500;
-                                                                                                                                auto errorMessage = 'Error deleting agent';
+                                                                                                                                auto errorMessage = "Error deleting agent";
 
                                                                                                                                 if (lastError instanceof Error) {
                                                                                                                                     const auto message = lastError.message;
 
                                                                                                                                     if (message.includes('foreign key constraint')) {
-                                                                                                                                        errorMessage = 'Cannot delete agent because it has active references in the system';
+                                                                                                                                        errorMessage = "Cannot delete agent because it has active references in the system";
                                                                                                                                         statusCode = 409;
-                                                                                                                                        } else if (message.includes('timed out')) {
-                                                                                                                                            errorMessage = 'Agent deletion operation timed out';
+                                                                                                                                        } else if ((std::find(message.begin(), message.end(), "timed out") != message.end())) {
+                                                                                                                                            errorMessage = "Agent deletion operation timed out";
                                                                                                                                             statusCode = 408;
                                                                                                                                         }
                                                                                                                                     }
@@ -324,7 +324,7 @@ express::Router createAgentCrudRouter(const std::unordered_map<UUID, IAgentRunti
                                                                                                                                     res.status(statusCode).json({
                                                                                                                                         success: false,
                                                                                                                                         error: {
-                                                                                                                                            code: 'DELETE_ERROR',
+                                                                                                                                            code: "DELETE_ERROR",
                                                                                                                                             message: errorMessage,
                                                                                                                                             details: true /* instanceof check */ ? lastError.message : std::to_string(lastError),
                                                                                                                                             },

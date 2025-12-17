@@ -1,10 +1,14 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
+#include <stdexcept>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "elizaos/core.hpp"
 #include "elizaos/logger.hpp"
@@ -25,7 +29,7 @@ struct CreationResult {
     bool success;
     std::string pluginName;
     std::string pluginPath;
-    std::optional<Error> error;
+    std::optional<std::runtime_error> error;
 };
 
 struct PluginSpecification {

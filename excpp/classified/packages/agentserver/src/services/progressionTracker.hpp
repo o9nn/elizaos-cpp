@@ -1,11 +1,14 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "capabilityProgressionService.hpp"
 #include "elizaos/core.hpp"
@@ -32,11 +35,11 @@ public:
     std::future<void> handleMicrophoneUsed(std::optional<std::any> _params);
     std::future<void> handleCapabilityUsed(std::optional<std::any> params);
     std::future<void> trackShellCommand(const std::string& command, double exitCode);
-    std::future<void> trackGoalCreation(const std::unordered_map<std::string, unknown>& goalData);
-    std::future<void> trackTodoCreation(const std::unordered_map<std::string, unknown>& todoData);
+    std::future<void> trackGoalCreation(const std::unordered_map<std::string, std::any>& goalData);
+    std::future<void> trackTodoCreation(const std::unordered_map<std::string, std::any>& todoData);
     std::future<void> trackAgentNaming(const std::string& name);
-    std::future<void> trackAction(const std::string& actionType, std::optional<std::unordered_map<std::string, unknown>> details);
-    std::unordered_map<std::string, unknown> getProgressionStatus();
+    std::future<void> trackAction(const std::string& actionType, std::optional<std::unordered_map<std::string, std::any>> details);
+    std::unordered_map<std::string, std::any> getProgressionStatus();
     void cleanup();
 
 private:

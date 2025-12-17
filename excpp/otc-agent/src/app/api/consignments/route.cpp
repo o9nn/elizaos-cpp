@@ -25,7 +25,7 @@ std::future<void> GET(NextRequest request) {
         // Filter by chains if specified
         if (chains.length > 0) {
             consignments = consignments.filter((c) =>;
-            chains.includes(c.chain),
+            (std::find(chains.begin(), chains.end(), c.chain) != chains.end()),
             );
         }
 

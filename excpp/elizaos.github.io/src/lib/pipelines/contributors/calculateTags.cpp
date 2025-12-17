@@ -25,7 +25,7 @@ std::future<void> storeTagScore(const std::string& username, const std::string& 
             db;
             .insert(userTagScores);
             .values({
-                std::to_string(username) + "_" + std::to_string(tag)
+                "id: " + username + "_" + tag
                 username,
                 tag,
                 score,

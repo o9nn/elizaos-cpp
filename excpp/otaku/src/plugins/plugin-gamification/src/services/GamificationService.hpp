@@ -1,16 +1,19 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
-#include ".constants.hpp"
-#include ".schema.hpp"
+#include "constants.hpp"
 #include "elizaos/core.hpp"
+#include "schema.hpp"
 
 namespace elizaos {
 

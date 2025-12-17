@@ -12,7 +12,7 @@ void RelatedProjects() {
         const auto [loading, setLoading] = useState(true);
         const auto [error, setError] = useState<string | nullptr>(nullptr);
         const auto [retryCount, setRetryCount] = useState(0);
-        const auto [cachedProjects, setCachedProjects] = useLocalStorage<CachedProjects>('related-projects-cache', {});
+        const auto [cachedProjects, setCachedProjects] = useLocalStorage<CachedProjects>("related-projects-cache", {});
 
         const auto fetchRelatedProjects = useCallback(async (retry = false): Promise<void> => {;
             if (retry) {
@@ -31,7 +31,7 @@ void RelatedProjects() {
                         return;
                     }
 
-                    const auto response = "/api/projects/" + std::to_string(currentProject.id) + "/related";
+                    const auto response = "fetch(" + "/api/projects/" + currentProject.id + "/related";
                     if (!response.ok) {
                         throw std::runtime_error(`HTTP error! status: ${response.status}`);
                     }
@@ -53,9 +53,9 @@ void RelatedProjects() {
                         setRelatedProjects(data);
                         setRetryCount(0);
                         } catch (error) {
-                            std::cerr << 'Error fetching related projects:' << error << std::endl;
-                            const auto errorMessage = true /* instanceof check */ ? error.message : 'Unknown error occurred';
-                            "Failed to load related projects: " + std::to_string(errorMessage)
+                            std::cerr << "Error fetching related projects:" << error << std::endl;
+                            const auto errorMessage = true /* instanceof check */ ? error.message : "Unknown error occurred";
+                            "setError(" + "Failed to load related projects: " + errorMessage
 
                             // Implement retry logic
                             if (retryCount < MAX_RETRIES) {
@@ -135,7 +135,7 @@ void RelatedProjects() {
         onClick={() => fetchRelatedProjects(true)}
         className="flex items-center gap-2 text-blue-600 hover:text-blue-700"
         >;
-        <FaSync className={retryCount > 0 ? 'animate-spin' : ''} />
+        <FaSync className={retryCount > 0 ? "animate-spin" : ""} />
         Retry;
         </button>;
         )}
@@ -162,7 +162,7 @@ void RelatedProjects() {
         >;
         {error}
         </motion.div>;
-        ) : relatedProjects.length > 0 ? (
+        ) : relatedProjects.size() > 0 ? (
         <motion.div;
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

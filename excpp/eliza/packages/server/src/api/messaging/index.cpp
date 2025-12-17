@@ -15,13 +15,13 @@ express::Router messagingRouter(const std::unordered_map<UUID, IAgentRuntime>& a
         }
 
         // Mount core messaging functionality at root level
-        router.use('/', createMessagingCoreRouter(serverInstance));
+        router.use("/", createMessagingCoreRouter(serverInstance));
 
         // Mount server management functionality
-        router.use('/', createServersRouter(serverInstance));
+        router.use("/", createServersRouter(serverInstance));
 
         // Mount channel management functionality
-        router.use('/', createChannelsRouter(agents, serverInstance));
+        router.use("/", createChannelsRouter(agents, serverInstance));
 
         return router;
 

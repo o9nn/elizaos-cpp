@@ -7,18 +7,18 @@ namespace elizaos {
 AgentLogger getLogger(const std::string& name, std::string emoji = "") {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto key = std::to_string(name) + "-" + std::to_string(emoji);
+    const auto key = name + "-" + emoji;
     if (!loggers.has(key)) {
         // Map specific logger names to emojis if not provided
         if (!emoji) {
             const std::unordered_map<std::string, std::string> emojiMap = {;
-                agent: '🤖',
-                model: '🧠',
-                config: '🔧',
-                run: '🏃',
-                env: '🌍',
-                tools: '🔨',
-                hook: '🪝',
+                agent: "🤖",
+                model: "🧠",
+                config: "🔧",
+                run: "🏃",
+                env: "🌍",
+                tools: "🔨",
+                hook: "🪝",
                 };
 
                 // Check for exact match or partial match
@@ -39,14 +39,14 @@ AgentLogger getLogger(const std::string& name, std::string emoji = "") {
 void setThreadName(const std::string& name) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    threadNames.set(process.pid.toString(), name);
+    threadNames.set(process.std::to_string(pid), name);
 
 }
 
 std::string getThreadName() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return threadNames.get(process.pid.toString()) || '';
+    return threadNames.get(process.std::to_string(pid)) || "";
 
 }
 
@@ -102,26 +102,26 @@ void setStreamHandlerLevels(const std::string& level) {
 void log(const std::string& message, std::string level = "info") {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto logger = getLogger('default');
+    const auto logger = getLogger("default");
     switch (level.toLowerCase()) {
-        case 'debug':
+        // case "debug":
         logger.debug(message);
         break;
-        case 'info':
+        // case "info":
         std::cout << message << std::endl;
         break;
-        case 'warn':
-        case 'warning':
+        // case "warn":
+        // case "warning":
         std::cout << message << std::endl;
         break;
-        case 'error':
+        // case "error":
         std::cerr << message << std::endl;
         break;
-        case 'critical':
-        case 'fatal':
+        // case "critical":
+        // case "fatal":
         logger.critical(message);
         break;
-        default:
+        // default:
         std::cout << message << std::endl;
     }
 

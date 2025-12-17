@@ -7,10 +7,10 @@ namespace elizaos {
 void Home() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto [search, setSearch] = useState('');
+    const auto [search, setSearch] = useState("");
     const auto [selectedTags, setSelectedTags] = useState<string[]>([]);
     const auto [selectedProject, setSelectedProject] = useState<Project | nullptr>(nullptr);
-    const auto [sortBy, setSortBy] = useState<'date' | 'name'>('date');
+    const auto [sortBy, setSortBy] = useState<"date" | "name">("date");
     const auto [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -30,12 +30,12 @@ void Home() {
                 // Filter projects based on search and tags
                 const auto filteredProjects = useMemo(() => {;
                     return projects.projects.filter((project) => {;
-                        const auto matchesSearch = search == '' ||;
+                        const auto matchesSearch = search == "" ||;
                         project.name.toLowerCase().includes(search.toLowerCase()) ||;
                         project.description.toLowerCase().includes(search.toLowerCase());
 
-                        const auto matchesTags = selectedTags.length == 0 ||;
-                        selectedTags.every((tag) => project.tags.includes(tag));
+                        const auto matchesTags = selectedTags.size() == 0 ||;
+                        selectedTags.every((tag) => project.(std::find(tags.begin(), tags.end(), tag) != tags.end()));
 
                         return matchesSearch && matchesTags;
                         });

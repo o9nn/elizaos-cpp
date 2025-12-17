@@ -11,13 +11,13 @@ std::future<void> addApprover() {
     setProvider(provider);
     const auto program = workspace.Otc<Otc>;
 
-    const auto ownerData = JSON.parse(fs.readFileSync("./id.json", "utf8"));
+    const auto ownerData = /* JSON.parse */ fs.readFileSync("./id.json", "utf8");
     const auto owner = Keypair.fromSecretKey(Uint8Array.from(ownerData));
     const auto desk = new PublicKey("7EN1rubej95WmoyupRXQ78PKU2hTCspKn2mVKN1vxuPp");
 
     std::cout << "Adding owner..." << std::endl;
-    std::cout << "  Owner:" << owner.publicKey.toString() << std::endl;
-    std::cout << "  Desk:" << desk.toString() << std::endl;
+    std::cout << "  Owner:" << owner.std::to_string(publicKey) << std::endl;
+    std::cout << "  Desk:" << std::to_string(desk) << std::endl;
 
     const auto tx = program.methods;
     .setApprover(owner.publicKey, true);

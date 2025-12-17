@@ -1,9 +1,13 @@
 #pragma once
+#include <algorithm>
+#include <chrono>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
 
@@ -42,7 +46,7 @@ std::string formatNumber(double value);
  * @param {string | Date} dateString - The date string to be formatted or a Date object.
  * @returns {string} The formatted date string.
  */
-std::string formatDate(const std::variant<std::string, Date>& dateString);
+std::string formatDate(const std::variant<std::string, std::chrono::system_clock::time_point>& dateString);
 
 /**
  * Function to normalize the balance based on the decimals provided.

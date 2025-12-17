@@ -31,24 +31,24 @@ std::string getRpcUrlForChain(const std::string& chainType) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     switch (chainType) {
-        case "base":
+        // case "base":
         return process.env.NEXT_PUBLIC_BASE_RPC_URL || "https://mainnet.base.org";
-        case "base-sepolia":
+        // case "base-sepolia":
         return process.env.NEXT_PUBLIC_BASE_RPC_URL || "https://sepolia.base.org";
-        case "bsc":
+        // case "bsc":
         return (;
         process.env.NEXT_PUBLIC_BSC_RPC_URL ||;
         "https://bsc-dataseed1.binance.org"
         );
-        case "bsc-testnet":
+        // case "bsc-testnet":
         return (;
         process.env.NEXT_PUBLIC_BSC_RPC_URL ||;
         "https://data-seed-prebsc-1-s1.binance.org:8545"
         );
-        case "localhost":
-        case "anvil":
+        // case "localhost":
+        // case "anvil":
         return process.env.NEXT_PUBLIC_RPC_URL || "http://127.0.0.1:8545";
-        default:
+        // default:
         return getRpcUrl();
     }
 

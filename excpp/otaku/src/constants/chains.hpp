@@ -1,10 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -17,7 +19,7 @@ namespace elizaos {
 /**
  * Supported blockchain networks
  */
-using SupportedNetwork = std::variant<std::string, std::string, std::string, std::string, std::string, std::string, std::string, std::string>;
+using SupportedNetwork = std::string;
 
 /**
  * Chain configuration interface

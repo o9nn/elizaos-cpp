@@ -19,14 +19,14 @@ void LinkAccounts() {
                 },
                 onError: (err) => {
                     std::cout << err << std::endl;
-                    setError(JSON.stringify(err.message));
+                    setError(/* JSON.stringify */ std::string(err.message));
                     },
                     });
                     const auto { sendCode: sendCodeEmail, linkWithCode: linkWithCodeEmail } =;
                     useLinkEmail({
                         onError: (err) => {
                             std::cout << err << std::endl;
-                            setError(JSON.stringify(err.message));
+                            setError(/* JSON.stringify */ std::string(err.message));
                             },
                             onLinkSuccess: () => {
                                 std::cout << "Link Email success" << std::endl;
@@ -38,7 +38,7 @@ void LinkAccounts() {
                                     const auto { sendCode: sendCodeSMS, linkWithCode: linkWithCodeSMS } = useLinkSMS({;
                                         onError: (err) => {
                                             std::cout << err << std::endl;
-                                            setError(JSON.stringify(err.message));
+                                            setError(/* JSON.stringify */ std::string(err.message));
                                             },
                                             onLinkSuccess: () => {
                                                 std::cout << "Link SMS success" << std::endl;
@@ -51,13 +51,13 @@ void LinkAccounts() {
                                                     const auto { linkWithPasskey } = useLinkWithPasskey({;
                                                         onError: (err) => {
                                                             std::cout << err << std::endl;
-                                                            setError(JSON.stringify(err.message));
+                                                            setError(/* JSON.stringify */ std::string(err.message));
                                                             },
                                                             });
                                                             const auto oauth = useLinkWithOAuth({;
                                                                 onError: (err) => {
                                                                     std::cout << err << std::endl;
-                                                                    setError(JSON.stringify(err.message));
+                                                                    setError(/* JSON.stringify */ std::string(err.message));
                                                                     },
                                                                     });
                                                                     return (;
@@ -89,7 +89,7 @@ void LinkAccounts() {
                                                                 ).map((provider) => (;
                                                                 <View key={provider}>;
                                                                 <Button;
-                                                            "Link " + std::to_string(provider);
+                                                            "title={" + "Link " + provider;
                                                         disabled={oauth.state.status == "loading"}
                                                     onPress={() => oauth.link({ provider })}
                                                     ></Button>;

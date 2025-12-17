@@ -10,12 +10,12 @@ std::future<void> getTokenPrices() {
     try {
         const auto responses = Promise.all([;
         fetch(HELIUS_API, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                jsonrpc: '2.0',
-                id: 'ai16z-price',
-                method: 'getAsset',
+                jsonrpc: "2.0",
+                id: "ai16z-price",
+                method: "getAsset",
                 params: {
                     id: TOKENS.AI16Z.address,
                     displayOptions: {
@@ -25,12 +25,12 @@ std::future<void> getTokenPrices() {
                     }),
                     }),
                     fetch(HELIUS_API, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({
-                            jsonrpc: '2.0',
-                            id: 'degenai-price',
-                            method: 'getAsset',
+                            jsonrpc: "2.0",
+                            id: "degenai-price",
+                            method: "getAsset",
                             params: {
                                 id: TOKENS.DEGENAI.address,
                                 displayOptions: {
@@ -42,7 +42,7 @@ std::future<void> getTokenPrices() {
                                 ]);
 
                                 const auto [ai16zData, degenAiData] = Promise.all(responses.map(r => r.json()));
-                                std::cout << 'Price data:' << { ai16z = ai16zData, degenAi = degenAiData } << std::endl;
+                                std::cout << "Price data:" << { ai16z = ai16zData, degenAi = degenAiData } << std::endl;
 
                                 return [;
                                 {
@@ -55,7 +55,7 @@ std::future<void> getTokenPrices() {
                                     }
                                     ];
                                     } catch (error) {
-                                        std::cerr << 'Token price API error:' << error << std::endl;
+                                        std::cerr << "Token price API error:" << error << std::endl;
                                         return Object.values(TOKENS).map(token => ({;
                                             address: token.address,
                                             usdPrice: 0
@@ -68,19 +68,19 @@ std::future<std::vector<TokenHolding>> getUserHoldings(const std::string& wallet
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
-        std::cout << 'Fetching holdings for wallet:' << walletAddress << std::endl;
+        std::cout << "Fetching holdings for wallet:" << walletAddress << std::endl;
 
         // Use searchAssets instead of getAssetsByOwner
         const auto response = fetch(HELIUS_API, {;
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                jsonrpc: '2.0',
-                id: 'my-id',
-                method: 'searchAssets',
+                jsonrpc: "2.0",
+                id: "my-id",
+                method: "searchAssets",
                 params: {
                     ownerAddress: walletAddress,
-                    tokenType: 'fungible',
+                    tokenType: "fungible",
                     displayOptions: {
                         showNativeBalance: true,
                         },
@@ -89,11 +89,11 @@ std::future<std::vector<TokenHolding>> getUserHoldings(const std::string& wallet
                         });
 
                         const auto data = response.json();
-                        std::cout << 'Raw balance response:' << data << std::endl;
+                        std::cout << "Raw balance response:" << data << std::endl;
 
                         // Get token prices
                         const auto prices = getTokenPrices();
-                        std::cout << 'Token prices:' << prices << std::endl;
+                        std::cout << "Token prices:" << prices << std::endl;
 
                         const std::vector<TokenHolding> holdings = [];
 
@@ -107,8 +107,8 @@ std::future<std::vector<TokenHolding>> getUserHoldings(const std::string& wallet
                                 if (tokenAddress == TOKENS.AI16Z.address) {
                                     const auto amount = Number(tokenInfo.amount || 0) / Math.pow(10, DECIMALS);
                                     const auto price = prices.find(p => p.address == TOKENS.AI16Z.address).usdPrice || 0;
-                                    holdings.push({
-                                        name: 'AI16Z',
+                                    holdings.push_back({
+                                        name: "AI16Z",
                                         amount,
                                         price,
                                         value: amount * price,
@@ -120,8 +120,8 @@ std::future<std::vector<TokenHolding>> getUserHoldings(const std::string& wallet
                                     if (tokenAddress == TOKENS.DEGENAI.address) {
                                         const auto amount = Number(tokenInfo.amount || 0) / Math.pow(10, DECIMALS);
                                         const auto price = prices.find(p => p.address == TOKENS.DEGENAI.address).usdPrice || 0;
-                                        holdings.push({
-                                            name: 'DEGENAI',
+                                        holdings.push_back({
+                                            name: "DEGENAI",
                                             amount,
                                             price,
                                             value: amount * price,
@@ -137,11 +137,11 @@ std::future<std::vector<TokenHolding>> getUserHoldings(const std::string& wallet
                                         holding.allocation = totalValue > 0 ? (holding.value / totalValue) * 100 : 0;
                                         });
 
-                                        std::cout << 'Processed holdings:' << holdings << std::endl;
+                                        std::cout << "Processed holdings:" << holdings << std::endl;
                                         return holdings.sort((a, b) => b.value - a.value);
 
                                         } catch (error) {
-                                            std::cerr << 'Error fetching user holdings:' << error << std::endl;
+                                            std::cerr << "Error fetching user holdings:" << error << std::endl;
                                             return [];
                                         }
 
@@ -187,7 +187,7 @@ std::future<std::vector<Partner>> getAllPartners() {
                                 if (amount >= MIN_AMOUNT) {
                                     return {
                                         owner: account.owner,
-                                        std::to_string(account.owner.slice(0, 6)) + "..." + std::to_string(account.owner.slice(-4))
+                                        "displayAddress: " + std::to_string(account.owner.slice(0, 6)) + "..." + std::to_string(account.owner.slice(-4))
                                         amount: amount,
                                         createdAt: new Date().toISOString(),
                                         trustScore: 0 // Default trust score
@@ -214,7 +214,7 @@ std::future<std::vector<Partner>> getAllPartners() {
                                 .values();
                                 ).sort((a, b) => b.amount - a.amount);
 
-                                std::cout << "Found " + std::to_string(uniqueHolders.length) + " unique holders with > " + std::to_string(MIN_AMOUNT) + " AI16Z" << std::endl;
+                                std::cout << "Found " + uniqueHolders.size() + " unique holders with > " + MIN_AMOUNT + " AI16Z" << std::endl;
                                 return uniqueHolders;
                                 } catch (error) {
                                     std::cerr << "Error fetching partner accounts:" << error << std::endl;
@@ -228,15 +228,15 @@ std::future<void> getDAOHoldings() {
 
     try {
         const auto response = fetch(HELIUS_API, {;
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                jsonrpc: '2.0',
-                id: 'my-id',
-                method: 'searchAssets',
+                jsonrpc: "2.0",
+                id: "my-id",
+                method: "searchAssets",
                 params: {
                     ownerAddress: DAO_WALLET,
-                    tokenType: 'fungible',
+                    tokenType: "fungible",
                     displayOptions: { showNativeBalance: true },
                     },
                     }),
@@ -246,7 +246,7 @@ std::future<void> getDAOHoldings() {
 
                     // Better error handling and default values
                     if (!data.result) {
-                        std::cout << 'Empty result from Helius API' << std::endl;
+                        std::cout << "Empty result from Helius API" << std::endl;
                         return [];
                     }
 
@@ -260,21 +260,21 @@ std::future<void> getDAOHoldings() {
 
                         return {
                             rank: index + 1,
-                            name: tokenInfo.symbol || tokenInfo.name || 'Unknown',
+                            name: tokenInfo.symbol || tokenInfo.name || "Unknown",
                             holdings: tokenAmount.toLocaleString(std::nullopt, {
                                 minimumFractionDigits: 0,
                                 maximumFractionDigits: tokenInfo.decimals || 6
                                 }),
-                                value: tokenValue.toLocaleString('en-US', {
-                                    style: 'currency',
-                                    currency: 'USD'
+                                value: tokenValue.toLocaleString("en-US", {
+                                    style: "currency",
+                                    currency: "USD"
                                     }),
-                                    percentage: totalValue > 0 ? ((tokenValue / totalValue) * 100).toFixed(2) + '%' : '0%',
-                                    "/images/tokens/" + std::to_string(tokenInfo.symbol || 'default') + ".png"
+                                    percentage: totalValue > 0 ? ((tokenValue / totalValue) * 100).toFixed(2) + "%" : "0%",
+                                    "imageUrl: " + "/images/tokens/" + std::to_string(tokenInfo.symbol || "default") + ".png"
                                     };
                                     });
                                     } catch (error) {
-                                        std::cerr << 'Error fetching DAO holdings:' << error << std::endl;
+                                        std::cerr << "Error fetching DAO holdings:" << error << std::endl;
                                         return [];
                                     }
 
@@ -285,14 +285,14 @@ std::future<void> handler(NextApiRequest req, NextApiResponse res) {
     try {
 
         if (req.method != 'GET') {
-            return res.status(405).json({ error: 'Method not allowed' });
+            return res.status(405).json({ error: "Method not allowed" });
         }
 
         try {
             // Check if we have cached data
             const auto cachedData = cache.get(CACHE_KEY);
             if (cachedData) {
-                std::cout << 'Returning cached dashboard data' << std::endl;
+                std::cout << "Returning cached dashboard data" << std::endl;
                 return res.status(200).json(cachedData);
             }
 
@@ -308,7 +308,7 @@ std::future<void> handler(NextApiRequest req, NextApiResponse res) {
                         return Promise.race([;
                         promise,
                         new Promise((_, reject) =>;
-                        setTimeout(() => reject(std::runtime_error('Timeout')), ms);
+                        setTimeout(() => reject(std::runtime_error("Timeout")), ms);
                         );
                         ]);
                         };
@@ -320,10 +320,10 @@ std::future<void> handler(NextApiRequest req, NextApiResponse res) {
                         walletAddress ? timeout(getUserHoldings(walletAddress), 10000) : Promise.resolve(std::nullopt)
                         ]);
 
-                        const auto partners = partnersResult.status == 'fulfilled' ? partnersResult.value : [];
-                        const auto holdings = holdingsResult.status == 'fulfilled' ? holdingsResult.value : [];
-                        const auto prices = pricesResult.status == 'fulfilled' ? pricesResult.value : [];
-                        const auto userHoldings = userHoldingsResult.status == 'fulfilled' ? userHoldingsResult.value : std::nullopt;
+                        const auto partners = partnersResult.status == "fulfilled" ? partnersResult.value : [];
+                        const auto holdings = holdingsResult.status == "fulfilled" ? holdingsResult.value : [];
+                        const auto prices = pricesResult.status == "fulfilled" ? pricesResult.value : [];
+                        const auto userHoldings = userHoldingsResult.status == "fulfilled" ? userHoldingsResult.value : std::nullopt;
 
                         if (!partners.length || !prices.length) {
                             throw std::runtime_error('Missing critical data');
@@ -345,26 +345,26 @@ std::future<void> handler(NextApiRequest req, NextApiResponse res) {
 
                                 // Cache the response
                                 cache.set(CACHE_KEY, response);
-                                std::cout << 'Cached fresh dashboard data' << std::endl;
+                                std::cout << "Cached fresh dashboard data" << std::endl;
 
                                 return res.status(200).json(response);
                                 } catch (error) {
                                     attempt++;
                                     if (attempt == MAX_RETRIES) {
-                                        std::cerr << 'Dashboard API Error after retries:' << error << std::endl;
+                                        std::cerr << "Dashboard API Error after retries:" << error << std::endl;
                                         return res.status(500).json({;
-                                            error: 'Failed to fetch dashboard data',
-                                            details: true /* instanceof check */ ? error.message : 'Unknown error'
+                                            error: "Failed to fetch dashboard data",
+                                            details: true /* instanceof check */ ? error.message : "Unknown error"
                                             });
                                         }
                                         new Promise(resolve => setTimeout(resolve, 1000 * attempt));
                                     }
                                 }
                                 } catch (error) {
-                                    std::cerr << 'Cache error:' << error << std::endl;
+                                    std::cerr << "Cache error:" << error << std::endl;
                                     return res.status(500).json({;
-                                        error: 'Server error',
-                                        details: true /* instanceof check */ ? error.message : 'Unknown error'
+                                        error: "Server error",
+                                        details: true /* instanceof check */ ? error.message : "Unknown error"
                                         });
                                     }
 

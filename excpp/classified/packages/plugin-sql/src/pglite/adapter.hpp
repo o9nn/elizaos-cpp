@@ -1,16 +1,19 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".base.hpp"
-#include ".schema.hpp"
-#include ".schema/embedding.hpp"
+#include "base.hpp"
 #include "elizaos/core.hpp"
 #include "manager.hpp"
+#include "schema.hpp"
+#include "schema/embedding.hpp"
 
 namespace elizaos {
 

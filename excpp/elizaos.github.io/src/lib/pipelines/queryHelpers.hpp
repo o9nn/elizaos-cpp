@@ -1,12 +1,14 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
-#include ".data/types.hpp"
+#include "data/types.hpp"
 
 namespace elizaos {
 
@@ -36,7 +38,7 @@ namespace elizaos {
  * @param period - Time period identifier ('daily', 'weekly', 'monthly', 'quarterly', 'yearly', 'all')
  * @returns DateRange object with startDate and endDate strings
  */
-DateRange getDateRangeForPeriod(const std::variant<"all", "daily", "weekly", "monthly", "quarterly", "yearly">& period);
+DateRange getDateRangeForPeriod(const std::string& period);
 
 /**
  * Format a period identifier for time-based aggregations
@@ -45,7 +47,7 @@ DateRange getDateRangeForPeriod(const std::variant<"all", "daily", "weekly", "mo
  * @param period - Aggregation period type
  * @returns SQL expression for the formatted period
  */
-SQL<string> formatPeriodLabel(SQLiteColumn dateColumn, const std::variant<"daily", "weekly", "monthly", "quarterly", "yearly">& period);
+SQL<string> formatPeriodLabel(SQLiteColumn dateColumn, const std::string& period);
 
   // Pagination
 

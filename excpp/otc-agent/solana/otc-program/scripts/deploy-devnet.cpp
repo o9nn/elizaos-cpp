@@ -15,26 +15,26 @@ std::future<void> main() {
     setProvider(provider);
     const auto program = workspace.Otc<Otc>;
 
-    std::cout << "📋 Program ID:" << program.programId.toString() << std::endl;
-    std::cout << "👤 Payer:" << provider.wallet.publicKey.toString() << std::endl;
+    std::cout << "📋 Program ID:" << program.std::to_string(programId) << std::endl;
+    std::cout << "👤 Payer:" << provider.wallet.std::to_string(publicKey) << std::endl;
 
     // 1. Load or Create Desk Keypair
     const auto deskKeypairPath = path.join(__dirname, "../desk-devnet-keypair.json");
     auto desk: Keypair;
 
     if (fs.existsSync(deskKeypairPath)) {
-        const auto secret = JSON.parse(fs.readFileSync(deskKeypairPath, "utf8"));
+        const auto secret = /* JSON.parse */ fs.readFileSync(deskKeypairPath, "utf8");
         desk = Keypair.fromSecretKey(Uint8Array.from(secret));
-        std::cout << "🏦 Using existing Desk:" << desk.publicKey.toString() << std::endl;
+        std::cout << "🏦 Using existing Desk:" << desk.std::to_string(publicKey) << std::endl;
         } else {
             desk = Keypair.generate();
-            fs.writeFileSync(deskKeypairPath, JSON.stringify(Array.from(desk.secretKey)));
-            std::cout << "🏦 Created new Desk:" << desk.publicKey.toString() << std::endl;
+            fs.writeFileSync(deskKeypairPath, /* JSON.stringify */ std::string(Array.from(desk.secretKey)));
+            std::cout << "🏦 Created new Desk:" << desk.std::to_string(publicKey) << std::endl;
         }
 
         // 2. Create USDC Mock Mint for Devnet testing
         std::cout << "\n🪙 Creating Devnet USDC Mock..." << std::endl;
-        const auto payer = (provider.wallet).payer || Keypair.fromSecretKey(Buffer.from(JSON.parse(fs.readFileSync(process.env.ANCHOR_WALLET || "./id.json", "utf8"))));
+        const auto payer = (provider.wallet).payer || Keypair.fromSecretKey(Buffer.from(/* JSON.parse */ fs.readFileSync(process.env.ANCHOR_WALLET || "./id.json", "utf8")));
 
         const auto usdcMint = createMint(;
         provider.connection,
@@ -43,7 +43,7 @@ std::future<void> main() {
         nullptr,
         6;
         );
-        std::cout << "✅ USDC Mock Mint:" << usdcMint.toString() << std::endl;
+        std::cout << "✅ USDC Mock Mint:" << std::to_string(usdcMint) << std::endl;
 
         // 3. Initialize Desk (no token_mint required - all tokens are equal)
         try {
@@ -71,10 +71,10 @@ std::future<void> main() {
                 // 4. Config Output (no TOKEN_MINT - all tokens are equal)
                 const auto envData = {;
                     NEXT_PUBLIC_SOLANA_RPC: "https://api.devnet.solana.com",
-                    NEXT_PUBLIC_SOLANA_PROGRAM_ID: program.programId.toString(),
-                    NEXT_PUBLIC_SOLANA_DESK: desk.publicKey.toString(),
-                    NEXT_PUBLIC_SOLANA_DESK_OWNER: provider.wallet.publicKey.toString(),
-                    NEXT_PUBLIC_SOLANA_USDC_MINT: usdcMint.toString(),
+                    NEXT_PUBLIC_SOLANA_PROGRAM_ID: program.std::to_string(programId),
+                    NEXT_PUBLIC_SOLANA_DESK: desk.std::to_string(publicKey),
+                    NEXT_PUBLIC_SOLANA_DESK_OWNER: provider.wallet.std::to_string(publicKey),
+                    NEXT_PUBLIC_SOLANA_USDC_MINT: std::to_string(usdcMint),
                     };
 
                     // Ensure dir exists
@@ -84,8 +84,8 @@ std::future<void> main() {
                         fs.mkdirSync(deploymentDir, { recursive: true });
                     }
 
-                    fs.writeFileSync(deploymentPath, JSON.stringify(envData, nullptr, 2));
-                    std::cout << "\n✅ Config saved to " + std::to_string(deploymentPath) << std::endl;
+                    fs.writeFileSync(deploymentPath, /* JSON.stringify */ std::string(envData, nullptr, 2));
+                    std::cout << "\n✅ Config saved to " + deploymentPath << std::endl;
 
 }
 

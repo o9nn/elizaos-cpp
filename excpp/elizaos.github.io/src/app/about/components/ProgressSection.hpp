@@ -1,10 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -18,7 +20,7 @@ struct Phase {
     std::string name;
     std::string icon;
     std::string name;
-    std::variant<"done", "in-progress", "not-started"> progress;
+    std::string progress;
 };
 
 // Helper function to calculate progress percentage

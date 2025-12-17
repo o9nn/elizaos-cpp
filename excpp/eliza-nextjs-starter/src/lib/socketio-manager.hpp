@@ -1,12 +1,14 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -27,7 +29,7 @@ using MessageBroadcastData = {
 
 using MessageCompleteData = {
 
-using ControlMessageData = std::variant<{
+using ControlMessageData = {
 
 using MessageDeletedData = {
 

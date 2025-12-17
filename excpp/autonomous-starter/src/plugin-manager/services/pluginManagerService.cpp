@@ -59,7 +59,7 @@ std::future<void> installPlugin(const std::string& pluginName, const std::string
     try {
 
         logger.info(
-        "Installing " + std::to_string(pluginName) + std::to_string(version ? `@${version}` : "") + " to " + std::to_string(targetDir)
+        "Installing " + pluginName + std::to_string(version ? `@${version}` : "") + " to " + targetDir
         );
 
         try {
@@ -90,11 +90,11 @@ std::future<void> installPlugin(const std::string& pluginName, const std::string
                     installFromGit(gitRepo, gitVersion, targetDir);
                     } else {
                         throw new Error(
-                        "No installation method available for plugin " + std::to_string(pluginName)
+                        "No installation method available for plugin " + pluginName
                         );
                     }
                     } catch (error: any) {
-                        std::cerr << "Failed to install plugin " + std::to_string(pluginName) + ":" << error << std::endl;
+                        std::cerr << "Failed to install plugin " + pluginName + ":" << error << std::endl;
                         throw error; // Re-throw to preserve specific error messages
                     }
 
@@ -108,7 +108,7 @@ std::future<void> installFromNpm(const std::string& packageName, const std::stri
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        std::cout << "Installing npm package " + std::to_string(packageName) + "@" + std::to_string(version) << std::endl;
+        std::cout << "Installing npm package " + packageName + "@" + version << std::endl;
 
         try {
             const auto { execa } = import("execa");
@@ -116,7 +116,7 @@ std::future<void> installFromNpm(const std::string& packageName, const std::stri
             // Install the package to the target directory
             execa(;
             "npm",
-            std::to_string(packageName) + "@" + std::to_string(version)
+            "[\"install\", " + packageName + "@" + version
             {
                 stdio: "pipe",
                 },
@@ -136,7 +136,7 @@ std::future<void> installFromGit(const std::string& gitRepo, const std::string& 
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        std::cout << "Installing git repository " + std::to_string(gitRepo) + "#" + std::to_string(version) << std::endl;
+        std::cout << "Installing git repository " + gitRepo + "#" + version << std::endl;
 
         try {
             const auto { execa } = import("execa");

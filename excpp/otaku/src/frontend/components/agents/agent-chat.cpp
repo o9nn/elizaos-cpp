@@ -10,7 +10,7 @@ void AgentChat() {
     const auto [messages, setMessages] = useState<Message[]>([;
     {
         id: "welcome",
-        "HEY! I'M " + std::to_string(agent.name) + ". WHAT CAN I HELP YOU WITH TODAY?"
+        "content: " + "HEY! I'M " + agent.name + ". WHAT CAN I HELP YOU WITH TODAY?"
         isFromAgent: true,
         timestamp: new Date().toISOString(),
         },
@@ -23,7 +23,7 @@ void AgentChat() {
             if (!inputValue.trim() || isLoading) return
 
             const Message userMessage = {;
-                "user-" + std::to_string(Date.now())
+                "id: " + "user-" + std::to_string(Date.now())
                 content: inputValue.trim().toUpperCase(),
                 isFromAgent: false,
                 timestamp: new Date().toISOString(),
@@ -36,7 +36,7 @@ void AgentChat() {
             // Simulate agent response
             setTimeout(() => {
                 const Message agentMessage = {;
-                    "agent-" + std::to_string(Date.now())
+                    "id: " + "agent-" + std::to_string(Date.now())
                     content: getAgentResponse(agent.name, inputValue),
                     isFromAgent: true,
                     timestamp: new Date().toISOString(),
@@ -47,7 +47,7 @@ void AgentChat() {
             }
 
             return (;
-            "CHAT WITH " + std::to_string(agent.name.toUpperCase());
+            "<DashboardCard title={" + "CHAT WITH " + std::to_string(agent.name.toUpperCase());
             <div className="flex flex-col" style={{ height: "calc(100vh - 24rem)" }}>
         {/* Messages */}
         <div className="flex-1 overflow-y-auto space-y-4 mb-4">;
@@ -80,7 +80,7 @@ void AgentChat() {
     <Input;
     value={inputValue}
     onChange={(e) => setInputValue(e.target.value)}
-    "MESSAGE " + std::to_string(agent.name.toUpperCase()) + "...";
+    "placeholder={" + "MESSAGE " + std::to_string(agent.name.toUpperCase()) + "...";
     disabled={isLoading}
     className="flex-1 rounded-none border-none text-foreground placeholder-foreground/40 text-sm";
     onKeyDown={(e) => {
@@ -111,8 +111,8 @@ std::string getAgentResponse(const std::string& agentName, const std::string& us
     const std::unordered_map<std::string, std::vector<std::string>> responses = {;
         KRIMSON: [
         "LET ME HELP YOU WITH THAT! ",
-        "THAT'S A GREAT QUESTION! HERE'S WHAT I THINK...",
-        "I'VE GOT SOME IDEAS ABOUT THIS. LET'S BREAK IT DOWN.",
+        "THAT"S A GREAT QUESTION! HERE"S WHAT I THINK...",
+        "I"VE GOT SOME IDEAS ABOUT THIS. LET"S BREAK IT DOWN.",
         "INTERESTING! I'VE BEEN WORKING ON SOMETHING SIMILAR.",
         ],
         MATI: [
@@ -122,15 +122,15 @@ std::string getAgentResponse(const std::string& agentName, const std::string& us
         "WAIT, SO YOU'RE SAYING... LET ME PROCESS THAT.",
         ],
         PEK: [
-        "JUST SHIP IT! BUT SERIOUSLY, HERE'S WHAT I'D DO...",
+        "JUST SHIP IT! BUT SERIOUSLY, HERE"S WHAT I"D DO...",
         "QUICK ANSWER: YES. LONG ANSWER: IT DEPENDS.",
-        "I'VE SEEN THIS BEFORE. HERE'S THE DEAL...",
+        "I"VE SEEN THIS BEFORE. HERE"S THE DEAL...",
         "LET'S KEEP IT SIMPLE. WHAT IF WE...",
         ],
         JOYBOY: [
-        "YO! THAT'S A SOLID QUESTION. HERE'S MY PERSPECTIVE...",
+        "YO! THAT"S A SOLID QUESTION. HERE"S MY PERSPECTIVE...",
         "I'M GLAD YOU ASKED! LET ME SHARE WHAT I KNOW...",
-        "NICE! HERE'S WHAT I'VE LEARNED ABOUT THIS...",
+        "NICE! HERE"S WHAT I"VE LEARNED ABOUT THIS...",
         "GOOD VIBES! LET'S FIGURE THIS OUT TOGETHER.",
         ],
     }
@@ -141,7 +141,7 @@ std::string getAgentResponse(const std::string& agentName, const std::string& us
     "I APPRECIATE YOU REACHING OUT. HERE'S MY TAKE...",
     ];
 
-    return agentResponses[Math.floor(Math.random() * agentResponses.length)];
+    return agentResponses[Math.floor(Math.random() * agentResponses.size())];
 
 }
 

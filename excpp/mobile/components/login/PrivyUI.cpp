@@ -21,7 +21,7 @@ void PrivyUI() {
                 std::cout << "User logged in" << session.user << std::endl;
                 });
                 .catch((err) => {
-                    setError(JSON.stringify(err.error));
+                    setError(/* JSON.stringify */ std::string(err.error));
                     });
                 }}
                 />;

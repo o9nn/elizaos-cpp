@@ -1,14 +1,17 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".pages/showcase/_components/ShowcaseCards.hpp"
-#include ".pages/showcase/_components/ShowcaseFilters.hpp"
-#include ".pages/showcase/_components/ShowcaseLayout/styles.module.css.hpp"
-#include ".pages/showcase/_components/ShowcaseSearchBar.hpp"
+#include "pages/showcase/_components/ShowcaseCards.hpp"
+#include "pages/showcase/_components/ShowcaseFilters.hpp"
+#include "pages/showcase/_components/ShowcaseLayout/styles.module.css.hpp"
+#include "pages/showcase/_components/ShowcaseSearchBar.hpp"
 
 namespace elizaos {
 

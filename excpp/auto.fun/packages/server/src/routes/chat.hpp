@@ -1,18 +1,21 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".db.hpp"
-#include ".logger.hpp"
-#include ".redis.hpp"
-#include ".uploader.hpp"
-#include ".util.hpp"
-#include ".websocket-manager.hpp"
+#include "db.hpp"
+#include "logger.hpp"
+#include "redis.hpp"
+#include "uploader.hpp"
+#include "util.hpp"
+#include "websocket-manager.hpp"
 
 namespace elizaos {
 

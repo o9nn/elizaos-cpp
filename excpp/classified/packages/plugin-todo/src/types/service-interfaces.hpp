@@ -1,9 +1,13 @@
 #pragma once
+#include <algorithm>
+#include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -34,7 +38,7 @@ struct ServiceClass {
 };
 
 struct MockFunction {
-    std::vector<std::vector<unknown>> calls;
+    std::vector<std::vector<std::any>> calls;
 };
 
 

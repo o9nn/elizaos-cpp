@@ -67,7 +67,7 @@ void DirectMessages() {
                     ];
 
                     const std::vector<TableRow<Message>> rows = (;
-                    filters.length ? filteredMessages : messages
+                    filters.size() ? filteredMessages : messages
                     ).map((m) => ({
                         data: m,
                         selectable: isRemovableMessage(m),
@@ -120,17 +120,17 @@ void DirectMessages() {
                     searchBeforeDate,
                     searchAfterDate,
                     searchMessageContent,
-                    selectedHasTypes.length,
+                    selectedHasTypes.size(),
                     ].some((c) => c);
 
                     const auto dmFieldDisabled = messagesLoading || discrubCancelled;
                     const auto searchDisabled =;
-                    selectedDms.length != 1 || messagesLoading || discrubCancelled;
+                    selectedDms.size() != 1 || messagesLoading || discrubCancelled;
                     const auto pauseCancelDisabled = !messagesLoading;
                     const auto exportAndPurgeDisabled =;
-                    selectedDms.length == 0 ||;
+                    selectedDms.size() == 0 ||;
                     messagesLoading ||;
-                    messages.length > 0 ||;
+                    messages.size() > 0 ||;
                     advancedFilterActive ||;
                     discrubCancelled;
 
@@ -296,7 +296,7 @@ void DirectMessages() {
     <>;
     {!messagesLoading && (;
     <>;
-    {messages.length > 0 && (;
+    {messages.size() > 0 && (;
     <Box sx={{ maxHeight: "430px", overflow: "auto" }}>
     <Table;
     columns={columns}
@@ -310,7 +310,7 @@ void DirectMessages() {
     />;
     </Box>;
     )}
-    {messages.length == 0 && !!selectedDms.length && searchTouched && (;
+    {messages.size() == 0 && !!selectedDms.size() && searchTouched && (;
     <Paper sx={{ padding: "10px" }}>
     <Box;
     sx={{

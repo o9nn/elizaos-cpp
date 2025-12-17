@@ -11,26 +11,26 @@ std::future<void> main() {
     std::cout << "================" << std::endl;
 
     switch (command) {
-        case "start":
+        // case "start":
         startContinuousService();
         break;
-        case "refresh":
+        // case "refresh":
         refreshStaleMetadata();
         break;
-        case "health":
+        // case "health":
         healthCheck();
         break;
-        case "queue":
+        // case "queue":
         showQueueStatus();
         break;
-        case "clear":
+        // case "clear":
         clearQueue();
         break;
-        case "help":
+        // case "help":
         showHelp();
         break;
-        default:
-        std::cerr << "Unknown command: " + std::to_string(command) << std::endl;
+        // default:
+        std::cerr << "Unknown command: " + command << std::endl;
         showHelp();
         process.exit(1);
     }
@@ -58,20 +58,20 @@ std::future<void> startContinuousService() {
         const auto statusInterval = setInterval(() => {;
             const auto status = tokenMetadataService.getQueueStatus();
             if (status.queueSize > 0) {
-                std::cout << "Queue status: " + std::to_string(status.queueSize) << processing: ${status.isProcessing}` << std::endl;
+                std::cout << "Queue status: " + status.queueSize << "processing: ${status.isProcessing}" << std::endl;
                 if (status.nextToken) {
-                    std::cout << "Next token: " + std::to_string(status.nextToken) << std::endl;
+                    std::cout << "Next token: " + status.nextToken << std::endl;
                 }
             }
             }, 30000); // Log every 30 seconds if queue has items;
 
             // Handle graceful shutdown
-            process.on('SIGINT', () => {
+            process.on("SIGINT", () => {
                 std::cout << "\n🛑 Shutdown signal received" << std::endl;
                 clearInterval(statusInterval);
                 });
 
-                process.on('SIGTERM', () => {
+                process.on("SIGTERM", () => {
                     std::cout << "\n🛑 Termination signal received" << std::endl;
                     clearInterval(statusInterval);
                     });
@@ -92,7 +92,7 @@ std::future<void> refreshStaleMetadata() {
 
     try {
         const auto staleTokens = tokenMetadataService.getTokensNeedingMetadata();
-        std::cout << "Found " + std::to_string(staleTokens.length) + " tokens needing metadata refresh" << std::endl;
+        std::cout << "Found " + staleTokens.size() + " tokens needing metadata refresh" << std::endl;
 
         if (staleTokens.length == 0) {
             std::cout << "✅ No tokens need metadata refresh" << std::endl;
@@ -108,7 +108,7 @@ std::future<void> refreshStaleMetadata() {
             const auto status = tokenMetadataService.getQueueStatus();
 
             if (status.queueSize != lastQueueSize) {
-                std::cout << "Processing... " + std::to_string(status.queueSize) + " tokens remaining" << std::endl;
+                std::cout << "Processing... " + status.queueSize + " tokens remaining" << std::endl;
                 lastQueueSize = status.queueSize;
             }
 
@@ -137,7 +137,7 @@ std::future<void> healthCheck() {
 
         std::cout << "Status: " + std::to_string(health.status == "healthy" ? "✅ Healthy" : "❌ Unhealthy") << std::endl;
         std::cout << "Details:" << std::endl;
-        std::cout << JSON.stringify(health.details, nullptr, 2) << std::endl;
+        std::cout << /* JSON.stringify */ std::string(health.details, nullptr, 2) << std::endl;
 
         if (health.status == "unhealthy") {
             process.exit(1);
@@ -156,11 +156,11 @@ std::future<void> showQueueStatus() {
     std::cout << "==========" << std::endl;
 
     const auto status = tokenMetadataService.getQueueStatus();
-    std::cout << "Queue Size: " + std::to_string(status.queueSize) << std::endl;
+    std::cout << "Queue Size: " + status.queueSize << std::endl;
     std::cout << "Processing: " + std::to_string(status.isProcessing ? "Yes" : "No") << std::endl;
 
     if (status.nextToken) {
-        std::cout << "Next Token: " + std::to_string(status.nextToken) << std::endl;
+        std::cout << "Next Token: " + status.nextToken << std::endl;
     }
 
     if (status.queueSize == 0) {
@@ -177,7 +177,7 @@ std::future<void> clearQueue() {
     const auto status = tokenMetadataService.getQueueStatus();
     if (status.queueSize > 0) {
         tokenMetadataService.clearQueue();
-        std::cout << "✅ Cleared " + std::to_string(status.queueSize) + " items from queue" << std::endl;
+        std::cout << "✅ Cleared " + status.queueSize + " items from queue" << std::endl;
         } else {
             std::cout << "✅ Queue was already empty" << std::endl;
         }

@@ -85,7 +85,7 @@ std::future<void> getLeaderboard(LeaderboardPeriod period) {
                             };
                             } catch (error) {
                                 console.warn(
-                                "Failed to fetch wallet data for user " + std::to_string(user.username) + " in leaderboard:"
+                                "Failed to fetch wallet data for user " + user.username + " in leaderboard:"
                                 error,
                                 );
                                 return {

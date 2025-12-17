@@ -18,7 +18,7 @@ MessageMemory createMessageMemory(std::optional<{
         metadata: {
             type: MemoryType.MESSAGE,
             timestamp: Date.now(),
-            scope: params.agentId ? 'private' : 'shared',
+            scope: params.agentId ? "private" : "shared",
             },
             };
 

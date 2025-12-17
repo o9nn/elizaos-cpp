@@ -11,11 +11,11 @@ void ContributorHighlights() {
     const auto [selectedContributor, setSelectedContributor] = useState<string | nullptr>(nullptr);
 
     const auto contributionTypeIcons = {;
-        code: '💻',
-        design: '🎨',
-        docs: '📚',
-        bug: '🐛',
-        feature: '✨',
+        code: "💻",
+        design: "🎨",
+        docs: "📚",
+        bug: "🐛",
+        feature: "✨",
         };
 
         return (;

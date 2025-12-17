@@ -33,7 +33,7 @@ void AuthProvider() {
 
                 if (storedUser) {
                     try {
-                        setUser(JSON.parse(storedUser));
+                        setUser(/* JSON.parse */ storedUser);
                         userRestoredSynchronously = true;
                         } catch (e) {
                             std::cerr << "Failed to parse stored user data:" << e << std::endl;
@@ -72,7 +72,7 @@ void AuthProvider() {
                             try {
                                 const auto response = fetch("https://api.github.com/user", {;
                                     headers: {
-                                        "Bearer " + std::to_string(accessToken)
+                                        "Authorization: " + "Bearer " + accessToken
                                         },
                                         });
 
@@ -87,7 +87,7 @@ void AuthProvider() {
 
                                         const auto userData = response.json();
                                         setUser(userData);
-                                        localStorage.setItem("github_user", JSON.stringify(userData));
+                                        localStorage.setItem("github_user", /* JSON.stringify */ std::string(userData));
                                         } catch (error) {
                                             std::cerr << "Error fetching user data:" << error << std::endl;
                                             setError(;
@@ -116,13 +116,13 @@ void AuthProvider() {
                                                     );
                                                     authUrl.searchParams.append(;
                                                     "redirect_uri",
-                                                    std::to_string(window.location.origin) + "/auth/callback"
+                                                    window.location.origin + "/auth/callback"
                                                     );
                                                     authUrl.searchParams.append("scope", "read:user");
                                                     authUrl.searchParams.append("state", state);
 
                                                     // Redirect the user to the GitHub authorization page
-                                                    window.location.href = authUrl.toString();
+                                                    window.location.href = std::to_string(authUrl);
                                                     } catch (error) {
                                                         std::cerr << "Error starting login flow:" << error << std::endl;
                                                         setError(;
@@ -151,14 +151,14 @@ void AuthProvider() {
                                                             localStorage.removeItem("oauth_state");
 
                                                             // Exchange the code for an access token via our Cloudflare Worker
-                                                            const auto tokenUrl = std::to_string(process.env.NEXT_PUBLIC_AUTH_WORKER_URL) + "/api/auth/callback?code=" + std::to_string(code);
+                                                            const auto tokenUrl = process.env.NEXT_PUBLIC_AUTH_WORKER_URL + "/api/auth/callback?code=" + code;
                                                             const auto response = fetch(tokenUrl);
 
                                                             if (!response.ok) {
                                                                 const auto errorData = response.json();
                                                                 throw new Error(
                                                                 errorData.error ||;
-                                                                "Failed to exchange code for token: " + std::to_string(response.status)
+                                                                "Failed to exchange code for token: " + response.status
                                                                 );
                                                             }
 
@@ -166,7 +166,7 @@ void AuthProvider() {
                                                             // Check if the token has the required scope
                                                             if (!data.scope || !data.scope.includes("read:user")) {
                                                                 throw new Error(
-                                                                "Insufficient permissions. Please authorize the application with the 'read:user' scope.",
+                                                                "Insufficient permissions. Please authorize the application with the "read:user" scope.",
                                                                 );
                                                             }
 
@@ -177,7 +177,7 @@ void AuthProvider() {
                                                             if (data.expires_at) {
                                                                 localStorage.setItem(;
                                                                 "github_token_expires_at",
-                                                                data.expires_at.toString(),
+                                                                data.std::to_string(expires_at),
                                                                 );
                                                             }
 

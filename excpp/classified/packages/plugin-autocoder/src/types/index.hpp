@@ -1,9 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
 
@@ -20,12 +23,12 @@ namespace elizaos {
 /**
  * Project type enumeration
  */
-using ProjectType = std::variant<std::string, std::string, std::string, std::string, std::string>;
+using ProjectType = std::string;
 
 /**
  * Project status
  */
-using ProjectStatus = std::variant<std::string, std::string, std::string, std::string, std::string>;
+using ProjectStatus = std::string;
 
 /**
  * WebSocket-related types

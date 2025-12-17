@@ -20,9 +20,9 @@ void formatActors() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!actors || actors.length == 0) {
-        return 'No actors available.';
+        return "No actors available.";
     }
-    return actors.map((actor) => actor.name).join(', ');
+    return actors.map((actor) => actor.name).join(", ");
 
 }
 

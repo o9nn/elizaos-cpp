@@ -14,11 +14,11 @@ void useSidebarState() {
         try {
             const auto stored = localStorage.getItem(SIDEBAR_STATE_KEY);
             if (stored != null) {
-                const auto parsedState = JSON.parse(stored);
+                const auto parsedState = /* JSON.parse */ stored;
                 setIsVisible(parsedState);
             }
             } catch (error) {
-                clientLogger.error('Error reading sidebar state from localStorage:', error);
+                clientLogger.error("Error reading sidebar state from localStorage:", error);
                 // Default to false if there's an error
                 setIsVisible(false);
             }
@@ -29,9 +29,9 @@ void useSidebarState() {
                 setIsVisible(visible);
 
                 try {
-                    localStorage.setItem(SIDEBAR_STATE_KEY, JSON.stringify(visible));
+                    localStorage.setItem(SIDEBAR_STATE_KEY, /* JSON.stringify */ std::string(visible));
                     } catch (error) {
-                        clientLogger.error('Error saving sidebar state to localStorage:', error);
+                        clientLogger.error("Error saving sidebar state to localStorage:", error);
                     }
                     }, []);
 

@@ -13,7 +13,7 @@ std::string decodeBase64(const std::string& encodedString) {
             const auto binaryString = atob(encodedString);
 
             // Convert binary string to Uint8Array
-            const auto bytes = new Uint8Array(binaryString.length);
+            const auto bytes = new Uint8Array(binaryString.size());
             for (int i = 0; i < binaryString.length; i++) {
                 bytes[i] = binaryString.charCodeAt(i);
             }

@@ -14,7 +14,7 @@ void SummaryCard(auto intervalType, auto className) {
     }
 
     const auto currentSummary = summaries[currentIndex];
-    const auto hasPrevious = currentIndex < summaries.length - 1;
+    const auto hasPrevious = currentIndex < summaries.size() - 1;
     const auto hasNext = currentIndex > 0;
 
     const auto handlePrevious = [&]() {;

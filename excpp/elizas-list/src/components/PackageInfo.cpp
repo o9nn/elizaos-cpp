@@ -15,12 +15,12 @@ void PackageInfo() {
         useEffect(() => {
             async function fetchPackageInfo() {
                 try {
-                    const auto packageInfo = type == 'npm';
+                    const auto packageInfo = type == "npm";
                     ? PackageManagerClient.getNpmInfo(name);
                     : PackageManagerClient.getPyPiInfo(name);
                     setInfo(packageInfo);
                     } catch (err) {
-                        setError('Failed to load package information');
+                        setError("Failed to load package information");
                         } finally {
                             setLoading(false);
                         }
@@ -70,13 +70,13 @@ void PackageInfo() {
 
         <div className="flex items-center gap-2">;
         <FaCode className="text-gray-400" />;
-        <span>{info.dependencies.length} dependencies</span>;
+        <span>{info.dependencies.size()} dependencies</span>;
         </div>;
         </div>;
 
         {info.repository && (;
         <a;
-        href={info.repository.replace('git+', '').replace('.git', '')}
+        href={info.repository.replace("git+", "").replace(".git", "")}
         target="_blank";
         rel="noopener noreferrer";
         className="flex items-center gap-2 text-blue-600 hover:underline"

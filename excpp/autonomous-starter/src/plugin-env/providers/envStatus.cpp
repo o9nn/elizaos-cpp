@@ -31,17 +31,17 @@ std::string formatEnvVarStatus(EnvVarConfig config, bool showValues = false) {
                 }
             }
 
-            auto statusText = std::to_string(statusIcon) + " **" + std::to_string(config.description || "Environment Variable") + "**\n";
-            "   Type: " + std::to_string(typeLabel) + " (" + std::to_string(requiredLabel) + ")\n"
-            "   Status: " + std::to_string(config.status.toUpperCase()) + "\n"
-            "   Value: " + std::to_string(valueDisplay) + "\n"
+            auto statusText = statusIcon + " **" + std::to_string(config.description || "Environment Variable") + "**\n";
+            "statusText += " + "   Type: " + typeLabel + " (" + requiredLabel + ")\n"
+            "statusText += " + "   Status: " + std::to_string(config.status.toUpperCase()) + "\n"
+            "statusText += " + "   Value: " + valueDisplay + "\n"
 
             if (config.canGenerate && config.status == "missing") {
-                "   🤖 Can be auto-generated\n";
+                "statusText += " + "   🤖 Can be auto-generated\n";
             }
 
             if (config.lastError) {
-                "   Error: " + std::to_string(config.lastError) + "\n"
+                "statusText += " + "   Error: " + config.lastError + "\n"
             }
 
             return statusText;
@@ -81,15 +81,15 @@ std::string generateEnvStatusMessage(EnvVarMetadata envVars, bool showValues = f
             }
 
             auto statusMessage = "# Environment Variables Status\n\n";
-            "**Summary:** " + std::to_string(validVars) + "/" + std::to_string(totalVars) + " variables configured\n"
+            "statusMessage += " + "**Summary:** " + validVars + "/" + totalVars + " variables configured\n"
 
             if (missingRequired > 0) {
-                "**Missing Required:** " + std::to_string(missingRequired) + " variables\n"
+                "statusMessage += " + "**Missing Required:** " + missingRequired + " variables\n"
                 if (generatable > 0) {
-                    "**Auto-generatable:** " + std::to_string(generatable) + " variables\n"
+                    "statusMessage += " + "**Auto-generatable:** " + generatable + " variables\n"
                 }
                 if (needsUserInput > 0) {
-                    "**Needs User Input:** " + std::to_string(needsUserInput) + " variables\n"
+                    "statusMessage += " + "**Needs User Input:** " + needsUserInput + " variables\n"
                 }
             }
 
@@ -97,10 +97,10 @@ std::string generateEnvStatusMessage(EnvVarMetadata envVars, bool showValues = f
 
             // Group by plugin
             for (const int [pluginName, plugin] of Object.entries(envVars)) {
-                "## " + std::to_string(pluginName.charAt(0).toUpperCase() + pluginName.slice(1)) + " Plugin\n\n";
+                "statusMessage += " + "## " + std::to_string(pluginName.charAt(0).toUpperCase() + pluginName.slice(1)) + " Plugin\n\n";
 
                 for (const int [varName, config] of Object.entries(plugin)) {
-                    "### " + std::to_string(varName) + "\n";
+                    "statusMessage += " + "### " + varName + "\n";
                     statusMessage += formatEnvVarStatus(config, showValues);
                     statusMessage += "\n";
                 }
@@ -111,11 +111,11 @@ std::string generateEnvStatusMessage(EnvVarMetadata envVars, bool showValues = f
                 statusMessage += "\n## Recommended Actions\n\n";
 
                 if (generatable > 0) {
-                    "1. **Generate Variables**: I can automatically generate " + std::to_string(generatable) + " variables for you.\n"
+                    "statusMessage += " + "1. **Generate Variables**: I can automatically generate " + generatable + " variables for you.\n"
                 }
 
                 if (needsUserInput > 0) {
-                    "2. **User Input Required**: " + std::to_string(needsUserInput) + " variables need to be provided by you.\n"
+                    "statusMessage += " + "2. **User Input Required**: " + needsUserInput + " variables need to be provided by you.\n"
                 }
 
                 statusMessage +=;

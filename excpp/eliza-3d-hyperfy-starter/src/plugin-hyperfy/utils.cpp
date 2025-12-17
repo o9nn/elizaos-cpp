@@ -4,18 +4,18 @@
 
 namespace elizaos {
 
-std::future<std::string> hashFileBuffer(Buffer buffer) {
+std::future<std::string> hashFileBuffer(const std::vector<uint8_t>& buffer) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto hashBuf = crypto.subtle.digest('SHA-256', buffer);
+    const auto hashBuf = crypto.subtle.digest("SHA-256", buffer);
     const auto hash = Array.from(new Uint8Array(hashBuf));
-    .map(b => b.tostd::to_string(16).padStart(2, '0'));
-    .join('');
+    .map(b => b.tostd::to_string(16).padStart(2, "0"));
+    .join("");
     return hash;
 
 }
 
-std::future<Buffer> convertToAudioBuffer(const std::any& speechResponse) {
+std::future<std::vector<uint8_t>> convertToAudioBuffer(const std::any& speechResponse) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -26,7 +26,7 @@ std::future<Buffer> convertToAudioBuffer(const std::any& speechResponse) {
         if (typeof speechResponse.getReader == 'function') {
             // Handle Web ReadableStream
             const auto reader = (speechResponse<Uint8Array>).getReader();
-            const std::vector<Uint8Array> chunks = [];
+            const std::vector<std::vector<uint8_t>> chunks = [];
 
             try {
                 while (true) {
@@ -44,15 +44,15 @@ std::future<Buffer> convertToAudioBuffer(const std::any& speechResponse) {
             true /* instanceof Readable check */ ||;
             (speechResponse &&;
             speechResponse.readable == true &&;
-            typeof speechResponse.pipe == 'function' &&;
-            typeof speechResponse.on == 'function');
+            typeof speechResponse.pipe == "function" &&;
+            typeof speechResponse.on == "function");
             ) {
                 // Handle Node Readable Stream
                 return new Promise<Buffer>((resolve, reject) => {;
-                    const std::vector<Buffer> chunks = [];
-                    speechResponse.on('data', (chunk) => chunks.push(Buffer.from(chunk)));
-                    speechResponse.on('end', () => resolve(Buffer.concat(chunks)));
-                    speechResponse.on('error', (err) => reject(err));
+                    const std::vector<std::vector<uint8_t>> chunks = [];
+                    speechResponse.on("data", (chunk) => chunks.push_back(Buffer.from(chunk)));
+                    speechResponse.on("end", () => resolve(Buffer.concat(chunks)));
+                    speechResponse.on("error", (err) => reject(err));
                     });
                 }
 
@@ -77,7 +77,7 @@ void getMimeTypeFromPath(auto filePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto ext = path.extname(filePath).toLowerCase();
-    return mimeTypes[ext] || 'application/octet-stream';
+    return mimeTypes[ext] || "application/octet-stream";
 
 }
 
@@ -85,7 +85,7 @@ std::future<std::vector<Action>> getHyperfyActions(IAgentRuntime runtime, Memory
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto availableActions = includeList;
-    ? runtime.actions.filter((action) => includeList.includes(action.name));
+    ? runtime.actions.filter((action) => (std::find(includeList.begin(), includeList.end(), action.name) != includeList.end()));
     : runtime.actions;
 
     const auto validated = Promise.all(;
@@ -104,8 +104,8 @@ void formatActions(const std::vector<Action>& actions) {
 
     return actions;
     .sort(() => 0.5 - Math.random());
-    "- **" + std::to_string(action.name) + "**: " + std::to_string(action.description)
-    .join('\n\n');
+    ".map((action: Action) => " + "- **" + action.name + "**: " + action.description
+    .join("\n\n");
 
 }
 

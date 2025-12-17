@@ -14,9 +14,9 @@ std::string expandTildePath(const std::string& filepath) {
     if (filepath.startsWith('~')) {
         if (filepath == '~') {
             return process.cwd();
-            } else if (filepath.startsWith('~/')) {
+            } else if (filepath.startsWith("~/")) {
                 return path.join(process.cwd(), filepath.slice(2));
-                } else if (filepath.startsWith('~~')) {
+                } else if (filepath.startsWith("~~")) {
                     // Don't expand ~~
                     return filepath;
                     } else {
@@ -63,7 +63,7 @@ std::string resolvePgliteDir(std::optional<std::string> dir, std::optional<std::
 bool isWebUIEnabled() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto isProduction = process.env.NODE_ENV == 'production';
+    const auto isProduction = process.env.NODE_ENV == "production";
     const auto uiEnabledEnv = process.env.ELIZA_UI_ENABLE;
 
     // Treat empty strings as undefined

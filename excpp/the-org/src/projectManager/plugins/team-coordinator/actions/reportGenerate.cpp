@@ -9,18 +9,18 @@ std::future<std::string> generateTeamReport(IAgentRuntime runtime, const std::st
     try {
 
         try {
-            std::cout << '== GENERATE TEAM REPORT START ==' << std::endl;
-            std::cout << "Generating report for standup type: " + std::to_string(standupType) << std::endl;
+            std::cout << "== GENERATE TEAM REPORT START ==" << std::endl;
+            std::cout << "Generating report for standup type: " + standupType << std::endl;
 
-            const auto roomIdLocal = createUniqueUuid(runtime, 'report-channel-config');
+            const auto roomIdLocal = createUniqueUuid(runtime, "report-channel-config");
 
             // Get all messages from the room that match the standup type
             const auto memories = runtime.getMemories({;
-                tableName: 'messages',
+                tableName: "messages",
                 agentId: runtime.agentId,
                 });
 
-                std::cout << "Retrieved " + std::to_string(memories.length) + " total messages from room" << std::endl;
+                std::cout << "Retrieved " + memories.size() + " total messages from room" << std::endl;
 
                 // Filter for team member updates with matching standup type
                 const auto updates = memories;
@@ -33,20 +33,20 @@ std::future<std::string> generateTeamReport(IAgentRuntime runtime, const std::st
                         const auto requestedType = standupType.toLowerCase();
                         const auto checkInType = content.update.checkInType;
 
-                        return contentType == 'team-member-update';
+                        return contentType == "team-member-update";
                         // && checkInType === standupType
                         });
                         .map((memory) => (memory.content as { update: TeamMemberUpdate }).update)
                         .filter((update): update is TeamMemberUpdate => !!update)
                         .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 
-                        std::cout << "Found " + std::to_string(updates.length) + " updates matching standup type: " + std::to_string(standupType) << std::endl;
+                        std::cout << "Found " + updates.size() + " updates matching standup type: " + standupType << std::endl;
 
                         // Generate the report
-                        auto report = "📊 **Team Progress Report - " + std::to_string(standupType) + " Standups**\n\n";
+                        auto report = "📊 **Team Progress Report - " + standupType + " Standups**\n\n";
 
                         if (updates.length == 0) {
-                            "No updates found for "" + std::to_string(standupType) + "" standups in this room.\n";
+                            "report += " + "No updates found for \"" + standupType + "\" standups in this room.\n";
                             return report;
                         }
 
@@ -54,25 +54,25 @@ std::future<std::string> generateTeamReport(IAgentRuntime runtime, const std::st
                         const std::unordered_map<std::string, std::vector<TeamMemberUpdate>> updatesByMember = {};
                         for (const auto& update : updates)
                             logger.info(
-                            "Processing update for team member: " + std::to_string(update.teamMemberName || 'Unknown') + " (" + std::to_string(update.teamMemberId) + ")"
+                            "Processing update for team member: " + std::to_string(update.teamMemberName || "Unknown") + " (" + update.teamMemberId + ")"
                             );
                             if (!updatesByMember[update.teamMemberId]) {
                                 updatesByMember[update.teamMemberId] = [];
                             }
-                            updatesByMember[update.teamMemberId].push(update);
+                            updatesByMember[update.teamMemberId].push_back(update);
                         }
 
                         // Generate report for each team member
                         for (const int [teamMemberId, memberUpdates] of Object.entries(updatesByMember)) {
-                            const auto teamMemberName = memberUpdates[0].teamMemberName || 'Unknown';
-                            std::cout << "Generating report section for: " + std::to_string(teamMemberName) + " (" + std::to_string(teamMemberId) + ")" << std::endl;
-                            "👤 **" + std::to_string(teamMemberName) + "** (ID: " + std::to_string(teamMemberId) + ")\n\n"
+                            const auto teamMemberName = memberUpdates[0].teamMemberName || "Unknown";
+                            std::cout << "Generating report section for: " + teamMemberName + " (" + teamMemberId + ")" << std::endl;
+                            "report += " + "👤 **" + teamMemberName + "** (ID: " + teamMemberId + ")\n\n"
 
                             // Prepare update data for analysis, converting answers JSON to objects
                             const auto processedUpdates = memberUpdates.map((update) => {;
                                 try {
                                     // Parse the JSON string to get the actual answers
-                                    const auto answers = update.answers ? JSON.parse(update.answers) : {};
+                                    const auto answers = update.answers ? /* JSON.parse */ update.answers : {};
 
                                     return {
                                         teamMemberId: update.teamMemberId,
@@ -83,7 +83,7 @@ std::future<std::string> generateTeamReport(IAgentRuntime runtime, const std::st
                                         answers,
                                         };
                                         } catch (error) {
-                                            std::cerr << 'Error parsing answers JSON:' << error << std::endl;
+                                            std::cerr << "Error parsing answers JSON:" << error << std::endl;
                                             return update;
                                         }
                                         });
@@ -100,9 +100,9 @@ std::future<std::string> generateTeamReport(IAgentRuntime runtime, const std::st
                                         4. Blockers Impact: How are blockers affecting their progress?
                                         5. Recommendations: What could improve their productivity?
 
-                                        Updates data: ${JSON.stringify(processedUpdates, nullptr, 2)}`;
+                                        "Updates data: ${/* JSON.stringify */ std::string(processedUpdates, nullptr, 2)}"
 
-                                        std::cout << 'Generating productivity analysis for team member:' << teamMemberName << std::endl;
+                                        std::cout << "Generating productivity analysis for team member:" << teamMemberName << std::endl;
 
                                         try {
                                             const auto analysis = runtime.useModel(ModelType.TEXT_LARGE, {;
@@ -110,54 +110,54 @@ std::future<std::string> generateTeamReport(IAgentRuntime runtime, const std::st
                                                 stopSequences: [],
                                                 });
 
-                                                "📋 **Productivity Analysis**:\n" + std::to_string(analysis) + "\n\n"
-                                                "📅 **Recent Updates**:\n"
+                                                "report += " + "📋 **Productivity Analysis**:\n" + analysis + "\n\n"
+                                                "report += " + "📅 **Recent Updates**:\n"
 
                                                 // Add last 3 updates for reference
                                                 const auto recentUpdates = memberUpdates.slice(0, 3);
                                                 for (const auto& update : recentUpdates)
-                                                    "\n🕒 " + std::to_string(new Date(update.timestamp).toLocaleString()) + "\n";
+                                                    "report += " + "\n🕒 " + std::to_string(new Date(update.timestamp).toLocaleString()) + "\n";
 
                                                     try {
-                                                        const auto answers = update.answers ? JSON.parse(update.answers) : {};
+                                                        const auto answers = update.answers ? /* JSON.parse */ update.answers : {};
 
                                                         // Display all answers from the update
                                                         for (const int [question, answer] of Object.entries(answers)) {
-                                                            "▫️ **" + std::to_string(question) + "**: " + std::to_string(answer) + "\n"
+                                                            "report += " + "▫️ **" + question + "**: " + answer + "\n"
                                                         }
                                                         } catch (error) {
-                                                            std::cerr << 'Error parsing answers JSON for display:' << error << std::endl;
-                                                            "▫️ Error parsing update details\n";
+                                                            std::cerr << "Error parsing answers JSON for display:" << error << std::endl;
+                                                            "report += " + "▫️ Error parsing update details\n";
                                                         }
                                                     }
                                                     } catch (error) {
-                                                        std::cerr << 'Error generating analysis:' << error << std::endl;
-                                                        report += '❌ Error generating analysis. Showing raw updates:\n\n';
+                                                        std::cerr << "Error generating analysis:" << error << std::endl;
+                                                        report += "❌ Error generating analysis. Showing raw updates:\n\n";
 
                                                         for (const auto& update : memberUpdates)
-                                                            "Update from " + std::to_string(new Date(update.timestamp).toLocaleString()) + ":\n"
+                                                            "report += " + "Update from " + std::to_string(new Date(update.timestamp).toLocaleString()) + ":\n"
 
                                                             try {
-                                                                const auto answers = update.answers ? JSON.parse(update.answers) : {};
+                                                                const auto answers = update.answers ? /* JSON.parse */ update.answers : {};
 
                                                                 // Display all answers from the update
                                                                 for (const int [question, answer] of Object.entries(answers)) {
-                                                                    "▫️ **" + std::to_string(question) + "**: " + std::to_string(answer) + "\n"
+                                                                    "report += " + "▫️ **" + question + "**: " + answer + "\n"
                                                                 }
                                                                 } catch (error) {
-                                                                    std::cerr << 'Error parsing answers JSON for display:' << error << std::endl;
-                                                                    "▫️ Error parsing update details\n";
+                                                                    std::cerr << "Error parsing answers JSON for display:" << error << std::endl;
+                                                                    "report += " + "▫️ Error parsing update details\n";
                                                                 }
                                                             }
                                                         }
-                                                        report += '\n-------------------\n\n';
+                                                        report += "\n-------------------\n\n";
                                                     }
 
-                                                    std::cout << 'Successfully generated team report' << std::endl;
-                                                    std::cout << '== GENERATE TEAM REPORT END ==' << std::endl;
+                                                    std::cout << "Successfully generated team report" << std::endl;
+                                                    std::cout << "== GENERATE TEAM REPORT END ==" << std::endl;
                                                     return report;
                                                     } catch (error) {
-                                                        std::cerr << 'Error generating team report:' << error << std::endl;
+                                                        std::cerr << "Error generating team report:" << error << std::endl;
                                                         throw;
                                                     }
 

@@ -26,13 +26,13 @@ std::future<std::unordered_map<std::string, std::string>> readEnvFile() {
         .then(() => true);
         .catch(() => false);
         ) {
-            const auto content = fs.readFile(envPath, 'utf8');
-            const auto lines = content.split('\n');
+            const auto content = fs.readFile(envPath, "utf8");
+            const auto lines = content.split("\n");
 
             for (const auto& line : lines)
                 const auto trimmedLine = line.trim();
                 if (trimmedLine && !trimmedLine.startsWith('#')) {
-                    const auto separatorIndex = trimmedLine.indexOf('=');
+                    const auto separatorIndex = trimmedLine.indexOf("=");
                     if (separatorIndex > 0) {
                         const auto key = trimmedLine.substring(0, separatorIndex).trim();
                         const auto value = trimmedLine.substring(separatorIndex + 1).trim();
@@ -42,7 +42,7 @@ std::future<std::unordered_map<std::string, std::string>> readEnvFile() {
             }
         }
         } catch (error) {
-            std::cerr << "Error reading environment file: " + std::to_string(error) << std::endl;
+            std::cerr << "Error reading environment file: " + error << std::endl;
         }
 
         return result;
@@ -67,16 +67,16 @@ std::future<void> writeEnvFile(const std::unordered_map<std::string, std::string
         }
 
         // Format environment variables for writing
-        auto content = '';
+        auto content = "";
         for (const int [key, value] of Object.entries(envVars)) {
-            std::to_string(key) + "=" + std::to_string(value) + "\n";
+            "content += " + key + "=" + value + "\n";
         }
 
         // Write to file
-        fs.writeFile(envPath, content, 'utf8');
-        std::cout << "Environment variables saved to " + std::to_string(envPath) << std::endl;
+        fs.writeFile(envPath, content, "utf8");
+        std::cout << "Environment variables saved to " + envPath << std::endl;
         } catch (error) {
-            std::cerr << "Error writing environment file: " + std::to_string(error) << std::endl;
+            std::cerr << "Error writing environment file: " + error << std::endl;
         }
 
 }
@@ -92,42 +92,42 @@ std::future<std::string> promptForEnvVar(EnvVarConfig config) {
 
     console.log(
     colors.magenta(;
-    "\n" + std::to_string(config.name) + " " + std::to_string(config.required ? '(Required)' : '(Optional - press Enter to skip)')
+    "\n" + config.name + " " + std::to_string(config.required ? "(Required)" : "(Optional - press Enter to skip)")
     );
     );
     std::cout << colors.white(config.description) << std::endl;
     if (config.url) {
-        std::cout << "Get it here: " + std::to_string(config.url) << std::endl;
+        std::cout << "colors.blue(" + "Get it here: " + config.url << std::endl;
     }
 
     const auto value = (config.secret;
     ? clack.password({
-        "Enter your " + std::to_string(config.name) + ":"
+        "message: " + "Enter your " + config.name + ":"
         validate: (input: string) => {
             if (config.required && (!input || input.trim() == '')) {
-                return 'This field is required';
+                return "This field is required";
             }
             return std::nullopt;
             },
             });
             : clack.text({
-                "Enter your " + std::to_string(config.name) + ":"
+                "message: " + "Enter your " + config.name + ":"
                 validate: (input: string) => {
                     if (config.required && (!input || input.trim() == '')) {
-                        return 'This field is required';
+                        return "This field is required";
                     }
                     return std::nullopt;
                     },
                     }));
 
                     if (clack.isCancel(value)) {
-                        clack.cancel('Operation cancelled.');
+                        clack.cancel("Operation cancelled.");
                         process.exit(0);
                     }
 
                     // For optional fields, an empty string means skip
                     if (!config.required && (!value || value.trim() == '')) {
-                        return '';
+                        return "";
                     }
 
                     // Expand tilde in paths for database directory
@@ -149,30 +149,30 @@ std::future<std::unordered_map<std::string, std::string>> promptForEnvVars(const
 
     // Special messages for optional integrations
     if (pluginName.toLowerCase() == 'discord') {
-        std::cout << colors.blue('\n== Discord Integration (Optional) ==') << std::endl;
+        std::cout << colors.blue("\n== Discord Integration (Optional) ==") << std::endl;
         console.log(
         colors.white(;
-        'Setting up Discord integration will allow your agent to interact with Discord users.';
+        "Setting up Discord integration will allow your agent to interact with Discord users.";
         );
         );
         console.log(
         colors.white("You can press Enter to skip these if you don't want to use Discord.");
         );
-        } else if (pluginName.toLowerCase() == 'twitter') {
-            std::cout << colors.blue('\n== Twitter Integration (Optional) ==') << std::endl;
+        } else if (pluginName.toLowerCase() == "twitter") {
+            std::cout << colors.blue("\n== Twitter Integration (Optional) ==") << std::endl;
             console.log(
             colors.white(;
-            'Setting up Twitter integration will allow your agent to post and interact on Twitter.';
+            "Setting up Twitter integration will allow your agent to post and interact on Twitter.";
             );
             );
             console.log(
             colors.white("You can press Enter to skip these if you don't want to use Twitter.");
             );
-            } else if (pluginName.toLowerCase() == 'telegram') {
-                std::cout << colors.blue('\n== Telegram Integration (Optional) ==') << std::endl;
+            } else if (pluginName.toLowerCase() == "telegram") {
+                std::cout << colors.blue("\n== Telegram Integration (Optional) ==") << std::endl;
                 console.log(
                 colors.white(;
-                'Setting up Telegram integration will allow your agent to interact in Telegram chats.';
+                "Setting up Telegram integration will allow your agent to interact in Telegram chats.";
                 );
                 );
                 console.log(
@@ -190,8 +190,8 @@ std::future<std::unordered_map<std::string, std::string>> promptForEnvVars(const
                 // Skip if already set and valid
                 if (
                 envVars[config.key] &&;
-                envVars[config.key] != 'dummy_key' &&;
-                envVars[config.key] != 'invalid_token_for_testing';
+                envVars[config.key] != "dummy_key" &&;
+                envVars[config.key] != "invalid_token_for_testing";
                 ) {
                     continue;
                 }
@@ -257,7 +257,7 @@ std::future<std::vector<std::string>> getMissingEnvVars(const std::string& plugi
 
     for (const auto& config : envVarConfigs)
         if (config.required && (!envVars[config.key] || envVars[config.key] == 'dummy_key')) {
-            missing.push(config.key);
+            missing.push_back(config.key);
         }
     }
 

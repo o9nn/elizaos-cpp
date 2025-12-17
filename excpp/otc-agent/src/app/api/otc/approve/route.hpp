@@ -1,10 +1,14 @@
 #pragma once
+#include <algorithm>
+#include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -15,7 +19,7 @@ namespace elizaos {
 
 
 // Helper to safely read from contract bypassing viem's strict authorizationList requirement
-using ReadContractFn = std::function<std::future<unknown>(unknown)>;
+using ReadContractFn = std::function<std::future<std::any>(std::any)>;
 
 std::future<void> POST(NextRequest request);;
 

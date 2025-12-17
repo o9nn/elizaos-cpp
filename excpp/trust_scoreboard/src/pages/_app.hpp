@@ -1,14 +1,17 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".components/ContentContainer.hpp"
-#include ".components/Notification.hpp"
-#include ".components/nav-element/NavBar.hpp"
-#include ".contexts/ContextProvider.hpp"
+#include "components/ContentContainer.hpp"
+#include "components/Notification.hpp"
+#include "components/nav-element/NavBar.hpp"
+#include "contexts/ContextProvider.hpp"
 
 namespace elizaos {
 

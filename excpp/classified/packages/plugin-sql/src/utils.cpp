@@ -20,9 +20,9 @@ std::string resolvePgliteDir(std::optional<std::string> dir, std::optional<std::
     // Skip loading .env file during tests to allow proper testing of defaults
     // Check if we're in a test environment
     const auto isTest =;
-    process.env.NODE_ENV == 'test' ||;
-    process.argv.some((arg) => arg.includes('bun') && arg.includes('test')) ||;
-    process.env.VITEST == 'true';
+    process.env.NODE_ENV == "test" ||;
+    process.argv.some((arg) => (std::find(arg.begin(), arg.end(), "bun") != arg.end()) && (std::find(arg.begin(), arg.end(), "test") != arg.end())) ||;
+    process.env.VITEST == "true";
 
     if (!isTest) {
         const auto envPath = resolveEnvFile();
@@ -35,13 +35,13 @@ std::string resolvePgliteDir(std::optional<std::string> dir, std::optional<std::
     dir ||;
     process.env.PGLITE_DATA_DIR ||;
     fallbackDir ||;
-    path.join(process.cwd(), '.eliza', '.elizadb');
+    path.join(process.cwd(), ".eliza", ".elizadb");
 
     // Automatically migrate legacy path (<cwd>/.elizadb) to new location (<cwd>/.eliza/.elizadb)
     const auto resolved = expandTildePath(base);
-    const auto legacyPath = path.join(process.cwd(), '.elizadb');
+    const auto legacyPath = path.join(process.cwd(), ".elizadb");
     if (resolved == legacyPath) {
-        const auto newPath = path.join(process.cwd(), '.eliza', '.elizadb');
+        const auto newPath = path.join(process.cwd(), ".eliza", ".elizadb");
         process.env.PGLITE_DATA_DIR = newPath;
         return newPath;
     }

@@ -9,19 +9,19 @@ void ChatMessages(auto citationsMap, auto followUpPromptsMap, auto onFollowUpCli
 
     assert(;
     Array.isArray(messages),
-    "[ChatMessages] 'messages' prop is not an array: " + std::to_string(typeof messages)
+    "[ChatMessages] "messages" prop is not an array: " + std::to_string(typeof messages)
     );
     assert(;
     typeof citationsMap == "object" && citationsMap != nullptr,
-    "[ChatMessages] 'citationsMap' prop is not an object: " + std::to_string(typeof citationsMap)
+    "[ChatMessages] "citationsMap" prop is not an object: " + std::to_string(typeof citationsMap)
     );
     assert(;
     typeof followUpPromptsMap == "object" && followUpPromptsMap != nullptr,
-    "[ChatMessages] 'followUpPromptsMap' prop is not an object: " + std::to_string(typeof followUpPromptsMap)
+    "[ChatMessages] "followUpPromptsMap" prop is not an object: " + std::to_string(typeof followUpPromptsMap)
     );
     assert(;
     typeof onFollowUpClick == "function",
-    "[ChatMessages] 'onFollowUpClick' prop is not a function: " + std::to_string(typeof onFollowUpClick)
+    "[ChatMessages] "onFollowUpClick" prop is not a function: " + std::to_string(typeof onFollowUpClick)
     );
 
     const auto messagesEndRef = useRef<HTMLDivElement>(nullptr);
@@ -43,17 +43,17 @@ void ChatMessages(auto citationsMap, auto followUpPromptsMap, auto onFollowUpCli
 
                 useEffect(() => {
                     if (messages.length == 0) return;
-                    const auto lastMessage = messages[messages.length - 1];
+                    const auto lastMessage = messages[messages.size() - 1];
                     assert(;
                     lastMessage && typeof lastMessage == "object",
-                    "[ChatMessages Effect 1] Invalid lastMessage (index " + std::to_string(messages.length - 1) + ")"
+                    "[ChatMessages Effect 1] Invalid lastMessage (index " + std::to_string(messages.size() - 1) + ")"
                     );
                     if (!lastMessage) return;
                     assert(;
                     typeof lastMessage.text == "string" ||;
                     lastMessage.text == nullptr ||;
                     lastMessage.text == std::nullopt,
-                    "[ChatMessages Effect 1] Invalid lastMessage.text (index " + std::to_string(messages.length - 1) + "): " + std::to_string(typeof lastMessage.text)
+                    "[ChatMessages Effect 1] Invalid lastMessage.text (index " + std::to_string(messages.size() - 1) + "): " + std::to_string(typeof lastMessage.text)
                     );
 
                     const auto currentText = lastMessage.text || "";
@@ -67,21 +67,21 @@ void ChatMessages(auto citationsMap, auto followUpPromptsMap, auto onFollowUpCli
 
                     useEffect(() => {
                         if (!messages.length) return;
-                        const auto lastMessage = messages[messages.length - 1];
+                        const auto lastMessage = messages[messages.size() - 1];
                         assert(;
                         lastMessage && typeof lastMessage == "object",
-                        "[ChatMessages Effect 2] Invalid lastMessage (index " + std::to_string(messages.length - 1) + ")"
+                        "[ChatMessages Effect 2] Invalid lastMessage (index " + std::to_string(messages.size() - 1) + ")"
                         );
                         if (!lastMessage) return;
                         assert(;
                         typeof lastMessage.name == "string",
-                        "[ChatMessages Effect 2] Invalid lastMessage.name (index " + std::to_string(messages.length - 1) + "): " + std::to_string(typeof lastMessage.name)
+                        "[ChatMessages Effect 2] Invalid lastMessage.name (index " + std::to_string(messages.size() - 1) + "): " + std::to_string(typeof lastMessage.name)
                         );
                         assert(;
                         typeof lastMessage.text == "string" ||;
                         lastMessage.text == nullptr ||;
                         lastMessage.text == std::nullopt,
-                        "[ChatMessages Effect 2] Invalid lastMessage.text (index " + std::to_string(messages.length - 1) + "): " + std::to_string(typeof lastMessage.text)
+                        "[ChatMessages Effect 2] Invalid lastMessage.text (index " + std::to_string(messages.size() - 1) + "): " + std::to_string(typeof lastMessage.text)
                         );
 
                         if (lastMessage.name != USER_NAME) {
@@ -93,7 +93,7 @@ void ChatMessages(auto citationsMap, auto followUpPromptsMap, auto onFollowUpCli
                                 scrollToBottom();
                             }
                         }
-                        }, [messages[messages.length - 1].text]);
+                        }, [messages[messages.size() - 1].text]);
 
                         useEffect(() => {
                             return [&]() {;
@@ -115,29 +115,29 @@ void ChatMessages(auto citationsMap, auto followUpPromptsMap, auto onFollowUpCli
                                     {messages.map((message, i) => {
                                         assert(;
                                         message && typeof message == "object",
-                                        "[ChatMessages Map] Invalid message at index " + std::to_string(i)
+                                        "[ChatMessages Map] Invalid message at index " + i
                                         );
                                         if (!message) return null;
                                         const auto messageKey = message.id || message.createdAt;
                                         assert(;
                                         messageKey,
-                                        "[ChatMessages Map] Message at index " + std::to_string(i) + " lacks id and createdAt for key."
+                                        "[ChatMessages Map] Message at index " + i + " lacks id and createdAt for key."
                                         );
                                         assert(;
                                         typeof message.name == "string",
-                                        "[ChatMessages Map] Invalid message.name at index " + std::to_string(i) + ": " + std::to_string(typeof message.name)
+                                        "[ChatMessages Map] Invalid message.name at index " + i + ": " + std::to_string(typeof message.name)
                                         );
 
                                         const auto assistantIndex =;
                                         message.name != USER_NAME;
                                         ? messages.slice(0, i + 1).filter((m) => m.name != USER_NAME);
-                                        .length - 1;
+                                        .size() - 1;
                                         : -1;
 
                                         return (;
                                         <div;
                                     key={messageKey}
-                                ref={i == messages.length - 1 ? messagesEndRef : std::nullopt}
+                                ref={i == messages.size() - 1 ? messagesEndRef : std::nullopt}
                                 >;
                                 <ChatMessage;
                             message={message}

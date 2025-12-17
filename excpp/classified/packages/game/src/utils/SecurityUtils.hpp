@@ -1,10 +1,14 @@
 #pragma once
+#include <algorithm>
+#include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -24,7 +28,7 @@ public:
     static std::future<std::string> encryptData(const std::string& data, const std::string& _key);
     static std::future<std::string> decryptData(const std::string& encryptedData, const std::string& _key);
     static std::string sanitizeHtml(const std::string& html);
-    static bool validateApiResponse(unknown response);
+    static bool validateApiResponse(const std::any& response);
     static std::future<std::string> hashString(const std::string& str);
     static bool isSecureContext();
     static void storeApiKey(const std::string& provider, const std::string& key);
@@ -44,7 +48,7 @@ public:
     static bool validateUuid(const std::string& uuid);
     static std::string sanitizeInput(const std::string& input);
     static  validateUserInput(const std::string& input);
-    static  validateConfigValue(const std::string& key, unknown value);
+    static  validateConfigValue(const std::string& key, const std::any& value);
     static  validateFileUpload(File file);
 };
 
@@ -53,12 +57,12 @@ public:
  */
 class SecurityLogger {
 public:
-    static void info(const std::string& message, std::optional<unknown> details);
-    static void warn(const std::string& message, std::optional<unknown> details);
-    static void error(const std::string& message, std::optional<unknown> details);
+    static void info(const std::string& message, std::optional<std::any> details);
+    static void warn(const std::string& message, std::optional<std::any> details);
+    static void error(const std::string& message, std::optional<std::any> details);
     static Array< getLogs(double limit = 100);
     static void clearLogs();
-    static void addLog(const std::string& level, const std::string& message, std::optional<unknown> details);
+    static void addLog(const std::string& level, const std::string& message, std::optional<std::any> details);
 
 private:
     double timestamp_;

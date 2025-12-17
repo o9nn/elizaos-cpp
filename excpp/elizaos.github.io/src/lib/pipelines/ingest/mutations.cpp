@@ -26,7 +26,7 @@ std::future<void> ensureUsersExist(std::optional<std::unordered_map<std::string,
     .map(([username, { avatarUrl }]) => ({
         username,
         avatarUrl: avatarUrl || "",
-        isBot: botUsers.includes(username) ? 1 : 0,
+        isBot: (std::find(botUsers.begin(), botUsers.end(), username) != botUsers.end()) ? 1 : 0,
         lastUpdated: new UTCDate().toISOString(),
         }));
 
@@ -38,8 +38,8 @@ std::future<void> ensureUsersExist(std::optional<std::unordered_map<std::string,
         .onConflictDoUpdate({
             target: users.username,
             set: {
-                "COALESCE(excluded.avatar_url, " + std::to_string(users.avatarUrl) + ")"
-                "excluded.is_bot"
+                "avatarUrl: sql" + "COALESCE(excluded.avatar_url, " + users.avatarUrl + ")"
+                "isBot: sql" + "excluded.is_bot"
                 },
                 });
 
@@ -69,9 +69,9 @@ std::future<std::unordered_map<std::string, std::string>> ensureLabelsExist(std:
         .onConflictDoUpdate({
             target: labels.id,
             set: {
-                "excluded.name"
-                "excluded.color"
-                "excluded.description"
+                "name: sql" + "excluded.name"
+                "color: sql" + "excluded.color"
+                "description: sql" + "excluded.description"
                 },
                 });
 

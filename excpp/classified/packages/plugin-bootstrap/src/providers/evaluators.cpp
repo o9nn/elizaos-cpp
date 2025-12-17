@@ -7,7 +7,7 @@ namespace elizaos {
 void formatEvaluatorNames(const std::vector<Evaluator>& evaluators) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return "'" + std::to_string(evaluator.name) + "'";
+    return "evaluators.map((evaluator: Evaluator) => " + """ + evaluator.name + """;
 
 }
 
@@ -33,7 +33,7 @@ void formatEvaluatorExamples(const std::vector<Evaluator>& evaluators) {
 
                 const auto formattedMessages = example.messages;
                 .map((message: ActionExample) => {
-                    auto messageString = std::to_string(message.name) + ": " + std::to_string(message.content.text);
+                    auto messageString = message.name + ": " + message.content.text;
                     exampleNames.forEach((name, index) => {
                         const auto placeholder = "{{name" + std::to_string(index + 1) + "}}";
                         messageString = messageString.replaceAll(placeholder, name);
@@ -41,17 +41,17 @@ void formatEvaluatorExamples(const std::vector<Evaluator>& evaluators) {
                         return (;
                         messageString +;
                         (message.content.action || message.content.actions;
-                        " (" + std::to_string(message.content.action || message.content.actions.join(', ')) + ")";
-                        : '')
+                        "? " + " (" + std::to_string(message.content.action || message.content.actions.join(", ")) + ")";
+                        : "")
                         );
                         });
-                        .join('\n');
+                        .join("\n");
 
-                        return "Prompt:\n" + std::to_string(formattedPrompt) + "\n\nMessages:\n" + std::to_string(formattedMessages) + "\n\nOutcome:\n" + std::to_string(formattedOutcome);
+                        return "Prompt:\n" + formattedPrompt + "\n\nMessages:\n" + formattedMessages + "\n\nOutcome:\n" + formattedOutcome;
                         });
-                        .join('\n\n');
+                        .join("\n\n");
                         });
-                        .join('\n\n');
+                        .join("\n\n");
 
 }
 
@@ -59,8 +59,8 @@ void formatEvaluators(const std::vector<Evaluator>& evaluators) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return evaluators;
-    "'" + std::to_string(evaluator.name) + ": " + std::to_string(evaluator.description) + "'"
-    .join(',\n');
+    ".map((evaluator: Evaluator) => " + """ + evaluator.name + ": " + evaluator.description + """
+    .join(",\n");
 
 }
 

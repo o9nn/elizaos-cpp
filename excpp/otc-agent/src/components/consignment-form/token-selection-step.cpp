@@ -30,17 +30,17 @@ std::optional<std::vector<TokenWithBalance>> getTokenCache(const std::string& wa
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
-        const auto cacheKey = "token-cache:" + std::to_string(chain) + ":" + std::to_string(walletAddress);
+        const auto cacheKey = "token-cache:" + chain + ":" + walletAddress;
         const auto cached = localStorage.getItem(cacheKey);
         if (!cached) return null;
 
-        const CachedTokens data = JSON.parse(cached);
+        const CachedTokens data = /* JSON.parse */ cached;
         // Check if cache is still valid (15 minutes)
         if (Date.now() - data.cachedAt >= TOKEN_CACHE_TTL_MS) {
             localStorage.removeItem(cacheKey);
             return nullptr;
         }
-        std::cout << "[TokenSelection] Using cached tokens for " + std::to_string(chain) << std::endl;
+        std::cout << "[TokenSelection] Using cached tokens for " + chain << std::endl;
         return data.tokens;
         } catch {
             return nullptr;
@@ -52,14 +52,14 @@ void setTokenCache(const std::string& walletAddress, const std::string& chain, c
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
-        const auto cacheKey = "token-cache:" + std::to_string(chain) + ":" + std::to_string(walletAddress);
+        const auto cacheKey = "token-cache:" + chain + ":" + walletAddress;
         const CachedTokens data = {;
             tokens,
             walletAddress,
             chain,
             cachedAt: Date.now(),
             };
-            localStorage.setItem(cacheKey, JSON.stringify(data));
+            localStorage.setItem(cacheKey, /* JSON.stringify */ std::string(data));
             } catch {
                 // Ignore storage errors
             }
@@ -71,7 +71,7 @@ void clearTokenCache(std::optional<std::string> walletAddress, std::optional<std
 
     try {
         if (walletAddress && chain) {
-            "token-cache:" + std::to_string(chain) + ":" + std::to_string(walletAddress)
+            "localStorage.removeItem(" + "token-cache:" + chain + ":" + walletAddress
             } else {
                 // Clear all token caches
                 const auto keys = Object.keys(localStorage).filter((k) =>;
@@ -108,11 +108,11 @@ LoadingState loadingReducer(LoadingState state, LoadingAction action) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     switch (action.type) {
-        case "START_LOADING":
+        // case "START_LOADING":
         return { isLoading: true, hasLoadedOnce: false }
-        case "FINISH_LOADING":
+        // case "FINISH_LOADING":
         return { isLoading: false, hasLoadedOnce: true }
-        default:
+        // default:
         return state;
     }
 
@@ -166,7 +166,7 @@ void TokenSelectionStep(auto updateFormData, auto onNext, auto onTokenSelect) {
                     // Detect if we should search by address
                     const auto searchIsAddress = useMemo(() => {;
                         const auto trimmed = searchQuery.trim();
-                        return trimmed.length > 0 && isContractAddress(trimmed);
+                        return trimmed.size() > 0 && isContractAddress(trimmed);
                         }, [searchQuery]);
 
                         // Check if the searched address is already in wallet
@@ -220,14 +220,14 @@ void TokenSelectionStep(auto updateFormData, auto onNext, auto onTokenSelect) {
 
                                                 try {
                                                     const auto response = fetch(;
-                                                    "/api/token-lookup?address=" + std::to_string(encodeURIComponent(trimmed)) + "&chain=" + std::to_string(chain)
+                                                    "/api/token-lookup?address=" + std::to_string(encodeURIComponent(trimmed)) + "&chain=" + chain
                                                     );
                                                     const auto data = response.json();
 
                                                     if (data.success && data.token) {
                                                         const auto token = data.token;
                                                         setSearchedToken({
-                                                            "token-" + std::to_string(token.chain) + "-" + std::to_string(token.address)
+                                                            "id: " + "token-" + token.chain + "-" + token.address
                                                             symbol: token.symbol,
                                                             name: token.name,
                                                             contractAddress: token.address,
@@ -312,7 +312,7 @@ void TokenSelectionStep(auto updateFormData, auto onNext, auto onTokenSelect) {
                                                                             const std::vector<TokenWithBalance> tokensWithBalances = scannedTokens;
                                                                             .filter((t) => BigInt(t.balance) > 0n);
                                                                             .map((t) => ({
-                                                                                "token-" + std::to_string(t.chain) + "-" + std::to_string(t.address)
+                                                                                "id: " + "token-" + t.chain + "-" + t.address
                                                                                 symbol: t.symbol,
                                                                                 name: t.name,
                                                                                 contractAddress: t.address,
@@ -450,7 +450,7 @@ void TokenSelectionStep(auto updateFormData, auto onNext, auto onTokenSelect) {
                                                                                     <div className="flex flex-col h-full min-h-0 space-y-3">;
                                                                                     <div className="flex items-center justify-between">;
                                                                                     <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                                                                                    Select a token to list for OTC trading ({tokens.length} tokens);
+                                                                                    Select a token to list for OTC trading ({tokens.size()} tokens);
                                                                                     </p>;
                                                                                     <button;
                                                                                 onClick={handleRefresh}
@@ -459,7 +459,7 @@ void TokenSelectionStep(auto updateFormData, auto onNext, auto onTokenSelect) {
                                                                             title="Refresh token list";
                                                                             >;
                                                                             <RefreshCw;
-                                                                        "w-3.5 h-3.5 " + std::to_string(isRefreshing ? "animate-spin" : "")
+                                                                        "className={" + "w-3.5 h-3.5 " + std::to_string(isRefreshing ? "animate-spin" : "")
                                                                         />;
                                                                     {isRefreshing ? "Refreshing..."  = "Refresh"}
                                                                     </button>;
@@ -501,11 +501,11 @@ void TokenSelectionStep(auto updateFormData, auto onNext, auto onTokenSelect) {
                                             </p>;
                                             <div;
                                         onClick={() => handleTokenClick(searchedToken)}
-                                        "p-4 rounded-xl border cursor-pointer transition-all hover:scale-[1.01] hover:shadow-md border-brand-300 dark:border-brand-700 bg-brand-500/5 " + std::to_string()
+                                        "className={" + "p-4 rounded-xl border cursor-pointer transition-all hover:scale-[1.01] hover:shadow-md border-brand-300 dark:border-brand-700 bg-brand-500/5 " + std::to_string()
                                             formData.tokenId == searchedToken.id;
                                             ? "ring-2 ring-brand-500/20";
                                             : ""
-                                        }`}
+                                        "}";
                                         >;
                                         <div className="flex items-center gap-3">;
                                         {searchedToken.logoUrl ? (;
@@ -561,20 +561,20 @@ void TokenSelectionStep(auto updateFormData, auto onNext, auto onTokenSelect) {
         ) : addressSearchError ? (
         <p className="text-sm text-brand-600 dark:text-brand-400 text-center py-4">
         {addressSearchError == "Token not found";
-        "No token found at " + std::to_string(searchQuery.slice(0, 8)) + "..." + std::to_string(searchQuery.slice(-4));
+        "? " + "No token found at " + std::to_string(searchQuery.slice(0, 8)) + "..." + std::to_string(searchQuery.slice(-4));
         : addressSearchError}
         </p>;
         ) : nullptr}
         </div>;
         )}
 
-        {filteredTokens.length == 0 && searchQuery && !searchIsAddress && (;
+        {filteredTokens.size() == 0 && searchQuery && !searchIsAddress && (;
         <p className="text-sm text-zinc-500 text-center py-4">;
         No tokens found matching &quot;{searchQuery}&quot;
         </p>;
         )}
 
-        {filteredTokens.length == 0 &&;
+        {filteredTokens.size() == 0 &&;
         searchQuery &&;
         searchIsAddress &&;
         addressFoundInWallet && (;
@@ -584,7 +584,7 @@ void TokenSelectionStep(auto updateFormData, auto onNext, auto onTokenSelect) {
         )}
 
         {/* Divider when showing both searched token and wallet tokens */}
-        {searchedToken && !addressFoundInWallet && filteredTokens.length > 0 && (;
+        {searchedToken && !addressFoundInWallet && filteredTokens.size() > 0 && (;
         <div className="flex items-center gap-3 py-1">;
         <div className="flex-1 h-px bg-zinc-200 dark:bg-zinc-700" />
         <span className="text-xs text-zinc-400">Your wallet tokens</span>;
@@ -597,11 +597,11 @@ void TokenSelectionStep(auto updateFormData, auto onNext, auto onTokenSelect) {
         <div;
         key={token.id}
         onClick={() => handleTokenClick(token)}
-        "p-4 rounded-xl border cursor-pointer transition-all hover:scale-[1.01] hover:shadow-md " + std::to_string()
+        "className={" + "p-4 rounded-xl border cursor-pointer transition-all hover:scale-[1.01] hover:shadow-md " + std::to_string()
             formData.tokenId == token.id;
             ? "border-brand-500 bg-brand-500/5 ring-2 ring-brand-500/20";
             : "border-zinc-200 dark:border-zinc-700 hover:border-brand-300 dark:hover:border-brand-700"
-        }`}
+        "}";
         >;
         <div className="flex items-center gap-3">;
         {token.logoUrl ? (;

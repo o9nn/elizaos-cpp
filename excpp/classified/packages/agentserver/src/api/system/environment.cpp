@@ -12,14 +12,14 @@ std::future<EnvVars> parseEnvFile(const std::string& filePath) {
             return {}
         }
 
-        const auto content = fs.readFile(filePath, 'utf-8');
+        const auto content = fs.readFile(filePath, "utf-8");
         // Handle empty file case gracefully
         if (content.trim() == '') {
             return {}
         }
         return dotenv.parse(content);
         } catch (error: any) {
-            std::cerr << "Error parsing .env file: " + std::to_string(error.message) << std::endl;
+            std::cerr << "Error parsing .env file: " + error.message << std::endl;
             return {}
         }
 
@@ -29,8 +29,8 @@ std::string serializeEnvObject(const std::unordered_map<std::string, std::string
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return Object.entries(envObj);
-    std::to_string(key) + "=" + std::to_string(val || '');
-    .join('\n\n');
+    ".map(([key, val]) => " + key + "=" + std::to_string(val || "");
+    .join("\n\n");
 
 }
 
@@ -49,7 +49,7 @@ express::Router createEnvironmentRouter() {
         const auto router = express.Router();
 
         // Get local environment variables
-        (router).get('/local', async (_req: express.Request, res: express.Response) => {
+        (router).get("/local", async (_req: express.Request, res: express.Response) => {
             try {
                 const auto localEnvPath = getLocalEnvPath();
                 if (!localEnvPath) {
@@ -65,12 +65,12 @@ express::Router createEnvironmentRouter() {
                         data: localEnvs,
                         });
                         } catch (error) {
-                            std::cerr << '[ENVS GET] Error retrieving local envs' << error << std::endl;
+                            std::cerr << "[ENVS GET] Error retrieving local envs" << error << std::endl;
                             res.status(500).json({
                                 success: false,
                                 error: {
-                                    code: 'FETCH_ERROR',
-                                    message: 'Failed to retrieve local envs',
+                                    code: "FETCH_ERROR",
+                                    message: "Failed to retrieve local envs",
                                     details: true /* instanceof check */ ? error.message : std::to_string(error),
                                     },
                                     });
@@ -78,7 +78,7 @@ express::Router createEnvironmentRouter() {
                                 });
 
                                 // Update local environment variables
-                                (router).post('/local', async (req: express.Request, res: express.Response) => {
+                                (router).post("/local", async (req: express.Request, res: express.Response) => {
                                     try {
                                         const auto { content } = req.body;
 
@@ -86,8 +86,8 @@ express::Router createEnvironmentRouter() {
                                             res.status(400).json({
                                                 success: false,
                                                 error: {
-                                                    code: 'INVALID_INPUT',
-                                                    message: 'Missing or invalid "content" in request body',
+                                                    code: "INVALID_INPUT",
+                                                    message: "Missing or invalid "content" in request body",
                                                     },
                                                     });
                                                 }
@@ -98,19 +98,19 @@ express::Router createEnvironmentRouter() {
                                                 }
 
                                                 const auto envString = serializeEnvObject(content);
-                                                writeFileSync(localEnvPath, envString, 'utf-8');
+                                                writeFileSync(localEnvPath, envString, "utf-8");
 
                                                 res.json({
                                                     success: true,
-                                                    message: 'Local env updated',
+                                                    message: "Local env updated",
                                                     });
                                                     } catch (error) {
-                                                        std::cerr << '[ENVS POST] Error updating local envs' << error << std::endl;
+                                                        std::cerr << "[ENVS POST] Error updating local envs" << error << std::endl;
                                                         res.status(500).json({
                                                             success: false,
                                                             error: {
-                                                                code: 'UPDATE_ERROR',
-                                                                message: 'Failed to update local envs',
+                                                                code: "UPDATE_ERROR",
+                                                                message: "Failed to update local envs",
                                                                 details: true /* instanceof check */ ? error.message : std::to_string(error),
                                                                 },
                                                                 });

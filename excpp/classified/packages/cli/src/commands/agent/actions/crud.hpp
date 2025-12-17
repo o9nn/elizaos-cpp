@@ -1,14 +1,17 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include "..shared.hpp"
-#include ".utils.hpp"
 #include "elizaos/core.hpp"
+#include "shared.hpp"
+#include "utils.hpp"
 
 namespace elizaos {
 
@@ -28,7 +31,7 @@ namespace elizaos {
  * @param response - The fetch Response object
  * @param defaultMessage - Default error message if JSON parsing fails
  */
-std::future<never> handleErrorResponse(Response response, const std::string& defaultMessage);
+std::future<void> handleErrorResponse(const std::string& response, const std::string& defaultMessage);
 
 /**
  * Get command implementation - retrieves and displays agent details

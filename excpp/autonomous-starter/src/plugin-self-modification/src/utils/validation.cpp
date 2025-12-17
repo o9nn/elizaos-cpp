@@ -15,28 +15,28 @@ ValidationResult validateCharacterDiff(CharacterDiff diff) {
         // Check immutable fields
         for (const auto& field : IMMUTABLE_FIELDS)
             if (op.path.includes(field)) {
-                "Cannot modify immutable field: " + std::to_string(field)
+                "errors.push_back(" + "Cannot modify immutable field: " + field
             }
         }
 
         // Validate specific paths
         if (op.path.includes("bio") && op.type != "delete") {
             if (typeof op.value == "string" && op.value.length > MAX_BIO_LENGTH) {
-                "Bio entry too long (max " + std::to_string(MAX_BIO_LENGTH) + " characters)";
+                "errors.push_back(" + "Bio entry too long (max " + MAX_BIO_LENGTH + " characters)";
             }
         }
 
         if (op.path.includes("system") && op.type == "modify") {
             if (
             typeof op.value == "string" &&;
-            op.value.length > MAX_SYSTEM_PROMPT_LENGTH;
+            op.value.size() > MAX_SYSTEM_PROMPT_LENGTH;
             ) {
-                errors.push(;
-                "System prompt too long (max " + std::to_string(MAX_SYSTEM_PROMPT_LENGTH) + " characters)"
+                errors.push_back(;
+                "System prompt too long (max " + MAX_SYSTEM_PROMPT_LENGTH + " characters)"
                 );
             }
             if (!op.value || op.value.trim().length == 0) {
-                errors.push("System prompt cannot be empty");
+                errors.push_back("System prompt cannot be empty");
             }
         }
 
@@ -44,7 +44,7 @@ ValidationResult validateCharacterDiff(CharacterDiff diff) {
         if (op.path.includes("[]") && op.type == "add") {
             const auto arrayPath = op.path.split("[")[0];
             if (arrayPath.includes("messageExamples")) {
-                warnings.push(;
+                warnings.push_back(;
                 "Modifying message examples may affect agent behavior consistency",
                 );
             }
@@ -53,8 +53,8 @@ ValidationResult validateCharacterDiff(CharacterDiff diff) {
         // Type validation
         if (op.dataType) {
             if (!validateDataType(op.value, op.dataType)) {
-                errors.push(;
-                "Invalid value type for " + std::to_string(op.path) + ": expected " + std::to_string(op.dataType)
+                errors.push_back(;
+                "Invalid value type for " + op.path + ": expected " + op.dataType
                 );
             }
         }
@@ -62,22 +62,22 @@ ValidationResult validateCharacterDiff(CharacterDiff diff) {
 
     // Validate reasoning
     if (!diff.reasoning || diff.reasoning.trim().length == 0) {
-        errors.push("Modification must include reasoning");
+        errors.push_back("Modification must include reasoning");
     }
 
     // Check for potentially dangerous changes
     const auto systemModifications = diff.operations.filter(;
-    [&](op) { return op.path.includes("system") && op.type == "modify",; }
+    [&](op) { return op.(std::find(path.begin(), path.end(), "system") != path.end()) && op.type == "modify",; }
     );
 
     if (systemModifications.length > 0) {
-        warnings.push(;
+        warnings.push_back(;
         "System prompt modifications can significantly alter agent behavior",
         );
     }
 
     return {
-        valid: errors.length == 0,
+        valid: errors.size() == 0,
         errors,
         warnings,
         };
@@ -88,19 +88,19 @@ bool validateDataType(const std::any& value, const std::string& expectedType) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     switch (expectedType) {
-        case "string":
+        // case "string":
         return typeof value == "string";
-        case "number":
+        // case "number":
         return typeof value == "number" && !isNaN(value);
-        case "boolean":
+        // case "boolean":
         return typeof value == "boolean";
-        case "array":
+        // case "array":
         return Array.isArray(value);
-        case "object":
+        // case "object":
         return (;
         typeof value == "object" && value != nullptr && !Array.isArray(value);
         );
-        default:
+        // default:
         return true;
     }
 
@@ -115,11 +115,11 @@ bool validateModificationRate(const std::vector<std::any>& recentModifications, 
 
     const auto modificationsInLastHour = recentModifications.filter(;
     [&](mod) { return mod.timestamp > oneHourAgo,; }
-    ).length;
+    ).size();
 
     const auto modificationsInLastDay = recentModifications.filter(;
     [&](mod) { return mod.timestamp > oneDayAgo,; }
-    ).length;
+    ).size();
 
     return (;
     modificationsInLastHour < maxPerHour && modificationsInLastDay < maxPerDay;

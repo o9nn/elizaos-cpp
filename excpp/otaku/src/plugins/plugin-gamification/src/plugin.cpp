@@ -4,11 +4,11 @@
 
 namespace elizaos {
 
-std::future<void> handleGetLeaderboard(Request req, Response res, IAgentRuntime runtime) {
+std::future<void> handleGetLeaderboard(const std::string& req, const std::string& res, IAgentRuntime runtime) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
-        const auto scope = (req.query.scope as 'weekly' | 'all_time') || 'weekly';
+        const auto scope = (req.query.scope as "weekly" | "all_time") || "weekly";
 
         // Validate and limit input
         const auto rawLimit = parseInt(req.query.limit) || 50;
@@ -18,12 +18,12 @@ std::future<void> handleGetLeaderboard(Request req, Response res, IAgentRuntime 
 
         // Validate scope
         if (scope != 'weekly' && scope != 'all_time') {
-            return res.status(400).json({ error: 'Invalid scope. Must be "weekly" or "all_time"' });
+            return res.status(400).json({ error: "Invalid scope. Must be "weekly" or "all_time"" });
         }
 
-        const auto gamificationService = runtime.getService('gamification');
+        const auto gamificationService = runtime.getService("gamification");
         if (!gamificationService) {
-            return res.status(503).json({ error: 'Gamification service not available' });
+            return res.status(503).json({ error: "Gamification service not available" });
         }
 
         const auto entries = gamificationService.getLeaderboard(scope, limit);
@@ -40,56 +40,56 @@ std::future<void> handleGetLeaderboard(Request req, Response res, IAgentRuntime 
             limit,
             });
             } catch (error) {
-                std::cerr << { error } << '[GamificationPlugin] Error fetching leaderboard' << std::endl;
-                res.status(500).json({ error: 'Error fetching leaderboard' });
+                std::cerr << { error } << "[GamificationPlugin] Error fetching leaderboard" << std::endl;
+                res.status(500).json({ error: "Error fetching leaderboard" });
             }
 
 }
 
-std::future<void> handleGetUserSummary(Request req, Response res, IAgentRuntime runtime) {
+std::future<void> handleGetUserSummary(const std::string& req, const std::string& res, IAgentRuntime runtime) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
         const auto userId = req.query.userId | std::nullopt;
 
         if (!userId) {
-            return res.status(400).json({ error: 'userId is required' });
+            return res.status(400).json({ error: "userId is required" });
         }
 
-        const auto gamificationService = runtime.getService('gamification');
+        const auto gamificationService = runtime.getService("gamification");
         if (!gamificationService) {
-            return res.status(503).json({ error: 'Gamification service not available' });
+            return res.status(503).json({ error: "Gamification service not available" });
         }
 
         const auto summary = gamificationService.getUserSummary(userId);
         res.json(summary);
         } catch (error) {
-            std::cerr << { error } << '[GamificationPlugin] Error fetching user summary' << std::endl;
-            res.status(500).json({ error: 'Error fetching user summary' });
+            std::cerr << { error } << "[GamificationPlugin] Error fetching user summary" << std::endl;
+            res.status(500).json({ error: "Error fetching user summary" });
         }
 
 }
 
-std::future<void> handleGetReferralCode(Request req, Response res, IAgentRuntime runtime) {
+std::future<void> handleGetReferralCode(const std::string& req, const std::string& res, IAgentRuntime runtime) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
         const auto userId = req.query.userId | std::nullopt;
 
         if (!userId) {
-            return res.status(400).json({ error: 'userId is required' });
+            return res.status(400).json({ error: "userId is required" });
         }
 
-        const auto referralService = runtime.getService('referral');
+        const auto referralService = runtime.getService("referral");
         if (!referralService) {
-            return res.status(503).json({ error: 'Referral service not available' });
+            return res.status(503).json({ error: "Referral service not available" });
         }
 
         const auto { code, stats } = referralService.getOrCreateCode(userId);
-        "https://otaku.so/?ref=" + std::to_string(code)
+        "res.json({ code, stats, referralLink: " + "https://otaku.so/?ref=" + code
         } catch (error) {
-            std::cerr << { error } << '[GamificationPlugin] Error fetching referral code' << std::endl;
-            res.status(500).json({ error: 'Error fetching referral code' });
+            std::cerr << { error } << "[GamificationPlugin] Error fetching referral code" << std::endl;
+            res.status(500).json({ error: "Error fetching referral code" });
         }
 
 }

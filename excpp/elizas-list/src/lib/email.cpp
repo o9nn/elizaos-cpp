@@ -10,9 +10,9 @@ std::future<void> sendProjectNotification(const std::string& to, const std::any&
     const auto html = render(ProjectNotification({ project }));
 
     transporter.sendMail({
-        from: '"ELIZAS LIST" <notifications@elizaslist.dev>',
+        from: ""ELIZAS LIST" <notifications@elizaslist.dev>",
         to,
-        "New Project: " + std::to_string(project.name)
+        "subject: " + "New Project: " + project.name
         html,
         });
 

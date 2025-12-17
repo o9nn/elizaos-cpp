@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::future<void> POST(Request request, RouteContext ctx) {
+std::future<void> POST(const std::string& request, RouteContext ctx) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { roomId } = ctx.params;
@@ -64,7 +64,7 @@ std::future<void> POST(Request request, RouteContext ctx) {
 
 }
 
-std::future<void> GET(Request request, RouteContext ctx) {
+std::future<void> GET(const std::string& request, RouteContext ctx) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { roomId } = ctx.params;
@@ -96,7 +96,7 @@ std::future<void> GET(Request request, RouteContext ctx) {
             const auto simple = filteredMessages.map((msg) => {;
                 auto parsedContent = msg.content;
                 if (typeof msg.content == "string") {
-                    parsedContent = JSON.parse(msg.content);
+                    parsedContent = /* JSON.parse */ msg.content;
                 }
                 return {
                     id: msg.id,
@@ -114,7 +114,7 @@ std::future<void> GET(Request request, RouteContext ctx) {
                         messages: simple,
                         hasMore: false,
                         lastTimestamp:
-                        simple.length > 0 ? simple[simple.length - 1].createdAt : Date.now(),
+                        simple.size() > 0 ? simple[simple.size() - 1].createdAt : Date.now(),
                         },
                         { headers: { "Cache-Control": "no-store" } },
                         );

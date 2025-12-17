@@ -1,11 +1,14 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <chrono>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -49,11 +52,11 @@ struct PluginConfigurationRequest {
 struct ConfigurationDialog {
     std::string id;
     std::string pluginName;
-    std::variant<"pending", "in_progress", "completed", "cancelled"> status;
+    std::string status;
     PluginConfigurationRequest request;
     std::optional<std::string> currentVariable;
-    Date startedAt;
-    std::optional<Date> completedAt;
+    std::chrono::system_clock::time_point startedAt;
+    std::optional<std::chrono::system_clock::time_point> completedAt;
 };
 
 struct PluginState {
@@ -70,7 +73,7 @@ struct PluginState {
     std::optional<double> loadedAt;
     std::optional<double> unloadedAt;
     std::optional<std::string> version;
-    std::optional<std::variant<"unconfigured", "partial", "complete">> configurationStatus;
+    std::optional<std::string> configurationStatus;
     std::optional<std::vector<PluginEnvironmentVariable>> requiredConfiguration;
     std::optional<std::vector<std::string>> configurationErrors;
 };

@@ -1,9 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "elizaos/core.hpp"
 
@@ -22,7 +25,7 @@ namespace elizaos {
  * @param {number} [bitsPerSample=16] - The number of bits per sample (default is 16).
  * @returns {Buffer} The WAV file header as a Buffer object.
  */
-Buffer getWavHeader(double audioLength, double sampleRate, auto channelCount, auto bitsPerSample);
+std::vector<uint8_t> getWavHeader(double audioLength, double sampleRate, auto channelCount, auto bitsPerSample);
 
 /**
  * Prepends a WAV header to a readable stream of audio data.

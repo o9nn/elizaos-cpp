@@ -8,7 +8,7 @@ std::future<ValidationResult> validateEnvVar(const std::string& varName, const s
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
-        std::cout << "Validating environment variable " + std::to_string(varName) + " of type " + std::to_string(type) << std::endl;
+        std::cout << "Validating environment variable " + varName + " of type " + type << std::endl;
 
         if (!value || value.trim() == "") {
             return { isValid: false, error: "Environment variable value is empty" }
@@ -34,14 +34,14 @@ std::future<ValidationResult> validateEnvVar(const std::string& varName, const s
 
         // Default validation - just check if value exists
         logger.warn(
-        "No specific validation strategy found for " + std::to_string(varName) + ", using basic validation"
+        "No specific validation strategy found for " + varName + ", using basic validation"
         );
         return {
             isValid: true,
             details: "Basic validation passed - value is present",
             };
             } catch (error) {
-                std::cerr << "Error validating environment variable " + std::to_string(varName) + ":" << error << std::endl;
+                std::cerr << "Error validating environment variable " + varName + ":" << error << std::endl;
                 return {
                     isValid: false,
                     error: "Validation failed due to unexpected error",

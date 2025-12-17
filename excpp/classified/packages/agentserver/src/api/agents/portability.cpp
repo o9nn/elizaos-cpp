@@ -14,19 +14,19 @@ express::Router createAgentPortabilityRouter(const std::unordered_map<UUID, IAge
         * Export agent data to ZIP file
         * @route POST /agents/:agentId/export
         */
-        router.post('/:agentId/export', async (req, res) => {
+        router.post("/:agentId/export", async (req, res) => {
             const auto { agentId } = req.params;
 
             try {
                 // Validate agent ID
                 if (!validateUuid(agentId)) {
-                    return sendError(res, 400, 'INVALID_AGENT_ID', 'Invalid agent ID format');
+                    return sendError(res, 400, "INVALID_AGENT_ID", "Invalid agent ID format");
                 }
 
                 // Check if agent exists
                 const auto runtime = agents.get(agentId);
                 if (!runtime) {
-                    return sendError(res, 404, 'AGENT_NOT_FOUND', 'Agent not found');
+                    return sendError(res, 404, "AGENT_NOT_FOUND", "Agent not found");
                 }
 
                 // Create export service
@@ -40,18 +40,18 @@ express::Router createAgentPortabilityRouter(const std::unordered_map<UUID, IAge
                         });
 
                         // Set response headers
-                        const auto timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-                        const auto filename = "agent-export-" + std::to_string(agentId) + "-" + std::to_string(timestamp) + ".zip";
+                        const auto timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+                        const auto filename = "agent-export-" + agentId + "-" + timestamp + ".zip";
 
-                        res.setHeader('Content-Type', 'application/zip');
-                        "attachment; filename="" + std::to_string(filename) + """;
-                        res.setHeader('X-Agent-Id', agentId);
+                        res.setHeader("Content-Type", "application/zip");
+                        "res.setHeader("Content-Disposition", " + "attachment; filename=\"" + filename + "\"";
+                        res.setHeader("X-Agent-Id", agentId);
 
                         // Stream the ZIP file to the client
                         zipStream.pipe(res);
 
                         // Clean up after stream ends
-                        zipStream.on('end', async () => {
+                        zipStream.on("end", async () => {
                             exportService.cleanup();
                             });
                             } catch (error) {
@@ -59,8 +59,8 @@ express::Router createAgentPortabilityRouter(const std::unordered_map<UUID, IAge
                                 throw;
                             }
                             } catch (error) {
-                                std::cerr << '[AgentPortability] Export failed:' << error << std::endl;
-                                return sendError(res, 500, 'EXPORT_FAILED', 'Failed to export agent data');
+                                std::cerr << "[AgentPortability] Export failed:" << error << std::endl;
+                                return sendError(res, 500, "EXPORT_FAILED", "Failed to export agent data");
                             }
                             });
 
@@ -68,23 +68,23 @@ express::Router createAgentPortabilityRouter(const std::unordered_map<UUID, IAge
                             * Import agent data from ZIP file
                             * @route POST /agents/:agentId/import
                             */
-                            router.post('/:agentId/import', uploadZip.single('archive'), async (req, res) => {
+                            router.post("/:agentId/import", uploadZip.single("archive"), async (req, res) => {
                                 const auto { agentId } = req.params;
 
                                 try {
                                     // Validate agent ID
                                     if (!validateUuid(agentId)) {
-                                        return sendError(res, 400, 'INVALID_AGENT_ID', 'Invalid agent ID format');
+                                        return sendError(res, 400, "INVALID_AGENT_ID", "Invalid agent ID format");
                                     }
 
                                     // Check if file was uploaded
                                     if (!req.file) {
-                                        return sendError(res, 400, 'NO_FILE', 'No ZIP file provided');
+                                        return sendError(res, 400, "NO_FILE", "No ZIP file provided");
                                     }
 
                                     // Parse options from request
-                                    const auto overwrite = req.body.overwrite == 'true' || req.body.overwrite == true;
-                                    const auto skipValidation = req.body.skipValidation == 'true' || req.body.skipValidation == true;
+                                    const auto overwrite = req.body.overwrite == "true" || req.body.overwrite == true;
+                                    const auto skipValidation = req.body.skipValidation == "true" || req.body.skipValidation == true;
 
                                     // Show warning if not overwriting and agent exists
                                     if (!overwrite) {
@@ -93,8 +93,8 @@ express::Router createAgentPortabilityRouter(const std::unordered_map<UUID, IAge
                                             return sendError(;
                                             res,
                                             409,
-                                            'AGENT_EXISTS',
-                                            'Agent already exists. Set overwrite=true to replace existing agent data.';
+                                            "AGENT_EXISTS",
+                                            "Agent already exists. Set overwrite=true to replace existing agent data.";
                                             );
                                         }
                                     }
@@ -113,7 +113,7 @@ express::Router createAgentPortabilityRouter(const std::unordered_map<UUID, IAge
                                             if (result.success && overwrite) {
                                                 const auto runtime = agents.get(agentId);
                                                 if (runtime) {
-                                                    std::cout << "[AgentPortability] Reloading agent " + std::to_string(agentId) + " after import" << std::endl;
+                                                    std::cout << "[AgentPortability] Reloading agent " + agentId + " after import" << std::endl;
                                                     // TODO: Implement agent reload functionality
                                                     // This would involve stopping the current runtime and starting a new one
                                                     // with the imported data
@@ -123,7 +123,7 @@ express::Router createAgentPortabilityRouter(const std::unordered_map<UUID, IAge
                                             importService.cleanup();
 
                                             return sendSuccess(res, {;
-                                                message: 'Agent imported successfully',
+                                                message: "Agent imported successfully",
                                                 result,
                                                 });
                                                 } catch (error) {
@@ -131,22 +131,22 @@ express::Router createAgentPortabilityRouter(const std::unordered_map<UUID, IAge
                                                     throw;
                                                 }
                                                 } catch (error) {
-                                                    std::cerr << '[AgentPortability] Import failed:' << error << std::endl;
+                                                    std::cerr << "[AgentPortability] Import failed:" << error << std::endl;
 
                                                     // Provide more specific error messages
                                                     if (error instanceof Error) {
                                                         if (error.message.includes('ZIP file too large')) {
-                                                            return sendError(res, 413, 'FILE_TOO_LARGE', error.message);
+                                                            return sendError(res, 413, "FILE_TOO_LARGE", error.message);
                                                         }
                                                         if (error.message.includes('Invalid export') || error.message.includes('manifest')) {
-                                                            return sendError(res, 400, 'INVALID_ARCHIVE', error.message);
+                                                            return sendError(res, 400, "INVALID_ARCHIVE", error.message);
                                                         }
                                                         if (error.message.includes('Unsupported export version')) {
-                                                            return sendError(res, 400, 'VERSION_MISMATCH', error.message);
+                                                            return sendError(res, 400, "VERSION_MISMATCH", error.message);
                                                         }
                                                     }
 
-                                                    return sendError(res, 500, 'IMPORT_FAILED', 'Failed to import agent data');
+                                                    return sendError(res, 500, "IMPORT_FAILED", "Failed to import agent data");
                                                 }
                                                 });
 
@@ -154,18 +154,18 @@ express::Router createAgentPortabilityRouter(const std::unordered_map<UUID, IAge
                                                 * Validate a ZIP file without importing
                                                 * @route POST /agents/:agentId/import/validate
                                                 */
-                                                router.post('/:agentId/import/validate', uploadZip.single('archive'), async (req, res) => {
+                                                router.post("/:agentId/import/validate", uploadZip.single("archive"), async (req, res) => {
                                                     const auto { agentId } = req.params;
 
                                                     try {
                                                         // Validate agent ID
                                                         if (!validateUuid(agentId)) {
-                                                            return sendError(res, 400, 'INVALID_AGENT_ID', 'Invalid agent ID format');
+                                                            return sendError(res, 400, "INVALID_AGENT_ID", "Invalid agent ID format");
                                                         }
 
                                                         // Check if file was uploaded
                                                         if (!req.file) {
-                                                            return sendError(res, 400, 'NO_FILE', 'No ZIP file provided');
+                                                            return sendError(res, 400, "NO_FILE", "No ZIP file provided");
                                                         }
 
                                                         // Create import service for validation only
@@ -173,16 +173,16 @@ express::Router createAgentPortabilityRouter(const std::unordered_map<UUID, IAge
 
                                                         try {
                                                             // Use a custom validation-only method
-                                                            const auto AdmZip = (import('adm-zip')).default;
+                                                            const auto AdmZip = (import("adm-zip")).default;
                                                             const auto zip = new AdmZip(req.file.buffer);
 
                                                             // Check manifest
-                                                            const auto manifestEntry = zip.getEntry('manifest.json');
+                                                            const auto manifestEntry = zip.getEntry("manifest.json");
                                                             if (!manifestEntry) {
                                                                 throw std::runtime_error('Invalid export: manifest.json not found');
                                                             }
 
-                                                            const auto manifest = JSON.parse(zip.readAsText(manifestEntry));
+                                                            const auto manifest = /* JSON.parse */ zip.readAsText(manifestEntry);
 
                                                             // Validate structure
                                                             const auto validationResult = {;
@@ -194,34 +194,34 @@ express::Router createAgentPortabilityRouter(const std::unordered_map<UUID, IAge
 
                                                                 // Check version compatibility
                                                                 if (manifest.version != '1.0.0') {
-                                                                    validationResult.warnings.push(;
-                                                                    "Export version " + std::to_string(manifest.version) + " may not be fully compatible";
+                                                                    validationResult.warnings.push_back(;
+                                                                    "Export version " + manifest.version + " may not be fully compatible";
                                                                     );
                                                                 }
 
                                                                 // Check for all expected files
                                                                 const auto expectedFiles = [;
-                                                                'database/agent.json',
-                                                                'database/entities.json',
-                                                                'database/worlds.json',
-                                                                'database/rooms.json',
-                                                                'database/participants.json',
-                                                                'database/memories.json',
-                                                                'database/relationships.json',
-                                                                'database/tasks.json',
-                                                                'database/server_agents.json',
+                                                                "database/agent.json",
+                                                                "database/entities.json",
+                                                                "database/worlds.json",
+                                                                "database/rooms.json",
+                                                                "database/participants.json",
+                                                                "database/memories.json",
+                                                                "database/relationships.json",
+                                                                "database/tasks.json",
+                                                                "database/server_agents.json",
                                                                 ];
 
                                                                 for (const auto& file : expectedFiles)
                                                                     if (!zip.getEntry(file)) {
-                                                                        "Missing file: " + std::to_string(file)
+                                                                        "validationResult.warnings.push_back(" + "Missing file: " + file
                                                                     }
                                                                 }
 
                                                                 importService.cleanup();
 
                                                                 return sendSuccess(res, {;
-                                                                    message: 'ZIP file validation complete',
+                                                                    message: "ZIP file validation complete",
                                                                     result: validationResult,
                                                                     });
                                                                     } catch (error) {
@@ -229,12 +229,12 @@ express::Router createAgentPortabilityRouter(const std::unordered_map<UUID, IAge
                                                                         throw;
                                                                     }
                                                                     } catch (error) {
-                                                                        std::cerr << '[AgentPortability] Validation failed:' << error << std::endl;
+                                                                        std::cerr << "[AgentPortability] Validation failed:" << error << std::endl;
                                                                         return sendError(;
                                                                         res,
                                                                         400,
-                                                                        'VALIDATION_FAILED',
-                                                                        true /* instanceof check */ ? error.message : 'Validation failed'
+                                                                        "VALIDATION_FAILED",
+                                                                        true /* instanceof check */ ? error.message : "Validation failed"
                                                                         );
                                                                     }
                                                                     });

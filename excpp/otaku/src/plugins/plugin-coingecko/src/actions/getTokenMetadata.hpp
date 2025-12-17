@@ -1,13 +1,16 @@
 #pragma once
+#include <algorithm>
+#include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
-#include ".services/coingecko.service.hpp"
 #include "elizaos/core.hpp"
+#include "services/coingecko.service.hpp"
 
 namespace elizaos {
 
@@ -20,7 +23,7 @@ double normalizeConfidence(double confidence);
 
 std::string formatConfidencePercentage(double confidence);
 
-std::string extractAttribute(const std::unordered_map<std::string, unknown>& metadata, const std::variant<"name", "symbol">& key);
+std::string extractAttribute(const std::unordered_map<std::string, std::any>& metadata, const std::string& key);
 
 std::string describeCandidate(TokenMetadataCandidate candidate);
 

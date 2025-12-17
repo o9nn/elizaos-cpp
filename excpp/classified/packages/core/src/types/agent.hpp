@@ -1,9 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
 
@@ -21,7 +24,7 @@ struct MessageExample {
     Content content;
 };
 
-using TemplateType = std::variant<, std::string, ((options: { state: State, std::function<void()>>;
+using TemplateType = std::function<void()>;
 
 /**
  * Configuration for an agent's character, defining its personality, knowledge, and capabilities.

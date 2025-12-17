@@ -10,7 +10,7 @@ std::future<void> upgradePlugin(const std::string& pluginPath, UpgradePluginOpti
 
         try {
             // Lazy import to avoid loading dependencies until needed
-            const auto { PluginMigrator } = import('@/src/utils/upgrade/migrator.js');
+            const auto { PluginMigrator } = import("@/src/utils/upgrade/migrator.js");
 
             // Set API key if provided
             if (opts.apiKey) {
@@ -19,8 +19,8 @@ std::future<void> upgradePlugin(const std::string& pluginPath, UpgradePluginOpti
 
             // Check for API key
             if (!process.env.ANTHROPIC_API_KEY) {
-                std::cerr << 'ANTHROPIC_API_KEY is required for plugin upgrade.' << std::endl;
-                std::cout << '\nPlease set ANTHROPIC_API_KEY environment variable or use --api-key option.' << std::endl;
+                std::cerr << "ANTHROPIC_API_KEY is required for plugin upgrade." << std::endl;
+                std::cout << "\nPlease set ANTHROPIC_API_KEY environment variable or use --api-key option." << std::endl;
                 process.exit(1);
             }
 
@@ -35,12 +35,12 @@ std::future<void> upgradePlugin(const std::string& pluginPath, UpgradePluginOpti
                 const MigrationResult result = migrator.migrate(pluginPath);
 
                 if (result.success) {
-                    std::cout << "\n" + std::to_string(emoji.success('Plugin successfully upgraded!')) << std::endl;
-                    std::cout << "   Branch: " + std::to_string(result.branchName) << std::endl;
-                    std::cout << "   Location: " + std::to_string(result.repoPath) << std::endl;
+                    std::cout << "\n" + std::to_string(emoji.success("Plugin successfully upgraded!")) << std::endl;
+                    std::cout << "   Branch: " + result.branchName << std::endl;
+                    std::cout << "   Location: " + result.repoPath << std::endl;
                     std::cout << "\nThe upgraded plugin has been copied to your current directory." << std::endl;
                     std::cout << "\nNext steps:" << std::endl;
-                    std::cout << "1. cd " + std::to_string(path.basename(result.repoPath || '')) << std::endl;
+                    std::cout << "1. cd " + std::to_string(path.basename(result.repoPath || "")) << std::endl;
                     std::cout << "2. Review the changes" << std::endl;
                     std::cout << "3. Test the upgraded plugin thoroughly" << std::endl;
                     std::cout << "4. Push to GitHub and create a pull request when ready" << std::endl;

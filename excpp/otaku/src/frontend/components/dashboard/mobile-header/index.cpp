@@ -8,7 +8,7 @@ void MobileHeader() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { currentUser } = useCDPWallet();
-    const auto userId = currentUser.userId || '';
+    const auto userId = currentUser.userId || "";
     const auto [isSheetOpen, setIsSheetOpen] = React.useState(false);
 
     return (;

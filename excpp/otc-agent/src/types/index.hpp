@@ -1,10 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -23,7 +25,7 @@ namespace elizaos {
 
 // CHAIN TYPES
 
-using EVMChain = std::variant<"base", "bsc">;
+using EVMChain = std::string;
 
 // OTC CONTRACT TYPES
 
@@ -160,7 +162,7 @@ struct OTCConsignment {
     std::optional<std::vector<std::string>> allowedBuyers;
     double maxPriceVolatilityBps;
     double maxTimeToExecuteSeconds;
-    std::variant<"active", "paused", "depleted", "withdrawn"> status;
+    std::string status;
     std::optional<std::string> contractConsignmentId;
     Chain chain;
     double createdAt;
@@ -182,7 +184,7 @@ struct ConsignmentDeal {
     double lockupDays;
     double executedAt;
     std::optional<std::string> offerId;
-    std::variant<"pending", "executed", "failed"> status;
+    std::string status;
 };
 
 // USER SESSION TYPES
@@ -194,7 +196,7 @@ struct UserSessionMemory {
     std::string id;
     std::string entityId;
     std::string walletAddress;
-    std::variant<"evm", "solana"> chainFamily;
+    std::string chainFamily;
     std::optional<std::string> preferredChain;
     double lastActiveAt;
     double createdAt;

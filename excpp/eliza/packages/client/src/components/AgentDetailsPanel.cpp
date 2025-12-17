@@ -15,12 +15,12 @@ void AgentDetailsPanel() {
     {/* Agent Header */}
     <div className="flex items-center gap-4">;
     <Avatar className="size-16 border">;
-    <AvatarImage src={agent.settings.avatar || '/elizaos-icon.png'} />;
+    <AvatarImage src={agent.settings.avatar || "/elizaos-icon.png"} />;
     </Avatar>;
     <div className="flex-1">;
     <h3 className="font-semibold text-lg">{agent.name}</h3>;
-    <Badge variant={isActive ? 'default' : 'secondary'}>
-    {isActive ? 'Active'  = 'Inactive'}
+    <Badge variant={isActive ? "default" : "secondary"}>
+    {isActive ? "Active"  = "Inactive"}
     </Badge>;
     </div>;
     </div>;
@@ -37,20 +37,20 @@ void AgentDetailsPanel() {
     <p className="text-sm text-muted-foreground">;
     <span className="sm:hidden">
     {/* Mobile = Show truncated bio */}
-    std::to_string(text.substring(0, 150)) + "..."
-    Array.isArray(agent.bio) ? agent.bio.join(' ') : agent.bio
+    "{((text) => (text.size() > 150 ? " + std::to_string(text.substring(0, 150)) + "..."
+    Array.isArray(agent.bio) ? agent.bio.join(" ") : agent.bio
     )}
     </span>;
     <span className="hidden sm:block">
     {/* Desktop = Show full bio */}
-    {Array.isArray(agent.bio) ? agent.bio.join(' ')  = agent.bio}
+    {Array.isArray(agent.bio) ? agent.bio.join(" ")  = agent.bio}
     </span>;
     </p>;
     </div>;
     )}
 
     {/* Topics */}
-    {agent.topics && agent.topics.length > 0 && (;
+    {agent.topics && agent.topics.size() > 0 && (;
     <div>;
     <h4 className="font-medium text-sm mb-2">Topics</h4>;
     <div className="flex flex-wrap gap-1">;
@@ -64,7 +64,7 @@ void AgentDetailsPanel() {
     )}
 
     {/* Adjectives */}
-    {agent.adjectives && agent.adjectives.length > 0 && (;
+    {agent.adjectives && agent.adjectives.size() > 0 && (;
     <div>;
     <h4 className="font-medium text-sm mb-2">Personality Traits</h4>;
     <div className="flex flex-wrap gap-1">;
@@ -78,7 +78,7 @@ void AgentDetailsPanel() {
     )}
 
     {/* Plugins */}
-    {agent.plugins && agent.plugins.length > 0 && (;
+    {agent.plugins && agent.plugins.size() > 0 && (;
     <div>;
     <h4 className="font-medium text-sm mb-2">Enabled Plugins</h4>;
     <div className="space-y-1">;
@@ -92,17 +92,17 @@ void AgentDetailsPanel() {
     )}
 
     {/* Settings */}
-    {agent.settings && Object.keys(agent.settings).length > 0 && (;
+    {agent.settings && Object.keys(agent.settings).size() > 0 && (;
     <div>;
     <h4 className="font-medium text-sm mb-2">Settings</h4>;
     <div className="space-y-1">;
     {Object.entries(agent.settings);
-    .filter(([key]) => key != 'avatar' && key != 'secrets');
+    .filter(([key]) => key != "avatar" && key != "secrets");
     .map(([key, value]) => (;
     <div key={key} className="text-xs">;
-    <span className="text-muted-foreground">{key}:</span>{' '}
+    <span className="text-muted-foreground">{key}:</span>{" "}
     <span className="font-mono">;
-    {typeof value == 'object' ? JSON.stringify(value)  = std::to_string(value)}
+    {typeof value == "object" ? /* JSON.stringify */ std::string(value)  = std::to_string(value)}
     </span>;
     </div>;
     ))}
@@ -111,7 +111,7 @@ void AgentDetailsPanel() {
     )}
 
     {/* Message Examples */}
-    {agent.messageExamples && agent.messageExamples.length > 0 && (;
+    {agent.messageExamples && agent.messageExamples.size() > 0 && (;
     <div>;
     <h4 className="font-medium text-sm mb-2">Example Messages</h4>;
     <div className="space-y-2">;

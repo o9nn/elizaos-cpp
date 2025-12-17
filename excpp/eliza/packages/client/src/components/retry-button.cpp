@@ -13,7 +13,7 @@ void RetryButton() {
     <Button;
     variant="ghost";
     size="icon";
-    "text-muted-foreground " + std::to_string(className);
+    "className={" + "text-muted-foreground " + className;
     onClick={onClick}
     >;
     <RotateCcw className="size-3" />;

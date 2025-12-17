@@ -65,7 +65,7 @@ std::future<void> GET(NextRequest request) {
             runReconciliationTask();
             const auto duration = Date.now() - startTime;
 
-            std::cout << "[Reconciliation Cron] Completed in " + std::to_string(duration) + "ms" << std::endl;
+            std::cout << "[Reconciliation Cron] Completed in " + duration + "ms" << std::endl;
 
             return NextResponse.json({;
                 success: true,

@@ -1,14 +1,17 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".agent/problem-statement.hpp"
-#include ".environment/deployment.hpp"
-#include ".environment/swe-env.hpp"
+#include "agent/problem-statement.hpp"
+#include "environment/deployment.hpp"
+#include "environment/swe-env.hpp"
 #include "types.hpp"
 
 namespace elizaos {
@@ -83,7 +86,7 @@ private:
 /**
  * Convert SWE-bench instance to SimpleBatchInstance
  */
-SimpleBatchInstance fromSWEBench(const std::unordered_map<std::string, unknown>& sweBenchInstance);
+SimpleBatchInstance fromSWEBench(const std::unordered_map<std::string, std::any>& sweBenchInstance);
 
 /**
  * SWE-bench instances

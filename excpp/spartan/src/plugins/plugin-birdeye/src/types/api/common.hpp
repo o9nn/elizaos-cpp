@@ -1,9 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
 
@@ -13,11 +16,11 @@ namespace elizaos {
 // Manual refinement required for production use
 
 
-using BirdeyeApiParams = std::variant<, DefiPriceParams, DefiMultiPriceParams, DefiHistoryPriceParams, HistoricalPriceUnixParams, OHLCVParams, PriceVolumeParams, MultiPriceVolumeParams, PairTradesParams, OHLCVPairParams, PairOverviewMultiParams, PairOverviewSingleParams, TokenMarketSearchParams, TokenTradesParams, TokenSecurityParams, TokenOverviewParams, TokenCreationInfoParams, TokenListV2Params, TokenMetadataMultiParams, TokenTradeDataMultiParams, GainersLosersParams, TraderTransactionsSeekParams, WalletPortfolioParams, WalletTokenBalanceParams, WalletTransactionHistoryParams, BaseQuoteParams, TokenHoldersParams, MintBurnParams, TopTradersParams, AllMarketsParams, NewListingParams, TokenMetadataSingleParams, TokenMarketDataParams, TokenTradeDataSingleParams, WalletPortfolioMultichainParams, WalletTransactionHistoryMultichainParams, WalletSimulationParams, std::unordered_map<std::string, never>>;
+using BirdeyeApiParams = std::variant<, DefiPriceParams, DefiMultiPriceParams, DefiHistoryPriceParams, HistoricalPriceUnixParams, OHLCVParams, PriceVolumeParams, MultiPriceVolumeParams, PairTradesParams, OHLCVPairParams, PairOverviewMultiParams, PairOverviewSingleParams, TokenMarketSearchParams, TokenTradesParams, TokenSecurityParams, TokenOverviewParams, TokenCreationInfoParams, TokenListV2Params, TokenMetadataMultiParams, TokenTradeDataMultiParams, GainersLosersParams, TraderTransactionsSeekParams, WalletPortfolioParams, WalletTokenBalanceParams, WalletTransactionHistoryParams, BaseQuoteParams, TokenHoldersParams, MintBurnParams, TopTradersParams, AllMarketsParams, NewListingParams, TokenMetadataSingleParams, TokenMarketDataParams, TokenTradeDataSingleParams, WalletPortfolioMultichainParams, WalletTransactionHistoryMultichainParams, WalletSimulationParams, std::unordered_map<std::string, void>>;
 
 using BirdeyeApiResponse = BirdeyeApiResponseWrapper<any>;
 
-using TimeInterval = std::variant<, "1m", "3m", "5m", "15m", "30m", "1H", "2H", "4H", "6H", "8H", "12H", "1D", "3D", "1W", "1M", "30m", "1h", "2h", "4h", "6h", "8h", "12h", "24h">;
+using TimeInterval = ;
 
 struct TokenTradeData {
     std::string address;

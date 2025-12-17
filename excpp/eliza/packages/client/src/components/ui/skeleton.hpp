@@ -1,9 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -14,6 +17,11 @@ namespace elizaos {
 
 
 void Skeleton();
+
+
+} // namespace elizaos
+="cypress" />
+/// <reference path="../../../cypress/support/types.d.ts" />
 
 
 } // namespace elizaos

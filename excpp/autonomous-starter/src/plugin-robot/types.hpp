@@ -1,10 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -26,11 +28,11 @@ struct ScreenObject {
 };
 
 struct ScreenActionStep {
-    std::variant<"move", "click", "type"> action;
+    std::string action;
     std::optional<double> x;
     std::optional<double> y;
     std::optional<std::string> text;
-    std::optional<std::variant<"left", "right", "middle">> button;
+    std::optional<std::string> button;
 };
 
 struct ScreenDescription {
@@ -40,7 +42,7 @@ struct ScreenDescription {
 };
 
 struct ScreenContext {
-    Buffer screenshot;
+    std::vector<uint8_t> screenshot;
     std::string currentDescription;
     std::vector<ScreenDescription> descriptionHistory;
     std::string ocr;

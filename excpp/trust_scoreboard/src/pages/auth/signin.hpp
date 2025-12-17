@@ -1,12 +1,15 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include "...public/discordLogo.svg.hpp"
-#include "...public/telegramLogo.svg.hpp"
+#include "public/discordLogo.svg.hpp"
+#include "public/telegramLogo.svg.hpp"
 #include "signin.module.css.hpp"
 
 namespace elizaos {

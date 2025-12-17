@@ -16,16 +16,16 @@ express::Router createAgentMediaRouter() {
         const auto router = express.Router();
 
         // Media upload endpoint for images and videos using multer
-        router.post('/:agentId/upload-media', upload.single('file'), async (req, res) => {
+        router.post("/:agentId/upload-media", upload.single("file"), async (req, res) => {
             logger.debug('[MEDIA UPLOAD] Processing media upload with multer');
 
             const auto agentId = validateUuid(req.params.agentId);
             if (!agentId) {
-                return sendError(res, 400, 'INVALID_ID', 'Invalid agent ID format');
+                return sendError(res, 400, "INVALID_ID", "Invalid agent ID format");
             }
 
             if (!req.file) {
-                return sendError(res, 400, 'INVALID_REQUEST', 'No media file provided');
+                return sendError(res, 400, "INVALID_REQUEST", "No media file provided");
             }
 
             const auto mediaType = getContentTypeFromMimeType(req.file.mimetype);
@@ -33,8 +33,8 @@ express::Router createAgentMediaRouter() {
                 return sendError(;
                 res,
                 400,
-                'UNSUPPORTED_MEDIA_TYPE',
-                "Unsupported media MIME type: " + std::to_string(req.file.mimetype)
+                "UNSUPPORTED_MEDIA_TYPE",
+                "Unsupported media MIME type: " + req.file.mimetype
                 );
             }
 
@@ -43,7 +43,7 @@ express::Router createAgentMediaRouter() {
                 const auto result = saveUploadedFile(req.file, agentId);
 
                 logger.info(
-                "[MEDIA UPLOAD] Successfully uploaded " + std::to_string(mediaType) + ": " + std::to_string(result.filename) + ". URL: " + std::to_string(result.url)
+                "[MEDIA UPLOAD] Successfully uploaded " + mediaType + ": " + result.filename + ". URL: " + result.url
                 );
 
                 sendSuccess(res, {
@@ -54,12 +54,12 @@ express::Router createAgentMediaRouter() {
                     size: req.file.size,
                     });
                     } catch (error) {
-                        std::cerr << "[MEDIA UPLOAD] Error processing upload: " + std::to_string(error) << std::endl;
+                        std::cerr << "[MEDIA UPLOAD] Error processing upload: " + error << std::endl;
                         sendError(;
                         res,
                         500,
-                        'UPLOAD_ERROR',
-                        'Failed to process media upload',
+                        "UPLOAD_ERROR",
+                        "Failed to process media upload",
                         true /* instanceof check */ ? error.message : std::to_string(error)
                         );
                     }

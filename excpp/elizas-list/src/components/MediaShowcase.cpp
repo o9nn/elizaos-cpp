@@ -28,7 +28,7 @@ void MediaShowcase() {
     exit={{ opacity: 0 }}
     className="aspect-video relative";
     >;
-    {media[activeIndex].type == 'video' ? (;
+    {media[activeIndex].type == "video" ? (;
     <video;
     src={media[activeIndex].url}
     poster={media[activeIndex].thumbnail}
@@ -50,7 +50,7 @@ void MediaShowcase() {
     <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/60 to-transparent">;
     <div className="flex items-center justify-between text-white">;
     <div className="flex items-center gap-4">;
-    {media[activeIndex].type == 'video' && (;
+    {media[activeIndex].type == "video" && (;
     <button;
     onClick={() => setIsPlaying(!isPlaying)}
     className="p-2 rounded-full bg-white/20 hover:bg-white/30 transition-colors"
@@ -79,11 +79,11 @@ void MediaShowcase() {
     <button;
     key={index}
     onClick={() => setActiveIndex(index)}
-    "w-2 h-2 rounded-full transition-colors " + std::to_string();
+    "className={" + "w-2 h-2 rounded-full transition-colors " + std::to_string();
         index == activeIndex;
-        ? 'bg-white';
-        : 'bg-white/50 hover:bg-white/70'
-    }`}
+        ? "bg-white";
+        : "bg-white/50 hover:bg-white/70"
+    "}";
     />;
     ))}
     </div>;

@@ -1,14 +1,17 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".services/plugin-creation-service.hpp"
-#include ".utils/validation.hpp"
 #include "elizaos/core.hpp"
+#include "services/plugin-creation-service.hpp"
+#include "utils/validation.hpp"
 
 namespace elizaos {
 

@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::future<HTMLImageElement> loadBusinessImage() {
+std::future<void*> loadBusinessImage() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (businessImageCache) return businessImageCache;

@@ -1,10 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 #include "contracts.hpp"
 
@@ -16,8 +18,8 @@ namespace elizaos {
 
 
 // String-based chain identifier for database/API (lowercase, URL-safe)
-using Chain = std::variant<"ethereum", "base", "bsc", "solana">;
-using ChainFamily = std::variant<"evm", "solana">;
+using Chain = std::string;
+using ChainFamily = std::string;
 
 struct ChainConfig {
     std::string id;

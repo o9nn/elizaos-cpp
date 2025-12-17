@@ -1,17 +1,20 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
-#include ".hyperfy/src/core/libs/csm/CSM.hpp"
-#include ".hyperfy/src/core/systems/System.js.hpp"
-#include ".managers/puppeteer-manager.js.hpp"
-#include ".utils.js.hpp"
 #include "elizaos/core.hpp"
+#include "hyperfy/src/core/libs/csm/CSM.hpp"
+#include "hyperfy/src/core/systems/System.js.hpp"
+#include "managers/puppeteer-manager.js.hpp"
+#include "utils.js.hpp"
 
 namespace elizaos {
 

@@ -1,15 +1,18 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".classes/embed.hpp"
-#include ".classes/message.hpp"
-#include ".features/export/use-export-slice.hpp"
-#include ".types/embed-field-object.hpp"
-#include ".utils.hpp"
+#include "classes/embed.hpp"
+#include "classes/message.hpp"
+#include "features/export/use-export-slice.hpp"
+#include "types/embed-field-object.hpp"
+#include "utils.hpp"
 
 namespace elizaos {
 

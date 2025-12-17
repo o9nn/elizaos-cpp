@@ -13,7 +13,7 @@ void PageNotFound() {
     <div className="text-4xl md:text-6xl lg:text-7xl space-y-8">
     <h1>page not found</h1>;
     <p className="text-white text-base md:text-1xl lg:text-2xl font-semibold">
-    Oops! The page you're looking for doesn't exist.;
+    Oops! The page you"re looking for doesn"t exist.;
     </p>;
     </div>;
     <div className="justify-items-center">;

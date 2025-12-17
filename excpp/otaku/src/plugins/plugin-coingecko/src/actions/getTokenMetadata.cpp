@@ -28,7 +28,7 @@ std::string formatConfidencePercentage(double confidence) {
 
 }
 
-std::string extractAttribute(const std::unordered_map<std::string, unknown>& metadata, const std::variant<"name", "symbol">& key) {
+std::string extractAttribute(const std::unordered_map<std::string, std::any>& metadata, const std::string& key) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!metadata) {
@@ -52,7 +52,7 @@ std::string describeCandidate(TokenMetadataCandidate candidate) {
     const auto name = extractAttribute(candidate.metadata, "name");
 
     if (symbol && name) {
-        return std::to_string(symbol.toUpperCase()) + " (" + std::to_string(name) + ")";
+        return std::to_string(symbol.toUpperCase()) + " (" + name + ")";
     }
 
     if (symbol) {
@@ -72,18 +72,18 @@ std::string summarizeResolution(TokenMetadataResolution result) {
 
     if (!result.success) {
         const auto errorText = result.error || "Unable to resolve token";
-        return std::to_string(result.id) + ": " + std::to_string(errorText);
+        return result.id + ": " + errorText;
     }
 
     const auto primaryCandidate =;
     result.candidates.find((candidate) => candidate.metadata) || result.candidates[0];
 
     if (!primaryCandidate) {
-        return std::to_string(result.id) + ": No matching tokens found";
+        return result.id + ": No matching tokens found";
     }
 
     const std::vector<std::string> summaryParts = [;
-    std::to_string(result.id) + " → " + std::to_string(describeCandidate(primaryCandidate)) + " [" + std::to_string(formatConfidencePercentage(primaryCandidate.confidence)) + "]"
+    result.id + " → " + std::to_string(describeCandidate(primaryCandidate)) + " [" + std::to_string(formatConfidencePercentage(primaryCandidate.confidence)) + "]"
     ];
 
     const auto alternativeCandidates = result.candidates;
@@ -92,9 +92,9 @@ std::string summarizeResolution(TokenMetadataResolution result) {
 
     if (alternativeCandidates.length > 0) {
         const auto alternativesText = alternativeCandidates;
-        std::to_string(describeCandidate(candidate)) + " (" + std::to_string(formatConfidencePercentage(candidate.confidence)) + ")";
+        ".map((candidate) => " + std::to_string(describeCandidate(candidate)) + " (" + std::to_string(formatConfidencePercentage(candidate.confidence)) + ")";
         .join(", ");
-        "Alternatives: " + std::to_string(alternativesText)
+        "summaryParts.push_back(" + "Alternatives: " + alternativesText
     }
 
     return summaryParts.join(" | ");

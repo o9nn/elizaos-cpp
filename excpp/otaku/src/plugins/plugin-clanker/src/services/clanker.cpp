@@ -13,7 +13,7 @@ std::any sanitizeError(const std::any& error) {
         }
 
         if (typeof error == "bigint") {
-            return error.toString();
+            return std::to_string(error);
         }
 
         if (error instanceof Error) {
@@ -69,7 +69,7 @@ std::string detectPlatform(const std::string& url) {
     if (lowerUrl.includes('tiktok')) return 'tiktok';
     if (lowerUrl.includes('linkedin')) return 'linkedin';
     if (lowerUrl.includes('facebook')) return 'facebook';
-    return 'other'; // fallback;
+    return "other"; // fallback;
 
 }
 

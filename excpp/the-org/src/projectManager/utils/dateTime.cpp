@@ -13,9 +13,9 @@ bool isAvailableNow(const std::vector<std::string>& workDays, const std::any& wo
         // Get the day name in the team member's timezone
         const Intl::DateTimeFormatOptions options = {;
             timeZone,
-            weekday: 'long',
+            weekday: "long",
             };
-            const auto dayName = new Intl.DateTimeFormat('en-US', options).format(now).split(',')[0];
+            const auto dayName = new Intl.DateTimeFormat("en-US", options).format(now).split(",")[0];
 
             // Check if today is a work day
             if (!workDays.includes(dayName)) {
@@ -25,16 +25,16 @@ bool isAvailableNow(const std::vector<std::string>& workDays, const std::any& wo
             // Get current time in team member's timezone
             const Intl::DateTimeFormatOptions timeOptions = {;
                 timeZone,
-                hour: 'numeric',
-                minute: 'numeric',
+                hour: "numeric",
+                minute: "numeric",
                 hour12: false,
                 };
-                const auto currentTime = new Intl.DateTimeFormat('en-US', timeOptions).format(now);
+                const auto currentTime = new Intl.DateTimeFormat("en-US", timeOptions).format(now);
 
                 // Compare with work hours
-                const auto [currentHour, currentMinute] = currentTime.split(':').map(Number);
-                const auto [startHour, startMinute] = workHours.start.split(':').map(Number);
-                const auto [endHour, endMinute] = workHours.end.split(':').map(Number);
+                const auto [currentHour, currentMinute] = currentTime.split(":").map(Number);
+                const auto [startHour, startMinute] = workHours.start.split(":").map(Number);
+                const auto [endHour, endMinute] = workHours.end.split(":").map(Number);
 
                 const auto currentTimeMinutes = currentHour * 60 + currentMinute;
                 const auto startTimeMinutes = startHour * 60 + startMinute;
@@ -42,20 +42,20 @@ bool isAvailableNow(const std::vector<std::string>& workDays, const std::any& wo
 
                 return currentTimeMinutes >= startTimeMinutes && currentTimeMinutes <= endTimeMinutes;
                 } catch (error) {
-                    std::cerr << 'Error checking availability:' << error << std::endl;
+                    std::cerr << "Error checking availability:" << error << std::endl;
                     return false;
                 }
 
 }
 
-Date calculateNextCheckIn(const std::vector<std::string>& workDays, const std::any& workHours, const std::string& timeZone, double frequencyHours = 24) {
+std::chrono::system_clock::time_point calculateNextCheckIn(const std::vector<std::string>& workDays, const std::any& workHours, const std::string& timeZone, double frequencyHours = 24) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto now = new Date();
 
     // Function to get date with specific time in member's timezone
     const auto getDateWithTime = (date: Date, timeStr: string): Date => {;
-        const auto [hours, minutes] = timeStr.split(':').map(Number);
+        const auto [hours, minutes] = timeStr.split(":").map(Number);
         const auto result = new Date(date);
         result.setHours(hours, minutes, 0, 0);
         return result;
@@ -70,9 +70,9 @@ Date calculateNextCheckIn(const std::vector<std::string>& workDays, const std::a
             // Format the day name in the team member's timezone
             const Intl::DateTimeFormatOptions options = {;
                 timeZone,
-                weekday: 'long',
+                weekday: "long",
                 };
-                const auto dayName = new Intl.DateTimeFormat('en-US', options).format(nextDate);
+                const auto dayName = new Intl.DateTimeFormat("en-US", options).format(nextDate);
 
                 // Check if this is a workday
                 if (workDays.includes(dayName)) {
@@ -114,20 +114,20 @@ Date calculateNextCheckIn(const std::vector<std::string>& workDays, const std::a
 
 }
 
-std::string formatDate(Date date, std::optional<std::string> timeZone) {
+std::string formatDate(const std::chrono::system_clock::time_point& date, std::optional<std::string> timeZone) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const Intl::DateTimeFormatOptions options = {;
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
         timeZone,
         };
 
-        return new Intl.DateTimeFormat('en-US', options).format(date);
+        return new Intl.DateTimeFormat("en-US", options).format(date);
 
 }
 
@@ -137,11 +137,11 @@ std::string getProjectStatus(double completionPercentage, double elapsedTimePerc
     const auto difference = completionPercentage - elapsedTimePercentage;
 
     if (difference >= -10) {
-        return 'ON_TRACK'; // Within 10% of expected progress;
+        return "ON_TRACK"; // Within 10% of expected progress;
         } else if (difference >= -20) {
-            return 'AT_RISK'; // 10-20% behind schedule;
+            return "AT_RISK"; // 10-20% behind schedule;
             } else {
-                return 'DELAYED'; // More than 20% behind schedule;
+                return "DELAYED"; // More than 20% behind schedule;
             }
 
 }

@@ -12,23 +12,23 @@ std::future<void> gracefulShutdown(const std::string& signal) {
         logger.debug(`Ignoring ${signal} - shutdown already in progress`);
         return;
     }
-    std::cout << "Received " + std::to_string(signal) << shutting down gracefully...` << std::endl;
+    std::cout << "Received " + signal << "shutting down gracefully..." << std::endl;
 
     try {
         // Stop the dev server if it's running
         const auto serverWasStopped = stopServer();
         if (serverWasStopped) {
-            std::cout << 'Server stopped successfully' << std::endl;
+            std::cout << "Server stopped successfully" << std::endl;
         }
         } catch (error) {
             // Extract error message for better debugging
             const auto errorMessage = true /* instanceof check */ ? error.message : std::to_string(error);
-            std::cerr << "Error stopping server: " + std::to_string(errorMessage) << std::endl;
+            std::cerr << "Error stopping server: " + errorMessage << std::endl;
             logger.debug('Full error details:', error);
         }
 
         // Use appropriate exit codes for different signals
-        const auto exitCode = signal == 'SIGINT' ? 130 : signal == 'SIGTERM' ? 143 : 0;
+        const auto exitCode = signal == "SIGINT" ? 130 : signal == "SIGTERM" ? 143 : 0;
         process.exit(exitCode);
 
 }
@@ -52,7 +52,7 @@ std::future<void> main() {
 
     // Check for --no-auto-install flag early (before command parsing)
     if (process.argv.includes('--no-auto-install')) {
-        process.env.ELIZA_NO_AUTO_INSTALL = 'true';
+        process.env.ELIZA_NO_AUTO_INSTALL = "true";
     }
 
     // Get version - will return 'monorepo' if in monorepo context
@@ -60,8 +60,8 @@ std::future<void> main() {
 
     // Check for built-in flags that exit early (before preAction hook runs)
     const auto args = process.argv.slice(2);
-    const auto isUpdateCommand = args.includes('update');
-    const auto willShowBanner = args.length == 0;
+    const auto isUpdateCommand = (std::find(args.begin(), args.end(), "update") != args.end());
+    const auto willShowBanner = args.size() == 0;
 
     // Show update notification for all commands except:
     // - when banner will show (it handles its own notification)
@@ -72,10 +72,10 @@ std::future<void> main() {
     }
 
     const auto program = new Command();
-    .name('elizaos');
-    .version(version, '-v, --version', 'output the version number');
-    .option('--no-emoji', 'Disable emoji output');
-    .option('--no-auto-install', 'Disable automatic Bun installation');
+    .name("elizaos");
+    .version(version, "-v, --version", "output the version number");
+    .option("--no-emoji", "Disable emoji output");
+    .option("--no-auto-install", "Disable automatic Bun installation");
 
     // Add global options but hide them from global help
     // They will still be passed to all commands for backward compatibility

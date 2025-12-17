@@ -1,9 +1,13 @@
 #pragma once
+#include <algorithm>
+#include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -22,7 +26,7 @@ using ChartContextProps = {
 void useChart();
 
 // Helper to extract item config from a payload.
-void getPayloadConfigFromPayload(ChartConfig config, unknown payload, const std::string& key);
+void getPayloadConfigFromPayload(ChartConfig config, const std::any& payload, const std::string& key);
 
 
 } // namespace elizaos

@@ -20,12 +20,12 @@ std::future<void> startAgents(ServerStartOptions options) {
     server.loadCharacterTryPath = loadCharacterTryPath;
     server.jsonToCharacter = jsonToCharacter;
 
-    const auto desiredPort = options.port || Number.parseInt(process.env.SERVER_PORT || '3000');
+    const auto desiredPort = options.port || Number.parseInt(process.env.SERVER_PORT || "3000");
     const auto serverPort = findNextAvailablePort(desiredPort);
     if (serverPort != desiredPort) {
-        std::cout << "Port " + std::to_string(desiredPort) << using port ${serverPort} instead` << std::endl;
+        std::cout << "Port " + desiredPort << "using port ${serverPort} instead" << std::endl;
     }
-    process.env.SERVER_PORT = serverPort.toString();
+    process.env.SERVER_PORT = std::to_string(serverPort);
     server.start(serverPort);
 
     // If we have project agents, start them with their init functions
@@ -40,7 +40,7 @@ std::future<void> startAgents(ServerStartOptions options) {
         }
     }
     // If we have standalone characters, start them
-    else if (options.characters && options.characters.length > 0) {
+    else if (options.characters && options.characters.size() > 0) {
         for (const auto& character : options.characters)
             startAgent(character, server);
         }

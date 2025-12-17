@@ -11,7 +11,7 @@ void upgradeDoubleToTriple(auto tpl) {
 
 }
 
-std::optional<UUID> validateUuid(unknown value) {
+std::optional<UUID> validateUuid(const std::any& value) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return coreValidateUuid(value);

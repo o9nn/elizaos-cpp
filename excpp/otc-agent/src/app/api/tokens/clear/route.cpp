@@ -23,7 +23,7 @@ std::future<void> POST() {
 
         // Delete each token
         for (const auto& tokenId : allTokenIds)
-            "token:" + std::to_string(tokenId)
+            "runtime.setCache(" + "token:" + tokenId
         }
 
         // Clear the token list
@@ -31,7 +31,7 @@ std::future<void> POST() {
 
         return NextResponse.json({;
             success: true,
-            "Cleared " + std::to_string(allTokenIds.length) + " tokens"
+            "message: " + "Cleared " + allTokenIds.size() + " tokens"
             clearedTokens: allTokenIds,
             });
             } catch (error) {

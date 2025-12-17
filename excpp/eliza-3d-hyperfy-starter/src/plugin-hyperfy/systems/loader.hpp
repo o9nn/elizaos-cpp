@@ -1,19 +1,22 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".hyperfy/src/core/extras/createEmoteFactory.js.hpp"
-#include ".hyperfy/src/core/extras/createNode.js.hpp"
-#include ".hyperfy/src/core/extras/glbToNodes.js.hpp"
-#include ".hyperfy/src/core/libs/gltfloader/GLTFLoader.js.hpp"
-#include ".hyperfy/src/core/systems/System.js.hpp"
-#include ".managers/puppeteer-manager.js.hpp"
-#include ".utils.js.hpp"
 #include "avatar.js.hpp"
+#include "hyperfy/src/core/extras/createEmoteFactory.js.hpp"
+#include "hyperfy/src/core/extras/createNode.js.hpp"
+#include "hyperfy/src/core/extras/glbToNodes.js.hpp"
+#include "hyperfy/src/core/libs/gltfloader/GLTFLoader.js.hpp"
+#include "hyperfy/src/core/systems/System.js.hpp"
+#include "managers/puppeteer-manager.js.hpp"
+#include "utils.js.hpp"
 
 namespace elizaos {
 

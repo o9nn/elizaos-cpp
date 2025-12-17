@@ -15,14 +15,14 @@ std::vector<std::string> getPythonModules() {
     const std::vector<std::string> modules = [];
 
     // Add entry points
-    modules.push(...ENTRY_POINTS.map((ep) => ep.path));
+    modules.push_back(...ENTRY_POINTS.map((ep) => ep.path));
 
     // Add main classes
-    modules.push(MAIN_AGENT_CLASS.path);
-    modules.push(SWE_ENV_CLASS.path);
+    modules.push_back(MAIN_AGENT_CLASS.path);
+    modules.push_back(SWE_ENV_CLASS.path);
 
     // Add inspectors
-    modules.push(...INSPECTORS.map((i) => i.path));
+    modules.push_back(...INSPECTORS.map((i) => i.path));
 
     return modules;
 

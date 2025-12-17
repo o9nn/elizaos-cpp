@@ -1,13 +1,16 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".types.hpp"
 #include "elizaos/core.hpp"
+#include "types.hpp"
 
 namespace elizaos {
 
@@ -34,9 +37,8 @@ public:
     SamTTSService(std::optional<IAgentRuntime> runtime);
     static std::future<SamTTSService> start(IAgentRuntime runtime);
     std::future<void> stop();
-    std::future<Uint8Array> generateAudio(const std::string& text, SamTTSOptions options = {});
-    std::future<Uint8Array> speakText(const std::string& text, SamTTSOptions options = {});
-    Uint8Array createWAVBuffer(Uint8Array audioData, double sampleRate = 22050);
+    std::future<std::vector<uint8_t>> generateAudio(const std::string& text, SamTTSOptions options = {});
+    std::vector<uint8_t> createWAVBuffer(const std::vector<uint8_t>& audioData, double sampleRate = 22050);
     std::string capabilityDescription() const;
     std::future<bool> testSynthesis();
 

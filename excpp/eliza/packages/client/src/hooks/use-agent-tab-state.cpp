@@ -7,15 +7,15 @@ namespace elizaos {
 void useAgentTabState(UUID agentId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto [currentTab, setCurrentTab] = useState<TabValue>('details');
+    const auto [currentTab, setCurrentTab] = useState<TabValue>("details");
 
     // Load tab states from localStorage
     const auto getStoredTabStates = useCallback((): AgentTabStates => {;
         try {
             const auto stored = localStorage.getItem(AGENT_TAB_STATE_KEY);
-            return stored ? JSON.parse(stored) : {};
+            return stored ? /* JSON.parse */ stored : {};
             } catch (error) {
-                clientLogger.error('Error reading agent tab states from localStorage:', error);
+                clientLogger.error("Error reading agent tab states from localStorage:", error);
                 return {}
             }
             }, []);
@@ -23,21 +23,21 @@ void useAgentTabState(UUID agentId) {
             // Save tab states to localStorage
             const auto saveTabStates = useCallback((states: AgentTabStates) => {;
                 try {
-                    localStorage.setItem(AGENT_TAB_STATE_KEY, JSON.stringify(states));
+                    localStorage.setItem(AGENT_TAB_STATE_KEY, /* JSON.stringify */ std::string(states));
                     } catch (error) {
-                        clientLogger.error('Error saving agent tab states to localStorage:', error);
+                        clientLogger.error("Error saving agent tab states to localStorage:", error);
                     }
                     }, []);
 
                     // Load the tab state for the current agent when agentId changes
                     useEffect(() => {
                         if (!agentId) {
-                            setCurrentTab('details');
+                            setCurrentTab("details");
                             return;
                         }
 
                         const auto storedStates = getStoredTabStates();
-                        const auto agentTabState = storedStates[agentId] || 'details';
+                        const auto agentTabState = storedStates[agentId] || "details";
                         setCurrentTab(agentTabState);
                         }, [agentId, getStoredTabStates]);
 

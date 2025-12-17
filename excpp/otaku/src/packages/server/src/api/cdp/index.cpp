@@ -29,7 +29,7 @@ express::Router cdpRouter(AgentServer serverInstance) {
             try {
                 const auto validatedUserId = validateUuid(userId);
                 if (!validatedUserId) {
-                    std::cout << "[CDP API] Invalid UUID format for userId: " + std::to_string(userId) << std::endl;
+                    std::cout << "[CDP API] Invalid UUID format for userId: " + userId << std::endl;
                     return nullptr;
                 }
 
@@ -48,7 +48,7 @@ express::Router cdpRouter(AgentServer serverInstance) {
 
                 return nullptr;
                 } catch (error) {
-                    std::cout << '[CDP API] Error fetching entity metadata:' << true /* instanceof check */ ? error.message : std::to_string(error) << std::endl;
+                    std::cout << "[CDP API] Error fetching entity metadata:" << true /* instanceof check */ ? error.message : std::to_string(error) << std::endl;
                     return nullptr;
                 }
             }
@@ -58,7 +58,7 @@ express::Router cdpRouter(AgentServer serverInstance) {
             * Get or create server wallet for authenticated user
             * SECURITY: Uses userId from JWT token, not from request body
             */
-            router.post('/wallet', async (req: AuthenticatedRequest, res) => {
+            router.post("/wallet", async (req: AuthenticatedRequest, res) => {
                 try {
                     const auto userId = req.userId!;
 
@@ -67,14 +67,14 @@ express::Router cdpRouter(AgentServer serverInstance) {
                     sendSuccess(res, result);
                     } catch (error) {
                         logger.error(
-                        '[CDP API] Error with wallet:',
+                        "[CDP API] Error with wallet:",
                         true /* instanceof check */ ? error.message : std::to_string(error)
                         );
                         sendError(;
                         res,
                         500,
-                        'WALLET_FAILED',
-                        'Failed to get/create wallet',
+                        "WALLET_FAILED",
+                        "Failed to get/create wallet",
                         true /* instanceof check */ ? error.message : std::to_string(error)
                         );
                     }
@@ -90,14 +90,14 @@ express::Router cdpRouter(AgentServer serverInstance) {
                     * For GET requests, we fetch the wallet address from entity metadata instead of
                     * calling getOrCreateAccount, which avoids unnecessary account initialization.
                     */
-                    router.get('/wallet/tokens', async (req: AuthenticatedRequest, res) => {
+                    router.get("/wallet/tokens", async (req: AuthenticatedRequest, res) => {
                         try {
                             const auto userId = req.userId!;
                             const auto chain = req.query.chain | std::nullopt;
 
                             // Validate chain if provided
                             if (chain && !MAINNET_NETWORKS.includes(chain as any)) {
-                                return "Invalid or unsupported chain: " + std::to_string(chain);
+                                return "sendError(res, 400, "INVALID_CHAIN", " + "Invalid or unsupported chain: " + chain;
                             }
 
                             // Try to get address from entity metadata first (for GET requests)
@@ -108,14 +108,14 @@ express::Router cdpRouter(AgentServer serverInstance) {
                             sendSuccess(res, result);
                             } catch (error) {
                                 logger.error(
-                                '[CDP API] Error fetching tokens:',
+                                "[CDP API] Error fetching tokens:",
                                 true /* instanceof check */ ? error.message : std::to_string(error)
                                 );
                                 sendError(;
                                 res,
                                 500,
-                                'FETCH_TOKENS_FAILED',
-                                'Failed to fetch token balances',
+                                "FETCH_TOKENS_FAILED",
+                                "Failed to fetch token balances",
                                 true /* instanceof check */ ? error.message : std::to_string(error)
                                 );
                             }
@@ -130,14 +130,14 @@ express::Router cdpRouter(AgentServer serverInstance) {
                             *
                             * Tries to get wallet address from entity metadata first, then falls back to CDP account
                             */
-                            router.post('/wallet/tokens/sync', async (req: AuthenticatedRequest, res) => {
+                            router.post("/wallet/tokens/sync", async (req: AuthenticatedRequest, res) => {
                                 try {
                                     const auto userId = req.userId!;
                                     const auto { chain } = req.body;
 
                                     // Validate chain if provided
                                     if (chain && !MAINNET_NETWORKS.includes(chain as any)) {
-                                        return "Invalid or unsupported chain: " + std::to_string(chain);
+                                        return "sendError(res, 400, "INVALID_CHAIN", " + "Invalid or unsupported chain: " + chain;
                                     }
 
                                     // Try to get address from entity metadata first (same as GET endpoint)
@@ -148,14 +148,14 @@ express::Router cdpRouter(AgentServer serverInstance) {
                                     sendSuccess(res, { ...result, synced: true });
                                     } catch (error) {
                                         logger.error(
-                                        '[CDP API] Error syncing tokens:',
+                                        "[CDP API] Error syncing tokens:",
                                         true /* instanceof check */ ? error.message : std::to_string(error)
                                         );
                                         sendError(;
                                         res,
                                         500,
-                                        'SYNC_TOKENS_FAILED',
-                                        'Failed to sync token balances',
+                                        "SYNC_TOKENS_FAILED",
+                                        "Failed to sync token balances",
                                         true /* instanceof check */ ? error.message : std::to_string(error)
                                         );
                                     }
@@ -171,14 +171,14 @@ express::Router cdpRouter(AgentServer serverInstance) {
                                     * For GET requests, we fetch the wallet address from entity metadata instead of
                                     * calling getOrCreateAccount, which avoids unnecessary account initialization.
                                     */
-                                    router.get('/wallet/nfts', async (req: AuthenticatedRequest, res) => {
+                                    router.get("/wallet/nfts", async (req: AuthenticatedRequest, res) => {
                                         try {
                                             const auto userId = req.userId!;
                                             const auto chain = req.query.chain | std::nullopt;
 
                                             // Validate chain if provided
                                             if (chain && !MAINNET_NETWORKS.includes(chain as any)) {
-                                                return "Invalid or unsupported chain: " + std::to_string(chain);
+                                                return "sendError(res, 400, "INVALID_CHAIN", " + "Invalid or unsupported chain: " + chain;
                                             }
 
                                             // Try to get address from entity metadata first (for GET requests)
@@ -189,14 +189,14 @@ express::Router cdpRouter(AgentServer serverInstance) {
                                             sendSuccess(res, result);
                                             } catch (error) {
                                                 logger.error(
-                                                '[CDP API] Error fetching NFTs:',
+                                                "[CDP API] Error fetching NFTs:",
                                                 true /* instanceof check */ ? error.message : std::to_string(error)
                                                 );
                                                 sendError(;
                                                 res,
                                                 500,
-                                                'FETCH_NFTS_FAILED',
-                                                'Failed to fetch NFTs',
+                                                "FETCH_NFTS_FAILED",
+                                                "Failed to fetch NFTs",
                                                 true /* instanceof check */ ? error.message : std::to_string(error)
                                                 );
                                             }
@@ -211,14 +211,14 @@ express::Router cdpRouter(AgentServer serverInstance) {
                                             *
                                             * Tries to get wallet address from entity metadata first, then falls back to CDP account
                                             */
-                                            router.post('/wallet/nfts/sync', async (req: AuthenticatedRequest, res) => {
+                                            router.post("/wallet/nfts/sync", async (req: AuthenticatedRequest, res) => {
                                                 try {
                                                     const auto userId = req.userId!;
                                                     const auto { chain } = req.body;
 
                                                     // Validate chain if provided
                                                     if (chain && !MAINNET_NETWORKS.includes(chain as any)) {
-                                                        return "Invalid or unsupported chain: " + std::to_string(chain);
+                                                        return "sendError(res, 400, "INVALID_CHAIN", " + "Invalid or unsupported chain: " + chain;
                                                     }
 
                                                     // Try to get address from entity metadata first (same as GET endpoint)
@@ -229,14 +229,14 @@ express::Router cdpRouter(AgentServer serverInstance) {
                                                     sendSuccess(res, { ...result, synced: true });
                                                     } catch (error) {
                                                         logger.error(
-                                                        '[CDP API] Error syncing NFTs:',
+                                                        "[CDP API] Error syncing NFTs:",
                                                         true /* instanceof check */ ? error.message : std::to_string(error)
                                                         );
                                                         sendError(;
                                                         res,
                                                         500,
-                                                        'SYNC_NFTS_FAILED',
-                                                        'Failed to sync NFTs',
+                                                        "SYNC_NFTS_FAILED",
+                                                        "Failed to sync NFTs",
                                                         true /* instanceof check */ ? error.message : std::to_string(error)
                                                         );
                                                     }
@@ -250,7 +250,7 @@ express::Router cdpRouter(AgentServer serverInstance) {
                                                     * For GET requests, we fetch the wallet address from entity metadata instead of
                                                     * calling getOrCreateAccount, which avoids unnecessary account initialization.
                                                     */
-                                                    router.get('/wallet/history', async (req: AuthenticatedRequest, res) => {
+                                                    router.get("/wallet/history", async (req: AuthenticatedRequest, res) => {
                                                         try {
                                                             const auto userId = req.userId!;
 
@@ -262,14 +262,14 @@ express::Router cdpRouter(AgentServer serverInstance) {
                                                             sendSuccess(res, result);
                                                             } catch (error) {
                                                                 logger.error(
-                                                                '[CDP API] Error fetching history:',
+                                                                "[CDP API] Error fetching history:",
                                                                 true /* instanceof check */ ? error.message : std::to_string(error)
                                                                 );
                                                                 sendError(;
                                                                 res,
                                                                 500,
-                                                                'FETCH_HISTORY_FAILED',
-                                                                'Failed to fetch transaction history',
+                                                                "FETCH_HISTORY_FAILED",
+                                                                "Failed to fetch transaction history",
                                                                 true /* instanceof check */ ? error.message : std::to_string(error)
                                                                 );
                                                             }
@@ -280,13 +280,13 @@ express::Router cdpRouter(AgentServer serverInstance) {
                                                             * Send tokens from authenticated user's server wallet
                                                             * SECURITY: Uses userId from JWT token, not from request body
                                                             */
-                                                            router.post('/wallet/send', async (req: AuthenticatedRequest, res) => {
+                                                            router.post("/wallet/send", async (req: AuthenticatedRequest, res) => {
                                                                 try {
                                                                     const auto userId = req.userId!;
                                                                     const auto { network, to, token, amount } = req.body;
 
                                                                     if (!network || !to || !token || !amount) {
-                                                                        return sendError(res, 400, 'INVALID_REQUEST', 'Missing required fields: network, to, token, amount');
+                                                                        return sendError(res, 400, "INVALID_REQUEST", "Missing required fields: network, to, token, amount");
                                                                     }
 
                                                                     const auto result = cdpTransactionManager.sendToken({;
@@ -301,16 +301,16 @@ express::Router cdpRouter(AgentServer serverInstance) {
                                                                         } catch (error) {
                                                                             const auto rawErrorMessage = true /* instanceof check */ ? error.message : std::to_string(error);
 
-                                                                            std::cerr << '[CDP API] Error sending tokens:' << rawErrorMessage << std::endl;
+                                                                            std::cerr << "[CDP API] Error sending tokens:" << rawErrorMessage << std::endl;
 
                                                                             // Extract just the "Details: ..." part if it exists
-                                                                            auto errorMessage = 'Failed to send tokens';
+                                                                            auto errorMessage = "Failed to send tokens";
                                                                             const auto detailsMatch = rawErrorMessage.match(/Details:\s*(.+?)(?:\nVersion:|$)/s);
                                                                             if (detailsMatch) {
                                                                                 errorMessage = detailsMatch[1].trim();
                                                                             }
 
-                                                                            sendError(res, 500, 'SEND_FAILED', errorMessage);
+                                                                            sendError(res, 500, "SEND_FAILED", errorMessage);
                                                                         }
                                                                         });
 
@@ -319,13 +319,13 @@ express::Router cdpRouter(AgentServer serverInstance) {
                                                                         * Send NFT from authenticated user's server wallet
                                                                         * SECURITY: Uses userId from JWT token, not from request body
                                                                         */
-                                                                        router.post('/wallet/send-nft', async (req: AuthenticatedRequest, res) => {
+                                                                        router.post("/wallet/send-nft", async (req: AuthenticatedRequest, res) => {
                                                                             try {
                                                                                 const auto userId = req.userId!;
                                                                                 const auto { network, to, contractAddress, tokenId } = req.body;
 
                                                                                 if (!network || !to || !contractAddress || !tokenId) {
-                                                                                    return sendError(res, 400, 'INVALID_REQUEST', 'Missing required fields: network, to, contractAddress, tokenId');
+                                                                                    return sendError(res, 400, "INVALID_REQUEST", "Missing required fields: network, to, contractAddress, tokenId");
                                                                                 }
 
                                                                                 const auto result = cdpTransactionManager.sendNFT({;
@@ -340,16 +340,16 @@ express::Router cdpRouter(AgentServer serverInstance) {
                                                                                     } catch (error) {
                                                                                         const auto rawErrorMessage = true /* instanceof check */ ? error.message : std::to_string(error);
 
-                                                                                        std::cerr << '[CDP API] Error sending NFT:' << rawErrorMessage << std::endl;
+                                                                                        std::cerr << "[CDP API] Error sending NFT:" << rawErrorMessage << std::endl;
 
                                                                                         // Extract just the "Details: ..." part if it exists
-                                                                                        auto errorMessage = 'Failed to send NFT';
+                                                                                        auto errorMessage = "Failed to send NFT";
                                                                                         const auto detailsMatch = rawErrorMessage.match(/Details:\s*(.+?)(?:\nVersion:|$)/s);
                                                                                         if (detailsMatch) {
                                                                                             errorMessage = detailsMatch[1].trim();
                                                                                         }
 
-                                                                                        sendError(res, 500, 'SEND_NFT_FAILED', errorMessage);
+                                                                                        sendError(res, 500, "SEND_NFT_FAILED", errorMessage);
                                                                                     }
                                                                                     });
 
@@ -374,7 +374,7 @@ express::Router cdpRouter(AgentServer serverInstance) {
                                                                                         async function resolveTokenToAddress(;
                                                                                         token: string,
                                                                                         network: string
-                                                                                        "0x" + std::to_string(string)
+                                                                                        "): Promise<" + "0x" + string
                                                                                             logger.debug(`[CDP API] Resolving token: ${token} on network: ${network}`);
                                                                                             const auto trimmedToken = token.trim();
 
@@ -383,35 +383,35 @@ express::Router cdpRouter(AgentServer serverInstance) {
                                                                                             if (trimmedToken.toLowerCase() == "eth") {
                                                                                                 if (network == "polygon") {
                                                                                                     const auto wethAddress = WETH_ADDRESSES[network];
-                                                                                                    std::cout << "[CDP API] Using WETH contract address for ETH on Polygon: " + std::to_string(wethAddress) << std::endl;
-                                                                                                    return "0x" + std::to_string(string);
+                                                                                                    std::cout << "[CDP API] Using WETH contract address for ETH on Polygon: " + wethAddress << std::endl;
+                                                                                                    return "wethAddress as " + "0x" + string;
                                                                                                 }
-                                                                                                std::cout << "[CDP API] Using native token address for ETH: " + std::to_string(NATIVE_TOKEN_ADDRESS) << std::endl;
-                                                                                                return "0x" + std::to_string(string);
+                                                                                                std::cout << "[CDP API] Using native token address for ETH: " + NATIVE_TOKEN_ADDRESS << std::endl;
+                                                                                                return "NATIVE_TOKEN_ADDRESS as " + "0x" + string;
                                                                                             }
 
                                                                                             // For explicit WETH - use actual WETH contract address
                                                                                             if (trimmedToken.toLowerCase() == "weth") {
                                                                                                 const auto wethAddress = WETH_ADDRESSES[network];
                                                                                                 if (wethAddress) {
-                                                                                                    std::cout << "[CDP API] Using WETH contract address for " + std::to_string(network) + ": " + std::to_string(wethAddress) << std::endl;
-                                                                                                    return "0x" + std::to_string(string);
+                                                                                                    std::cout << "[CDP API] Using WETH contract address for " + network + ": " + wethAddress << std::endl;
+                                                                                                    return "wethAddress as " + "0x" + string;
                                                                                                 }
-                                                                                                std::cout << "[CDP API] No WETH address configured for network " + std::to_string(network) << std::endl;
+                                                                                                std::cout << "[CDP API] No WETH address configured for network " + network << std::endl;
                                                                                             }
 
                                                                                             // For native MATIC/POL on Polygon - use native token address
                                                                                             // Note: POL exists as ERC20 on Ethereum mainnet, but is NOT a native gas token there
                                                                                             // POL on Ethereum would fall through to token search resolution (ERC20 contract address)
                                                                                             if ((trimmedToken.toLowerCase() == "matic" || trimmedToken.toLowerCase() == "pol") && network == "polygon") {
-                                                                                                std::cout << "[CDP API] Using native token address for " + std::to_string(trimmedToken.toUpperCase()) + ": " + std::to_string(NATIVE_TOKEN_ADDRESS) << std::endl;
-                                                                                                return "0x" + std::to_string(string);
+                                                                                                std::cout << "[CDP API] Using native token address for " + std::to_string(trimmedToken.toUpperCase()) + ": " + NATIVE_TOKEN_ADDRESS << std::endl;
+                                                                                                return "NATIVE_TOKEN_ADDRESS as " + "0x" + string;
                                                                                             }
 
                                                                                             // For explicit WMATIC on Polygon - use actual WMATIC contract address
                                                                                             if (trimmedToken.toLowerCase() == "wmatic" && network == "polygon") {
-                                                                                                std::cout << "[CDP API] Using WMATIC contract address for Polygon: " + std::to_string(WMATIC_ADDRESS) << std::endl;
-                                                                                                return "0x" + std::to_string(string);
+                                                                                                std::cout << "[CDP API] Using WMATIC contract address for Polygon: " + WMATIC_ADDRESS << std::endl;
+                                                                                                return "WMATIC_ADDRESS as " + "0x" + string;
                                                                                             }
 
                                                                                             // If it looks like an address, validate it via searchTokens (simpler than CoinGecko validation for API route)
@@ -429,15 +429,15 @@ express::Router cdpRouter(AgentServer serverInstance) {
                                                                                                         );
 
                                                                                                         if (foundToken) {
-                                                                                                            std::cout << "[CDP API] Validated address " + std::to_string(token) + " exists: " + std::to_string(foundToken.symbol) + " (" + std::to_string(foundToken.name) + ")" << std::endl;
-                                                                                                            return "0x" + std::to_string(string);
+                                                                                                            std::cout << "[CDP API] Validated address " + token + " exists: " + foundToken.symbol + " (" + foundToken.name + ")" << std::endl;
+                                                                                                            return "trimmedToken as " + "0x" + string;
                                                                                                         }
-                                                                                                        std::cout << "[CDP API] Address " + std::to_string(token) + " not found via searchTokens for network " + std::to_string(network) + " - may be fake/invalid" << std::endl;
+                                                                                                        std::cout << "[CDP API] Address " + token + " not found via searchTokens for network " + network + " - may be fake/invalid" << std::endl;
                                                                                                         } catch (error) {
-                                                                                                            std::cout << "[CDP API] Failed to validate address " + std::to_string(token) + ":" << true /* instanceof check */ ? error.message : std::to_string(error) << std::endl;
+                                                                                                            std::cout << "[CDP API] Failed to validate address " + token + ":" << true /* instanceof check */ ? error.message : std::to_string(error) << std::endl;
                                                                                                         }
                                                                                                         // Still return the address even if validation fails (let transaction manager handle it)
-                                                                                                        return "0x" + std::to_string(string);
+                                                                                                        return "trimmedToken as " + "0x" + string;
                                                                                                     }
 
                                                                                                     // Try to resolve symbol to address via searchTokens
@@ -454,14 +454,14 @@ express::Router cdpRouter(AgentServer serverInstance) {
                                                                                                             );
 
                                                                                                             if (matchedToken.contractAddress) {
-                                                                                                                std::cout << "[CDP API] Resolved " + std::to_string(token) + " to " + std::to_string(matchedToken.contractAddress) + " via searchTokens" << std::endl;
-                                                                                                                return "0x" + std::to_string(string);
+                                                                                                                std::cout << "[CDP API] Resolved " + token + " to " + matchedToken.contractAddress + " via searchTokens" << std::endl;
+                                                                                                                return "matchedToken.contractAddress.toLowerCase() as " + "0x" + string;
                                                                                                             }
                                                                                                             } catch (error) {
-                                                                                                                std::cout << "[CDP API] Failed to resolve token symbol " + std::to_string(token) + ":" << true /* instanceof check */ ? error.message : std::to_string(error) << std::endl;
+                                                                                                                std::cout << "[CDP API] Failed to resolve token symbol " + token + ":" << true /* instanceof check */ ? error.message : std::to_string(error) << std::endl;
                                                                                                             }
 
-                                                                                                            std::cout << "[CDP API] Could not resolve token " + std::to_string(token) + " on " + std::to_string(network) << std::endl;
+                                                                                                            std::cout << "[CDP API] Could not resolve token " + token + " on " + network << std::endl;
                                                                                                             return nullptr;
                                                                                                         }
 
@@ -476,13 +476,13 @@ express::Router cdpRouter(AgentServer serverInstance) {
                                                                                                         * - Token symbols: 'USDC', 'CBBTC' -> resolved via searchTokens
                                                                                                         * - Token addresses: '0x...' -> used directly
                                                                                                         */
-                                                                                                        router.post('/wallet/swap-price', async (req: AuthenticatedRequest, res) => {
+                                                                                                        router.post("/wallet/swap-price", async (req: AuthenticatedRequest, res) => {
                                                                                                             try {
                                                                                                                 const auto userId = req.userId!;
                                                                                                                 const auto { network, fromToken, toToken, fromAmount } = req.body;
 
                                                                                                                 if (!network || !fromToken || !toToken || !fromAmount) {
-                                                                                                                    return sendError(res, 400, 'INVALID_REQUEST', 'Missing required fields: network, fromToken, toToken, fromAmount');
+                                                                                                                    return sendError(res, 400, "INVALID_REQUEST", "Missing required fields: network, fromToken, toToken, fromAmount");
                                                                                                                 }
 
                                                                                                                 // Resolve token symbols/addresses to proper addresses (same logic as action handler)
@@ -492,10 +492,10 @@ express::Router cdpRouter(AgentServer serverInstance) {
                                                                                                                 const auto resolvedToToken = resolveTokenToAddress(toToken, network);
 
                                                                                                                 if (!resolvedFromToken) {
-                                                                                                                    return "Could not resolve source token: " + std::to_string(fromToken);
+                                                                                                                    return "sendError(res, 400, "TOKEN_RESOLUTION_FAILED", " + "Could not resolve source token: " + fromToken;
                                                                                                                 }
                                                                                                                 if (!resolvedToToken) {
-                                                                                                                    return "Could not resolve destination token: " + std::to_string(toToken);
+                                                                                                                    return "sendError(res, 400, "TOKEN_RESOLUTION_FAILED", " + "Could not resolve destination token: " + toToken;
                                                                                                                 }
 
                                                                                                                 logger.debug(`[CDP API] Resolved tokens: ${resolvedFromToken} -> ${resolvedToToken}`);
@@ -511,14 +511,14 @@ express::Router cdpRouter(AgentServer serverInstance) {
                                                                                                                     sendSuccess(res, result);
                                                                                                                     } catch (error) {
                                                                                                                         logger.error(
-                                                                                                                        '[CDP API] Error getting swap price:',
+                                                                                                                        "[CDP API] Error getting swap price:",
                                                                                                                         true /* instanceof check */ ? error.message : std::to_string(error)
                                                                                                                         );
                                                                                                                         sendError(;
                                                                                                                         res,
                                                                                                                         500,
-                                                                                                                        'SWAP_PRICE_FAILED',
-                                                                                                                        'Failed to get swap price',
+                                                                                                                        "SWAP_PRICE_FAILED",
+                                                                                                                        "Failed to get swap price",
                                                                                                                         true /* instanceof check */ ? error.message : std::to_string(error)
                                                                                                                         );
                                                                                                                     }
@@ -535,13 +535,13 @@ express::Router cdpRouter(AgentServer serverInstance) {
                                                                                                                     * - Token symbols: 'USDC', 'CBBTC' -> resolved via searchTokens
                                                                                                                     * - Token addresses: '0x...' -> used directly
                                                                                                                     */
-                                                                                                                    router.post('/wallet/swap', async (req: AuthenticatedRequest, res) => {
+                                                                                                                    router.post("/wallet/swap", async (req: AuthenticatedRequest, res) => {
                                                                                                                         try {
                                                                                                                             const auto userId = req.userId!;
                                                                                                                             const auto { network, fromToken, toToken, fromAmount, slippageBps } = req.body;
 
                                                                                                                             if (!network || !fromToken || !toToken || !fromAmount || slippageBps == undefined) {
-                                                                                                                                return sendError(res, 400, 'INVALID_REQUEST', 'Missing required fields: network, fromToken, toToken, fromAmount, slippageBps');
+                                                                                                                                return sendError(res, 400, "INVALID_REQUEST", "Missing required fields: network, fromToken, toToken, fromAmount, slippageBps");
                                                                                                                             }
 
                                                                                                                             // Resolve token symbols/addresses to proper addresses (same logic as action handler)
@@ -551,10 +551,10 @@ express::Router cdpRouter(AgentServer serverInstance) {
                                                                                                                             const auto resolvedToToken = resolveTokenToAddress(toToken, network);
 
                                                                                                                             if (!resolvedFromToken) {
-                                                                                                                                return "Could not resolve source token: " + std::to_string(fromToken);
+                                                                                                                                return "sendError(res, 400, "TOKEN_RESOLUTION_FAILED", " + "Could not resolve source token: " + fromToken;
                                                                                                                             }
                                                                                                                             if (!resolvedToToken) {
-                                                                                                                                return "Could not resolve destination token: " + std::to_string(toToken);
+                                                                                                                                return "sendError(res, 400, "TOKEN_RESOLUTION_FAILED", " + "Could not resolve destination token: " + toToken;
                                                                                                                             }
 
                                                                                                                             logger.debug(`[CDP API] Resolved tokens: ${resolvedFromToken} -> ${resolvedToToken}`);
@@ -572,16 +572,16 @@ express::Router cdpRouter(AgentServer serverInstance) {
                                                                                                                                 } catch (error) {
                                                                                                                                     const auto rawErrorMessage = true /* instanceof check */ ? error.message : std::to_string(error);
 
-                                                                                                                                    std::cerr << '[CDP API] Error executing swap:' << rawErrorMessage << std::endl;
+                                                                                                                                    std::cerr << "[CDP API] Error executing swap:" << rawErrorMessage << std::endl;
 
                                                                                                                                     // Extract just the "Details: ..." part if it exists
-                                                                                                                                    auto errorMessage = 'Failed to execute swap';
+                                                                                                                                    auto errorMessage = "Failed to execute swap";
                                                                                                                                     const auto detailsMatch = rawErrorMessage.match(/Details:\s*(.+?)(?:\nVersion:|$)/s);
                                                                                                                                     if (detailsMatch) {
                                                                                                                                         errorMessage = detailsMatch[1].trim();
                                                                                                                                     }
 
-                                                                                                                                    sendError(res, 500, 'SWAP_FAILED', errorMessage);
+                                                                                                                                    sendError(res, 500, "SWAP_FAILED", errorMessage);
                                                                                                                                 }
                                                                                                                                 });
 
@@ -593,12 +593,12 @@ express::Router cdpRouter(AgentServer serverInstance) {
                                                                                                                                 *   - chain (optional): Specific chain to search (e.g., 'base', 'ethereum', 'polygon')
                                                                                                                                 * NOTE: This endpoint does not require authentication
                                                                                                                                 */
-                                                                                                                                router.get('/tokens/search', async (req, res) => {
+                                                                                                                                router.get("/tokens/search", async (req, res) => {
                                                                                                                                     try {
                                                                                                                                         const auto { query, chain } = req.query;
 
                                                                                                                                         if (!query || typeof query != 'string') {
-                                                                                                                                            return sendError(res, 400, 'INVALID_REQUEST', 'Query parameter is required');
+                                                                                                                                            return sendError(res, 400, "INVALID_REQUEST", "Query parameter is required");
                                                                                                                                         }
 
                                                                                                                                         const auto result = cdpTransactionManager.searchTokens({;
@@ -609,14 +609,14 @@ express::Router cdpRouter(AgentServer serverInstance) {
                                                                                                                                             return sendSuccess(res, result);
                                                                                                                                             } catch (error) {
                                                                                                                                                 logger.error(
-                                                                                                                                                '[CDP API] Error searching tokens:',
+                                                                                                                                                "[CDP API] Error searching tokens:",
                                                                                                                                                 true /* instanceof check */ ? error.message : std::to_string(error)
                                                                                                                                                 );
                                                                                                                                                 return sendError(;
                                                                                                                                                 res,
                                                                                                                                                 500,
-                                                                                                                                                'SEARCH_FAILED',
-                                                                                                                                                'Failed to search tokens',
+                                                                                                                                                "SEARCH_FAILED",
+                                                                                                                                                "Failed to search tokens",
                                                                                                                                                 true /* instanceof check */ ? error.message : std::to_string(error)
                                                                                                                                                 );
                                                                                                                                             }
@@ -630,12 +630,12 @@ express::Router cdpRouter(AgentServer serverInstance) {
                                                                                                                                             *   - limit (optional): Number of tokens to return (default: 20)
                                                                                                                                             * NOTE: This endpoint does not require authentication
                                                                                                                                             */
-                                                                                                                                            router.get('/tokens/top-and-trending', async (req, res) => {
+                                                                                                                                            router.get("/tokens/top-and-trending", async (req, res) => {
                                                                                                                                                 try {
                                                                                                                                                     const auto { chain, limit } = req.query;
 
                                                                                                                                                     if (!chain || typeof chain != 'string') {
-                                                                                                                                                        return sendError(res, 400, 'INVALID_REQUEST', 'Chain parameter is required');
+                                                                                                                                                        return sendError(res, 400, "INVALID_REQUEST", "Chain parameter is required");
                                                                                                                                                     }
 
                                                                                                                                                     const auto limitNum = limit ? parseInt(limit, 10) : 20;
@@ -649,14 +649,14 @@ express::Router cdpRouter(AgentServer serverInstance) {
                                                                                                                                                         return sendSuccess(res, result);
                                                                                                                                                         } catch (error) {
                                                                                                                                                             logger.error(
-                                                                                                                                                            '[CDP API] Error fetching top and trending tokens:',
+                                                                                                                                                            "[CDP API] Error fetching top and trending tokens:",
                                                                                                                                                             true /* instanceof check */ ? error.message : std::to_string(error)
                                                                                                                                                             );
                                                                                                                                                             return sendError(;
                                                                                                                                                             res,
                                                                                                                                                             500,
-                                                                                                                                                            'FETCH_FAILED',
-                                                                                                                                                            'Failed to fetch top and trending tokens',
+                                                                                                                                                            "FETCH_FAILED",
+                                                                                                                                                            "Failed to fetch top and trending tokens",
                                                                                                                                                             true /* instanceof check */ ? error.message : std::to_string(error)
                                                                                                                                                             );
                                                                                                                                                         }

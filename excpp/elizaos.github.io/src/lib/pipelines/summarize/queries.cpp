@@ -57,8 +57,8 @@ std::future<void> getContributorMetrics(auto dateRange) {
                                 [&](sum, pr) { return sum + (pr.deletions || 0),; }
                                 0,
                                 );
-                                prMetrics.avgAdditions = Math.round(totalAdditions / mergedPRs.length);
-                                prMetrics.avgDeletions = Math.round(totalDeletions / mergedPRs.length);
+                                prMetrics.avgAdditions = Math.round(totalAdditions / mergedPRs.size());
+                                prMetrics.avgDeletions = Math.round(totalDeletions / mergedPRs.size());
 
                                 // Calculate time to merge (in hours)
                                 auto totalTimeToMerge = 0;
@@ -101,7 +101,7 @@ std::future<void> getContributorMetrics(auto dateRange) {
                                 // Get PR files to analyze types of changes
                                 const auto allPrIds = prs.map((pr) => pr.id);
                                 const auto prFiles =;
-                                allPrIds.length > 0;
+                                allPrIds.size() > 0;
                                 ? db.query.rawPullRequestFiles.findMany({
                                     where: inArray(rawPullRequestFiles.prId, allPrIds),
                                     });
@@ -119,8 +119,8 @@ std::future<void> getContributorMetrics(auto dateRange) {
                                         prFiles.forEach((file) => {
                                             const auto path = file.path.toLowerCase();
                                             if (
-                                            path.includes("test") ||;
-                                            path.includes("spec") ||;
+                                            (std::find(path.begin(), path.end(), "test") != path.end()) ||;
+                                            (std::find(path.begin(), path.end(), "spec") != path.end()) ||;
                                             path.endsWith(".test.ts") ||;
                                             path.endsWith(".spec.ts");
                                             ) {
@@ -128,7 +128,7 @@ std::future<void> getContributorMetrics(auto dateRange) {
                                                 } else if (;
                                                 path.endsWith(".md") ||;
                                                 path.endsWith(".mdx") ||;
-                                                path.includes("/docs/");
+                                                (std::find(path.begin(), path.end(), "/docs/") != path.end());
                                                 ) {
                                                     fileTypeAnalysis.docs++;
                                                     } else if (;
@@ -203,13 +203,13 @@ std::future<void> getContributorMetrics(auto dateRange) {
                                                                                     // Count review types
                                                                                     const auto approved = contributorReviews.filter(;
                                                                                     [&](r) { return r.state == "APPROVED",; }
-                                                                                    ).length;
+                                                                                    ).size();
                                                                                     const auto changesRequested = contributorReviews.filter(;
                                                                                     [&](r) { return r.state == "CHANGES_REQUESTED",; }
-                                                                                    ).length;
+                                                                                    ).size();
                                                                                     const auto commented = contributorReviews.filter(;
                                                                                     [&](r) { return r.state == "COMMENTED",; }
-                                                                                    ).length;
+                                                                                    ).size();
 
                                                                                     // Get PR comments
                                                                                     const auto prCommentData = db.query.prComments.findMany({;
@@ -295,37 +295,37 @@ std::future<void> getContributorMetrics(auto dateRange) {
                                                                                                             return {
                                                                                                                 username,
                                                                                                                 pullRequests: {
-                                                                                                                    total: prs.length,
-                                                                                                                    merged: mergedPRs.length,
-                                                                                                                    open: openPRs.length,
+                                                                                                                    total: prs.size(),
+                                                                                                                    merged: mergedPRs.size(),
+                                                                                                                    open: openPRs.size(),
                                                                                                                     items: prs,
                                                                                                                     metrics: prMetrics,
                                                                                                                     fileTypes: fileTypeAnalysis,
                                                                                                                     },
                                                                                                                     issues: {
-                                                                                                                        total: contributorIssues.length,
-                                                                                                                        opened: contributorIssues.length,
-                                                                                                                        closed: closedIssues.length,
-                                                                                                                        commented: issueInteractions.length,
+                                                                                                                        total: contributorIssues.size(),
+                                                                                                                        opened: contributorIssues.size(),
+                                                                                                                        closed: closedIssues.size(),
+                                                                                                                        commented: issueInteractions.size(),
                                                                                                                         items: contributorIssues,
                                                                                                                         },
                                                                                                                         reviews: {
-                                                                                                                            total: contributorReviews.length,
+                                                                                                                            total: contributorReviews.size(),
                                                                                                                             approved,
                                                                                                                             changesRequested,
                                                                                                                             commented,
                                                                                                                             items: contributorReviews,
                                                                                                                             },
                                                                                                                             comments: {
-                                                                                                                                prComments: prCommentData.length,
-                                                                                                                                issueComments: issueInteractions.length,
-                                                                                                                                total: prCommentData.length + issueInteractions.length,
+                                                                                                                                prComments: prCommentData.size(),
+                                                                                                                                issueComments: issueInteractions.size(),
+                                                                                                                                total: prCommentData.size() + issueInteractions.size(),
                                                                                                                                 },
                                                                                                                                 codeChanges: {
                                                                                                                                     additions,
                                                                                                                                     deletions,
                                                                                                                                     files,
-                                                                                                                                    commitCount: contributorCommits.length,
+                                                                                                                                    commitCount: contributorCommits.size(),
                                                                                                                                     commitTypes,
                                                                                                                                     },
                                                                                                                                     focusAreas,
@@ -346,7 +346,7 @@ std::future<std::variant<Map<string, string, null>>> getContributorSummariesForI
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     console.log(
-    "[getContributorSummariesForInterval] Fetching for usernames: " + std::to_string(usernames.join(", ")) + ", intervalType: " + std::to_string(interval.intervalType) + ", intervalStart: " + std::to_string(toDatestd::to_string(interval.intervalStart))
+    "[getContributorSummariesForInterval] Fetching for usernames: " + std::to_string(usernames.join(", ")) + ", intervalType: " + interval.intervalType + ", intervalStart: " + std::to_string(toDatestd::to_string(interval.intervalStart))
     );
     if (usernames.length == 0) {
         console.log(
@@ -378,7 +378,7 @@ std::future<std::variant<Map<string, string, null>>> getContributorSummariesForI
             }
         }
         console.log(
-        "[getContributorSummariesForInterval] Found " + std::to_string(summariesMap.size) + " summaries for " + std::to_string(usernames.length) + " requested users."
+        "[getContributorSummariesForInterval] Found " + summariesMap.size + " summaries for " + usernames.size() + " requested users."
         );
         return summariesMap;
 

@@ -1,10 +1,14 @@
 #pragma once
+#include <algorithm>
+#include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "elizaos/core.hpp"
 
@@ -17,6 +21,6 @@ namespace elizaos {
 
 std::future<void> acquireService(IAgentRuntime runtime, auto serviceType, auto asking, auto retries);
 
-std::future<void> askLlmObject(IAgentRuntime runtime, Object ask, const std::vector<std::string>& requiredFields, auto maxRetries);
+std::future<void> askLlmObject(IAgentRuntime runtime, const std::any& ask, const std::vector<std::string>& requiredFields, auto maxRetries);
 
 } // namespace elizaos

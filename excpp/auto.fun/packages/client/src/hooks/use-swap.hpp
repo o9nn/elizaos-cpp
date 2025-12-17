@@ -1,10 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 #include "use-config-account.hpp"
 #include "use-mev-protection.hpp"
@@ -19,7 +21,7 @@ namespace elizaos {
 
 
 struct SwapParams {
-    std::variant<"buy", "sell"> style;
+    std::string style;
     double amount;
     std::string tokenAddress;
     std::optional<IToken> token;

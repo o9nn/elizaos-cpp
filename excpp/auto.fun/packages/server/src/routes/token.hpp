@@ -1,30 +1,33 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".db.hpp"
-#include ".externalToken.hpp"
-#include ".generation.hpp"
-#include ".mcap.hpp"
-#include ".ogImageGenerator.hpp"
-#include ".redis.hpp"
-#include ".s3Client.hpp"
-#include ".tokenSupplyHelpers.hpp"
-#include ".tools/normalizeParams.hpp"
-#include ".uploader.hpp"
-#include ".util.hpp"
-#include ".websocket-client.hpp"
+#include "db.hpp"
+#include "externalToken.hpp"
 #include "files.hpp"
+#include "generation.hpp"
+#include "mcap.hpp"
+#include "ogImageGenerator.hpp"
+#include "redis.hpp"
+#include "s3Client.hpp"
+#include "tokenSupplyHelpers.hpp"
+#include "tools/normalizeParams.hpp"
+#include "uploader.hpp"
+#include "util.hpp"
 #include "validators/global.hpp"
 #include "validators/tokenHoldersQuery.hpp"
 #include "validators/tokenQuery.hpp"
 #include "validators/tokenSearchQuery.hpp"
 #include "validators/tokenUpdateQuery.hpp"
+#include "websocket-client.hpp"
 
 namespace elizaos {
 
@@ -97,7 +100,7 @@ std::future<void> processSwapEvent(const std::any& swap, bool shouldEmitGlobal =
 std::future<void> processTokenInfo(PublicKey mintPublicKey, AccountInfo<Buffer> tokenInfo, Connection connection, const std::string& requestor);
 
 // Helper to check token balance directly on blockchain
-std::future<Response> checkBlockchainTokenBalance(const std::any& c, const std::string& address, auto checkMultipleNetworks);
+std::future<std::string> checkBlockchainTokenBalance(const std::any& c, const std::string& address, auto checkMultipleNetworks);
 
   // const limit = isSearching ? 5 : Math.min(requestedLimit, MAX_LIMIT);
 

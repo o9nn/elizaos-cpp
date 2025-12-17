@@ -1,11 +1,14 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
 #include "entities.hpp"
@@ -43,7 +46,7 @@ public:
     void stop();
     std::future<void> initialize();
     std::future<void> runPluginMigrations();
-    std::future<unknown> getConnection();
+    std::future<std::any> getConnection();
     void setSetting(const std::string& key, const std::variant<std::string, bool, std::any>& value, auto secret);
     std::variant<std::string, bool, std::any> getSetting(const std::string& key);
     void getConversationLength();

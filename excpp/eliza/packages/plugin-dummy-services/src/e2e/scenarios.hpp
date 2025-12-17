@@ -1,15 +1,18 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".lp/service.hpp"
-#include ".tokenData/service.hpp"
-#include ".wallet/service.hpp"
 #include "elizaos/core.hpp"
+#include "lp/service.hpp"
 #include "test-utils.hpp"
+#include "tokenData/service.hpp"
+#include "wallet/service.hpp"
 
 namespace elizaos {
 

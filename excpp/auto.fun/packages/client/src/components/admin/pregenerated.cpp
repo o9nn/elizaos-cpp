@@ -57,7 +57,7 @@ void AdminPregenerated() {
                             ],
                             queryFn: async () => {
                                 const auto params = new URLSearchParams({;
-                                    page: currentPage.toString(),
+                                    page: std::to_string(currentPage),
                                     limit: "50",
                                     sortBy,
                                     sortOrder,
@@ -72,7 +72,7 @@ void AdminPregenerated() {
                                     }
 
                                     const auto response = fetcher(;
-                                    "/api/admin/pregenerated?" + std::to_string(params.toString())
+                                    "/api/admin/pregenerated?" + std::to_string(std::to_string(params))
                                     "GET",
                                     );
                                     return response;
@@ -85,7 +85,7 @@ void AdminPregenerated() {
                                     // Delete mutation
                                     const auto deleteMutation = useMutation({;
                                         mutationFn: (id: string) =>
-                                        "/api/admin/pregenerated/" + std::to_string(id)
+                                        "fetcher(" + "/api/admin/pregenerated/" + id
                                         onSuccess: () => {
                                             toast.success("Token deleted successfully");
                                             queryClient.invalidateQueries({ queryKey: ["admin-pregenerated"] });
@@ -124,7 +124,7 @@ void AdminPregenerated() {
                                                                 // Edit token mutation
                                                                 const auto editMutation = useMutation({;
                                                                     mutationFn: (data: { id: string; updates: Partial<PreGeneratedToken> }) =>
-                                                                    "/api/admin/pregenerated/" + std::to_string(data.id)
+                                                                    "fetcher(" + "/api/admin/pregenerated/" + data.id
                                                                     onSuccess: () => {
                                                                         toast.success("Token updated successfully");
                                                                         queryClient.invalidateQueries({ queryKey: ["admin-pregenerated"] });
@@ -316,7 +316,7 @@ void AdminPregenerated() {
                 </tr>;
                 </thead>;
                 <tbody>;
-                {tokens.length == 0 ? (;
+                {tokens.size() == 0 ? (;
                 <tr>;
                 <td;
             colSpan={9}
@@ -398,7 +398,7 @@ void AdminPregenerated() {
     {totalPages > 1 && (;
     <div className="flex justify-between items-center mt-4">;
     <div className="text-sm text-autofun-text-secondary">;
-    Showing {tokens.length} of {totalItems} tokens;
+    Showing {tokens.size()} of {totalItems} tokens;
     </div>;
     <Pagination;
     pagination={{

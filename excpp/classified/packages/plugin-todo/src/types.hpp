@@ -1,9 +1,13 @@
 #pragma once
+#include <algorithm>
+#include <chrono>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -39,10 +43,10 @@ struct TodoData {
     double priority;
     bool isUrgent;
     bool isCompleted;
-    std::optional<Date> dueDate;
-    std::optional<Date> completedAt;
-    Date createdAt;
-    Date updatedAt;
+    std::optional<std::chrono::system_clock::time_point> dueDate;
+    std::optional<std::chrono::system_clock::time_point> completedAt;
+    std::chrono::system_clock::time_point createdAt;
+    std::chrono::system_clock::time_point updatedAt;
     TodoMetadata metadata;
     std::optional<std::vector<std::string>> tags;
 };
@@ -57,7 +61,7 @@ struct CreateTodoInput {
     std::string type;
     std::optional<double> priority;
     std::optional<bool> isUrgent;
-    std::optional<Date> dueDate;
+    std::optional<std::chrono::system_clock::time_point> dueDate;
     std::optional<TodoMetadata> metadata;
     std::optional<std::vector<std::string>> tags;
 };
@@ -69,8 +73,8 @@ struct UpdateTodoInput {
     std::optional<double> priority;
     std::optional<bool> isUrgent;
     std::optional<bool> isCompleted;
-    std::optional<Date> dueDate;
-    std::optional<Date> completedAt;
+    std::optional<std::chrono::system_clock::time_point> dueDate;
+    std::optional<std::chrono::system_clock::time_point> completedAt;
     std::optional<TodoMetadata> metadata;
 };
 

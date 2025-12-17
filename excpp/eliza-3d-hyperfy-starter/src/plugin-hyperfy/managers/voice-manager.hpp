@@ -1,15 +1,18 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".events.hpp"
-#include ".service.hpp"
-#include ".utils.hpp"
 #include "elizaos/core.hpp"
+#include "events.hpp"
 #include "guards.hpp"
+#include "service.hpp"
+#include "utils.hpp"
 
 namespace elizaos {
 
@@ -33,7 +36,7 @@ public:
 
 private:
     IAgentRuntime runtime_;
-    std::vector<Buffer> buffers_;
+    std::vector<std::vector<uint8_t>> buffers_;
     double totalLength_;
     double lastActive_;
     std::string transcriptionText_;

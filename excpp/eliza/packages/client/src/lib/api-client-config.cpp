@@ -7,14 +7,14 @@ namespace elizaos {
 ApiClientConfig createApiClientConfig() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto getLocalStorageApiKey = "eliza-api-key-" + std::to_string(window.location.origin);
+    const auto getLocalStorageApiKey = "() => " + "eliza-api-key-" + window.location.origin;
     const auto apiKey = localStorage.getItem(getLocalStorageApiKey());
 
     const ApiClientConfig config = {;
         baseUrl: window.location.origin,
         timeout: 30000,
         headers: {
-            Accept: 'application/json',
+            Accept: "application/json",
             },
             };
 
@@ -54,7 +54,7 @@ void resetElizaClient() {
 void updateApiClientApiKey(const std::string& newApiKey) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto getLocalStorageApiKey = "eliza-api-key-" + std::to_string(window.location.origin);
+    const auto getLocalStorageApiKey = "() => " + "eliza-api-key-" + window.location.origin;
 
     if (newApiKey) {
         localStorage.setItem(getLocalStorageApiKey(), newApiKey);

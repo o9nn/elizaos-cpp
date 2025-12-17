@@ -1,10 +1,14 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <chrono>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "service.hpp"
 
@@ -47,7 +51,7 @@ struct TokenData {
     std::optional<double> holders;
     std::optional<std::string> logoURI;
     std::optional<double> decimals;
-    std::optional<Date> lastUpdatedAt;
+    std::optional<std::chrono::system_clock::time_point> lastUpdatedAt;
     std::optional<std::any> raw;
 };
 

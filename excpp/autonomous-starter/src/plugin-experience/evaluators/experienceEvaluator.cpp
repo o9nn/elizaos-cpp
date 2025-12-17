@@ -82,16 +82,16 @@ std::string extractLearning(const std::string& text, const std::string& type) {
 
     // Generate learning based on type
     switch (type) {
-        case "correction":
+        // case "correction":
         return "Corrected approach works better than initial attempt";
-        case "discovery":
+        // case "discovery":
         const auto discovery = extractDiscovery(text);
         return discovery != "made a discovery";
         ? discovery;
-        "New capability or information discovered"
-        case "success":
+        ": " + "New capability or information discovered"
+        // case "success":
         return "This approach successfully completes the task";
-        default:
+        // default:
         return "Experience recorded for future reference";
     }
 

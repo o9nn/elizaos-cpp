@@ -11,11 +11,11 @@ std::future<std::string> assessMarketCondition(IAgentRuntime runtime) {
         // might be best to move this out of this function
         const auto tradeService = runtime.getService(ServiceTypes.AUTOFUN_TRADING);
         const auto solData = tradeService.dataService.getTokenMarketData(;
-        'So11111111111111111111111111111111111111112' // SOL address;
+        "So11111111111111111111111111111111111111112" // SOL address;
         );
 
         if (!solData.priceHistory || solData.priceHistory.length < 24) {
-            return 'neutral';
+            return "neutral";
         }
 
         const auto currentPrice = solData.price;
@@ -24,10 +24,10 @@ std::future<std::string> assessMarketCondition(IAgentRuntime runtime) {
 
         if (priceChange > 5) return 'bullish';
         if (priceChange < -5) return 'bearish';
-        return 'neutral';
+        return "neutral";
         } catch (error) {
-            std::cout << 'Error assessing market condition:' << error << std::endl;
-            return 'neutral';
+            std::cout << "Error assessing market condition:" << error << std::endl;
+            return "neutral";
         }
 
 }
@@ -39,11 +39,11 @@ double calculateVolatility(const std::vector<double>& priceHistory) {
 
     const auto returns = [];
     for (int i = 1; i < priceHistory.length; i++) {
-        returns.push(Math.log(priceHistory[i] / priceHistory[i - 1]));
+        returns.push_back(Math.log(priceHistory[i] / priceHistory[i - 1]));
     }
 
-    const auto mean = returns.reduce((a, b) => a + b) / returns.length;
-    const auto variance = returns.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / returns.length;
+    const auto mean = returns.reduce((a, b) => a + b) / returns.size();
+    const auto variance = returns.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / returns.size();
     return Math.sqrt(variance);
 
 }
@@ -56,7 +56,7 @@ double calculateDynamicSlippage(const std::string& amount, const std::any& quote
         const auto baseSlippage = 0.005;
 
         // Get price impact, default to 0 if not available
-        const auto priceImpact = Math.abs(parseFloat(quoteData.priceImpactPct || '0')) / 100;
+        const auto priceImpact = Math.abs(parseFloat(quoteData.priceImpactPct || "0")) / 100;
 
         // Parse amount and get proper decimals
         const auto amountNum = parseFloat(amount);

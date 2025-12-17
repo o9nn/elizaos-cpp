@@ -1,10 +1,13 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
 #include "elizaos/core.hpp"
@@ -23,12 +26,12 @@ std::future<void> initializeCanvas();
 class FaceRecognition {
 public:
     std::future<void> initialize();
-    Array< detectFaces(Buffer imageData, double width, double height);
-    Promise< recognizeFace(Float32Array descriptor);
-    std::future<std::string> addOrUpdateFace(Float32Array descriptor, std::optional<std::optional<FaceProfile>> attributes);
+    Array< detectFaces(const std::vector<uint8_t>& imageData, double width, double height);
+    Promise< recognizeFace(const std::vector<float>& descriptor);
+    std::future<std::string> addOrUpdateFace(const std::vector<float>& descriptor, std::optional<std::optional<FaceProfile>> attributes);
     FaceProfile getFaceProfile(const std::string& profileId);
     std::vector<FaceProfile> getAllProfiles();
-    double euclideanDistance(const std::variant<Float32Array, std::vector<double>>& a, const std::vector<double>& b);
+    double euclideanDistance(const std::variant<std::vector<float>, std::vector<double>>& a, const std::vector<double>& b);
     std::future<void> saveFaceLibrary(const std::string& path);
     std::future<void> loadFaceLibrary(const std::string& path);
 };

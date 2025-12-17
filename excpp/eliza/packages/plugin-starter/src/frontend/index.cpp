@@ -9,9 +9,9 @@ void TimeDisplay() {
     try {
 
         const auto { data, isLoading, error, refetch } = useQuery<TimeResponse>({;
-            queryKey: ['currentTime'],
+            queryKey: ["currentTime"],
             queryFn: async () => {
-                const auto response = std::to_string(apiBase) + "/api/time";
+                const auto response = "fetch(" + apiBase + "/api/time";
                 if (!response.ok) {
                     throw std::runtime_error('Failed to fetch time');
                 }
@@ -27,7 +27,7 @@ void TimeDisplay() {
                 if (error) {
                     return (;
                     <div className="text-red-600">;
-                Error fetching time: {true /* instanceof check */ ? error.message : 'Unknown error'}
+                Error fetching time: {true /* instanceof check */ ? error.message : "Unknown error"}
                 </div>;
                 );
             }
@@ -67,11 +67,11 @@ void ExampleRoute() {
 
     const auto config = (window).ELIZA_CONFIG | std::nullopt;
     const auto agentId = config.agentId;
-    const auto apiBase = config.apiBase || 'http://localhost:3000';
+    const auto apiBase = config.apiBase || "http://localhost:3000";
 
     // Apply dark mode to the root element
     React.useEffect(() => {
-        document.documentElement.classList.add('dark');
+        document.documentElement.classList.add("dark");
         }, []);
 
         if (!agentId) {

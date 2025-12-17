@@ -31,7 +31,7 @@ void ActivityItem(auto title, auto author, auto number, auto href, auto icon, au
     <div className="mt-1 flex items-center gap-2">;
     <Avatar className="h-4 w-4">;
     <AvatarImage;
-    "https://github.com/" + std::to_string(author) + ".png"
+    "src={" + "https://github.com/" + author + ".png"
     alt={author}
     />;
     <AvatarFallback>{author[0].toUpperCase()}</AvatarFallback>;

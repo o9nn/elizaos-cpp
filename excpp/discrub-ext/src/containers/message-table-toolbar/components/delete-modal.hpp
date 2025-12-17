@@ -1,17 +1,20 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include "...app/guards.hpp"
-#include "...components/cancel-button.hpp"
-#include "...components/modal-debug-message.hpp"
-#include "...components/pause-button.hpp"
-#include "...features/app/app-types.hpp"
-#include "...features/message/message-types.hpp"
-#include "..message-mock/message-mock.hpp"
+#include "app/guards.hpp"
+#include "components/cancel-button.hpp"
+#include "components/modal-debug-message.hpp"
+#include "components/pause-button.hpp"
+#include "features/app/app-types.hpp"
+#include "features/message/message-types.hpp"
+#include "message-mock/message-mock.hpp"
 
 namespace elizaos {
 

@@ -1,11 +1,14 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
 #include "elizaos/core.hpp"
@@ -24,7 +27,7 @@ using DrizzleDB = std::variant<NodePgDatabase, PgliteDatabase>;
  * Drizzle wraps PostgreSQL errors and only shows the SQL query in the error message,
  * hiding the actual error in the cause property.
  */
-std::string extractErrorMessage(unknown error);
+std::string extractErrorMessage(const std::any& error);
 
 /**
  * Extract detailed error information including stack trace for logging

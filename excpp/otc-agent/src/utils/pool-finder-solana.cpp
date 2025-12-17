@@ -4,15 +4,15 @@
 
 namespace elizaos {
 
-bool isRateLimitError(unknown error) {
+bool isRateLimitError(const std::any& error) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (error instanceof Error) {
         const auto message = error.message.toLowerCase();
         return (;
-        message.includes("429") ||;
-        message.includes("rate limit") ||;
-        message.includes("too many requests");
+        (std::find(message.begin(), message.end(), "429") != message.end()) ||;
+        (std::find(message.begin(), message.end(), "rate limit") != message.end()) ||;
+        (std::find(message.begin(), message.end(), "too many requests") != message.end());
         );
     }
     return false;
@@ -26,11 +26,11 @@ std::future<void> delay(double ms) {
 
 }
 
-std::future<std::optional<SolanaPoolInfo>> findBestSolanaPool(const std::string& tokenMint, std::variant<"mainnet", "devnet"> cluster = "mainnet", std::optional<Connection> rpcConnection) {
+std::future<std::optional<SolanaPoolInfo>> findBestSolanaPool(const std::string& tokenMint, std::string cluster = "mainnet", std::optional<Connection> rpcConnection) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        const auto cacheKey = "solana-pool:" + std::to_string(cluster) + ":" + std::to_string(tokenMint);
+        const auto cacheKey = "solana-pool:" + cluster + ":" + tokenMint;
 
         // Check cache first
         const auto cached = getCached<SolanaPoolInfo | nullptr>(cacheKey);
@@ -119,7 +119,7 @@ std::future<std::optional<SolanaPoolInfo>> findBestSolanaPool(const std::string&
     }
 }
 
-std::future<std::vector<SolanaPoolInfo>> findPumpSwapPools(Connection connection, PublicKey mint, const std::variant<"mainnet", "devnet">& cluster, bool strict = false) {
+std::future<std::vector<SolanaPoolInfo>> findPumpSwapPools(Connection connection, PublicKey mint, const std::string& cluster, bool strict = false) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -193,7 +193,7 @@ std::future<std::vector<SolanaPoolInfo>> findPumpSwapPools(Connection connection
                                     const auto poolQuoteTokenAccount = readPubkey(171);
 
                                     // PumpSwap typically pairs with WSOL (SOL)
-                                    std::variant<"SOL", "USDC"> baseToken = nullptr;
+                                    std::string baseToken = nullptr;
                                     std::optional<PublicKey> otherMint = nullptr;
 
                                     if (quoteMint.equals(USDC_MINT) || baseMint.equals(USDC_MINT)) {
@@ -294,7 +294,7 @@ std::future<std::vector<SolanaPoolInfo>> findPumpSwapPools(Connection connection
                                                         ? poolQuoteTokenAccount.toBase58();
                                                         : poolBaseTokenAccount.toBase58();
 
-                                                        pools.push({
+                                                        pools.push_back({
                                                             protocol: "PumpSwap",
                                                             address: account.pubkey.toBase58(),
                                                             tokenA: baseMint.toBase58(),
@@ -329,7 +329,7 @@ std::future<std::vector<SolanaPoolInfo>> findPumpSwapPools(Connection connection
     }
 }
 
-std::future<std::vector<SolanaPoolInfo>> findRaydiumPools(Connection connection, PublicKey mint, const std::variant<"mainnet", "devnet">& cluster, bool strict = false) {
+std::future<std::vector<SolanaPoolInfo>> findRaydiumPools(Connection connection, PublicKey mint, const std::string& cluster, bool strict = false) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -396,7 +396,7 @@ std::future<std::vector<SolanaPoolInfo>> findRaydiumPools(Connection connection,
                             const auto coinMint = readPubkey(400);
                             const auto pcMint = readPubkey(432);
 
-                            std::variant<"SOL", "USDC"> baseToken = nullptr;
+                            std::string baseToken = nullptr;
                             std::optional<PublicKey> otherMint = nullptr;
 
                             if (coinMint.equals(USDC_MINT) || pcMint.equals(USDC_MINT)) {
@@ -469,7 +469,7 @@ std::future<std::vector<SolanaPoolInfo>> findRaydiumPools(Connection connection,
                                                     }
                                                 }
 
-                                                pools.push({
+                                                pools.push_back({
                                                     protocol: "Raydium",
                                                     address: account.pubkey.toBase58(),
                                                     tokenA: coinMint.toBase58(),

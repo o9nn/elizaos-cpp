@@ -19,14 +19,14 @@ void Modal(auto onClose, auto closeOnBackdropClick, auto closeOnEsc, auto showCl
             }
             };
 
-            document.addEventListener('keydown', handleEsc);
-            return [&]() { return document.removeEventListener('keydown', handleEsc); };
+            document.addEventListener("keydown", handleEsc);
+            return [&]() { return document.removeEventListener("keydown", handleEsc); };
             }, [closeOnEsc, onClose]);
 
             // Prevent body scroll when modal is open
             useEffect(() => {
                 const auto originalOverflow = document.body.style.overflow;
-                document.body.style.overflow = 'hidden';
+                document.body.style.overflow = "hidden";
 
                 return [&]() {;
                     document.body.style.overflow = originalOverflow;
@@ -43,9 +43,9 @@ void Modal(auto onClose, auto closeOnBackdropClick, auto closeOnEsc, auto showCl
                         <div;
                         className="fixed inset-0 z-[9998] flex items-center justify-center bg-black/80  p-4";
                     onClick={handleBackdropClick}
-                style={{ pointerEvents: 'auto' }}
+                style={{ pointerEvents: "auto" }}
                 >;
-                "bg-background rounded-lg w-full max-h-[90vh] p-1.5 relative " + std::to_string(className)
+                "<div className={" + "bg-background rounded-lg w-full max-h-[90vh] p-1.5 relative " + className
             {/* Close button - positioned above content with better visibility */}
             {showCloseButton && (;
             <button;
@@ -58,7 +58,7 @@ void Modal(auto onClose, auto closeOnBackdropClick, auto closeOnEsc, auto showCl
     )}
 
     {/* Modal content - with proper overflow handling, allow dropdowns to extend beyond */}
-    <div className="bg-pop rounded-lg p-4 sm:p-6" style={{ overflow: 'visible' }}>
+    <div className="bg-pop rounded-lg p-4 sm:p-6" style={{ overflow: "visible" }}>
     {children}
     </div>;
     </div>;

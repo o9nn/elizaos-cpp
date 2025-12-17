@@ -1,10 +1,14 @@
 #pragma once
+#include <algorithm>
+#include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "elizaos/core.hpp"
 
@@ -52,7 +56,7 @@ public:
     std::future<TransactionReceipt> getTransactionReceipt(const std::string& txHash, std::optional<std::string> chain);
     std::future<TransactionStatus> getTransactionStatus(const std::string& txHash, std::optional<std::string> chain);
     Promise< getTransactionReceiptStatus(const std::string& txHash, std::optional<std::string> chain);
-    std::future<std::unordered_map<std::string, unknown>> getTransactionByHash(const std::string& txHash, std::optional<std::string> chain);
+    std::future<std::unordered_map<std::string, std::any>> getTransactionByHash(const std::string& txHash, std::optional<std::string> chain);
 };
 
 struct EtherscanFetchOptions {

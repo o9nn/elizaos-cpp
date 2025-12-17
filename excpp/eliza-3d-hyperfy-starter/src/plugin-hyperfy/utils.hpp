@@ -1,11 +1,13 @@
 #pragma once
-#include <any>
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -15,9 +17,7 @@ namespace elizaos {
 
 
 
-std::future<std::string> hashFileBuffer(Buffer buffer);
-
-std::future<Buffer> convertToAudioBuffer(const std::any& speechResponse);
+std::future<std::string> hashFileBuffer(const std::vector<uint8_t>& buffer);
 
 std::string getModuleDirectory();
 

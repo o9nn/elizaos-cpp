@@ -12,7 +12,7 @@ void UserProfile(auto monthlySummaries, auto weeklySummaries, auto roleTags, aut
     <div className="items-star flex flex-col gap-4 sm:flex-row">
     <Avatar className="h-20 w-20">;
     <AvatarImage;
-    "https://github.com/" + std::to_string(username) + ".png"
+    "src={" + "https://github.com/" + username + ".png"
     alt={username}
     />;
     <AvatarFallback>{username[0].toUpperCase()}</AvatarFallback>;
@@ -27,7 +27,7 @@ void UserProfile(auto monthlySummaries, auto weeklySummaries, auto roleTags, aut
     (level-{totalLevel});
     </span>;
 
-    {linkedWallets.length > 0 && (;
+    {linkedWallets.size() > 0 && (;
     <TooltipProvider>;
     <Tooltip>;
     <TooltipTrigger asChild>;
@@ -47,7 +47,7 @@ void UserProfile(auto monthlySummaries, auto weeklySummaries, auto roleTags, aut
     </span>;
     </div>;
     <a;
-    "https://github.com/" + std::to_string(username)
+    "href={" + "https://github.com/" + username
     target="_blank";
     rel="noopener noreferrer";
     className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-secondary transition-colors hover:bg-secondary/80"
@@ -76,7 +76,7 @@ void UserProfile(auto monthlySummaries, auto weeklySummaries, auto roleTags, aut
     </div>;
     </div>;
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-    {monthlySummaries.length > 0 && (;
+    {monthlySummaries.size() > 0 && (;
     <SummaryCard;
     summaries={monthlySummaries}
     intervalType="month";
@@ -84,7 +84,7 @@ void UserProfile(auto monthlySummaries, auto weeklySummaries, auto roleTags, aut
     />;
     )}
 
-    {weeklySummaries.length > 0 && (;
+    {weeklySummaries.size() > 0 && (;
     <SummaryCard;
     summaries={weeklySummaries}
     intervalType="week";
@@ -92,8 +92,8 @@ void UserProfile(auto monthlySummaries, auto weeklySummaries, auto roleTags, aut
     />;
     )}
     {/* Daily Activity Section */}
-    {dailyActivity && dailyActivity.length > 0 && (;
-    "md:row-span-2"
+    {dailyActivity && dailyActivity.size() > 0 && (;
+    "<div className={" + "md:row-span-2"
     <DailyActivity data={dailyActivity} />;
     </div>;
     )}

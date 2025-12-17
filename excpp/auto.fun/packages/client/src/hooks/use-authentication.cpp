@@ -37,7 +37,7 @@ void useAuthentication() {
                 if (newToken != authToken) {
                     if (newToken) {
                         try {
-                            const auto parsedToken = JSON.parse(newToken);
+                            const auto parsedToken = /* JSON.parse */ newToken;
                             // Set the flag to prevent recursive events
                             isSettingToken.current = true;
                             setAuthToken(parsedToken);
@@ -73,7 +73,7 @@ void useAuthentication() {
                                         }
                                     }
                                     if (connected && publicKey) {
-                                        return publicKey.toString();
+                                        return std::to_string(publicKey);
                                     }
                                     return nullptr;
                                     };
@@ -87,7 +87,7 @@ void useAuthentication() {
                                                 return { authenticated: false }
                                             }
                                             try {
-                                                const auto response = std::to_string(env.apiUrl) + "/api/auth-status";
+                                                const auto response = "fetchWithAuth(" + env.apiUrl + "/api/auth-status";
                                                     method: "GET",
                                                     });
 
@@ -199,8 +199,8 @@ void useAuthentication() {
                                                                                         try {
                                                                                             if (tokenToRevoke) {
                                                                                                 const auto headers = new Headers();
-                                                                                                "Bearer " + std::to_string(tokenToRevoke);
-                                                                                                std::to_string(env.apiUrl) + "/api/logout";
+                                                                                                "headers.set(\"Authorization\", " + "Bearer " + tokenToRevoke;
+                                                                                                "fetch(" + env.apiUrl + "/api/logout";
                                                                                                     method: "POST",
                                                                                                     headers: headers,
                                                                                                     credentials: "include",

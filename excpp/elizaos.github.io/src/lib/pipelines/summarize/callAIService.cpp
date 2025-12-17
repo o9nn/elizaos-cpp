@@ -15,7 +15,7 @@ std::future<std::string> callAIService(const std::string& prompt, AISummaryConfi
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "Bearer " + std::to_string(config.apiKey)
+                    "Authorization: " + "Bearer " + config.apiKey
                     "HTTP-Referer": process.env.SITE_URL || "https://elizaos.github.io",
                     "X-Title": process.env.SITE_NAME || "ElizaOS Leaderboard",
                     },

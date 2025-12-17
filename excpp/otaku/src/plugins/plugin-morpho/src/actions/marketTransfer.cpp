@@ -8,19 +8,19 @@ std::string getOperationEmoji(const std::string& intent) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     switch (intent) {
-        case "supply":
+        // case "supply":
         return "🏦";
-        case "supplyCollateral":
+        // case "supplyCollateral":
         return "🔐";
-        case "borrow":
+        // case "borrow":
         return "💸";
-        case "repay":
+        // case "repay":
         return "💰";
-        case "withdraw":
+        // case "withdraw":
         return "📤";
-        case "withdrawCollateral":
+        // case "withdrawCollateral":
         return "🔓";
-        default:
+        // default:
         return "⚡";
     }
 
@@ -30,19 +30,19 @@ std::string getOperationDescription(const std::string& intent) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     switch (intent) {
-        case "supply":
+        // case "supply":
         return "Supply (lend assets to earn yield)";
-        case "supplyCollateral":
+        // case "supplyCollateral":
         return "Supply Collateral (secure borrowing position)";
-        case "borrow":
+        // case "borrow":
         return "Borrow (borrow assets against collateral)";
-        case "repay":
+        // case "repay":
         return "Repay (repay borrowed assets)";
-        case "withdraw":
+        // case "withdraw":
         return "Withdraw (withdraw supplied assets)";
-        case "withdrawCollateral":
+        // case "withdrawCollateral":
         return "Withdraw Collateral (remove collateral)";
-        default:
+        // default:
         return "Market Operation";
     }
 

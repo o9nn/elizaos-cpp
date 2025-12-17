@@ -25,7 +25,7 @@ std::future<std::string> extractPluginNameFromMessage(IAgentRuntime runtime, con
 
     // Try using AI to extract plugin name
     try {
-        const auto prompt = "Extract the plugin name from this user message about plugin configuration: "" + std::to_string(text);
+        const auto prompt = "Extract the plugin name from this user message about plugin configuration: \"" + text;
 
         If the user mentions a specific plugin name, return just the plugin name (lowercase, no spaces).;
         If no specific plugin is mentioned, return "unknown".;
@@ -36,7 +36,7 @@ std::future<std::string> extractPluginNameFromMessage(IAgentRuntime runtime, con
         - "I want to configure twitter" → "twitter";
         - "setup plugin environment variables" → "unknown";
 
-        Plugin name:`;
+        "Plugin name:"
 
         const auto result = runtime.useModel("text", {;
             prompt,
@@ -48,8 +48,8 @@ std::future<std::string> extractPluginNameFromMessage(IAgentRuntime runtime, con
             if (
             extracted &&;
             extracted != "unknown" &&;
-            extracted.length > 0 &&;
-            extracted.length < 50;
+            extracted.size() > 0 &&;
+            extracted.size() < 50;
             ) {
                 return extracted;
             }

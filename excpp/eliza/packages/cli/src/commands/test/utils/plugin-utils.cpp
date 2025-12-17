@@ -16,20 +16,20 @@ std::future<std::vector<Plugin>> loadPluginDependencies(DirectoryInfo projectInf
     if (
     project.isPlugin &&;
     project.pluginModule.dependencies &&;
-    project.pluginModule.dependencies.length > 0;
+    project.pluginModule.dependencies.size() > 0;
     ) {
-        const auto projectPluginsPath = path.join(process.cwd(), '.eliza', 'plugins');
+        const auto projectPluginsPath = path.join(process.cwd(), ".eliza", "plugins");
         for (const auto& dependency : project.pluginModule.dependencies)
-            const auto pluginPath = path.join(projectPluginsPath, 'node_modules', dependency);
+            const auto pluginPath = path.join(projectPluginsPath, "node_modules", dependency);
             if (fs.existsSync(pluginPath)) {
                 try {
                     // Dependencies from node_modules are pre-built. We just need to load them.
                     const auto pluginProject = loadProject(pluginPath);
                     if (pluginProject.pluginModule) {
-                        dependencyPlugins.push(pluginProject.pluginModule);
+                        dependencyPlugins.push_back(pluginProject.pluginModule);
                     }
                     } catch (error) {
-                        std::cerr << "Failed to load or build dependency " + std::to_string(dependency) + ":" << error << std::endl;
+                        std::cerr << "Failed to load or build dependency " + dependency + ":" << error << std::endl;
                     }
                 }
             }

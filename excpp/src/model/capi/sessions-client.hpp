@@ -1,11 +1,14 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -39,7 +42,7 @@ class SessionsClient {
 public:
     SessionsClient(std::optional<std::string> endpoint, SessionUploadOptions options = {});
     std::future<bool> uploadSessionLog(SessionLogData logData, SessionUploadOptions options = {});
-    std::future<Response> performUpload(const std::string& endpoint, SessionLogData logData, std::optional<double> timeoutMs);
+    std::future<std::string> performUpload(const std::string& endpoint, SessionLogData logData, std::optional<double> timeoutMs);
     std::future<void> delay(double ms);
     std::future<bool> healthCheck(std::optional<std::string> endpoint);
 

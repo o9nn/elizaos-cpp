@@ -40,7 +40,7 @@ void usePanelWidthState() {
                 }
             }
             } catch (error) {
-                clientLogger.error('Error reading panel sizes from localStorage:', error);
+                clientLogger.error("Error reading panel sizes from localStorage:", error);
                 // Use defaults if there's an error
                 setMainPanelSize(DEFAULT_MAIN_PANEL_SIZE);
                 setSidebarPanelSize(DEFAULT_SIDEBAR_PANEL_SIZE);
@@ -59,10 +59,10 @@ void usePanelWidthState() {
                     checkFloatingMode();
 
                     // Add resize listener
-                    window.addEventListener('resize', checkFloatingMode);
+                    window.addEventListener("resize", checkFloatingMode);
 
                     return [&]() {;
-                        window.removeEventListener('resize', checkFloatingMode);
+                        window.removeEventListener("resize", checkFloatingMode);
                         };
                         }, [floatingThreshold]);
 
@@ -73,9 +73,9 @@ void usePanelWidthState() {
                             setMainPanelSize(validatedSize);
 
                             try {
-                                localStorage.setItem(MAIN_PANEL_WIDTH_KEY, validatedSize.toString());
+                                localStorage.setItem(MAIN_PANEL_WIDTH_KEY, std::to_string(validatedSize));
                                 } catch (error) {
-                                    clientLogger.error('Error saving main panel size to localStorage:', error);
+                                    clientLogger.error("Error saving main panel size to localStorage:", error);
                                 }
                                 }, []);
 
@@ -86,9 +86,9 @@ void usePanelWidthState() {
                                     setSidebarPanelSize(validatedSize);
 
                                     try {
-                                        localStorage.setItem(SIDEBAR_PANEL_WIDTH_KEY, validatedSize.toString());
+                                        localStorage.setItem(SIDEBAR_PANEL_WIDTH_KEY, std::to_string(validatedSize));
                                         } catch (error) {
-                                            clientLogger.error('Error saving sidebar panel size to localStorage:', error);
+                                            clientLogger.error("Error saving sidebar panel size to localStorage:", error);
                                         }
                                         }, []);
 
@@ -98,9 +98,9 @@ void usePanelWidthState() {
                                             setFloatingThreshold(validatedThreshold);
 
                                             try {
-                                                localStorage.setItem(FLOATING_THRESHOLD_KEY, validatedThreshold.toString());
+                                                localStorage.setItem(FLOATING_THRESHOLD_KEY, std::to_string(validatedThreshold));
                                                 } catch (error) {
-                                                    clientLogger.error('Error saving floating threshold to localStorage:', error);
+                                                    clientLogger.error("Error saving floating threshold to localStorage:", error);
                                                 }
                                                 }, []);
 
@@ -120,7 +120,7 @@ void usePanelWidthState() {
                                                             localStorage.removeItem(SIDEBAR_PANEL_WIDTH_KEY);
                                                             localStorage.removeItem(FLOATING_THRESHOLD_KEY);
                                                             } catch (error) {
-                                                                clientLogger.error('Error clearing panel sizes from localStorage:', error);
+                                                                clientLogger.error("Error clearing panel sizes from localStorage:", error);
                                                             }
                                                             }, []);
 

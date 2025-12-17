@@ -34,9 +34,9 @@ std::string extractSearchQuery(const std::string& text) {
             auto query = match[1].trim();
 
             // Clean up common artifacts
-            query = query.replace(/\?+$/, ''); // Remove trailing question marks;
-            query = query.replace(/^(do|handle|manage|work\s+with)\s+/i, ''); // Remove action words;
-            query = query.replace(/\s+/g, ' '); // Normalize whitespace;
+            query = query.replace(/\?+$/, ""); // Remove trailing question marks;
+            query = query.replace(/^(do|handle|manage|work\s+with)\s+/i, ""); // Remove action words;
+            query = query.replace(/\s+/g, " "); // Normalize whitespace;
 
             if (query.length > 2) {
                 return query;
@@ -50,7 +50,7 @@ std::string extractSearchQuery(const std::string& text) {
     );
 
     if (techKeywords && techKeywords.length > 0) {
-        return techKeywords.join(' ');
+        return techKeywords.join(" ");
     }
 
     return nullptr;

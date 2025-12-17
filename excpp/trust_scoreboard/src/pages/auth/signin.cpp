@@ -58,13 +58,13 @@ void SignIn() {
                     id="telegram-login-container";
                 className={styles.discordButton}
                 style={{
-                    backgroundColor: '#54a9eb',
-                    color: 'white',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    padding: '14px 48px',
-                    borderRadius: '1000px',
+                    backgroundColor: "#54a9eb",
+                    color: "white",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    padding: "14px 48px",
+                    borderRadius: "1000px",
                 }}
                 >;
                 </div>;

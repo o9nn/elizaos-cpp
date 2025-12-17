@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void log(const std::string& category, const std::string& message, std::optional<std::unordered_map<std::string, unknown>> data) {
+void log(const std::string& category, const std::string& message, std::optional<std::unordered_map<std::string, std::any>> data) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto prefix = {;
@@ -17,10 +17,10 @@ void log(const std::string& category, const std::string& message, std::optional<
         TX: "📝",
         }[category] || "•";
 
-        std::cout << std::to_string(prefix) + " " + std::to_string(message) << std::endl;
+        std::cout << prefix + " " + message << std::endl;
         if (data) {
             Object.entries(data).forEach(([key, value]) => {
-                std::cout << "   " + std::to_string(key) + ": " + std::to_string(value) << std::endl;
+                std::cout << "   " + key + ": " + value << std::endl;
                 });
             }
 
@@ -30,7 +30,7 @@ void section(const std::string& title) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     std::cout << "\n" + "═".repeat(70) << std::endl;
-    std::cout << "  " + std::to_string(title) << std::endl;
+    std::cout << "  " + title << std::endl;
     std::cout << "═".repeat(70) + "\n" << std::endl;
 
 }
@@ -54,7 +54,7 @@ std::future<void> validateEVM() {
         }
         log("SUCCESS", "OTC contract deployed", {
             address: OTC_ADDRESS,
-            std::to_string(code.length) + " chars"
+            "bytecodeSize: " + code.size() + " chars"
             });
 
             // 2. Read contract configuration (sequential to avoid rate limits)
@@ -108,7 +108,7 @@ std::future<void> validateEVM() {
                                             log("INFO", "Contract State:", {
                                                 "Total Consignments": Number(nextConsignmentId) - 1,
                                                 "Total Offers": Number(nextOfferId) - 1,
-                                                "$" + std::to_string(Number(minUsdAmount) / 1e8)
+                                                "\"Min USD Amount\": " + "$" + std::to_string(Number(minUsdAmount) / 1e8)
                                                 "Agent": agent,
                                                 "Required Approvals": Number(requiredApprovals),
                                                 "Approver Fulfill Only": requireApproverToFulfill,
@@ -119,7 +119,7 @@ std::future<void> validateEVM() {
 
                                                 const auto numConsignments = Number(nextConsignmentId) - 1;
                                                 if (numConsignments > 0) {
-                                                    "Found " + std::to_string(numConsignments) + " consignments";
+                                                    "log(\"INFO\", " + "Found " + numConsignments + " consignments";
 
                                                     try {
                                                         delay(500);
@@ -130,7 +130,7 @@ std::future<void> validateEVM() {
                                                             functionName: "consignments",
                                                             args: [1n],
                                                             }) as [;
-                                                            "0x" + std::to_string(string)
+                                                            "0x" + string
                                                             number, number, number, number, bigint, bigint, number, boolean, bigint;
                                                             ];
 
@@ -140,8 +140,8 @@ std::future<void> validateEVM() {
                                                                 "Total Amount": formatEther(consignment[2]),
                                                                 "Remaining": formatEther(consignment[3]),
                                                                 "Is Negotiable": consignment[4],
-                                                                std::to_string(consignment[5] / 100) + "%"
-                                                                std::to_string(consignment[6]) + " days"
+                                                                "\"Fixed Discount\": " + std::to_string(consignment[5] / 100) + "%"
+                                                                "\"Fixed Lockup\": " + std::to_string(consignment[6]) + " days"
                                                                 "Is Active": consignment[14],
                                                                 });
                                                                 } catch {
@@ -156,7 +156,7 @@ std::future<void> validateEVM() {
 
                                                                 const auto numOffers = Number(nextOfferId) - 1;
                                                                 if (numOffers > 0) {
-                                                                    "Found " + std::to_string(numOffers) + " offers";
+                                                                    "log(\"INFO\", " + "Found " + numOffers + " offers";
 
                                                                     try {
                                                                         delay(500);
@@ -167,16 +167,16 @@ std::future<void> validateEVM() {
                                                                             functionName: "offers",
                                                                             args: [BigInt(numOffers)],
                                                                             }) as [;
-                                                                            "0x" + std::to_string(string)
+                                                                            "bigint, " + "0x" + string
                                                                             bigint, bigint, number, boolean, boolean, boolean, boolean, Address, bigint;
                                                                             ];
 
-                                                                            "Latest Offer #" + std::to_string(numOffers) + ":"
+                                                                            "log(\"INFO\", " + "Latest Offer #" + numOffers + ":"
                                                                                 "Consignment ID": Number(latestOffer[0]),
                                                                                 "Beneficiary": latestOffer[2],
                                                                                 "Token Amount": formatEther(latestOffer[3]),
-                                                                                std::to_string(Number(latestOffer[4]) / 100) + "%"
-                                                                                "$" + std::to_string(Number(latestOffer[7]) / 1e8)
+                                                                                "\"Discount\": " + std::to_string(Number(latestOffer[4]) / 100) + "%"
+                                                                                "\"Price (8 decimals)\": " + "$" + std::to_string(Number(latestOffer[7]) / 1e8)
                                                                                 "Currency": latestOffer[10] == 0 ? "ETH" : "USDC",
                                                                                 "Approved": latestOffer[11],
                                                                                 "Paid": latestOffer[12],
@@ -196,7 +196,7 @@ std::future<void> validateEVM() {
                                                                                 const auto privateKey = process.env.MAINNET_PRIVATE_KEY;
                                                                                 if (privateKey) {
                                                                                     try {
-                                                                                        const auto account = "0x" + std::to_string(string);
+                                                                                        const auto account = "privateKeyToAccount(privateKey as " + "0x" + string;
                                                                                         delay(500);
                                                                                         const auto balance = publicClient.getBalance({ address: account.address });
                                                                                         delay(500);
@@ -231,11 +231,11 @@ std::future<void> validateEVM() {
                                                                                                 log("CHECK", "Testing price feeds via backend...");
 
                                                                                                 try {
-                                                                                                    const auto priceResponse = std::to_string(BACKEND_URL) + "/api/tokens";
+                                                                                                    const auto priceResponse = "fetch(" + BACKEND_URL + "/api/tokens";
                                                                                                     if (priceResponse.ok) {
                                                                                                         const auto tokens = priceResponse.json();
                                                                                                         log("SUCCESS", "Backend is responding", {
-                                                                                                            "Token count": Array.isArray(tokens) ? tokens.length : "N/A"
+                                                                                                            "Token count": Array.isArray(tokens) ? tokens.size() : "N/A"
                                                                                                             });
                                                                                                             } else {
                                                                                                                 log("WARNING", "Backend not responding - ensure server is running");
@@ -271,7 +271,7 @@ std::future<void> validateSolana() {
     log("SUCCESS", "OTC program deployed", {
         "Program ID": SOLANA_PROGRAM_ID,
         "Executable": programInfo.executable,
-        std::to_string(programInfo.data.length) + " bytes"
+        "\"Data size\": " + programInfo.data.size() + " bytes"
         });
 
         // 2. Verify desk account
@@ -283,7 +283,7 @@ std::future<void> validateSolana() {
         }
         log("SUCCESS", "Desk account exists", {
             "Desk": SOLANA_DESK,
-            std::to_string(deskInfo.data.length) + " bytes"
+            "\"Data size\": " + deskInfo.data.size() + " bytes"
             "Lamports": deskInfo.lamports / LAMPORTS_PER_SOL,
             });
 
@@ -296,7 +296,7 @@ std::future<void> validateSolana() {
                 log("INFO", "Expected path", { path: idlPath });
                 } else {
                     try {
-                        const auto idl = JSON.parse(fs.readFileSync(idlPath, "utf8"));
+                        const auto idl = /* JSON.parse */ fs.readFileSync(idlPath, "utf8");
 
                         // Create a dummy wallet for read-only operations
                         const auto dummyKeypair = Keypair.generate();
@@ -330,10 +330,10 @@ std::future<void> validateSolana() {
                                 "Owner": deskAccount.owner.toBase58(),
                                 "Agent": deskAccount.agent.toBase58(),
                                 "USDC Mint": deskAccount.usdcMint.toBase58(),
-                                "Next Consignment ID": deskAccount.nextConsignmentId.toString(),
-                                "Next Offer ID": deskAccount.nextOfferId.toString(),
-                                "$" + std::to_string(deskAccount.minUsdAmount8d.toNumber() / 1e8)
-                                std::to_string(deskAccount.quoteExpirySecs.toNumber() / 60) + " minutes"
+                                "Next Consignment ID": deskAccount.std::to_string(nextConsignmentId),
+                                "Next Offer ID": deskAccount.std::to_string(nextOfferId),
+                                "\"Min USD (8d)\": " + "$" + std::to_string(deskAccount.minUsdAmount8d.toNumber() / 1e8)
+                                "\"Quote Expiry\": " + std::to_string(deskAccount.quoteExpirySecs.toNumber() / 60) + " minutes"
                                 "Paused": deskAccount.paused,
                                 "Restrict Fulfill": deskAccount.restrictFulfill,
                                 });
@@ -349,7 +349,7 @@ std::future<void> validateSolana() {
                                     });
 
                                     if (tokenRegistries.length > 0) {
-                                        "Found " + std::to_string(tokenRegistries.length) + " potential token registries";
+                                        "log(\"INFO\", " + "Found " + tokenRegistries.size() + " potential token registries";
                                         } else {
                                             log("WARNING", "No token registries found - no tokens registered on desk");
                                         }
@@ -369,7 +369,7 @@ std::future<void> validateSolana() {
                                             try {
                                                 auto keypairBytes: Uint8Array;
                                                 if (privateKey.startsWith("[")) {
-                                                    keypairBytes = Uint8Array.from(JSON.parse(privateKey));
+                                                    keypairBytes = Uint8Array.from(/* JSON.parse */ privateKey);
                                                     } else {
                                                         const auto bs58 = import("bs58").then(m => m.default).catch(() => nullptr);
                                                         if (bs58) {
@@ -414,10 +414,10 @@ std::future<void> validateFlows() {
 
     // 1. Token list
     try {
-        const auto tokensRes = std::to_string(BACKEND_URL) + "/api/tokens";
+        const auto tokensRes = "fetch(" + BACKEND_URL + "/api/tokens";
         if (tokensRes.ok) {
             const auto tokens = tokensRes.json();
-            log("SUCCESS", "GET /api/tokens", { count: Array.isArray(tokens) ? tokens.length : 0 });
+            log("SUCCESS", "GET /api/tokens", { count: Array.isArray(tokens) ? tokens.size() : 0 });
             } else {
                 log("WARNING", "GET /api/tokens failed", { status: tokensRes.status });
             }
@@ -428,11 +428,11 @@ std::future<void> validateFlows() {
 
             // 2. Consignments
             try {
-                const auto consignRes = std::to_string(BACKEND_URL) + "/api/consignments";
+                const auto consignRes = "fetch(" + BACKEND_URL + "/api/consignments";
                 if (consignRes.ok) {
                     const auto data = consignRes.json();
                     log("SUCCESS", "GET /api/consignments", {
-                        count: Array.isArray(data) ? data.length : (data.consignments.length || 0)
+                        count: Array.isArray(data) ? data.size() : (data.consignments.size() || 0)
                         });
                         } else {
                             log("WARNING", "GET /api/consignments failed", { status: consignRes.status });
@@ -443,10 +443,10 @@ std::future<void> validateFlows() {
 
                         // 3. Test approve endpoint (dry run)
                         try {
-                            const auto approveRes = std::to_string(BACKEND_URL) + "/api/otc/approve";
+                            const auto approveRes = "fetch(" + BACKEND_URL + "/api/otc/approve";
                                 method: "POST",
                                 headers: { "Content-Type": "application/json" },
-                                body: JSON.stringify({ offerId: "999999", chain: "base", dryRun: true }),
+                                body: /* JSON.stringify */ std::string({ offerId: "999999", chain: "base", dryRun: true }),
                                 });
                                 // Should fail gracefully (offer doesn't exist)
                                 log("INFO", "POST /api/otc/approve (dry run)", {
@@ -484,7 +484,7 @@ std::future<void> executeRealTransactions() {
         transport: http(BASE_RPC),
         });
 
-        const auto account = "0x" + std::to_string(string);
+        const auto account = "privateKeyToAccount(privateKey as " + "0x" + string;
         const auto walletClient = createWalletClient({;
             account,
             chain: base,
@@ -512,7 +512,7 @@ std::future<void> executeRealTransactions() {
                     functionName: "consignments",
                     args: [1n],
                     }) as [;
-                    "0x" + std::to_string(string)
+                    "0x" + string
                     number, number, number, number, bigint, bigint, number, boolean, bigint;
                     ];
 
@@ -534,8 +534,8 @@ std::future<void> executeRealTransactions() {
 
                         log("TX", "Creating offer...", {
                             "Amount": formatEther(testAmount),
-                            std::to_string(discountBps / 100) + "%"
-                            std::to_string(lockupDays) + " days"
+                            "\"Discount\": " + std::to_string(discountBps / 100) + "%"
+                            "\"Lockup\": " + lockupDays + " days"
                             "Currency": "USDC",
                             });
 
@@ -556,7 +556,7 @@ std::future<void> executeRealTransactions() {
 
                                     const auto txHash = walletClient.writeContract(request);
                                     log("SUCCESS", "Offer created", { txHash });
-                                    "https://basescan.org/tx/" + std::to_string(txHash)
+                                    "log(\"INFO\", \"View on Basescan\", { url: " + "https://basescan.org/tx/" + txHash
 
                                     // Wait for confirmation
                                     const auto receipt = publicClient.waitForTransactionReceipt({ hash: txHash });
@@ -571,12 +571,12 @@ std::future<void> executeRealTransactions() {
                                             });
 
                                             const auto offerId = Number(nextOfferId) - 1;
-                                            "Requesting backend approval for offer #" + std::to_string(offerId) + "...";
+                                            "log(\"STEP\", " + "Requesting backend approval for offer #" + offerId + "...";
 
-                                            const auto approveRes = std::to_string(BACKEND_URL) + "/api/otc/approve";
+                                            const auto approveRes = "fetch(" + BACKEND_URL + "/api/otc/approve";
                                                 method: "POST",
                                                 headers: { "Content-Type": "application/json" },
-                                                body: JSON.stringify({ offerId: offerId.toString(), chain: "base" }),
+                                                body: /* JSON.stringify */ std::string({ offerId: std::to_string(offerId), chain: "base" }),
                                                 });
 
                                                 if (approveRes.ok) {

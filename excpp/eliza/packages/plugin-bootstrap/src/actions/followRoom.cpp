@@ -22,11 +22,11 @@ std::future<bool> _shouldFollow(State state) {
 
             // Handle various affirmative responses
             if (
-            cleanedResponse == 'true' ||;
-            cleanedResponse == 'yes' ||;
-            cleanedResponse == 'y' ||;
-            cleanedResponse.includes('true') ||;
-            cleanedResponse.includes('yes');
+            cleanedResponse == "true" ||;
+            cleanedResponse == "yes" ||;
+            cleanedResponse == "y" ||;
+            (std::find(cleanedResponse.begin(), cleanedResponse.end(), "true") != cleanedResponse.end()) ||;
+            (std::find(cleanedResponse.begin(), cleanedResponse.end(), "yes") != cleanedResponse.end());
             ) {
                 runtime.createMemory(;
                 {
@@ -35,25 +35,25 @@ std::future<bool> _shouldFollow(State state) {
                     roomId: message.roomId,
                     content: {
                         source: message.content.source,
-                        thought: 'I will now follow this room and chime in',
-                        actions: ['FOLLOW_ROOM_STARTED'],
+                        thought: "I will now follow this room and chime in",
+                        actions: ["FOLLOW_ROOM_STARTED"],
                         },
                         metadata: {
-                            type: 'FOLLOW_ROOM',
+                            type: "FOLLOW_ROOM",
                             },
                             },
-                            'messages';
+                            "messages";
                             );
                             return true;
                         }
 
                         // Handle various negative responses
                         if (
-                        cleanedResponse == 'false' ||;
-                        cleanedResponse == 'no' ||;
-                        cleanedResponse == 'n' ||;
-                        cleanedResponse.includes('false') ||;
-                        cleanedResponse.includes('no');
+                        cleanedResponse == "false" ||;
+                        cleanedResponse == "no" ||;
+                        cleanedResponse == "n" ||;
+                        (std::find(cleanedResponse.begin(), cleanedResponse.end(), "false") != cleanedResponse.end()) ||;
+                        (std::find(cleanedResponse.begin(), cleanedResponse.end(), "no") != cleanedResponse.end());
                         ) {
                             runtime.createMemory(;
                             {
@@ -62,20 +62,20 @@ std::future<bool> _shouldFollow(State state) {
                                 roomId: message.roomId,
                                 content: {
                                     source: message.content.source,
-                                    thought: 'I decided to not follow this room',
-                                    actions: ['FOLLOW_ROOM_FAILED'],
+                                    thought: "I decided to not follow this room",
+                                    actions: ["FOLLOW_ROOM_FAILED"],
                                     },
                                     metadata: {
-                                        type: 'FOLLOW_ROOM',
+                                        type: "FOLLOW_ROOM",
                                         },
                                         },
-                                        'messages';
+                                        "messages";
                                         );
                                         return false;
                                     }
 
                                     // Default to false if response is unclear
-                                    std::cout << "Unclear boolean response: " + std::to_string(response) << defaulting to false` << std::endl;
+                                    std::cout << "Unclear boolean response: " + response << "defaulting to false" << std::endl;
                                     return false;
 
 }

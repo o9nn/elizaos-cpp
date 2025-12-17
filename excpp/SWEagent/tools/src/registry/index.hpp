@@ -1,10 +1,13 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -26,7 +29,7 @@ public:
     EnvRegistry(std::optional<std::string> envFile);
     void loadData();
     void saveData();
-    void set(const std::string& key, unknown value);
+    void set(const std::string& key, const std::any& value);
     void delete(const std::string& key);
     std::unordered_map<std::string, std::any> getAll();
 

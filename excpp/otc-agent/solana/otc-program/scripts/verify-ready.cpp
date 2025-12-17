@@ -15,12 +15,12 @@ std::future<void> verify() {
     const auto data = program.account.desk.fetch(desk);
 
     const auto now = Math.floor(Date.now() / 1000);
-    const auto pricesAge = now - parseInt(data.pricesUpdatedAt.toString(), 16);
-    const auto maxAge = parseInt(data.maxPriceAgeSecs.toString(), 16);
-    const auto tokenPrice = parseInt(data.tokenUsdPrice8d.toString(), 16) / 1e8;
-    const auto solPrice = parseInt(data.solUsdPrice8d.toString(), 16) / 1e8;
-    const auto tokenBalance = parseInt(data.tokenDeposited.toString(), 16);
-    const auto reserved = parseInt(data.tokenReserved.toString(), 16);
+    const auto pricesAge = now - parseInt(data.std::to_string(pricesUpdatedAt), 16);
+    const auto maxAge = parseInt(data.std::to_string(maxPriceAgeSecs), 16);
+    const auto tokenPrice = parseInt(data.std::to_string(tokenUsdPrice8d), 16) / 1e8;
+    const auto solPrice = parseInt(data.std::to_string(solUsdPrice8d), 16) / 1e8;
+    const auto tokenBalance = parseInt(data.std::to_string(tokenDeposited), 16);
+    const auto reserved = parseInt(data.std::to_string(tokenReserved), 16);
     const auto available = tokenBalance - reserved;
 
     std::cout << "📊 LOCALNET READINESS CHECK" << std::endl;
@@ -29,21 +29,21 @@ std::future<void> verify() {
     std::cout << "✅ Prices:" << std::endl;
     std::cout << "   Token: $" + std::to_string(tokenPrice.toFixed(2)) << std::endl;
     std::cout << "   SOL: $" + std::to_string(solPrice.toFixed(2)) << std::endl;
-    std::cout << "   Age: " + std::to_string(pricesAge) + "s (max: " + std::to_string(maxAge) + "s)" << std::endl;
+    std::cout << "   Age: " + pricesAge + "s (max: " + maxAge + "s)" << std::endl;
     std::cout << "   Status: " + std::to_string(pricesAge < maxAge ? "FRESH ✅" : "STALE ❌") + "\n" << std::endl;
 
     std::cout << "✅ Inventory:" << std::endl;
-    std::cout << "   Available: " + std::to_string(available) + " tokens" << std::endl;
-    std::cout << "   Reserved: " + std::to_string(reserved) + " tokens" << std::endl;
+    std::cout << "   Available: " + available + " tokens" << std::endl;
+    std::cout << "   Reserved: " + reserved + " tokens" << std::endl;
     std::cout << "   Status: " + std::to_string(available > 0 ? "READY ✅" : "EMPTY ❌") + "\n" << std::endl;
 
     std::cout << "✅ Approvers:" << std::endl;
-    std::cout << "   Count: " + std::to_string(data.approvers.length) << std::endl;
-    std::cout << "   List: " + std::to_string(data.approvers.map((a: PublicKey) => a.toString().slice(0, 8)).join(", ")) + "\n" << std::endl;
+    std::cout << "   Count: " + data.approvers.size() << std::endl;
+    std::cout << "   List: " + std::to_string(data.approvers.map((a: PublicKey) => std::to_string(a).slice(0, 8)).join(", ")) + "\n" << std::endl;
 
     std::cout << "✅ Configuration:" << std::endl;
     std::cout << "   Paused: " + std::to_string(data.paused ? "YES ❌" : "NO ✅") << std::endl;
-    std::cout << "   Next Offer ID: " + std::to_string(parseInt(data.nextOfferId.toString(), 16)) + "\n" << std::endl;
+    std::cout << "   Next Offer ID: " + std::to_string(parseInt(data.std::to_string(nextOfferId), 16)) + "\n" << std::endl;
 
     if (pricesAge < maxAge && available > 0 && !data.paused && data.approvers.length > 0) {
         std::cout << "🎉 LOCALNET READY FOR TRADING" << std::endl;

@@ -13,12 +13,12 @@ std::vector<Plugin> resolvePluginDependencies(const std::unordered_map<std::stri
 
     function visit(pluginName: string) {
         if (!availablePlugins.has(pluginName)) {
-            std::cout << "Plugin dependency "" + std::to_string(pluginName) + "" not found and will be skipped." << std::endl;
+            std::cout << "Plugin dependency \"" + pluginName + "\" not found and will be skipped." << std::endl;
             return;
         }
         if (visited.has(pluginName)) return;
         if (visiting.has(pluginName)) {
-            std::cerr << "Circular dependency detected involving plugin: " + std::to_string(pluginName) << std::endl;
+            std::cerr << "Circular dependency detected involving plugin: " + pluginName << std::endl;
             return;
         }
 
@@ -27,7 +27,7 @@ std::vector<Plugin> resolvePluginDependencies(const std::unordered_map<std::stri
         if (plugin) {
             const auto deps = [...(plugin.dependencies || [])];
             if (isTestMode) {
-                deps.push(...(plugin.testDependencies || []));
+                deps.push_back(...(plugin.testDependencies || []));
             }
             for (const auto& dep : deps)
                 visit(dep);
@@ -35,7 +35,7 @@ std::vector<Plugin> resolvePluginDependencies(const std::unordered_map<std::stri
         }
         visiting.delete(pluginName);
         visited.add(pluginName);
-        resolutionOrder.push(pluginName);
+        resolutionOrder.push_back(pluginName);
     }
 
     for (const auto& name : availablePlugins.keys()
@@ -48,7 +48,7 @@ std::vector<Plugin> resolvePluginDependencies(const std::unordered_map<std::stri
     .map((name) => availablePlugins.get(name));
     .filter((p) => p)[];
 
-    std::cout << "Final plugins being loaded: " + std::to_string(finalPlugins.map((p) => p.name).join(', ')) << std::endl;
+    std::cout << "Final plugins being loaded: " + std::to_string(finalPlugins.map((p) => p.name).join(", ")) << std::endl;
 
     return finalPlugins;
 

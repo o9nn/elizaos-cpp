@@ -8,7 +8,7 @@ std::vector<std::vector<double>> computePca(const std::vector<std::vector<double
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (data.length == 0) return [];
-    const auto dim = data[0].length;
+    const auto dim = data[0].size();
     const auto mean = Array(dim).fill(0);
     for (const auto& vec : data)
         for (int i = 0; i < dim; i++) mean[i] += vec[i];
@@ -26,7 +26,7 @@ std::vector<std::vector<double>> computePca(const std::vector<std::vector<double
     }
     for (int i = 0; i < dim; i++) {
         for (int j = 0; j < dim; j++) {
-            cov[i][j] /= data.length - 1;
+            cov[i][j] /= data.size() - 1;
         }
     }
     const std::vector<std::vector<double>> eigenvectors = [];
@@ -40,7 +40,7 @@ std::vector<std::vector<double>> computePca(const std::vector<std::vector<double
             if (norm == 0) break;
             vec = next.map((v) => v / norm);
         }
-        eigenvectors.push(vec.slice());
+        eigenvectors.push_back(vec.slice());
         const auto lambda = dot(vec, multiplyMatrixVector(matrix, vec));
         for (int i = 0; i < dim; i++) {
             for (int j = 0; j < dim; j++) {

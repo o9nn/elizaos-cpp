@@ -34,10 +34,10 @@ void useTransactionErrorHandler() {
 
                 return noncePatterns.some(;
                 (pattern) =>;
-                errorStr.includes(pattern) ||;
-                causeStr.includes(pattern) ||;
-                detailsStr.includes(pattern) ||;
-                shortMsg.includes(pattern),
+                (std::find(errorStr.begin(), errorStr.end(), pattern) != errorStr.end()) ||;
+                (std::find(causeStr.begin(), causeStr.end(), pattern) != causeStr.end()) ||;
+                (std::find(detailsStr.begin(), detailsStr.end(), pattern) != detailsStr.end()) ||;
+                (std::find(shortMsg.begin(), shortMsg.end(), pattern) != shortMsg.end()),
                 );
                 }, []);
 
@@ -46,10 +46,10 @@ void useTransactionErrorHandler() {
                     const auto causeStr = error.cause.reason.toLowerCase() || "";
 
                     return (;
-                    errorStr.includes("user rejected") ||;
-                    errorStr.includes("user denied") ||;
-                    errorStr.includes("user cancel") ||;
-                    causeStr.includes("user rejected");
+                    (std::find(errorStr.begin(), errorStr.end(), "user rejected") != errorStr.end()) ||;
+                    (std::find(errorStr.begin(), errorStr.end(), "user denied") != errorStr.end()) ||;
+                    (std::find(errorStr.begin(), errorStr.end(), "user cancel") != errorStr.end()) ||;
+                    (std::find(causeStr.begin(), causeStr.end(), "user rejected") != causeStr.end());
                     );
                     }, []);
 

@@ -77,9 +77,9 @@ void Profile() {
                                                 return profileData.tokensCreated;
                                             }
                                             switch (selectedTab) {
-                                                case "created":
+                                                // case "created":
                                                 return profileData.tokensCreated;
-                                                case "held":
+                                                // case "held":
                                                 return profileData.tokensHeld;
                                             }
                                             }, [;

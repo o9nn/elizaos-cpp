@@ -1,10 +1,14 @@
 #pragma once
+#include <algorithm>
+#include <chrono>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "service.hpp"
 
@@ -20,8 +24,8 @@ struct SearchOptions {
     std::optional<double> offset;
     std::optional<std::string> language;
     std::optional<std::string> region;
-    std::optional<Date> start;
-    std::optional<Date> end;
+    std::optional<std::chrono::system_clock::time_point> start;
+    std::optional<std::chrono::system_clock::time_point> end;
     std::optional<std::string> fileType;
     std::optional<std::string> site;
     std::optional<std::string> sortBy;
@@ -34,7 +38,7 @@ struct SearchResult {
     std::string description;
     std::optional<std::string> displayUrl;
     std::optional<std::string> thumbnail;
-    std::optional<Date> publishedDate;
+    std::optional<std::chrono::system_clock::time_point> publishedDate;
     std::optional<std::string> source;
     std::optional<double> relevanceScore;
     std::optional<std::string> snippet;

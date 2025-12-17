@@ -13,7 +13,7 @@ void ProjectCard() {
     animate={{ opacity: 1, y: 0 }}
     transition={{ delay: index * 0.1 }}
     className="group relative bg-white dark:bg-gray-800 rounded-xl overflow-hidden cursor-pointer"
-    "/projects/" + std::to_string(project.id);
+    "onClick={() => window.location.href = " + "/projects/" + project.id;
     >;
     <div className="aspect-video relative overflow-hidden">;
     <Image;
@@ -52,7 +52,7 @@ void ProjectCard() {
     rel="noopener noreferrer";
     >;
     <img;
-    std::to_string(project.author.github) + ".png";
+    "src={" + project.author.github + ".png";
     alt={project.author.name}
     className="w-6 h-6 rounded-full mr-2";
     />;

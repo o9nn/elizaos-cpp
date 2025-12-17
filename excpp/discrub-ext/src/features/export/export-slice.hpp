@@ -1,24 +1,27 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include "..app/store.hpp"
-#include "..classes/channel.hpp"
-#include "..classes/guild.hpp"
-#include "..classes/message.hpp"
-#include "..enum/export-type.hpp"
-#include "..enum/media-type.hpp"
-#include "..enum/message-regex.hpp"
-#include "..services/discord-service.hpp"
-#include "..utils.hpp"
-#include ".app/app-slice.hpp"
-#include ".channel/channel-slice.hpp"
-#include ".message/message-slice.hpp"
+#include "app/app-slice.hpp"
+#include "app/store.hpp"
+#include "channel/channel-slice.hpp"
+#include "classes/channel.hpp"
+#include "classes/guild.hpp"
+#include "classes/message.hpp"
+#include "enum/export-type.hpp"
+#include "enum/media-type.hpp"
+#include "enum/message-regex.hpp"
 #include "export-types.hpp"
 #include "export-utils.hpp"
+#include "message/message-slice.hpp"
+#include "services/discord-service.hpp"
+#include "utils.hpp"
 
 namespace elizaos {
 

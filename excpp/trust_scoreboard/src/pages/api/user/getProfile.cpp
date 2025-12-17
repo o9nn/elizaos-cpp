@@ -42,10 +42,10 @@ std::future<void> handler(NextApiRequest req, NextApiResponse res) {
     const auto accessToken = connection.accessToken;
 
     try {
-        const auto response = std::to_string(process.env.NEST_API_URL) + "/user/profile";
+        const auto response = "fetch(" + process.env.NEST_API_URL + "/user/profile";
             method: "GET",
             headers: {
-                "Bearer " + std::to_string(accessToken)
+                "Authorization: " + "Bearer " + accessToken
                 "Content-Type": "application/json",
                 },
                 });

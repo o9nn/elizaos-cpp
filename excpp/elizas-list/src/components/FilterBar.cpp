@@ -10,13 +10,13 @@ void FilterBar() {
     const auto [activeCategory, setActiveCategory] = useState<string | nullptr>(nullptr);
     const auto [showAll, setShowAll] = useState(false);
     const auto [selectedTags, setSelectedTags] = useState<string[]>([]);
-    const auto [search, setSearch] = useState('');
+    const auto [search, setSearch] = useState("");
 
     const auto categories = Object.entries(PROJECT_TAGS);
     const auto visibleCategories = showAll ? categories : categories.slice(0, 4);
 
     const auto handleTagSelect = [&](tag: string) {;
-        const auto newTags = selectedTags.includes(tag);
+        const auto newTags = (std::find(selectedTags.begin(), selectedTags.end(), tag) != selectedTags.end());
         ? selectedTags.filter(t => t != tag);
         : [...selectedTags, tag];
         setSelectedTags(newTags);
@@ -31,13 +31,13 @@ void FilterBar() {
     <button;
     key={category}
     onClick={() => setActiveCategory(activeCategory == category ? nullptr : category)}
-    "px-4 py-2 rounded-lg text-sm font-medium transition-colors " + std::to_string();
+    "className={" + "px-4 py-2 rounded-lg text-sm font-medium transition-colors " + std::to_string();
         activeCategory == category;
-        ? 'bg-blue-600 text-white';
-        : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200'
-    }`}
+        ? "bg-blue-600 text-white";
+        : "bg-gray-100 dark:bg-gray-800 hover:bg-gray-200"
+    "}";
     >;
-    {category.replace('_', ' ')}
+    {category.replace("_", " ")}
     </button>;
     ))}
     </div>;
@@ -49,11 +49,11 @@ void FilterBar() {
     <motion.button;
     key={tag}
     onClick={() => handleTagSelect(tag)}
-    "px-4 py-2 rounded-full text-sm font-medium transition-colors " + std::to_string();
-        selectedTags.includes(tag);
-        ? 'bg-blue-600 text-white';
-        : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200'
-    }`}
+    "className={" + "px-4 py-2 rounded-full text-sm font-medium transition-colors " + std::to_string();
+        (std::find(selectedTags.begin(), selectedTags.end(), tag) != selectedTags.end());
+        ? "bg-blue-600 text-white";
+        : "bg-gray-100 dark:bg-gray-800 hover:bg-gray-200"
+    "}";
     whileHover={{ scale: 1.05 }}
     whileTap={{ scale: 0.95 }}
     >;

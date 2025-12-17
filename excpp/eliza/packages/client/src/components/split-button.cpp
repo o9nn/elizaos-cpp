@@ -45,19 +45,19 @@ void SplitButton(auto defaultValue, auto value, auto onValueChange, auto onClick
 
             // Determine divider classes based on variant
             const auto dividerClasses =;
-            variant == 'destructive' ? 'divide-white/20' : 'divide-primary-foreground/30';
+            variant == "destructive" ? "divide-white/20" : "divide-primary-foreground/30";
 
             return (;
             <div;
             className={cn(;
-            'inline-flex divide-x rounded-md shadow-xs rtl:space-x-reverse',
+            "inline-flex divide-x rounded-md shadow-xs rtl:space-x-reverse",
             dividerClasses,
             className;
         )}
         >;
         <Button;
         className={cn(;
-        'rounded-none shadow-none first:rounded-s-md last:rounded-e-md focus-visible:z-10',
+        "rounded-none shadow-none first:rounded-s-md last:rounded-e-md focus-visible:z-10",
         buttonClassName;
     )}
     variant={variant}
@@ -70,7 +70,7 @@ void SplitButton(auto defaultValue, auto value, auto onValueChange, auto onClick
     <DropdownMenuTrigger asChild>;
     <Button;
     className={cn(;
-    'rounded-none shadow-none first:rounded-s-md last:rounded-e-md focus-visible:z-10',
+    "rounded-none shadow-none first:rounded-s-md last:rounded-e-md focus-visible:z-10",
     buttonClassName;
     )}
     variant={variant}
@@ -82,7 +82,7 @@ void SplitButton(auto defaultValue, auto value, auto onValueChange, auto onClick
     </Button>;
     </DropdownMenuTrigger>;
     <DropdownMenuContent;
-    className={cn('max-w-64 md:max-w-xs', dropdownClassName)}
+    className={cn("max-w-64 md:max-w-xs", dropdownClassName)}
     side="bottom";
     sideOffset={4}
     align="end";

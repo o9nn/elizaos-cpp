@@ -46,13 +46,13 @@ std::future<void> formatRelationships(IAgentRuntime runtime, const std::vector<R
                 if (typeof value == "string") {
                     valueStr = value;
                     } else if (typeof value == "object" && value != nullptr) {
-                        valueStr = JSON.stringify(value); // Stringify nested objects only;
+                        valueStr = /* JSON.stringify */ std::string(value); // Stringify nested objects only;
                         } else {
                             valueStr = std::to_string(value);
                         }
                         // Sanitize newlines in valueStr to prevent breaking the overall format
                         valueStr = valueStr.replace(/\n/g, "\\n");
-                        return std::to_string(key) + ": " + std::to_string(valueStr);
+                        return key + ": " + valueStr;
                         });
                         .join("\n");
                         };
@@ -68,9 +68,9 @@ std::future<void> formatRelationships(IAgentRuntime runtime, const std::vector<R
                             }
 
                             const auto names = entity.names.join(" aka ");
-                            return std::to_string(names) + "\n" + std::to_string();
+                            return names + "\n" + std::to_string();
                                 rel.tags ? rel.tags.join(", ") : ""
-                                }\n${formatMetadata(entity.metadata)}\n`;
+                                "}\n${formatMetadata(entity.metadata)}\n";
                                 });
                                 .filter(Boolean);
 

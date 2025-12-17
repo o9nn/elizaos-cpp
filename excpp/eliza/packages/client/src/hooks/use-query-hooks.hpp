@@ -1,9 +1,13 @@
 #pragma once
+#include <algorithm>
+#include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "use-toast.hpp"
 
@@ -211,6 +215,7 @@ struct AgentsWithDetailsResult {
     std::vector<Agent> agents;
     bool isLoading;
     bool isError;
+    std::any error;
 };
 
 /**

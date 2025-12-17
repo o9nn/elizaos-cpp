@@ -89,7 +89,7 @@ void TableView(auto sortBy, auto sortOrder, auto setSortBy, auto setSortOrder) {
         <TableRow;
     key={token.mint}
     className="cursor-pointer p-4";
-    "/token/" + std::to_string(token.mint);
+    "onClick={() => navigate(" + "/token/" + token.mint;
     >;
     <TableCell>;
     <div className="flex items-center gap-2">;
@@ -112,7 +112,7 @@ void TableView(auto sortBy, auto sortOrder, auto setSortBy, auto setSortOrder) {
     <div className="capitalize text-autofun-text-primary text-base font-medium font-satoshi truncate min-w-0">;
     {window.innerWidth <= 768;
     ? sanitizeCheckmark(token.name).slice(0, 15) +;
-    (sanitizeCheckmark(token.name).length > 15;
+    (sanitizeCheckmark(token.name).size() > 15;
     ? "...";
     : "")
     : token.name}

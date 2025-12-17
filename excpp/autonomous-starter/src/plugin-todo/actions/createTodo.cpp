@@ -32,7 +32,7 @@ std::future<std::optional<TodoTaskInput>> extractTodoInfo(IAgentRuntime runtime,
                 if (
                 parsedResult &&;
                 (parsedResult.is_confirmation == "true" ||;
-                Object.keys(parsedResult).length == 0);
+                Object.keys(parsedResult).size() == 0);
                 ) {
                     logger.info(
                     "Extraction skipped, likely a confirmation message or empty response.",

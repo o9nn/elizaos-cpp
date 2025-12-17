@@ -22,32 +22,32 @@ void CodeBlock() {
 
             const auto getLanguageExtension = useCallback((lang: string) => {;
                 switch (lang.toLowerCase()) {
-                    case "javascript":
-                    case "js":
+                    // case "javascript":
+                    // case "js":
                     return javascript();
-                    case "typescript":
-                    case "ts":
+                    // case "typescript":
+                    // case "ts":
                     return javascript({ typescript: true });
-                    case "jsx":
+                    // case "jsx":
                     return javascript({ jsx: true });
-                    case "tsx":
+                    // case "tsx":
                     return javascript({ typescript: true, jsx: true });
-                    case "json":
+                    // case "json":
                     return json();
-                    case "bash":
-                    case "shell":
-                    case "sh":
+                    // case "bash":
+                    // case "shell":
+                    // case "sh":
                     return StreamLanguage.define(shellMode);
-                    case "css":
+                    // case "css":
                     return css();
-                    case "html":
+                    // case "html":
                     return html();
-                    case "markdown":
-                    case "md":
+                    // case "markdown":
+                    // case "md":
                     return markdown();
-                    case "sql":
+                    // case "sql":
                     return sql();
-                    default:
+                    // default:
                     return javascript(); // fallback to javascript;
                 }
                 }, []);
@@ -96,7 +96,7 @@ void CodeBlock() {
                                                 }
                                                 };
 
-                                                return children.includes("\n") ? (;
+                                                return (std::find(children.begin(), children.end(), "\n") != children.end()) ? (;
                                                 <div className="not-prose">;
                                                 <div className="read-only-editor w-full bg-zinc-50 dark:bg-zinc-950 rounded-md overflow-hidden max-w-full min-w-full border border-zinc-950/5 dark:border-white/5">
                                                 <div className="bg-zinc-100 dark:bg-zinc-900 flex items-center pl-4 pr-2 text-xs font-sans py-1 text-zinc-500 border-b border-zinc-950/5 dark:border-white/5">

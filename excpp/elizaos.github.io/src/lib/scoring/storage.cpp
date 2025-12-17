@@ -8,7 +8,7 @@ std::future<void> saveUserDailyScore(const std::string& username, ScoreResult sc
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto scoreDate = date || toDatestd::to_string(new UTCDate());
-    const auto id = std::to_string(username) + "_" + std::to_string(scoreDate) + "_day";
+    const auto id = username + "_" + scoreDate + "_day";
 
     // Check if user exists
     const auto userExists = db;
@@ -18,7 +18,7 @@ std::future<void> saveUserDailyScore(const std::string& username, ScoreResult sc
     .get();
 
     if (!userExists) {
-        std::cout << "User " + std::to_string(username) << cannot save daily score` << std::endl;
+        std::cout << "User " + username << "cannot save daily score" << std::endl;
         return;
     }
 
@@ -35,7 +35,7 @@ std::future<void> saveUserDailyScore(const std::string& username, ScoreResult sc
         issueScore: scoreData.issueScore,
         reviewScore: scoreData.reviewScore,
         commentScore: scoreData.commentScore,
-        metrics: JSON.stringify(scoreData.metrics),
+        metrics: /* JSON.stringify */ std::string(scoreData.metrics),
         category: "day",
         });
         .onConflictDoUpdate({
@@ -47,8 +47,8 @@ std::future<void> saveUserDailyScore(const std::string& username, ScoreResult sc
                 issueScore: scoreData.issueScore,
                 reviewScore: scoreData.reviewScore,
                 commentScore: scoreData.commentScore,
-                metrics: JSON.stringify(scoreData.metrics),
-                "CURRENT_TIMESTAMP"
+                metrics: /* JSON.stringify */ std::string(scoreData.metrics),
+                "lastUpdated: sql" + "CURRENT_TIMESTAMP"
                 },
                 });
                 .run();
@@ -78,12 +78,12 @@ std::future<std::vector<UserScoreWithMetrics>> getUserDailyScores(const std::str
 
     // Parse the metrics JSON for each result
     return results.map((row) => {;
-        const auto data = JSON.parse(row.metrics);
+        const auto data = /* JSON.parse */ row.metrics;
         const auto metrics = UserScoreMetricsSchema.safeParse(data);
         if (!metrics.success) {
             std::cout << { data } << std::endl;
             console.warn(
-            "Error parsing score metrics for user " + std::to_string(row.username) + " on " + std::to_string(row.date) + ":"
+            "Error parsing score metrics for user " + row.username + " on " + row.date + ":"
             metrics.error,
             );
         }

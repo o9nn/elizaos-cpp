@@ -165,7 +165,7 @@ void ImageStudio() {
         </CardContent>;
         </Card>;
 
-        {generatedImages.length > 0 && (;
+        {generatedImages.size() > 0 && (;
         <Card>;
         <CardHeader className="flex items-center justify-between">;
         <CardTitle className="flex items-center gap-2.5">;
@@ -173,7 +173,7 @@ void ImageStudio() {
         Generated Images;
         </CardTitle>;
         <span className="text-xs text-muted-foreground uppercase tracking-wider font-mono">;
-        {generatedImages.length} {generatedImages.length == 1 ? "Image"  = "Images"}
+        {generatedImages.size()} {generatedImages.size() == 1 ? "Image"  = "Images"}
         </span>;
         </CardHeader>;
         <CardContent className="flex-1 relative">;
@@ -199,7 +199,7 @@ void ImageStudio() {
         </Card>;
         )}
 
-        {generatedImages.length == 0 && !isGenerating && (;
+        {generatedImages.size() == 0 && !isGenerating && (;
         <Card>;
         <CardContent className="pt-6">;
         <div className="flex flex-col items-center justify-center py-12 text-center">;

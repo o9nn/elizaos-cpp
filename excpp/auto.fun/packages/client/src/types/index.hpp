@@ -1,9 +1,13 @@
 #pragma once
+#include <algorithm>
+#include <chrono>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
 
@@ -14,7 +18,7 @@ namespace elizaos {
 
 
 
-using HomepageSortBy = std::variant<"all", "marketCap", "newest", "oldest">;
+using HomepageSortBy = std::string;
 
 struct IPagination {
     double page;
@@ -26,10 +30,10 @@ struct IPagination {
 struct ISwap {
     double amountIn;
     double amountOut;
-    std::variant<0, 1> direction;
+    int direction;
     std::string id;
     double price;
-    std::variant<std::string, Date> timestamp;
+    std::variant<std::string, std::chrono::system_clock::time_point> timestamp;
     std::string tokenMint;
     std::string txId;
     std::string type;
@@ -42,7 +46,7 @@ struct ITokenHolder {
     std::string address;
     double amount;
     double percentage;
-    std::variant<std::string, Date> lastUpdated;
+    std::variant<std::string, std::chrono::system_clock::time_point> lastUpdated;
 };
 
 using ChartTable = {

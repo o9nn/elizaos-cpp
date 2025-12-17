@@ -1,10 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -17,7 +19,7 @@ namespace elizaos {
 /**
  * Time period options for aggregation queries
  */
-using AggregationPeriod = std::variant<, "daily", "weekly", "monthly", "quarterly", "yearly">;
+using AggregationPeriod = ;
 
 using UserScoreMetrics = z::infer<typeof UserScoreMetricsSchema>;
 /**

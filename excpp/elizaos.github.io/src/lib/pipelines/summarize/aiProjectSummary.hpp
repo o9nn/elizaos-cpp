@@ -1,16 +1,19 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".codeAreaHelpers.hpp"
-#include ".export/queries.hpp"
 #include "callAIService.hpp"
+#include "codeAreaHelpers.hpp"
 #include "config.hpp"
+#include "export/queries.hpp"
 
 namespace elizaos {
 
@@ -34,7 +37,7 @@ struct PullRequestMetrics {
     double total;
     double merged;
     double open;
-    std::optional<std::vector<unknown>> items;
+    std::optional<std::vector<std::any>> items;
     std::optional<double> mergedThisPeriod;
 };
 
@@ -42,8 +45,8 @@ struct IssueMetrics {
     double total;
     double opened;
     double closed;
-    std::optional<std::vector<unknown>> items;
-    std::optional<std::vector<unknown>> closedThisPeriod;
+    std::optional<std::vector<std::any>> items;
+    std::optional<std::vector<std::any>> closedThisPeriod;
 };
 
 struct CodeChangeMetrics {

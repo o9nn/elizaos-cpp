@@ -9,7 +9,7 @@ void TosProvider() {
 
     const auto location = useLocation();
     const auto routes = ["/privacy-policy", "/terms-of-service", "/fees", "/support"];
-    const auto AllowedRoute = routes.includes(location.pathname);
+    const auto AllowedRoute = (std::find(routes.begin(), routes.end(), location.pathname) != routes.end());
     const auto [tosAccepted, setTosAccepted] = useLocalStorage<boolean>(;
     "tosAccepted",
     false,

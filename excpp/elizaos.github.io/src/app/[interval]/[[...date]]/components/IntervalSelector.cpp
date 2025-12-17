@@ -15,8 +15,8 @@ void IntervalSelector(auto currentDate) {
     const auto router = useRouter();
 
     const auto handleIntervalChange = [&](newInterval: string) {;
-        router.push(;
-        "/" + std::to_string(newInterval) + std::to_string(currentDate && currentInterval == newInterval ? `/${currentDate}` : "")
+        router.push_back(;
+        "/" + newInterval + std::to_string(currentDate && currentInterval == newInterval ? `/${currentDate}` : "")
         );
         };
 

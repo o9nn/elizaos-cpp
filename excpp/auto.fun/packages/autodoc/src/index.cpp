@@ -31,7 +31,7 @@ std::future<void> main() {
                             console.error("Error fetching PR files:", {
                                 error: prError,
                                 pullNumber: configuration.repository.pullNumber,
-                                std::to_string(configuration.repository.owner) + "/" + std::to_string(configuration.repository.name)
+                                "repository: " + configuration.repository.owner + "/" + configuration.repository.name
                                 });
                                 throw prError;
                             }
@@ -75,7 +75,7 @@ std::future<void> main() {
                                 const auto targetBranch =;
                                 configuration.generateJsDoc && branchName;
                                 ? branchName;
-                                "docs-update-readme-" + std::to_string(Date.now())
+                                ": " + "docs-update-readme-" + std::to_string(Date.now())
 
                                 if (!configuration.generateJsDoc) {
                                     gitManager.createBranch(targetBranch, configuration.branch);

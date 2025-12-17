@@ -45,7 +45,7 @@ void DiscrubDialog() {
                 <Box;
                 sx={{
                     backgroundColor: palette.background.default,
-                    "1px solid " + std::to_string(palette.secondary.dark)
+                    "border: " + "1px solid " + palette.secondary.dark
                     wordWrap: "break-word",
                     overflow: "hidden",
                     borderRadius: "6px",

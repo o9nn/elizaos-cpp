@@ -1,12 +1,14 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 #include "elizaos/core.hpp"
 #include "florence2-model.hpp"
@@ -30,7 +32,7 @@ struct VisionModelConfig {
     double maxTokens;
 };
 
-using Pose = std::variant<std::string, std::string, std::string, std::string, std::string>;
+using Pose = std::string;
 
 struct PoseLandmark {
     std::string name;
@@ -45,10 +47,10 @@ public:
     std::future<void> initialize(VisionModelConfig config);
     bool hasObjectDetection();
     bool hasPoseDetection();
-    std::future<std::vector<DetectedObject>> detectObjects(Buffer imageData, double width, double height, std::optional<std::string> description);
+    std::future<std::vector<DetectedObject>> detectObjects(const std::vector<uint8_t>& imageData, double width, double height, std::optional<std::string> description);
     std::vector<DetectedObject> enhancedObjectDetection(std::optional<std::string> description);
      generatePlausibleBoundingBox(const std::string& type, double index, double total);
-    std::future<std::vector<PersonInfo>> detectPoses(Buffer imageData, double width, double height, std::optional<std::string> description);
+    std::future<std::vector<PersonInfo>> detectPoses(const std::vector<uint8_t>& imageData, double width, double height, std::optional<std::string> description);
     std::vector<PersonInfo> enhancedPoseDetection(std::optional<std::string> description);
     std::vector<PoseLandmark> generatePlausibleKeypoints(const std::any& boundingBox, Pose pose, const std::string& _facing);
     std::vector<PersonInfo> convertPosesToPersonInfo(const std::vector<poseDetection::Pose>& poses);

@@ -13,18 +13,18 @@ express::Router createDebugRouter(AgentServer serverInstance) {
     router.use(requireAuth, requireAdmin);
 
     // Debug endpoint to check message servers - ADMIN ONLY
-    router.get('/servers', async (_req: AuthenticatedRequest, res) => {
+    router.get("/servers", async (_req: AuthenticatedRequest, res) => {
         try {
             const auto servers = serverInstance.getServers();
             res.json({
                 success: true,
                 servers: servers || [],
-                count: servers.length || 0,
+                count: servers.size() || 0,
                 });
                 } catch (error) {
                     res.status(500).json({
                         success: false,
-                        error: true /* instanceof check */ ? error.message : 'Unknown error',
+                        error: true /* instanceof check */ ? error.message : "Unknown error",
                         });
                     }
                     });

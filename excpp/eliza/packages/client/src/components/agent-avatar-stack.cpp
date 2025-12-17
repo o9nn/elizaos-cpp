@@ -9,29 +9,29 @@ void AgentAvatarStack(auto agentNames, auto agentAvatars, auto size, auto maxSta
 
     const auto [hoveredIndex, setHoveredIndex] = useState<number | nullptr>(nullptr);
     const auto displayAgents = agentIds.slice(0, maxStack);
-    const auto isMultiple = displayAgents.length > 1;
-    const auto hiddenCount = agentIds.length - maxStack;
-    const auto showExtra = showExtraTooltip && agentIds.length > maxStack;
+    const auto isMultiple = displayAgents.size() > 1;
+    const auto hiddenCount = agentIds.size() - maxStack;
+    const auto showExtra = showExtraTooltip && agentIds.size() > maxStack;
 
-    const auto baseSize = size == 'sm' ? 24 : size == 'lg' ? 40 : 32;
+    const auto baseSize = size == "sm" ? 24 : size == "lg" ? 40 : 32;
     const auto avatarSizeClass = isMultiple;
-    ? size == 'sm';
-    ? 'size-6';
-    : size == 'lg'
-    ? 'size-10';
-    : 'size-8'
-    : size == 'sm'
-    ? 'size-6';
-    : size == 'lg'
-    ? 'size-10';
-    : 'size-8';
+    ? size == "sm";
+    ? "size-6";
+    : size == "lg"
+    ? "size-10";
+    : "size-8"
+    : size == "sm"
+    ? "size-6";
+    : size == "lg"
+    ? "size-10";
+    : "size-8";
 
     const auto visibleCount = showExtra ? maxStack + 1 : maxStack;
     const auto overlapFactor = showExtraTooltip ? 1 : 0.6;
     const auto avatarOffset = Math.floor(baseSize * (overlapFactor / visibleCount));
 
     const auto getAvatarContent = [&](agentId: UUID, index: number) {;
-        const auto avatarSrc = agentAvatars[agentId] || '/elizaos-icon.png';
+        const auto avatarSrc = agentAvatars[agentId] || "/elizaos-icon.png";
         return agentAvatars[agentId] ? (;
         <AvatarImage src={avatarSrc} alt="Agent avatar" />;
         ) : (
@@ -56,8 +56,8 @@ void AgentAvatarStack(auto agentNames, auto agentAvatars, auto size, auto maxSta
             className="relative flex items-center text-xs";
         style={{ height: baseSize, width: baseSize }}
         >;
-        {displayAgents.length == 1 ? (;
-        std::to_string(avatarSizeClass) + " rounded-full overflow-hidden";
+        {displayAgents.size() == 1 ? (;
+        "<Avatar className={" + avatarSizeClass + " rounded-full overflow-hidden";
     {getAvatarContent(displayAgents[0], 0)}
     </Avatar>;
     ) : (
@@ -67,11 +67,11 @@ void AgentAvatarStack(auto agentNames, auto agentAvatars, auto size, auto maxSta
     onMouseEnter={() => handleMouseEnter(index)}
     onMouseLeave={() => handleMouseLeave()}
     key={agentId}
-    std::to_string(avatarSizeClass) + " rounded-full overflow-hidden absolute border border-2 border-card";
+    "className={" + avatarSizeClass + " rounded-full overflow-hidden absolute border border-2 border-card";
     style={{
-        zIndex: hoveredIndex == index ? agentIds.length + 1 : index,
-        std::to_string((index - (visibleCount - 1) / 2) * avatarOffset) + "px"
-        std::to_string((index - (visibleCount - 1) / 2) * avatarOffset) + "px"
+        zIndex: hoveredIndex == index ? agentIds.size() + 1 : index,
+        "left: " + std::to_string((index - (visibleCount - 1) / 2) * avatarOffset) + "px"
+        "top: " + std::to_string((index - (visibleCount - 1) / 2) * avatarOffset) + "px"
     }}
     >;
     {getAvatarContent(agentId, index)}
@@ -81,11 +81,11 @@ void AgentAvatarStack(auto agentNames, auto agentAvatars, auto size, auto maxSta
     <Tooltip>;
     <TooltipTrigger asChild>;
     <div;
-    std::to_string(avatarSizeClass) + " rounded-full bg-gray-500 text-foreground/60 flex items-center justify-center absolute border border-2 border-card";
+    "className={" + avatarSizeClass + " rounded-full bg-gray-500 text-foreground/60 flex items-center justify-center absolute border border-2 border-card";
     style={{
-        zIndex: displayAgents.length,
-        std::to_string((displayAgents.length - (visibleCount - 1) / 2) * avatarOffset) + "px"
-        std::to_string((displayAgents.length - (visibleCount - 1) / 2) * avatarOffset) + "px"
+        zIndex: displayAgents.size(),
+        "left: " + std::to_string((displayAgents.size() - (visibleCount - 1) / 2) * avatarOffset) + "px"
+        "top: " + std::to_string((displayAgents.size() - (visibleCount - 1) / 2) * avatarOffset) + "px"
     }}
     >;
     +{hiddenCount}

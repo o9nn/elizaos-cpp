@@ -1,10 +1,14 @@
 #pragma once
+#include <algorithm>
+#include <chrono>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "elizaos/core.hpp"
 
@@ -25,14 +29,14 @@ struct ApiKeyValidationResult {
     std::vector<std::string> capabilities;
     std::optional<std::string> errorMessage;
     double remaining;
-    Date resetTime;
+    std::chrono::system_clock::time_point resetTime;
     double tokensUsed;
     double costEstimate;
 };
 
 struct AuthStatus {
     std::string overall;
-    Date lastChecked;
+    std::chrono::system_clock::time_point lastChecked;
     std::vector<std::string> capabilities;
 };
 

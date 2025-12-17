@@ -18,14 +18,14 @@ void mountWithProviders(ReactNode component, auto options) {
         {},
         // Add a div container for portals
         React.createElement(;
-        'div',
+        "div",
         {
-            id: 'root',
-            style: { width: '100%', height: '100%' },
+            id: "root",
+            style: { width: "100%", height: "100%" },
             },
             component,
             // Portal container for Radix UI
-            React.createElement('div', { id: 'radix-portal' })
+            React.createElement("div", { id: "radix-portal" })
             );
             );
             ),
@@ -49,14 +49,14 @@ void mountWithRouter(ReactNode component, auto options) {
         {},
         // Add a div container for portals
         React.createElement(;
-        'div',
+        "div",
         {
-            id: 'root',
-            style: { width: '100%', height: '100%' },
+            id: "root",
+            style: { width: "100%", height: "100%" },
             },
             component,
             // Portal container for Radix UI
-            React.createElement('div', { id: 'radix-portal' })
+            React.createElement("div", { id: "radix-portal" })
             );
             );
             ),
@@ -74,7 +74,7 @@ void mountRadix(ReactNode component, auto options) {
     const auto wrapped = React.createElement(TooltipProvider, {;
         children: React.createElement(
         DirectionProvider,
-        { dir: 'ltr' },
+        { dir: "ltr" },
         React.createElement(;
         QueryClientProvider,
         { client: queryClient },
@@ -83,14 +83,14 @@ void mountRadix(ReactNode component, auto options) {
         {},
         // Add a div container for portals
         React.createElement(;
-        'div',
+        "div",
         {
-            id: 'root',
-            style: { width: '100%', height: '100%' },
+            id: "root",
+            style: { width: "100%", height: "100%" },
             },
             component,
             // Portal container for Radix UI
-            React.createElement('div', { id: 'radix-portal' })
+            React.createElement("div", { id: "radix-portal" })
             );
             );
             );

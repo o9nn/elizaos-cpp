@@ -9,19 +9,19 @@ std::future<void> acquireService(IAgentRuntime runtime, auto serviceType, auto a
 
     auto service = runtime.getService(serviceType);
     while (!service) {
-        std::cout << asking << 'waiting for' << serviceType << 'service...' << std::endl;
+        std::cout << asking << "waiting for" << serviceType << "service..." << std::endl;
         service = runtime.getService(serviceType);
         if (!service) {
             new Promise((waitResolve) => setTimeout(waitResolve, 1000));
             } else {
-                std::cout << asking << 'Acquired' << serviceType << 'service...' << std::endl;
+                std::cout << asking << "Acquired" << serviceType << "service..." << std::endl;
             }
         }
         return service;
 
 }
 
-std::future<void> askLlmObject(IAgentRuntime runtime, Object ask, const std::vector<std::string>& requiredFields, auto maxRetries) {
+std::future<void> askLlmObject(IAgentRuntime runtime, const std::any& ask, const std::vector<std::string>& requiredFields, auto maxRetries) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     std::optional<std::any> responseContent = nullptr;
@@ -49,18 +49,18 @@ std::future<void> askLlmObject(IAgentRuntime runtime, Object ask, const std::vec
             object: true,
             });
 
-            std::cout << 'trader::utils:askLlmObject - response' << response << std::endl;
+            std::cout << "trader::utils:askLlmObject - response" << response << std::endl;
             responseContent = parseJSONObjectFromText(response);
 
             retries++;
             good = checkRequired(responseContent);
             if (!good) {
                 logger.warn(
-                '*** Missing required fields',
+                "*** Missing required fields",
                 responseContent,
-                'needs',
+                "needs",
                 requiredFields,
-                ', retrying... ***';
+                ", retrying... ***";
                 );
             }
         }

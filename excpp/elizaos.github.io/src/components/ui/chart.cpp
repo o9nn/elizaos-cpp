@@ -22,7 +22,7 @@ void useChart() {
     }
 }
 
-void getPayloadConfigFromPayload(ChartConfig config, unknown payload, const std::string& key) {
+void getPayloadConfigFromPayload(ChartConfig config, const std::any& payload, const std::string& key) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (typeof payload != "object" || payload == null) {

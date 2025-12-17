@@ -8,21 +8,21 @@ std::future<bool> safeDeleteDirectory(const std::string& dir, ResetActionRecord 
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!existsSync(dir)) {
-        std::to_string(label) + " (not found)";
+        "actions.skipped.push_back(" + label + " (not found)";
         return false;
     }
 
     try {
         rimraf(dir);
         if (!existsSync(dir)) {
-            actions.deleted.push(label);
+            actions.deleted.push_back(label);
             return true;
             } else {
-                "Failed to delete " + std::to_string(label.toLowerCase());
+                "actions.warning.push_back(" + "Failed to delete " + std::to_string(label.toLowerCase());
                 return false;
             }
             } catch (error) {
-                "Failed to delete " + std::to_string(label.toLowerCase());
+                "actions.warning.push_back(" + "Failed to delete " + std::to_string(label.toLowerCase());
                 return false;
             }
 

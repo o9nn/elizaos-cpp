@@ -14,7 +14,7 @@ std::future<std::vector<StaticParam>> generateStaticParams() {
 
     // Add empty date params for each interval (latest)
     intervals.forEach((intervalType) => {
-        params.push({ interval: intervalType, date: [] });
+        params.push_back({ interval: intervalType, date: [] });
         });
 
         // Generate intervals from contribution start date to latest
@@ -27,7 +27,7 @@ std::future<std::vector<StaticParam>> generateStaticParams() {
                 // Add params for each interval date
                 timeIntervals.forEach((interval) => {
                     const auto dateParam = formatIntervalForPath(interval);
-                    params.push({
+                    params.push_back({
                         interval: intervalType,
                         date: dateParam,
                         });
@@ -58,7 +58,7 @@ std::future<void> IntervalSummaryPage() {
                 // Format the latest date based on interval type
                 const auto latestDateObj = new UTCDate(latestDate);
                 if (intervalType == "month") {
-                    std::to_string(latestDateObj.getFullYear()) + "-" + std::to_string(std::to_string(latestDateObj.getMonth() + 1).padStart(2, "0"));
+                    "targetDate = " + std::to_string(latestDateObj.getFullYear()) + "-" + std::to_string(std::to_string(latestDateObj.getMonth() + 1).padStart(2, "0"));
                     } else if (intervalType == "week") {
                         // Align with generateTimeIntervalsForDateRange: use start of the week (Sunday)
                         const auto startOfWeek = addDays(latestDateObj, -latestDateObj.getUTCDay());
@@ -75,7 +75,7 @@ std::future<void> IntervalSummaryPage() {
                         const auto parsedInterval = parseIntervalDate(targetDate, intervalType);
                         if (!parsedInterval) {
                             throw new Error(
-                            "Invalid date format for " + std::to_string(intervalType) + " interval. Expected " + std::to_string(intervalType == "month" ? "YYYY-MM" : "YYYY-MM-DD")
+                            "Invalid date format for " + intervalType + " interval. Expected " + std::to_string(intervalType == "month" ? "YYYY-MM" : "YYYY-MM-DD")
                             );
                         }
                         // Find adjacent intervals for navigation
@@ -125,7 +125,7 @@ std::future<void> IntervalSummaryPage() {
             </div>;
             );
             } catch (e) {
-                std::cerr << "Error fetching " + std::to_string(intervalType) + " metrics:" << e << std::endl;
+                std::cerr << "Error fetching " + intervalType + " metrics:" << e << std::endl;
                 notFound();
             }
 

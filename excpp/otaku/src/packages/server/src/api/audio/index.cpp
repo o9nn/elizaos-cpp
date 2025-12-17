@@ -10,13 +10,13 @@ express::Router audioRouter(ElizaOS elizaOS) {
     const auto router = express.Router();
 
     // Mount audio processing (upload, transcription)
-    router.use('/', createAudioProcessingRouter(elizaOS));
+    router.use("/", createAudioProcessingRouter(elizaOS));
 
     // Mount text-to-speech synthesis
-    router.use('/', createSynthesisRouter(elizaOS));
+    router.use("/", createSynthesisRouter(elizaOS));
 
     // Mount speech conversation functionality
-    router.use('/', createConversationRouter(elizaOS));
+    router.use("/", createConversationRouter(elizaOS));
 
     return router;
 

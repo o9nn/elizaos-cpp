@@ -16,7 +16,7 @@ void CopyAdornment(auto copyName, auto disabled) {
 
         return (;
         <>;
-        "Copy " + std::to_string(copyName);
+        "<Tooltip title={" + "Copy " + copyName;
         <IconButton disabled={disabled} onClick={handleClick} color="secondary">;
         <ContentCopyIcon />;
         </IconButton>;

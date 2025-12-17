@@ -9,20 +9,20 @@ std::future<CaptchaInfo> detectCaptchaType(Page page) {
 
     try {
         // Check for Cloudflare Turnstile
-        const auto turnstileElement = page.$('[id*="turnstile"], [class*="cf-turnstile"]');
+        const auto turnstileElement = page.$("[id*="turnstile"], [class*="cf-turnstile"]");
         if (turnstileElement) {
             const auto siteKey = page.evaluate(() => {;
-                const auto element = document.querySelector('[data-sitekey]');
+                const auto element = document.querySelector("[data-sitekey]");
                 return element.dataset.sitekey || nullptr;
                 });
                 return { type: 'turnstile', siteKey }
             }
 
             // Check for reCAPTCHA v2
-            const auto recaptchaV2Element = page.$('.g-recaptcha, [data-sitekey]');
+            const auto recaptchaV2Element = page.$(".g-recaptcha, [data-sitekey]");
             if (recaptchaV2Element) {
                 const auto siteKey = page.evaluate(() => {;
-                    const auto element = document.querySelector('[data-sitekey]');
+                    const auto element = document.querySelector("[data-sitekey]");
                     return element.dataset.sitekey || nullptr;
                     });
                     return { type: 'recaptcha-v2', siteKey }
@@ -34,7 +34,7 @@ std::future<CaptchaInfo> detectCaptchaType(Page page) {
                     });
                     if (hasRecaptchaV3) {
                         const auto siteKey = page.evaluate(() => {;
-                            const auto scripts = Array.from(document.querySelectorAll('script[src*="recaptcha"]'));
+                            const auto scripts = Array.from(document.querySelectorAll("script[src*="recaptcha"]"));
                             for (const auto& script : scripts)
                                 const auto match = (script).src.match(/render=([^&]+)/);
                                 if (match) return match[1];
@@ -45,10 +45,10 @@ std::future<CaptchaInfo> detectCaptchaType(Page page) {
                         }
 
                         // Check for hCaptcha
-                        const auto hcaptchaElement = page.$('.h-captcha, [data-hcaptcha-widget-id]');
+                        const auto hcaptchaElement = page.$(".h-captcha, [data-hcaptcha-widget-id]");
                         if (hcaptchaElement) {
                             const auto siteKey = page.evaluate(() => {;
-                                const auto element = document.querySelector('[data-sitekey]');
+                                const auto element = document.querySelector("[data-sitekey]");
                                 return element.dataset.sitekey || nullptr;
                                 });
                                 return { type: 'hcaptcha', siteKey }
@@ -56,7 +56,7 @@ std::future<CaptchaInfo> detectCaptchaType(Page page) {
 
                             return { type: null, siteKey: null }
                             } catch (error) {
-                                std::cerr << 'Error detecting captcha type:' << error << std::endl;
+                                std::cerr << "Error detecting captcha type:" << error << std::endl;
                                 return { type: null, siteKey: null }
                             }
 
@@ -67,7 +67,7 @@ std::future<void> injectCaptchaSolution(Page page, const std::string& captchaTyp
 
     // This is a placeholder - actual implementation would depend on captcha type
     // For now, we'll just log that we would inject the solution
-    std::cout << "Would inject " + std::to_string(captchaType) + " solution:" << solution.substring(0, 20) + '...' << std::endl;
+    std::cout << "Would inject " + captchaType + " solution:" << solution.substring(0, 20) + "..." << std::endl;
 
 }
 

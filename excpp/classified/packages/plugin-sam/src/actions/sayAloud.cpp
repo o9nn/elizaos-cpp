@@ -12,11 +12,11 @@ std::string extractTextToSpeak(const std::string& messageText) {
 
     // Patterns to extract quoted text
     const auto quotedPatterns = [;
-    /say ["']([^"']+)["']/,
-    /speak ["']([^"']+)["']/,
-    /read ["']([^"']+)["']/,
-    /announce ["']([^"']+)["']/,
-    /["']([^"']+)["']/,
+    /say [""]([^""]+)["']/,
+    /speak [""]([^""]+)["']/,
+    /read [""]([^""]+)["']/,
+    /announce [""]([^""]+)["']/,
+    /[""]([^""]+)["']/,
     ];
 
     // Try to find quoted text first
@@ -43,9 +43,9 @@ std::string extractTextToSpeak(const std::string& messageText) {
 
             // Clean up common trailing words
             extractedText = extractedText;
-            .replace(/\s+out loud$/, '');
-            .replace(/\s+aloud$/, '');
-            .replace(/\s+please$/, '');
+            .replace(/\s+out loud$/, "");
+            .replace(/\s+aloud$/, "");
+            .replace(/\s+please$/, "");
             .trim();
 
             return extractedText;
@@ -53,12 +53,12 @@ std::string extractTextToSpeak(const std::string& messageText) {
     }
 
     // If no specific text found but speech is requested, use a default response
-    const auto speechKeywords = ['say aloud', 'speak', 'use your voice', 'talk to me'];
+    const auto speechKeywords = ["say aloud", "speak", "use your voice", "talk to me"];
     if (speechKeywords.some((keyword) => text.includes(keyword))) {
-        return 'Hello! I am speaking using my SAM voice synthesizer.';
+        return "Hello! I am speaking using my SAM voice synthesizer.";
     }
 
-    return '';
+    return "";
 
 }
 
@@ -72,9 +72,9 @@ SamTTSOptions extractVoiceOptions(const std::string& messageText) {
     if (text.includes('higher voice') || text.includes('high pitch') || text.includes('squeaky')) {
         options.pitch = 100; // Higher pitch;
         } else if (;
-        text.includes('lower voice') ||;
-        text.includes('low pitch') ||;
-        text.includes('deep voice');
+        (std::find(text.begin(), text.end(), "lower voice") != text.end()) ||;
+        (std::find(text.begin(), text.end(), "low pitch") != text.end()) ||;
+        (std::find(text.begin(), text.end(), "deep voice") != text.end());
         ) {
             options.pitch = 30; // Lower pitch;
         }
@@ -82,7 +82,7 @@ SamTTSOptions extractVoiceOptions(const std::string& messageText) {
         // Speed modifications
         if (text.includes('faster') || text.includes('quickly') || text.includes('speed up')) {
             options.speed = 120; // Faster speech;
-            } else if (text.includes('slower') || text.includes('slowly') || text.includes('slow down')) {
+            } else if ((std::find(text.begin(), text.end(), "slower") != text.end()) || (std::find(text.begin(), text.end(), "slowly") != text.end()) || (std::find(text.begin(), text.end(), "slow down") != text.end())) {
                 options.speed = 40; // Slower speech;
             }
 
@@ -90,7 +90,7 @@ SamTTSOptions extractVoiceOptions(const std::string& messageText) {
             if (text.includes('robotic') || text.includes('robot voice')) {
                 options.throat = 200; // More robotic;
                 options.mouth = 50; // Sharper articulation;
-                } else if (text.includes('smooth') || text.includes('natural')) {
+                } else if ((std::find(text.begin(), text.end(), "smooth") != text.end()) || (std::find(text.begin(), text.end(), "natural") != text.end())) {
                     options.throat = 100; // Smoother;
                     options.mouth = 150; // Softer articulation;
                 }

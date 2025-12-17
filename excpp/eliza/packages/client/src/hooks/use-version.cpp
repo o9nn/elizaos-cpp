@@ -11,19 +11,19 @@ void useVersion() {
         const auto { toast } = useToast();
 
         async function getLatestRelease(repo: string) {
-            const auto apiUrl = "https://api.github.com/repos/" + std::to_string(repo) + "/releases/latest";
+            const auto apiUrl = "https://api.github.com/repos/" + repo + "/releases/latest";
 
             try {
                 const auto response = fetch(apiUrl, {;
                     headers: {
-                        Accept: 'application/vnd.github.v3+json',
-                        'User-Agent': 'fetch-latest-release',
+                        Accept: "application/vnd.github.v3+json",
+                        "User-Agent": "fetch-latest-release",
                         },
                         });
 
                         if (!response.ok) {
                             throw new Error(
-                            "Failed to fetch latest release: " + std::to_string(response.status) + " " + std::to_string(response.statusText)
+                            "Failed to fetch latest release: " + response.status + " " + response.statusText
                             );
                         }
 
@@ -35,14 +35,14 @@ void useVersion() {
 
                 const auto compareVersion = useCallback(async () => {;
                     try {
-                        const auto latestVersion = getLatestRelease('elizaos/eliza');
+                        const auto latestVersion = getLatestRelease("elizaos/eliza");
                         const auto thisVersion = info.version;
                         if (latestVersion && thisVersion) {
                             if (semver.gt(latestVersion.replace('v', ''), thisVersion.replace('v', ''))) {
                                 toast({
-                                    variant: 'default',
-                                    "New version " + std::to_string(latestVersion) + " is available."
-                                    description: 'Visit GitHub for more information.',
+                                    variant: "default",
+                                    "title: " + "New version " + latestVersion + " is available."
+                                    description: "Visit GitHub for more information.",
                                     action: (
                                     <NavLink to="https://github.com/elizaos/eliza/releases" target="_blank">
                                     <ToastAction altText="Update">Update</ToastAction>;
@@ -52,7 +52,7 @@ void useVersion() {
                                 }
                             }
                             } catch (e) {
-                                "Unable to retrieve latest version from GitHub: " + std::to_string(e)
+                                "clientLogger.error(" + "Unable to retrieve latest version from GitHub: " + e
                             }
                             }, [toast]);
 

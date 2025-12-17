@@ -15,19 +15,19 @@ express::Router messagingRouter(ElizaOS elizaOS, AgentServer serverInstance) {
         }
 
         // Mount core messaging functionality at root level
-        router.use('/', createMessagingCoreRouter(serverInstance));
+        router.use("/", createMessagingCoreRouter(serverInstance));
 
         // Mount server management functionality
-        router.use('/', createServersRouter(serverInstance));
+        router.use("/", createServersRouter(serverInstance));
 
         // Mount channel management functionality
-        router.use('/', createChannelsRouter(elizaOS, serverInstance));
+        router.use("/", createChannelsRouter(elizaOS, serverInstance));
 
         // Mount unified sessions API for simplified messaging
-        router.use('/', createSessionsRouter(elizaOS, serverInstance));
+        router.use("/", createSessionsRouter(elizaOS, serverInstance));
 
         // Mount jobs API for one-off messaging (similar to @bankr/sdk)
-        router.use('/', createJobsRouter(elizaOS, serverInstance));
+        router.use("/", createJobsRouter(elizaOS, serverInstance));
 
         return router;
 

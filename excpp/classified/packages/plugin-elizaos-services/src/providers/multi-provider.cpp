@@ -9,9 +9,9 @@ std::optional<ProviderConfig> getAvailableProvider(IAgentRuntime runtime, ModelT
 
     // Check for provider-specific API keys in order of preference
     const auto providerPreference = [;
-    { key: 'OPENAI_API_KEY', provider: 'openai' },
-    { key: 'GROQ_API_KEY', provider: 'groq' },
-    { key: 'ANTHROPIC_API_KEY', provider: 'anthropic' },
+    { key: "OPENAI_API_KEY", provider: "openai" },
+    { key: "GROQ_API_KEY", provider: "groq" },
+    { key: "ANTHROPIC_API_KEY", provider: "anthropic" },
     ];
 
     for (const int { key, provider } of providerPreference) {
@@ -37,7 +37,7 @@ std::optional<ProviderConfig> getAvailableProvider(IAgentRuntime runtime, ModelT
         }
     }
 
-    std::cout << "No API key found for " + std::to_string(modelType) << std::endl;
+    std::cout << "No API key found for " + modelType << std::endl;
     return nullptr;
 
 }
@@ -46,9 +46,9 @@ std::string getProviderApiKey(IAgentRuntime runtime, const std::string& provider
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const std::unordered_map<std::string, std::string> keyMap = {;
-        openai: 'OPENAI_API_KEY',
-        groq: 'GROQ_API_KEY',
-        anthropic: 'ANTHROPIC_API_KEY',
+        openai: "OPENAI_API_KEY",
+        groq: "GROQ_API_KEY",
+        anthropic: "ANTHROPIC_API_KEY",
         };
 
         const auto keyName = keyMap[providerName];
@@ -64,7 +64,7 @@ std::future<std::any> makeProviderRequest(ProviderConfig provider, const std::st
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        const auto url = std::to_string(provider.baseURL) + std::to_string(endpoint);
+        const auto url = provider.baseURL + endpoint;
         const auto headers = provider.headers(apiKey);
 
         // Transform request if needed
@@ -74,9 +74,9 @@ std::future<std::any> makeProviderRequest(ProviderConfig provider, const std::st
 
         try {
             const auto response = fetch(url, {;
-                method: 'POST',
+                method: "POST",
                 headers,
-                body: JSON.stringify(requestPayload),
+                body: /* JSON.stringify */ std::string(requestPayload),
                 });
 
                 if (!response.ok) {
@@ -89,7 +89,7 @@ std::future<std::any> makeProviderRequest(ProviderConfig provider, const std::st
                 // Transform response if needed
                 return provider.transformResponse ? provider.transformResponse(data) : data;
                 } catch (error) {
-                    std::cerr << std::to_string(provider.name) + " API request failed:" << error << std::endl;
+                    std::cerr << provider.name + " API request failed:" << error << std::endl;
                     throw;
                 }
 
@@ -102,7 +102,7 @@ std::future<std::any> makeProviderRequest(ProviderConfig provider, const std::st
 void emitProviderUsageEvent(IAgentRuntime runtime, const std::string& providerName, ModelTypeName modelType, const std::string& prompt, const std::any& usage) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    runtime.emitEvent('MODEL_USED', {
+    runtime.emitEvent("MODEL_USED", {
         provider: providerName,
         type: modelType,
         prompt: prompt.substring(0, 100), // Truncate for privacy

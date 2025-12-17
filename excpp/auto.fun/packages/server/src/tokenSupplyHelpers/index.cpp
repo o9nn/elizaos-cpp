@@ -34,7 +34,7 @@ std::future<void> handleSignature(const std::string& signature, const std::any& 
         commitment,
         });
         if (!tx || !tx.meta) {
-            std::cerr << "Transaction not found for signature: " + std::to_string(signature) << std::endl;
+            std::cerr << "Transaction not found for signature: " + signature << std::endl;
             return;
         }
         const auto logs = tx.meta.logMessages;
@@ -47,7 +47,7 @@ std::future<void> handleSignature(const std::string& signature, const std::any& 
         logs,
         );
         if (metrics) {
-            std::cout << "Swap metrics for " + std::to_string(metrics.mintAddress) + ":" << metrics << std::endl;
+            std::cout << "Swap metrics for " + metrics.mintAddress + ":" << metrics << std::endl;
         }
         return metrics;
 
@@ -58,11 +58,11 @@ std::future<void> processSwapLog(const std::any& token, const std::string& signa
 
     try {
         const auto wsClient = getWebSocketClient();
-        const auto swapLog = logs.find((l) => l.includes("Swap:"));
-        const auto reservesLog = logs.find((l) => l.includes("Reserves:"));
-        const auto mintLog = logs.find((l) => l.includes("Mint:"));
-        const auto feeLog = logs.find((l) => l.includes("Fee:"));
-        const auto swapeventLog = logs.find((log) => log.includes("SwapEvent:"));
+        const auto swapLog = logs.find((l) => (std::find(l.begin(), l.end(), "Swap:") != l.end()));
+        const auto reservesLog = logs.find((l) => (std::find(l.begin(), l.end(), "Reserves:") != l.end()));
+        const auto mintLog = logs.find((l) => (std::find(l.begin(), l.end(), "Mint:") != l.end()));
+        const auto feeLog = logs.find((l) => (std::find(l.begin(), l.end(), "Fee:") != l.end()));
+        const auto swapeventLog = logs.find((log) => (std::find(log.begin(), log.end(), "SwapEvent:") != log.end()));
 
         if (!(mintLog && swapLog && reservesLog && feeLog)) return null;
 
@@ -77,7 +77,7 @@ std::future<void> processSwapLog(const std::any& token, const std::string& signa
             mintAddress,
             );
             ) {
-                std::cerr << "Invalid mint address format: " + std::to_string(mintAddress) << std::endl;
+                std::cerr << "Invalid mint address format: " + mintAddress << std::endl;
                 return;
             }
             const auto [user, direction, amount] = swapLog;
@@ -161,16 +161,16 @@ std::future<void> processSwapLog(const std::any& token, const std::string& signa
                     timestamp: new Date(),
                     };
                     const auto redisCache = getGlobalRedisCache();
-                    const auto listKey = "swapsList:" + std::to_string(mintAddress);
+                    const auto listKey = "swapsList:" + mintAddress;
                     try {
-                        redisCache.lpush(listKey, JSON.stringify(swapRecord));
+                        redisCache.lpush(listKey, /* JSON.stringify */ std::string(swapRecord));
                         redisCache.ltrim(listKey, 0, MAX_SWAPS_TO_KEEP - 1);
                         logger.log(
-                        "Helper: Saved swap to Redis list " + std::to_string(listKey) + " & trimmed. Type: " + std::to_string(direction == "0" ? "buy" : "sell")
+                        "Helper: Saved swap to Redis list " + listKey + " & trimmed. Type: " + std::to_string(direction == "0" ? "buy" : "sell")
                         );
                         } catch (redisError) {
                             logger.error(
-                            "Helper: Failed to save swap to Redis list " + std::to_string(listKey) + ":"
+                            "Helper: Failed to save swap to Redis list " + listKey + ":"
                             redisError,
                             );
                             // Consider if we should proceed or return error
@@ -194,12 +194,12 @@ std::future<void> processSwapLog(const std::any& token, const std::string& signa
                             100,
                             txId: signature,
                             lastUpdated: new Date(),
-                            "COALESCE(" + std::to_string(tokens.volume24h) + ", 0) + " + std::to_string(direction == "1)
+                            "volume24h: sql" + "COALESCE(" + tokens.volume24h + ", 0) + " + std::to_string(direction == "1)
                             ? (Number(amount) / Math.pow(10, token.tokenDecimals)) *;
                             tokenPriceUSD;
                             : (Number(amountOut) / Math.pow(10, token.tokenDecimals)) *
                             tokenPriceUSD;
-                            }`,
+                            "}"
                             priceChange24h,
                             // Conditionally set price24hAgo & lastPriceUpdate
                             ...(shouldReset24h;
@@ -222,13 +222,13 @@ std::future<void> processSwapLog(const std::any& token, const std::string& signa
                                 ),
                                 };
                                 // Emit event to all clients via WebSocket
-                                "token-" + std::to_string(mintAddress);
+                                "wsClient.emit(" + "token-" + mintAddress;
                                     ...swapRecord,
                                     mint: mintAddress, // Add mint field for compatibility
                                     timestamp: swapRecord.timestamp.toISOString(), // Emit ISO string
                                     });
                                     wsClient;
-                                    "token-" + std::to_string(swapRecord.tokenMint);
+                                    ".to(" + "token-" + swapRecord.tokenMint;
                                     .emit("updateToken", enrichedToken);
                                     return {
                                         mintAddress,
@@ -277,7 +277,7 @@ std::future<bool> isValidSwapTx(Connection connection, const std::string& signat
         const auto logs = tx.meta.logMessages;
         if (!logs) return false;
 
-        const auto has = [&](kw: string) { return logs.some((l) => l.includes(kw)); };
+        const auto has = [&](kw: string) { return logs.some((l) => (std::find(l.begin(), l.end(), kw) != l.end())); };
         return (;
         has("Mint:") &&
         has("Swap:") &&
@@ -342,7 +342,7 @@ std::future<double> updateHoldersCache(const std::string& mint, bool imported = 
         .limit(1);
         if (existingToken.[0].imported == 1) {
             //ignore imported tokens
-            std::cout << "Token " + std::to_string(mint) << skipping holder update.` << std::endl;
+            std::cout << "Token " + mint << "skipping holder update." << std::endl;
             const auto redisCache = getGlobalRedisCache(); // Instantiate Redis cache;
             const auto ext = ExternalToken.create(mint, redisCache);
             ext.updateMarketAndHolders();
@@ -370,11 +370,11 @@ std::future<double> updateHoldersCache(const std::string& mint, bool imported = 
                         );
 
                         if (!accounts || accounts.length == 0) {
-                            std::cout << "No accounts found for token " + std::to_string(mint) << std::endl;
+                            std::cout << "No accounts found for token " + mint << std::endl;
                             return 0;
                         }
 
-                        std::cout << "Found " + std::to_string(accounts.length) + " token accounts for mint " + std::to_string(mint) << std::endl;
+                        std::cout << "Found " + accounts.size() + " token accounts for mint " + mint << std::endl;
 
                         // Process accounts to extract holder information
                         auto totalTokens = 0;
@@ -400,7 +400,7 @@ std::future<double> updateHoldersCache(const std::string& mint, bool imported = 
                                 totalTokens += tokenBalance;
 
                                 // Use a consistent structure, maybe matching old DB schema if needed
-                                holders.push({
+                                holders.push_back({
                                     // id: crypto.randomUUID(), // No longer needed for DB
                                     mint, // Keep for context within the stored object;
                                     address: ownerAddress,
@@ -412,7 +412,7 @@ std::future<double> updateHoldersCache(const std::string& mint, bool imported = 
 
 
                                     } catch (error: any) {
-                                        std::cerr << "Error processing account for " + std::to_string(mint) + ":" << error << std::endl;
+                                        std::cerr << "Error processing account for " + mint + ":" << error << std::endl;
                                         // Continue with other accounts even if one fails
                                         continue;
                                     }
@@ -428,21 +428,21 @@ std::future<double> updateHoldersCache(const std::string& mint, bool imported = 
                                 // Sort holders by amount (descending)
                                 holders.sort((a, b) => b.amount - a.amount);
 
-                                const auto holdersListKey = "holders:" + std::to_string(mint);
+                                const auto holdersListKey = "holders:" + mint;
                                 try {
                                     // Store the entire list, stringified. No TTL.
-                                    redisCache.set(holdersListKey, JSON.stringify(holders));
+                                    redisCache.set(holdersListKey, /* JSON.stringify */ std::string(holders));
                                     logger.log(
-                                    "Stored " + std::to_string(holders.length) + " holders in Redis list " + std::to_string(holdersListKey)
+                                    "Stored " + holders.size() + " holders in Redis list " + holdersListKey
                                     );
                                     } catch (redisError) {
-                                        std::cerr << "Failed to store holders in Redis for " + std::to_string(mint) + ":" << redisError << std::endl;
+                                        std::cerr << "Failed to store holders in Redis for " + mint + ":" << redisError << std::endl;
                                     }
 
                                     try {
                                         const auto wsClient = getWebSocketClient();
                                         const auto limitedHolders = holders.slice(0, 50); // Emit only top 50;
-                                        "token-" + std::to_string(mint);
+                                        "wsClient.emit(" + "token-" + mint;
                                         } catch (wsError) {
                                             std::cerr << "WebSocket error when emitting holder update:" << wsError << std::endl;
                                         }
@@ -451,7 +451,7 @@ std::future<double> updateHoldersCache(const std::string& mint, bool imported = 
                                         db;
                                         .update(tokens);
                                         .set({
-                                            holderCount: holders.length, // Use full count
+                                            holderCount: holders.size(), // Use full count
                                             lastUpdated: new Date(),
                                             });
                                             .where(eq(tokens.mint, mint));
@@ -468,17 +468,17 @@ std::future<double> updateHoldersCache(const std::string& mint, bool imported = 
                                                     processTokenUpdateEvent({
                                                         ...tokenData[0],
                                                         event: "holdersUpdated",
-                                                        holderCount: holders.length, // Use full count here too
+                                                        holderCount: holders.size(), // Use full count here too
                                                         timestamp: new Date().toISOString(),
                                                         });
                                                     }
                                                     } catch (wsError) {
-                                                        std::cerr << "WebSocket error when emitting holder update: " + std::to_string(wsError) << std::endl;
+                                                        std::cerr << "WebSocket error when emitting holder update: " + wsError << std::endl;
                                                     }
 
-                                                    return holders.length; // Return full count;
+                                                    return holders.size(); // Return full count;
                                                     } catch (error) {
-                                                        std::cerr << "Error updating holders for token " + std::to_string(mint) + ":" << error << std::endl;
+                                                        std::cerr << "Error updating holders for token " + mint + ":" << error << std::endl;
                                                         return 0;
                                                     }
 
@@ -508,7 +508,7 @@ std::future<void> processTokenUpdateEvent(const std::any& tokenData, bool should
 
                 // Always emit to token-specific room
                 wsClient.emit(;
-                "token-" + std::to_string(tokenData.mint)
+                "token-" + tokenData.mint
                 "updateToken",
                 enrichedTokenData,
                 );
@@ -516,7 +516,7 @@ std::future<void> processTokenUpdateEvent(const std::any& tokenData, bool should
                 // Use env var for debug check
                 const auto debugWs = process.env.DEBUG_WEBSOCKET == "true";
                 if (debugWs) {
-                    std::cout << "Emitted token update event for " + std::to_string(tokenData.mint) << std::endl;
+                    std::cout << "Emitted token update event for " + tokenData.mint << std::endl;
                 }
 
                 // Handle global emission based on flags
@@ -527,11 +527,11 @@ std::future<void> processTokenUpdateEvent(const std::any& tokenData, bool should
                         timestamp: new Date(),
                         });
                         if (debugWs) {
-                            std::cout << "Emitted NEW token event to global feed: " + std::to_string(tokenData.mint) << std::endl;
+                            std::cout << "Emitted NEW token event to global feed: " + tokenData.mint << std::endl;
                         }
                         } else if (shouldEmitGlobal) {
                             // Otherwise, if shouldEmitGlobal is true (and it's not a new token), emit "updateToken" globally
-                            "token-" + std::to_string(tokenData.mint);
+                            "wsClient.emit(" + "token-" + tokenData.mint;
                                 ...enrichedTokenData,
                                 timestamp: new Date(),
                                 });

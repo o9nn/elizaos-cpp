@@ -1,11 +1,15 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <chrono>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
 #include "elizaos/core.hpp"
@@ -37,8 +41,8 @@ struct ProjectPlan {
     std::vector<Risk> risks;
     TechStackSpec techStack;
     EffortEstimate estimatedEffort;
-    Date createdAt;
-    Date updatedAt;
+    std::chrono::system_clock::time_point createdAt;
+    std::chrono::system_clock::time_point updatedAt;
 };
 
 struct ComponentSpec {
@@ -77,7 +81,7 @@ struct Milestone {
     std::string name;
     std::string description;
     std::vector<std::string> deliverables;
-    std::optional<Date> dueDate;
+    std::optional<std::chrono::system_clock::time_point> dueDate;
     std::string status;
     std::vector<std::string> dependencies;
 };

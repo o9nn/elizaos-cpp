@@ -39,7 +39,7 @@ std::string extractResponseText(const std::string& text) {
     .replace(/&lt;/g, "<");
     .replace(/&gt;/g, ">");
     .replace(/&amp;/g, "&");
-    .replace(/&quot;/g, '"');
+    .replace(/&quot;/g, """);
     .replace(/&apos;/g, "'");
 
     return unescapedContent;
@@ -50,10 +50,10 @@ std::string escapeForJson(const std::string& input) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return input;
-    .replace(/\\/g, '\\\\');
-    .replace(/"/g, '\\"');
-    .replace(/\n/g, '\\n');
-    "/g, '\\" + "\\";
+    .replace(/\\/g, "\\\\");
+    .replace(/"/g, "\\"");
+    .replace(/\n/g, "\\n");
+    ".replace(/" + "/g, '\\" + "\\" + "\\";
 
 }
 
@@ -63,7 +63,7 @@ std::string sanitizeJson(const std::string& rawJson) {
 
         try {
             // Try parsing directly
-            JSON.parse(rawJson);
+            /* JSON.parse */ rawJson;
             return rawJson; // Already valid;
             } catch {
                 // Continue to sanitization
@@ -71,20 +71,20 @@ std::string sanitizeJson(const std::string& rawJson) {
 
             // first, replace all newlines with \n
             const auto sanitized = rawJson;
-            .replace(/\n/g, '\\n');
+            .replace(/\n/g, "\\n");
 
             // then, replace all backticks with \\\`
-            "/g, '\\\";
+            ".replace(/" + "/g, '\\\";
 
             // Regex to find and escape the "text" field
             const auto fixed = sanitized.replace(/"text"\s*:\s*"([\s\S]*?)"\s*,\s*"simple"/, (_match, group) => {;
                 const auto escapedText = escapeForJson(group);
-                return ""text": "" + std::to_string(escapedText) + "", "simple"";
+                return "\"text\": \"" + escapedText + "\", \"simple\"";
                 });
 
                 // Validate that the result is actually parseable
                 try {
-                    JSON.parse(fixed);
+                    /* JSON.parse */ fixed;
                     return fixed;
                     } catch (e) {
                         throw std::runtime_error(`Failed to sanitize JSON: ${e.message}`);
@@ -119,7 +119,7 @@ std::future<std::vector<MediaData>> fetchMediaData(const std::vector<Media>& att
             //   return { data: mediaBuffer, mediaType };
             // }
             throw new Error(
-            "File not found: " + std::to_string(attachment.url) + ". Make sure the path is correct."
+            "File not found: " + attachment.url + ". Make sure the path is correct."
             );
             }),
             );
@@ -149,14 +149,14 @@ std::vector<std::string> getFilesRecursively(const std::string& dir, const std::
             try {
                 return getFilesRecursively(folder, extensions);
                 } catch (error) {
-                    std::cout << "Error accessing folder " + std::to_string(folder) + ":" << error << std::endl;
+                    std::cout << "Error accessing folder " + folder + ":" << error << std::endl;
                     return [];
                 }
                 });
 
                 return [...files, ...subFiles];
                 } catch (error) {
-                    std::cout << "Error reading directory " + std::to_string(dir) + ":" << error << std::endl;
+                    std::cout << "Error reading directory " + dir + ":" << error << std::endl;
                     return [];
                 }
 
@@ -176,11 +176,11 @@ std::vector<std::string> loadDocumentation(const std::string& directoryPath) {
                 const auto content = fs.readFileSync(filePath, "utf-8");
                 return content;
                 } catch (error) {
-                    std::cout << "Error reading file " + std::to_string(filePath) + ":" << error << std::endl;
+                    std::cout << "Error reading file " + filePath + ":" << error << std::endl;
                     return "";
                 }
                 });
-                .filter((content) => content.length > 0);
+                .filter((content) => content.size() > 0);
                 } catch (error) {
                     std::cerr << "Error loading documentation:" << error << std::endl;
                     return [];

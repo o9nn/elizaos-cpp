@@ -35,7 +35,7 @@ std::future<void> GET(NextRequest request) {
         try {
             OTC_ADDRESS = getContractAddress();
             console.log(
-            "[Check Matured OTC] Using contract address: " + std::to_string(OTC_ADDRESS) + " for network: " + std::to_string(process.env.NETWORK || "localnet")
+            "[Check Matured OTC] Using contract address: " + OTC_ADDRESS + " for network: " + std::to_string(process.env.NETWORK || "localnet")
             );
             } catch (error) {
                 std::cerr << "[Check Matured OTC] Failed to get contract address:" << error << std::endl;
@@ -120,7 +120,7 @@ std::future<void> GET(NextRequest request) {
                             Number(unlockTime) > 0 &&;
                             Number(unlockTime) <= now;
                             ) {
-                                maturedOffers.push(i);
+                                maturedOffers.push_back(i);
                             }
                         }
 
@@ -160,7 +160,7 @@ std::future<void> GET(NextRequest request) {
                                             const auto chunkSize = 50;
                                             const std::vector<std::vector<bigint>> chunks = [];
                                             for (int i = 0; i < maturedOffers.length; i += chunkSize) {
-                                                chunks.push(maturedOffers.slice(i, i + chunkSize));
+                                                chunks.push_back(maturedOffers.slice(i, i + chunkSize));
                                             }
 
                                             for (const auto& chunk : chunks)
@@ -175,7 +175,7 @@ std::future<void> GET(NextRequest request) {
                                                     // wait for 1 confirmation
                                                     publicClient.waitForTransactionReceipt({ hash });
                                                     result.txHash = hash;
-                                                    result.claimedOffers.push(...chunk.map(String));
+                                                    result.claimedOffers.push_back(...chunk.map(String));
                                                 }
                                             }
 

@@ -1,23 +1,26 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include "..types.hpp"
-#include "..utils/bignumber.hpp"
-#include "..utils/wallet.hpp"
-#include ".analyticsService.hpp"
-#include ".base/BaseTradeService.hpp"
-#include ".calculation/tradeCalculation.hpp"
-#include ".dataService.hpp"
-#include ".tradeMemoryService.hpp"
-#include ".validation/TokenValidationService.hpp"
-#include ".walletService.hpp"
+#include "analyticsService.hpp"
+#include "base/BaseTradeService.hpp"
+#include "calculation/tradeCalculation.hpp"
+#include "dataService.hpp"
 #include "elizaos/core.hpp"
+#include "tradeMemoryService.hpp"
+#include "types.hpp"
+#include "utils/bignumber.hpp"
+#include "utils/wallet.hpp"
+#include "validation/TokenValidationService.hpp"
+#include "walletService.hpp"
 
 namespace elizaos {
 

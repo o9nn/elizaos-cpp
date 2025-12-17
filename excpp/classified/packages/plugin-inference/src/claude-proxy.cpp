@@ -14,7 +14,7 @@ void createClaudeHandler(IAgentRuntime runtime) {
             try {
                 return proxy.processRequest(request);
                 } catch (error) {
-                    std::cerr << '[CLAUDE_PROXY] Error processing request:' << error << std::endl;
+                    std::cerr << "[CLAUDE_PROXY] Error processing request:" << error << std::endl;
                     throw;
                 }
                 };

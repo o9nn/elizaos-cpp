@@ -23,7 +23,7 @@ void SearchBar() {
                 const auto data = getSearchTokens({ search: searchQuery });
                 return data as { tokens: IToken[] };
                 },
-                enabled: searchQuery.length >= 2,
+                enabled: searchQuery.size() >= 2,
                 staleTime: 30000,
                 gcTime: 5 * 60 * 1000,
                 refetchOnWindowFocus: false,
@@ -72,7 +72,7 @@ void SearchBar() {
                     <div className="text-autofun-background-action-highlight">;
                     Searching for tokens...;
                     </div>;
-                    ) : query.data.tokens.length == 0 ? (
+                    ) : query.data.tokens.size() == 0 ? (
                     <div className="text-autofun-background-action-highlight">;
                     No tokens found.;
                     </div>;

@@ -17,13 +17,13 @@ std::future<void> handler(NextApiRequest req, NextApiResponse res) {
         const auto endIndex = startIndex + limit;
         const auto paginatedUsers = mockUsers.slice(startIndex, endIndex);
 
-        std::cout << "Returning " + std::to_string(paginatedUsers.length) + " mock users for trust scoreboard" << std::endl;
+        std::cout << "Returning " + paginatedUsers.size() + " mock users for trust scoreboard" << std::endl;
 
         return res.status(200).json({;
             users: paginatedUsers,
-            total: mockUsers.length,
+            total: mockUsers.size(),
             cursor: cursor,
-            hasMore: endIndex < mockUsers.length
+            hasMore: endIndex < mockUsers.size()
             });
             } catch (error) {
                 std::cerr << "Error:" << error << std::endl;

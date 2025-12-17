@@ -11,18 +11,18 @@ express::Router createAgentMemoryRouter(const std::unordered_map<UUID, IAgentRun
         const auto router = express.Router();
 
         // Get memories for a specific room
-        router.get('/:agentId/rooms/:roomId/memories', async (req, res) => {
+        router.get("/:agentId/rooms/:roomId/memories", async (req, res) => {
             const auto agentId = validateUuid(req.params.agentId);
             const auto roomId = validateUuid(req.params.roomId);
 
             if (!agentId || !roomId) {
-                return sendError(res, 400, 'INVALID_ID', 'Invalid agent ID or room ID format');
+                return sendError(res, 400, "INVALID_ID", "Invalid agent ID or room ID format");
             }
 
             const auto runtime = agents.get(agentId);
 
             if (!runtime) {
-                return sendError(res, 404, 'NOT_FOUND', 'Agent not found');
+                return sendError(res, 404, "NOT_FOUND", "Agent not found");
             }
 
             try {
@@ -30,8 +30,8 @@ express::Router createAgentMemoryRouter(const std::unordered_map<UUID, IAgentRun
                 const auto before = req.query.before;
                 ? Number.parseInt(req.query.before, 10);
                 : Date.now();
-                const auto includeEmbedding = req.query.includeEmbedding == 'true';
-                const auto tableName = (req.query.tableName) || 'messages';
+                const auto includeEmbedding = req.query.includeEmbedding == "true";
+                const auto tableName = (req.query.tableName) || "messages";
 
                 const auto memories = runtime.getMemories({;
                     tableName,
@@ -49,33 +49,33 @@ express::Router createAgentMemoryRouter(const std::unordered_map<UUID, IAgentRun
 
                         sendSuccess(res, { memories: cleanMemories });
                         } catch (error) {
-                            std::cerr << '[MEMORIES GET] Error retrieving memories for room:' << error << std::endl;
+                            std::cerr << "[MEMORIES GET] Error retrieving memories for room:" << error << std::endl;
                             sendError(;
                             res,
                             500,
-                            '500',
-                            'Failed to retrieve memories',
+                            "500",
+                            "Failed to retrieve memories",
                             true /* instanceof check */ ? error.message : std::to_string(error)
                             );
                         }
                         });
 
                         // Get all memories for an agent
-                        router.get('/:agentId/memories', async (req, res) => {
+                        router.get("/:agentId/memories", async (req, res) => {
                             const auto agentId = validateUuid(req.params.agentId);
 
                             if (!agentId) {
-                                return sendError(res, 400, 'INVALID_ID', 'Invalid agent ID');
+                                return sendError(res, 400, "INVALID_ID", "Invalid agent ID");
                             }
 
                             const auto runtime = agents.get(agentId);
                             if (!runtime) {
-                                return sendError(res, 404, 'NOT_FOUND', 'Agent not found');
+                                return sendError(res, 404, "NOT_FOUND", "Agent not found");
                             }
 
                             try {
-                                const auto tableName = (req.query.tableName) || 'messages';
-                                const auto includeEmbedding = req.query.includeEmbedding == 'true';
+                                const auto tableName = (req.query.tableName) || "messages";
+                                const auto includeEmbedding = req.query.includeEmbedding == "true";
 
                                 // Handle both roomId and channelId parameters
                                 auto roomIdToUse: UUID | std::nullopt;
@@ -84,18 +84,18 @@ express::Router createAgentMemoryRouter(const std::unordered_map<UUID, IAgentRun
                                     // Convert channelId to the agent's unique roomId
                                     const auto channelId = validateUuid(req.query.channelId);
                                     if (!channelId) {
-                                        return sendError(res, 400, 'INVALID_ID', 'Invalid channel ID format');
+                                        return sendError(res, 400, "INVALID_ID", "Invalid channel ID format");
                                     }
                                     // Use createUniqueUuid to generate the same roomId the agent uses
                                     roomIdToUse = createUniqueUuid(runtime, channelId);
                                     logger.info(
-                                    "[AGENT MEMORIES] Converting channelId " + std::to_string(channelId) + " to roomId " + std::to_string(roomIdToUse) + " for agent " + std::to_string(agentId);
+                                    "[AGENT MEMORIES] Converting channelId " + channelId + " to roomId " + roomIdToUse + " for agent " + agentId;
                                     );
                                     } else if (req.query.roomId) {
                                         // Backward compatibility: still accept roomId directly
                                         const auto roomId = validateUuid(req.query.roomId);
                                         if (!roomId) {
-                                            return sendError(res, 400, 'INVALID_ID', 'Invalid room ID format');
+                                            return sendError(res, 400, "INVALID_ID", "Invalid room ID format");
                                         }
                                         roomIdToUse = roomId;
                                     }
@@ -114,31 +114,31 @@ express::Router createAgentMemoryRouter(const std::unordered_map<UUID, IAgentRun
                                             }));
                                             sendSuccess(res, { memories: cleanMemories });
                                             } catch (error) {
-                                                std::cerr << "[AGENT MEMORIES] Error retrieving memories for agent " + std::to_string(agentId) + ":" << error << std::endl;
+                                                std::cerr << "[AGENT MEMORIES] Error retrieving memories for agent " + agentId + ":" << error << std::endl;
                                                 sendError(;
                                                 res,
                                                 500,
-                                                'MEMORY_ERROR',
-                                                'Error retrieving agent memories',
+                                                "MEMORY_ERROR",
+                                                "Error retrieving agent memories",
                                                 true /* instanceof check */ ? error.message : std::to_string(error)
                                                 );
                                             }
                                             });
 
                                             // Update a specific memory for an agent
-                                            router.patch('/:agentId/memories/:memoryId', async (req, res) => {
+                                            router.patch("/:agentId/memories/:memoryId", async (req, res) => {
                                                 const auto agentId = validateUuid(req.params.agentId);
                                                 const auto memoryId = validateUuid(req.params.memoryId);
 
                                                 const auto { id: _idFromData, ...restOfMemoryData } = req.body;
 
                                                 if (!agentId || !memoryId) {
-                                                    return sendError(res, 400, 'INVALID_ID', 'Invalid agent ID or memory ID format');
+                                                    return sendError(res, 400, "INVALID_ID", "Invalid agent ID or memory ID format");
                                                 }
 
                                                 const auto runtime = agents.get(agentId);
                                                 if (!runtime) {
-                                                    return sendError(res, 404, 'NOT_FOUND', 'Agent not found');
+                                                    return sendError(res, 404, "NOT_FOUND", "Agent not found");
                                                 }
 
                                                 try {
@@ -179,66 +179,66 @@ express::Router createAgentMemoryRouter(const std::unordered_map<UUID, IAgentRun
                                                             runtime.updateMemory(memoryToUpdate);
 
                                                             logger.success(`[MEMORY UPDATE] Successfully updated memory ${memoryId}`);
-                                                            sendSuccess(res, { id: memoryId, message: 'Memory updated successfully' });
+                                                            sendSuccess(res, { id: memoryId, message: "Memory updated successfully" });
                                                             } catch (error) {
-                                                                std::cerr << "[MEMORY UPDATE] Error updating memory " + std::to_string(memoryId) + ":" << error << std::endl;
+                                                                std::cerr << "[MEMORY UPDATE] Error updating memory " + memoryId + ":" << error << std::endl;
                                                                 sendError(;
                                                                 res,
                                                                 500,
-                                                                'UPDATE_ERROR',
-                                                                'Failed to update memory',
+                                                                "UPDATE_ERROR",
+                                                                "Failed to update memory",
                                                                 true /* instanceof check */ ? error.message : std::to_string(error)
                                                                 );
                                                             }
                                                             });
 
                                                             // Delete all memories for an agent
-                                                            router.delete('/:agentId/memories', async (req, res) => {
+                                                            router.delete("/:agentId/memories", async (req, res) => {
                                                                 try {
                                                                     const auto agentId = validateUuid(req.params.agentId);
 
                                                                     if (!agentId) {
-                                                                        return sendError(res, 400, 'INVALID_ID', 'Invalid agent ID');
+                                                                        return sendError(res, 400, "INVALID_ID", "Invalid agent ID");
                                                                     }
 
                                                                     const auto runtime = agents.get(agentId);
                                                                     if (!runtime) {
-                                                                        return sendError(res, 404, 'NOT_FOUND', 'Agent not found');
+                                                                        return sendError(res, 404, "NOT_FOUND", "Agent not found");
                                                                     }
 
-                                                                    const auto deletedCount = (runtime.getAllMemories()).length;
+                                                                    const auto deletedCount = (runtime.getAllMemories()).size();
                                                                     runtime.clearAllAgentMemories();
 
-                                                                    sendSuccess(res, { deletedCount, message: 'All agent memories cleared successfully' });
+                                                                    sendSuccess(res, { deletedCount, message: "All agent memories cleared successfully" });
                                                                     } catch (error) {
-                                                                        std::cerr << '[DELETE ALL AGENT MEMORIES] Error deleting all agent memories:' << error << std::endl;
+                                                                        std::cerr << "[DELETE ALL AGENT MEMORIES] Error deleting all agent memories:" << error << std::endl;
                                                                         sendError(;
                                                                         res,
                                                                         500,
-                                                                        'DELETE_ERROR',
-                                                                        'Error deleting all agent memories',
+                                                                        "DELETE_ERROR",
+                                                                        "Error deleting all agent memories",
                                                                         true /* instanceof check */ ? error.message : std::to_string(error)
                                                                         );
                                                                     }
                                                                     });
 
                                                                     // Delete all memories for a room
-                                                                    router.delete('/:agentId/memories/all/:roomId', async (req, res) => {
+                                                                    router.delete("/:agentId/memories/all/:roomId", async (req, res) => {
                                                                         try {
                                                                             const auto agentId = validateUuid(req.params.agentId);
                                                                             const auto roomId = validateUuid(req.params.roomId);
 
                                                                             if (!agentId) {
-                                                                                return sendError(res, 400, 'INVALID_ID', 'Invalid agent ID');
+                                                                                return sendError(res, 400, "INVALID_ID", "Invalid agent ID");
                                                                             }
 
                                                                             if (!roomId) {
-                                                                                return sendError(res, 400, 'INVALID_ID', 'Invalid room ID');
+                                                                                return sendError(res, 400, "INVALID_ID", "Invalid room ID");
                                                                             }
 
                                                                             const auto runtime = agents.get(agentId);
                                                                             if (!runtime) {
-                                                                                return sendError(res, 404, 'NOT_FOUND', 'Agent not found');
+                                                                                return sendError(res, 404, "NOT_FOUND", "Agent not found");
                                                                             }
 
                                                                             runtime.deleteAllMemories(roomId, MemoryType.MESSAGE);
@@ -246,43 +246,43 @@ express::Router createAgentMemoryRouter(const std::unordered_map<UUID, IAgentRun
 
                                                                             res.status(204).send();
                                                                             } catch (error) {
-                                                                                std::cerr << '[DELETE ALL MEMORIES] Error deleting all memories:' << error << std::endl;
+                                                                                std::cerr << "[DELETE ALL MEMORIES] Error deleting all memories:" << error << std::endl;
                                                                                 sendError(;
                                                                                 res,
                                                                                 500,
-                                                                                'DELETE_ERROR',
-                                                                                'Error deleting all memories',
+                                                                                "DELETE_ERROR",
+                                                                                "Error deleting all memories",
                                                                                 true /* instanceof check */ ? error.message : std::to_string(error)
                                                                                 );
                                                                             }
                                                                             });
 
                                                                             // Delete a specific memory for an agent
-                                                                            router.delete('/:agentId/memories/:memoryId', async (req, res) => {
+                                                                            router.delete("/:agentId/memories/:memoryId", async (req, res) => {
                                                                                 try {
                                                                                     const auto agentId = validateUuid(req.params.agentId);
                                                                                     const auto memoryId = validateUuid(req.params.memoryId);
 
                                                                                     if (!agentId || !memoryId) {
-                                                                                        return sendError(res, 400, 'INVALID_ID', 'Invalid agent ID or memory ID format');
+                                                                                        return sendError(res, 400, "INVALID_ID", "Invalid agent ID or memory ID format");
                                                                                     }
 
                                                                                     const auto runtime = agents.get(agentId);
                                                                                     if (!runtime) {
-                                                                                        return sendError(res, 404, 'NOT_FOUND', 'Agent not found');
+                                                                                        return sendError(res, 404, "NOT_FOUND", "Agent not found");
                                                                                     }
 
                                                                                     // Delete the specific memory
                                                                                     runtime.deleteMemory(memoryId);
 
-                                                                                    sendSuccess(res, { message: 'Memory deleted successfully' });
+                                                                                    sendSuccess(res, { message: "Memory deleted successfully" });
                                                                                     } catch (error) {
-                                                                                        std::cerr << "[DELETE MEMORY] Error deleting memory " + std::to_string(req.params.memoryId) + ":" << error << std::endl;
+                                                                                        std::cerr << "[DELETE MEMORY] Error deleting memory " + req.params.memoryId + ":" << error << std::endl;
                                                                                         sendError(;
                                                                                         res,
                                                                                         500,
-                                                                                        'DELETE_ERROR',
-                                                                                        'Error deleting memory',
+                                                                                        "DELETE_ERROR",
+                                                                                        "Error deleting memory",
                                                                                         true /* instanceof check */ ? error.message : std::to_string(error)
                                                                                         );
                                                                                     }

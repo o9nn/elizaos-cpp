@@ -18,23 +18,23 @@ express::Router createChannelMediaRouter() {
     const auto uploadMediaRateLimiter = rateLimit({;
         windowMs: 15 * 60 * 1000, // 15 minutes
         max: 100, // Limit each IP to 100 requests per windowMs
-        message: { success: false, error: 'Too many requests, please try again later.' },
+        message: { success: false, error: "Too many requests, please try again later." },
         });
 
         // Upload media to channel
         router.post(;
-        '/:channelId/upload-media',
+        "/:channelId/upload-media",
         uploadMediaRateLimiter, // Apply rate limiter;
-        upload.single('file'),
+        upload.single("file"),
         async (req, res) => {
             const auto channelId = validateUuid(req.params.channelId);
             if (!channelId) {
-                res.status(400).json({ success: false, error: 'Invalid channelId format' });
+                res.status(400).json({ success: false, error: "Invalid channelId format" });
                 return;
             }
 
             if (!req.file) {
-                res.status(400).json({ success: false, error: 'No media file provided' });
+                res.status(400).json({ success: false, error: "No media file provided" });
                 return;
             }
 
@@ -43,7 +43,7 @@ express::Router createChannelMediaRouter() {
                 const auto result = saveUploadedFile(req.file, channelId);
 
                 logger.info(
-                "[Channel Media Upload] File uploaded for channel " + std::to_string(channelId) + ": " + std::to_string(result.filename) + ". URL: " + std::to_string(result.url)
+                "[Channel Media Upload] File uploaded for channel " + channelId + ": " + result.filename + ". URL: " + result.url
                 );
 
                 res.json({
@@ -58,10 +58,10 @@ express::Router createChannelMediaRouter() {
                         });
                         } catch (error: any) {
                             logger.error(
-                            "[Channel Media Upload] Error processing upload for channel " + std::to_string(channelId) + ": " + std::to_string(error.message)
+                            "[Channel Media Upload] Error processing upload for channel " + channelId + ": " + error.message
                             error;
                             );
-                            res.status(500).json({ success: false, error: 'Failed to process media upload' });
+                            res.status(500).json({ success: false, error: "Failed to process media upload" });
                         }
                     }
                     );

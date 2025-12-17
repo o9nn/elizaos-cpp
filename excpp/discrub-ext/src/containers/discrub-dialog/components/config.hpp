@@ -1,19 +1,22 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include "...common-components/multi-value-select/multi-value-select.hpp"
-#include "...common-components/tooltip/tooltip.hpp"
-#include "...enum/discrub-setting.hpp"
-#include "...enum/media-type.hpp"
-#include "...enum/resolution-type.hpp"
-#include "...enum/sort-direction.hpp"
-#include "...features/app/app-types.hpp"
-#include "...services/chrome-service.hpp"
-#include "...utils.hpp"
+#include "common-components/multi-value-select/multi-value-select.hpp"
+#include "common-components/tooltip/tooltip.hpp"
+#include "enum/discrub-setting.hpp"
+#include "enum/media-type.hpp"
+#include "enum/resolution-type.hpp"
+#include "enum/sort-direction.hpp"
+#include "features/app/app-types.hpp"
+#include "services/chrome-service.hpp"
+#include "utils.hpp"
 
 namespace elizaos {
 

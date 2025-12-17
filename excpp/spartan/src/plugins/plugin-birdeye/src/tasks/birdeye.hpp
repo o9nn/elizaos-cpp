@@ -1,11 +1,15 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <chrono>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "elizaos/core.hpp"
 
@@ -24,7 +28,7 @@ namespace elizaos {
  */
 struct TransactionHistory {
     std::string txHash;
-    Date blockTime;
+    std::chrono::system_clock::time_point blockTime;
     std::any data;
 };
 

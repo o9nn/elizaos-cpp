@@ -1,11 +1,14 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -30,7 +33,7 @@ using HandlerCallback = std::function<std::future<std::vector<Memory>>(Content, 
 /**
  * Handler function type for processing messages
  */
-using Handler = std::function<std::future<unknown>(IAgentRuntime, Memory, State, std::any, HandlerCallback, std::vector<Memory>)>;
+using Handler = std::function<std::future<std::any>(IAgentRuntime, Memory, State, std::any, HandlerCallback, std::vector<Memory>)>;
 
 /**
  * Validator function type for actions/evaluators

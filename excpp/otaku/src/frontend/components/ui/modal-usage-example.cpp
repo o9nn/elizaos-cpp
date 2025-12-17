@@ -8,7 +8,7 @@ void ExampleSimpleModal() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { showModal, hideModal } = useModal();
-    const auto modalId = 'simple-modal';
+    const auto modalId = "simple-modal";
 
     const auto handleOpenModal = [&]() {;
         showModal(;
@@ -42,16 +42,16 @@ void ExampleFormModal() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { showModal, hideModal } = useModal();
-    const auto modalId = 'form-modal';
+    const auto modalId = "form-modal";
 
     const auto handleOpenFormModal = [&]() {;
         // You can define the form content inline or as a separate component
         const auto FormContent = [&]() {;
-            const auto [name, setName] = useState('');
-            const auto [email, setEmail] = useState('');
+            const auto [name, setName] = useState("");
+            const auto [email, setEmail] = useState("");
 
             const auto handleSubmit = [&]() {;
-                std::cout << 'Form submitted:' << { name, email } << std::endl;
+                std::cout << "Form submitted:" << { name, email } << std::endl;
                 // Do something with the data
                 hideModal(modalId);
                 };
@@ -125,7 +125,7 @@ void ExampleConfirmationModal() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { showModal, hideModal } = useModal();
-    const auto modalId = 'confirm-modal';
+    const auto modalId = "confirm-modal";
 
     const auto handleDeleteAction = [&]() {;
         showModal(;
@@ -146,7 +146,7 @@ void ExampleConfirmationModal() {
     </Button>;
     <Button;
     onClick={() => {
-        std::cout << 'Item deleted!' << std::endl;
+        std::cout << "Item deleted!" << std::endl;
         hideModal(modalId);
     }}
     variant="destructive";
@@ -177,7 +177,7 @@ void ExampleCustomStyledModal() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { showModal, hideModal } = useModal();
-    const auto modalId = 'custom-modal';
+    const auto modalId = "custom-modal";
 
     const auto handleOpenCustomModal = [&]() {;
         showModal(;
@@ -195,7 +195,7 @@ void ExampleCustomStyledModal() {
             closeOnBackdropClick: true,
             closeOnEsc: true,
             showCloseButton: true,
-            className: 'max-w-2xl', // Custom width
+            className: "max-w-2xl", // Custom width
         }
         );
         };

@@ -10,7 +10,7 @@ DirectoryInfo detectDirectoryType(const std::string& dir) {
     // Check if directory exists and is readable
     if (!fs.existsSync(dir)) {
         return {
-            type: 'non-elizaos-dir',
+            type: "non-elizaos-dir",
             hasPackageJson: false,
             hasElizaOSDependencies: false,
             elizaPackageCount: 0,
@@ -21,7 +21,7 @@ DirectoryInfo detectDirectoryType(const std::string& dir) {
             fs.readdirSync(dir);
             } catch (error) {
                 return {
-                    type: 'non-elizaos-dir',
+                    type: "non-elizaos-dir",
                     hasPackageJson: false,
                     hasElizaOSDependencies: false,
                     elizaPackageCount: 0,
@@ -32,14 +32,14 @@ DirectoryInfo detectDirectoryType(const std::string& dir) {
                 const auto monorepoRoot = UserEnvironment.getInstance().findMonorepoRoot(dir) || std::nullopt;
 
                 // Check for package.json
-                const auto packageJsonPath = path.join(dir, 'package.json');
+                const auto packageJsonPath = path.join(dir, "package.json");
                 const auto hasPackageJson = fs.existsSync(packageJsonPath);
 
                 if (monorepoRoot) {
                     // If the current directory IS the monorepo root, classify as monorepo
                     if (path.resolve(dir) == path.resolve(monorepoRoot)) {
                         return {
-                            type: 'elizaos-monorepo',
+                            type: "elizaos-monorepo",
                             hasPackageJson,
                             hasElizaOSDependencies: false,
                             elizaPackageCount: 0,
@@ -50,7 +50,7 @@ DirectoryInfo detectDirectoryType(const std::string& dir) {
                         // If we're inside the monorepo but don't have package.json, it's a subdirectory
                         if (!hasPackageJson) {
                             return {
-                                type: 'elizaos-subdir',
+                                type: "elizaos-subdir",
                                 hasPackageJson: false,
                                 hasElizaOSDependencies: false,
                                 elizaPackageCount: 0,
@@ -60,7 +60,7 @@ DirectoryInfo detectDirectoryType(const std::string& dir) {
                             } else if (!hasPackageJson) {
                                 // Not in monorepo and no package.json
                                 return {
-                                    type: 'non-elizaos-dir',
+                                    type: "non-elizaos-dir",
                                     hasPackageJson: false,
                                     hasElizaOSDependencies: false,
                                     elizaPackageCount: 0,
@@ -71,11 +71,11 @@ DirectoryInfo detectDirectoryType(const std::string& dir) {
                                 // Parse package.json
                                 auto packageJson: PackageJson;
                                 try {
-                                    const auto packageJsonContent = fs.readFileSync(packageJsonPath, 'utf8');
-                                    packageJson = JSON.parse(packageJsonContent);
+                                    const auto packageJsonContent = fs.readFileSync(packageJsonPath, "utf8");
+                                    packageJson = /* JSON.parse */ packageJsonContent;
                                     } catch (error) {
                                         return {
-                                            type: 'non-elizaos-dir',
+                                            type: "non-elizaos-dir",
                                             hasPackageJson: true,
                                             hasElizaOSDependencies: false,
                                             elizaPackageCount: 0,
@@ -85,7 +85,7 @@ DirectoryInfo detectDirectoryType(const std::string& dir) {
 
                                         // Create result object
                                         const DirectoryInfo result = {;
-                                            type: 'non-elizaos-dir', // Default, will be updated below
+                                            type: "non-elizaos-dir", // Default, will be updated below
                                             hasPackageJson: true,
                                             hasElizaOSDependencies: false,
                                             elizaPackageCount: 0,
@@ -95,30 +95,30 @@ DirectoryInfo detectDirectoryType(const std::string& dir) {
 
                                             // Check for ElizaOS dependencies
                                             const auto dependencies = { ...packageJson.dependencies, ...packageJson.devDependencies };
-                                            const auto elizaPackages = Object.keys(dependencies).filter((pkg) => pkg.startsWith('@elizaos/'));
-                                            result.elizaPackageCount = elizaPackages.length;
-                                            result.hasElizaOSDependencies = elizaPackages.length > 0;
+                                            const auto elizaPackages = Object.keys(dependencies).filter((pkg) => pkg.startsWith("@elizaos/"));
+                                            result.elizaPackageCount = elizaPackages.size();
+                                            result.hasElizaOSDependencies = elizaPackages.size() > 0;
 
                                             // Determine if this is an ElizaOS plugin
                                             const auto isPlugin = isElizaOSPlugin(packageJson);
                                             if (isPlugin) {
-                                                result.type = 'elizaos-plugin';
+                                                result.type = "elizaos-plugin";
                                                 return result;
                                             }
 
                                             // Determine if this is an ElizaOS project
                                             const auto isProject = isElizaOSProject(packageJson, dir, monorepoRoot);
                                             if (isProject) {
-                                                result.type = 'elizaos-project';
+                                                result.type = "elizaos-project";
                                                 return result;
                                             }
 
                                             // If inside monorepo and not a project or plugin → elizaos-subdir
                                             // If outside monorepo and not a project or plugin → non-elizaos-dir
                                             if (monorepoRoot) {
-                                                result.type = 'elizaos-subdir';
+                                                result.type = "elizaos-subdir";
                                                 } else {
-                                                    result.type = 'non-elizaos-dir';
+                                                    result.type = "non-elizaos-dir";
                                                 }
 
                                                 return result;
@@ -147,12 +147,12 @@ bool isElizaOSPlugin(PackageJson packageJson) {
     }
 
     // 2. FALLBACK to package name patterns
-    const auto packageName = packageJson.name || '';
+    const auto packageName = packageJson.name || "";
     if (
-    packageName.startsWith('@elizaos/plugin-') ||;
-    packageName.startsWith('plugin-') ||;
-    packageName.includes('/plugin-') ||;
-    (packageName.includes('plugin') && packageName.includes('eliza'));
+    packageName.startsWith("@elizaos/plugin-") ||;
+    packageName.startsWith("plugin-") ||;
+    (std::find(packageName.begin(), packageName.end(), "/plugin-") != packageName.end()) ||;
+    ((std::find(packageName.begin(), packageName.end(), "plugin") != packageName.end()) && (std::find(packageName.begin(), packageName.end(), "eliza") != packageName.end()));
     ) {
         return true;
     }
@@ -160,13 +160,13 @@ bool isElizaOSPlugin(PackageJson packageJson) {
     // 3. OTHER heuristics (least reliable)
     if (
     packageJson.main &&;
-    (packageJson.main.includes('plugin') ||;
-    packageJson.main == 'src/index.ts' ||;
-    packageJson.main == 'dist/index.js');
+    (packageJson.(std::find(main.begin(), main.end(), "plugin") != main.end()) ||;
+    packageJson.main == "src/index.ts" ||;
+    packageJson.main == "dist/index.js");
     ) {
         // Additional check for plugin-like dependencies
         const auto allDeps = { ...packageJson.dependencies, ...packageJson.devDependencies };
-        const auto hasElizaCore = Object.keys(allDeps).some((dep) => dep.startsWith('@elizaos/core'));
+        const auto hasElizaCore = Object.keys(allDeps).some((dep) => dep.startsWith("@elizaos/core"));
         if (hasElizaCore && keywords.length > 0) {
             return true;
         }
@@ -198,12 +198,12 @@ bool isElizaOSProject(PackageJson packageJson, const std::string& dir, std::opti
     }
 
     // 2. FALLBACK to package name patterns
-    const auto packageName = packageJson.name || '';
+    const auto packageName = packageJson.name || "";
     if (
-    packageName.startsWith('@elizaos/project-') ||;
-    packageName.startsWith('project-') ||;
-    packageName.includes('/project-') ||;
-    (packageName.includes('project') && packageName.includes('eliza'));
+    packageName.startsWith("@elizaos/project-") ||;
+    packageName.startsWith("project-") ||;
+    (std::find(packageName.begin(), packageName.end(), "/project-") != packageName.end()) ||;
+    ((std::find(packageName.begin(), packageName.end(), "project") != packageName.end()) && (std::find(packageName.begin(), packageName.end(), "eliza") != packageName.end()));
     ) {
         return true;
     }
@@ -211,14 +211,14 @@ bool isElizaOSProject(PackageJson packageJson, const std::string& dir, std::opti
     // 3. OTHER heuristics (only when outside monorepo to avoid false positives)
     if (!monorepoRoot) {
         // Check src/index.ts content
-        const auto srcIndexPath = path.join(dir, 'src', 'index.ts');
+        const auto srcIndexPath = path.join(dir, "src", "index.ts");
         if (fs.existsSync(srcIndexPath)) {
             try {
-                const auto indexContent = fs.readFileSync(srcIndexPath, 'utf8');
+                const auto indexContent = fs.readFileSync(srcIndexPath, "utf8");
                 if (
-                indexContent.includes('export const project') ||;
-                indexContent.includes('Project') ||;
-                indexContent.includes('agents');
+                (std::find(indexContent.begin(), indexContent.end(), "export const project") != indexContent.end()) ||;
+                (std::find(indexContent.begin(), indexContent.end(), "Project") != indexContent.end()) ||;
+                (std::find(indexContent.begin(), indexContent.end(), "agents") != indexContent.end());
                 ) {
                     return true;
                 }
@@ -228,7 +228,7 @@ bool isElizaOSProject(PackageJson packageJson, const std::string& dir, std::opti
             }
 
             // Check for character files (common in ElizaOS projects)
-            const auto characterFiles = ['character.json', 'characters.json', 'characters'];
+            const auto characterFiles = ["character.json", "characters.json", "characters"];
             for (const auto& file : characterFiles)
                 if (fs.existsSync(path.join(dir, file))) {
                     return true;
@@ -236,7 +236,7 @@ bool isElizaOSProject(PackageJson packageJson, const std::string& dir, std::opti
             }
 
             // Check for project-specific directories
-            const auto projectDirs = ['characters', 'agents', '.eliza'];
+            const auto projectDirs = ["characters", "agents", ".eliza"];
             for (const auto& dirName : projectDirs)
                 if (fs.existsSync(path.join(dir, dirName))) {
                     const auto stat = fs.statSync(path.join(dir, dirName));
@@ -248,9 +248,9 @@ bool isElizaOSProject(PackageJson packageJson, const std::string& dir, std::opti
 
             // Check for project dependencies pattern
             const auto allDeps = { ...packageJson.dependencies, ...packageJson.devDependencies };
-            const auto hasElizaCore = Object.keys(allDeps).some((dep) => dep.startsWith('@elizaos/core'));
+            const auto hasElizaCore = Object.keys(allDeps).some((dep) => dep.startsWith("@elizaos/core"));
             const auto hasMultipleElizaPackages =;
-            Object.keys(allDeps).filter((dep) => dep.startsWith('@elizaos/')).length >= 2;
+            Object.keys(allDeps).filter((dep) => dep.startsWith("@elizaos/")).size() >= 2;
 
             if (hasElizaCore && hasMultipleElizaPackages) {
                 return true;
@@ -265,10 +265,10 @@ bool isValidForUpdates(DirectoryInfo info) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
-    info.type == 'elizaos-project' ||;
-    info.type == 'elizaos-plugin' ||;
-    info.type == 'elizaos-monorepo' ||;
-    info.type == 'elizaos-subdir';
+    info.type == "elizaos-project" ||;
+    info.type == "elizaos-plugin" ||;
+    info.type == "elizaos-monorepo" ||;
+    info.type == "elizaos-subdir";
     );
 
 }

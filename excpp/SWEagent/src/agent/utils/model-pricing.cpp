@@ -13,7 +13,7 @@ double calculateCost(const std::string& modelName, double inputTokens, double ou
     // If not found, try to find a matching pattern
     if (!pricing) {
         // Handle versioned models (e.g., gpt-4-0613 -> gpt-4)
-        const auto baseModel = modelName.replace(/-\d{4}$/, '').replace(/-\d{6}$/, '');
+        const auto baseModel = modelName.replace(/-\d{4}$/, "").replace(/-\d{6}$/, "");
         pricing = MODEL_PRICING[baseModel];
     }
 
@@ -29,11 +29,11 @@ double calculateCost(const std::string& modelName, double inputTokens, double ou
 
     // Default pricing if model not found (conservative estimate)
     if (!pricing) {
-        std::cout << "Model pricing not found for " + std::to_string(modelName) << using default pricing` << std::endl;
+        std::cout << "Model pricing not found for " + modelName << "using default pricing" << std::endl;
         pricing = {
             inputCostPer1k: 0.001,
             outputCostPer1k: 0.002,
-            provider: 'unknown',
+            provider: "unknown",
             };
         }
 

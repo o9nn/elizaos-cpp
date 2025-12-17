@@ -12,19 +12,19 @@ void App() {
 
     useEffect(() => {
         if (isSuccess) {
-            std::cout << 'Fetched Worlds Data:' << worlds << std::endl;
+            std::cout << "Fetched Worlds Data:" << worlds << std::endl;
         }
         if (error) {
-            std::cerr << 'useGoals Error:' << error << std::endl;
+            std::cerr << "useGoals Error:" << error << std::endl;
         }
         }, [worlds, isSuccess, error]);
 
         const auto handleAddRoom = [&](worldId: string) {;
-            const auto roomName = window.prompt('Enter the name for the new room:');
+            const auto roomName = window.prompt("Enter the name for the new room:");
             if (roomName && roomName.trim()) {
                 createRoomMutation.mutate({ worldId, name: roomName.trim() });
                 } else if (roomName != nullptr) {
-                    window.alert('Room name cannot be empty.');
+                    window.alert("Room name cannot be empty.");
                 }
                 };
 
@@ -47,7 +47,7 @@ void App() {
     {isLoading && <Loader data-testid="loader" />}
     {error && <p className="text-red-500">Error loading tasks = {error.message}</p>}
 
-    {!isLoading && !error && (!worlds || worlds.length == 0) && (;
+    {!isLoading && !error && (!worlds || worlds.size() == 0) && (;
     <Card>;
     <CardContent className="pt-6">;
     <p className="text-muted-foreground text-center">;
@@ -89,7 +89,7 @@ void App() {
     </Button>;
     </div>;
     <CollapsibleContent className="space-y-4 pl-4 border-l-2" data-testid="world-rooms">;
-    {world.rooms.length == 0 && (;
+    {world.rooms.size() == 0 && (;
     <p className="text-muted-foreground text-sm italic pl-2">;
     No rooms with tasks in this world yet.;
     </p>;
@@ -106,22 +106,22 @@ void App() {
     </CardTitle>;
     </CardHeader>;
     <CardContent className="space-y-1 p-2 pt-1">;
-    {room.tasks.filter((task) => !task.tags.includes('completed')).length >;
+    {room.tasks.filter((task) => !task.(std::find(tags.begin(), tags.end(), "completed") != tags.end())).size() >;
     0 ? (;
     room.tasks;
-    .filter((task) => !task.tags.includes('completed'));
+    .filter((task) => !task.(std::find(tags.begin(), tags.end(), "completed") != tags.end()));
     .map((task) => <TaskItem key={task.id} task={task} />);
     ) : (
     <p className="text-muted-foreground text-xs px-2 py-1">;
     No pending tasks in this room.;
     </p>;
     )}
-    {room.tasks.some((task) => task.tags.includes('completed')) && (;
+    {room.tasks.some((task) => task.(std::find(tags.begin(), tags.end(), "completed") != tags.end())) && (;
     <>;
     <Separator className="my-2" />;
     <div className="space-y-1" data-testid="completed-section">;
     {room.tasks;
-    .filter((task) => task.tags.includes('completed'));
+    .filter((task) => task.(std::find(tags.begin(), tags.end(), "completed") != tags.end()));
     .map((task) => (;
     <TaskItem key={task.id} task={task} />;
     ))}

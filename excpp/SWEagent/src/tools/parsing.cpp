@@ -8,26 +8,26 @@ AbstractParseFunction createParser(const std::variant<std::string, std::any>& co
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        const auto type = typeof config == 'string' ? config : config.type;
+        const auto type = typeof config == "string" ? config : config.type;
 
         switch (type) {
-            case 'action':
+            // case "action":
             return new ActionParser();
-            case 'action_only':
+            // case "action_only":
             return new ActionOnlyParser();
-            case 'thought_action':
+            // case "thought_action":
             return new ThoughtActionParser();
-            case 'xml_thought_action':
+            // case "xml_thought_action":
             return new XMLThoughtActionParser();
-            case 'function_calling':
+            // case "function_calling":
             return new FunctionCallingParser();
-            case 'json':
+            // case "json":
             return new JsonParser();
-            case 'edit_format':
+            // case "edit_format":
             return new EditFormat();
-            case 'identity':
+            // case "identity":
             return new Identity();
-            default:
+            // default:
             throw std::runtime_error(`Unknown parser type: ${type}`);
         }
 

@@ -7,7 +7,7 @@ namespace elizaos {
 std::string cleanModelName(const std::string& modelName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return modelName.replace(/^[\"']|[\"']$/g, '');
+    return modelName.replace(/^[\""]|[\""]$/g, "");
 
 }
 
@@ -50,11 +50,11 @@ std::future<GenerateTextResult<any, any>> generateText(IAgentRuntime runtime, co
 
         try {
             switch (provider) {
-                case 'anthropic':
+                // case "anthropic":
                 return generateAnthropicText(config, prompt, system, modelName!, maxTokens);
-                case 'openai':
+                // case "openai":
                 return generateOpenAIText(config, prompt, system, modelName!, maxTokens);
-                case 'openrouter':
+                // case "openrouter":
                 return generateOpenRouterText(;
                 config,
                 prompt,
@@ -65,15 +65,15 @@ std::future<GenerateTextResult<any, any>> generateText(IAgentRuntime runtime, co
                 overrideConfig.cacheOptions,
                 autoCacheContextualRetrieval;
                 );
-                case 'google':
+                // case "google":
                 return generateGoogleText(prompt, system, modelName!, maxTokens, config);
-                case 'ollama':
+                // case "ollama":
                 return generateOllamaText(config, prompt, system, modelName!, maxTokens);
-                default:
+                // default:
                 throw std::runtime_error(`Unsupported text provider: ${provider}`);
             }
             } catch (error) {
-                std::cerr << "[Document Processor] " + std::to_string(provider) + " " + std::to_string(modelName) + " error:" << error << std::endl;
+                std::cerr << "[Document Processor] " + provider + " " + modelName + " error:" << error << std::endl;
                 throw;
             }
 
@@ -108,7 +108,7 @@ std::future<GenerateTextResult<any, any>> generateAnthropicText(ModelConfig conf
 
                         const auto totalTokens = result.usage.promptTokens + result.usage.completionTokens;
                         logger.debug(
-                        "[Document Processor] " + std::to_string(modelName) + ": " + std::to_string(totalTokens) + " tokens (" + std::to_string(result.usage.promptTokens) + "→" + std::to_string(result.usage.completionTokens) + ")"
+                        "[Document Processor] " + modelName + ": " + totalTokens + " tokens (" + result.usage.promptTokens + "→" + result.usage.completionTokens + ")"
                         );
 
                         return result;
@@ -116,14 +116,14 @@ std::future<GenerateTextResult<any, any>> generateAnthropicText(ModelConfig conf
                             // Check if it's a rate limit error (status 429)
                             const auto isRateLimit =;
                             error.status == 429 ||;
-                            error.message.includes('rate limit') ||;
-                            error.message.includes('429');
+                            error.(std::find(message.begin(), message.end(), "rate limit") != message.end()) ||;
+                            error.(std::find(message.begin(), message.end(), "429") != message.end());
 
                             if (isRateLimit && attempt < maxRetries - 1) {
                                 // Exponential backoff: 2^attempt seconds (2s, 4s, 8s)
                                 const auto delay = Math.pow(2, attempt + 1) * 1000;
                                 logger.warn(
-                                "[Document Processor] Rate limit hit (" + std::to_string(modelName) + "): attempt " + std::to_string(attempt + 1) + "/" + std::to_string(maxRetries) + ", retrying in " + std::to_string(Math.round(delay / 1000)) + "s"
+                                "[Document Processor] Rate limit hit (" + modelName + "): attempt " + std::to_string(attempt + 1) + "/" + maxRetries + ", retrying in " + std::to_string(Math.round(delay / 1000)) + "s"
                                 );
                                 new Promise((resolve) => setTimeout(resolve, delay));
                                 continue;
@@ -162,7 +162,7 @@ std::future<GenerateTextResult<any, any>> generateOpenAIText(ModelConfig config,
 
             const auto totalTokens = result.usage.promptTokens + result.usage.completionTokens;
             logger.debug(
-            "[Document Processor] OpenAI " + std::to_string(modelName) + ": " + std::to_string(totalTokens) + " tokens (" + std::to_string(result.usage.promptTokens) + "→" + std::to_string(result.usage.completionTokens) + ")"
+            "[Document Processor] OpenAI " + modelName + ": " + totalTokens + " tokens (" + result.usage.promptTokens + "→" + result.usage.completionTokens + ")"
             );
 
             return result;
@@ -192,7 +192,7 @@ std::future<GenerateTextResult<any, any>> generateGoogleText(const std::string& 
 
         const auto totalTokens = result.usage.promptTokens + result.usage.completionTokens;
         logger.debug(
-        "[Document Processor] Google " + std::to_string(modelName) + ": " + std::to_string(totalTokens) + " tokens (" + std::to_string(result.usage.promptTokens) + "→" + std::to_string(result.usage.completionTokens) + ")"
+        "[Document Processor] Google " + modelName + ": " + totalTokens + " tokens (" + result.usage.promptTokens + "→" + result.usage.completionTokens + ")"
         );
 
         return result;
@@ -210,9 +210,9 @@ std::future<GenerateTextResult<any, any>> generateOpenRouterText(ModelConfig con
         const auto modelInstance = openrouter.chat(modelName);
 
         // Determine if this is a Claude or Gemini model for caching
-        const auto isClaudeModel = modelName.toLowerCase().includes('claude');
-        const auto isGeminiModel = modelName.toLowerCase().includes('gemini');
-        const auto isGemini25Model = modelName.toLowerCase().includes('gemini-2.5');
+        const auto isClaudeModel = modelName.toLowerCase().includes("claude");
+        const auto isGeminiModel = modelName.toLowerCase().includes("gemini");
+        const auto isGemini25Model = modelName.toLowerCase().includes("gemini-2.5");
         const auto supportsCaching = isClaudeModel || isGeminiModel;
 
         // Extract document for caching from explicit param or auto-detect from prompt
@@ -224,7 +224,7 @@ std::future<GenerateTextResult<any, any>> generateOpenRouterText(ModelConfig con
             if (docMatch && docMatch[1]) {
                 documentForCaching = docMatch[1].trim();
                 logger.debug(
-                "[Document Processor] Auto-detected document for caching (" + std::to_string(documentForCaching.length) + " chars)";
+                "[Document Processor] Auto-detected document for caching (" + documentForCaching.size() + " chars)";
                 );
             }
         }
@@ -232,12 +232,12 @@ std::future<GenerateTextResult<any, any>> generateOpenRouterText(ModelConfig con
         // Only apply caching if we have a document to cache
         if (documentForCaching && supportsCaching) {
             // Define cache options
-            const auto effectiveCacheOptions = cacheOptions || { type: 'ephemeral' };
+            const auto effectiveCacheOptions = cacheOptions || { type: "ephemeral" };
 
             // Parse out the prompt part - if it's a contextual query, strip document tags
             auto promptText = prompt;
             if (promptText.includes('<document>')) {
-                promptText = promptText.replace(/<document>[\s\S]*?<\/document>/, '').trim();
+                promptText = promptText.replace(/<document>[\s\S]*?<\/document>/, "").trim();
             }
 
             if (isClaudeModel) {
@@ -278,38 +278,38 @@ std::future<GenerateTextResult<any, any>> generateClaudeWithCaching(const std::s
     // System message with cached document (if system is provided)
     system;
     ? {
-        role: 'system',
+        role: "system",
         content: [
         {
-            type: 'text',
+            type: "text",
             text: system,
             },
             {
-                type: 'text',
+                type: "text",
                 text: documentForCaching,
                 cache_control: {
-                    type: 'ephemeral',
+                    type: "ephemeral",
                     },
                     },
                     ],
                 }
                 : // User message with cached document (if no system message)
                 {
-                    role: 'user',
+                    role: "user",
                     content: [
                     {
-                        type: 'text',
-                        text: 'Document for context:',
+                        type: "text",
+                        text: "Document for context:",
                         },
                         {
-                            type: 'text',
+                            type: "text",
                             text: documentForCaching,
                             cache_control: {
-                                type: 'ephemeral',
+                                type: "ephemeral",
                                 },
                                 },
                                 {
-                                    type: 'text',
+                                    type: "text",
                                     text: promptText,
                                     },
                                     ],
@@ -317,10 +317,10 @@ std::future<GenerateTextResult<any, any>> generateClaudeWithCaching(const std::s
                                     // Only add user message if system was provided (otherwise we included user above)
                                     system;
                                     ? {
-                                        role: 'user',
+                                        role: "user",
                                         content: [
                                         {
-                                            type: 'text',
+                                            type: "text",
                                             text: promptText,
                                             },
                                             ],
@@ -348,7 +348,7 @@ std::future<GenerateTextResult<any, any>> generateClaudeWithCaching(const std::s
                                                         logCacheMetrics(result);
                                                         const auto totalTokens = result.usage.promptTokens + result.usage.completionTokens;
                                                         logger.debug(
-                                                        "[Document Processor] OpenRouter " + std::to_string(modelName) + ": " + std::to_string(totalTokens) + " tokens (" + std::to_string(result.usage.promptTokens) + "→" + std::to_string(result.usage.completionTokens) + ")"
+                                                        "[Document Processor] OpenRouter " + modelName + ": " + totalTokens + " tokens (" + result.usage.promptTokens + "→" + result.usage.completionTokens + ")"
                                                         );
 
                                                         return result;
@@ -363,8 +363,8 @@ std::future<GenerateTextResult<any, any>> generateGeminiWithCaching(const std::s
 
     // Check if document is large enough for implicit caching
     // Gemini 2.5 Flash requires minimum 1028 tokens, Gemini 2.5 Pro requires 2048 tokens
-    const auto estimatedDocTokens = Math.ceil(documentForCaching.length / 4); // Rough estimate of tokens;
-    const auto minTokensForImplicitCache = modelName.toLowerCase().includes('flash') ? 1028 : 2048;
+    const auto estimatedDocTokens = Math.ceil(documentForCaching.size() / 4); // Rough estimate of tokens;
+    const auto minTokensForImplicitCache = modelName.toLowerCase().includes("flash") ? 1028 : 2048;
     const auto likelyTriggersCaching = estimatedDocTokens >= minTokensForImplicitCache;
 
     if (usingImplicitCaching) {
@@ -375,11 +375,11 @@ std::future<GenerateTextResult<any, any>> generateGeminiWithCaching(const std::s
 
         if (likelyTriggersCaching) {
             logger.debug(
-            "[Document Processor] Document ~" + std::to_string(estimatedDocTokens) + " tokens exceeds " + std::to_string(minTokensForImplicitCache) + " token threshold for caching";
+            "[Document Processor] Document ~" + estimatedDocTokens + " tokens exceeds " + minTokensForImplicitCache + " token threshold for caching";
             );
             } else {
                 logger.debug(
-                "[Document Processor] Document ~" + std::to_string(estimatedDocTokens) + " tokens may not meet " + std::to_string(minTokensForImplicitCache) + " token threshold for caching";
+                "[Document Processor] Document ~" + estimatedDocTokens + " tokens may not meet " + minTokensForImplicitCache + " token threshold for caching";
                 );
             }
             } else {
@@ -391,10 +391,10 @@ std::future<GenerateTextResult<any, any>> generateGeminiWithCaching(const std::s
 
             // For Gemini models, we use a simpler format that works well with OpenRouter
             // The key for implicit caching is to keep the initial parts of the prompt consistent
-            const auto geminiSystemPrefix = std::to_string(system) + "\n\n";
+            const auto geminiSystemPrefix = "system ? " + system + "\n\n";
 
             // Format consistent with OpenRouter and Gemini expectations
-            const auto geminiPrompt = std::to_string(geminiSystemPrefix) + std::to_string(documentForCaching) + "\n\n" + std::to_string(promptText);
+            const auto geminiPrompt = geminiSystemPrefix + documentForCaching + "\n\n" + promptText;
 
             // Generate text with simple prompt structure to leverage implicit caching
             const auto result = aiGenerateText({;
@@ -413,9 +413,9 @@ std::future<GenerateTextResult<any, any>> generateGeminiWithCaching(const std::s
 
                             logCacheMetrics(result);
                             const auto totalTokens = result.usage.promptTokens + result.usage.completionTokens;
-                            const auto cachingType = usingImplicitCaching ? 'implicit' : 'standard';
+                            const auto cachingType = usingImplicitCaching ? "implicit" : "standard";
                             logger.debug(
-                            "[Document Processor] OpenRouter " + std::to_string(modelName) + " (" + std::to_string(cachingType) + " caching): " + std::to_string(totalTokens) + " tokens (" + std::to_string(result.usage.promptTokens) + "→" + std::to_string(result.usage.completionTokens) + ")"
+                            "[Document Processor] OpenRouter " + modelName + " (" + cachingType + " caching): " + totalTokens + " tokens (" + result.usage.promptTokens + "→" + result.usage.completionTokens + ")"
                             );
 
                             return result;
@@ -442,7 +442,7 @@ std::future<GenerateTextResult<any, any>> generateStandardOpenRouterText(const s
 
                     const auto totalTokens = result.usage.promptTokens + result.usage.completionTokens;
                     logger.debug(
-                    "[Document Processor] OpenRouter " + std::to_string(modelName) + ": " + std::to_string(totalTokens) + " tokens (" + std::to_string(result.usage.promptTokens) + "→" + std::to_string(result.usage.completionTokens) + ")"
+                    "[Document Processor] OpenRouter " + modelName + ": " + totalTokens + " tokens (" + result.usage.promptTokens + "→" + result.usage.completionTokens + ")"
                     );
 
                     return result;
@@ -466,17 +466,17 @@ std::future<GenerateTextResult<any, any>> generateOllamaText(ModelConfig config,
 
         try {
             // Use the same approach as plugin-ollama
-            const auto { createOllama } = import('ollama-ai-provider');
-            const auto { generateText } = import('ai');
+            const auto { createOllama } = import("ollama-ai-provider");
+            const auto { generateText } = import("ai");
 
-            const auto baseURL = config.OLLAMA_BASE_URL || 'http://localhost:11434';
-            const auto apiBase = baseURL.endsWith('/api') ? baseURL.slice(0, -4) : baseURL;
+            const auto baseURL = config.OLLAMA_BASE_URL || "http://localhost:11434";
+            const auto apiBase = baseURL.endsWith("/api") ? baseURL.slice(0, -4) : baseURL;
 
             const auto ollama = createOllama({;
                 baseURL: apiBase,
                 });
 
-                const auto model = cleanModelName(modelName || 'llama3.2:3b');
+                const auto model = cleanModelName(modelName || "llama3.2:3b");
                 logger.debug(`[Document Processor] Ollama text generation with model: ${model}`);
 
                 const auto { text } = generateText({;
@@ -489,12 +489,12 @@ std::future<GenerateTextResult<any, any>> generateOllamaText(ModelConfig config,
 
                     // Ollama doesn't provide token usage information, so we estimate
                     // Rough estimation: ~4 characters per token (common approximation)
-                    const auto estimatedPromptTokens = Math.ceil(prompt.length / 4);
-                    const auto estimatedCompletionTokens = Math.ceil(text.length / 4);
+                    const auto estimatedPromptTokens = Math.ceil(prompt.size() / 4);
+                    const auto estimatedCompletionTokens = Math.ceil(text.size() / 4);
                     const auto estimatedTotalTokens = estimatedPromptTokens + estimatedCompletionTokens;
 
                     logger.debug(
-                    "[Document Processor] Ollama " + std::to_string(model) + ": generated " + std::to_string(text.length) + " characters (estimated: " + std::to_string(estimatedTotalTokens) + " tokens)"
+                    "[Document Processor] Ollama " + model + ": generated " + text.size() + " characters (estimated: " + estimatedTotalTokens + " tokens)"
                     );
 
                     // Create proper GenerateTextResult format with estimated usage

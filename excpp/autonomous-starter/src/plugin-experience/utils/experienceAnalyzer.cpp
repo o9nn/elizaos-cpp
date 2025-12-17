@@ -29,7 +29,7 @@ std::future<ExperienceAnalysis> analyzeExperience(const std::optional<Experience
         if (contradictions.length > 0) {
             return {
                 isSignificant: true,
-                "New outcome contradicts previous experience: " + std::to_string(partialExperience.result) + " vs " + std::to_string(contradictions[0].result)
+                "learning: " + "New outcome contradicts previous experience: " + partialExperience.result + " vs " + std::to_string(contradictions[0].result)
                 confidence: 0.8,
                 relatedExperiences: contradictions.map((e) => e.id),
                 actionableInsights: ["Update strategy based on new information"],
@@ -43,10 +43,10 @@ std::future<ExperienceAnalysis> analyzeExperience(const std::optional<Experience
             if (isFirstTime && partialExperience.type == ExperienceType.SUCCESS) {
                 return {
                     isSignificant: true,
-                    "Successfully completed new action: " + std::to_string(partialExperience.action)
+                    "learning: " + "Successfully completed new action: " + partialExperience.action
                     confidence: 0.7,
                     actionableInsights: [
-                    std::to_string(partialExperience.action) + " is now a known capability"
+                    partialExperience.action + " is now a known capability"
                     ],
                     };
                 }
@@ -107,8 +107,8 @@ bool similarContext(const std::string& context1, const std::string& context2) {
     // Simple similarity check - could be enhanced with better NLP
     const auto words1 = context1.toLowerCase().split(/\s+/);
     const auto words2 = context2.toLowerCase().split(/\s+/);
-    const auto commonWords = words1.filter((w) => words2.includes(w));
-    return commonWords.length / Math.max(words1.length, words2.length) > 0.5;
+    const auto commonWords = words1.filter((w) => (std::find(words2.begin(), words2.end(), w) != words2.end()));
+    return commonWords.size() / Math.max(words1.size(), words2.size()) > 0.5;
 
 }
 
@@ -125,10 +125,10 @@ std::optional<FailurePattern> detectFailurePattern(const std::optional<Experienc
     );
     if (sameActionFailures.length >= 3) {
         return {
-            "Action " + std::to_string(partial.action) + " has failed " + std::to_string(sameActionFailures.length) + " times recently. Need alternative approach."
+            "learning: " + "Action " + partial.action + " has failed " + sameActionFailures.size() + " times recently. Need alternative approach."
             relatedIds: sameActionFailures.map((e) => e.id),
             insights: [
-            "Avoid " + std::to_string(partial.action) + " until root cause is addressed"
+            "Avoid " + partial.action + " until root cause is addressed"
             "Consider alternative actions to achieve the same goal",
             ],
             };
@@ -169,7 +169,7 @@ std::unordered_map<double, std::vector<Experience>> groupByHour(const std::vecto
     experiences.forEach((exp) => {
         const auto hour = new Date(exp.createdAt).getHours();
         const auto group = groups.get(hour) || [];
-        group.push(exp);
+        group.push_back(exp);
         groups.set(hour, group);
         });
 

@@ -15,7 +15,7 @@ void if() {
 void normalizeAction(const std::string& actionString) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return actionString.toLowerCase().replace('_', '');
+    return actionString.toLowerCase().replace("_", "");
 
 }
 

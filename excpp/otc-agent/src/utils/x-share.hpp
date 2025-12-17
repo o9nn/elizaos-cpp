@@ -1,10 +1,13 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -36,7 +39,7 @@ bool ensureXAuth(std::optional<PendingShare> pending);
 
   // Clean URL param
 
-std::future<void> safeText(Response r);
+std::future<void> safeText(const std::string& r);
 
 
 } // namespace elizaos

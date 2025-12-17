@@ -11,22 +11,22 @@ express::Router createAgentTodosRouter(const std::unordered_map<UUID, IAgentRunt
         const auto router = express.Router();
 
         // Get all todos for an agent
-        router.get('/:agentId/todos', async (req, res) => {
+        router.get("/:agentId/todos", async (req, res) => {
             const auto agentId = validateUuid(req.params.agentId);
             if (!agentId) {
-                return sendError(res, 400, 'INVALID_ID', 'Invalid agent ID format');
+                return sendError(res, 400, "INVALID_ID", "Invalid agent ID format");
             }
 
             const auto runtime = agents.get(agentId);
             if (!runtime) {
-                return sendError(res, 404, 'NOT_FOUND', 'Agent not found or not running');
+                return sendError(res, 404, "NOT_FOUND", "Agent not found or not running");
             }
 
             try {
                 // Get the Todo service (uppercase 'TODO')
-                const auto todoService = runtime.getService('TODO');
+                const auto todoService = runtime.getService("TODO");
                 if (!todoService) {
-                    std::cout << '[TODOS GET] Todo service not available' << std::endl;
+                    std::cout << "[TODOS GET] Todo service not available" << std::endl;
                     return sendSuccess(res, { todos: [] });
                 }
 
@@ -38,7 +38,7 @@ express::Router createAgentTodosRouter(const std::unordered_map<UUID, IAgentRunt
                     id: todo.id,
                     task: todo.name,
                     completed: todo.isCompleted || false,
-                    priority: todo.priority == 1 ? 'high' : todo.priority == 2 ? 'medium' : 'low',
+                    priority: todo.priority == 1 ? "high" : todo.priority == 2 ? "medium" : "low",
                     dueDate: todo.dueDate ? new Date(todo.dueDate).toISOString() : std::nullopt,
                     createdAt: todo.createdAt || new Date().toISOString(),
                     completedAt: todo.completedAt ? new Date(todo.completedAt).toISOString() : std::nullopt,
@@ -46,40 +46,40 @@ express::Router createAgentTodosRouter(const std::unordered_map<UUID, IAgentRunt
 
                     sendSuccess(res, { todos });
                     } catch (error) {
-                        std::cerr << '[TODOS GET] Error getting todos:' << error << std::endl;
+                        std::cerr << "[TODOS GET] Error getting todos:" << error << std::endl;
                         sendError(;
                         res,
                         500,
-                        'TODOS_ERROR',
-                        'Error retrieving todos',
+                        "TODOS_ERROR",
+                        "Error retrieving todos",
                         true /* instanceof check */ ? error.message : std::to_string(error)
                         );
                     }
                     });
 
                     // Create a new todo
-                    router.post('/:agentId/todos', async (req, res) => {
+                    router.post("/:agentId/todos", async (req, res) => {
                         const auto agentId = validateUuid(req.params.agentId);
                         if (!agentId) {
-                            return sendError(res, 400, 'INVALID_ID', 'Invalid agent ID format');
+                            return sendError(res, 400, "INVALID_ID", "Invalid agent ID format");
                         }
 
                         const auto runtime = agents.get(agentId);
                         if (!runtime) {
-                            return sendError(res, 404, 'NOT_FOUND', 'Agent not found or not running');
+                            return sendError(res, 404, "NOT_FOUND", "Agent not found or not running");
                         }
 
                         const auto { task, priority, dueDate } = req.body;
 
                         if (!task) {
-                            return sendError(res, 400, 'MISSING_FIELDS', 'Task is required');
+                            return sendError(res, 400, "MISSING_FIELDS", "Task is required");
                         }
 
                         try {
                             // Get the Todo service
-                            const auto todoService = runtime.getService('TODO');
+                            const auto todoService = runtime.getService("TODO");
                             if (!todoService) {
-                                return sendError(res, 503, 'SERVICE_UNAVAILABLE', 'Todo service not available');
+                                return sendError(res, 503, "SERVICE_UNAVAILABLE", "Todo service not available");
                             }
 
                             // Map priority string to number
@@ -93,8 +93,8 @@ express::Router createAgentTodosRouter(const std::unordered_map<UUID, IAgentRunt
                                 roomId: agentId, // Using agentId fallback
                                 entityId: agentId,
                                 name: task,
-                                description: req.body.description || '',
-                                type: 'one-off',
+                                description: req.body.description || "",
+                                type: "one-off",
                                 priority: priorityNum,
                                 dueDate: dueDate ? new Date(dueDate) : std::nullopt,
                                 metadata: req.body.metadata || {},
@@ -102,42 +102,42 @@ express::Router createAgentTodosRouter(const std::unordered_map<UUID, IAgentRunt
                                 });
 
                                 if (!todoId) {
-                                    return sendError(res, 500, 'TODO_CREATE_FAILED', 'Failed to create todo');
+                                    return sendError(res, 500, "TODO_CREATE_FAILED", "Failed to create todo");
                                 }
 
                                 const Todo todo = {;
                                     id: todoId,
                                     task,
                                     completed: false,
-                                    priority: priority || 'medium',
+                                    priority: priority || "medium",
                                     dueDate,
                                     createdAt: new Date().toISOString(),
                                     };
 
-                                    std::cout << "[TODOS CREATE] Created todo "" + std::to_string(task) + "" for agent " + std::to_string(runtime.character.name) << std::endl;
+                                    std::cout << "[TODOS CREATE] Created todo \"" + task + "\" for agent " + runtime.character.name << std::endl;
                                     sendSuccess(res, { todo }, 201);
                                     } catch (error) {
-                                        std::cerr << '[TODOS CREATE] Error creating todo:' << error << std::endl;
+                                        std::cerr << "[TODOS CREATE] Error creating todo:" << error << std::endl;
                                         sendError(;
                                         res,
                                         500,
-                                        'TODO_CREATE_ERROR',
-                                        'Error creating todo',
+                                        "TODO_CREATE_ERROR",
+                                        "Error creating todo",
                                         true /* instanceof check */ ? error.message : std::to_string(error)
                                         );
                                     }
                                     });
 
                                     // Update a todo
-                                    router.put('/:agentId/todos/:todoId', async (req, res) => {
+                                    router.put("/:agentId/todos/:todoId", async (req, res) => {
                                         const auto agentId = validateUuid(req.params.agentId);
                                         if (!agentId) {
-                                            return sendError(res, 400, 'INVALID_ID', 'Invalid agent ID format');
+                                            return sendError(res, 400, "INVALID_ID", "Invalid agent ID format");
                                         }
 
                                         const auto runtime = agents.get(agentId);
                                         if (!runtime) {
-                                            return sendError(res, 404, 'NOT_FOUND', 'Agent not found or not running');
+                                            return sendError(res, 404, "NOT_FOUND", "Agent not found or not running");
                                         }
 
                                         const auto { todoId } = req.params;
@@ -145,9 +145,9 @@ express::Router createAgentTodosRouter(const std::unordered_map<UUID, IAgentRunt
 
                                         try {
                                             // Get the Todo service
-                                            const auto todoService = runtime.getService('TODO');
+                                            const auto todoService = runtime.getService("TODO");
                                             if (!todoService) {
-                                                return sendError(res, 503, 'SERVICE_UNAVAILABLE', 'Todo service not available');
+                                                return sendError(res, 503, "SERVICE_UNAVAILABLE", "Todo service not available");
                                             }
 
                                             // Map priority string to number if provided
@@ -168,7 +168,7 @@ express::Router createAgentTodosRouter(const std::unordered_map<UUID, IAgentRunt
                                                 });
 
                                                 if (!success) {
-                                                    return sendError(res, 500, 'TODO_UPDATE_FAILED', 'Failed to update todo');
+                                                    return sendError(res, 500, "TODO_UPDATE_FAILED", "Failed to update todo");
                                                 }
 
                                                 // Handle completion status
@@ -181,7 +181,7 @@ express::Router createAgentTodosRouter(const std::unordered_map<UUID, IAgentRunt
                                                 const auto updatedTodoData = todosData.find((t: any) => t.id == todoId);
 
                                                 if (!updatedTodoData) {
-                                                    return sendError(res, 404, 'TODO_NOT_FOUND', 'Todo not found');
+                                                    return sendError(res, 404, "TODO_NOT_FOUND", "Todo not found");
                                                 }
 
                                                 const Todo todo = {;
@@ -190,10 +190,10 @@ express::Router createAgentTodosRouter(const std::unordered_map<UUID, IAgentRunt
                                                     completed: updatedTodoData.isCompleted || false,
                                                     priority:
                                                     updatedTodoData.priority == 1;
-                                                    ? 'high';
+                                                    ? "high";
                                                     : updatedTodoData.priority == 2
-                                                    ? 'medium';
-                                                    : 'low',
+                                                    ? "medium";
+                                                    : "low",
                                                     dueDate: updatedTodoData.dueDate
                                                     ? new Date(updatedTodoData.dueDate).toISOString();
                                                     : std::nullopt,
@@ -203,57 +203,57 @@ express::Router createAgentTodosRouter(const std::unordered_map<UUID, IAgentRunt
                                                     : std::nullopt,
                                                     };
 
-                                                    std::cout << "[TODOS UPDATE] Updated todo " + std::to_string(todoId) + " for agent " + std::to_string(runtime.character.name) << std::endl;
+                                                    std::cout << "[TODOS UPDATE] Updated todo " + todoId + " for agent " + runtime.character.name << std::endl;
                                                     sendSuccess(res, { todo });
                                                     } catch (error) {
-                                                        std::cerr << '[TODOS UPDATE] Error updating todo:' << error << std::endl;
+                                                        std::cerr << "[TODOS UPDATE] Error updating todo:" << error << std::endl;
                                                         sendError(;
                                                         res,
                                                         500,
-                                                        'TODO_UPDATE_ERROR',
-                                                        'Error updating todo',
+                                                        "TODO_UPDATE_ERROR",
+                                                        "Error updating todo",
                                                         true /* instanceof check */ ? error.message : std::to_string(error)
                                                         );
                                                     }
                                                     });
 
                                                     // Delete a todo
-                                                    router.delete('/:agentId/todos/:todoId', async (req, res) => {
+                                                    router.delete("/:agentId/todos/:todoId", async (req, res) => {
                                                         const auto agentId = validateUuid(req.params.agentId);
                                                         if (!agentId) {
-                                                            return sendError(res, 400, 'INVALID_ID', 'Invalid agent ID format');
+                                                            return sendError(res, 400, "INVALID_ID", "Invalid agent ID format");
                                                         }
 
                                                         const auto runtime = agents.get(agentId);
                                                         if (!runtime) {
-                                                            return sendError(res, 404, 'NOT_FOUND', 'Agent not found or not running');
+                                                            return sendError(res, 404, "NOT_FOUND", "Agent not found or not running");
                                                         }
 
                                                         const auto { todoId } = req.params;
 
                                                         try {
                                                             // Get the Todo service
-                                                            const auto todoService = runtime.getService('TODO');
+                                                            const auto todoService = runtime.getService("TODO");
                                                             if (!todoService) {
-                                                                return sendError(res, 503, 'SERVICE_UNAVAILABLE', 'Todo service not available');
+                                                                return sendError(res, 503, "SERVICE_UNAVAILABLE", "Todo service not available");
                                                             }
 
                                                             // Cancel the todo using the service
                                                             const auto success = (todoService).cancelTodo(todoId);
 
                                                             if (!success) {
-                                                                return sendError(res, 500, 'TODO_DELETE_FAILED', 'Failed to delete todo');
+                                                                return sendError(res, 500, "TODO_DELETE_FAILED", "Failed to delete todo");
                                                             }
 
-                                                            std::cout << "[TODOS DELETE] Deleted todo " + std::to_string(todoId) + " for agent " + std::to_string(runtime.character.name) << std::endl;
-                                                            sendSuccess(res, { message: 'Todo deleted successfully', todoId });
+                                                            std::cout << "[TODOS DELETE] Deleted todo " + todoId + " for agent " + runtime.character.name << std::endl;
+                                                            sendSuccess(res, { message: "Todo deleted successfully", todoId });
                                                             } catch (error) {
-                                                                std::cerr << '[TODOS DELETE] Error deleting todo:' << error << std::endl;
+                                                                std::cerr << "[TODOS DELETE] Error deleting todo:" << error << std::endl;
                                                                 sendError(;
                                                                 res,
                                                                 500,
-                                                                'TODO_DELETE_ERROR',
-                                                                'Error deleting todo',
+                                                                "TODO_DELETE_ERROR",
+                                                                "Error deleting todo",
                                                                 true /* instanceof check */ ? error.message : std::to_string(error)
                                                                 );
                                                             }

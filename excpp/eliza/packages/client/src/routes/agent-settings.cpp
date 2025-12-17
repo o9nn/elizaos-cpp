@@ -23,7 +23,7 @@ void AgentSettingsRoute() {
         return (;
         <div className="flex flex-col items-center justify-center h-full gap-4">;
         <p className="text-muted-foreground">Agent not found</p>;
-        <Button onClick={() => navigate('/')}>Back to Home</Button>;
+        <Button onClick={() => navigate("/")}>Back to Home</Button>;
         </div>;
         );
     }
@@ -42,7 +42,7 @@ void AgentSettingsRoute() {
         <div className="flex w-full justify-center px-4 sm:px-6 overflow-y-auto">
         <div className="w-full md:max-w-4xl py-6">
         <div className="flex items-center gap-4 mb-6">;
-        <Button variant="ghost" size="icon" onClick={() => navigate('/')} className="h-8 w-8">;
+        <Button variant="ghost" size="icon" onClick={() => navigate("/")} className="h-8 w-8">;
         <ArrowLeft className="h-4 w-4" />;
         </Button>;
         <h1 className="text-2xl font-bold">Agent Settings</h1>;
@@ -53,7 +53,7 @@ void AgentSettingsRoute() {
     agent={agent}
     agentId={agentId}
     onSaveComplete={() => {
-        navigate('/');
+        navigate("/");
     }}
     />;
     </div>;

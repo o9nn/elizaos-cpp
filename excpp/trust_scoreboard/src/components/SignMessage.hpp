@@ -1,11 +1,14 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".utils/notifications.hpp"
+#include "utils/notifications.hpp"
 
 namespace elizaos {
 

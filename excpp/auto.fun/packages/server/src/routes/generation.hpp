@@ -1,16 +1,19 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".db.hpp"
-#include ".generation.hpp"
-#include ".prompts/create-token.hpp"
-#include ".s3Client.hpp"
-#include ".util.hpp"
+#include "db.hpp"
+#include "generation.hpp"
+#include "prompts/create-token.hpp"
+#include "s3Client.hpp"
+#include "util.hpp"
 
 namespace elizaos {
 

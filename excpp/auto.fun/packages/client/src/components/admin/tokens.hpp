@@ -1,14 +1,16 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
-#include ".bonding-curve-bar.hpp"
-#include ".button.hpp"
-#include ".ui/table.hpp"
+#include "bonding-curve-bar.hpp"
+#include "button.hpp"
+#include "ui/table.hpp"
 
 namespace elizaos {
 
@@ -27,7 +29,7 @@ namespace elizaos {
 
  // Import table components
 
-using SortOrderType = std::variant<"asc", "desc">;
+using SortOrderType = std::string;
 
 void AdminTokensList();
 

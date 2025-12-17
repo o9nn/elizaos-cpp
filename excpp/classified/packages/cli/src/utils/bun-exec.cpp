@@ -10,19 +10,19 @@ std::unordered_map<std::string, std::string> ensureBunInPath(std::unordered_map<
     const auto enhancedEnv = { ...process.env, ...env };
 
     if (enhancedEnv.PATH) {
-        const auto pathSeparator = process.platform == 'win32' ? ';' : ':';
+        const auto pathSeparator = process.platform == "win32" ? ";" : ":";
         const auto currentPaths = enhancedEnv.PATH.split(pathSeparator);
 
         // Add common bun installation paths if not already present
         const auto bunPaths = [;
-        std::to_string(process.env.HOME) + "/.bun/bin"
-        '/opt/homebrew/bin',
-        '/usr/local/bin',
+        "process.env.HOME ? " + process.env.HOME + "/.bun/bin"
+        "/opt/homebrew/bin",
+        "/usr/local/bin",
         ].filter(Boolean);
 
         for (const auto& bunPath : bunPaths)
             if (bunPath && !currentPaths.some((p) => p == bunPath || p.endsWith('/.bun/bin'))) {
-                std::to_string(bunPath) + std::to_string(pathSeparator) + std::to_string(enhancedEnv.PATH);
+                "enhancedEnv.PATH = " + bunPath + pathSeparator + enhancedEnv.PATH;
             }
         }
     }
@@ -36,12 +36,12 @@ std::string escapeShellArg(const std::string& arg) {
 
     // For empty strings, return quoted empty string
     if (arg == '') {
-        return '""';
+        return """";
     }
 
     // Use JSON.stringify to handle all special characters including quotes,
     // backslashes, newlines, etc. Then remove the outer quotes that JSON adds
-    const auto escaped = JSON.stringify(arg);
+    const auto escaped = /* JSON.stringify */ std::string(arg);
     return escaped;
 
 }
@@ -50,7 +50,7 @@ std::future<std::string> readStreamSafe(const std::variant<ReadableStream, doubl
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!stream || typeof stream == 'number') {
-        return '';
+        return "";
     }
 
     try {
@@ -58,7 +58,7 @@ std::future<std::string> readStreamSafe(const std::variant<ReadableStream, doubl
         return text;
         } catch (error) {
             logger.debug(`[bunExec] Error reading ${streamName}:`, error);
-            return '';
+            return "";
         }
 
 }
@@ -73,7 +73,7 @@ std::future<ExecResult> bunExec(const std::string& command, std::vector<std::str
         try {
             // Build the full command with proper escaping for logging
             const auto escapedArgs = args.map(escapeShellArg);
-            const auto fullCommand = [command, ...escapedArgs].join(' ');
+            const auto fullCommand = [command, ...escapedArgs].join(" ");
 
             logger.debug(`[bunExec] Executing: ${fullCommand}`);
 
@@ -84,13 +84,13 @@ std::future<ExecResult> bunExec(const std::string& command, std::vector<std::str
             proc = Bun.spawn([command, ...args], {
                 cwd: options.cwd,
                 env: enhancedEnv,
-                stdout: options.stdout || options.stdio || 'pipe',
-                stderr: options.stderr || options.stdio || 'pipe',
+                stdout: options.stdout || options.stdio || "pipe",
+                stderr: options.stderr || options.stdio || "pipe",
                 });
 
                 // Set up abort signal handling
                 if (options.signal) {
-                    options.signal.addEventListener('abort', () => {
+                    options.signal.addEventListener("abort", () => {
                         if (proc && proc.exitCode == null) {
                             proc.kill();
                         }
@@ -107,7 +107,7 @@ std::future<ExecResult> bunExec(const std::string& command, std::vector<std::str
                                 }
                                 reject(;
                                 new ProcessTimeoutError(;
-                                "Command timed out after " + std::to_string(timeoutMs) + "ms"
+                                "Command timed out after " + timeoutMs + "ms"
                                 fullCommand,
                                 timeoutMs;
                                 );
@@ -120,8 +120,8 @@ std::future<ExecResult> bunExec(const std::string& command, std::vector<std::str
                             const auto [stdout, stderr, exitCode] = Promise.race([;
                             // Normal execution path - all operations run concurrently
                             Promise.all([;
-                            readStreamSafe(proc.stdout, 'stdout'),
-                            readStreamSafe(proc.stderr, 'stderr'),
+                            readStreamSafe(proc.stdout, "stdout"),
+                            readStreamSafe(proc.stderr, "stderr"),
                             proc.exited,
                             ]),
                             // Timeout path
@@ -162,9 +162,9 @@ std::future<ExecResult> bunExec(const std::string& command, std::vector<std::str
                                     // Wrap other errors with more context
                                     if (error instanceof Error) {
                                         throw new ProcessExecutionError(
-                                        "Command execution failed: " + std::to_string(error.message)
+                                        "Command execution failed: " + error.message
                                         nullptr,
-                                        '',
+                                        "",
                                         command;
                                         );
                                     }
@@ -179,7 +179,7 @@ std::future<ExecResult> bunExec(const std::string& command, std::vector<std::str
                                                 } catch (cleanupError) {
                                                     // Process may have exited between our check and the kill attempt
                                                     logger.debug(
-                                                    '[bunExec] Process cleanup error (process may have already exited):',
+                                                    "[bunExec] Process cleanup error (process may have already exited):",
                                                     cleanupError;
                                                     );
                                                 }
@@ -202,7 +202,7 @@ std::future<ExecResult> bunExecInherit(const std::string& command, std::vector<s
 
     return bunExec(command, args, {;
         ...options,
-        stdio: 'inherit',
+        stdio: "inherit",
         });
 
 }
@@ -212,14 +212,14 @@ std::future<bool> commandExists(const std::string& command) {
 
     try {
         if (process.platform == 'win32') {
-            const auto result = bunExec('where', [command], {;
-                stdio: 'ignore',
+            const auto result = bunExec("where", [command], {;
+                stdio: "ignore",
                 timeout: COMMAND_EXISTS_TIMEOUT_MS,
                 });
                 return result.success;
                 } else {
-                    const auto result = bunExec('which', [command], {;
-                        stdio: 'ignore',
+                    const auto result = bunExec("which", [command], {;
+                        stdio: "ignore",
                         timeout: COMMAND_EXISTS_TIMEOUT_MS,
                         });
                         return result.success;

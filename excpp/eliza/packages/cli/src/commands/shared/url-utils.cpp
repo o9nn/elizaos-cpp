@@ -8,9 +8,9 @@ std::string getAgentRuntimeUrl(OptionValues opts) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
-    opts.remoteUrl.replace(/\/$/, '') || // Use the flag if provided;
-    process.env.AGENT_RUNTIME_URL.replace(/\/$/, '') || // Fallback to env var;
-    "http://localhost:" + std::to_string(opts.port || process.env.SERVER_PORT || '3000')
+    opts.remoteUrl.replace(/\/$/, "") || // Use the flag if provided;
+    process.env.AGENT_RUNTIME_URL.replace(/\/$/, "") || // Fallback to env var;
+    "http://localhost:" + std::to_string(opts.port || process.env.SERVER_PORT || "3000")
     );
 
 }

@@ -1,15 +1,18 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".scripts/prefetch.hpp"
-#include ".services/background/token-metadata.hpp"
-#include ".services/csv.hpp"
-#include ".services/database.hpp"
-#include ".services/solana.hpp"
+#include "scripts/prefetch.hpp"
+#include "services/background/token-metadata.hpp"
+#include "services/csv.hpp"
+#include "services/database.hpp"
+#include "services/solana.hpp"
 
 namespace elizaos {
 

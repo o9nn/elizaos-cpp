@@ -1,14 +1,18 @@
 #pragma once
+#include <algorithm>
+#include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".constants.hpp"
-#include ".keypairUtils.hpp"
+#include "constants.hpp"
 #include "elizaos/core.hpp"
+#include "keypairUtils.hpp"
 
 namespace elizaos {
 
@@ -38,7 +42,7 @@ std::future<double> getTokenDecimals(Connection connection, const std::string& m
  * @param {number} amount The amount of tokens to swap.
  * @returns {Promise<unknown>} A Promise that resolves to the swap data object.
  */
-std::future<unknown> swapToken(Connection connection, PublicKey walletPublicKey, const std::string& inputTokenCA, const std::string& outputTokenCA, double amount);
+std::future<std::any> swapToken(Connection connection, PublicKey walletPublicKey, const std::string& inputTokenCA, const std::string& outputTokenCA, double amount);
 
 // Get token from wallet data using SolanaService
 /**

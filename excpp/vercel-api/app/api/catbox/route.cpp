@@ -143,9 +143,9 @@ std::future<void> GET(NextRequest request) {
                 }
 
                 // Construct the catbox file URL
-                const auto catboxUrl = "https://files.catbox.moe/" + std::to_string(actualFileId);
+                const auto catboxUrl = "https://files.catbox.moe/" + actualFileId;
 
-                std::cout << "[CATBOX PROXY] Fetching file: " + std::to_string(actualFileId) << std::endl;
+                std::cout << "[CATBOX PROXY] Fetching file: " + actualFileId << std::endl;
 
                 // Get timeout from query params or use default
                 const auto timeoutParam = request.nextUrl.searchParams.get("timeout");
@@ -154,49 +154,49 @@ std::future<void> GET(NextRequest request) {
                 // Fetch the file from catbox
                 const auto response = axios.get(catboxUrl, {;
                     timeout: timeoutMs,
-                    responseType: 'stream',
+                    responseType: "stream",
                     headers: {
-                        'User-Agent': 'Mozilla/5.0 (compatible; Catbox-Proxy/1.0)',
+                        "User-Agent": "Mozilla/5.0 (compatible; Catbox-Proxy/1.0)",
                         // Forward relevant headers from the original request
                         ...Object.fromEntries(;
                         Object.entries(request.headers).filter(;
                         ([key]) =>;
-                        key.toLowerCase() == 'range' ||;
-                        key.toLowerCase() == 'if-none-match' ||;
-                        key.toLowerCase() == 'if-modified-since';
+                        key.toLowerCase() == "range" ||;
+                        key.toLowerCase() == "if-none-match" ||;
+                        key.toLowerCase() == "if-modified-since";
                         );
                         ),
                         },
                         });
 
-                        std::cout << "[CATBOX PROXY] Successfully fetched file: " + std::to_string(actualFileId) << std::endl;
+                        std::cout << "[CATBOX PROXY] Successfully fetched file: " + actualFileId << std::endl;
 
                         // Get content type from response or try to infer from file extension
-                        const auto contentType = response.headers['content-type'] ||;
+                        const auto contentType = response.headers["content-type"] ||;
                         getContentTypeFromExtension(actualFileId) ||;
-                        'application/octet-stream';
+                        "application/octet-stream";
 
                         // Prepare response headers
                         const std::unordered_map<std::string, std::string> responseHeaders = {;
-                            'Content-Type': contentType,
-                            'Access-Control-Allow-Origin': '*',
-                            'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-                            'Access-Control-Allow-Headers': 'Content-Type',
-                            'Cache-Control': 'public, max-age=31536000', // Cache for 1 year
+                            "Content-Type": contentType,
+                            "Access-Control-Allow-Origin": "*",
+                            "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+                            "Access-Control-Allow-Headers": "Content-Type",
+                            "Cache-Control": "public, max-age=31536000", // Cache for 1 year
                             };
 
                             // Forward relevant headers from catbox response
                             if (response.headers['content-length']) {
-                                responseHeaders['Content-Length'] = response.headers['content-length'];
+                                responseHeaders["Content-Length"] = response.headers["content-length"];
                             }
                             if (response.headers['last-modified']) {
-                                responseHeaders['Last-Modified'] = response.headers['last-modified'];
+                                responseHeaders["Last-Modified"] = response.headers["last-modified"];
                             }
                             if (response.headers['etag']) {
-                                responseHeaders['ETag'] = response.headers['etag'];
+                                responseHeaders["ETag"] = response.headers["etag"];
                             }
                             if (response.headers['content-range']) {
-                                responseHeaders['Content-Range'] = response.headers['content-range'];
+                                responseHeaders["Content-Range"] = response.headers["content-range"];
                             }
 
                             // Return the file data
@@ -240,27 +240,27 @@ std::future<void> GET(NextRequest request) {
 std::string getContentTypeFromExtension(const std::string& filename) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto ext = filename.split('.').pop().toLowerCase();
+    const auto ext = filename.split(".").pop().toLowerCase();
 
     const std::unordered_map<std::string, std::string> mimeTypes = {;
-        'jpg': 'image/jpeg',
-        'jpeg': 'image/jpeg',
-        'png': 'image/png',
-        'gif': 'image/gif',
-        'webp': 'image/webp',
-        'svg': 'image/svg+xml',
-        'mp4': 'video/mp4',
-        'webm': 'video/webm',
-        'mov': 'video/quicktime',
-        'avi': 'video/x-msvideo',
-        'mp3': 'audio/mpeg',
-        'wav': 'audio/wav',
-        'pdf': 'application/pdf',
-        'txt': 'text/plain',
-        'json': 'application/json',
-        'js': 'application/javascript',
-        'css': 'text/css',
-        'html': 'text/html',
+        "jpg": "image/jpeg",
+        "jpeg": "image/jpeg",
+        "png": "image/png",
+        "gif": "image/gif",
+        "webp": "image/webp",
+        "svg": "image/svg+xml",
+        "mp4": "video/mp4",
+        "webm": "video/webm",
+        "mov": "video/quicktime",
+        "avi": "video/x-msvideo",
+        "mp3": "audio/mpeg",
+        "wav": "audio/wav",
+        "pdf": "application/pdf",
+        "txt": "text/plain",
+        "json": "application/json",
+        "js": "application/javascript",
+        "css": "text/css",
+        "html": "text/html",
         };
 
         return ext ? mimeTypes[ext] || nullptr : nullptr;

@@ -1,9 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
 
@@ -16,7 +19,7 @@ namespace elizaos {
 /**
  * Possible types for form fields
  */
-using FormFieldType = std::variant<, std::string, std::string, std::string, std::string, std::string, std::string, std::string, std::string, std::string, std::string, std::string>;
+using FormFieldType = std::variant<, std::string>;
 
 /**
  * Represents a single field in a form
@@ -46,7 +49,7 @@ struct FormStep {
 /**
  * Possible statuses for a form
  */
-using FormStatus = std::variant<std::string, std::string, std::string>;
+using FormStatus = std::string;
 
 /**
  * Represents a complete form instance

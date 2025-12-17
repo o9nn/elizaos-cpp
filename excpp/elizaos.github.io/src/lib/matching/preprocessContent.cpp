@@ -56,7 +56,7 @@ MatchContent preprocessContent(MatchContent content) {
         break;
         // Add cases for other TagPatternType if they need specific preprocessing
         // e.g., PR_CLOSES_ISSUE, REACTION might not need string preprocessing
-        default:
+        // default:
         processedString = content.content; // No preprocessing needed;
         break;
     }

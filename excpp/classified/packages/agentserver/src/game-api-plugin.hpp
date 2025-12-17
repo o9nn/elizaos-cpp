@@ -1,10 +1,14 @@
 #pragma once
+#include <algorithm>
+#include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "elizaos/core.hpp"
 #include "elizaos/plugin-autonomy.hpp"
@@ -30,8 +34,8 @@ struct GameApiResponse {
 
 // Media stream buffer interface
 struct MediaStreamBuffer {
-    std::vector<Uint8Array> videoFrames;
-    std::vector<Uint8Array> audioChunks;
+    std::vector<std::vector<uint8_t>> videoFrames;
+    std::vector<std::vector<uint8_t>> audioChunks;
     double maxBufferSize;
 };
 
@@ -66,15 +70,15 @@ struct AgentServerInstance {
 // Virtual screen capture state
 
 // Start capturing agent's virtual screen
-std::future<void> startAgentScreenCapture(IAgentRuntime runtime, std::optional<unknown> server);
+std::future<void> startAgentScreenCapture(IAgentRuntime runtime, std::optional<std::any> server);
 
 // Stop capturing agent's virtual screen
 std::future<void> stopAgentScreenCapture();
 
 // Standard API response helpers
-void successResponse(unknown data);
+void successResponse(const std::any& data);
 
-void errorResponse(const std::string& code, const std::string& message, std::optional<unknown> details);
+void errorResponse(const std::string& code, const std::string& message, std::optional<std::any> details);
 
 /**
  * Generates configuration recommendations based on validation results

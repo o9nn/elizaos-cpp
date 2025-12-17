@@ -27,13 +27,13 @@ std::future<std::vector<Character>> loadCharacters(const std::string& characters
         if (characterPaths.length > 0) {
             for (const auto& path : characterPaths)
                 try {
-                    const auto character = JSON.parse(fs.readFileSync(path, "utf8"));
+                    const auto character = /* JSON.parse */ fs.readFileSync(path, "utf8");
 
                     validateCharacterConfig(character);
 
-                    loadedCharacters.push(character);
+                    loadedCharacters.push_back(character);
                     } catch (e) {
-                        std::cerr << "Error loading character from " + std::to_string(path) + ": " + std::to_string(e) << std::endl;
+                        std::cerr << "Error loading character from " + path + ": " + e << std::endl;
                         // don't continue to load if a specified file is not found
                         process.exit(1);
                     }

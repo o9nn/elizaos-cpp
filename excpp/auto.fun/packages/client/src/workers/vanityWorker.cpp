@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-bool validateKeypair(Uint8Array privateKey, Uint8Array publicKey, Uint8Array secretKey) {
+bool validateKeypair(const std::vector<uint8_t>& privateKey, const std::vector<uint8_t>& publicKey, const std::vector<uint8_t>& secretKey) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // ... (validation logic remains the same)

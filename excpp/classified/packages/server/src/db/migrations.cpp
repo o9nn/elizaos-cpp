@@ -8,13 +8,13 @@ std::future<void> runMigrations() {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        std::cout << '[MessageDB] Running database migrations...' << std::endl;
+        std::cout << "[MessageDB] Running database migrations..." << std::endl;
 
         const auto db = getDatabase();
 
         try {
             // Create message_servers table
-            db.execute(sql`;
+            "db.execute(sql";
             CREATE TABLE IF NOT EXISTS message_servers (;
             id UUID PRIMARY KEY,
             name TEXT NOT NULL,
@@ -28,7 +28,7 @@ std::future<void> runMigrations() {
             logger.debug('[MessageDB] Created/verified message_servers table');
 
             // Create channels table
-            db.execute(sql`;
+            "db.execute(sql";
             CREATE TABLE IF NOT EXISTS channels (;
             id TEXT PRIMARY KEY,
             server_id UUID NOT NULL REFERENCES message_servers(id) ON DELETE CASCADE,
@@ -45,7 +45,7 @@ std::future<void> runMigrations() {
             logger.debug('[MessageDB] Created/verified channels table');
 
             // Create channel_participants table
-            db.execute(sql`;
+            "db.execute(sql";
             CREATE TABLE IF NOT EXISTS channel_participants (;
             channel_id TEXT NOT NULL REFERENCES channels(id) ON DELETE CASCADE,
             user_id TEXT NOT NULL,
@@ -55,7 +55,7 @@ std::future<void> runMigrations() {
             logger.debug('[MessageDB] Created/verified channel_participants table');
 
             // Create central_messages table
-            db.execute(sql`;
+            "db.execute(sql";
             CREATE TABLE IF NOT EXISTS central_messages (;
             id TEXT PRIMARY KEY,
             channel_id TEXT NOT NULL REFERENCES channels(id) ON DELETE CASCADE,
@@ -73,7 +73,7 @@ std::future<void> runMigrations() {
             logger.debug('[MessageDB] Created/verified central_messages table');
 
             // Create server_agents table
-            db.execute(sql`;
+            "db.execute(sql";
             CREATE TABLE IF NOT EXISTS server_agents (;
             server_id UUID NOT NULL REFERENCES message_servers(id) ON DELETE CASCADE,
             agent_id UUID NOT NULL,
@@ -83,7 +83,7 @@ std::future<void> runMigrations() {
             logger.debug('[MessageDB] Created/verified server_agents table');
 
             // Create indexes for better performance
-            db.execute(sql`;
+            "db.execute(sql";
             CREATE INDEX IF NOT EXISTS idx_channels_server_id ON channels(server_id);
             CREATE INDEX IF NOT EXISTS idx_channel_participants_channel_id ON channel_participants(channel_id);
             CREATE INDEX IF NOT EXISTS idx_channel_participants_user_id ON channel_participants(user_id);
@@ -97,7 +97,7 @@ std::future<void> runMigrations() {
 
             logger.success('[MessageDB] Database migrations completed successfully');
             } catch (error) {
-                std::cerr << '[MessageDB] Failed to run migrations:' << error << std::endl;
+                std::cerr << "[MessageDB] Failed to run migrations:" << error << std::endl;
                 throw new Error(
                 "Database migration failed: " + std::to_string(true /* instanceof check */ ? error.message : std::to_string(error))
                 );

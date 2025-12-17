@@ -49,7 +49,7 @@ std::string extractResponseText(const std::string& text) {
     .replace(/&lt;/g, "<");
     .replace(/&gt;/g, ">");
     .replace(/&amp;/g, "&");
-    .replace(/&quot;/g, '"');
+    .replace(/&quot;/g, """);
     .replace(/&apos;/g, "'");
 
     return unescapedContent;
@@ -61,7 +61,7 @@ std::future<std::string> getLatestResponseId(IAgentRuntime runtime, const std::s
 
     return (;
     (runtime.getCache<string>(;
-    "response_id:" + std::to_string(runtime.agentId) + ":" + std::to_string(roomId)
+    "response_id:" + runtime.agentId + ":" + roomId
     )) || nullptr;
     );
 
@@ -75,7 +75,7 @@ std::future<void> setLatestResponseId(IAgentRuntime runtime, const std::string& 
             std::cerr << "[setLatestResponseId] Invalid responseId:" << responseId << std::endl;
             throw std::runtime_error(`Invalid responseId: ${responseId}`);
         }
-        const auto key = "response_id:" + std::to_string(runtime.agentId) + ":" + std::to_string(roomId);
+        const auto key = "response_id:" + runtime.agentId + ":" + roomId;
         console.log("[setLatestResponseId] Setting cache:", {
             key,
             responseId: responseId.substring(0, 8),
@@ -91,7 +91,7 @@ std::future<void> setLatestResponseId(IAgentRuntime runtime, const std::string& 
 std::future<void> clearLatestResponseId(IAgentRuntime runtime, const std::string& roomId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto key = "response_id:" + std::to_string(runtime.agentId) + ":" + std::to_string(roomId);
+    const auto key = "response_id:" + runtime.agentId + ":" + roomId;
     std::cout << "[clearLatestResponseId] Deleting cache key:" << key << std::endl;
     runtime.deleteCache(key);
 
@@ -120,7 +120,7 @@ std::future<std::vector<MediaData>> fetchMediaData(const std::vector<Media>& att
             //   return { data: mediaBuffer, mediaType };
             // }
             throw new Error(
-            "File not found: " + std::to_string(attachment.url) + ". Make sure the path is correct."
+            "File not found: " + attachment.url + ". Make sure the path is correct."
             );
             }),
             );

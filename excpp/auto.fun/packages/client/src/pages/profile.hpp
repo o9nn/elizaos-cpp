@@ -1,14 +1,16 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
-#include ".components/token-table.hpp"
-#include ".utils/env.hpp"
-#include ".utils/profileUtils.hpp"
+#include "components/token-table.hpp"
+#include "utils/env.hpp"
+#include "utils/profileUtils.hpp"
 
 namespace elizaos {
 
@@ -29,7 +31,7 @@ struct EditableProfileHeaderProps {
     std::string editError;
 };
 
-using Tab = std::variant<"held", "created">;
+using Tab = std::string;
 
 
 } // namespace elizaos

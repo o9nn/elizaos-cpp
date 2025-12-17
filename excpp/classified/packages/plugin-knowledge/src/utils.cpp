@@ -4,83 +4,83 @@
 
 namespace elizaos {
 
-std::future<std::string> extractTextFromFileBuffer(Buffer fileBuffer, const std::string& contentType, string // For logging and context originalFilename) {
+std::future<std::string> extractTextFromFileBuffer(const std::vector<uint8_t>& fileBuffer, const std::string& contentType, string // For logging and context originalFilename) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
         const auto lowerContentType = contentType.toLowerCase();
         logger.debug(
-        "[TextUtil] Attempting to extract text from " + std::to_string(originalFilename) + " (type: " + std::to_string(contentType) + ")"
+        "[TextUtil] Attempting to extract text from " + originalFilename + " (type: " + contentType + ")"
         );
 
         if (
-        lowerContentType == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+        lowerContentType == "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
         ) {
             logger.debug(`[TextUtil] Extracting text from DOCX ${originalFilename} via mammoth.`);
             try {
                 const auto result = mammoth.extractRawText({ buffer: fileBuffer });
                 logger.debug(
-                "[TextUtil] DOCX text extraction complete for " + std::to_string(originalFilename) + ". Text length: " + std::to_string(result.value.length)
+                "[TextUtil] DOCX text extraction complete for " + originalFilename + ". Text length: " + result.value.size()
                 );
                 return result.value;
                 } catch (docxError: any) {
-                    const auto errorMsg = "[TextUtil] Failed to parse DOCX file " + std::to_string(originalFilename) + ": " + std::to_string(docxError.message);
+                    const auto errorMsg = "[TextUtil] Failed to parse DOCX file " + originalFilename + ": " + docxError.message;
                     std::cerr << errorMsg << docxError.stack << std::endl;
                     throw std::runtime_error(errorMsg);
                 }
                 } else if (;
-                lowerContentType == 'application/msword' ||;
-                originalFilename.toLowerCase().endsWith('.doc');
+                lowerContentType == "application/msword" ||;
+                originalFilename.toLowerCase().endsWith(".doc");
                 ) {
                     // For .doc files, we'll store the content as-is, and just add a message
                     // The frontend will handle the display appropriately
                     logger.debug(`[TextUtil] Handling Microsoft Word .doc file: ${originalFilename}`);
 
                     // We'll add a descriptive message as a placeholder
-                    return "[Microsoft Word Document: " + std::to_string(originalFilename) + "]\n\nThis document was indexed for search but cannot be displayed directly in the browser. The original document content is preserved for retrieval purposes.";
+                    return "[Microsoft Word Document: " + originalFilename + "]\n\nThis document was indexed for search but cannot be displayed directly in the browser. The original document content is preserved for retrieval purposes.";
                     } else if (;
-                    lowerContentType.startsWith('text/') ||;
-                    PLAIN_TEXT_CONTENT_TYPES.includes(lowerContentType);
+                    lowerContentType.startsWith("text/") ||;
+                    (std::find(PLAIN_TEXT_CONTENT_TYPES.begin(), PLAIN_TEXT_CONTENT_TYPES.end(), lowerContentType) != PLAIN_TEXT_CONTENT_TYPES.end());
                     ) {
                         logger.debug(
-                        "[TextUtil] Extracting text from plain text compatible file " + std::to_string(originalFilename) + " (type: " + std::to_string(contentType) + ")"
+                        "[TextUtil] Extracting text from plain text compatible file " + originalFilename + " (type: " + contentType + ")"
                         );
-                        return fileBuffer.tostd::to_string('utf-8');
+                        return fileBuffer.tostd::to_string("utf-8");
                         } else {
                             logger.warn(
-                            "[TextUtil] Unsupported content type: "" + std::to_string(contentType) + "" for " + std::to_string(originalFilename) + ". Attempting fallback to plain text."
+                            "[TextUtil] Unsupported content type: \"" + contentType + "\" for " + originalFilename + ". Attempting fallback to plain text."
                             );
 
                             if (fileBuffer.length > MAX_FALLBACK_SIZE_BYTES) {
-                                const auto sizeErrorMsg = "[TextUtil] File " + std::to_string(originalFilename) + " (type: " + std::to_string(contentType) + ") exceeds maximum size for fallback (" + std::to_string(MAX_FALLBACK_SIZE_BYTES) + " bytes). Cannot process text.";
+                                const auto sizeErrorMsg = "[TextUtil] File " + originalFilename + " (type: " + contentType + ") exceeds maximum size for fallback (" + MAX_FALLBACK_SIZE_BYTES + " bytes). Cannot process text.";
                                 std::cerr << sizeErrorMsg << std::endl;
                                 throw std::runtime_error(sizeErrorMsg);
                             }
 
                             // Simple binary detection: check for null bytes in the first N bytes
-                            const auto initialBytes = fileBuffer.subarray(0, Math.min(fileBuffer.length, BINARY_CHECK_BYTES));
+                            const auto initialBytes = fileBuffer.subarray(0, Math.min(fileBuffer.size(), BINARY_CHECK_BYTES));
                             if (initialBytes.includes(0)) {
                                 // Check for NUL byte
-                                const auto binaryHeuristicMsg = "[TextUtil] File " + std::to_string(originalFilename) + " (type: " + std::to_string(contentType) + ") appears to be binary based on initial byte check. Cannot process text.";
+                                const auto binaryHeuristicMsg = "[TextUtil] File " + originalFilename + " (type: " + contentType + ") appears to be binary based on initial byte check. Cannot process text.";
                                 std::cerr << binaryHeuristicMsg << std::endl;
                                 throw std::runtime_error(binaryHeuristicMsg);
                             }
 
                             try {
-                                const auto textContent = fileBuffer.tostd::to_string('utf-8');
+                                const auto textContent = fileBuffer.tostd::to_string("utf-8");
                                 if (textContent.includes('\ufffd')) {
                                     // Replacement character, indicating potential binary or wrong encoding
-                                    const auto binaryErrorMsg = "[TextUtil] File " + std::to_string(originalFilename) + " (type: " + std::to_string(contentType) + ") seems to be binary or has encoding issues after fallback to plain text (detected \ufffd).";
+                                    const auto binaryErrorMsg = "[TextUtil] File " + originalFilename + " (type: " + contentType + ") seems to be binary or has encoding issues after fallback to plain text (detected \ufffd).";
                                     std::cerr << binaryErrorMsg << std::endl;
                                     throw std::runtime_error(binaryErrorMsg);
                                 }
                                 logger.debug(
-                                "[TextUtil] Successfully processed unknown type " + std::to_string(contentType) + " text after fallback for " + std::to_string(originalFilename) + ".";
+                                "[TextUtil] Successfully processed unknown type " + contentType + " text after fallback for " + originalFilename + ".";
                                 );
                                 return textContent;
                                 } catch (fallbackError: any) {
                                     // If the initial toString failed or if we threw due to \ufffd
-                                    const auto finalErrorMsg = "[TextUtil] Unsupported content type: " + std::to_string(contentType) + " for " + std::to_string(originalFilename) + ". Fallback to plain text also failed or indicated binary content.";
+                                    const auto finalErrorMsg = "[TextUtil] Unsupported content type: " + contentType + " for " + originalFilename + ". Fallback to plain text also failed or indicated binary content.";
                                     std::cerr << finalErrorMsg << fallbackError.message ? fallbackError.stack : std::nullopt << std::endl;
                                     throw std::runtime_error(finalErrorMsg);
                                 }
@@ -92,11 +92,11 @@ std::future<std::string> extractTextFromFileBuffer(Buffer fileBuffer, const std:
     }
 }
 
-std::future<std::string> convertPdfToTextFromBuffer(Buffer pdfBuffer, std::optional<std::string> filename) {
+std::future<std::string> convertPdfToTextFromBuffer(const std::vector<uint8_t>& pdfBuffer, std::optional<std::string> filename) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        const auto docName = filename || 'unnamed-document';
+        const auto docName = filename || "unnamed-document";
         logger.debug(`[PdfService] Starting conversion for ${docName}`);
 
         try {
@@ -119,7 +119,7 @@ std::future<std::string> convertPdfToTextFromBuffer(Buffer pdfBuffer, std::optio
                     if (!lineMap.has(yPos)) {
                         lineMap.set(yPos, []);
                     }
-                    lineMap.get(yPos)!.push(item);
+                    lineMap.get(yPos)!.push_back(item);
                     });
 
                     // Sort lines by y-position (top to bottom) and items within lines by x-position (left to right)
@@ -129,17 +129,17 @@ std::future<std::string> convertPdfToTextFromBuffer(Buffer pdfBuffer, std::optio
                     items;
                     .sort((a, b) => a.transform[4] - b.transform[4]);
                     .map((item) => item.str);
-                    .join(' ');
+                    .join(" ");
                     );
 
-                    textPages.push(sortedLines.join('\n'));
+                    textPages.push_back(sortedLines.join("\n"));
                 }
 
-                const auto fullText = textPages.join('\n\n').replace(/\s+/g, ' ').trim();
+                const auto fullText = textPages.join("\n\n").replace(/\s+/g, " ").trim();
                 logger.debug(`[PdfService] Conversion complete for ${docName}, length: ${fullText.length}`);
                 return fullText;
                 } catch (error: any) {
-                    std::cerr << "[PdfService] Error converting PDF " + std::to_string(docName) + ":" << error.message << std::endl;
+                    std::cerr << "[PdfService] Error converting PDF " + docName + ":" << error.message << std::endl;
                     throw std::runtime_error(`Failed to convert PDF to text: ${error.message}`);
                 }
 
@@ -154,111 +154,111 @@ bool isBinaryContentType(const std::string& contentType, const std::string& file
 
     // Text-based content types that should NOT be treated as binary
     const auto textContentTypes = [;
-    'text/',
-    'application/json',
-    'application/xml',
-    'application/javascript',
-    'application/typescript',
-    'application/x-yaml',
-    'application/x-sh',
+    "text/",
+    "application/json",
+    "application/xml",
+    "application/javascript",
+    "application/typescript",
+    "application/x-yaml",
+    "application/x-sh",
     ];
 
     // Check if it's a text-based MIME type
-    const auto isTextMimeType = textContentTypes.some((type) => contentType.includes(type));
+    const auto isTextMimeType = textContentTypes.some((type) => (std::find(contentType.begin(), contentType.end(), type) != contentType.end()));
     if (isTextMimeType) {
         return false;
     }
 
     // Binary content types
     const auto binaryContentTypes = [;
-    'application/pdf',
-    'application/msword',
-    'application/vnd.openxmlformats-officedocument',
-    'application/vnd.ms-excel',
-    'application/vnd.ms-powerpoint',
-    'application/zip',
-    'application/x-zip-compressed',
-    'application/octet-stream',
-    'image/',
-    'audio/',
-    'video/',
+    "application/pdf",
+    "application/msword",
+    "application/vnd.openxmlformats-officedocument",
+    "application/vnd.ms-excel",
+    "application/vnd.ms-powerpoint",
+    "application/zip",
+    "application/x-zip-compressed",
+    "application/octet-stream",
+    "image/",
+    "audio/",
+    "video/",
     ];
 
     // Check MIME type
-    const auto isBinaryMimeType = binaryContentTypes.some((type) => contentType.includes(type));
+    const auto isBinaryMimeType = binaryContentTypes.some((type) => (std::find(contentType.begin(), contentType.end(), type) != contentType.end()));
 
     if (isBinaryMimeType) {
         return true;
     }
 
     // Check file extension as fallback
-    const auto fileExt = filename.split('.').pop().toLowerCase() || '';
+    const auto fileExt = filename.split(".").pop().toLowerCase() || "";
 
     // Text file extensions that should NOT be treated as binary
     const auto textExtensions = [;
-    'txt',
-    'md',
-    'markdown',
-    'json',
-    'xml',
-    'html',
-    'htm',
-    'css',
-    'js',
-    'ts',
-    'jsx',
-    'tsx',
-    'yaml',
-    'yml',
-    'toml',
-    'ini',
-    'cfg',
-    'conf',
-    'sh',
-    'bash',
-    'zsh',
-    'fish',
-    'py',
-    'rb',
-    'go',
-    'rs',
-    'java',
-    'c',
-    'cpp',
-    'h',
-    'hpp',
-    'cs',
-    'php',
-    'sql',
-    'r',
-    'swift',
-    'kt',
-    'scala',
-    'clj',
-    'ex',
-    'exs',
-    'vim',
-    'env',
-    'gitignore',
-    'dockerignore',
-    'editorconfig',
-    'log',
-    'csv',
-    'tsv',
-    'properties',
-    'gradle',
-    'sbt',
-    'makefile',
-    'dockerfile',
-    'vagrantfile',
-    'gemfile',
-    'rakefile',
-    'podfile',
-    'csproj',
-    'vbproj',
-    'fsproj',
-    'sln',
-    'pom',
+    "txt",
+    "md",
+    "markdown",
+    "json",
+    "xml",
+    "html",
+    "htm",
+    "css",
+    "js",
+    "ts",
+    "jsx",
+    "tsx",
+    "yaml",
+    "yml",
+    "toml",
+    "ini",
+    "cfg",
+    "conf",
+    "sh",
+    "bash",
+    "zsh",
+    "fish",
+    "py",
+    "rb",
+    "go",
+    "rs",
+    "java",
+    "c",
+    "cpp",
+    "h",
+    "hpp",
+    "cs",
+    "php",
+    "sql",
+    "r",
+    "swift",
+    "kt",
+    "scala",
+    "clj",
+    "ex",
+    "exs",
+    "vim",
+    "env",
+    "gitignore",
+    "dockerignore",
+    "editorconfig",
+    "log",
+    "csv",
+    "tsv",
+    "properties",
+    "gradle",
+    "sbt",
+    "makefile",
+    "dockerfile",
+    "vagrantfile",
+    "gemfile",
+    "rakefile",
+    "podfile",
+    "csproj",
+    "vbproj",
+    "fsproj",
+    "sln",
+    "pom",
     ];
 
     // If it's a known text extension, it's not binary
@@ -268,55 +268,55 @@ bool isBinaryContentType(const std::string& contentType, const std::string& file
 
     // Binary file extensions
     const auto binaryExtensions = [;
-    'pdf',
-    'docx',
-    'doc',
-    'xls',
-    'xlsx',
-    'ppt',
-    'pptx',
-    'zip',
-    'rar',
-    '7z',
-    'tar',
-    'gz',
-    'bz2',
-    'xz',
-    'jpg',
-    'jpeg',
-    'png',
-    'gif',
-    'bmp',
-    'svg',
-    'ico',
-    'webp',
-    'mp3',
-    'mp4',
-    'avi',
-    'mov',
-    'wmv',
-    'flv',
-    'wav',
-    'flac',
-    'ogg',
-    'exe',
-    'dll',
-    'so',
-    'dylib',
-    'bin',
-    'dat',
-    'db',
-    'sqlite',
+    "pdf",
+    "docx",
+    "doc",
+    "xls",
+    "xlsx",
+    "ppt",
+    "pptx",
+    "zip",
+    "rar",
+    "7z",
+    "tar",
+    "gz",
+    "bz2",
+    "xz",
+    "jpg",
+    "jpeg",
+    "png",
+    "gif",
+    "bmp",
+    "svg",
+    "ico",
+    "webp",
+    "mp3",
+    "mp4",
+    "avi",
+    "mov",
+    "wmv",
+    "flv",
+    "wav",
+    "flac",
+    "ogg",
+    "exe",
+    "dll",
+    "so",
+    "dylib",
+    "bin",
+    "dat",
+    "db",
+    "sqlite",
     ];
 
-    return binaryExtensions.includes(fileExt);
+    return (std::find(binaryExtensions.begin(), binaryExtensions.end(), fileExt) != binaryExtensions.end());
 
 }
 
 item is TextItem isTextItem(const std::variant<TextItem, TextMarkedContent>& item) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return 'str' in item;
+    return "str" in item;
 
 }
 
@@ -325,9 +325,9 @@ std::string normalizeS3Url(const std::string& url) {
 
     try {
         const auto urlObj = new URL(url);
-        return std::to_string(urlObj.origin) + std::to_string(urlObj.pathname);
+        return urlObj.origin + urlObj.pathname;
         } catch (error) {
-            std::cout << "[URL NORMALIZER] Failed to parse URL: " + std::to_string(url) + ". Returning original." << std::endl;
+            std::cout << "[URL NORMALIZER] Failed to parse URL: " + url + ". Returning original." << std::endl;
             return url;
         }
 
@@ -343,7 +343,7 @@ bool looksLikeBase64(std::optional<std::string> content) {
 
     if (!content || content.length == 0) return false;
 
-    const auto cleanContent = content.replace(/\s/g, '');
+    const auto cleanContent = content.replace(/\s/g, "");
 
     // Too short to be meaningful Base64
     if (cleanContent.length < 16) return false;
@@ -379,7 +379,7 @@ std::string generateContentBasedId(const std::string& content, const std::string
         // If it's base64, decode it first to get actual content
         if (looksLikeBase64(content)) {
             try {
-                const auto decoded = Buffer.from(content, 'base64').tostd::to_string('utf8');
+                const auto decoded = Buffer.from(content, "base64").tostd::to_string("utf8");
                 // Check if decoded content is readable text
                 if (!decoded.includes('\ufffd') || contentType.includes('pdf')) {
                     // For PDFs and other binary files, use a portion of the base64 itself
@@ -399,30 +399,30 @@ std::string generateContentBasedId(const std::string& content, const std::string
 
                     // Normalize whitespace and line endings for consistency
                     contentForHashing = contentForHashing;
-                    .replace(/\r\n/g, '\n') // Normalize line endings;
-                    .replace(/\r/g, '\n');
+                    .replace(/\r\n/g, "\n") // Normalize line endings;
+                    .replace(/\r/g, "\n");
                     .trim();
 
                     // Create a deterministic string that includes all relevant factors
                     const auto componentsToHash = [;
                     agentId, // Namespace by agent;
                     contentForHashing, // The actual content;
-                    includeFilename || '', // Optional filename for additional uniqueness;
+                    includeFilename || "", // Optional filename for additional uniqueness;
                     ];
                     .filter(Boolean);
-                    .join('::');
+                    .join("::");
 
                     // Create SHA-256 hash
-                    const auto hash = createHash('sha256').update(componentsToHash).digest('hex');
+                    const auto hash = createHash("sha256").update(componentsToHash).digest("hex");
 
                     // Use a namespace UUID for documents (you can define this as a constant)
-                    const auto DOCUMENT_NAMESPACE = '6ba7b810-9dad-11d1-80b4-00c04fd430c8'; // Standard namespace UUID;
+                    const auto DOCUMENT_NAMESPACE = "6ba7b810-9dad-11d1-80b4-00c04fd430c8"; // Standard namespace UUID;
 
                     // Generate UUID v5 from the hash (deterministic)
                     const auto uuid = uuidv5(hash, DOCUMENT_NAMESPACE);
 
                     logger.debug(
-                    "[generateContentBasedId] Generated UUID " + std::to_string(uuid) + " for document with content hash " + std::to_string(hash.slice(0, 8)) + "...";
+                    "[generateContentBasedId] Generated UUID " + uuid + " for document with content hash " + std::to_string(hash.slice(0, 8)) + "...";
                     );
 
                     return uuid;
@@ -433,7 +433,7 @@ std::string extractFirstLines(const std::string& content, double maxLines = 10) 
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto lines = content.split(/\r?\n/);
-    return lines.slice(0, maxLines).join('\n');
+    return lines.slice(0, maxLines).join("\n");
 
 }
 

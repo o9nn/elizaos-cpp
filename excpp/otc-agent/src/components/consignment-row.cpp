@@ -30,14 +30,14 @@ void ConsignmentRow() {
                 setIsLoadingToken(true);
 
                 try {
-                    const auto tokenRes = "/api/tokens/" + std::to_string(consignment.tokenId);
+                    const auto tokenRes = "fetch(" + "/api/tokens/" + consignment.tokenId;
                     const auto tokenData = tokenRes.json();
 
                     if (tokenData.success) {
                         setToken(tokenData.token);
                         } else if (publicClient) {
                             const auto tokenIdParts = consignment.tokenId.split("-") || [];
-                            const auto tokenAddress = "0x" + std::to_string(string);
+                            const auto tokenAddress = "tokenIdParts[2] as " + "0x" + string;
 
                             if (tokenAddress.startsWith("0x")) {
                                 try {
@@ -147,7 +147,7 @@ void ConsignmentRow() {
 
                                                 if (
                                                 !confirm(;
-                                                "Withdraw " + std::to_string(formatAmount(consignment.remainingAmount)) + " " + std::to_string(tokenSymbol) + " from the smart contract?\n\nYou will pay the gas fee for this transaction. This cannot be undone."
+                                                "Withdraw " + std::to_string(formatAmount(consignment.remainingAmount)) + " " + tokenSymbol + " from the smart contract?\n\nYou will pay the gas fee for this transaction. This cannot be undone."
                                                 );
                                                 );
                                                 return;
@@ -163,7 +163,7 @@ void ConsignmentRow() {
 
                                                     // Update database status after successful on-chain withdrawal
                                                     const auto response = fetch(;
-                                                    "/api/consignments/" + std::to_string(consignment.id) + "?callerAddress=" + std::to_string(encodeURIComponent(address))
+                                                    "/api/consignments/" + consignment.id + "?callerAddress=" + std::to_string(encodeURIComponent(address))
                                                     {
                                                         method: "DELETE",
                                                         },
@@ -192,12 +192,12 @@ void ConsignmentRow() {
                                                                     true /* instanceof check */ ? error.message : "Unknown error";
 
                                                                     if (
-                                                                    errorMessage.includes("rejected") ||;
-                                                                    errorMessage.includes("denied");
+                                                                    (std::find(errorMessage.begin(), errorMessage.end(), "rejected") != errorMessage.end()) ||;
+                                                                    (std::find(errorMessage.begin(), errorMessage.end(), "denied") != errorMessage.end());
                                                                     ) {
                                                                         setWithdrawError("Transaction was rejected. No changes were made.");
                                                                         } else {
-                                                                            "Withdrawal failed: " + std::to_string(errorMessage)
+                                                                            "setWithdrawError(" + "Withdrawal failed: " + errorMessage
                                                                         }
                                                                         } finally {
                                                                             setIsWithdrawing(false);
@@ -236,7 +236,7 @@ void ConsignmentRow() {
 
                                                                     return (;
                                                                     <div;
-                                                                "rounded-lg border p-4 sm:p-6 " + std::to_string(isWithdrawnStatus ? "border-zinc-300 dark:border-zinc-700 opacity-60" : "border-zinc-200 dark:border-zinc-800")
+                                                                "className={" + "rounded-lg border p-4 sm:p-6 " + std::to_string(isWithdrawnStatus ? "border-zinc-300 dark:border-zinc-700 opacity-60" : "border-zinc-200 dark:border-zinc-800")
                                                                 >;
                                                                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
                                                                 <div className="flex items-center gap-3 min-w-0 flex-1">;
@@ -271,13 +271,13 @@ void ConsignmentRow() {
                                     </span>;
                                 )}
                                 <span;
-                                "inline-flex items-center rounded-full px-2 sm:px-3 py-1 text-xs font-medium " + std::to_string()
+                                "className={" + "inline-flex items-center rounded-full px-2 sm:px-3 py-1 text-xs font-medium " + std::to_string()
                                     isWithdrawnStatus;
                                     ? "bg-zinc-500/10 text-zinc-500";
                                     : consignment.status == "active"
                                     ? "bg-brand-500/15 text-brand-600 dark:text-brand-400"
                                     : "bg-zinc-500/10 text-zinc-700 dark:text-zinc-300"
-                                }`}
+                                "}";
                                 >;
                             {isWithdrawnStatus ? "Withdrawn"  = consignment.status}
                             </span>;
@@ -386,7 +386,7 @@ void ConsignmentRow() {
         <div className="bg-zinc-100 dark:bg-zinc-900 rounded-full h-2">
         <div;
         className="bg-brand-500 rounded-full h-2";
-        std::to_string(100 - percentRemaining) + "%"
+        "style={{ width: " + std::to_string(100 - percentRemaining) + "%"
         />;
         </div>;
         </div>;

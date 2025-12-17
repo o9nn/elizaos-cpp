@@ -40,7 +40,7 @@ void CallbackPage() {
                     if (error) {
                         const auto errorMsg = errorDescription || error;
                         std::cerr << "Twitter OAuth error:" << errorMsg << std::endl;
-                        "Twitter returned an error: " + std::to_string(errorMsg)
+                        "setError(" + "Twitter returned an error: " + errorMsg
                         return;
                     }
 
@@ -48,7 +48,7 @@ void CallbackPage() {
                     if (oauthToken && oauthVerifier) {
                         try {
                             const auto response = fetch(;
-                            std::to_string(env.apiUrl) + "/api/share/oauth1/callback?oauth_token=" + std::to_string(oauthToken) + "&oauth_verifier=" + std::to_string(oauthVerifier)
+                            env.apiUrl + "/api/share/oauth1/callback?oauth_token=" + oauthToken + "&oauth_verifier=" + oauthVerifier
                             { credentials: "include" },
                             );
 
@@ -62,11 +62,11 @@ void CallbackPage() {
                                 );
                                 setDebugInfo((prev) => ({
                                     ...prev,
-                                    responseStatus: response.status.toString(),
+                                    responseStatus: response.std::to_string(status),
                                     responseError: errorText,
                                     }));
                                     throw new Error(
-                                    "OAuth 1.0a authentication failed: " + std::to_string(response.statusText) + " - " + std::to_string(errorText)
+                                    "OAuth 1.0a authentication failed: " + response.statusText + " - " + errorText
                                     );
                                 }
 
@@ -88,7 +88,7 @@ void CallbackPage() {
                                         oauth1TokenSecret: data.oauth1_token_secret,
                                         };
 
-                                        localStorage.setItem(STORAGE_KEY, JSON.stringify(credentials));
+                                        localStorage.setItem(STORAGE_KEY, /* JSON.stringify */ std::string(credentials));
 
                                         // Redirect back to original page
                                         redirectToOrigin();
@@ -112,7 +112,7 @@ void CallbackPage() {
                                     if (code && state) {
                                         try {
                                             const auto tokenResponse = fetch(;
-                                            std::to_string(env.apiUrl) + "/api/share/oauth/callback?code=" + std::to_string(code) + "&state=" + std::to_string(state)
+                                            env.apiUrl + "/api/share/oauth/callback?code=" + code + "&state=" + state
                                             { credentials: "include" },
                                             );
 
@@ -126,11 +126,11 @@ void CallbackPage() {
                                                 );
                                                 setDebugInfo((prev) => ({
                                                     ...prev,
-                                                    responseStatus: tokenResponse.status.toString(),
+                                                    responseStatus: tokenResponse.std::to_string(status),
                                                     responseError: errorText,
                                                     }));
                                                     throw new Error(
-                                                    "Authentication token exchange failed: " + std::to_string(tokenResponse.statusText) + " - " + std::to_string(errorText)
+                                                    "Authentication token exchange failed: " + tokenResponse.statusText + " - " + errorText
                                                     );
                                                 }
 
@@ -149,10 +149,10 @@ void CallbackPage() {
                                                     auto profileImageUrl: string | std::nullopt;
                                                     try {
                                                         const auto profileApiResponse = fetch(;
-                                                        std::to_string(env.apiUrl) + "/api/share/twitter-user"
+                                                        env.apiUrl + "/api/share/twitter-user"
                                                         {
                                                             headers: {
-                                                                "Bearer " + std::to_string(tokenData.access_token)
+                                                                "Authorization: " + "Bearer " + tokenData.access_token
                                                                 },
                                                                 },
                                                                 );
@@ -169,7 +169,7 @@ void CallbackPage() {
                                                                             });
                                                                             } else {
                                                                                 console.warn(
-                                                                                "Profile data received but 'data' field missing or empty.",
+                                                                                "Profile data received but "data" field missing or empty.",
                                                                                 profileData,
                                                                                 );
                                                                             }
@@ -198,9 +198,9 @@ void CallbackPage() {
 
                                                                                 console.log(
                                                                                 "Saving complete credentials to localStorage:",
-                                                                                JSON.stringify(credentials, nullptr, 2),
+                                                                                /* JSON.stringify */ std::string(credentials, nullptr, 2),
                                                                                 );
-                                                                                localStorage.setItem(STORAGE_KEY, JSON.stringify(credentials));
+                                                                                localStorage.setItem(STORAGE_KEY, /* JSON.stringify */ std::string(credentials));
                                                                                 redirectToOrigin(); // Redirect after saving complete data;
                                                                                 } else {
                                                                                     console.error(
@@ -210,7 +210,7 @@ void CallbackPage() {
                                                                                     setDebugInfo((prev) => ({
                                                                                         ...prev,
                                                                                         tokenMissing: "true",
-                                                                                        receivedTokenData: JSON.stringify(tokenData),
+                                                                                        receivedTokenData: /* JSON.stringify */ std::string(tokenData),
                                                                                         })); // Add received data to debug;
                                                                                         throw new Error(
                                                                                         "Incomplete token data received (missing access_token, refresh_token, or user_id)",
@@ -240,7 +240,7 @@ void CallbackPage() {
                                                                                         const auto redirectUrl = new URL(redirectOrigin, window.location.origin);
                                                                                         redirectUrl.searchParams.set("fresh_auth", "true"); // Add the flag;
 
-                                                                                        window.location.href = redirectUrl.toString(); // Redirect dynamically;
+                                                                                        window.location.href = std::to_string(redirectUrl); // Redirect dynamically;
                                                                                         };
 
                                                                                         processCallback();

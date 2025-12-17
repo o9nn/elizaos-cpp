@@ -1,10 +1,13 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -16,7 +19,7 @@ namespace elizaos {
 
 // Load and cache the business image
 
-std::future<HTMLImageElement> loadBusinessImage();
+std::future<void*> loadBusinessImage();
 
 // Generate a share image for a completed deal (purchase)
 

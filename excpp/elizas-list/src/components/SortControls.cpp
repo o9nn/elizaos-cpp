@@ -12,7 +12,7 @@ void SortControls() {
     <FaSort className="text-gray-400" />;
     <select;
     value={currentSort}
-    onChange={(e) => onSort(e.target.value as 'date' | 'name')}
+    onChange={(e) => onSort(e.target.value as "date" | "name")}
     className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
     >;
     <option value="date">Latest First</option>;

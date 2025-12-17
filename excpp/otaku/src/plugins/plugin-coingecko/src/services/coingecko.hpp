@@ -1,15 +1,18 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
-#include ".utils.hpp"
 #include "elizaos/core.hpp"
+#include "utils.hpp"
 
 namespace elizaos {
 
@@ -24,9 +27,9 @@ struct CoinGeckoTokenMetadata {
     std::string name;
     std::optional<std::string> asset_platform_id;
     std::optional<std::string> contract_address;
-    std::optional<unknown> market_data;
-    std::optional<unknown> links;
-    std::optional<unknown> image;
+    std::optional<std::any> market_data;
+    std::optional<std::any> links;
+    std::optional<std::any> image;
 };
 
 struct MarketRow {
@@ -72,7 +75,7 @@ public:
     std::future<std::vector<MarketRow>> fetchMarketRows(const std::vector<std::string>& ids);
     std::future<std::vector<TokenMetadataCandidate>> enrichCandidateMetadata(const std::string& baseUrl, const std::vector<TokenMetadataCandidate>& candidates, double limit = 3);
     std::variant<Promise<CoinGeckoTokenMetadata, null>> fetchCoinDetail(const std::string& baseUrl, const std::string& coinId);
-    std::string extractCoinId(const std::unordered_map<std::string, unknown>& metadata, const std::string& fallback);
+    std::string extractCoinId(const std::unordered_map<std::string, std::any>& metadata, const std::string& fallback);
     std::future<std::any> getNFTCollectionStats(const std::string& collectionIdentifier);
     std::future<std::any> getTrendingSearch();
     std::string formatDateForTimeframe(double timestamp, const std::string& timeframe);

@@ -10,10 +10,10 @@ express::Router mediaRouter() {
     const auto router = express.Router();
 
     // Mount agent media uploads under /agents
-    router.use('/agents', createAgentMediaRouter());
+    router.use("/agents", createAgentMediaRouter());
 
     // Mount channel media uploads under /channels
-    router.use('/channels', createChannelMediaRouter());
+    router.use("/channels", createChannelMediaRouter());
 
     return router;
 

@@ -1,10 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -40,7 +42,7 @@ struct DealCompletionProps {
     std::optional<std::string> transactionHash;
     std::optional<std::string> offerId;
     std::optional<std::string> status;
-    std::optional<std::variant<"evm", "solana">> chain;
+    std::optional<std::string> chain;
 };
 
 void DealCompletion();

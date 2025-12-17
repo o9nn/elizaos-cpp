@@ -56,7 +56,7 @@ std::future<void> createWeatherPlugin(Agent agent) {
 
                                         // Simulate agent conversation
                                         std::cout << "User: Create a weather plugin with the following spec:" << std::endl;
-                                        std::cout << JSON.stringify(weatherPluginSpec, nullptr, 2) << std::endl;
+                                        std::cout << /* JSON.stringify */ std::string(weatherPluginSpec, nullptr, 2) << std::endl;
 
                                         // Agent would process this through the createPlugin action
                                         // const result = await agent.processMessage("Create plugin: " + JSON.stringify(weatherPluginSpec));
@@ -99,7 +99,7 @@ std::future<void> monitorPluginCreation(Agent agent) {
     - Build successful;
     - Running tests...;
     - 12 tests passed;
-    - Running validation...`);
+    "- Running validation...";
 
 }
 
@@ -220,10 +220,10 @@ std::future<void> main() {
         createTodoPlugin(agent);
 
         std::cout << "\n== Database Plugin Specification ==" << std::endl;
-        std::cout << JSON.stringify(getDatabasePluginSpec(), nullptr, 2) << std::endl;
+        std::cout << /* JSON.stringify */ std::string(getDatabasePluginSpec(), nullptr, 2) << std::endl;
 
         std::cout << "\n== Social Media Plugin Specification ==" << std::endl;
-        std::cout << JSON.stringify(getSocialMediaPluginSpec(), nullptr, 2) << std::endl;
+        std::cout << /* JSON.stringify */ std::string(getSocialMediaPluginSpec(), nullptr, 2) << std::endl;
 
 }
 

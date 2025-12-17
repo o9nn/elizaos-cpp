@@ -1,10 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -19,7 +21,7 @@ struct SearchResult {
     std::string url;
     std::string snippet;
     std::optional<double> score;
-    std::variant<"tavily", "exa"> source;
+    std::string source;
 };
 
 struct SearchOptions {

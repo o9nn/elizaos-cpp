@@ -10,51 +10,51 @@ express::Router createHealthRouter(ElizaOS elizaOS, AgentServer serverInstance) 
     const auto router = express.Router();
 
     // Health check
-    router.get('/ping', (_req, res) => {
+    router.get("/ping", (_req, res) => {
         res.json({ pong: true, timestamp: Date.now() });
         });
 
         // Hello world endpoint
-        router.get('/hello', (_req, res) => {
-            std::cout << 'Hello endpoint hit' << std::endl;
-            res.setHeader('Content-Type', 'application/json');
-            res.send(JSON.stringify({ message: 'Hello World!' }));
+        router.get("/hello", (_req, res) => {
+            std::cout << "Hello endpoint hit" << std::endl;
+            res.setHeader("Content-Type", "application/json");
+            res.send(/* JSON.stringify */ std::string({ message: "Hello World!" }));
             });
 
             // System status endpoint
-            router.get('/status', (_req, res) => {
-                std::cout << 'Status endpoint hit' << std::endl;
-                res.setHeader('Content-Type', 'application/json');
+            router.get("/status", (_req, res) => {
+                std::cout << "Status endpoint hit" << std::endl;
+                res.setHeader("Content-Type", "application/json");
                 res.send(;
                 JSON.stringify({
-                    status: 'ok',
-                    agentCount: elizaOS.getAgents().length,
+                    status: "ok",
+                    agentCount: elizaOS.getAgents().size(),
                     timestamp: new Date().toISOString(),
                     });
                     );
                     });
 
                     // Comprehensive health check
-                    router.get('/health', (_req, res) => {
-                        std::cout << { apiRoute = '/health' } << 'Health check route hit' << std::endl;
+                    router.get("/health", (_req, res) => {
+                        std::cout << { apiRoute = "/health" } << "Health check route hit" << std::endl;
                         const auto healthcheck = {;
-                            status: 'OK',
-                            version: process.env.APP_VERSION || 'unknown',
+                            status: "OK",
+                            version: process.env.APP_VERSION || "unknown",
                             timestamp: new Date().toISOString(),
                             dependencies: {
-                                agents: elizaOS.getAgents().length > 0 ? 'healthy' : 'no_agents',
+                                agents: elizaOS.getAgents().size() > 0 ? "healthy" : "no_agents",
                                 },
                                 };
 
-                                const auto statusCode = healthcheck.dependencies.agents == 'healthy' ? 200 : 503;
+                                const auto statusCode = healthcheck.dependencies.agents == "healthy" ? 200 : 503;
                                 res.status(statusCode).json(healthcheck);
                                 });
 
                                 // Server stop endpoint (admin only)
-                                router.post('/stop', requireAuth, requireAdmin, (_req: AuthenticatedRequest, res) => {
-                                    std::cout << { apiRoute = '/stop' } << 'Server stopping...' << std::endl;
+                                router.post("/stop", requireAuth, requireAdmin, (_req: AuthenticatedRequest, res) => {
+                                    std::cout << { apiRoute = "/stop" } << "Server stopping..." << std::endl;
                                     serverInstance.stop(); // Use optional chaining in case server is std::nullopt;
-                                    res.json({ message: 'Server stopping...' });
+                                    res.json({ message: "Server stopping..." });
                                     });
 
                                     return router;

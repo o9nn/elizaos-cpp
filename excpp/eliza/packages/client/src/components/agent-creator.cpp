@@ -57,19 +57,19 @@ void AgentCreator() {
                                     });
 
                                     // Invalidate the characters query to refresh the characters list
-                                    queryClient.invalidateQueries({ queryKey: ['characters'] });
+                                    queryClient.invalidateQueries({ queryKey: ["characters"] });
 
                                     toast({
-                                        title: 'Success',
-                                        description: 'Agent created successfully!',
+                                        title: "Success",
+                                        description: "Agent created successfully!",
                                         });
-                                        queryClient.invalidateQueries({ queryKey: ['agents'] });
-                                        navigate('/');
+                                        queryClient.invalidateQueries({ queryKey: ["agents"] });
+                                        navigate("/");
                                         } catch (error) {
                                             toast({
-                                                title: 'Error',
-                                                description: true /* instanceof check */ ? error.message : 'Failed to create agent',
-                                                variant: 'destructive',
+                                                title: "Error",
+                                                description: true /* instanceof check */ ? error.message : "Failed to create agent",
+                                                variant: "destructive",
                                                 });
                                             }
                                             };
@@ -87,7 +87,7 @@ void AgentCreator() {
                                     setCurrentSecrets({});
                                 }}
                                 onDelete={() => {
-                                    navigate('/');
+                                    navigate("/");
                                 }}
                                 onTemplateChange={() => {
                                     setCurrentSecrets({});
@@ -96,13 +96,13 @@ void AgentCreator() {
                         secretPanelRef={secretPanelRef}
                         customComponents={[;
                         {
-                            name: 'Plugins',
+                            name: "Plugins",
                             component: (
                             <PluginsPanel characterValue={agentState.agent} setCharacterValue={agentState} />;
                             ),
                             },
                             {
-                                name: 'Secret',
+                                name: "Secret",
                                 component: (
                                 <SecretPanel;
                             characterValue={agentState.agent}
@@ -115,7 +115,7 @@ void AgentCreator() {
                         ),
                         },
                         {
-                            name: 'Avatar',
+                            name: "Avatar",
                             component: (
                             <AvatarPanel characterValue={agentState.agent} setCharacterValue={agentState} />;
                             ),

@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::future<Response> fetchWithTimeout(const std::string& resource, RequestInit options = {}) {
+std::future<std::string> fetchWithTimeout(const std::string& resource, RequestInit options = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { timeout = 8000 } = options;
@@ -26,11 +26,11 @@ std::string formatCurrency(const std::optional<double>& value, double decimals =
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (value == null || value == undefined || isNaN(value)) {
-        return '$--';
+        return "$--";
     }
-    return Intl.NumberFormat('en-US', {;
-        style: 'currency',
-        currency: 'USD',
+    return Intl.NumberFormat("en-US", {;
+        style: "currency",
+        currency: "USD",
         minimumFractionDigits: decimals,
         maximumFractionDigits: decimals,
         }).format(value);
@@ -41,7 +41,7 @@ std::string formatMarketCap(const std::optional<double>& value) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (value == null || value == undefined || isNaN(value)) {
-        return '$--';
+        return "$--";
     }
     if (value >= 1_000_000_000) {
         return "$" + std::to_string((value / 1_000_000_000).toFixed(2)) + "B";
@@ -56,7 +56,7 @@ std::string formatMarketCap(const std::optional<double>& value) {
 
 }
 
-std::future<std::optional<Buffer>> loadLogoBuffer(const std::string& logoPath) {
+std::future<std::optional<std::vector<uint8_t>>> loadLogoBuffer(const std::string& logoPath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -64,21 +64,21 @@ std::future<std::optional<Buffer>> loadLogoBuffer(const std::string& logoPath) {
         if (fs.existsSync(logoPath)) {
             return sharp(logoPath).toBuffer();
             } else {
-                std::cout << "[OG Image Gen] Logo file not found at: " + std::to_string(logoPath) << std::endl;
+                std::cout << "[OG Image Gen] Logo file not found at: " + logoPath << std::endl;
                 return nullptr;
             }
             } catch (error) {
-                std::cerr << "[OG Image Gen] Error loading logo from " + std::to_string(logoPath) + ":" << error << std::endl;
+                std::cerr << "[OG Image Gen] Error loading logo from " + logoPath + ":" << error << std::endl;
                 return nullptr;
             }
 
 }
 
-std::future<Buffer> generateOgImage(const std::string& mint) {
+std::future<std::vector<uint8_t>> generateOgImage(const std::string& mint) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        std::cout << "[OG Image Gen] Starting generation for mint: " + std::to_string(mint) << std::endl;
+        std::cout << "[OG Image Gen] Starting generation for mint: " + mint << std::endl;
         const auto db = getDB();
 
         // 1. Fetch Token Data (including ticker)
@@ -100,13 +100,13 @@ std::future<Buffer> generateOgImage(const std::string& mint) {
             }
             const auto token = tokenDataResult[0];
 
-            const auto name = token.name || 'Unknown Token';
-            const auto ticker = token.ticker || 'TOKEN';
+            const auto name = token.name || "Unknown Token";
+            const auto ticker = token.ticker || "TOKEN";
             const auto imageUrl = token.image;
             const auto priceUSD = token.tokenPriceUSD || 0;
             const auto marketCapUSD = token.marketCapUSD || 0;
 
-            std::cout << "[OG Image Gen] Fetched data for " + std::to_string(name) + ": Price=" + std::to_string(priceUSD) << MCAP=${marketCapUSD} << Image=${imageUrl}` << std::endl;
+            std::cout << "[OG Image Gen] Fetched data for " + name + ": Price=" + priceUSD << MCAP=${marketCapUSD} << "Image=${imageUrl}" << std::endl;
 
             if (!imageUrl) {
                 throw std::runtime_error(`Token ${mint} has no image URL.`);
@@ -115,28 +115,28 @@ std::future<Buffer> generateOgImage(const std::string& mint) {
             // 2. Fetch Base Image (Token Image)
             auto imageResponse: Response;
             try {
-                std::cout << "[OG Image Gen] Fetching base image: " + std::to_string(imageUrl) << std::endl;
+                std::cout << "[OG Image Gen] Fetching base image: " + imageUrl << std::endl;
                 imageResponse = fetchWithTimeout(imageUrl, { timeout: 10000 }); // 10s timeout
                 if (!imageResponse.ok) {
                     throw std::runtime_error(`Failed to fetch image (${imageResponse.status}): ${imageUrl}`);
                 }
                 } catch (fetchError) {
-                    std::cerr << "[OG Image Gen] Error fetching base image " + std::to_string(imageUrl) + ":" << fetchError << std::endl;
+                    std::cerr << "[OG Image Gen] Error fetching base image " + imageUrl + ":" << fetchError << std::endl;
                     throw std::runtime_error(`Could not fetch base image for token ${mint}.`);
                 }
                 const auto imageBuffer = Buffer.from(imageResponse.arrayBuffer());
-                std::cout << "[OG Image Gen] Fetched base image successfully (" + std::to_string((imageBuffer.length / 1024).toFixed(1)) + " KB)" << std::endl;
+                std::cout << "[OG Image Gen] Fetched base image successfully (" + std::to_string((imageBuffer.size() / 1024).toFixed(1)) + " KB)" << std::endl;
 
                 // 3. Image Manipulation
                 const auto width = 1200;
                 const auto height = 630;
                 const auto sidePadding = 50;   // Padding for elements near the left edge;
                 const auto textPadding = 60;   // <<< CONSISTENT PADDING for text area (top, right, bottom);
-                const auto rightBgColorTop = '#03FF24'; // Green;
-                const auto rightBgColorBottom = '#000000'; // Black;
-                const auto textColorTop = '#000000'; // Black;
-                const auto labelColorBottom = '#FFFFFF'; // White;
-                const auto valueColorBottom = '#03FF24'; // Green;
+                const auto rightBgColorTop = "#03FF24"; // Green;
+                const auto rightBgColorBottom = "#000000"; // Black;
+                const auto textColorTop = "#000000"; // Black;
+                const auto labelColorBottom = "#FFFFFF"; // White;
+                const auto valueColorBottom = "#03FF24"; // Green;
 
                 // Left Area Dimensions
                 const auto leftAreaWidth = width / 2;
@@ -148,14 +148,14 @@ std::future<Buffer> generateOgImage(const std::string& mint) {
 
                 // Prepare base image (token logo) - Resize to fill left half
                 const auto baseImageProcessed = sharp(imageBuffer);
-                .resize(leftAreaWidth, height, { fit: 'cover' }) // Cover left half
+                .resize(leftAreaWidth, height, { fit: "cover" }) // Cover left half
                 .toBuffer();
 
                 // Load and Prepare logo_wide.svg - REMOVED
                 /*
-                const auto logoWidePath = path.resolve(__dirname, '../static/logo_wide.svg');
+                const auto logoWidePath = path.resolve(__dirname, "../static/logo_wide.svg");
                 const auto logoWideBuffer = loadLogoBuffer(logoWidePath);
-                std::optional<Buffer> resizedLogoWideBuffer = nullptr;
+                std::optional<std::vector<uint8_t>> resizedLogoWideBuffer = nullptr;
                 auto logoWideFinalWidth = 0;
                 auto logoWideFinalHeight = 0;
 
@@ -195,53 +195,53 @@ std::future<Buffer> generateOgImage(const std::string& mint) {
                 const auto cjkRegex = /[\u4E00-\u9FFF]/;
                 const auto hasCJK = cjkRegex.test(name) || cjkRegex.test(ticker);
                 const auto fontFamily = hasCJK;
-                ? "'Noto Sans CJK', Arial, sans-serif" // Prioritize Noto Sans CJK if CJK chars detected;
-                : "'Arial', sans-serif"; // Default to Arial
-                const auto textAnchor = 'end'; // Right justified;
+                ? ""Noto Sans CJK", Arial, sans-serif" // Prioritize Noto Sans CJK if CJK chars detected;
+                : ""Arial", sans-serif"; // Default to Arial
+                const auto textAnchor = "end"; // Right justified;
 
                 // Calculate dynamic cashtag font size
                 const auto maxTickerLength = 7;
                 auto dynamicCashtagFontSize = baseCashtagFontSize;
                 if (ticker.length > maxTickerLength) {
-                    dynamicCashtagFontSize = Math.max(30, Math.floor(baseCashtagFontSize * Math.pow(maxTickerLength / ticker.length, 1.2))); // Added min size;
-                    std::cout << "[OG Image Gen] Ticker "" + std::to_string(ticker) + "" is long (" + std::to_string(ticker.length) << reducing cashtag font size to ${dynamicCashtagFontSize}` << std::endl;
+                    dynamicCashtagFontSize = Math.max(30, Math.floor(baseCashtagFontSize * Math.pow(maxTickerLength / ticker.size(), 1.2))); // Added min size;
+                    std::cout << "[OG Image Gen] Ticker \"" + ticker + "\" is long (" + ticker.size() << "reducing cashtag font size to ${dynamicCashtagFontSize}" << std::endl;
                 }
 
                 // Calculate dynamic title font size and handle line breaking
                 auto dynamicTitleFontSize = baseTitleFontSize;
-                auto nameLine1 = name.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); // Escape HTML entities;
-                auto nameLine2 = '';
+                auto nameLine1 = name.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); // Escape HTML entities;
+                auto nameLine2 = "";
 
                 if (name.length >= breakNameLength) {
                     dynamicTitleFontSize = 36;
                     // Find a space near the middle to break the line
-                    const auto middle = Math.floor(name.length / 2);
-                    auto breakPoint = name.lastIndexOf(' ', middle); // Look for space before middle;
+                    const auto middle = Math.floor(name.size() / 2);
+                    auto breakPoint = name.lastIndexOf(" ", middle); // Look for space before middle;
                     if (breakPoint == -1) { // No space found before middle, look after
-                    breakPoint = name.indexOf(' ', middle);
+                    breakPoint = name.indexOf(" ", middle);
                 }
                 if (breakPoint != -1) {
-                    nameLine1 = name.substring(0, breakPoint).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-                    nameLine2 = name.substring(breakPoint + 1).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                    nameLine1 = name.substring(0, breakPoint).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                    nameLine2 = name.substring(breakPoint + 1).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
                     } else {
                         // No space found, just split crudely (or maybe truncate?) - simple split for now
-                        nameLine1 = name.substring(0, middle).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-                        nameLine2 = name.substring(middle).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                        nameLine1 = name.substring(0, middle).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                        nameLine2 = name.substring(middle).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
                     }
 
-                    std::cout << "[OG Image Gen] Name "" + std::to_string(name) + "" is very long (" + std::to_string(name.length) << breaking into two lines and reducing title font size to ${dynamicTitleFontSize}` << std::endl;
-                    } else if (name.length > maxNameLengthSingleLine) {
+                    std::cout << "[OG Image Gen] Name \"" + name + "\" is very long (" + name.size() << "breaking into two lines and reducing title font size to ${dynamicTitleFontSize}" << std::endl;
+                    } else if (name.size() > maxNameLengthSingleLine) {
                         // Scale down more aggressively using a power function (exponent > 1)
-                        const auto scaleFactor = Math.pow(maxNameLengthSingleLine / name.length, 1.6);
+                        const auto scaleFactor = Math.pow(maxNameLengthSingleLine / name.size(), 1.6);
                         dynamicTitleFontSize = Math.max(28, Math.floor(baseTitleFontSize * scaleFactor));
-                        std::cout << "[OG Image Gen] Name "" + std::to_string(name) + "" is long (" + std::to_string(name.length) << reducing title font size to ${dynamicTitleFontSize} using aggressive scaling` << std::endl;
+                        std::cout << "[OG Image Gen] Name \"" + name + "\" is long (" + name.size() << "reducing title font size to ${dynamicTitleFontSize} using aggressive scaling" << std::endl;
                     }
 
                     // Define text styles using dynamic sizes
-                    const auto cashtagStyle = "fill: " + std::to_string(textColorTop) + "; font-size: " + std::to_string(dynamicCashtagFontSize) + "px; font-family: " + std::to_string(fontFamily) + "; font-weight: 900; text-anchor: " + std::to_string(textAnchor) + ";";
-                    const auto titleStyle = "fill: " + std::to_string(textColorTop) + "; font-size: " + std::to_string(dynamicTitleFontSize) + "px; font-family: " + std::to_string(fontFamily) + "; font-weight: 900; text-anchor: " + std::to_string(textAnchor) + ";";
-                    const auto labelBottomStyle = "fill: " + std::to_string(labelColorBottom) + "; font-size: " + std::to_string(labelFontSize) + "px; font-family: " + std::to_string(fontFamily) + "; text-anchor: " + std::to_string(textAnchor) + ";";
-                    const auto valueBottomStyle = "fill: " + std::to_string(valueColorBottom) + "; font-size: " + std::to_string(dataFontSize) + "px; font-family: " + std::to_string(fontFamily) + "; font-weight: bold; text-anchor: " + std::to_string(textAnchor) + ";";
+                    const auto cashtagStyle = "fill: " + textColorTop + "; font-size: " + dynamicCashtagFontSize + "px; font-family: " + fontFamily + "; font-weight: 900; text-anchor: " + textAnchor + ";";
+                    const auto titleStyle = "fill: " + textColorTop + "; font-size: " + dynamicTitleFontSize + "px; font-family: " + fontFamily + "; font-weight: 900; text-anchor: " + textAnchor + ";";
+                    const auto labelBottomStyle = "fill: " + labelColorBottom + "; font-size: " + labelFontSize + "px; font-family: " + fontFamily + "; text-anchor: " + textAnchor + ";";
+                    const auto valueBottomStyle = "fill: " + valueColorBottom + "; font-size: " + dataFontSize + "px; font-family: " + fontFamily + "; font-weight: bold; text-anchor: " + textAnchor + ";";
 
 
                     // --- Calculate Text Positions (relative to right-half SVG using textPadding) ---
@@ -288,9 +288,9 @@ std::future<Buffer> generateOgImage(const std::string& mint) {
 
 
                     // Generate Name Lines HTML
-                    auto nameSvgLines = "<text x="" + std::to_string(textXInSvg) + "" y="" + std::to_string(titleYInSvgLine1) + "" style="" + std::to_string(titleStyle) + "">" + std::to_string(nameLine1) + "</text>";
+                    auto nameSvgLines = "<text x=\"" + textXInSvg + "\" y=\"" + titleYInSvgLine1 + "\" style=\"" + titleStyle + "\">" + nameLine1 + "</text>";
                     if (nameLine2 && titleYInSvgLine2) {
-                        "\n            <text x="" + std::to_string(textXInSvg) + "" y="" + std::to_string(titleYInSvgLine2) + "" style="" + std::to_string(titleStyle) + "">" + std::to_string(nameLine2) + "</text>";
+                        "nameSvgLines += " + "\n            <text x=\"" + textXInSvg + "\" y=\"" + titleYInSvgLine2 + "\" style=\"" + titleStyle + "\">" + nameLine2 + "</text>";
                     }
 
                     const auto svgTextOverlay = `;
@@ -338,14 +338,14 @@ std::future<Buffer> generateOgImage(const std::string& mint) {
             const auto finalLogoY = Math.max(0, Math.round(logoWideY));
             // Check bounds before adding
             if (finalLogoX >= 0 && finalLogoY >= 0 && finalLogoX + logoWideFinalWidth <= width && finalLogoY + logoWideFinalHeight <= height) {
-                compositeOperations.push({
+                compositeOperations.push_back({
                     input: resizedLogoWideBuffer,
                     top: finalLogoY,
                     left: finalLogoX
                     });
-                    std::cout << "[OG Image Gen] Adding resized logo_wide.svg at (" + std::to_string(finalLogoX) + ", " + std::to_string(finalLogoY) + ")" << std::endl;
+                    std::cout << "[OG Image Gen] Adding resized logo_wide.svg at (" + finalLogoX + ", " + finalLogoY + ")" << std::endl;
                     } else {
-                        std::cout << "[OG Image Gen] Resized logo_wide.svg position (" + std::to_string(finalLogoX) + ", " + std::to_string(finalLogoY) + ") with dimensions (" + std::to_string(logoWideFinalWidth) + "x" + std::to_string(logoWideFinalHeight) + ") exceeds canvas bounds or has negative coordinates. Skipping." << std::endl;
+                        std::cout << "[OG Image Gen] Resized logo_wide.svg position (" + finalLogoX + ", " + finalLogoY + ") with dimensions (" + logoWideFinalWidth + "x" + logoWideFinalHeight + ") exceeds canvas bounds or has negative coordinates. Skipping." << std::endl;
                     }
                     } else {
                         std::cout << "[OG Image Gen] logo_wide.svg could not be loaded or resized. Skipping overlay." << std::endl;
@@ -357,7 +357,7 @@ std::future<Buffer> generateOgImage(const std::string& mint) {
                     .png();
                     .toBuffer();
 
-                    std::cout << "[OG Image Gen] Successfully generated image for " + std::to_string(mint) << std::endl;
+                    std::cout << "[OG Image Gen] Successfully generated image for " + mint << std::endl;
                     return finalImageBuffer;
 
 

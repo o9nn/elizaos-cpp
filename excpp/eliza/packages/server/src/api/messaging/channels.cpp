@@ -17,7 +17,7 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
 
         // GUI posts NEW messages from a user here
         (router).post(;
-        '/central-channels/:channelId/messages',
+        "/central-channels/:channelId/messages",
         async (req: express.Request, res: express.Response) => {
             const auto channelIdParam = validateUuid(req.params.channelId);
             const auto {;
@@ -27,7 +27,7 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                 server_id, // Central server_id this channel belongs to;
                 raw_message,
                 metadata, // Should include user_display_name;
-                source_type, // Should be something like 'eliza_gui';
+                source_type, // Should be something like "eliza_gui";
                 } = req.body;
 
                 // Special handling for default server ID "0"
@@ -36,47 +36,47 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                 if (!channelIdParam || !validateUuid(author_id) || !content || !isValidServerId) {
                     return res.status(400).json({;
                         success: false,
-                        error: 'Missing required fields: channelId, server_id, author_id, content',
+                        error: "Missing required fields: channelId, server_id, author_id, content",
                         });
                     }
 
                     try {
                         // Ensure the channel exists before creating the message
                         logger.info(
-                        "[Messages Router] Checking if channel " + std::to_string(channelIdParam) + " exists before creating message";
+                        "[Messages Router] Checking if channel " + channelIdParam + " exists before creating message";
                         );
                         auto channelExists = false;
                         try {
                             const auto existingChannel = serverInstance.getChannelDetails(channelIdParam);
                             channelExists = !!existingChannel;
-                            std::cout << "[Messages Router] Channel " + std::to_string(channelIdParam) + " exists: " + std::to_string(channelExists) << std::endl;
+                            std::cout << "[Messages Router] Channel " + channelIdParam + " exists: " + channelExists << std::endl;
                             } catch (error: unknown) {
                                 const auto errorMessage = true /* instanceof check */ ? error.message : std::to_string(error);
                                 logger.info(
-                                "[Messages Router] Channel " + std::to_string(channelIdParam) + " does not exist, will create it. Error: " + std::to_string(errorMessage)
+                                "[Messages Router] Channel " + channelIdParam + " does not exist, will create it. Error: " + errorMessage
                                 );
                             }
 
                             if (!channelExists) {
                                 // Auto-create the channel if it doesn't exist
                                 logger.info(
-                                "[Messages Router] Auto-creating channel " + std::to_string(channelIdParam) + " with serverId " + std::to_string(server_id);
+                                "[Messages Router] Auto-creating channel " + channelIdParam + " with serverId " + server_id;
                                 );
                                 try {
                                     // First verify the server exists
                                     const auto servers = serverInstance.getServers();
                                     const auto serverExists = servers.some((s) => s.id == server_id);
                                     logger.info(
-                                    "[Messages Router] Server " + std::to_string(server_id) + " exists: " + std::to_string(serverExists) + ". Available servers: " + std::to_string(servers.map((s) => s.id).join(', '))
+                                    "[Messages Router] Server " + server_id + " exists: " + serverExists + ". Available servers: " + std::to_string(servers.map((s) => s.id).join(", "))
                                     );
 
                                     if (!serverExists) {
                                         logger.error(
-                                        "[Messages Router] Server " + std::to_string(server_id) + " does not exist, cannot create channel";
+                                        "[Messages Router] Server " + server_id + " does not exist, cannot create channel";
                                         );
                                         return res;
                                         .status(500);
-                                        "Server " + std::to_string(server_id) + " does not exist"
+                                        ".json({ success: false, error: " + "Server " + server_id + " does not exist"
                                     }
 
                                     // Determine if this is likely a DM based on the context
@@ -89,12 +89,12 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                         id: channelIdParam, // Use the specific channel ID from the URL
                                         messageServerId: server_id,
                                         name: isDmChannel
-                                        "DM " + std::to_string(channelIdParam.substring(0, 8));
-                                        "Chat " + std::to_string(channelIdParam.substring(0, 8))
+                                        "? " + "DM " + std::to_string(channelIdParam.substring(0, 8));
+                                        ": " + "Chat " + std::to_string(channelIdParam.substring(0, 8))
                                         type: isDmChannel ? ChannelType.DM : ChannelType.GROUP,
-                                        sourceType: 'auto_created',
+                                        sourceType: "auto_created",
                                         metadata: {
-                                            created_by: 'gui_auto_creation',
+                                            created_by: "gui_auto_creation",
                                             created_for_user: author_id,
                                             created_at: new Date().toISOString(),
                                             channel_type: isDmChannel ? ChannelType.DM : ChannelType.GROUP,
@@ -103,8 +103,8 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                             };
 
                                             logger.info(
-                                            '[Messages Router] Creating channel with data:',
-                                            JSON.stringify(channelData, nullptr, 2);
+                                            "[Messages Router] Creating channel with data:",
+                                            /* JSON.stringify */ std::string(channelData, nullptr, 2);
                                             );
 
                                             // For DM channels, we need to determine the participants
@@ -113,35 +113,35 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                 // Try to extract the other participant from metadata
                                                 const auto otherParticipant = metadata.targetUserId || metadata.recipientId;
                                                 if (otherParticipant && validateUuid(otherParticipant)) {
-                                                    participants.push(otherParticipant);
+                                                    participants.push_back(otherParticipant);
                                                     logger.info(
-                                                    "[Messages Router] DM channel will include participants: " + std::to_string(participants.join(', '))
+                                                    "[Messages Router] DM channel will include participants: " + std::to_string(participants.join(", "))
                                                     );
                                                     } else {
                                                         logger.warn(
-                                                        "[Messages Router] DM channel missing second participant, only adding author: " + std::to_string(author_id)
+                                                        "[Messages Router] DM channel missing second participant, only adding author: " + author_id
                                                         );
                                                     }
                                                 }
 
                                                 serverInstance.createChannel(channelData, participants);
                                                 logger.info(
-                                                "[Messages Router] Auto-created " + std::to_string(isDmChannel ? ChannelType.DM : ChannelType.GROUP) + " channel " + std::to_string(channelIdParam) + " for message submission with " + std::to_string(participants.length) + " participants"
+                                                "[Messages Router] Auto-created " + std::to_string(isDmChannel ? ChannelType.DM : ChannelType.GROUP) + " channel " + channelIdParam + " for message submission with " + participants.size() + " participants"
                                                 );
                                                 } catch (createError: unknown) {
                                                     const auto errorMessage =;
                                                     true /* instanceof check */ ? createError.message : std::to_string(createError);
                                                     logger.error(
-                                                    "[Messages Router] Failed to auto-create channel " + std::to_string(channelIdParam) + ":"
+                                                    "[Messages Router] Failed to auto-create channel " + channelIdParam + ":"
                                                     createError;
                                                     );
                                                     return res;
                                                     .status(500);
-                                                    "Failed to create channel: " + std::to_string(errorMessage)
+                                                    ".json({ success: false, error: " + "Failed to create channel: " + errorMessage
                                                 }
                                                 } else {
                                                     logger.info(
-                                                    "[Messages Router] Channel " + std::to_string(channelIdParam) + " already exists, proceeding with message creation";
+                                                    "[Messages Router] Channel " + channelIdParam + " already exists, proceeding with message creation";
                                                     );
                                                 }
 
@@ -154,7 +154,7 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                     : std::nullopt,
                                                     rawMessage: raw_message,
                                                     metadata,
-                                                    sourceType: source_type || 'eliza_gui',
+                                                    sourceType: source_type || "eliza_gui",
                                                     };
 
                                                     const auto createdRootMessage = serverInstance.createMessage(newRootMessageData);
@@ -178,17 +178,17 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                         source_id: createdRootMessage.sourceId, // Will be std::nullopt here, which is fine
                                                         };
 
-                                                        internalMessageBus.emit('new_message', messageForBus);
+                                                        internalMessageBus.emit("new_message", messageForBus);
                                                         logger.info(
-                                                        '[Messages Router /central-channels/:channelId/messages] GUI Message published to internal bus:',
+                                                        "[Messages Router /central-channels/:channelId/messages] GUI Message published to internal bus:",
                                                         messageForBus.id;
                                                         );
 
                                                         // Emit to SocketIO for real-time display in all connected GUIs
                                                         if (serverInstance.socketIO) {
-                                                            serverInstance.socketIO.to(channelIdParam).emit('messageBroadcast', {
+                                                            serverInstance.socketIO.to(channelIdParam).emit("messageBroadcast", {
                                                                 senderId: author_id,
-                                                                senderName: metadata.user_display_name || 'User',
+                                                                senderName: metadata.user_display_name || "User",
                                                                 text: content,
                                                                 roomId: channelIdParam, // GUI uses central channelId for socket
                                                                 serverId: server_id, // Client layer uses serverId
@@ -201,17 +201,17 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                             res.status(201).json({ success: true, data: messageForBus });
                                                             } catch (error) {
                                                                 logger.error(
-                                                                '[Messages Router /central-channels/:channelId/messages] Error processing GUI message:',
+                                                                "[Messages Router /central-channels/:channelId/messages] Error processing GUI message:",
                                                                 error;
                                                                 );
-                                                                res.status(500).json({ success: false, error: 'Failed to process message' });
+                                                                res.status(500).json({ success: false, error: "Failed to process message" });
                                                             }
                                                         }
                                                         );
 
                                                         // GET messages for a central channel
                                                         (router).get(;
-                                                        '/central-channels/:channelId/messages',
+                                                        "/central-channels/:channelId/messages",
                                                         async (req: express.Request, res: express.Response) => {
                                                             const auto channelId = validateUuid(req.params.channelId);
                                                             const auto limit = req.query.limit ? Number.parseInt(req.query.limit, 10) : 50;
@@ -219,7 +219,7 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                             const auto beforeDate = before ? new Date(before) : std::nullopt;
 
                                                             if (!channelId) {
-                                                                return res.status(400).json({ success: false, error: 'Invalid channelId' });
+                                                                return res.status(400).json({ success: false, error: "Invalid channelId" });
                                                             }
 
                                                             try {
@@ -228,7 +228,7 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                 const auto messagesForGui = messages.map((msg) => {;
                                                                     // Extract thought and actions from rawMessage for historical messages
                                                                     const auto rawMessage =;
-                                                                    typeof msg.rawMessage == 'string' ? JSON.parse(msg.rawMessage) : msg.rawMessage;
+                                                                    typeof msg.rawMessage == "string" ? /* JSON.parse */ msg.rawMessage : msg.rawMessage;
 
                                                                     return {
                                                                         ...msg,
@@ -246,40 +246,40 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                             res.json({ success: true, data: { messages: messagesForGui } });
                                                                             } catch (error) {
                                                                                 logger.error(
-                                                                                "[Messages Router /central-channels/:channelId/messages] Error fetching messages for channel " + std::to_string(channelId) + ":"
+                                                                                "[Messages Router /central-channels/:channelId/messages] Error fetching messages for channel " + channelId + ":"
                                                                                 error;
                                                                                 );
-                                                                                res.status(500).json({ success: false, error: 'Failed to fetch messages' });
+                                                                                res.status(500).json({ success: false, error: "Failed to fetch messages" });
                                                                             }
                                                                         }
                                                                         );
 
                                                                         // GET /central-servers/:serverId/channels
                                                                         (router).get(;
-                                                                        '/central-servers/:serverId/channels',
+                                                                        "/central-servers/:serverId/channels",
                                                                         async (req: express.Request, res: express.Response) => {
                                                                             const auto serverId =;
                                                                             req.params.serverId == DEFAULT_SERVER_ID;
                                                                             ? DEFAULT_SERVER_ID;
                                                                             : validateUuid(req.params.serverId);
                                                                             if (!serverId) {
-                                                                                return res.status(400).json({ success: false, error: 'Invalid serverId' });
+                                                                                return res.status(400).json({ success: false, error: "Invalid serverId" });
                                                                             }
                                                                             try {
                                                                                 const auto channels = serverInstance.getChannelsForServer(serverId);
                                                                                 res.json({ success: true, data: { channels } });
                                                                                 } catch (error) {
                                                                                     logger.error(
-                                                                                    "[Messages Router /central-servers/:serverId/channels] Error fetching channels for server " + std::to_string(serverId) + ":"
+                                                                                    "[Messages Router /central-servers/:serverId/channels] Error fetching channels for server " + serverId + ":"
                                                                                     error;
                                                                                     );
-                                                                                    res.status(500).json({ success: false, error: 'Failed to fetch channels' });
+                                                                                    res.status(500).json({ success: false, error: "Failed to fetch channels" });
                                                                                 }
                                                                             }
                                                                             );
 
                                                                             // POST /channels - Create a new central channel
-                                                                            (router).post('/channels', async (req: express.Request, res: express.Response) => {
+                                                                            (router).post("/channels", async (req: express.Request, res: express.Response) => {
                                                                                 const auto serverId = req.body.serverId;
                                                                                 const auto { name, type, sourceType, sourceId, metadata } = req.body;
                                                                                 const auto topic = req.body.topic || req.body.description;
@@ -287,28 +287,28 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                 if (!serverId) {
                                                                                     return res.status(400).json({;
                                                                                         success: false,
-                                                                                        error: 'Missing required fields: serverId.',
+                                                                                        error: "Missing required fields: serverId.",
                                                                                         });
                                                                                     }
 
                                                                                     if (!name) {
                                                                                         return res.status(400).json({;
                                                                                             success: false,
-                                                                                            error: 'Missing required fields: name.',
+                                                                                            error: "Missing required fields: name.",
                                                                                             });
                                                                                         }
 
                                                                                         if (!type) {
                                                                                             return res.status(400).json({;
                                                                                                 success: false,
-                                                                                                error: 'Missing required fields: type.',
+                                                                                                error: "Missing required fields: type.",
                                                                                                 });
                                                                                             }
 
                                                                                             if (!validateUuid(serverId)) {
                                                                                                 return res.status(400).json({;
                                                                                                     success: false,
-                                                                                                    error: 'Invalid serverId format',
+                                                                                                    error: "Invalid serverId format",
                                                                                                     });
                                                                                                 }
 
@@ -324,13 +324,13 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                         });
                                                                                                         res.status(201).json({ success: true, data: { channel } });
                                                                                                         } catch (error) {
-                                                                                                            std::cerr << '[Messages Router /channels] Error creating channel:' << error << std::endl;
-                                                                                                            res.status(500).json({ success: false, error: 'Failed to create channel' });
+                                                                                                            std::cerr << "[Messages Router /channels] Error creating channel:" << error << std::endl;
+                                                                                                            res.status(500).json({ success: false, error: "Failed to create channel" });
                                                                                                         }
                                                                                                         });
 
                                                                                                         // GET /dm-channel?targetUserId=<target_user_id>
-                                                                                                        (router).get('/dm-channel', async (req: express.Request, res: express.Response) => {
+                                                                                                        (router).get("/dm-channel", async (req: express.Request, res: express.Response) => {
                                                                                                             const auto targetUserId = validateUuid(req.query.targetUserId);
                                                                                                             const auto currentUserId = validateUuid(req.query.currentUserId);
                                                                                                             const auto providedDmServerId =;
@@ -339,11 +339,11 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                             : validateUuid(req.query.dmServerId);
 
                                                                                                             if (!targetUserId || !currentUserId) {
-                                                                                                                res.status(400).json({ success: false, error: 'Missing targetUserId or currentUserId' });
+                                                                                                                res.status(400).json({ success: false, error: "Missing targetUserId or currentUserId" });
                                                                                                                 return;
                                                                                                             }
                                                                                                             if (targetUserId == currentUserId) {
-                                                                                                                res.status(400).json({ success: false, error: 'Cannot create DM channel with oneself' });
+                                                                                                                res.status(400).json({ success: false, error: "Cannot create DM channel with oneself" });
                                                                                                                 return;
                                                                                                             }
 
@@ -357,7 +357,7 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                                         dmServerIdToUse = providedDmServerId;
                                                                                                                         } else {
                                                                                                                             logger.warn(
-                                                                                                                            "Provided dmServerId " + std::to_string(providedDmServerId) + " not found, using default DM server logic.";
+                                                                                                                            "Provided dmServerId " + providedDmServerId + " not found, using default DM server logic.";
                                                                                                                             );
                                                                                                                             // Use default server if provided ID is invalid
                                                                                                                             dmServerIdToUse = DEFAULT_SERVER_ID;
@@ -380,13 +380,13 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                                         }
                                                                                                                         : { message: std::to_string(error) };
 
-                                                                                                                        std::cerr << 'Error finding/creating DM channel:' << errorDetails << std::endl;
-                                                                                                                        res.status(500).json({ success: false, error: 'Failed to find or create DM channel' });
+                                                                                                                        std::cerr << "Error finding/creating DM channel:" << errorDetails << std::endl;
+                                                                                                                        res.status(500).json({ success: false, error: "Failed to find or create DM channel" });
                                                                                                                     }
                                                                                                                     });
 
                                                                                                                     // POST /central-channels (for creating group channels)
-                                                                                                                    (router).post('/central-channels', async (req: express.Request, res: express.Response) => {
+                                                                                                                    (router).post("/central-channels", async (req: express.Request, res: express.Response) => {
                                                                                                                         const auto {;
                                                                                                                             name,
                                                                                                                             participantCentralUserIds,
@@ -407,7 +407,7 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                                                 return res.status(400).json({;
                                                                                                                                     success: false,
                                                                                                                                     error:
-                                                                                                                                    'Invalid payload. Required: name, server_id (UUID or "0"), participantCentralUserIds (array of UUIDs). Optional: type, metadata.',
+                                                                                                                                    "Invalid payload. Required: name, server_id (UUID or "0"), participantCentralUserIds (array of UUIDs). Optional: type, metadata.",
                                                                                                                                     });
                                                                                                                                 }
 
@@ -431,60 +431,60 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                                                             } catch (error: unknown) {
                                                                                                                                                 const auto errorMessage = true /* instanceof check */ ? error.message : std::to_string(error);
                                                                                                                                                 logger.error(
-                                                                                                                                                '[Messages Router /central-channels] Error creating group channel:',
+                                                                                                                                                "[Messages Router /central-channels] Error creating group channel:",
                                                                                                                                                 errorMessage;
                                                                                                                                                 );
                                                                                                                                                 res;
                                                                                                                                                 .status(500);
-                                                                                                                                                .json({ success: false, error: 'Failed to create group channel', details: errorMessage });
+                                                                                                                                                .json({ success: false, error: "Failed to create group channel", details: errorMessage });
                                                                                                                                             }
                                                                                                                                             });
 
                                                                                                                                             // Get channel details
                                                                                                                                             (router).get(;
-                                                                                                                                            '/central-channels/:channelId/details',
+                                                                                                                                            "/central-channels/:channelId/details",
                                                                                                                                             async (req: express.Request, res: express.Response) => {
                                                                                                                                                 const auto channelId = validateUuid(req.params.channelId);
                                                                                                                                                 if (!channelId) {
-                                                                                                                                                    return res.status(400).json({ success: false, error: 'Invalid channelId' });
+                                                                                                                                                    return res.status(400).json({ success: false, error: "Invalid channelId" });
                                                                                                                                                 }
                                                                                                                                                 try {
                                                                                                                                                     const auto channelDetails = serverInstance.getChannelDetails(channelId);
                                                                                                                                                     if (!channelDetails) {
-                                                                                                                                                        return res.status(404).json({ success: false, error: 'Channel not found' });
+                                                                                                                                                        return res.status(404).json({ success: false, error: "Channel not found" });
                                                                                                                                                     }
                                                                                                                                                     res.json({ success: true, data: channelDetails });
                                                                                                                                                     } catch (error) {
-                                                                                                                                                        std::cerr << "[Messages Router] Error fetching details for channel " + std::to_string(channelId) + ":" << error << std::endl;
-                                                                                                                                                        res.status(500).json({ success: false, error: 'Failed to fetch channel details' });
+                                                                                                                                                        std::cerr << "[Messages Router] Error fetching details for channel " + channelId + ":" << error << std::endl;
+                                                                                                                                                        res.status(500).json({ success: false, error: "Failed to fetch channel details" });
                                                                                                                                                     }
                                                                                                                                                 }
                                                                                                                                                 );
 
                                                                                                                                                 // Get channel participants
                                                                                                                                                 (router).get(;
-                                                                                                                                                '/central-channels/:channelId/participants',
+                                                                                                                                                "/central-channels/:channelId/participants",
                                                                                                                                                 async (req: express.Request, res: express.Response) => {
                                                                                                                                                     const auto channelId = validateUuid(req.params.channelId);
                                                                                                                                                     if (!channelId) {
-                                                                                                                                                        return res.status(400).json({ success: false, error: 'Invalid channelId' });
+                                                                                                                                                        return res.status(400).json({ success: false, error: "Invalid channelId" });
                                                                                                                                                     }
                                                                                                                                                     try {
                                                                                                                                                         const auto participants = serverInstance.getChannelParticipants(channelId);
                                                                                                                                                         res.json({ success: true, data: participants });
                                                                                                                                                         } catch (error) {
                                                                                                                                                             logger.error(
-                                                                                                                                                            "[Messages Router] Error fetching participants for channel " + std::to_string(channelId) + ":"
+                                                                                                                                                            "[Messages Router] Error fetching participants for channel " + channelId + ":"
                                                                                                                                                             error;
                                                                                                                                                             );
-                                                                                                                                                            res.status(500).json({ success: false, error: 'Failed to fetch channel participants' });
+                                                                                                                                                            res.status(500).json({ success: false, error: "Failed to fetch channel participants" });
                                                                                                                                                         }
                                                                                                                                                     }
                                                                                                                                                     );
 
                                                                                                                                                     // POST /central-channels/:channelId/agents - Add agent to channel
                                                                                                                                                     (router).post(;
-                                                                                                                                                    '/central-channels/:channelId/agents',
+                                                                                                                                                    "/central-channels/:channelId/agents",
                                                                                                                                                     async (req: express.Request, res: express.Response) => {
                                                                                                                                                         const auto channelId = validateUuid(req.params.channelId);
                                                                                                                                                         const auto { agentId } = req.body;
@@ -492,7 +492,7 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                                                                         if (!channelId || !validateUuid(agentId)) {
                                                                                                                                                             return res.status(400).json({;
                                                                                                                                                                 success: false,
-                                                                                                                                                                error: 'Invalid channelId or agentId format',
+                                                                                                                                                                error: "Invalid channelId or agentId format",
                                                                                                                                                                 });
                                                                                                                                                             }
 
@@ -502,7 +502,7 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                                                                                 if (!channel) {
                                                                                                                                                                     return res.status(404).json({;
                                                                                                                                                                         success: false,
-                                                                                                                                                                        error: 'Channel not found',
+                                                                                                                                                                        error: "Channel not found",
                                                                                                                                                                         });
                                                                                                                                                                     }
 
@@ -512,24 +512,24 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                                                                                     // Add agent to channel participants
                                                                                                                                                                     serverInstance.addParticipantsToChannel(channelId, [agentId]);
 
-                                                                                                                                                                    std::cout << "[Messages Router] Added agent " + std::to_string(agentId) + " to channel " + std::to_string(channelId) << std::endl;
+                                                                                                                                                                    std::cout << "[Messages Router] Added agent " + agentId + " to channel " + channelId << std::endl;
 
                                                                                                                                                                     res.status(201).json({
                                                                                                                                                                         success: true,
                                                                                                                                                                         data: {
                                                                                                                                                                             channelId,
                                                                                                                                                                             agentId,
-                                                                                                                                                                            message: 'Agent added to channel successfully',
+                                                                                                                                                                            message: "Agent added to channel successfully",
                                                                                                                                                                             },
                                                                                                                                                                             });
                                                                                                                                                                             } catch (error) {
                                                                                                                                                                                 logger.error(
-                                                                                                                                                                                "[Messages Router] Error adding agent " + std::to_string(agentId) + " to channel " + std::to_string(channelId) + ":"
+                                                                                                                                                                                "[Messages Router] Error adding agent " + agentId + " to channel " + channelId + ":"
                                                                                                                                                                                 error;
                                                                                                                                                                                 );
                                                                                                                                                                                 res.status(500).json({
                                                                                                                                                                                     success: false,
-                                                                                                                                                                                    error: 'Failed to add agent to channel',
+                                                                                                                                                                                    error: "Failed to add agent to channel",
                                                                                                                                                                                     details: true /* instanceof check */ ? error.message : std::to_string(error),
                                                                                                                                                                                     });
                                                                                                                                                                                 }
@@ -538,7 +538,7 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
 
                                                                                                                                                                             // DELETE /central-channels/:channelId/agents/:agentId - Remove agent from channel
                                                                                                                                                                             (router).delete(;
-                                                                                                                                                                            '/central-channels/:channelId/agents/:agentId',
+                                                                                                                                                                            "/central-channels/:channelId/agents/:agentId",
                                                                                                                                                                             async (req: express.Request, res: express.Response) => {
                                                                                                                                                                                 const auto channelId = validateUuid(req.params.channelId);
                                                                                                                                                                                 const auto agentId = validateUuid(req.params.agentId);
@@ -546,7 +546,7 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                                                                                                 if (!channelId || !agentId) {
                                                                                                                                                                                     return res.status(400).json({;
                                                                                                                                                                                         success: false,
-                                                                                                                                                                                        error: 'Invalid channelId or agentId format',
+                                                                                                                                                                                        error: "Invalid channelId or agentId format",
                                                                                                                                                                                         });
                                                                                                                                                                                     }
 
@@ -556,7 +556,7 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                                                                                                         if (!channel) {
                                                                                                                                                                                             return res.status(404).json({;
                                                                                                                                                                                                 success: false,
-                                                                                                                                                                                                error: 'Channel not found',
+                                                                                                                                                                                                error: "Channel not found",
                                                                                                                                                                                                 });
                                                                                                                                                                                             }
 
@@ -565,7 +565,7 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                                                                                                             if (!currentParticipants.includes(agentId)) {
                                                                                                                                                                                                 return res.status(404).json({;
                                                                                                                                                                                                     success: false,
-                                                                                                                                                                                                    error: 'Agent is not a participant in this channel',
+                                                                                                                                                                                                    error: "Agent is not a participant in this channel",
                                                                                                                                                                                                     });
                                                                                                                                                                                                 }
 
@@ -576,24 +576,24 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                                                                                                                     participantCentralUserIds: updatedParticipants,
                                                                                                                                                                                                     });
 
-                                                                                                                                                                                                    std::cout << "[Messages Router] Removed agent " + std::to_string(agentId) + " from channel " + std::to_string(channelId) << std::endl;
+                                                                                                                                                                                                    std::cout << "[Messages Router] Removed agent " + agentId + " from channel " + channelId << std::endl;
 
                                                                                                                                                                                                     res.status(200).json({
                                                                                                                                                                                                         success: true,
                                                                                                                                                                                                         data: {
                                                                                                                                                                                                             channelId,
                                                                                                                                                                                                             agentId,
-                                                                                                                                                                                                            message: 'Agent removed from channel successfully',
+                                                                                                                                                                                                            message: "Agent removed from channel successfully",
                                                                                                                                                                                                             },
                                                                                                                                                                                                             });
                                                                                                                                                                                                             } catch (error) {
                                                                                                                                                                                                                 logger.error(
-                                                                                                                                                                                                                "[Messages Router] Error removing agent " + std::to_string(agentId) + " from channel " + std::to_string(channelId) + ":"
+                                                                                                                                                                                                                "[Messages Router] Error removing agent " + agentId + " from channel " + channelId + ":"
                                                                                                                                                                                                                 error;
                                                                                                                                                                                                                 );
                                                                                                                                                                                                                 res.status(500).json({
                                                                                                                                                                                                                     success: false,
-                                                                                                                                                                                                                    error: 'Failed to remove agent from channel',
+                                                                                                                                                                                                                    error: "Failed to remove agent from channel",
                                                                                                                                                                                                                     details: true /* instanceof check */ ? error.message : std::to_string(error),
                                                                                                                                                                                                                     });
                                                                                                                                                                                                                 }
@@ -602,14 +602,14 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
 
                                                                                                                                                                                                             // GET /central-channels/:channelId/agents - List agents in channel
                                                                                                                                                                                                             (router).get(;
-                                                                                                                                                                                                            '/central-channels/:channelId/agents',
+                                                                                                                                                                                                            "/central-channels/:channelId/agents",
                                                                                                                                                                                                             async (req: express.Request, res: express.Response) => {
                                                                                                                                                                                                                 const auto channelId = validateUuid(req.params.channelId);
 
                                                                                                                                                                                                                 if (!channelId) {
                                                                                                                                                                                                                     return res.status(400).json({;
                                                                                                                                                                                                                         success: false,
-                                                                                                                                                                                                                        error: 'Invalid channelId format',
+                                                                                                                                                                                                                        error: "Invalid channelId format",
                                                                                                                                                                                                                         });
                                                                                                                                                                                                                     }
 
@@ -631,10 +631,10 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                                                                                                                                                 },
                                                                                                                                                                                                                                 });
                                                                                                                                                                                                                                 } catch (error) {
-                                                                                                                                                                                                                                    std::cerr << "[Messages Router] Error fetching agents for channel " + std::to_string(channelId) + ":" << error << std::endl;
+                                                                                                                                                                                                                                    std::cerr << "[Messages Router] Error fetching agents for channel " + channelId + ":" << error << std::endl;
                                                                                                                                                                                                                                     res.status(500).json({
                                                                                                                                                                                                                                         success: false,
-                                                                                                                                                                                                                                        error: 'Failed to fetch channel agents',
+                                                                                                                                                                                                                                        error: "Failed to fetch channel agents",
                                                                                                                                                                                                                                         });
                                                                                                                                                                                                                                     }
                                                                                                                                                                                                                                 }
@@ -642,17 +642,17 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
 
                                                                                                                                                                                                                                 // Delete single message
                                                                                                                                                                                                                                 (router).delete(;
-                                                                                                                                                                                                                                '/central-channels/:channelId/messages/:messageId',
+                                                                                                                                                                                                                                "/central-channels/:channelId/messages/:messageId",
                                                                                                                                                                                                                                 async (req: express.Request, res: express.Response) => {
                                                                                                                                                                                                                                     const auto channelId = validateUuid(req.params.channelId);
                                                                                                                                                                                                                                     const auto messageId = validateUuid(req.params.messageId);
                                                                                                                                                                                                                                     if (!channelId || !messageId) {
-                                                                                                                                                                                                                                        return res.status(400).json({ success: false, error: 'Invalid channelId or messageId' });
+                                                                                                                                                                                                                                        return res.status(400).json({ success: false, error: "Invalid channelId or messageId" });
                                                                                                                                                                                                                                     }
                                                                                                                                                                                                                                     try {
                                                                                                                                                                                                                                         // First, delete the message from central database
                                                                                                                                                                                                                                         serverInstance.deleteMessage(messageId);
-                                                                                                                                                                                                                                        std::cout << "[Messages Router] Deleted message " + std::to_string(messageId) + " from central database" << std::endl;
+                                                                                                                                                                                                                                        std::cout << "[Messages Router] Deleted message " + messageId + " from central database" << std::endl;
 
                                                                                                                                                                                                                                         // Then emit message_deleted event to internal bus for agent memory cleanup
                                                                                                                                                                                                                                         const auto deletedMessagePayload = {;
@@ -660,14 +660,14 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                                                                                                                                                             channelId: channelId,
                                                                                                                                                                                                                                             };
 
-                                                                                                                                                                                                                                            internalMessageBus.emit('message_deleted', deletedMessagePayload);
+                                                                                                                                                                                                                                            internalMessageBus.emit("message_deleted", deletedMessagePayload);
                                                                                                                                                                                                                                             logger.info(
-                                                                                                                                                                                                                                            "[Messages Router] Emitted message_deleted event to internal bus for message " + std::to_string(messageId);
+                                                                                                                                                                                                                                            "[Messages Router] Emitted message_deleted event to internal bus for message " + messageId;
                                                                                                                                                                                                                                             );
 
                                                                                                                                                                                                                                             // Also, emit an event via SocketIO to inform clients about the deletion
                                                                                                                                                                                                                                             if (serverInstance.socketIO) {
-                                                                                                                                                                                                                                                serverInstance.socketIO.to(channelId).emit('messageDeleted', {
+                                                                                                                                                                                                                                                serverInstance.socketIO.to(channelId).emit("messageDeleted", {
                                                                                                                                                                                                                                                     messageId: messageId,
                                                                                                                                                                                                                                                     channelId: channelId,
                                                                                                                                                                                                                                                     });
@@ -675,21 +675,21 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                                                                                                                                                                 res.status(204).send();
                                                                                                                                                                                                                                                 } catch (error) {
                                                                                                                                                                                                                                                     logger.error(
-                                                                                                                                                                                                                                                    "[Messages Router] Error deleting message " + std::to_string(messageId) + " from channel " + std::to_string(channelId) + ":"
+                                                                                                                                                                                                                                                    "[Messages Router] Error deleting message " + messageId + " from channel " + channelId + ":"
                                                                                                                                                                                                                                                     error;
                                                                                                                                                                                                                                                     );
-                                                                                                                                                                                                                                                    res.status(500).json({ success: false, error: 'Failed to delete message' });
+                                                                                                                                                                                                                                                    res.status(500).json({ success: false, error: "Failed to delete message" });
                                                                                                                                                                                                                                                 }
                                                                                                                                                                                                                                             }
                                                                                                                                                                                                                                             );
 
                                                                                                                                                                                                                                             // Clear all messages in channel
                                                                                                                                                                                                                                             (router).delete(;
-                                                                                                                                                                                                                                            '/central-channels/:channelId/messages',
+                                                                                                                                                                                                                                            "/central-channels/:channelId/messages",
                                                                                                                                                                                                                                             async (req: express.Request, res: express.Response) => {
                                                                                                                                                                                                                                                 const auto channelId = validateUuid(req.params.channelId);
                                                                                                                                                                                                                                                 if (!channelId) {
-                                                                                                                                                                                                                                                    return res.status(400).json({ success: false, error: 'Invalid channelId' });
+                                                                                                                                                                                                                                                    return res.status(400).json({ success: false, error: "Invalid channelId" });
                                                                                                                                                                                                                                                 }
                                                                                                                                                                                                                                                 try {
                                                                                                                                                                                                                                                     // Clear all messages from central database
@@ -699,32 +699,32 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                                                                                                                                                                     const auto channelClearedPayload = {;
                                                                                                                                                                                                                                                         channelId: channelId,
                                                                                                                                                                                                                                                         };
-                                                                                                                                                                                                                                                        internalMessageBus.emit('channel_cleared', channelClearedPayload);
+                                                                                                                                                                                                                                                        internalMessageBus.emit("channel_cleared", channelClearedPayload);
                                                                                                                                                                                                                                                         logger.info(
-                                                                                                                                                                                                                                                        "[Messages Router] Emitted channel_cleared event to internal bus for channel " + std::to_string(channelId);
+                                                                                                                                                                                                                                                        "[Messages Router] Emitted channel_cleared event to internal bus for channel " + channelId;
                                                                                                                                                                                                                                                         );
 
                                                                                                                                                                                                                                                         // Also, emit an event via SocketIO to inform clients about the channel clear
                                                                                                                                                                                                                                                         if (serverInstance.socketIO) {
-                                                                                                                                                                                                                                                            serverInstance.socketIO.to(channelId).emit('channelCleared', {
+                                                                                                                                                                                                                                                            serverInstance.socketIO.to(channelId).emit("channelCleared", {
                                                                                                                                                                                                                                                                 channelId: channelId,
                                                                                                                                                                                                                                                                 });
                                                                                                                                                                                                                                                             }
                                                                                                                                                                                                                                                             res.status(204).send();
                                                                                                                                                                                                                                                             } catch (error) {
-                                                                                                                                                                                                                                                                std::cerr << "[Messages Router] Error clearing messages for channel " + std::to_string(channelId) + ":" << error << std::endl;
-                                                                                                                                                                                                                                                                res.status(500).json({ success: false, error: 'Failed to clear messages' });
+                                                                                                                                                                                                                                                                std::cerr << "[Messages Router] Error clearing messages for channel " + channelId + ":" << error << std::endl;
+                                                                                                                                                                                                                                                                res.status(500).json({ success: false, error: "Failed to clear messages" });
                                                                                                                                                                                                                                                             }
                                                                                                                                                                                                                                                         }
                                                                                                                                                                                                                                                         );
 
                                                                                                                                                                                                                                                         // Update channel
                                                                                                                                                                                                                                                         (router).patch(;
-                                                                                                                                                                                                                                                        '/central-channels/:channelId',
+                                                                                                                                                                                                                                                        "/central-channels/:channelId",
                                                                                                                                                                                                                                                         async (req: express.Request, res: express.Response) => {
                                                                                                                                                                                                                                                             const auto channelId = validateUuid(req.params.channelId);
                                                                                                                                                                                                                                                             if (!channelId) {
-                                                                                                                                                                                                                                                                return res.status(400).json({ success: false, error: 'Invalid channelId' });
+                                                                                                                                                                                                                                                                return res.status(400).json({ success: false, error: "Invalid channelId" });
                                                                                                                                                                                                                                                             }
                                                                                                                                                                                                                                                             const auto { name, participantCentralUserIds, metadata } = req.body;
                                                                                                                                                                                                                                                             try {
@@ -735,76 +735,76 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                                                                                                                                                                                     });
                                                                                                                                                                                                                                                                     // Emit an event via SocketIO to inform clients about the channel update
                                                                                                                                                                                                                                                                     if (serverInstance.socketIO) {
-                                                                                                                                                                                                                                                                        serverInstance.socketIO.to(channelId).emit('channelUpdated', {
+                                                                                                                                                                                                                                                                        serverInstance.socketIO.to(channelId).emit("channelUpdated", {
                                                                                                                                                                                                                                                                             channelId: channelId,
                                                                                                                                                                                                                                                                             updates: updatedChannel,
                                                                                                                                                                                                                                                                             });
                                                                                                                                                                                                                                                                         }
                                                                                                                                                                                                                                                                         res.json({ success: true, data: updatedChannel });
                                                                                                                                                                                                                                                                         } catch (error) {
-                                                                                                                                                                                                                                                                            std::cerr << "[Messages Router] Error updating channel " + std::to_string(channelId) + ":" << error << std::endl;
-                                                                                                                                                                                                                                                                            res.status(500).json({ success: false, error: 'Failed to update channel' });
+                                                                                                                                                                                                                                                                            std::cerr << "[Messages Router] Error updating channel " + channelId + ":" << error << std::endl;
+                                                                                                                                                                                                                                                                            res.status(500).json({ success: false, error: "Failed to update channel" });
                                                                                                                                                                                                                                                                         }
                                                                                                                                                                                                                                                                     }
                                                                                                                                                                                                                                                                     );
 
                                                                                                                                                                                                                                                                     // Delete entire channel
                                                                                                                                                                                                                                                                     (router).delete(;
-                                                                                                                                                                                                                                                                    '/central-channels/:channelId',
+                                                                                                                                                                                                                                                                    "/central-channels/:channelId",
                                                                                                                                                                                                                                                                     async (req: express.Request, res: express.Response) => {
                                                                                                                                                                                                                                                                         const auto channelId = validateUuid(req.params.channelId);
                                                                                                                                                                                                                                                                         if (!channelId) {
-                                                                                                                                                                                                                                                                            return res.status(400).json({ success: false, error: 'Invalid channelId' });
+                                                                                                                                                                                                                                                                            return res.status(400).json({ success: false, error: "Invalid channelId" });
                                                                                                                                                                                                                                                                         }
                                                                                                                                                                                                                                                                         try {
                                                                                                                                                                                                                                                                             // Get messages count before deletion for logging
                                                                                                                                                                                                                                                                             const auto messages = serverInstance.getMessagesForChannel(channelId);
-                                                                                                                                                                                                                                                                            const auto messageCount = messages.length;
+                                                                                                                                                                                                                                                                            const auto messageCount = messages.size();
 
                                                                                                                                                                                                                                                                             // Delete the entire channel
                                                                                                                                                                                                                                                                             serverInstance.deleteChannel(channelId);
                                                                                                                                                                                                                                                                             logger.info(
-                                                                                                                                                                                                                                                                            "[Messages Router] Deleted channel " + std::to_string(channelId) + " with " + std::to_string(messageCount) + " messages from central database";
+                                                                                                                                                                                                                                                                            "[Messages Router] Deleted channel " + channelId + " with " + messageCount + " messages from central database";
                                                                                                                                                                                                                                                                             );
 
                                                                                                                                                                                                                                                                             // Emit to internal bus for agent memory cleanup (same as clear messages)
                                                                                                                                                                                                                                                                             const auto channelClearedPayload = {;
                                                                                                                                                                                                                                                                                 channelId: channelId,
                                                                                                                                                                                                                                                                                 };
-                                                                                                                                                                                                                                                                                internalMessageBus.emit('channel_cleared', channelClearedPayload);
+                                                                                                                                                                                                                                                                                internalMessageBus.emit("channel_cleared", channelClearedPayload);
                                                                                                                                                                                                                                                                                 logger.info(
-                                                                                                                                                                                                                                                                                "[Messages Router] Emitted channel_cleared event to internal bus for deleted channel " + std::to_string(channelId);
+                                                                                                                                                                                                                                                                                "[Messages Router] Emitted channel_cleared event to internal bus for deleted channel " + channelId;
                                                                                                                                                                                                                                                                                 );
 
                                                                                                                                                                                                                                                                                 // Emit an event via SocketIO to inform clients about the channel deletion
                                                                                                                                                                                                                                                                                 if (serverInstance.socketIO) {
-                                                                                                                                                                                                                                                                                    serverInstance.socketIO.to(channelId).emit('channelDeleted', {
+                                                                                                                                                                                                                                                                                    serverInstance.socketIO.to(channelId).emit("channelDeleted", {
                                                                                                                                                                                                                                                                                         channelId: channelId,
                                                                                                                                                                                                                                                                                         });
                                                                                                                                                                                                                                                                                     }
                                                                                                                                                                                                                                                                                     res.status(204).send();
                                                                                                                                                                                                                                                                                     } catch (error) {
-                                                                                                                                                                                                                                                                                        std::cerr << "[Messages Router] Error deleting channel " + std::to_string(channelId) + ":" << error << std::endl;
-                                                                                                                                                                                                                                                                                        res.status(500).json({ success: false, error: 'Failed to delete channel' });
+                                                                                                                                                                                                                                                                                        std::cerr << "[Messages Router] Error deleting channel " + channelId + ":" << error << std::endl;
+                                                                                                                                                                                                                                                                                        res.status(500).json({ success: false, error: "Failed to delete channel" });
                                                                                                                                                                                                                                                                                     }
                                                                                                                                                                                                                                                                                 }
                                                                                                                                                                                                                                                                                 );
 
                                                                                                                                                                                                                                                                                 // Upload media to channel
                                                                                                                                                                                                                                                                                 (router).post(;
-                                                                                                                                                                                                                                                                                '/channels/:channelId/upload-media',
+                                                                                                                                                                                                                                                                                "/channels/:channelId/upload-media",
                                                                                                                                                                                                                                                                                 createUploadRateLimit(),
                                                                                                                                                                                                                                                                                 createFileSystemRateLimit(),
-                                                                                                                                                                                                                                                                                channelUploadMiddleware.single('file'),
+                                                                                                                                                                                                                                                                                channelUploadMiddleware.single("file"),
                                                                                                                                                                                                                                                                                 async (req: express.Request, res: express.Response) => {
                                                                                                                                                                                                                                                                                     const auto channelId = validateUuid(req.params.channelId);
                                                                                                                                                                                                                                                                                     if (!channelId) {
-                                                                                                                                                                                                                                                                                        res.status(400).json({ success: false, error: 'Invalid channelId format' });
+                                                                                                                                                                                                                                                                                        res.status(400).json({ success: false, error: "Invalid channelId format" });
                                                                                                                                                                                                                                                                                         return;
                                                                                                                                                                                                                                                                                     }
 
                                                                                                                                                                                                                                                                                     if (!req.file) {
-                                                                                                                                                                                                                                                                                        res.status(400).json({ success: false, error: 'No media file provided' });
+                                                                                                                                                                                                                                                                                        res.status(400).json({ success: false, error: "No media file provided" });
                                                                                                                                                                                                                                                                                         return;
                                                                                                                                                                                                                                                                                     }
 
@@ -812,10 +812,10 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                                                                                                                                                                                                         // Additional filename security validation
                                                                                                                                                                                                                                                                                         if (
                                                                                                                                                                                                                                                                                         !req.file.originalname ||;
-                                                                                                                                                                                                                                                                                        req.file.originalname.includes('..') ||;
-                                                                                                                                                                                                                                                                                        req.file.originalname.includes('/');
+                                                                                                                                                                                                                                                                                        req.file.(std::find(originalname.begin(), originalname.end(), "..") != originalname.end()) ||;
+                                                                                                                                                                                                                                                                                        req.file.(std::find(originalname.begin(), originalname.end(), "/") != originalname.end());
                                                                                                                                                                                                                                                                                         ) {
-                                                                                                                                                                                                                                                                                            res.status(400).json({ success: false, error: 'Invalid filename detected' });
+                                                                                                                                                                                                                                                                                            res.status(400).json({ success: false, error: "Invalid filename detected" });
                                                                                                                                                                                                                                                                                             return;
                                                                                                                                                                                                                                                                                         }
 
@@ -823,7 +823,7 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                                                                                                                                                                                                         const auto result = saveChannelUploadedFile(req.file, channelId);
 
                                                                                                                                                                                                                                                                                         logger.info(
-                                                                                                                                                                                                                                                                                        "[MessagesRouter /upload-media] Secure file uploaded for channel " + std::to_string(channelId) + ": " + std::to_string(result.filename) + ". URL: " + std::to_string(result.url)
+                                                                                                                                                                                                                                                                                        "[MessagesRouter /upload-media] Secure file uploaded for channel " + channelId + ": " + result.filename + ". URL: " + result.url
                                                                                                                                                                                                                                                                                         );
 
                                                                                                                                                                                                                                                                                         res.json({
@@ -839,16 +839,16 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                                                                                                                                                                                                                 } catch (error: unknown) {
                                                                                                                                                                                                                                                                                                     const auto errorMessage = true /* instanceof check */ ? error.message : std::to_string(error);
                                                                                                                                                                                                                                                                                                     logger.error(
-                                                                                                                                                                                                                                                                                                    "[MessagesRouter /upload-media] Error processing upload for channel " + std::to_string(channelId) + ": " + std::to_string(errorMessage)
+                                                                                                                                                                                                                                                                                                    "[MessagesRouter /upload-media] Error processing upload for channel " + channelId + ": " + errorMessage
                                                                                                                                                                                                                                                                                                     error;
                                                                                                                                                                                                                                                                                                     );
-                                                                                                                                                                                                                                                                                                    res.status(500).json({ success: false, error: 'Failed to process media upload' });
+                                                                                                                                                                                                                                                                                                    res.status(500).json({ success: false, error: "Failed to process media upload" });
                                                                                                                                                                                                                                                                                                 }
                                                                                                                                                                                                                                                                                             }
                                                                                                                                                                                                                                                                                             );
 
                                                                                                                                                                                                                                                                                             (router).post(;
-                                                                                                                                                                                                                                                                                            '/central-channels/:channelId/generate-title',
+                                                                                                                                                                                                                                                                                            "/central-channels/:channelId/generate-title",
                                                                                                                                                                                                                                                                                             async (req: express.Request, res: express.Response) => {
                                                                                                                                                                                                                                                                                                 const auto channelId = validateUuid(req.params.channelId);
                                                                                                                                                                                                                                                                                                 const auto { agentId } = req.body;
@@ -856,14 +856,14 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                                                                                                                                                                                                                 if (!channelId) {
                                                                                                                                                                                                                                                                                                     return res.status(400).json({;
                                                                                                                                                                                                                                                                                                         success: false,
-                                                                                                                                                                                                                                                                                                        error: 'Invalid channel ID format',
+                                                                                                                                                                                                                                                                                                        error: "Invalid channel ID format",
                                                                                                                                                                                                                                                                                                         });
                                                                                                                                                                                                                                                                                                     }
 
                                                                                                                                                                                                                                                                                                     if (!agentId || !validateUuid(agentId)) {
                                                                                                                                                                                                                                                                                                         return res.status(400).json({;
                                                                                                                                                                                                                                                                                                             success: false,
-                                                                                                                                                                                                                                                                                                            error: 'Valid agent ID is required',
+                                                                                                                                                                                                                                                                                                            error: "Valid agent ID is required",
                                                                                                                                                                                                                                                                                                             });
                                                                                                                                                                                                                                                                                                         }
 
@@ -873,11 +873,11 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                                                                                                                                                                                                                             if (!runtime) {
                                                                                                                                                                                                                                                                                                                 return res.status(404).json({;
                                                                                                                                                                                                                                                                                                                     success: false,
-                                                                                                                                                                                                                                                                                                                    error: 'Agent not found or not active',
+                                                                                                                                                                                                                                                                                                                    error: "Agent not found or not active",
                                                                                                                                                                                                                                                                                                                     });
                                                                                                                                                                                                                                                                                                                 }
 
-                                                                                                                                                                                                                                                                                                                std::cout << "[CHANNEL SUMMARIZE] Summarizing channel " + std::to_string(channelId) << std::endl;
+                                                                                                                                                                                                                                                                                                                std::cout << "[CHANNEL SUMMARIZE] Summarizing channel " + channelId << std::endl;
                                                                                                                                                                                                                                                                                                                 const auto limit = req.query.limit ? Number.parseInt(req.query.limit, 10) : 50;
                                                                                                                                                                                                                                                                                                                 const auto before = req.query.before;
                                                                                                                                                                                                                                                                                                                 ? Number.parseInt(req.query.before, 10);
@@ -892,7 +892,7 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                                                                                                                                                                                                                                         data: {
                                                                                                                                                                                                                                                                                                                             title: nullptr,
                                                                                                                                                                                                                                                                                                                             channelId,
-                                                                                                                                                                                                                                                                                                                            reason: 'Not enough messages to generate a title',
+                                                                                                                                                                                                                                                                                                                            reason: "Not enough messages to generate a title",
                                                                                                                                                                                                                                                                                                                             },
                                                                                                                                                                                                                                                                                                                             });
                                                                                                                                                                                                                                                                                                                         }
@@ -901,10 +901,10 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                                                                                                                                                                                                                                         .reverse() // Show in chronological order;
                                                                                                                                                                                                                                                                                                                         .map((msg) => {
                                                                                                                                                                                                                                                                                                                             const auto isUser = msg.authorId != runtime.agentId;
-                                                                                                                                                                                                                                                                                                                            const auto role = isUser ? 'User' : 'Agent';
-                                                                                                                                                                                                                                                                                                                            return std::to_string(role) + ": " + std::to_string(msg.content);
+                                                                                                                                                                                                                                                                                                                            const auto role = isUser ? "User" : "Agent";
+                                                                                                                                                                                                                                                                                                                            return role + ": " + msg.content;
                                                                                                                                                                                                                                                                                                                             });
-                                                                                                                                                                                                                                                                                                                            .join('\n');
+                                                                                                                                                                                                                                                                                                                            .join("\n");
 
                                                                                                                                                                                                                                                                                                                             const auto prompt = composePromptFromState({;
                                                                                                                                                                                                                                                                                                                                 state: {
@@ -913,7 +913,7 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                                                                                                                                                                                                                                                     data: {},
                                                                                                                                                                                                                                                                                                                                     text: recentMessages,
                                                                                                                                                                                                                                                                                                                                     },
-                                                                                                                                                                                                                                                                                                                                    template: `
+                                                                                                                                                                                                                                                                                                                                    "template: "
                                                                                                                                                                                                                                                                                                                                     Based on the conversation below, generate a short, descriptive title for this chat. The title should capture the main topic or theme of the discussion.;
                                                                                                                                                                                                                                                                                                                                     Rules:
                                                                                                                                                                                                                                                                                                                                     - Keep it concise (3-6 words);
@@ -940,13 +940,13 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                                                                                                                                                                                                                                                     });
 
                                                                                                                                                                                                                                                                                                                                     if (!newTitle || newTitle.trim().length == 0) {
-                                                                                                                                                                                                                                                                                                                                        std::cout << "[ChatTitleEvaluator] Failed to generate title for room " + std::to_string(channelId) << std::endl;
+                                                                                                                                                                                                                                                                                                                                        std::cout << "[ChatTitleEvaluator] Failed to generate title for room " + channelId << std::endl;
                                                                                                                                                                                                                                                                                                                                         return;
                                                                                                                                                                                                                                                                                                                                     }
 
-                                                                                                                                                                                                                                                                                                                                    const auto cleanTitle = newTitle.trim().replace(/^["']|["']$/g, ''); // Remove quotes if present;
+                                                                                                                                                                                                                                                                                                                                    const auto cleanTitle = newTitle.trim().replace(/^[""]|[""]$/g, ""); // Remove quotes if present;
 
-                                                                                                                                                                                                                                                                                                                                    std::cout << "[ChatTitleEvaluator] Generated title: "" + std::to_string(cleanTitle) + "" for room " + std::to_string(channelId) << std::endl;
+                                                                                                                                                                                                                                                                                                                                    std::cout << "[ChatTitleEvaluator] Generated title: \"" + cleanTitle + "\" for room " + channelId << std::endl;
 
                                                                                                                                                                                                                                                                                                                                     const auto result = {;
                                                                                                                                                                                                                                                                                                                                         title: cleanTitle,
@@ -960,10 +960,10 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                                                                                                                                                                                                                                                             data: result,
                                                                                                                                                                                                                                                                                                                                             });
                                                                                                                                                                                                                                                                                                                                             } catch (error) {
-                                                                                                                                                                                                                                                                                                                                                std::cerr << '[CHANNEL SUMMARIZE] Error summarizing channel:' << error << std::endl;
+                                                                                                                                                                                                                                                                                                                                                std::cerr << "[CHANNEL SUMMARIZE] Error summarizing channel:" << error << std::endl;
                                                                                                                                                                                                                                                                                                                                                 res.status(500).json({
                                                                                                                                                                                                                                                                                                                                                     success: false,
-                                                                                                                                                                                                                                                                                                                                                    error: 'Failed to summarize channel',
+                                                                                                                                                                                                                                                                                                                                                    error: "Failed to summarize channel",
                                                                                                                                                                                                                                                                                                                                                     details: true /* instanceof check */ ? error.message : std::to_string(error),
                                                                                                                                                                                                                                                                                                                                                     });
                                                                                                                                                                                                                                                                                                                                                 }

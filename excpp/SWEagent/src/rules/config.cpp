@@ -8,34 +8,34 @@ std::string exportToCursorFormat(Rule rule) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto frontmatter = [;
-    '---',
-    "description: " + std::to_string(rule.description || '')
-    "globs: " + std::to_string(rule.globs.join(', ') || '')
-    "alwaysApply: " + std::to_string(rule.alwaysApply)
-    '---',
-    '',
-    ].join('\n');
+    "---",
+    "description: " + std::to_string(rule.description || "")
+    "globs: " + std::to_string(rule.globs.join(", ") || "")
+    "alwaysApply: " + rule.alwaysApply
+    "---",
+    "",
+    ].join("\n");
 
-    auto content = '';
+    auto content = "";
     if (typeof rule.content == 'string') {
         content = rule.content;
         } else if (rule.content) {
             if (rule.content.title) {
-                "# " + std::to_string(rule.content.title) + "\n\n";
+                "content += " + "# " + rule.content.title + "\n\n";
             }
             if (rule.content.overview) {
-                std::to_string(rule.content.overview) + "\n\n";
+                "content += " + rule.content.overview + "\n\n";
             }
             if (rule.content.guidelines) {
-                "- " + std::to_string(g);
+                "content += rule.content.guidelines.map((g) => " + "- " + g;
             }
             if (rule.content.projectStructure) {
-                content += '\n\nProject Structure:\n';
-                "- Main entry points: " + std::to_string(rule.content.projectStructure.mainEntryPoints.map((e) => e.path).join(', ')) + "\n"
-                "- Main class: " + std::to_string(rule.content.projectStructure.mainClass.name) + " (" + std::to_string(rule.content.projectStructure.mainClass.path) + ")\n"
-                "- Execution: " + std::to_string(rule.content.projectStructure.executionEnvironment.description) + "\n"
-                "- Tools: Located in " + std::to_string(rule.content.projectStructure.tools.location) + "\n"
-                "- Inspectors: " + std::to_string(rule.content.projectStructure.inspectors.map((i) => i.name).join(', ')) + "\n"
+                content += "\n\nProject Structure:\n";
+                "content += " + "- Main entry points: " + std::to_string(rule.content.projectStructure.mainEntryPoints.map((e) => e.path).join(", ")) + "\n"
+                "content += " + "- Main class: " + rule.content.projectStructure.mainClass.name + " (" + rule.content.projectStructure.mainClass.path + ")\n"
+                "content += " + "- Execution: " + rule.content.projectStructure.executionEnvironment.description + "\n"
+                "content += " + "- Tools: Located in " + rule.content.projectStructure.tools.location + "\n"
+                "content += " + "- Inspectors: " + std::to_string(rule.content.projectStructure.inspectors.map((i) => i.name).join(", ")) + "\n"
             }
         }
 
@@ -49,7 +49,7 @@ std::unordered_map<std::string, std::string> exportAllRulesToCursor() {
     const std::unordered_map<std::string, std::string> exported = {};
 
     for (const auto& rule : CURSOR_RULES)
-        std::to_string(rule.name) + ".mdc";
+        "exported[" + rule.name + ".mdc";
     }
 
     return exported;
@@ -59,7 +59,7 @@ std::unordered_map<std::string, std::string> exportAllRulesToCursor() {
 void getLanguageConfig(const std::string& language) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return language == 'python' ? GENERAL_CODING_GUIDELINES : TYPESCRIPT_CODING_GUIDELINES;
+    return language == "python" ? GENERAL_CODING_GUIDELINES : TYPESCRIPT_CODING_GUIDELINES;
 
 }
 

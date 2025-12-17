@@ -11,7 +11,7 @@ std::future<void> runShellFromConfig(std::optional<std::any> _options) {
         // This function appears to be incomplete/incorrectly implemented
         // For now, throw an error indicating it needs proper implementation
         throw new Error(
-        'runShellFromConfig is not yet properly implemented. Use RunShell directly with proper env and agent instances.',
+        "runShellFromConfig is not yet properly implemented. Use RunShell directly with proper env and agent instances.",
         );
 
         // TODO: Properly implement this function by:

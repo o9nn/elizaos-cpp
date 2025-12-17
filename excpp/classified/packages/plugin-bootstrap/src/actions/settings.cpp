@@ -17,7 +17,7 @@ std::future<std::optional<WorldSettings>> getWorldSettings(IAgentRuntime runtime
 
         return world.metadata.settings;
         } catch (error) {
-            std::cerr << "Error getting settings state: " + std::to_string(error) << std::endl;
+            std::cerr << "Error getting settings state: " + error << std::endl;
             return nullptr;
         }
 
@@ -31,7 +31,7 @@ std::future<bool> updateWorldSettings(IAgentRuntime runtime, const std::string& 
         const auto world = runtime.getWorld(worldId);
 
         if (!world) {
-            std::cerr << "No world found for server " + std::to_string(serverId) << std::endl;
+            std::cerr << "No world found for server " + serverId << std::endl;
             return false;
         }
 
@@ -48,7 +48,7 @@ std::future<bool> updateWorldSettings(IAgentRuntime runtime, const std::string& 
 
         return true;
         } catch (error) {
-            std::cerr << "Error updating settings state: " + std::to_string(error) << std::endl;
+            std::cerr << "Error updating settings state: " + error << std::endl;
             return false;
         }
 
@@ -58,15 +58,15 @@ std::string formatSettingsList(WorldSettings worldSettings) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto settings = Object.entries(worldSettings);
-    .filter(([key]) => !key.startsWith('_')) // Skip internal settings;
+    .filter(([key]) => !key.startsWith("_")) // Skip internal settings;
     .map(([key, setting]: [string, Setting]) => {
-        const auto status = setting.value != nullptr ? 'Configured' : 'Not configured';
-        const auto required = setting.required ? 'Required' : 'Optional';
-        return "- " + std::to_string(setting.name) + " (" + std::to_string(key) + "): " + std::to_string(status) + ", " + std::to_string(required);
+        const auto status = setting.value != nullptr ? "Configured" : "Not configured";
+        const auto required = setting.required ? "Required" : "Optional";
+        return "- " + setting.name + " (" + key + "): " + status + ", " + required;
         });
-        .join('\n');
+        .join("\n");
 
-        return settings || 'No settings available';
+        return settings || "No settings available";
 
 }
 
@@ -89,12 +89,12 @@ std::future<std::vector<SettingUpdate>> extractSettingValues(IAgentRuntime runti
     const auto settingsContext = requiredUnconfigured;
     .concat(optionalUnconfigured);
     .map(([key, setting]) => {
-        const auto requiredStr = setting.required ? 'Required.' : 'Optional.';
-        return std::to_string(key) + ": " + std::to_string(setting.description) + " " + std::to_string(requiredStr);
+        const auto requiredStr = setting.required ? "Required." : "Optional.";
+        return key + ": " + setting.description + " " + requiredStr;
         });
-        .join('\n');
+        .join("\n");
 
-        const auto basePrompt = dedent`;
+        const auto basePrompt = "dedent";
         I need to extract settings values from the user's message.;
 
         Available settings:
@@ -114,16 +114,16 @@ std::future<std::vector<SettingUpdate>> extractSettingValues(IAgentRuntime runti
         ModelType.OBJECT_LARGE,
         {
             prompt: basePrompt,
-            output: 'array',
+            output: "array",
             schema: {
-                type: 'array',
+                type: "array",
                 items: {
-                    type: 'object',
+                    type: "object",
                     properties: {
-                        key: { type: 'string' },
-                        value: { type: 'string' },
+                        key: { type: "string" },
+                        value: { type: "string" },
                         },
-                        required: ['key', 'value'],
+                        required: ["key", "value"],
                         },
                         },
                     }
@@ -142,10 +142,10 @@ std::future<std::vector<SettingUpdate>> extractSettingValues(IAgentRuntime runti
                                 for (const auto& item : node)
                                     traverse(item);
                                 }
-                                } else if (typeof node == 'object' && node != nullptr) {
+                                } else if (typeof node == "object" && node != nullptr) {
                                     for (const int [key, value] of Object.entries(node)) {
                                         if (worldSettings[key] && typeof value != 'object') {
-                                            extracted.push({ key, value });
+                                            extracted.push_back({ key, value });
                                             } else {
                                                 traverse(value);
                                             }
@@ -161,7 +161,7 @@ std::future<std::vector<SettingUpdate>> extractSettingValues(IAgentRuntime runti
 
                             return extractedSettings;
                             } catch (error) {
-                                std::cerr << 'Error extracting settings:' << error << std::endl;
+                                std::cerr << "Error extracting settings:" << error << std::endl;
                                 return [];
                             }
 
@@ -192,42 +192,42 @@ std::future<ActionResult> handleOnboardingComplete(IAgentRuntime runtime, WorldS
 
                     callback({
                         text: responseContent.text,
-                        actions: ['ONBOARDING_COMPLETE'],
-                        source: 'discord',
+                        actions: ["ONBOARDING_COMPLETE"],
+                        source: "discord",
                         });
 
                         return {
-                            text: 'Onboarding completed successfully',
+                            text: "Onboarding completed successfully",
                             values: {
                                 success: true,
                                 onboardingComplete: true,
                                 allRequiredConfigured: true,
                                 },
                                 data: {
-                                    actionName: 'UPDATE_SETTINGS',
-                                    action: 'ONBOARDING_COMPLETE',
+                                    actionName: "UPDATE_SETTINGS",
+                                    action: "ONBOARDING_COMPLETE",
                                     settingsStatus: formatSettingsList(worldSettings),
                                     },
                                     success: true,
                                     };
                                     } catch (error) {
-                                        std::cerr << "Error handling settings completion: " + std::to_string(error) << std::endl;
+                                        std::cerr << "Error handling settings completion: " + error << std::endl;
                                         callback({
-                                            text: 'Great! All required settings have been configured. Your server is now fully set up and ready to use.',
-                                            actions: ['ONBOARDING_COMPLETE'],
-                                            source: 'discord',
+                                            text: "Great! All required settings have been configured. Your server is now fully set up and ready to use.",
+                                            actions: ["ONBOARDING_COMPLETE"],
+                                            source: "discord",
                                             });
 
                                             return {
-                                                text: 'Onboarding completed with fallback message',
+                                                text: "Onboarding completed with fallback message",
                                                 values: {
                                                     success: true,
                                                     onboardingComplete: true,
                                                     fallbackUsed: true,
                                                     },
                                                     data: {
-                                                        actionName: 'UPDATE_SETTINGS',
-                                                        action: 'ONBOARDING_COMPLETE',
+                                                        actionName: "UPDATE_SETTINGS",
+                                                        action: "ONBOARDING_COMPLETE",
                                                         error: true /* instanceof check */ ? error.message : std::to_string(error),
                                                         },
                                                         success: true,
@@ -249,15 +249,15 @@ std::future<ActionResult> generateSuccessResponse(IAgentRuntime runtime, WorldSe
         }
 
         const auto requiredUnconfiguredString = requiredUnconfigured;
-        std::to_string(key) + ": " + std::to_string(setting.name)
-        .join('\n');
+        ".map(([key, setting]) => " + key + ": " + setting.name
+        .join("\n");
 
         // Generate success message
         const auto prompt = composePrompt({;
             state: {
-                updateMessages: messages.join('\n'),
+                updateMessages: messages.join("\n"),
                 nextSetting: requiredUnconfiguredString,
-                remainingRequired: requiredUnconfigured.length.toString(),
+                remainingRequired: requiredUnconfigured.std::to_string(length),
                 },
                 template: successTemplate,
                 });
@@ -270,43 +270,43 @@ std::future<ActionResult> generateSuccessResponse(IAgentRuntime runtime, WorldSe
 
                     callback({
                         text: responseContent.text,
-                        actions: ['SETTING_UPDATED'],
-                        source: 'discord',
+                        actions: ["SETTING_UPDATED"],
+                        source: "discord",
                         });
 
                         return {
-                            text: 'Settings updated successfully',
+                            text: "Settings updated successfully",
                             values: {
                                 success: true,
                                 settingsUpdated: true,
-                                remainingRequired: requiredUnconfigured.length,
+                                remainingRequired: requiredUnconfigured.size(),
                                 },
                                 data: {
-                                    actionName: 'UPDATE_SETTINGS',
-                                    action: 'SETTING_UPDATED',
+                                    actionName: "UPDATE_SETTINGS",
+                                    action: "SETTING_UPDATED",
                                     updatedMessages: messages,
-                                    remainingRequired: requiredUnconfigured.length,
+                                    remainingRequired: requiredUnconfigured.size(),
                                     },
                                     success: true,
                                     };
                                     } catch (error) {
-                                        std::cerr << "Error generating success response: " + std::to_string(error) << std::endl;
+                                        std::cerr << "Error generating success response: " + error << std::endl;
                                         callback({
-                                            text: 'Settings updated successfully. Please continue with the remaining configuration.',
-                                            actions: ['SETTING_UPDATED'],
-                                            source: 'discord',
+                                            text: "Settings updated successfully. Please continue with the remaining configuration.",
+                                            actions: ["SETTING_UPDATED"],
+                                            source: "discord",
                                             });
 
                                             return {
-                                                text: 'Settings updated with fallback message',
+                                                text: "Settings updated with fallback message",
                                                 values: {
                                                     success: true,
                                                     settingsUpdated: true,
                                                     fallbackUsed: true,
                                                     },
                                                     data: {
-                                                        actionName: 'UPDATE_SETTINGS',
-                                                        action: 'SETTING_UPDATED',
+                                                        actionName: "UPDATE_SETTINGS",
+                                                        action: "SETTING_UPDATED",
                                                         error: true /* instanceof check */ ? error.message : std::to_string(error),
                                                         },
                                                         success: true,
@@ -328,14 +328,14 @@ std::future<ActionResult> generateFailureResponse(IAgentRuntime runtime, WorldSe
         }
 
         const auto requiredUnconfiguredString = requiredUnconfigured;
-        std::to_string(key) + ": " + std::to_string(setting.name)
-        .join('\n');
+        ".map(([key, setting]) => " + key + ": " + setting.name
+        .join("\n");
 
         // Generate failure message
         const auto prompt = composePrompt({;
             state: {
                 nextSetting: requiredUnconfiguredString,
-                remainingRequired: requiredUnconfigured.length.toString(),
+                remainingRequired: requiredUnconfigured.std::to_string(length),
                 },
                 template: failureTemplate,
                 });
@@ -348,42 +348,42 @@ std::future<ActionResult> generateFailureResponse(IAgentRuntime runtime, WorldSe
 
                     callback({
                         text: responseContent.text,
-                        actions: ['SETTING_UPDATE_FAILED'],
-                        source: 'discord',
+                        actions: ["SETTING_UPDATE_FAILED"],
+                        source: "discord",
                         });
 
                         return {
-                            text: 'No settings were updated',
+                            text: "No settings were updated",
                             values: {
                                 success: false,
                                 settingsUpdated: false,
-                                remainingRequired: requiredUnconfigured.length,
+                                remainingRequired: requiredUnconfigured.size(),
                                 },
                                 data: {
-                                    actionName: 'UPDATE_SETTINGS',
-                                    action: 'SETTING_UPDATE_FAILED',
-                                    remainingRequired: requiredUnconfigured.length,
+                                    actionName: "UPDATE_SETTINGS",
+                                    action: "SETTING_UPDATE_FAILED",
+                                    remainingRequired: requiredUnconfigured.size(),
                                     },
                                     success: false,
                                     };
                                     } catch (error) {
-                                        std::cerr << "Error generating failure response: " + std::to_string(error) << std::endl;
+                                        std::cerr << "Error generating failure response: " + error << std::endl;
                                         callback({
                                             text: "I couldn't understand your settings update. Please try again with a clearer format.",
-                                            actions: ['SETTING_UPDATE_FAILED'],
-                                            source: 'discord',
+                                            actions: ["SETTING_UPDATE_FAILED"],
+                                            source: "discord",
                                             });
 
                                             return {
-                                                text: 'Failed to parse settings with fallback message',
+                                                text: "Failed to parse settings with fallback message",
                                                 values: {
                                                     success: false,
                                                     settingsUpdated: false,
                                                     fallbackUsed: true,
                                                     },
                                                     data: {
-                                                        actionName: 'UPDATE_SETTINGS',
-                                                        action: 'SETTING_UPDATE_FAILED',
+                                                        actionName: "UPDATE_SETTINGS",
+                                                        action: "SETTING_UPDATE_FAILED",
                                                         error: true /* instanceof check */ ? error.message : std::to_string(error),
                                                         },
                                                         success: false,
@@ -410,40 +410,40 @@ std::future<ActionResult> generateErrorResponse(IAgentRuntime runtime, State sta
 
                     callback({
                         text: responseContent.text,
-                        actions: ['SETTING_UPDATE_ERROR'],
-                        source: 'discord',
+                        actions: ["SETTING_UPDATE_ERROR"],
+                        source: "discord",
                         });
 
                         return {
-                            text: 'Error processing settings',
+                            text: "Error processing settings",
                             values: {
                                 success: false,
-                                error: 'PROCESSING_ERROR',
+                                error: "PROCESSING_ERROR",
                                 },
                                 data: {
-                                    actionName: 'UPDATE_SETTINGS',
-                                    action: 'SETTING_UPDATE_ERROR',
+                                    actionName: "UPDATE_SETTINGS",
+                                    action: "SETTING_UPDATE_ERROR",
                                     },
                                     success: false,
                                     };
                                     } catch (error) {
-                                        std::cerr << "Error generating error response: " + std::to_string(error) << std::endl;
+                                        std::cerr << "Error generating error response: " + error << std::endl;
                                         callback({
                                             text: "I'm sorry, but I encountered an error while processing your request. Please try again or contact support if the issue persists.",
-                                            actions: ['SETTING_UPDATE_ERROR'],
-                                            source: 'discord',
+                                            actions: ["SETTING_UPDATE_ERROR"],
+                                            source: "discord",
                                             });
 
                                             return {
-                                                text: 'Error with fallback message',
+                                                text: "Error with fallback message",
                                                 values: {
                                                     success: false,
-                                                    error: 'PROCESSING_ERROR',
+                                                    error: "PROCESSING_ERROR",
                                                     fallbackUsed: true,
                                                     },
                                                     data: {
-                                                        actionName: 'UPDATE_SETTINGS',
-                                                        action: 'SETTING_UPDATE_ERROR',
+                                                        actionName: "UPDATE_SETTINGS",
+                                                        action: "SETTING_UPDATE_ERROR",
                                                         error: true /* instanceof check */ ? error.message : std::to_string(error),
                                                         },
                                                         success: false,

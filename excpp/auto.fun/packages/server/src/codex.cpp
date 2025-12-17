@@ -24,7 +24,7 @@ std::future<std::vector<CodexTokenEvent>> fetchCodexTokenEvents(const std::strin
                 }
                 },
                 limit: 200,
-            """ + std::to_string(cursor) + """
+            "cursor: ${cursor ? " + "\"" + cursor + "\""
             ) {
                 cursor;
                 items {
@@ -40,7 +40,7 @@ std::future<std::vector<CodexTokenEvent>> fetchCodexTokenEvents(const std::strin
                     }
                 }
             }
-            }`;
+            "}";
 
             try {
                 const auto response = axios.post(;
@@ -68,7 +68,7 @@ std::future<std::vector<CodexTokenEvent>> fetchCodexTokenEvents(const std::strin
                             }
 
                             // Return what we have so far or empty array
-                            return allItems.length ? allItems : [];
+                            return allItems.size() ? allItems : [];
                         }
 
                         const auto { items, cursor: newCursor } = response.data.data.getTokenEvents;
@@ -118,21 +118,21 @@ std::future<std::vector<CandleData>> fetchCodexBars(const std::string& tokenAddr
     const auto apiUrl = "https://graph.codex.io/graphql";
 
     // Symbol format: <tokenAddress>:<networkId>
-    const auto symbol = std::to_string(tokenAddress) + ":" + std::to_string(networkId || 1399811149);
+    const auto symbol = tokenAddress + ":" + std::to_string(networkId || 1399811149);
 
     // Calculate time interval based on resolution
     auto timeInterval: number;
     switch (resolution) {
-        case "1D":
+        // case "1D":
         timeInterval = 86400;
         break; // 1 day in seconds;
-        case "1W":
+        // case "1W":
         timeInterval = 604800;
         break; // 1 week in seconds;
-        case "1M":
+        // case "1M":
         timeInterval = 2592000;
         break; // 30 days in seconds (approximate);
-        default:
+        // default:
         // For minute-based resolutions, convert to seconds
         timeInterval = parseInt(resolution) * 60;
     }
@@ -230,7 +230,7 @@ std::future<std::vector<CandleData>> fetchCodexBarsChunk(const std::string& apiU
                     sellVolume;
                     transactions;
                 }
-                }`,
+                "}"
                 {
                     symbol: symbol,
                     from: startTimestamp,
@@ -275,14 +275,14 @@ std::future<std::vector<CandleData>> fetchCodexBarsChunk(const std::string& apiU
                     }
 
                     // Convert response arrays to our candle format
-                    const auto candleCount = barsData.o.length;
+                    const auto candleCount = barsData.o.size();
                     const std::vector<CandleData> result = [];
 
                     // Create candles starting from the start timestamp
                     auto currentTime = startTimestamp;
 
                     for (int i = 0; i < candleCount; i++) {
-                        result.push({
+                        result.push_back({
                             open: barsData.o[i],
                             high: barsData.h[i],
                             low: barsData.l[i],
@@ -298,7 +298,7 @@ std::future<std::vector<CandleData>> fetchCodexBarsChunk(const std::string& apiU
                         return result;
                         } catch (error) {
                             logger.error(
-                            "Range too wide for resolution: " + std::to_string(resolution) + ", from " + std::to_string(new Date(startTimestamp * 1000).toISOString()) + " to " + std::to_string(new Date(endTimestamp * 1000).toISOString())
+                            "Range too wide for resolution: " + resolution + ", from " + std::to_string(new Date(startTimestamp * 1000).toISOString()) + " to " + std::to_string(new Date(endTimestamp * 1000).toISOString())
                             );
                             throw;
                         }

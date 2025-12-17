@@ -28,7 +28,7 @@ void AvatarPanel() {
                     // Only update when there's a real change
                     updateCharacterAvatar(compressedImage);
                     } catch (error) {
-                        std::cerr << 'Error compressing image:' << error << std::endl;
+                        std::cerr << "Error compressing image:" << error << std::endl;
                     }
                 }
                 };
@@ -37,7 +37,7 @@ void AvatarPanel() {
                     if (avatar) {
                         setAvatar(nullptr);
                         setHasChanged(true);
-                        updateCharacterAvatar('');
+                        updateCharacterAvatar("");
                     }
                     };
 
@@ -48,10 +48,10 @@ void AvatarPanel() {
                             setCharacterValue.updateAvatar(avatarUrl);
                             } else if (setCharacterValue.updateSetting) {
                                 // Use updateSetting as fallback
-                                setCharacterValue.updateSetting('avatar', avatarUrl);
+                                setCharacterValue.updateSetting("avatar", avatarUrl);
                                 } else if (setCharacterValue.updateField) {
                                     // Last resort - use the generic field update
-                                    setCharacterValue.updateField('settings.avatar', avatarUrl);
+                                    setCharacterValue.updateField("settings.avatar", avatarUrl);
                                 }
                                 };
 
@@ -98,7 +98,7 @@ void AvatarPanel() {
     onClick={() => fileInputRef.current.click()}
     >;
     <Upload className="w-5 h-5" />;
-    {avatar ? 'Replace'  = 'Upload'}
+    {avatar ? "Replace"  = "Upload"}
     </Button>;
 
     {avatar && (;

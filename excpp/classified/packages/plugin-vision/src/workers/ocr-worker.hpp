@@ -1,13 +1,16 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".ocr-service.hpp"
+#include "ocr-service.hpp"
 #include "worker-logger.hpp"
 
 namespace elizaos {
@@ -38,8 +41,8 @@ public:
     std::future<void> initialize();
     std::future<void> run();
     std::future<void> processFrame();
-    std::future<Buffer> extractFullScreenBuffer(SharedMetadata metadata);
-    std::future<Buffer> extractRegionBuffer(const std::any& region, SharedMetadata metadata);
+    std::future<std::vector<uint8_t>> extractFullScreenBuffer(SharedMetadata metadata);
+    std::future<std::vector<uint8_t>> extractRegionBuffer(const std::any& region, SharedMetadata metadata);
     std::future<void> writeResultsToBuffer(const std::vector<OCRResult>& results, double frameId);
     void stop();
     std::future<void> dispose();
@@ -49,7 +52,7 @@ private:
     WorkerConfig config_;
     SharedArrayBuffer sharedBuffer_;
     DataView dataView_;
-    Int32Array atomicState_;
+    std::vector<int32_t> atomicState_;
     SharedArrayBuffer resultsBuffer_;
     DataView resultsView_;
     OCRService ocrService_;

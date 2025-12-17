@@ -16,7 +16,7 @@ std::future<void> handleUserInput(auto input, auto agentId) {
         const auto serverPort = parseInt(settings.SERVER_PORT || "3000");
 
         const auto response = fetch(;
-        "http://localhost:" + std::to_string(serverPort) + "/" + std::to_string(agentId) + "/message"
+        "http://localhost:" + serverPort + "/" + agentId + "/message"
         {
             method: "POST",
             headers: { "Content-Type": "application/json" },

@@ -1,9 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -63,7 +66,7 @@ struct VisionFrame {
     double timestamp;
     double width;
     double height;
-    Buffer data;
+    std::vector<uint8_t> data;
     std::string format;
 };
 
@@ -76,7 +79,7 @@ struct ScreenCapture {
     double timestamp;
     double width;
     double height;
-    Buffer data;
+    std::vector<uint8_t> data;
     std::vector<ScreenTile> tiles;
 };
 
@@ -88,7 +91,7 @@ struct ScreenTile {
     double y;
     double width;
     double height;
-    std::optional<Buffer> data;
+    std::optional<std::vector<uint8_t>> data;
     std::optional<TileAnalysis> analysis;
 };
 

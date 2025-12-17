@@ -11,13 +11,13 @@ void getCachedData() {
         if (!fs.existsSync(CACHE_FILE)) {
             return nullptr;
         }
-        const auto data = JSON.parse(fs.readFileSync(CACHE_FILE, 'utf-8'));
+        const auto data = /* JSON.parse */ fs.readFileSync(CACHE_FILE, "utf-8");
         return {
             holdings: data.holdings,
             lastUpdated: new Date(data.lastUpdated)
             };
             } catch (error) {
-                std::cerr << 'Error reading cache:' << error << std::endl;
+                std::cerr << "Error reading cache:" << error << std::endl;
                 return nullptr;
             }
 
@@ -36,7 +36,7 @@ void setCachedData(const std::vector<TokenHolding>& holdings) {
             lastUpdated: new Date()
             }));
             } catch (error) {
-                std::cerr << 'Error writing cache:' << error << std::endl;
+                std::cerr << "Error writing cache:" << error << std::endl;
             }
 
 }

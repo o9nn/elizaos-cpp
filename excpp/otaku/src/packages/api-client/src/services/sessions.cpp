@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::string toTimestampString(const std::variant<Date, std::string, double>& value, const std::string& paramName) {
+std::string toTimestampString(const std::variant<std::chrono::system_clock::time_point, std::string, double>& value, const std::string& paramName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!value) return undefined;
@@ -13,23 +13,23 @@ std::string toTimestampString(const std::variant<Date, std::string, double>& val
 
     if (value instanceof Date) {
         timestamp = value.getTime();
-        } else if (typeof value == 'string') {
+        } else if (typeof value == "string") {
             const auto date = new Date(value);
             timestamp = date.getTime();
 
             // Check for invalid date
             if (isNaN(timestamp)) {
-                std::cout << "Invalid date string for " + std::to_string(paramName) + ": " + std::to_string(value) << std::endl;
+                std::cout << "Invalid date string for " + paramName + ": " + value << std::endl;
                 return std::nullopt;
             }
-            } else if (typeof value == 'number') {
+            } else if (typeof value == "number") {
                 timestamp = value;
                 } else {
-                    std::cout << "Invalid type for " + std::to_string(paramName) + ": " + std::to_string(typeof value) << std::endl;
+                    std::cout << "Invalid type for " + paramName + ": " + std::to_string(typeof value) << std::endl;
                     return std::nullopt;
                 }
 
-                return timestamp.toString();
+                return std::to_string(timestamp);
 
 }
 

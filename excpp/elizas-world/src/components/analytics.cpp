@@ -12,7 +12,7 @@ void AnalyticsTracking() {
 
     useEffect(() => {
         if (pathname) {
-            posthog.capture('$pageview');
+            posthog.capture("$pageview");
         }
         }, [pathname, searchParams]);
 

@@ -18,7 +18,7 @@ Handler fromV2Handler(HandlerV2 handlerV2) {
                 const std::vector<std::any> responses = [];
                 return handlerV2(runtime, message, stateV2, options, callback, responses);
                 } catch (error) {
-                    std::cerr << 'Error in v2 handler:' << error << std::endl;
+                    std::cerr << "Error in v2 handler:" << error << std::endl;
                     throw;
                 }
                 };
@@ -41,7 +41,7 @@ HandlerV2 toV2Handler(Handler handler) {
                 // Call v1 handler, ignoring the responses parameter
                 return handler(runtime, message, stateV1, options, callback);
                 } catch (error) {
-                    std::cerr << 'Error in v1 handler:' << error << std::endl;
+                    std::cerr << "Error in v1 handler:" << error << std::endl;
                     throw;
                 }
                 };
@@ -96,7 +96,7 @@ ActionV2 toV2Action(Action action) {
     return {
         name: action.name,
         description: action.description,
-        similes: action.similes.length > 0 ? action.similes : std::nullopt, // V2 optional
+        similes: action.similes.size() > 0 ? action.similes : std::nullopt, // V2 optional
         examples: action.examples.map(exampleGroup =>
         exampleGroup.map(example => toV2ActionExample(example));
         ),

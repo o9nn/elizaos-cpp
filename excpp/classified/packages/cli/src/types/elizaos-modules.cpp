@@ -11,7 +11,7 @@ std::variant<Character, null;
 declare module '@elizaos/plugin-sql'> loadCharacterTryPath(const std::string& path) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    import type { Plugin } from '@elizaos/core';
+    import type { Plugin } from "@elizaos/core";
 
     export const plugin: Plugin;
 

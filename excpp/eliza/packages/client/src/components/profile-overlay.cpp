@@ -24,12 +24,12 @@ void ProfileOverlay(auto onClose) {
 
     // Start button configuration
     const auto startButtonConfig = {;
-        label: 'Start',
+        label: "Start",
         icon: <Play className="w-4 h-4" />,
         };
 
         if (isStarting) {
-            startButtonConfig.label = 'Starting...';
+            startButtonConfig.label = "Starting...";
             startButtonConfig.icon = <Loader2 className="animate-spin w-4 h-4" />;
         }
 
@@ -86,13 +86,13 @@ void ProfileOverlay(auto onClose) {
         className="w-full h-full object-cover";
         />;
         ) : (
-        formatAgentName(agent.name || '');
+        formatAgentName(agent.name || "");
     )}
     </div>;
     <div;
-    "absolute bottom-1 right-1 w-4 h-4 rounded-full border-2 border-background " + std::to_string();
-        isActive ? 'bg-emerald-500' : 'bg-muted-foreground'
-    }`}
+    "className={" + "absolute bottom-1 right-1 w-4 h-4 rounded-full border-2 border-background " + std::to_string();
+        isActive ? "bg-emerald-500" : "bg-muted-foreground"
+    "}";
     />;
     </div>;
     <div className="flex flex-col justify-center mr-4">;
@@ -117,7 +117,7 @@ void ProfileOverlay(auto onClose) {
         }
     }}
     >;
-    ID: {agent.id || 'N/A'}
+    ID: {agent.id || "N/A"}
     </span>;
     </TooltipTrigger>;
     <TooltipContent side="bottom">;
@@ -142,9 +142,9 @@ void ProfileOverlay(auto onClose) {
     <p className="font-medium text-sm mb-2">Status</p>;
     <div className="flex items-center">;
     <div;
-    "w-3 h-3 rounded-full mr-2 " + std::to_string(isActive ? 'bg-green-500' : 'bg-gray-400')
+    "className={" + "w-3 h-3 rounded-full mr-2 " + std::to_string(isActive ? "bg-green-500" : "bg-gray-400")
     />;
-    <span className="text-sm">{isActive ? 'Active' : 'Inactive'}</span>
+    <span className="text-sm">{isActive ? "Active" : "Inactive"}</span>
     </div>;
     </div>;
 
@@ -152,26 +152,26 @@ void ProfileOverlay(auto onClose) {
     <p className="font-medium text-sm mb-2">Model</p>;
     <div className="flex items-center gap-2">;
     <Brain className="w-4 h-4 text-muted-foreground" />;
-    <span className="text-sm">{agent.settings.model || 'Default'}</span>;
+    <span className="text-sm">{agent.settings.model || "Default"}</span>;
     </div>;
     </div>;
 
     <div>;
     <p className="font-medium text-sm mb-2">Created</p>;
     <p className="text-sm text-gray-500">;
-    {agent.createdAt ? moment(agent.createdAt).format('LLL')  = moment().format('LLL')}
+    {agent.createdAt ? moment(agent.createdAt).format("LLL")  = moment().format("LLL")}
     </p>;
     </div>;
 
     <div>;
     <p className="font-medium text-sm mb-2">Plugins</p>;
     <div className="flex flex-wrap gap-2">;
-    {agent.plugins && agent.plugins.length > 0 ? (;
+    {agent.plugins && agent.plugins.size() > 0 ? (;
     agent.plugins.map((plugin, index) => {
         // Extract plugin name by removing the prefix
         const auto pluginName = plugin;
-        .replace('@elizaos/plugin-', '');
-        .replace('@elizaos-plugins/plugin-', '');
+        .replace("@elizaos/plugin-", "");
+        .replace("@elizaos-plugins/plugin-", "");
         return (;
         <span;
     key={index}
@@ -227,7 +227,7 @@ void ProfileOverlay(auto onClose) {
     <TooltipTrigger asChild>;
     <Button;
     variant="outline";
-    "/settings/" + std::to_string(agentId);
+    "onClick={() => navigate(" + "/settings/" + agentId;
     disabled={!agent}
     className="h-9";
     size="sm";
@@ -243,7 +243,7 @@ void ProfileOverlay(auto onClose) {
     </div>;
 
     {isActive && (;
-    "/chat/" + std::to_string(agent.id);
+    "<Button variant=\"default\" className=\"h-9\" onClick={() => navigate(" + "/chat/" + agent.id;
     Message;
     </Button>;
     )}

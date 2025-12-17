@@ -68,6 +68,47 @@ class TypeScriptToCppTranspiler:
             'Record': 'std::unordered_map',
             'Partial': 'std::optional',
             'readonly': 'const',
+            # Browser/DOM types
+            'Uint8Array': 'std::vector<uint8_t>',
+            'Uint16Array': 'std::vector<uint16_t>',
+            'Uint32Array': 'std::vector<uint32_t>',
+            'Int8Array': 'std::vector<int8_t>',
+            'Int16Array': 'std::vector<int16_t>',
+            'Int32Array': 'std::vector<int32_t>',
+            'Float32Array': 'std::vector<float>',
+            'Float64Array': 'std::vector<double>',
+            'ArrayBuffer': 'std::vector<uint8_t>',
+            'Buffer': 'std::vector<uint8_t>',
+            'Blob': 'std::vector<uint8_t>',
+            'HTMLElement': 'void*',
+            'HTMLVideoElement': 'void*',
+            'HTMLAudioElement': 'void*',
+            'HTMLCanvasElement': 'void*',
+            'HTMLInputElement': 'void*',
+            'HTMLDivElement': 'void*',
+            'HTMLImageElement': 'void*',
+            'Element': 'void*',
+            'Node': 'void*',
+            'Document': 'void*',
+            'Window': 'void*',
+            'Event': 'void*',
+            'MouseEvent': 'void*',
+            'KeyboardEvent': 'void*',
+            'Response': 'std::string',
+            'Request': 'std::string',
+            'Headers': 'std::unordered_map<std::string, std::string>',
+            'URL': 'std::string',
+            'URLSearchParams': 'std::unordered_map<std::string, std::string>',
+            'Date': 'std::chrono::system_clock::time_point',
+            'RegExp': 'std::regex',
+            'Error': 'std::runtime_error',
+            'TypeError': 'std::runtime_error',
+            'RangeError': 'std::runtime_error',
+            'Object': 'std::any',
+            'Symbol': 'std::string',
+            'BigInt': 'int64_t',
+            'unknown': 'std::any',
+            'never': 'void',
         }
         
         # Common import patterns to C++ includes
@@ -148,11 +189,50 @@ class TypeScriptToCppTranspiler:
             raw_types = [t.strip() for t in ts_type.split('|')]
 
             # Check if this is a string literal union like 'default' | 'retry' | 'shell'
-            # All parts are string literals (single quoted)
-            if all(t.startswith("'") and t.endswith("'") for t in raw_types):
+            # All parts are string literals (single or double quoted)
+            def is_string_literal(t):
+                return (t.startswith("'") and t.endswith("'")) or \
+                       (t.startswith('"') and t.endswith('"'))
+
+            if all(is_string_literal(t) for t in raw_types):
                 return 'std::string'  # String literal union -> std::string
 
+            # Check if this is a numeric literal union like 0 | 1 | 2
+            # All parts are just numbers
+            if all(re.match(r'^-?\d+\.?\d*$', t) for t in raw_types):
+                # Use the smallest appropriate integer type
+                return 'int'  # Numeric literal union -> int
+
+            # Check if this is a boolean literal union like true | false
+            if all(t in ['true', 'false'] for t in raw_types):
+                return 'bool'
+
             types = [self.convert_type(t) for t in raw_types]
+
+            # Filter out invalid types (numeric literals, string literals, booleans)
+            valid_types = []
+            for t in types:
+                # Skip if it's a numeric literal (shouldn't be in variant)
+                if re.match(r'^-?\d+\.?\d*$', t):
+                    continue
+                # Skip if it's a boolean literal
+                if t in ['true', 'false']:
+                    continue
+                # Skip if it's a quoted string literal that wasn't converted
+                if (t.startswith("'") and t.endswith("'")) or \
+                   (t.startswith('"') and t.endswith('"')):
+                    continue
+                valid_types.append(t)
+
+            # If all types were filtered out (all string literals), return std::string
+            if not valid_types:
+                # Check if original types were all string literals
+                if all(is_string_literal(t) or t == 'std::string' for t in raw_types):
+                    return 'std::string'
+                return 'int'  # Fallback to int
+
+            types = valid_types
+
             # Simplify null unions to optional
             if 'null' in ts_type.lower():
                 non_null_types = [t for t in types if t not in ['null', 'nullptr', 'std::nullopt', 'std::string']]
@@ -172,6 +252,9 @@ class TypeScriptToCppTranspiler:
             unique_types = list(dict.fromkeys(types))
             if len(unique_types) == 1:
                 return unique_types[0]
+            # Final check: if all remaining types are std::string, just return std::string
+            if all(t == 'std::string' for t in unique_types):
+                return 'std::string'
             return f'std::variant<{", ".join(unique_types)}>'
         
         # Handle function types like (value: string) => void
@@ -309,6 +392,9 @@ class TypeScriptToCppTranspiler:
         includes.add('#include <optional>')
         includes.add('#include <functional>')
         includes.add('#include <unordered_map>')
+        includes.add('#include <unordered_set>')
+        includes.add('#include <algorithm>')  # For std::find
+        includes.add('#include <cstdint>')  # For uint8_t, etc.
         
         # Track if we need additional includes based on usage
         self._needs_any = False
@@ -326,11 +412,23 @@ class TypeScriptToCppTranspiler:
                 module_name = module_path.split('/')[-1]
                 includes.add(f'#include "elizaos/{module_name}.hpp"')
             elif module_path.startswith('.'):
-                # Relative import
-                clean_path = module_path.replace('./', '').replace('../', '')
+                # Relative import - clean up path properly
+                clean_path = module_path
+                # Remove leading ./ and ../
+                while clean_path.startswith('./') or clean_path.startswith('../'):
+                    if clean_path.startswith('./'):
+                        clean_path = clean_path[2:]
+                    elif clean_path.startswith('../'):
+                        clean_path = clean_path[3:]
+                # Remove leading single dot if path starts with just .something
+                if clean_path.startswith('.') and len(clean_path) > 1 and clean_path[1] != '.':
+                    clean_path = clean_path[1:]
+                # Ensure it has .hpp extension
                 if not clean_path.endswith('.hpp'):
                     clean_path += '.hpp'
-                includes.add(f'#include "{clean_path}"')
+                # Skip empty paths
+                if clean_path and clean_path != '.hpp':
+                    includes.add(f'#include "{clean_path}"')
         
         # Remove import statements from content (including any trailing semicolons)
         content_no_imports = re.sub(import_pattern + r';?', '', ts_content)
@@ -359,6 +457,22 @@ class TypeScriptToCppTranspiler:
         # Check for std::tuple usage
         if 'std::tuple' in content:
             includes_set.add('#include <tuple>')
+
+        # Check for std::chrono usage
+        if 'std::chrono' in content:
+            includes_set.add('#include <chrono>')
+
+        # Check for std::regex usage
+        if 'std::regex' in content:
+            includes_set.add('#include <regex>')
+
+        # Check for std::runtime_error usage
+        if 'std::runtime_error' in content:
+            includes_set.add('#include <stdexcept>')
+
+        # Check for iostream usage
+        if 'std::cout' in content or 'std::cerr' in content or 'std::endl' in content:
+            includes_set.add('#include <iostream>')
         
         # Sort includes properly: pragma once first, then system, then project
         result = []
@@ -701,12 +815,9 @@ class TypeScriptToCppTranspiler:
         def convert_type_alias(m):
             name = m.group(1)
             type_def = m.group(2).strip()
-            # Convert union types A | B to std::variant<A, B>
-            if '|' in type_def:
-                types = [self.convert_type(t.strip()) for t in type_def.split('|')]
-                return f'using {name} = std::variant<{", ".join(types)}>;'
-            else:
-                return f'using {name} = {self.convert_type(type_def)};'
+            # Use convert_type which already handles union types properly
+            cpp_type = self.convert_type(type_def)
+            return f'using {name} = {cpp_type};'
         content = re.sub(type_pattern, convert_type_alias, content)
         
         # Extract and convert function declarations properly
@@ -919,73 +1030,95 @@ class TypeScriptToCppTranspiler:
         """Convert a single TypeScript statement to C++"""
         indent = '    ' * indent_level
         stmt = stmt.strip()
-        
+
         if not stmt:
             return ''
-        
+
         # Skip lines that are just braces
         if stmt in ['{', '}']:
             return indent + stmt
-        
+
         # Handle closing braces with semicolons (end of return statement with object literal)
         if stmt in ['};', '}']:
             return indent + '};'
-        
+
         # Skip lines that are just closing with comma (part of object literal)
         if stmt in ['},', '];', '),']:
             return indent + stmt
-        
+
         # Handle try-catch blocks
         if stmt == 'try {':
             return indent + stmt
         if stmt.startswith('catch '):
             return indent + self.convert_catch_statement(stmt)
-        
+
+        # Convert case statements in switches (string cases to if-else equivalent comment)
+        if stmt.startswith('case '):
+            # Extract case value and convert single quotes
+            case_match = re.match(r"case\s+['\"]([^'\"]+)['\"]\s*:", stmt)
+            if case_match:
+                case_value = case_match.group(1)
+                return f'{indent}// case "{case_value}":'
+            # Numeric case - keep as is
+            return indent + stmt
+
+        if stmt == 'default:':
+            return f'{indent}// default:'
+
+        if stmt == 'break;':
+            return f'{indent}break;'
+
         # Convert variable declarations
         if stmt.startswith('const ') or stmt.startswith('let ') or stmt.startswith('var '):
             return self.convert_variable_declaration(stmt, indent)
-        
+
         # Convert return statements
         if stmt.startswith('return '):
             return self.convert_return_statement(stmt, indent)
-        
+
         # Convert if statements
         if stmt.startswith('if '):
             return indent + self.convert_if_statement(stmt)
-        
+
         # Convert for loops
         if stmt.startswith('for '):
             return indent + self.convert_for_loop(stmt)
-        
+
         # Convert while loops
         if stmt.startswith('while '):
             return indent + stmt.replace('===', '==').replace('!==', '!=')
-        
+
+        # Convert switch statements header (note: body handled separately)
+        if stmt.startswith('switch '):
+            # Convert switch variable
+            converted = self.convert_expression(stmt)
+            return indent + converted
+
         # Convert throw statements
         if stmt.startswith('throw '):
             return indent + self.convert_throw_statement(stmt)
-        
+
         # Convert logger/console statements
         if 'logger.' in stmt or 'console.' in stmt:
             return indent + self.convert_log_statement(stmt)
-        
+
         # Check if this is part of an object/array literal (contains : or just ,)
         if (':' in stmt or stmt.endswith(',')) and not stmt.startswith('//'):
             # This is likely a property in an object literal
             converted = self.convert_expression(stmt)
             # Don't add semicolon for object properties
             return indent + converted
-        
+
         # Default: return with basic conversions
         converted = self.convert_expression(stmt)
-        
+
         # Remove trailing semicolons if present, we'll add them back
         converted = converted.rstrip(';')
-        
+
         # Add semicolon if this is a statement (not a brace, not ending in comma)
         if converted and not converted.endswith(('{', '}', ',', ';')):
             converted += ';'
-        
+
         return indent + converted
     
     def convert_catch_statement(self, stmt: str) -> str:
@@ -1128,60 +1261,117 @@ class TypeScriptToCppTranspiler:
     def convert_expression(self, expr: str) -> str:
         """Convert a TypeScript expression to C++"""
         expr = expr.strip()
-        
+
         if not expr:
             return expr
-        
+
         # Remove type assertions like "as any" or "as string"
         expr = re.sub(r'\s+as\s+\w+', '', expr)
-        
+
         # Convert instanceof checks
         # error instanceof Error -> dynamic_cast or typeid check (simplified)
         expr = re.sub(r'(\w+)\s+instanceof\s+Error', r'true /* instanceof check */', expr)
         expr = re.sub(r'(\w+)\s+instanceof\s+(\w+)', r'true /* instanceof \2 check */', expr)
-        
+
         # Convert new Error() to std::runtime_error
         expr = re.sub(r'new\s+Error\s*\(([^)]*)\)', r'std::runtime_error(\1)', expr)
-        
+
         # Convert String() to std::to_string or similar
         expr = re.sub(r'String\(([^)]+)\)', r'std::to_string(\1)', expr)
-        
+
         # Convert await expressions
         expr = re.sub(r'\bawait\s+', '', expr)  # Remove await, assume sync for now
-        
+
+        # Convert string templates `text ${var}` to string concatenation BEFORE other processing
+        if '`' in expr:
+            expr = self.convert_template_string(expr)
+
+        # Convert single-quoted strings to double-quoted (for C++)
+        # But be careful with character literals
+        expr = self._convert_single_quotes(expr)
+
         # Convert object literals { key: value } - try to convert to struct init
         if expr.startswith('{') and expr.endswith('}') and ':' in expr:
             expr = self.convert_object_literal(expr)
-        
+
         # Convert array literals
         if expr.startswith('[') and expr.endswith(']'):
             # Leave as is, C++ uses same syntax
             pass
-        
-        # Convert string templates `text ${var}` to string concatenation
-        if '`' in expr:
-            expr = self.convert_template_string(expr)
-        
+
         # Convert null to nullptr
         expr = re.sub(r'\bnull\b', 'nullptr', expr)
-        
+
         # Convert undefined to std::nullopt
         expr = re.sub(r'\bundefined\b', 'std::nullopt', expr)
-        
+
         # Convert strict equality
         expr = expr.replace('===', '==').replace('!==', '!=')
-        
+
         # Convert optional chaining (simplified - just remove ?)
         expr = expr.replace('?.', '.')
-        
+
         # Convert nullish coalescing (simplified)
         expr = expr.replace('??', '||')
-        
+
         # Convert arrow functions (simple cases)
         if '=>' in expr and not any(kw in expr for kw in ['===', '!==']):
             expr = self.convert_arrow_function(expr)
-        
+
+        # Convert console.log/error/warn to std::cout/cerr
+        expr = re.sub(r'console\.log\(([^)]*)\)', r'std::cout << \1 << std::endl', expr)
+        expr = re.sub(r'console\.error\(([^)]*)\)', r'std::cerr << \1 << std::endl', expr)
+        expr = re.sub(r'console\.warn\(([^)]*)\)', r'std::cerr << "[WARN] " << \1 << std::endl', expr)
+
+        # Convert JSON.stringify to a placeholder
+        expr = re.sub(r'JSON\.stringify\(([^)]*)\)', r'/* JSON.stringify */ std::string(\1)', expr)
+
+        # Convert JSON.parse to a placeholder
+        expr = re.sub(r'JSON\.parse\(([^)]*)\)', r'/* JSON.parse */ \1', expr)
+
+        # Convert .toString() to std::to_string()
+        expr = re.sub(r'(\w+)\.toString\(\)', r'std::to_string(\1)', expr)
+
+        # Convert .length to .size() for containers
+        expr = re.sub(r'\.length\b', '.size()', expr)
+
+        # Convert .push() to .push_back()
+        expr = re.sub(r'\.push\(', '.push_back(', expr)
+
+        # Convert .includes() to std::find pattern (simplified)
+        expr = re.sub(r'(\w+)\.includes\(([^)]+)\)', r'(std::find(\1.begin(), \1.end(), \2) != \1.end())', expr)
+
         return expr
+
+    def _convert_single_quotes(self, expr: str) -> str:
+        """Convert single-quoted strings to double-quoted strings for C++"""
+        result = []
+        i = 0
+        while i < len(expr):
+            if expr[i] == "'":
+                # Find matching closing quote
+                j = i + 1
+                while j < len(expr):
+                    if expr[j] == "\\" and j + 1 < len(expr):
+                        j += 2
+                        continue
+                    if expr[j] == "'":
+                        break
+                    j += 1
+                if j < len(expr):
+                    # Extract content and convert to double quotes
+                    content = expr[i+1:j]
+                    # Check if it's a single character (char literal in C++)
+                    if len(content) == 1 and content not in ['"', "'"]:
+                        # Keep as char literal but could be string
+                        result.append('"' + content + '"')
+                    else:
+                        result.append('"' + content + '"')
+                    i = j + 1
+                    continue
+            result.append(expr[i])
+            i += 1
+        return ''.join(result)
     
     def convert_object_literal(self, obj_str: str) -> str:
         """Convert object literal to C++ struct initialization"""
@@ -1204,25 +1394,27 @@ class TypeScriptToCppTranspiler:
         """Convert template strings to string concatenation"""
         # Pattern: `text ${var} more text`
         # Convert to: "text " + std::to_string(var) + " more text"
-        
+
         result = []
         i = 0
         in_template = False
         current_part = []
-        
+
         while i < len(expr):
             if expr[i] == '`':
                 in_template = not in_template
                 if current_part:
-                    result.append('"' + ''.join(current_part) + '"')
+                    escaped_content = ''.join(current_part).replace('"', '\\"')
+                    result.append('"' + escaped_content + '"')
                     current_part = []
                 i += 1
             elif in_template and expr[i:i+2] == '${':
                 # Found interpolation start
                 if current_part:
-                    result.append('"' + ''.join(current_part) + '"')
+                    escaped_content = ''.join(current_part).replace('"', '\\"')
+                    result.append('"' + escaped_content + '"')
                     current_part = []
-                
+
                 # Find matching }
                 j = i + 2
                 brace_count = 1
@@ -1232,21 +1424,71 @@ class TypeScriptToCppTranspiler:
                     elif expr[j] == '}':
                         brace_count -= 1
                     j += 1
-                
+
                 # Extract variable and convert
-                var_expr = expr[i+2:j-1]
-                result.append(f'std::to_string({var_expr})')
+                var_expr = expr[i+2:j-1].strip()
+                # Check if it's a simple string variable or something more complex
+                if re.match(r'^[\w.]+$', var_expr):
+                    # Simple variable - might be a string already
+                    result.append(var_expr)
+                else:
+                    # Complex expression - wrap in to_string for safety
+                    result.append(f'std::to_string({var_expr})')
                 i = j
             elif in_template:
                 current_part.append(expr[i])
                 i += 1
             else:
+                # Not in template, keep character
+                current_part.append(expr[i])
                 i += 1
-        
+
+        # Handle any remaining content
+        if current_part and not in_template:
+            # Non-template content at end
+            pass
+
         if not result:
             return expr
-        
+
         return ' + '.join(result)
+
+    def convert_switch_statement(self, stmt: str, body_lines: List[str]) -> str:
+        """Convert TypeScript switch statement with string cases to C++ if-else chain"""
+        # Extract the switch expression
+        match = re.match(r'switch\s*\(\s*([^)]+)\s*\)', stmt)
+        if not match:
+            return stmt
+
+        switch_var = match.group(1).strip()
+        cpp_lines = []
+        first_case = True
+
+        for line in body_lines:
+            stripped = line.strip()
+            if stripped.startswith('case '):
+                # Extract case value
+                case_match = re.match(r"case\s+['\"]?([^'\":]+)['\"]?\s*:", stripped)
+                if case_match:
+                    case_value = case_match.group(1)
+                    if first_case:
+                        cpp_lines.append(f'if ({switch_var} == "{case_value}") {{')
+                        first_case = False
+                    else:
+                        cpp_lines.append(f'}} else if ({switch_var} == "{case_value}") {{')
+            elif stripped == 'default:':
+                cpp_lines.append('} else {')
+            elif stripped == 'break;':
+                continue  # Skip break statements in if-else
+            elif stripped == '}':
+                continue
+            else:
+                cpp_lines.append('    ' + stripped)
+
+        if cpp_lines:
+            cpp_lines.append('}')
+
+        return '\n'.join(cpp_lines)
     
     def convert_arrow_function(self, expr: str) -> str:
         """Convert arrow function to C++ lambda (simplified)"""

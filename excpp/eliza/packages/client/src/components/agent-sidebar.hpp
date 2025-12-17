@@ -1,9 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
 #include "agent-action-viewer.hpp"
@@ -18,9 +21,9 @@ namespace elizaos {
 
 
 
-using AgentSidebarProps = std::variant<{
+using AgentSidebarProps = {
 
-using FixedTabValue = std::variant<std::string, std::string, std::string, std::string>;
+using FixedTabValue = std::string;
 using TabValue = std::variant<FixedTabValue, std::string>;
 
 void AgentSidebar(auto agentName);

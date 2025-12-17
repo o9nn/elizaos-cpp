@@ -1,16 +1,20 @@
 #pragma once
+#include <algorithm>
+#include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".constants.hpp"
-#include ".services/GamificationService.hpp"
-#include ".services/ReferralService.hpp"
-#include ".utils/contentQuality.hpp"
+#include "constants.hpp"
 #include "elizaos/core.hpp"
+#include "services/GamificationService.hpp"
+#include "services/ReferralService.hpp"
+#include "utils/contentQuality.hpp"
 
 namespace elizaos {
 
@@ -23,7 +27,7 @@ namespace elizaos {
  * Validate and sanitize volume USD value
  * Returns 0 for invalid/negative values
  */
-double validateVolumeUsd(unknown volume);
+double validateVolumeUsd(const std::any& volume);
 
 std::future<bool> recordSwapPoints(ActionEventPayload payload);
 

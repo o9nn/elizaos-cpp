@@ -1,18 +1,21 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".types.hpp"
-#include ".utils/config-utils.hpp"
-#include ".utils/dependency-resolver.hpp"
-#include ".utils/plugin-utils.hpp"
 #include "elizaos/core.hpp"
 #include "elizaos/plugin-sql.hpp"
 #include "elizaos/server.hpp"
+#include "types.hpp"
+#include "utils/config-utils.hpp"
+#include "utils/dependency-resolver.hpp"
+#include "utils/plugin-utils.hpp"
 
 namespace elizaos {
 

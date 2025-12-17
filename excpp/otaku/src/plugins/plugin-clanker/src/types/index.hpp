@@ -1,10 +1,13 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
 
@@ -63,7 +66,7 @@ struct RewardRecipient {
     std::string recipient;
     std::string admin;
     double bps;
-    std::variant<"Both", "Paired", "Clanker"> token;
+    std::string token;
 };
 
 struct RewardsConfig {
@@ -219,7 +222,7 @@ enum ErrorCode {
 // Transaction monitoring
 struct TransactionStatus {
     std::string hash;
-    std::variant<"pending", "confirmed", "failed"> status;
+    std::string status;
     double confirmations;
     std::optional<std::string> error;
 };

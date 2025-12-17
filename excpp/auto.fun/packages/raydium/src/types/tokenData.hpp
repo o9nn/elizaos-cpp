@@ -1,9 +1,13 @@
 #pragma once
+#include <algorithm>
+#include <chrono>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
 
@@ -64,14 +68,14 @@ struct TokenData {
     std::optional<std::string> nftMinted;
     std::optional<std::string> lockId;
     std::optional<std::string> lockedAmount;
-    std::optional<Date> lockedAt;
-    std::optional<Date> harvestedAt;
+    std::optional<std::chrono::system_clock::time_point> lockedAt;
+    std::optional<std::chrono::system_clock::time_point> harvestedAt;
     std::string status;
-    Date createdAt;
+    std::chrono::system_clock::time_point createdAt;
     std::string lastUpdated;
-    std::optional<Date> completedAt;
-    std::optional<Date> withdrawnAt;
-    std::optional<Date> migratedAt;
+    std::optional<std::chrono::system_clock::time_point> completedAt;
+    std::optional<std::chrono::system_clock::time_point> withdrawnAt;
+    std::optional<std::chrono::system_clock::time_point> migratedAt;
     std::optional<std::string> marketId;
     std::optional<std::string> baseVault;
     std::optional<std::string> quoteVault;
@@ -90,8 +94,8 @@ struct TokenData {
     std::optional<double> price24hAgo;
     std::optional<double> volume24h;
     std::optional<double> inferenceCount;
-    std::optional<Date> lastVolumeReset;
-    std::optional<Date> lastPriceUpdate;
+    std::optional<std::chrono::system_clock::time_point> lastVolumeReset;
+    std::optional<std::chrono::system_clock::time_point> lastPriceUpdate;
     std::optional<double> holderCount;
     std::optional<std::string> txId;
     std::optional<MigrationData> migration;
@@ -101,7 +105,7 @@ struct TokenData {
     std::optional<std::string> tokenSupply;
     std::optional<double> tokenSupplyUiAmount;
     std::optional<double> tokenDecimals;
-    std::optional<Date> lastSupplyUpdate;
+    std::optional<std::chrono::system_clock::time_point> lastSupplyUpdate;
 };
 
 struct TokenDBData {
@@ -121,14 +125,14 @@ struct TokenDBData {
     std::optional<std::string> nftMinted;
     std::optional<std::string> lockId;
     std::optional<std::string> lockedAmount;
-    std::optional<Date> lockedAt;
-    std::optional<Date> harvestedAt;
+    std::optional<std::chrono::system_clock::time_point> lockedAt;
+    std::optional<std::chrono::system_clock::time_point> harvestedAt;
     std::optional<std::string> status;
-    std::optional<Date> createdAt;
-    Date lastUpdated;
-    std::optional<Date> completedAt;
-    std::optional<Date> withdrawnAt;
-    std::optional<Date> migratedAt;
+    std::optional<std::chrono::system_clock::time_point> createdAt;
+    std::chrono::system_clock::time_point lastUpdated;
+    std::optional<std::chrono::system_clock::time_point> completedAt;
+    std::optional<std::chrono::system_clock::time_point> withdrawnAt;
+    std::optional<std::chrono::system_clock::time_point> migratedAt;
     std::optional<std::string> marketId;
     std::optional<std::string> baseVault;
     std::optional<std::string> quoteVault;
@@ -147,8 +151,8 @@ struct TokenDBData {
     std::optional<double> price24hAgo;
     std::optional<double> volume24h;
     std::optional<double> inferenceCount;
-    std::optional<Date> lastVolumeReset;
-    std::optional<Date> lastPriceUpdate;
+    std::optional<std::chrono::system_clock::time_point> lastVolumeReset;
+    std::optional<std::chrono::system_clock::time_point> lastPriceUpdate;
     std::optional<double> holderCount;
     std::optional<std::string> txId;
     std::optional<std::string> migration;

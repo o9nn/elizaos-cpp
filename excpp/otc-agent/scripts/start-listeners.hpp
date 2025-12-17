@@ -1,13 +1,16 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".src/services/token-registration-listener-base.hpp"
-#include ".src/services/token-registration-listener-solana.hpp"
+#include "src/services/token-registration-listener-base.hpp"
+#include "src/services/token-registration-listener-solana.hpp"
 
 namespace elizaos {
 

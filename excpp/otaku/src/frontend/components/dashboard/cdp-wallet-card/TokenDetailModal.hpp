@@ -1,16 +1,18 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
-#include "...constants/chains.hpp"
-#include "...contexts/ModalContext.hpp"
-#include "...lib/number-format.hpp"
-#include "..ui/button.hpp"
-#include "..ui/chart.hpp"
+#include "constants/chains.hpp"
+#include "contexts/ModalContext.hpp"
+#include "lib/number-format.hpp"
+#include "ui/button.hpp"
+#include "ui/chart.hpp"
 
 namespace elizaos {
 
@@ -32,14 +34,14 @@ struct Token {
     std::optional<std::string> icon;
 };
 
-using ChainNetwork = std::variant<std::string, std::string, std::string>;
+using ChainNetwork = std::string;
 
 struct TokenDetailModalContentProps {
     Token token;
 };
 
-using TimeFrame = std::variant<std::string, std::string, std::string, std::string, std::string>;
-using ChartType = std::variant<std::string, std::string>;
+using TimeFrame = std::string;
+using ChartType = std::string;
 
 struct PriceDataPoint {
     double timestamp;

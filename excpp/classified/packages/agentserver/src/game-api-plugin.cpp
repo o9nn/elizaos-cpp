@@ -4,12 +4,12 @@
 
 namespace elizaos {
 
-std::future<void> startAgentScreenCapture(IAgentRuntime runtime, std::optional<unknown> server) {
+std::future<void> startAgentScreenCapture(IAgentRuntime runtime, std::optional<std::any> server) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
         if (screenCaptureActive) {
-            std::cout << '[VirtualScreen] Screen capture already active' << std::endl;
+            std::cout << "[VirtualScreen] Screen capture already active" << std::endl;
             return;
         }
 
@@ -18,22 +18,22 @@ std::future<void> startAgentScreenCapture(IAgentRuntime runtime, std::optional<u
             agentServerInstance = server;
         }
 
-        const auto display = process.env.DISPLAY || ':99';
-        std::cout << "[VirtualScreen] Starting screen capture on display " + std::to_string(display) << std::endl;
+        const auto display = process.env.DISPLAY || ":99";
+        std::cout << "[VirtualScreen] Starting screen capture on display " + display << std::endl;
 
         // Test ffmpeg availability first
         try {
-            execAsync('which ffmpeg');
+            execAsync("which ffmpeg");
             } catch {
                 logger.error(
-                '[VirtualScreen] ffmpeg not found. Installing would be required for screen capture.';
+                "[VirtualScreen] ffmpeg not found. Installing would be required for screen capture.";
                 );
                 throw std::runtime_error('ffmpeg not available for screen capture');
             }
 
             // Test X11 display availability
             try {
-                "xdpyinfo -display " + std::to_string(display);
+                "execAsync(" + "xdpyinfo -display " + display;
                 } catch {
                     std::cout << '[VirtualScreen] X11 display not ready << waiting...' << std::endl;
                     // Wait a bit for display to be ready
@@ -47,51 +47,51 @@ std::future<void> startAgentScreenCapture(IAgentRuntime runtime, std::optional<u
                     try {
                         // Use ffmpeg to capture a single frame from the virtual display
                         // Using spawn to properly handle binary data
-                        const auto ffmpeg = spawn('ffmpeg', [;
-                        '-f',
-                        'x11grab',
-                        '-video_size',
-                        '1280x720',
-                        '-i',
+                        const auto ffmpeg = spawn("ffmpeg", [;
+                        "-f",
+                        "x11grab",
+                        "-video_size",
+                        "1280x720",
+                        "-i",
                         display,
-                        '-vframes',
-                        '1',
-                        '-f',
-                        'mjpeg',
-                        '-q:v',
-                        '2',
-                        '-loglevel',
-                        'error',
-                        '-',
+                        "-vframes",
+                        "1",
+                        "-f",
+                        "mjpeg",
+                        "-q:v",
+                        "2",
+                        "-loglevel",
+                        "error",
+                        "-",
                         ]);
 
-                        const std::vector<Buffer> chunks = [];
-                        auto errorOutput = '';
+                        const std::vector<std::vector<uint8_t>> chunks = [];
+                        auto errorOutput = "";
 
-                        ffmpeg.stdout.on('data', (chunk) => {
-                            chunks.push(chunk);
+                        ffmpeg.stdout.on("data", (chunk) => {
+                            chunks.push_back(chunk);
                             });
 
-                            ffmpeg.stderr.on('data', (data) => {
-                                errorOutput += data.toString();
+                            ffmpeg.stderr.on("data", (data) => {
+                                errorOutput += std::to_string(data);
                                 });
 
                                 new Promise<void>((resolve, reject) => {
                                     const auto timeout = setTimeout(() => {;
                                         ffmpeg.kill();
-                                        reject(std::runtime_error('FFmpeg timeout'));
+                                        reject(std::runtime_error("FFmpeg timeout"));
                                         }, 5000);
 
-                                        ffmpeg.on('close', (code) => {
+                                        ffmpeg.on("close", (code) => {
                                             clearTimeout(timeout);
                                             if (code != 0) {
-                                                "FFmpeg exited with code " + std::to_string(code) + ": " + std::to_string(errorOutput)
+                                                "reject(std::runtime_error(" + "FFmpeg exited with code " + code + ": " + errorOutput
                                                 } else {
                                                     resolve();
                                                 }
                                                 });
 
-                                                ffmpeg.on('error', (err) => {
+                                                ffmpeg.on("error", (err) => {
                                                     clearTimeout(timeout);
                                                     reject(err);
                                                     });
@@ -126,7 +126,7 @@ std::future<void> startAgentScreenCapture(IAgentRuntime runtime, std::optional<u
                                                         }
 
                                                         const auto buffer = mediaBuffers.get(agentId)!;
-                                                        buffer.videoFrames.push(new Uint8Array(frameData));
+                                                        buffer.videoFrames.push_back(new Uint8Array(frameData));
                                                         if (buffer.videoFrames.length > buffer.maxBufferSize) {
                                                             buffer.videoFrames.shift();
                                                         }
@@ -135,7 +135,7 @@ std::future<void> startAgentScreenCapture(IAgentRuntime runtime, std::optional<u
                                                         const auto serverInstance = agentServerInstance;
                                                         if (serverInstance && serverInstance.broadcastToWebSocketClients) {
                                                             serverInstance.broadcastToWebSocketClients({
-                                                                type: 'agent_screen_frame',
+                                                                type: "agent_screen_frame",
                                                                 agentId,
                                                                 frameData: Array.from(frameData),
                                                                 width: 1280,
@@ -148,13 +148,13 @@ std::future<void> startAgentScreenCapture(IAgentRuntime runtime, std::optional<u
                                                                 }
 
                                                                 // Also notify vision service if available
-                                                                const auto visionService = runtime.getService<VisionService>('vision');
+                                                                const auto visionService = runtime.getService<VisionService>("vision");
                                                                 if (visionService && typeof visionService.processMediaStream == 'function') {
                                                                     visionService.processMediaStream({
-                                                                        type: 'video',
-                                                                        streamType: 'agent_screen',
+                                                                        type: "video",
+                                                                        streamType: "agent_screen",
                                                                         data: new Uint8Array(frameData),
-                                                                        encoding: 'jpeg',
+                                                                        encoding: "jpeg",
                                                                         timestamp: Date.now(),
                                                                         });
                                                                     }
@@ -162,12 +162,12 @@ std::future<void> startAgentScreenCapture(IAgentRuntime runtime, std::optional<u
                                                                         // Only log actual errors, not expected issues
                                                                         const auto errorMessage = true /* instanceof check */ ? error.message : std::to_string(error);
                                                                         if (!errorMessage.includes('timeout')) {
-                                                                            std::cerr << '[VirtualScreen] Failed to capture screen:' << errorMessage << std::endl;
+                                                                            std::cerr << "[VirtualScreen] Failed to capture screen:" << errorMessage << std::endl;
                                                                         }
                                                                     }
                                                                     }, 100); // 10 FPS;
 
-                                                                    std::cout << '[VirtualScreen] Screen capture started successfully' << std::endl;
+                                                                    std::cout << "[VirtualScreen] Screen capture started successfully" << std::endl;
 
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
@@ -183,11 +183,11 @@ std::future<void> stopAgentScreenCapture() {
         screenCaptureInterval = nullptr;
     }
     screenCaptureActive = false;
-    std::cout << '[VirtualScreen] Screen capture stopped' << std::endl;
+    std::cout << "[VirtualScreen] Screen capture stopped" << std::endl;
 
 }
 
-void successResponse(unknown data) {
+void successResponse(const std::any& data) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return {
@@ -198,7 +198,7 @@ void successResponse(unknown data) {
 
 }
 
-void errorResponse(const std::string& code, const std::string& message, std::optional<unknown> details) {
+void errorResponse(const std::string& code, const std::string& message, std::optional<std::any> details) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return {
@@ -215,13 +215,13 @@ std::vector<std::string> generateConfigRecommendations(ValidationResults validat
     const std::vector<std::string> recommendations = [];
 
     if (validationResults.overall == 'unhealthy') {
-        recommendations.push(;
-        '❌ Critical: No working model provider configured. Please configure at least one provider.'
+        recommendations.push_back(;
+        "❌ Critical: No working model provider configured. Please configure at least one provider."
         );
     }
 
     if (validationResults.overall == 'degraded') {
-        recommendations.push('⚠️ Warning: Some issues detected with model provider configuration.');
+        recommendations.push_back("⚠️ Warning: Some issues detected with model provider configuration.");
     }
 
     // Check each provider
@@ -229,20 +229,20 @@ std::vector<std::string> generateConfigRecommendations(ValidationResults validat
     [&]([provider, config]: [string, ValidationConfig]) {
         if (config.status == 'unhealthy') {
             if (config.apiKey == 'missing') {
-                "🔑 Configure " + std::to_string(provider) + " API key to enable " + std::to_string(provider) + " provider.";
-                } else if (config.connectionTest.status == 'failed') {
-                    recommendations.push(;
-                    "🔗 " + std::to_string(provider) + " API key present but connection failed: " + std::to_string(config.connectionTest.message)
+                "recommendations.push_back(" + "🔑 Configure " + provider + " API key to enable " + provider + " provider.";
+                } else if (config.connectionTest.status == "failed") {
+                    recommendations.push_back(;
+                    "🔗 " + provider + " API key present but connection failed: " + config.connectionTest.message
                     );
                 }
-                } else if (config.status == 'degraded') {
+                } else if (config.status == "degraded") {
                     if (config.connectionTest.modelAvailable == false) {
-                        recommendations.push(;
-                        "📋 " + std::to_string(provider) + " connected but model "" + std::to_string(config.model) + "" not available. Check model name or permissions.";
+                        recommendations.push_back(;
+                        "📋 " + provider + " connected but model \"" + config.model + "\" not available. Check model name or permissions.";
                         );
                     }
-                    } else if (config.status == 'healthy') {
-                        "✅ " + std::to_string(provider) + " configuration is working correctly.";
+                    } else if (config.status == "healthy") {
+                        "recommendations.push_back(" + "✅ " + provider + " configuration is working correctly.";
                     }
                 }
                 );
@@ -251,18 +251,18 @@ std::vector<std::string> generateConfigRecommendations(ValidationResults validat
                 Object.entries(validationResults.services).forEach(;
                 [&]([service, config]: [string, ServiceConfig]) {
                     if (
-                    config.status == 'not_loaded' &&;
+                    config.status == "not_loaded" &&;
                     service == validationResults.environment.MODEL_PROVIDER.value;
                     ) {
-                        recommendations.push(;
-                        "⚙️ " + std::to_string(service) + " service not loaded. This may affect runtime performance.";
+                        recommendations.push_back(;
+                        "⚙️ " + service + " service not loaded. This may affect runtime performance.";
                         );
                     }
                 }
                 );
 
                 if (recommendations.length == 0) {
-                    recommendations.push('✅ All configurations appear to be working correctly.');
+                    recommendations.push_back("✅ All configurations appear to be working correctly.");
                 }
 
                 return recommendations;
@@ -272,26 +272,26 @@ std::vector<std::string> generateConfigRecommendations(ValidationResults validat
 std::future<void> createInitialTodosAndGoals(IAgentRuntime runtime) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    std::cout << '[GAME-API] Creating initial todos and goals using plugin APIs...' << std::endl;
+    std::cout << "[GAME-API] Creating initial todos and goals using plugin APIs..." << std::endl;
 
     // First, ensure the agent exists in the database
     try {
         const auto agent = runtime.db.getAgent(runtime.agentId);
         if (!agent) {
             console.error(
-            '[GAME-API] Agent not found in database, skipping initial todos/goals creation';
+            "[GAME-API] Agent not found in database, skipping initial todos/goals creation";
             );
             return;
         }
-        std::cout << '[GAME-API] Agent verified in database:' << agent.id << std::endl;
+        std::cout << "[GAME-API] Agent verified in database:" << agent.id << std::endl;
         } catch (error) {
-            std::cerr << '[GAME-API] Error checking for agent existence:' << error << std::endl;
+            std::cerr << "[GAME-API] Error checking for agent existence:" << error << std::endl;
             return;
         }
 
         // Log all available services for debugging
         const auto services = runtime.services || new Map();
-        std::cout << '[GAME-API] Available services:' << Array.from(services.keys()) << std::endl;
+        std::cout << "[GAME-API] Available services:" << Array.from(services.keys()) << std::endl;
 
         // Wait for plugins to be fully ready and services to be registered
         auto retries = 0;
@@ -299,19 +299,19 @@ std::future<void> createInitialTodosAndGoals(IAgentRuntime runtime) {
         const auto retryDelay = 3000; // 3 seconds between retries;
 
         // Wait for Goals service to be available - use lowercase 'goals'
-        auto goalService = runtime.getService('goals') | nullptr;
+        auto goalService = runtime.getService("goals") | nullptr;
         while (!goalService && retries < maxRetries) {
-            goalService = runtime.getService('goals') | nullptr;
+            goalService = runtime.getService("goals") | nullptr;
             if (!goalService) {
-                std::cout << "[GAME-API] Waiting for Goals service... attempt " + std::to_string(retries + 1) + "/" + std::to_string(maxRetries) << std::endl;
-                std::cout << '[GAME-API] Current services:' << Array.from(services.keys()) << std::endl;
+                std::cout << "[GAME-API] Waiting for Goals service... attempt " + std::to_string(retries + 1) + "/" + maxRetries << std::endl;
+                std::cout << "[GAME-API] Current services:" << Array.from(services.keys()) << std::endl;
                 new Promise((resolve) => setTimeout(resolve, retryDelay));
                 retries++;
             }
         }
 
         if (!goalService) {
-            std::cerr << '[GAME-API] Goals service not available after waiting. Skipping goal creation.' << std::endl;
+            std::cerr << "[GAME-API] Goals service not available after waiting. Skipping goal creation." << std::endl;
             return;
         }
 
@@ -319,15 +319,15 @@ std::future<void> createInitialTodosAndGoals(IAgentRuntime runtime) {
 
         try {
             // Check if this is a brand new agent (no existing goals)
-            const auto existingGoals = goalService.getAllGoalsForOwner('agent', runtime.agentId);
+            const auto existingGoals = goalService.getAllGoalsForOwner("agent", runtime.agentId);
             if (existingGoals && existingGoals.length > 0) {
                 console.log(
-                "[GAME-API] Agent already has " + std::to_string(existingGoals.length) + " goals, skipping initialization";
+                "[GAME-API] Agent already has " + existingGoals.size() + " goals, skipping initialization";
                 );
                 return; // Don't add goals if agent already has some;
             }
             } catch (error) {
-                std::cerr << '[GAME-API] Error checking existing goals:' << error << std::endl;
+                std::cerr << "[GAME-API] Error checking existing goals:" << error << std::endl;
                 // Continue with creation anyway
             }
 
@@ -337,13 +337,13 @@ std::future<void> createInitialTodosAndGoals(IAgentRuntime runtime) {
             const auto starterGoals = [;
             {
                 agentId: runtime.agentId,
-                ownerType: 'agent',
+                ownerType: "agent",
                 ownerId: runtime.agentId,
-                name: 'Welcome to ELIZA OS',
+                name: "Welcome to ELIZA OS",
                 description:
-                'Get familiar with the ELIZA OS terminal interface and explore the available capabilities',
-                metadata: { priority: 'high', category: 'orientation', source: 'initial_setup' },
-                tags: ['orientation', 'setup'],
+                "Get familiar with the ELIZA OS terminal interface and explore the available capabilities",
+                metadata: { priority: "high", category: "orientation", source: "initial_setup" },
+                tags: ["orientation", "setup"],
                 },
                 ];
 
@@ -353,33 +353,33 @@ std::future<void> createInitialTodosAndGoals(IAgentRuntime runtime) {
                         const auto goalId = goalService.createGoal(goalData);
                         if (goalId) {
                             goalsCreated++;
-                            std::cout << "[GAME-API] Created goal: " + std::to_string(goalData.name) + " (" + std::to_string(goalId) + ")" << std::endl;
+                            std::cout << "[GAME-API] Created goal: " + goalData.name + " (" + goalId + ")" << std::endl;
                         }
                         } catch (error) {
-                            std::cerr << "[GAME-API] Failed to create goal "" + std::to_string(goalData.name) + "":" << error << std::endl;
+                            std::cerr << "[GAME-API] Failed to create goal \"" + goalData.name + "\":" << error << std::endl;
                         }
                     }
 
-                    std::cout << "[GAME-API] ✅ Created " + std::to_string(goalsCreated) + " initial goals using Goals plugin" << std::endl;
+                    std::cout << "[GAME-API] ✅ Created " + goalsCreated + " initial goals using Goals plugin" << std::endl;
 
                     // Create starter todos using the Todo plugin service
-                    std::cout << '[GAME-API] Creating todos using Todo plugin API...' << std::endl;
+                    std::cout << "[GAME-API] Creating todos using Todo plugin API..." << std::endl;
 
                     // Wait for Todo service to be available - use uppercase 'TODO'
-                    auto todoService = runtime.getService('TODO') | nullptr;
+                    auto todoService = runtime.getService("TODO") | nullptr;
                     retries = 0;
                     while (!todoService && retries < maxRetries) {
-                        todoService = runtime.getService('TODO') | nullptr;
+                        todoService = runtime.getService("TODO") | nullptr;
                         if (!todoService) {
-                            std::cout << "[GAME-API] Waiting for Todo service... attempt " + std::to_string(retries + 1) + "/" + std::to_string(maxRetries) << std::endl;
-                            std::cout << '[GAME-API] Current services:' << Array.from(services.keys()) << std::endl;
+                            std::cout << "[GAME-API] Waiting for Todo service... attempt " + std::to_string(retries + 1) + "/" + maxRetries << std::endl;
+                            std::cout << "[GAME-API] Current services:" << Array.from(services.keys()) << std::endl;
                             new Promise((resolve) => setTimeout(resolve, retryDelay));
                             retries++;
                         }
                     }
 
                     if (!todoService) {
-                        std::cerr << '[GAME-API] Todo service not available after waiting. Skipping todo creation.' << std::endl;
+                        std::cerr << "[GAME-API] Todo service not available after waiting. Skipping todo creation." << std::endl;
                         return;
                     }
 
@@ -387,12 +387,12 @@ std::future<void> createInitialTodosAndGoals(IAgentRuntime runtime) {
                     // Based on API testing, these are the rooms that the todos plugin API monitors:
                     const auto API_MONITORED_ROOMS = [;
                     {
-                        worldId: '00000000-0000-0000-0000-000000000001',
-                        roomId: '78dfa017-9548-4e2a-8e5f-b54aa4b5cb08',
+                        worldId: "00000000-0000-0000-0000-000000000001",
+                        roomId: "78dfa017-9548-4e2a-8e5f-b54aa4b5cb08",
                         }, // Autonomy World;
                         {
-                            worldId: 'cc91bfa9-aa00-0bfc-8919-09a4f073b8fe',
-                            roomId: 'b14661f9-37a8-0b7b-bb9c-ee9ea36b30e5',
+                            worldId: "cc91bfa9-aa00-0bfc-8919-09a4f073b8fe",
+                            roomId: "b14661f9-37a8-0b7b-bb9c-ee9ea36b30e5",
                             }, // Terminal World;
                             ];
 
@@ -401,7 +401,7 @@ std::future<void> createInitialTodosAndGoals(IAgentRuntime runtime) {
                             const auto targetRoomId = API_MONITORED_ROOMS[1].roomId; // Terminal Room;
 
                             console.log(
-                            "[GAME-API] Using hardcoded API-monitored world " + std::to_string(targetWorldId) + " and room " + std::to_string(targetRoomId) + " for todos";
+                            "[GAME-API] Using hardcoded API-monitored world " + targetWorldId + " and room " + targetRoomId + " for todos";
                             );
 
                             const auto starterTodos = [;
@@ -410,13 +410,13 @@ std::future<void> createInitialTodosAndGoals(IAgentRuntime runtime) {
                                 worldId: targetWorldId,
                                 roomId: targetRoomId,
                                 entityId: runtime.agentId,
-                                name: 'Say hello to the admin',
-                                description: 'Introduce yourself and start a conversation with the admin user',
-                                type: 'one-off',
+                                name: "Say hello to the admin",
+                                description: "Introduce yourself and start a conversation with the admin user",
+                                type: "one-off",
                                 priority: 1,
                                 isUrgent: true,
-                                metadata: { category: 'social', source: 'initial_setup', importance: 'high' },
-                                tags: ['communication', 'greeting', 'urgent'],
+                                metadata: { category: "social", source: "initial_setup", importance: "high" },
+                                tags: ["communication", "greeting", "urgent"],
                                 },
                                 ];
 
@@ -426,17 +426,17 @@ std::future<void> createInitialTodosAndGoals(IAgentRuntime runtime) {
                                         const auto todoId = todoService.createTodo(todoData);
                                         if (todoId) {
                                             todosCreated++;
-                                            std::cout << "[GAME-API] Created todo: " + std::to_string(todoData.name) + " (" + std::to_string(todoId) + ")" << std::endl;
+                                            std::cout << "[GAME-API] Created todo: " + todoData.name + " (" + todoId + ")" << std::endl;
                                         }
                                         } catch (error) {
-                                            std::cerr << "[GAME-API] Failed to create todo "" + std::to_string(todoData.name) + "":" << error << std::endl;
+                                            std::cerr << "[GAME-API] Failed to create todo \"" + todoData.name + "\":" << error << std::endl;
                                         }
                                     }
 
                                     console.log(
-                                    "[GAME-API] ✅ Created " + std::to_string(todosCreated) + " initial todos using Todo plugin (" + std::to_string(starterTodos.length) + " total configured)";
+                                    "[GAME-API] ✅ Created " + todosCreated + " initial todos using Todo plugin (" + starterTodos.size() + " total configured)";
                                     );
-                                    std::cout << "[GAME-API] ✅ Successfully created " + std::to_string(goalsCreated) + " goals and " + std::to_string(todosCreated) + " todos" << std::endl;
+                                    std::cout << "[GAME-API] ✅ Successfully created " + goalsCreated + " goals and " + todosCreated + " todos" << std::endl;
 
 }
 

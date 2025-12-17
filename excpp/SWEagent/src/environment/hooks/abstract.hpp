@@ -1,12 +1,16 @@
 #pragma once
+#include <algorithm>
+#include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
-#include ".repo.hpp"
+#include "repo.hpp"
 
 namespace elizaos {
 
@@ -20,7 +24,7 @@ namespace elizaos {
 
 // Environment interface for hooks
 struct EnvironmentInstance {
-    std::optional<unknown> deployment;
+    std::optional<std::any> deployment;
     std::optional<std::optional<Repo>> repo;
 };
 

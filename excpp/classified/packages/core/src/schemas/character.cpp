@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-CharacterValidationResult validateCharacter(unknown data) {
+CharacterValidationResult validateCharacter(const std::any& data) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto result = characterSchema.safeParse(data);
@@ -19,7 +19,7 @@ CharacterValidationResult validateCharacter(unknown data) {
         return {
             success: false,
             error: {
-                "Character validation failed: " + std::to_string(result.error.message)
+                "message: " + "Character validation failed: " + result.error.message
                 issues: result.error.issues,
                 },
                 };
@@ -30,20 +30,20 @@ CharacterValidationResult parseAndValidateCharacter(const std::string& jsonStrin
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
-        const auto parsed = JSON.parse(jsonString);
+        const auto parsed = /* JSON.parse */ jsonString;
         return validateCharacter(parsed);
         } catch (error) {
             return {
                 success: false,
                 error: {
-                    "Invalid JSON: " + std::to_string(true /* instanceof check */ ? error.message : 'Unknown JSON parsing error')
+                    "message: " + "Invalid JSON: " + std::to_string(true /* instanceof check */ ? error.message : "Unknown JSON parsing error")
                     },
                     };
                 }
 
 }
 
-data is Character isValidCharacter(unknown data) {
+data is Character isValidCharacter(const std::any& data) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return validateCharacter(data).success;

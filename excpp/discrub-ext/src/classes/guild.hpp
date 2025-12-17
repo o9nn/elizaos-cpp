@@ -1,16 +1,19 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
-#include ".types/sticker-object.hpp"
-#include ".types/welcome-screen-object.hpp"
 #include "emoji.hpp"
 #include "role.hpp"
+#include "types/sticker-object.hpp"
+#include "types/welcome-screen-object.hpp"
 
 namespace elizaos {
 

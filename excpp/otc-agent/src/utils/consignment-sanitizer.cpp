@@ -7,7 +7,7 @@ namespace elizaos {
 SanitizedConsignment sanitizeConsignmentForBuyer(OTCConsignment consignment) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const std::unordered_map<std::string, unknown> sanitized = { ...consignment };
+    const std::unordered_map<std::string, std::any> sanitized = { ...consignment };
 
     // Remove sensitive fields
     for (const auto& field : SENSITIVE_CONSIGNMENT_FIELDS)

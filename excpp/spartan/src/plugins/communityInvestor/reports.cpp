@@ -7,9 +7,9 @@ namespace elizaos {
 std::string formatPrice(double price) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return new Intl.NumberFormat('en-US', {;
-        style: 'currency',
-        currency: 'USD',
+    return new Intl.NumberFormat("en-US", {;
+        style: "currency",
+        currency: "USD",
         minimumFractionDigits: price < 1 ? 6 : 2,
         maximumFractionDigits: price < 1 ? 6 : 2,
         }).format(price);
@@ -19,18 +19,18 @@ std::string formatPrice(double price) {
 std::string formatPercent(double value) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return std::to_string(value >= 0 ? '+' : '') + std::to_string(value.toFixed(2)) + "%";
+    return std::to_string(value >= 0 ? "+" : "") + std::to_string(value.toFixed(2)) + "%";
 
 }
 
 std::string formatNumber(double value) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return new Intl.NumberFormat('en-US').format(value);
+    return new Intl.NumberFormat("en-US").format(value);
 
 }
 
-std::string formatDate(const std::variant<std::string, Date>& dateString) {
+std::string formatDate(const std::variant<std::string, std::chrono::system_clock::time_point>& dateString) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto date = true /* instanceof Date check */ ? dateString : new Date(dateString);
@@ -41,7 +41,7 @@ std::string formatDate(const std::variant<std::string, Date>& dateString) {
 double normalizeBalance(const std::variant<std::string, bigint>& balanceStr, double decimals) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto balance = typeof balanceStr == 'string' ? BigInt(balanceStr) : balanceStr;
+    const auto balance = typeof balanceStr == "string" ? BigInt(balanceStr) : balanceStr;
     return Number(balance) / 10 ** decimals;
 
 }
@@ -68,20 +68,20 @@ TradeMetrics calculateTradeMetrics(const std::vector<Transaction>& transactions,
         if (tx.timestamp > lastTradeTime) lastTradeTime = new Date(tx.timestamp);
 
         switch (tx.type) {
-            case 'BUY':
+            // case "BUY":
             totalBought += normalizedAmount;
             totalBoughtValue += value;
             volumeUsd += value;
             break;
-            case 'SELL':
+            // case "SELL":
             totalSold += normalizedAmount;
             totalSoldValue += value;
             volumeUsd += value;
             break;
-            case 'transfer_in':
+            // case "transfer_in":
             totalTransferIn += normalizedAmount;
             break;
-            case 'transfer_out':
+            // case "transfer_out":
             totalTransferOut += normalizedAmount;
             break;
         }
@@ -178,7 +178,7 @@ std::string formatTokenPerformance(TokenPerformance token) {
     - Creation Time: ${new Date(token.metadata.security.creationTime * 1000).toLocaleString()}
     - Total Supply: ${formatNumber(token.metadata.security.totalSupply)}
     - Top 10 Holders: ${formatPercent(token.metadata.security.top10HolderPercent)}
-    - Token Standard: ${token.metadata.security.isToken2022 ? 'Token-2022' : 'SPL Token'}
+    - Token Standard: ${token.metadata.security.isToken2022 ? "Token-2022" : "SPL Token"}
     `.trim();
 
 }
@@ -192,10 +192,10 @@ std::vector<std::string> formatTransactionHistory(const std::vector<Transaction>
         const auto normalizedAmount = normalizeBalance(tx.amount, token.decimals);
         const auto price = tx.price;
         ? formatPrice(Number.parseFloat(tx.price));
-        : 'N/A';
+        : "N/A";
         const auto value = tx.valueUsd;
         ? formatPrice(Number.parseFloat(tx.valueUsd));
-        : 'N/A';
+        : "N/A";
 
         return `;
     ${formatDate(tx.timestamp)} - ${tx.type}
@@ -215,7 +215,7 @@ std::string formatPositionPerformance(PositionWithBalance position, TokenPerform
 
     return `;
     Position ID: ${position.id}
-    Type: ${position.isSimulation ? 'Simulation' : 'Real'}
+    Type: ${position.isSimulation ? "Simulation" : "Real"}
     Token: ${token.name} (${token.symbol})
     Wallet: ${position.walletAddress}
 
@@ -261,7 +261,7 @@ void formatFullReport(const std::vector<TokenPerformance>& tokens, const std::ve
         if (!txMap.has(tx.positionId)) {
             txMap.set(tx.positionId, []);
         }
-        txMap.get(tx.positionId).push(tx);
+        txMap.get(tx.positionId).push_back(tx);
         });
 
         const auto tokenReports = tokens.map((token) => formatTokenPerformance(token));
@@ -347,7 +347,7 @@ std::string formatTrendArrow(double trend) {
 
     if (trend > 5) return '↑';
     if (trend < -5) return '↓';
-    return '→';
+    return "→";
 
 }
 
@@ -375,9 +375,9 @@ std::string formatTrends(Array<{
     ${trend.period}:
     - Performance: ${formatPercent(trend.avgPerformance)}
     - Success Rate: ${formatPercentMetric(trend.successRate)}
-    - Recommendations: ${trend.recommendations}`.trim()
+    "- Recommendations: ${trend.recommendations}"
     );
-    .join('\n\n');
+    .join("\n\n");
 
 }
 
@@ -385,8 +385,8 @@ std::string formatRecommenderProfile(Entity entity, RecommenderMetrics metrics, 
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto successRate = metrics.successfulRecs / metrics.totalRecommendations;
-    const auto trustTrend = calculateMetricTrend(metrics, 'trustScore', history);
-    const auto performanceTrend = calculateMetricTrend(metrics, 'avgTokenPerformance', history);
+    const auto trustTrend = calculateMetricTrend(metrics, "trustScore", history);
+    const auto performanceTrend = calculateMetricTrend(metrics, "avgTokenPerformance", history);
 
     return `;
     Entity Profile: ${entity.metadata.username}
@@ -417,11 +417,11 @@ std::string formatRecommenderReport(Entity entity, RecommenderMetrics metrics, c
 
     // Calculate performance trends for different time periods
     const auto dailyTrends = calculatePeriodTrends(sortedHistory, {;
-        label: '24 Hours',
+        label: "24 Hours",
         days: 1,
         });
         const auto weeklyTrends = calculatePeriodTrends(sortedHistory, {;
-            label: '7 Days',
+            label: "7 Days",
             days: 7,
             });
             const auto monthlyTrends = calculatePeriodTrends(sortedHistory);
@@ -461,7 +461,7 @@ std::string formatRecommenderReport(Entity entity, RecommenderMetrics metrics, c
     ${formatTrends(weeklyTrends)}
 
     Monthly Average Performance:
-    ${formatTrends(monthlyTrends)}`.trim();
+    "${formatTrends(monthlyTrends)}";
 
 }
 
@@ -482,9 +482,9 @@ std::string formatTopRecommendersOverview(const std::vector<Entity>& recommender
             const auto metric = metrics.get(entity.id);
             if (!metric) return null;
             const auto historicalData = history.get(entity.id) || [];
-            const auto trustTrend = calculateMetricTrend(metric, 'trustScore', historicalData);
+            const auto trustTrend = calculateMetricTrend(metric, "trustScore", historicalData);
 
-            const auto performanceTrend = calculateMetricTrend(metric, 'avgTokenPerformance', historicalData);
+            const auto performanceTrend = calculateMetricTrend(metric, "avgTokenPerformance", historicalData);
 
             return `;
             ${entity.metadata.username} (${entity.metadata.platform});
@@ -495,8 +495,8 @@ std::string formatTopRecommendersOverview(const std::vector<Entity>& recommender
     `.trim();
     });
     .filter((report) => report != nullptr);
-    .join('\n\n')}
-    </top_recommenders>`.trim();
+    .join("\n\n")}
+    "</top_recommenders>";
 
 }
 

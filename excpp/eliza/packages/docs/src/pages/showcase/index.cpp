@@ -47,9 +47,9 @@ void filterUsers(const std::vector<User>& users, const std::string& search, cons
         }
 
         if (operator == 'AND') {
-            return selectedTags.every((tag) => user.tags.includes(tag));
+            return selectedTags.every((tag) => user.(std::find(tags.begin(), tags.end(), tag) != tags.end()));
         }
-        return selectedTags.some((tag) => user.tags.includes(tag));
+        return selectedTags.some((tag) => user.(std::find(tags.begin(), tags.end(), tag) != tags.end()));
         });
 
 }
@@ -58,17 +58,17 @@ JSX::Element Showcase() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [selectedTags, setSelectedTags] = useState<string[]>([]);
-    const auto [operator, setOperator] = useState<'OR' | 'AND'>('OR');
-    const auto [searchValue, setSearchValue] = useState('');
+    const auto [operator, setOperator] = useState<"OR" | "AND">("OR");
+    const auto [searchValue, setSearchValue] = useState("");
 
     const auto toggleTag = [&](tag: string) {;
         setSelectedTags((tags) =>;
-        tags.includes(tag) ? tags.filter((t) => t != tag) : [...tags, tag]
+        (std::find(tags.begin(), tags.end(), tag) != tags.end()) ? tags.filter((t) => t != tag) : [...tags, tag]
         );
         };
 
         const auto toggleOperator = [&]() {;
-            setOperator((op) => (op == 'OR' ? 'AND' : 'OR'));
+            setOperator((op) => (op == "OR" ? "AND" : "OR"));
             };
 
             const auto filteredUsers = useMemo(() => {;

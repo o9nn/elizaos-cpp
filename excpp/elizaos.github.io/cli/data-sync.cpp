@@ -20,7 +20,7 @@ void printUvInstallInstructions() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     console.log(
-    chalk.red("\nError: 'uv' is not installed or not available in your PATH."),
+    chalk.red("\nError: "uv" is not installed or not available in your PATH."),
     );
     console.log(
     "\nThis script requires uv for database operations. Please install it:",
@@ -86,7 +86,7 @@ std::string formatFilesAndSize(double files, double size) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (files == 0) return "empty";
-    return std::to_string(files) + " (" + std::to_string(formatBytes(size)) + ")";
+    return files + " (" + std::to_string(formatBytes(size)) + ")";
 
 }
 
@@ -102,25 +102,25 @@ double getLatestMigrationNumber(const std::string& worktreeDir, ReturnType<typeo
     );
     if (!existsSync(journalPath)) {
         logger.warn(
-        "Journal file not found at " + std::to_string(journalPath) + ", cannot determine migration version of dump."
+        "Journal file not found at " + journalPath + ", cannot determine migration version of dump."
         );
         return std::nullopt;
     }
     try {
         const auto journalRaw = readFileSync(journalPath, "utf-8");
-        const auto journal = JSON.parse(journalRaw);
+        const auto journal = /* JSON.parse */ journalRaw;
         if (journal.entries && journal.entries.length > 0) {
-            const auto lastEntry = journal.entries[journal.entries.length - 1];
+            const auto lastEntry = journal.entries[journal.entries.size() - 1];
             if (lastEntry && typeof lastEntry.idx == "number") {
                 logger.info(
-                "Latest migration number from data branch is " + std::to_string(lastEntry.idx)
+                "Latest migration number from data branch is " + lastEntry.idx
                 );
                 return lastEntry.idx;
             }
         }
         } catch (e) {
             const auto message = true /* instanceof check */ ? e.message : std::to_string(e);
-            std::cerr << "Failed to read or parse journal file: " + std::to_string(message) << std::endl;
+            std::cerr << "Failed to read or parse journal file: " + message << std::endl;
         }
         return std::nullopt;
 
@@ -134,7 +134,7 @@ double deleteDataFiles(const std::string& directory, ReturnType<typeof createLog
     auto deletedCount = 0;
     try {
         // Find all files recursively except .gitkeep
-        const auto files = "find "" + std::to_string(directory) + "" -type f ! -name ".gitkeep"";
+        const auto files = "execSync(" + "find \"" + directory + "\" -type f ! -name \".gitkeep\"";
             encoding: "utf-8",
             });
             .split("\n");
@@ -147,7 +147,7 @@ double deleteDataFiles(const std::string& directory, ReturnType<typeof createLog
                 deletedCount++;
             }
             } catch (error) {
-                std::cerr << "Error deleting data files: " + std::to_string(error) << std::endl;
+                std::cerr << "Error deleting data files: " + error << std::endl;
             }
 
             return deletedCount;

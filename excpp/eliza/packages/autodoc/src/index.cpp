@@ -18,10 +18,10 @@ std::future<void> main() {
 
                 std::vector<std::string> prFiles = [];
                 if (
-                typeof configuration.repository.pullNumber == 'number' &&;
+                typeof configuration.repository.pullNumber == "number" &&;
                 !Number.isNaN(configuration.repository.pullNumber);
                 ) {
-                    std::cout << 'Pull Request Number: ' << configuration.repository.pullNumber << std::endl;
+                    std::cout << "Pull Request Number: " << configuration.repository.pullNumber << std::endl;
                     try {
                         const auto files = gitManager.getFilesInPullRequest(configuration.repository.pullNumber);
                         prFiles = files.map((file) => file.filename);
@@ -29,7 +29,7 @@ std::future<void> main() {
                             console.error('Error fetching PR files:', {
                                 error: prError,
                                 pullNumber: configuration.repository.pullNumber,
-                                std::to_string(configuration.repository.owner) + "/" + std::to_string(configuration.repository.name)
+                                "repository: " + configuration.repository.owner + "/" + configuration.repository.name
                                 });
                                 throw prError;
                             }
@@ -71,7 +71,7 @@ std::future<void> main() {
                                 const auto targetBranch =;
                                 configuration.generateJsDoc && branchName;
                                 ? branchName;
-                                "docs-update-readme-" + std::to_string(Date.now())
+                                ": " + "docs-update-readme-" + std::to_string(Date.now())
 
                                 if (!configuration.generateJsDoc) {
                                     gitManager.createBranch(targetBranch, configuration.branch);
@@ -82,8 +82,8 @@ std::future<void> main() {
                                 // Only create PR if we're not also generating JSDoc (otherwise changes go in JSDoc PR)
                                 if (!configuration.generateJsDoc) {
                                     const auto prContent = {;
-                                        title: 'docs: Update plugin documentation',
-                                        body: 'Updates plugin documentation with latest changes',
+                                        title: "docs: Update plugin documentation",
+                                        body: "Updates plugin documentation with latest changes",
                                         };
 
                                         gitManager.createPullRequest({
@@ -91,7 +91,7 @@ std::future<void> main() {
                                             body: prContent.body,
                                             head: targetBranch,
                                             base: configuration.branch,
-                                            labels: ['documentation', 'automated-pr'],
+                                            labels: ["documentation", "automated-pr"],
                                             reviewers: configuration.pullRequestReviewers || [],
                                             });
                                         }

@@ -13,19 +13,19 @@ PgSelect buildAdminTokensBaseQuery(const std::any& db, std::optional<std::any> p
     const std::variant<(SQL, std::vector<undefined)>> conditions = [];
 
     if (hideImported == 1) {
-        std::to_string(tokens.imported) + " = 0";
+        "conditions.push_back(sql" + tokens.imported + " = 0";
         std::cout << "[Admin Query Build] Adding condition: imported = 0" << std::endl;
     }
 
     if (search) {
-        conditions.push(;
+        conditions.push_back(;
         or(;
-        std::to_string(tokens.name) + " ILIKE " + std::to_string("%" + search + "%")
-        std::to_string(tokens.ticker) + " ILIKE " + std::to_string("%" + search + "%")
-        std::to_string(tokens.mint) + " ILIKE " + std::to_string("%" + search + "%");
+        "sql" + tokens.name + " ILIKE " + std::to_string("%" + search + "%")
+        "sql" + tokens.ticker + " ILIKE " + std::to_string("%" + search + "%")
+        "sql" + tokens.mint + " ILIKE " + std::to_string("%" + search + "%");
         );
         );
-        std::cout << "[Admin Query Build] Adding condition: search LIKE " + std::to_string(search) << std::endl;
+        std::cout << "[Admin Query Build] Adding condition: search LIKE " + search << std::endl;
     }
 
     if (conditions.length > 0) {
@@ -43,19 +43,19 @@ PgSelect buildAdminTokensCountBaseQuery(const std::any& db, std::optional<std::a
     const std::variant<(SQL, std::vector<undefined)>> conditions = [];
 
     if (hideImported == 1) {
-        std::to_string(tokens.imported) + " = 0";
+        "conditions.push_back(sql" + tokens.imported + " = 0";
         std::cout << "[Admin Count Build] Adding condition: imported = 0" << std::endl;
     }
 
     if (search) {
-        conditions.push(;
+        conditions.push_back(;
         or(;
-        std::to_string(tokens.name) + " ILIKE " + std::to_string("%" + search + "%")
-        std::to_string(tokens.ticker) + " ILIKE " + std::to_string("%" + search + "%")
-        std::to_string(tokens.mint) + " ILIKE " + std::to_string("%" + search + "%");
+        "sql" + tokens.name + " ILIKE " + std::to_string("%" + search + "%")
+        "sql" + tokens.ticker + " ILIKE " + std::to_string("%" + search + "%")
+        "sql" + tokens.mint + " ILIKE " + std::to_string("%" + search + "%");
         );
         );
-        std::cout << "[Admin Count Build] Adding condition: search LIKE " + std::to_string(search) << std::endl;
+        std::cout << "[Admin Count Build] Adding condition: search LIKE " + search << std::endl;
     }
 
     if (conditions.length > 0) {

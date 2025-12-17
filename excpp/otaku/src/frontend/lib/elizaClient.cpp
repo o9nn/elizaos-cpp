@@ -8,9 +8,9 @@ void updateApiKey(const std::string& newKey) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (newKey) {
-        localStorage.setItem('eliza-api-key', newKey);
+        localStorage.setItem("eliza-api-key", newKey);
         } else {
-            localStorage.removeItem('eliza-api-key');
+            localStorage.removeItem("eliza-api-key");
         }
 
 }

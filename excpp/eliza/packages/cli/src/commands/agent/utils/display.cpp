@@ -16,15 +16,15 @@ std::future<void> listAgents(OptionValues opts) {
             const auto agentData = agents.map((agent) => ({;
                 Name: agent.name,
                 ID: agent.id,
-                Status: agent.status || 'unknown',
+                Status: agent.status || "unknown",
                 }));
 
                 if (opts.json) {
-                    std::cout << JSON.stringify(agentData, nullptr, 2) << std::endl;
+                    std::cout << /* JSON.stringify */ std::string(agentData, nullptr, 2) << std::endl;
                     } else {
-                        std::cout << '\nAvailable agents:' << std::endl;
+                        std::cout << "\nAvailable agents:" << std::endl;
                         if (agentData.length == 0) {
-                            std::cout << 'No agents found' << std::endl;
+                            std::cout << "No agents found" << std::endl;
                             } else {
                                 console.table(agentData);
                             }

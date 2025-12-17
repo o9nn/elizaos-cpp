@@ -13,7 +13,7 @@ void UnlinkAccounts() {
         const auto { unlinkFarcaster } = useUnlinkFarcaster({;
             onError: (err) => {
                 std::cout << err << std::endl;
-                setError(JSON.stringify(err.message));
+                setError(/* JSON.stringify */ std::string(err.message));
                 },
                 onSuccess: () => {
                     std::cout << "Unlink Farcaster success" << std::endl;
@@ -22,7 +22,7 @@ void UnlinkAccounts() {
                     const auto oauth = useUnlinkOAuth({;
                         onError: (err) => {
                             std::cout << err << std::endl;
-                            setError(JSON.stringify(err.message));
+                            setError(/* JSON.stringify */ std::string(err.message));
                             },
                             });
 
@@ -55,20 +55,20 @@ void UnlinkAccounts() {
                         ).map((provider) => (;
                         <View key={provider}>;
                         <Button;
-                    "Unlink " + std::to_string(provider);
+                    "title={" + "Unlink " + provider;
                     onPress={() =>;
                     oauth.unlinkOAuth({
                         provider,
                         subject: (
                         user.linked_accounts.find(;
-                        std::to_string(provider) + "_oauth";
+                        "(account) => (account).type == " + provider + "_oauth";
                         );
                         ).subject,
                         });
                     }
                     disabled={
                         user.linked_accounts.find(;
-                        std::to_string(provider) + "_oauth";
+                        "(account) => (account).type == " + provider + "_oauth";
                         ) == std::nullopt;
                     }
                     ></Button>;

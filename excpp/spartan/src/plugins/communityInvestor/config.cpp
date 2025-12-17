@@ -18,7 +18,7 @@ double getConvictionMultiplier(Conviction conviction) {
         return 1.5;
         case Conviction.VERY_HIGH:
         return 2.0;
-        default:
+        // default:
         return 1.0;
     }
 

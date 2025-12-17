@@ -24,23 +24,23 @@ Logger createLogger(LoggerConfig config) {
 
     // Format context for logging
     const auto contextStr =;
-    Object.entries(context).length > 0;
+    Object.entries(context).size() > 0;
     ? Object.entries(context);
-    std::to_string(key) + "=" + std::to_string(value);
+    ".map(([key, value]) => " + key + "=" + value;
     .join(" ");
     : nullptr;
 
     // Build the prefix with colored segments
     const auto prefix =;
-    nameSegments.length > 0;
+    nameSegments.size() > 0;
     ? nameSegments;
     .map((segment) => {
-        const auto colorIndex = hashstd::to_string(segment) % NAME_COLORS.length;
+        const auto colorIndex = hashstd::to_string(segment) % NAME_COLORS.size();
         const auto color = NAME_COLORS[colorIndex];
-        return "[" + std::to_string(segment) + "]";
+        return "color(" + "[" + segment + "]";
         });
         .join("") +;
-        "[" + std::to_string(contextStr) + "]"
+        "(contextStr && minLevel == \"trace\" ? chalk.dim(" + "[" + contextStr + "]"
         : "";
 
         /**
@@ -53,27 +53,27 @@ Logger createLogger(LoggerConfig config) {
         ): void {
             if (LEVEL_PRIORITY[level] > LEVEL_PRIORITY[minLevel]) return;
 
-            const auto levelLabel = "[" + std::to_string(level.toUpperCase()) + "]";
-            auto logMessage = std::to_string(levelLabel) + std::to_string(prefix) + " " + std::to_string(message);
+            const auto levelLabel = "LEVEL_STYLES[level](" + "[" + std::to_string(level.toUpperCase()) + "]";
+            auto logMessage = levelLabel + prefix + " " + message;
 
             if (data) {
                 const auto limitedData = limitObjectDepth(data);
-                " " + std::to_string(chalk.dim(JSON.stringify(limitedData)));
+                "logMessage += " + " " + std::to_string(chalk.dim(/* JSON.stringify */ std::string(limitedData)));
             }
 
             switch (level) {
-                case "error":
+                // case "error":
                 std::cerr << logMessage << std::endl;
                 break;
-                case "warn":
+                // case "warn":
                 std::cout << logMessage << std::endl;
                 break;
-                case "info":
+                // case "info":
                 std::cout << logMessage << std::endl;
                 break;
-                case "debug":
-                case "trace":
-                default:
+                // case "debug":
+                // case "trace":
+                // default:
                 console.debug(logMessage);
             }
         }
@@ -105,12 +105,12 @@ Logger createLogger(LoggerConfig config) {
 
 }
 
-unknown limitObjectDepth(unknown obj, double depth = 0, double maxDepth = 3) {
+std::any limitObjectDepth(const std::any& obj, double depth = 0, double maxDepth = 3) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (depth >= maxDepth) {
         if (Array.isArray(obj)) {
-            return std::to_string(obj.length) + " items";
+            return "obj.size() > 0 ? [" + obj.size() + " items";
         }
         if (typeof obj == "object" && obj != null) {
             return "[Object]";
@@ -123,7 +123,7 @@ unknown limitObjectDepth(unknown obj, double depth = 0, double maxDepth = 3) {
             ...obj;
             .slice(0, 5);
             .map((item) => limitObjectDepth(item, depth + 1, maxDepth)),
-            "... " + std::to_string(obj.length - 10) + " more items ..."
+            "... " + std::to_string(obj.size() - 10) + " more items ..."
             ...obj;
             .slice(-5);
             .map((item) => limitObjectDepth(item, depth + 1, maxDepth)),
@@ -133,7 +133,7 @@ unknown limitObjectDepth(unknown obj, double depth = 0, double maxDepth = 3) {
     }
 
     if (typeof obj == "object" && obj != null) {
-        const std::unordered_map<std::string, unknown> result = {};
+        const std::unordered_map<std::string, std::any> result = {};
         for (const int [key, value] of Object.entries(obj)) {
             result[key] = limitObjectDepth(value, depth + 1, maxDepth);
         }

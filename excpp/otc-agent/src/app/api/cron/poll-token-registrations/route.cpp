@@ -49,11 +49,11 @@ std::future<void> pollBaseRegistrations() {
                 }
 
                 console.log(
-                "[Cron Base] Fetching events from block " + std::to_string(startBlock) + " to " + std::to_string(latestBlock)
+                "[Cron Base] Fetching events from block " + startBlock + " to " + latestBlock
                 );
 
                 const auto logs = client.getLogs({;
-                    "0x" + std::to_string(string)
+                    "address: registrationHelperAddress as " + "0x" + string
                     event: {
                         type: "event",
                         name: "TokenRegistered",
@@ -69,7 +69,7 @@ std::future<void> pollBaseRegistrations() {
                         toBlock: latestBlock,
                         });
 
-                        std::cout << "[Cron Base] Found " + std::to_string(logs.length) + " TokenRegistered events" << std::endl;
+                        std::cout << "[Cron Base] Found " + logs.size() + " TokenRegistered events" << std::endl;
 
                         auto processed = 0;
                         for (const auto& log : logs)
@@ -81,7 +81,7 @@ std::future<void> pollBaseRegistrations() {
                                 };
 
                                 console.log(
-                                "[Cron Base] Processing token registration: " + std::to_string(tokenAddress) + " by " + std::to_string(registeredBy)
+                                "[Cron Base] Processing token registration: " + tokenAddress + " by " + registeredBy
                                 );
 
                                 // Fetch token metadata
@@ -91,17 +91,17 @@ std::future<void> pollBaseRegistrations() {
                                 ) => Promise<unknown>;
                                 const auto [symbol, name, decimals] = Promise.all([;
                                 readContract({
-                                    "0x" + std::to_string(string)
+                                    "address: tokenAddress as " + "0x" + string
                                     abi: ERC20_ABI,
                                     functionName: "symbol",
                                     }),
                                     readContract({
-                                        "0x" + std::to_string(string)
+                                        "address: tokenAddress as " + "0x" + string
                                         abi: ERC20_ABI,
                                         functionName: "name",
                                         }),
                                         readContract({
-                                            "0x" + std::to_string(string)
+                                            "address: tokenAddress as " + "0x" + string
                                             abi: ERC20_ABI,
                                             functionName: "decimals",
                                             }),
@@ -116,11 +116,11 @@ std::future<void> pollBaseRegistrations() {
                                                 chain: "base",
                                                 decimals: Number(decimals),
                                                 logoUrl: std::nullopt,
-                                                "Registered via RegistrationHelper by " + std::to_string(registeredBy)
+                                                "description: " + "Registered via RegistrationHelper by " + registeredBy
                                                 });
 
                                                 processed++;
-                                                std::cout << "[Cron Base] ✅ Registered " + std::to_string(symbol) + " (" + std::to_string(tokenAddress) + ")" << std::endl;
+                                                std::cout << "[Cron Base] ✅ Registered " + symbol + " (" + tokenAddress + ")" << std::endl;
                                             }
 
                                             // Update last processed block
@@ -177,7 +177,7 @@ std::future<void> pollSolanaRegistrations() {
         }
 
         console.log(
-        "[Cron Solana] Checking " + std::to_string(signatures.length - startIndex) + " transactions"
+        "[Cron Solana] Checking " + std::to_string(signatures.size() - startIndex) + " transactions"
         );
 
         auto processed = 0;
@@ -193,13 +193,13 @@ std::future<void> pollSolanaRegistrations() {
                 if (tx && tx.meta && tx.meta.logMessages) {
                     const auto hasRegisterToken = tx.meta.logMessages.some(;
                     (log) =>;
-                    log.includes("Instruction: RegisterToken") ||
-                    log.includes("register_token"),
+                    (std::find(log.begin(), log.end(), "Instruction: RegisterToken") != log.end()) ||
+                    (std::find(log.begin(), log.end(), "register_token") != log.end()),
                     );
 
                     if (hasRegisterToken) {
                         console.log(
-                        "[Cron Solana] Detected token registration: " + std::to_string(sig.signature)
+                        "[Cron Solana] Detected token registration: " + sig.signature
                         );
                         // TODO: Parse and register token (Solana parsing not fully implemented)
                         // For now, just log it
@@ -296,7 +296,7 @@ std::future<void> GET(NextRequest request) {
 
                                     return NextResponse.json({;
                                         success: true,
-                                        "Processed " + std::to_string(totalProcessed) + " new token registrations"
+                                        "message: " + "Processed " + totalProcessed + " new token registrations"
                                         results,
                                         });
 

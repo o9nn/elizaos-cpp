@@ -1,15 +1,18 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
-#include ".types.hpp"
 #include "elizaos/core.hpp"
+#include "types.hpp"
 
 namespace elizaos {
 
@@ -37,7 +40,7 @@ public:
     std::future<void> forcePersist();
     std::future<bool> waitForTables(auto maxAttempts, auto delayMs);
     bool isPersistenceAvailable();
-    std::future<Form> createForm(const std::variant<std::string, std::optional<Form>>& templateOrForm, std::optional<std::unordered_map<std::string, unknown>> metadata);
+    std::future<Form> createForm(const std::variant<std::string, std::optional<Form>>& templateOrForm, std::optional<std::unordered_map<std::string, std::any>> metadata);
     std::future<FormUpdateResult> updateForm(UUID formId, Memory message);
     Promise< extractFormValues(const std::string& text, const std::vector<FormField>& fields);
     std::string trim();

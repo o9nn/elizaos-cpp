@@ -14,45 +14,45 @@ std::future<void> main() {
         const auto walletKey = (process.env.WALLET_PRIVATE_KEY || DEFAULT_WALLET_KEY);
         const auto account = privateKeyToAccount(walletKey);
 
-        std::cout << '[Agent] Wallet configured (for testing):' << std::endl;
-        std::cout << "[Agent] Address: " + std::to_string(account.address) << std::endl;
-        std::cout << '[Agent] Using FREE gateway configuration (no payment required)\n' << std::endl;
+        std::cout << "[Agent] Wallet configured (for testing):" << std::endl;
+        std::cout << "[Agent] Address: " + account.address << std::endl;
+        std::cout << "[Agent] Using FREE gateway configuration (no payment required)\n" << std::endl;
 
         // Path to the gateway config and entry point
-        const auto gatewayRoot = join(__dirname, '..');
-        const auto gatewayEntry = join(gatewayRoot, 'src', 'index.ts');
-        const auto configPath = join(gatewayRoot, 'examples', 'coingecko-free-config.yaml');
+        const auto gatewayRoot = join(__dirname, "..");
+        const auto gatewayEntry = join(gatewayRoot, "src", "index.ts");
+        const auto configPath = join(gatewayRoot, "examples", "coingecko-free-config.yaml");
 
-        std::cout << '[Agent] Initializing MCP Gateway connection...' << std::endl;
-        std::cout << "[Agent] Gateway: " + std::to_string(gatewayEntry) << std::endl;
-        std::cout << "[Agent] Config: " + std::to_string(configPath) << std::endl;
+        std::cout << "[Agent] Initializing MCP Gateway connection..." << std::endl;
+        std::cout << "[Agent] Gateway: " + gatewayEntry << std::endl;
+        std::cout << "[Agent] Config: " + configPath << std::endl;
 
         // Create MCP client using stdio transport
         mcpClient = new Client({
-            name: 'ai16z-price-agent',
-            version: '1.0.0'
+            name: "ai16z-price-agent",
+            version: "1.0.0"
             }, {
             capabilities: {}
             });
 
             const auto transport = new StdioClientTransport({;
-                command: 'bun',
-                "--config=" + std::to_string(configPath)
+                command: "bun",
+                "args: ["run", gatewayEntry, " + "--config=" + configPath
                 });
 
                 mcpClient.connect(transport);
 
-                std::cout << '[Agent] Connected to MCP Gateway' << std::endl;
+                std::cout << "[Agent] Connected to MCP Gateway" << std::endl;
 
                 // List available tools from the MCP server
                 const auto toolsResult = mcpClient.listTools();
                 const auto availableTools = toolsResult.tools;
 
-                std::cout << '[Agent] Available MCP tools:' << availableTools.map((t: { name: string }) => t.name) << std::endl;
+                std::cout << "[Agent] Available MCP tools:" << availableTools.map((t: { name: string }) => t.name) << std::endl;
 
                 // Initialize Anthropic client with x402 payment support
                 const auto anthropic = new Anthropic({;
-                    apiKey: process.env.ANTHROPIC_API_KEY || 'required',
+                    apiKey: process.env.ANTHROPIC_API_KEY || "required",
                     fetch: wrapFetchWithPayment(fetch, account)
                     });
 
@@ -60,10 +60,10 @@ std::future<void> main() {
                     // Note: Anthropic requires tool names to match ^[a-zA-Z0-9_-]{1,128}$
                     // So we transform "crypto:get_price" to "crypto_get_price"
                     const std::vector<Anthropic::Tool> tools = availableTools.map((tool: { name: string; description?: string; inputSchema: Record<string, unknown> }) => ({;
-                        name: tool.name.replace(/:/g, '_'),
-                        description: tool.description || '',
+                        name: tool.name.replace(/:/g, "_"),
+                        description: tool.description || "",
                         input_schema: {
-                            type: 'object',
+                            type: "object",
                             ...tool.inputSchema;
                         }
                         }));
@@ -71,16 +71,16 @@ std::future<void> main() {
                         // Create a mapping from transformed names back to original MCP tool names
                         const auto toolNameMap = new Map<string, string>();
                         for (const auto& tool : availableTools)
-                            toolNameMap.set(tool.name.replace(/:/g, '_'), tool.name);
+                            toolNameMap.set(tool.name.replace(/:/g, "_"), tool.name);
                         }
 
-                        std::cout << '\n[Agent] Starting AI16Z price query...\n' << std::endl;
+                        std::cout << "\n[Agent] Starting AI16Z price query...\n" << std::endl;
 
                         // Initial message to Claude
                         const std::vector<Anthropic::MessageParam> messages = [;
                         {
-                            role: 'user',
-                            content: 'What is the current price of AI16Z token in USD?'
+                            role: "user",
+                            content: "What is the current price of AI16Z token in USD?"
                         }
                         ];
 
@@ -93,9 +93,9 @@ std::future<void> main() {
                             iterations++;
 
                             const auto response = anthropic.messages.create({;
-                                model: 'claude-3-7-sonnet-20250219',
+                                model: "claude-3-7-sonnet-20250219",
                                 max_tokens: 4096,
-                                system: `You are a cryptocurrency price assistant with access to CoinGecko data.
+                                "system: "
 
                                 Your task is to fetch the current price of the AI16Z token (also known).;
 
@@ -106,7 +106,7 @@ std::future<void> main() {
                                 2. Get its current price in USD;
                                 3. Provide a clear, concise response with the price;
 
-                                Be specific and accurate. The token might be listed as "ai16z", "AI16Z", or similar variations.`,
+                                "Be specific and accurate. The token might be listed as \"ai16z\", \"AI16Z\", or similar variations."
                                 messages,
                                 tools;
                                 });
@@ -114,9 +114,9 @@ std::future<void> main() {
                                 // Check if we should stop
                                 if (response.stop_reason == 'end_turn') {
                                     // Extract final text response
-                                    const auto textContent = response.content.find((c: { type: string; text?: string }) => c.type == 'text');
+                                    const auto textContent = response.content.find((c: { type: string; text?: string }) => c.type == "text");
                                     if (textContent && 'text' in textContent) {
-                                        std::cout << '\n[Agent] Result:\n' << std::endl;
+                                        std::cout << "\n[Agent] Result:\n" << std::endl;
                                         std::cout << textContent.text << std::endl;
                                     }
                                     continueLoop = false;
@@ -129,7 +129,7 @@ std::future<void> main() {
 
                                     for (const auto& block : response.content)
                                         if (block.type == 'tool_use') {
-                                            std::cout << "[Agent] Calling tool: " + std::to_string(block.name) << std::endl;
+                                            std::cout << "[Agent] Calling tool: " + block.name << std::endl;
 
                                             try {
                                                 // Translate transformed tool name back to original MCP tool name
@@ -141,29 +141,29 @@ std::future<void> main() {
                                                     arguments: block.input<string, unknown>
                                                     });
 
-                                                    toolResults.push({
-                                                        type: 'tool_result',
+                                                    toolResults.push_back({
+                                                        type: "tool_result",
                                                         tool_use_id: block.id,
-                                                        content: JSON.stringify(result.content)
+                                                        content: /* JSON.stringify */ std::string(result.content)
                                                         });
                                                         } catch (toolError) {
                                                             std::cerr << "[Agent] Tool error:" << toolError << std::endl;
-                                                            toolResults.push({
-                                                                type: 'tool_result',
+                                                            toolResults.push_back({
+                                                                type: "tool_result",
                                                                 tool_use_id: block.id,
-                                                                "Error: " + std::to_string(true /* instanceof check */ ? toolError.message : std::to_string(toolError))
+                                                                "content: " + "Error: " + std::to_string(true /* instanceof check */ ? toolError.message : std::to_string(toolError))
                                                                 });
                                                             }
                                                         }
                                                     }
 
                                                     // Add assistant message with tool use and user message with tool results
-                                                    messages.push({
-                                                        role: 'assistant',
+                                                    messages.push_back({
+                                                        role: "assistant",
                                                         content: response.content
                                                         });
-                                                        messages.push({
-                                                            role: 'user',
+                                                        messages.push_back({
+                                                            role: "user",
                                                             content: toolResults
                                                             });
                                                             } else {
@@ -171,19 +171,19 @@ std::future<void> main() {
                                                             }
                                                         }
 
-                                                        std::cout << '\n[Agent] Done!' << std::endl;
+                                                        std::cout << "\n[Agent] Done!" << std::endl;
 
                                                         } catch (error) {
-                                                            std::cerr << '[Agent] Error:' << error << std::endl;
+                                                            std::cerr << "[Agent] Error:" << error << std::endl;
                                                             process.exit(1);
                                                             } finally {
                                                                 // Ensure cleanup
                                                                 if (mcpClient) {
                                                                     try {
                                                                         mcpClient.close();
-                                                                        std::cout << '[Agent] MCP client closed' << std::endl;
+                                                                        std::cout << "[Agent] MCP client closed" << std::endl;
                                                                         } catch (closeError) {
-                                                                            std::cerr << '[Agent] Error closing MCP client:' << closeError << std::endl;
+                                                                            std::cerr << "[Agent] Error closing MCP client:" << closeError << std::endl;
                                                                         }
                                                                     }
                                                                 }

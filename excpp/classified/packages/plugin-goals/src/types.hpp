@@ -1,9 +1,13 @@
 #pragma once
+#include <algorithm>
+#include <chrono>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -30,9 +34,9 @@ struct GoalData {
     std::string name;
     std::optional<std::string> description;
     bool isCompleted;
-    std::optional<std::optional<Date>> completedAt;
-    Date createdAt;
-    Date updatedAt;
+    std::optional<std::optional<std::chrono::system_clock::time_point>> completedAt;
+    std::chrono::system_clock::time_point createdAt;
+    std::chrono::system_clock::time_point updatedAt;
     std::optional<std::vector<std::string>> tags;
 };
 

@@ -1,15 +1,18 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".types/index.hpp"
 #include "payment-middleware.hpp"
 #include "registry.hpp"
 #include "server-manager.hpp"
+#include "types/index.hpp"
 #include "x402-client.hpp"
 
 namespace elizaos {

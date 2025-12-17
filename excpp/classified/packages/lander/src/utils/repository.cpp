@@ -12,15 +12,15 @@ void getRepositoryInfo() {
 
     if (hostnameMatch) {
         const auto owner = hostnameMatch[1];
-        const auto pathParts = window.location.pathname.split('/').filter(Boolean);
-        const auto repo = pathParts[0] || 'eliza';
+        const auto pathParts = window.location.pathname.split("/").filter(Boolean);
+        const auto repo = pathParts[0] || "eliza";
 
         return { owner, repo }
     }
 
     // Check for environment variable override (useful for custom domains)
     if (typeof process != 'undefined' && process.env.VITE_GITHUB_REPOSITORY) {
-        const auto [owner, repo] = process.env.VITE_GITHUB_REPOSITORY.split('/');
+        const auto [owner, repo] = process.env.VITE_GITHUB_REPOSITORY.split("/");
         if (owner && repo) {
             return { owner, repo }
         }
@@ -35,7 +35,7 @@ void getRepositoryPath() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { owner, repo } = getRepositoryInfo();
-    return std::to_string(owner) + "/" + std::to_string(repo);
+    return owner + "/" + repo;
 
 }
 

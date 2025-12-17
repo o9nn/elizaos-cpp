@@ -1,12 +1,15 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include "..common/types.ts.hpp"
-#include "..common/utils.ts.hpp"
+#include "common/types.ts.hpp"
+#include "common/utils.ts.hpp"
 
 namespace elizaos {
 

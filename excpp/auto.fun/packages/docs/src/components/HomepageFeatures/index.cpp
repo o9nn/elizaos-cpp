@@ -8,7 +8,7 @@ void Feature(auto Svg) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
-    <div className={clsx('col col--4')}>;
+    <div className={clsx("col col--4")}>;
     <div className="text--center">;
     <Svg className={styles.featureSvg} role="img" />;
     </div>;

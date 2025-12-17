@@ -35,8 +35,8 @@ double calculateAmountOutSell(double reserveLamport, double amount, double _toke
         .div(new BN(10000));
 
         // For selling tokens: amount_out = reserve_lamport * adjusted_amount / (reserve_token + adjusted_amount)
-        const auto numerator = new BN(reserveLamport.toString()).mul(adjustedAmount);
-        const auto denominator = new BN(reserveToken.toString()).add(adjustedAmount);
+        const auto numerator = new BN(std::to_string(reserveLamport)).mul(adjustedAmount);
+        const auto denominator = new BN(std::to_string(reserveToken)).add(adjustedAmount);
 
         if (denominator.isZero()) throw new Error("Division by zero");
 
@@ -59,10 +59,10 @@ double calculateAmountOutBuy(double reserveToken, double amount, double _solDeci
     .sub(feeBasisPoints);
     .div(new BN(10000));
 
-    const auto reserveTokenBN = new BN(reserveToken.toString());
+    const auto reserveTokenBN = new BN(std::to_string(reserveToken));
 
     const auto numerator = (reserveTokenBN).mul(adjustedAmount);
-    const auto denominator = new BN(reserveLamport.toString()).add(adjustedAmount);
+    const auto denominator = new BN(std::to_string(reserveLamport)).add(adjustedAmount);
 
     const auto out = numerator.div(denominator).toNumber();
     return out;

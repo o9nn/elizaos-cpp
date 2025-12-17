@@ -8,7 +8,7 @@ std::optional<IAgentRuntime> createMockRuntime(std::optional<IAgentRuntime> over
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return {
-        agentId: asUUID('test-agent-id'),
+        agentId: asUUID("test-agent-id"),
         services: new Map(),
         getService: (name: string) => nullptr,
         registerService: (service: typeof Service) => Promise.resolve(),
@@ -21,10 +21,10 @@ Memory createMockMemory(const std::string& text, std::optional<Memory> overrides
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return {
-        id: asUUID('test-memory-id'),
-        entityId: asUUID('test-user-id'),
-        agentId: asUUID('test-agent-id'),
-        roomId: asUUID('test-room-id'),
+        id: asUUID("test-memory-id"),
+        entityId: asUUID("test-user-id"),
+        agentId: asUUID("test-agent-id"),
+        roomId: asUUID("test-room-id"),
         content: { text },
         createdAt: Date.now(),
         ...overrides,
@@ -38,11 +38,11 @@ State createMockState(std::optional<State> overrides = {}) {
     return {
         values: {},
         data: {},
-        text: '',
-        agentId: asUUID('test-agent-id'),
-        roomId: asUUID('test-room-id'),
-        userId: asUUID('test-user-id'),
-        agentName: 'Test Agent',
+        text: "",
+        agentId: asUUID("test-agent-id"),
+        roomId: asUUID("test-room-id"),
+        userId: asUUID("test-user-id"),
+        agentName: "Test Agent",
         ...overrides,
         };
 

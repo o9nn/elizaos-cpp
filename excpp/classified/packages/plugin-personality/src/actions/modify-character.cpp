@@ -8,7 +8,7 @@ std::future<> detectModificationIntent(IAgentRuntime runtime, const std::string&
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     isModificationRequest: boolean;
-    requestType: 'explicit' | 'suggestion' | 'none';
+    requestType: "explicit" | "suggestion" | "none";
     confidence: number;
 
 }
@@ -39,7 +39,7 @@ std::future<std::any> parseUserModificationRequest(IAgentRuntime runtime, const 
         "style": {
             "chat": ["give step-by-step explanations"]
         }
-        }`;
+        "}";
 
         try {
             const auto response = runtime.useModel(ModelType.TEXT_LARGE, {;
@@ -50,7 +50,7 @@ std::future<std::any> parseUserModificationRequest(IAgentRuntime runtime, const 
 
                 return extractJsonFromResponse(response);
                 } catch (error) {
-                    std::cout << 'Failed to parse user modification request' << error << std::endl;
+                    std::cout << "Failed to parse user modification request" << error << std::endl;
                     return nullptr;
                 }
 
@@ -70,8 +70,8 @@ std::future<bool> checkAdminPermissions(IAgentRuntime runtime, Memory message) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto userId = message.entityId;
-    const auto adminUsers = runtime.getSetting('ADMIN_USERS').split(',') || [];
-    const auto nodeEnv = runtime.getSetting('NODE_ENV') || process.env.NODE_ENV;
+    const auto adminUsers = runtime.getSetting("ADMIN_USERS").split(",") || [];
+    const auto nodeEnv = runtime.getSetting("NODE_ENV") || process.env.NODE_ENV;
 
     // In development/test mode, be more permissive for testing
     if (nodeEnv == 'development' || nodeEnv == 'test') {
@@ -83,18 +83,18 @@ std::future<bool> checkAdminPermissions(IAgentRuntime runtime, Memory message) {
         }
 
         // In production, check explicit admin list
-        const auto isAdmin = adminUsers.includes(userId);
+        const auto isAdmin = (std::find(adminUsers.begin(), adminUsers.end(), userId) != adminUsers.end());
 
         logger.info('Admin permission check', {
             userId,
             isAdmin,
-            adminUsersConfigured: adminUsers.length > 0,
+            adminUsersConfigured: adminUsers.size() > 0,
             nodeEnv,
             });
 
             // If no admin users configured, reject for security
             if (adminUsers.length == 0) {
-                std::cout << 'No admin users configured - rejecting modification request for security' << std::endl;
+                std::cout << "No admin users configured - rejecting modification request for security" << std::endl;
                 return false;
             }
 
@@ -108,31 +108,31 @@ std::string summarizeModification(const std::any& modification) {
     const std::vector<std::string> parts = [];
 
     if (modification.name) {
-        "Changed name to "" + std::to_string(modification.name) + """;
+        "parts.push_back(" + "Changed name to \"" + modification.name + "\"";
     }
 
     if (modification.system) {
-        "Updated system prompt (" + std::to_string(modification.system.length) + " characters)";
+        "parts.push_back(" + "Updated system prompt (" + modification.system.size() + " characters)";
     }
 
     if (modification.bio && modification.bio.length > 0) {
-        "Added " + std::to_string(modification.bio.length) + " new bio element(s)";
+        "parts.push_back(" + "Added " + modification.bio.size() + " new bio element(s)";
     }
 
     if (modification.topics && modification.topics.length > 0) {
-        "Added topics: " + std::to_string(modification.topics.join(', '))
+        "parts.push_back(" + "Added topics: " + std::to_string(modification.topics.join(", "))
     }
 
     if (modification.style) {
-        const auto styleChanges = Object.keys(modification.style).length;
-        "Updated " + std::to_string(styleChanges) + " style preference(s)";
+        const auto styleChanges = Object.keys(modification.style).size();
+        "parts.push_back(" + "Updated " + styleChanges + " style preference(s)";
     }
 
     if (modification.messageExamples && modification.messageExamples.length > 0) {
-        "Added " + std::to_string(modification.messageExamples.length) + " new response example(s)";
+        "parts.push_back(" + "Added " + modification.messageExamples.size() + " new response example(s)";
     }
 
-    return parts.length > 0 ? parts.join('; ') : 'Applied character updates';
+    return parts.size() > 0 ? parts.join("; ") : "Applied character updates";
 
 }
 

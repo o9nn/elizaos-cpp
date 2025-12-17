@@ -18,28 +18,28 @@ ModelConfig validateModelConfig(std::optional<IAgentRuntime> runtime) {
                 };
 
                 // Determine if contextual Knowledge is enabled
-                const auto ctxKnowledgeEnabled = parseBooleanEnv(getSetting('CTX_KNOWLEDGE_ENABLED', 'false'));
+                const auto ctxKnowledgeEnabled = parseBooleanEnv(getSetting("CTX_KNOWLEDGE_ENABLED", "false"));
 
                 // Log configuration once during validation (not per chunk)
                 logger.debug(
-                "[Document Processor] CTX_KNOWLEDGE_ENABLED: '" + std::to_string(ctxKnowledgeEnabled) + " (runtime: " + std::to_string(!!runtime) + ")"
+                "[Document Processor] CTX_KNOWLEDGE_ENABLED: '" + ctxKnowledgeEnabled + " (runtime: " + std::to_string(!!runtime) + ")"
                 );
 
                 // If EMBEDDING_PROVIDER is not provided, assume we're using plugin-openai
-                const auto embeddingProvider = getSetting('EMBEDDING_PROVIDER');
+                const auto embeddingProvider = getSetting("EMBEDDING_PROVIDER");
                 const auto assumePluginOpenAI = !embeddingProvider;
 
                 if (assumePluginOpenAI) {
-                    const auto openaiApiKey = getSetting('OPENAI_API_KEY');
-                    const auto openaiEmbeddingModel = getSetting('OPENAI_EMBEDDING_MODEL');
+                    const auto openaiApiKey = getSetting("OPENAI_API_KEY");
+                    const auto openaiEmbeddingModel = getSetting("OPENAI_EMBEDDING_MODEL");
 
                     if (openaiApiKey && openaiEmbeddingModel) {
                         logger.debug(
-                        '[Document Processor] EMBEDDING_PROVIDER not specified, using configuration from plugin-openai';
+                        "[Document Processor] EMBEDDING_PROVIDER not specified, using configuration from plugin-openai";
                         );
                         } else {
                             logger.debug(
-                            '[Document Processor] EMBEDDING_PROVIDER not specified. Assuming embeddings are provided by another plugin (e.g., plugin-google-genai).';
+                            "[Document Processor] EMBEDDING_PROVIDER not specified. Assuming embeddings are provided by another plugin (e.g., plugin-google-genai).";
                             );
                         }
                     }
@@ -50,45 +50,45 @@ ModelConfig validateModelConfig(std::optional<IAgentRuntime> runtime) {
 
                     // For Ollama, use OLLAMA_EMBEDDING_MODEL, otherwise use TEXT_EMBEDDING_MODEL
                     const auto textEmbeddingModel =;
-                    embeddingProvider == 'ollama';
-                    ? getSetting('OLLAMA_EMBEDDING_MODEL') || 'nomic-embed-text';
-                    : getSetting('TEXT_EMBEDDING_MODEL') ||
-                    getSetting('OPENAI_EMBEDDING_MODEL') ||;
-                    'text-embedding-3-small';
+                    embeddingProvider == "ollama";
+                    ? getSetting("OLLAMA_EMBEDDING_MODEL") || "nomic-embed-text";
+                    : getSetting("TEXT_EMBEDDING_MODEL") ||
+                    getSetting("OPENAI_EMBEDDING_MODEL") ||;
+                    "text-embedding-3-small";
                     const auto embeddingDimension =;
-                    getSetting('EMBEDDING_DIMENSION') || getSetting('OPENAI_EMBEDDING_DIMENSIONS') || '768';
+                    getSetting("EMBEDDING_DIMENSION") || getSetting("OPENAI_EMBEDDING_DIMENSIONS") || "768";
 
                     // Use OpenAI API key from runtime settings
-                    const auto openaiApiKey = getSetting('OPENAI_API_KEY');
+                    const auto openaiApiKey = getSetting("OPENAI_API_KEY");
 
                     const auto config = ModelConfigSchema.parse({;
                         EMBEDDING_PROVIDER: finalEmbeddingProvider,
-                        TEXT_PROVIDER: getSetting('TEXT_PROVIDER'),
+                        TEXT_PROVIDER: getSetting("TEXT_PROVIDER"),
 
                         OPENAI_API_KEY: openaiApiKey,
-                        ANTHROPIC_API_KEY: getSetting('ANTHROPIC_API_KEY'),
-                        OPENROUTER_API_KEY: getSetting('OPENROUTER_API_KEY'),
-                        GOOGLE_API_KEY: getSetting('GOOGLE_API_KEY'),
-                        OLLAMA_API_KEY: getSetting('OLLAMA_API_KEY'),
+                        ANTHROPIC_API_KEY: getSetting("ANTHROPIC_API_KEY"),
+                        OPENROUTER_API_KEY: getSetting("OPENROUTER_API_KEY"),
+                        GOOGLE_API_KEY: getSetting("GOOGLE_API_KEY"),
+                        OLLAMA_API_KEY: getSetting("OLLAMA_API_KEY"),
 
-                        OPENAI_BASE_URL: getSetting('OPENAI_BASE_URL'),
-                        ANTHROPIC_BASE_URL: getSetting('ANTHROPIC_BASE_URL'),
-                        OPENROUTER_BASE_URL: getSetting('OPENROUTER_BASE_URL'),
-                        GOOGLE_BASE_URL: getSetting('GOOGLE_BASE_URL'),
+                        OPENAI_BASE_URL: getSetting("OPENAI_BASE_URL"),
+                        ANTHROPIC_BASE_URL: getSetting("ANTHROPIC_BASE_URL"),
+                        OPENROUTER_BASE_URL: getSetting("OPENROUTER_BASE_URL"),
+                        GOOGLE_BASE_URL: getSetting("GOOGLE_BASE_URL"),
                         OLLAMA_BASE_URL:
-                        getSetting('OLLAMA_BASE_URL') ||;
-                        getSetting('OLLAMA_API_ENDPOINT').replace('/api', '') ||;
-                        'http://localhost:11434',
+                        getSetting("OLLAMA_BASE_URL") ||;
+                        getSetting("OLLAMA_API_ENDPOINT").replace("/api", "") ||;
+                        "http://localhost:11434",
 
                         TEXT_EMBEDDING_MODEL: textEmbeddingModel,
-                        TEXT_MODEL: getSetting('TEXT_MODEL'),
+                        TEXT_MODEL: getSetting("TEXT_MODEL"),
 
-                        MAX_INPUT_TOKENS: getSetting('MAX_INPUT_TOKENS', '4000'),
-                        MAX_OUTPUT_TOKENS: getSetting('MAX_OUTPUT_TOKENS', '4096'),
+                        MAX_INPUT_TOKENS: getSetting("MAX_INPUT_TOKENS", "4000"),
+                        MAX_OUTPUT_TOKENS: getSetting("MAX_OUTPUT_TOKENS", "4096"),
 
                         EMBEDDING_DIMENSION: embeddingDimension,
 
-                        LOAD_DOCS_ON_STARTUP: parseBooleanEnv(getSetting('LOAD_DOCS_ON_STARTUP')),
+                        LOAD_DOCS_ON_STARTUP: parseBooleanEnv(getSetting("LOAD_DOCS_ON_STARTUP")),
                         CTX_KNOWLEDGE_ENABLED: ctxKnowledgeEnabled,
                         });
                         validateConfigRequirements(config, assumePluginOpenAI);
@@ -96,8 +96,8 @@ ModelConfig validateModelConfig(std::optional<IAgentRuntime> runtime) {
                         } catch (error) {
                             if (error instanceof z.ZodError) {
                                 const auto issues = error.issues;
-                                std::to_string(issue.path.join('.')) + ": " + std::to_string(issue.message)
-                                .join(', ');
+                                ".map((issue) => " + std::to_string(issue.path.join(".")) + ": " + issue.message
+                                .join(", ");
                                 throw std::runtime_error(`Model configuration validation failed: ${issues}`);
                             }
                             throw;
@@ -127,18 +127,18 @@ void validateConfigRequirements(ModelConfig config, bool assumePluginOpenAI) {
         if (embeddingProvider == 'ollama') {
             // Ollama often doesn't require a real API key, so we'll just log a warning
             if (!config.OLLAMA_API_KEY) {
-                std::cout << 'OLLAMA_API_KEY not provided - using dummy key (this is often fine for Ollama)' << std::endl;
+                std::cout << "OLLAMA_API_KEY not provided - using dummy key (this is often fine for Ollama)" << std::endl;
             }
             // Ollama uses model names from @elizaos/plugin-ollama
             logger.info(
-            'Ollama embedding uses model names (OLLAMA_EMBEDDING_MODEL) from @elizaos/plugin-ollama';
+            "Ollama embedding uses model names (OLLAMA_EMBEDDING_MODEL) from @elizaos/plugin-ollama";
             );
         }
 
         // If no embedding provider is set, skip validation - let runtime handle it
         if (!embeddingProvider) {
             logger.debug(
-            '[Document Processor] No EMBEDDING_PROVIDER specified. Embeddings will be handled by the runtime.';
+            "[Document Processor] No EMBEDDING_PROVIDER specified. Embeddings will be handled by the runtime.";
             );
         }
 
@@ -171,37 +171,37 @@ void validateConfigRequirements(ModelConfig config, bool assumePluginOpenAI) {
                 // Ollama often doesn't require a real API key, so we'll just log a warning
                 if (!config.OLLAMA_API_KEY) {
                     logger.warn(
-                    'OLLAMA_API_KEY not provided - using dummy key (this is often fine for Ollama)';
+                    "OLLAMA_API_KEY not provided - using dummy key (this is often fine for Ollama)";
                     );
                 }
                 // Check for existing Ollama configuration
                 if (config.OLLAMA_BASE_URL && config.OLLAMA_BASE_URL != 'http://localhost:11434') {
-                    std::cout << "Using Ollama configuration: " + std::to_string(config.OLLAMA_BASE_URL) << std::endl;
+                    std::cout << "Using Ollama configuration: " + config.OLLAMA_BASE_URL << std::endl;
                     } else {
-                        std::cout << 'OLLAMA_BASE_URL not provided - using default http://localhost:11434' << std::endl;
+                        std::cout << "OLLAMA_BASE_URL not provided - using default http://localhost:11434" << std::endl;
                     }
                 }
 
                 // If using OpenRouter with Claude or Gemini models, check for additional recommended configurations
                 if (config.TEXT_PROVIDER == 'openrouter') {
-                    const auto modelName = config.TEXT_MODEL.toLowerCase() || '';
+                    const auto modelName = config.TEXT_MODEL.toLowerCase() || "";
                     if (modelName.includes('claude') || modelName.includes('gemini')) {
                         logger.debug(
-                        "[Document Processor] Using " + std::to_string(modelName) + " with OpenRouter. This configuration supports document caching for improved performance.";
+                        "[Document Processor] Using " + modelName + " with OpenRouter. This configuration supports document caching for improved performance.";
                         );
                     }
                 }
                 } else {
                     // Log appropriate message based on where embedding config came from
-                    std::cout << '[Document Processor] Contextual Knowledge is DISABLED!' << std::endl;
-                    std::cout << '[Document Processor] This means documents will NOT be enriched with context.' << std::endl;
+                    std::cout << "[Document Processor] Contextual Knowledge is DISABLED!" << std::endl;
+                    std::cout << "[Document Processor] This means documents will NOT be enriched with context." << std::endl;
                     if (assumePluginOpenAI) {
                         logger.info(
-                        '[Document Processor] Embeddings will be handled by the runtime (e.g., plugin-openai, plugin-google-genai).';
+                        "[Document Processor] Embeddings will be handled by the runtime (e.g., plugin-openai, plugin-google-genai).";
                         );
                         } else {
                             logger.info(
-                            '[Document Processor] Using configured embedding provider for basic embeddings only.';
+                            "[Document Processor] Using configured embedding provider for basic embeddings only.";
                             );
                         }
                     }
@@ -226,54 +226,54 @@ std::future<ProviderRateLimits> getProviderRateLimits(std::optional<IAgentRuntim
         };
 
         // Get rate limit values from runtime settings or use defaults
-        const auto maxConcurrentRequests = parseInt(getSetting('MAX_CONCURRENT_REQUESTS', '30'), 10);
-        const auto requestsPerMinute = parseInt(getSetting('REQUESTS_PER_MINUTE', '60'), 10);
-        const auto tokensPerMinute = parseInt(getSetting('TOKENS_PER_MINUTE', '150000'), 10);
+        const auto maxConcurrentRequests = parseInt(getSetting("MAX_CONCURRENT_REQUESTS", "30"), 10);
+        const auto requestsPerMinute = parseInt(getSetting("REQUESTS_PER_MINUTE", "60"), 10);
+        const auto tokensPerMinute = parseInt(getSetting("TOKENS_PER_MINUTE", "150000"), 10);
 
         // CRITICAL FIX: Check TEXT_PROVIDER first since that's where rate limits are typically hit
         const auto primaryProvider = config.TEXT_PROVIDER || config.EMBEDDING_PROVIDER;
 
         logger.debug(
-        "[Document Processor] Rate limiting for " + std::to_string(primaryProvider) + ": " + std::to_string(requestsPerMinute) + " RPM, " + std::to_string(tokensPerMinute) + " TPM, " + std::to_string(maxConcurrentRequests) + " concurrent"
+        "[Document Processor] Rate limiting for " + primaryProvider + ": " + requestsPerMinute + " RPM, " + tokensPerMinute + " TPM, " + maxConcurrentRequests + " concurrent"
         );
 
         // Provider-specific rate limits based on actual usage
         switch (primaryProvider) {
-            case 'anthropic':
+            // case "anthropic":
             // Anthropic Claude rate limits - use user settings (they know their tier)
             return {
                 maxConcurrentRequests,
                 requestsPerMinute,
                 tokensPerMinute,
-                provider: 'anthropic',
+                provider: "anthropic",
                 };
 
-                case 'openai':
+                // case "openai":
                 // OpenAI typically allows 150,000 tokens per minute for embeddings
                 // and up to 3,000 RPM for Tier 4+ accounts
                 return {
                     maxConcurrentRequests,
                     requestsPerMinute: Math.min(requestsPerMinute, 3000),
                     tokensPerMinute: Math.min(tokensPerMinute, 150000),
-                    provider: 'openai',
+                    provider: "openai",
                     };
 
-                    case 'google':
+                    // case "google":
                     // Google's default is 60 requests per minute
                     return {
                         maxConcurrentRequests,
                         requestsPerMinute: Math.min(requestsPerMinute, 60),
                         tokensPerMinute: Math.min(tokensPerMinute, 100000),
-                        provider: 'google',
+                        provider: "google",
                         };
 
-                        default:
+                        // default:
                         // Use user-configured values for unknown providers
                         return {
                             maxConcurrentRequests,
                             requestsPerMinute,
                             tokensPerMinute,
-                            provider: primaryProvider || 'unknown',
+                            provider: primaryProvider || "unknown",
                             };
                         }
 

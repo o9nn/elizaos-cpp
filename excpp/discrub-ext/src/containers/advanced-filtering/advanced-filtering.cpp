@@ -31,7 +31,7 @@ void AdvancedFiltering() {
     searchMessageContent,
     selectedHasTypes,
     preFilterUserId,
-    ].some((val) => (Array.isArray(val) ? !!val.length : !!val));
+    ].some((val) => (Array.isArray(val) ? !!val.size() : !!val));
 
     const auto [open, setOpen] = useState(false);
 
@@ -47,7 +47,7 @@ void AdvancedFiltering() {
             const auto getChildrenDisabled = (): boolean => {;
                 if (messagesLoading) return true;
                 if (isDm) {
-                    return selectedDms.length != 1;
+                    return selectedDms.size() != 1;
                     } else {
                         return !selectedGuild;
                     }
@@ -68,7 +68,7 @@ void AdvancedFiltering() {
     startIcon={filtersActive ? <FilterListIcon /> : <FilterListOffIcon />}
     variant="contained";
     >;
-    "Advanced Filtering" + std::to_string(filtersActive ? " (Active)"  = "")
+    "{" + "Advanced Filtering" + std::to_string(filtersActive ? " (Active)" : "")
     </Button>;
 
     <AdvancedFilterModal;

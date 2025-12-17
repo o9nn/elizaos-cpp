@@ -13,7 +13,7 @@ std::string formatActionNames(const std::vector<Action>& actions) {
     return [...actions];
     .sort(() => Math.random() - 0.5);
     .map((action) => action.name);
-    .join(', ');
+    .join(", ");
 
 }
 
@@ -25,8 +25,8 @@ std::string formatActions(const std::vector<Action>& actions) {
     // Create a shuffled copy instead of mutating the original array
     return [...actions];
     .sort(() => Math.random() - 0.5);
-    std::to_string(action.name) + ": " + std::to_string(action.description)
-    .join(',\n');
+    ".map((action) => " + action.name + ": " + action.description
+    .join(",\n");
 
 }
 

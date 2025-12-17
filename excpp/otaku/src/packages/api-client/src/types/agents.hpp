@@ -1,10 +1,14 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <chrono>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
 #include "base.hpp"
@@ -24,8 +28,8 @@ struct Agent {
     std::optional<std::string> characterName;
     std::string status;
     std::optional<bool> enabled;
-    std::optional<Date> createdAt;
-    std::optional<Date> updatedAt;
+    std::optional<std::chrono::system_clock::time_point> createdAt;
+    std::optional<std::chrono::system_clock::time_point> updatedAt;
 };
 
 struct AgentCreateParams {

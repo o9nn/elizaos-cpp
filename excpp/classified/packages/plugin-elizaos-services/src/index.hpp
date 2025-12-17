@@ -1,11 +1,13 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 #include "auth/index.hpp"
 #include "elizaos/core.hpp"
@@ -50,8 +52,8 @@ class ElizaOSStorageService {
 public:
     ElizaOSStorageService(IAgentRuntime runtime);
     std::future<void> ensureInitialized();
-    std::future<std::string> uploadFile(const std::string& key, const std::variant<Buffer, Uint8Array>& data, std::optional<std::string> contentType);
-    std::future<Buffer> downloadFile(const std::string& key);
+    std::future<std::string> uploadFile(const std::string& key, const std::vector<uint8_t>& data, std::optional<std::string> contentType);
+    std::future<std::vector<uint8_t>> downloadFile(const std::string& key);
     std::future<void> deleteFile(const std::string& key);
     std::future<bool> fileExists(const std::string& key);
     std::future<std::vector<std::string>> listFiles(std::optional<std::string> prefix, double maxKeys = 1000);

@@ -51,10 +51,10 @@ void MemoryGraph(auto onNodeClick) {
                                 };
 
                                 updateDimensions();
-                                window.addEventListener('resize', updateDimensions);
+                                window.addEventListener("resize", updateDimensions);
 
                                 return [&]() {;
-                                    window.removeEventListener('resize', updateDimensions);
+                                    window.removeEventListener("resize", updateDimensions);
                                     };
                                     }, []);
 
@@ -75,12 +75,12 @@ void MemoryGraph(auto onNodeClick) {
 
                                             // Configure the graph force simulation only if graphRef is defined
                                             if (graph) {
-                                                const auto chargeForce = graph.d3Force('charge');
+                                                const auto chargeForce = graph.d3Force("charge");
                                                 if (chargeForce) {
                                                     chargeForce.strength(-120); // Repulsion force;
                                                 }
 
-                                                const auto linkForce = graph.d3Force('link');
+                                                const auto linkForce = graph.d3Force("link");
                                                 if (linkForce) {
                                                     linkForce.distance(50); // Distance between nodes;
                                                 }
@@ -124,7 +124,7 @@ void MemoryGraph(auto onNodeClick) {
                                     width={dimensions.width}
                                 height={dimensions.height}
                                 backgroundColor="hsla(var(--background), 0.8)";
-                            linkColor={() => 'hsla(var(--muted-foreground), 0.2)'}
+                            linkColor={() => "hsla(var(--muted-foreground), 0.2)"}
                         linkWidth={1}
                     linkDirectionalParticles={1}
                 linkDirectionalParticleWidth={1}
@@ -133,15 +133,15 @@ void MemoryGraph(auto onNodeClick) {
     nodeVal={(node: MemoryNode) => node.val || 3}
     nodeColor={
         (node: MemoryNode) =>
-        node.type == 'document';
-        ? 'hsl(30, 100%, 50%)' // Orange for documents;
-        : 'hsl(210, 10%, 70%)' // Gray for fragments
+        node.type == "document";
+        ? "hsl(30, 100%, 50%)" // Orange for documents;
+        : "hsl(210, 10%, 70%)" // Gray for fragments
     }
     nodeLabel={(node: MemoryNode) => {
         const auto metadata = node.memory.metadata;
-        return std::to_string(node.type == 'document' ? 'Document' : 'Fragment') + ": " + std::to_string();
+        return std::to_string(node.type == "document" ? "Document" : "Fragment") + ": " + std::to_string();
             metadata.title || node.id.substring(0, 8);
-            }`;
+            "}";
         }}
         onNodeClick={(node: MemoryNode) => {
             onNodeClick(node.memory);
@@ -152,14 +152,14 @@ void MemoryGraph(auto onNodeClick) {
         }}
     cooldownTicks={100}
     nodeCanvasObjectMode={(node: MemoryNode) =>
-    selectedMemoryId == node.id ? 'after' : 'replace'
+    selectedMemoryId == node.id ? "after" : "replace"
     }
     nodeCanvasObject={(node: MemoryNode, ctx, globalScale) => {
         const auto { x, y } = node;
         const auto size = (node.val || 3) * NODE_REL_SIZE;
         const auto fontSize = 10 / globalScale; // Font size reduction;
         const auto isSelected = selectedMemoryId == node.id;
-        const auto isDocument = node.type == 'document';
+        const auto isDocument = node.type == "document";
 
         // Draw node circle
         ctx.beginPath();
@@ -167,15 +167,15 @@ void MemoryGraph(auto onNodeClick) {
 
         // Fill color based on type
         ctx.fillStyle = isDocument;
-        ? 'hsl(30, 100%, 50%)' // Orange for documents;
-        : 'hsl(210, 10%, 70%)'; // Gray for fragments
+        ? "hsl(30, 100%, 50%)" // Orange for documents;
+        : "hsl(210, 10%, 70%)"; // Gray for fragments
 
         ctx.fill();
 
         // More visible border
         ctx.strokeStyle = isDocument;
-        ? 'hsl(30, 100%, 35%)' // Darker border for documents;
-        : 'hsl(210, 10%, 45%)'; // Darker border for fragments
+        ? "hsl(30, 100%, 35%)" // Darker border for documents;
+        : "hsl(210, 10%, 45%)"; // Darker border for fragments
         ctx.lineWidth = isSelected ? 2 : 1;
         ctx.stroke();
 
@@ -187,20 +187,20 @@ void MemoryGraph(auto onNodeClick) {
             const auto nodeText = isDocument;
             ? label;
             : metadata.position != std::nullopt
-            "#" + std::to_string(metadata.position);
+            "? " + "#" + metadata.position;
             : label;
 
-            std::to_string(isSelected ? 'bold ' : '') + std::to_string(fontSize) + "px Arial"
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
+            "ctx.font = " + std::to_string(isSelected ? "bold " : "") + fontSize + "px Arial"
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
 
             // Text outline for readability
-            ctx.strokeStyle = 'hsla(var(--background), 0.8)';
+            ctx.strokeStyle = "hsla(var(--background), 0.8)";
             ctx.lineWidth = 3;
             ctx.strokeText(nodeText, x || 0, y || 0);
 
             // Text
-            ctx.fillStyle = 'hsla(var(--foreground), 0.9)';
+            ctx.fillStyle = "hsla(var(--foreground), 0.9)";
             ctx.fillText(nodeText, x || 0, y || 0);
         }
 
@@ -210,8 +210,8 @@ void MemoryGraph(auto onNodeClick) {
             ctx.beginPath();
             ctx.arc(x || 0, y || 0, size * 1.4, 0, 2 * Math.PI);
             ctx.strokeStyle = isDocument;
-            ? 'hsla(30, 100%, 60%, 0.8)' // Bright orange;
-            : 'hsla(210, 10%, 80%, 0.8)'; // Bright gray
+            ? "hsla(30, 100%, 60%, 0.8)" // Bright orange;
+            : "hsla(210, 10%, 80%, 0.8)"; // Bright gray
             ctx.lineWidth = 1.5;
             ctx.stroke();
 
@@ -226,9 +226,9 @@ void MemoryGraph(auto onNodeClick) {
             );
             gradient.addColorStop(;
             0,
-            isDocument ? 'hsla(30, 100%, 60%, 0.3)' : 'hsla(210, 10%, 80%, 0.3)'
+            isDocument ? "hsla(30, 100%, 60%, 0.3)" : "hsla(210, 10%, 80%, 0.3)"
             );
-            gradient.addColorStop(1, 'hsla(0, 0%, 0%, 0)');
+            gradient.addColorStop(1, "hsla(0, 0%, 0%, 0)");
 
             ctx.fillStyle = gradient;
             ctx.beginPath();

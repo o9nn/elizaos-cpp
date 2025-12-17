@@ -1,10 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -23,12 +25,12 @@ namespace elizaos {
  // Example icons
 
 // Define types for state
-using GridSortByType = std::variant<"newest", "all", "marketCap", "verified">;
-using VerifiedType = std::variant<1, 0>;
-using TokenSourceType = std::variant<"all", "autofun">;
-using BondingStatusType = std::variant<"all", "active", "locked">;
-using TableSortByType = std::variant<keyof IToken, nullptr>;
-using SortOrderType = std::variant<"asc", "desc">;
+using GridSortByType = std::string;
+using VerifiedType = int;
+using TokenSourceType = std::string;
+using BondingStatusType = std::string;
+using TableSortByType = std::optional<keyof IToken>;
+using SortOrderType = std::string;
 
 
 } // namespace elizaos

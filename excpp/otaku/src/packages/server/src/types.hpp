@@ -1,9 +1,14 @@
 #pragma once
+#include <algorithm>
+#include <any>
+#include <chrono>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
 
@@ -19,8 +24,8 @@ struct MessageServer {
     std::string sourceType;
     std::optional<std::string> sourceId;
     std::optional<ServerMetadata> metadata;
-    Date createdAt;
-    Date updatedAt;
+    std::chrono::system_clock::time_point createdAt;
+    std::chrono::system_clock::time_point updatedAt;
 };
 
 struct MessageChannel {
@@ -32,8 +37,8 @@ struct MessageChannel {
     std::optional<std::string> sourceId;
     std::optional<std::string> topic;
     std::optional<ChannelMetadata> metadata;
-    Date createdAt;
-    Date updatedAt;
+    std::chrono::system_clock::time_point createdAt;
+    std::chrono::system_clock::time_point updatedAt;
 };
 
 struct CentralRootMessage {
@@ -41,12 +46,12 @@ struct CentralRootMessage {
     UUID channelId;
     UUID authorId;
     std::string content;
-    std::optional<unknown> rawMessage;
+    std::optional<std::any> rawMessage;
     std::optional<UUID> inReplyToRootMessageId;
     std::optional<std::string> sourceType;
     std::optional<std::string> sourceId;
-    Date createdAt;
-    Date updatedAt;
+    std::chrono::system_clock::time_point createdAt;
+    std::chrono::system_clock::time_point updatedAt;
     std::optional<MessageMetadata> metadata;
 };
 
@@ -58,7 +63,7 @@ struct MessageServiceStructure {
     UUID author_id;
     std::optional<std::string> author_display_name;
     std::string content;
-    std::optional<unknown> raw_message;
+    std::optional<std::any> raw_message;
     std::optional<std::string> source_id;
     std::optional<std::string> source_type;
     std::optional<UUID> in_reply_to_message_id;
@@ -82,7 +87,7 @@ struct MessageMetadataWithAttachments {
 };
 
 struct MessageWithAttachments {
-    std::optional<std::variant<MessageContentWithAttachments, unknown>> content;
+    std::optional<std::variant<MessageContentWithAttachments, std::any>> content;
     std::optional<MessageMetadataWithAttachments> metadata;
 };
 

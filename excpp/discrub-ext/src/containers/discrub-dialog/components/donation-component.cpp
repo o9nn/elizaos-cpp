@@ -27,7 +27,7 @@ void DonationComponent() {
             width: "200px",
             height: "611px",
             backgroundColor: palette.background.default,
-            "1px solid " + std::to_string(palette.secondary.dark)
+            "border: " + "1px solid " + palette.secondary.dark
         }}
         >;
         <Box;
@@ -72,7 +72,7 @@ void DonationComponent() {
     </Icon>;
     </Stack>;
 
-    {donations.length ? (;
+    {donations.size() ? (;
     <List>;
     {donations.map((donation) => (;
     <DonationListButton donation={donation} />;

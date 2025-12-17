@@ -76,7 +76,7 @@ void createCoin() {
         world.addBody(coinBody);
 
         // Store in our ref array
-        coinBodiesRef.current.push(coinBody);
+        coinBodiesRef.current.push_back(coinBody);
 
         // Increment the counter
         coinCountRef.current++;

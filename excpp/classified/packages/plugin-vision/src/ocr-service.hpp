@@ -1,10 +1,13 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "elizaos/core.hpp"
 
@@ -19,12 +22,12 @@ class OCRService {
 public:
     std::future<void> initialize();
     std::future<void> _initialize();
-    std::future<OCRResult> extractText(Buffer imageBuffer);
+    std::future<OCRResult> extractText(const std::vector<uint8_t>& imageBuffer);
     std::future<OCRResult> extractFromTile(ScreenTile tile);
-    std::future<OCRResult> extractFromImage(Buffer imageBuffer);
-    std::future<Buffer> preprocessImage(Buffer imageBuffer);
+    std::future<OCRResult> extractFromImage(const std::vector<uint8_t>& imageBuffer);
+    std::future<std::vector<uint8_t>> preprocessImage(const std::vector<uint8_t>& imageBuffer);
     OCRResult convertTesseractResult(Tesseract::RecognizeResult result);
-    Promise< extractStructuredData(Buffer imageBuffer);
+    Promise< extractStructuredData(const std::vector<uint8_t>& imageBuffer);
     Array< detectTables(OCRResult ocrResult);
     Array< detectForms(OCRResult ocrResult);
     Array< detectLists(OCRResult ocrResult);

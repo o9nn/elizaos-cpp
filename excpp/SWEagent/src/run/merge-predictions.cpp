@@ -13,36 +13,36 @@ void mergePredictions(const std::vector<std::string>& directories, std::optional
         // Find all prediction files
         for (const auto& directory : directories)
             const auto predFiles = findPredFiles(directory);
-            preds.push(...predFiles);
+            preds.push_back(...predFiles);
             logger.debug(`Found ${predFiles.length} predictions in ${directory}`);
         }
 
-        std::cout << "Found " + std::to_string(preds.length) + " predictions" << std::endl;
+        std::cout << "Found " + preds.size() + " predictions" << std::endl;
 
         if (preds.length == 0) {
-            std::cout << "No predictions found in " + std::to_string(directories.join(', ')) << std::endl;
+            std::cout << "No predictions found in " + std::to_string(directories.join(", ")) << std::endl;
             return;
         }
 
         if (!output) {
-            output = path.join(directories[0], 'preds.json');
+            output = path.join(directories[0], "preds.json");
         }
 
         const std::unordered_map<std::string, std::any> data = {};
 
         for (const auto& pred : preds)
-            const auto content = fs.readFileSync(pred, 'utf-8');
-            const auto predData = JSON.parse(content);
+            const auto content = fs.readFileSync(pred, "utf-8");
+            const auto predData = /* JSON.parse */ content;
             const auto instanceId = predData.instance_id;
 
             if (!('model_patch' in predData)) {
-                std::cout << "Prediction " + std::to_string(pred) + " does not contain a model patch. SKIPPING" << std::endl;
+                std::cout << "Prediction " + pred + " does not contain a model patch. SKIPPING" << std::endl;
                 continue;
             }
 
             // Ensure model_patch is a string
             predData.model_patch =;
-            predData.model_patch != nullptr && predData.model_patch != std::nullopt ? std::to_string(predData.model_patch) : '';
+            predData.model_patch != nullptr && predData.model_patch != std::nullopt ? std::to_string(predData.model_patch) : "";
 
             if (instanceId in data) {
                 throw std::runtime_error(`Duplicate instance ID found: ${instanceId}`);
@@ -57,8 +57,8 @@ void mergePredictions(const std::vector<std::string>& directories, std::optional
             fs.mkdirSync(outputDir, { recursive: true });
         }
 
-        fs.writeFileSync(output, JSON.stringify(data, nullptr, 4));
-        std::cout << "Wrote merged predictions to " + std::to_string(output) << std::endl;
+        fs.writeFileSync(output, /* JSON.stringify */ std::string(data, nullptr, 4));
+        std::cout << "Wrote merged predictions to " + output << std::endl;
 
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
@@ -84,8 +84,8 @@ std::vector<std::string> findPredFiles(const std::string& directory) {
 
             if (stat.isDirectory()) {
                 walk(filePath);
-                } else if (file.endsWith('.pred')) {
-                    results.push(filePath);
+                } else if (file.endsWith(".pred")) {
+                    results.push_back(filePath);
                 }
             }
         }

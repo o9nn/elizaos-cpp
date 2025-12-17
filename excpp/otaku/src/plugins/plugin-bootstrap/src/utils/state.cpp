@@ -4,14 +4,14 @@
 
 namespace elizaos {
 
-std::future<State> refreshStateAfterAction(IAgentRuntime runtime, Memory message, State currentState, const std::vector<unknown>& actionResults) {
+std::future<State> refreshStateAfterAction(IAgentRuntime runtime, Memory message, State currentState, const std::vector<std::any>& actionResults) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Recompose state with updated wallet info and action results
     const auto refreshedState = runtime.composeState(message, [;
-    'RECENT_MESSAGES',
-    'ACTION_STATE',
-    'WALLET_STATE',
+    "RECENT_MESSAGES",
+    "ACTION_STATE",
+    "WALLET_STATE",
     ]);
 
     // Preserve action results in state
@@ -30,7 +30,7 @@ std::future<State> refreshStateAfterAction(IAgentRuntime runtime, Memory message
 
 }
 
-State updateActionPlanStep(State state, double stepIndex, const std::string& status, std::optional<std::unordered_map<std::string, unknown>> result, std::optional<std::string> error) {
+State updateActionPlanStep(State state, double stepIndex, const std::string& status, std::optional<std::unordered_map<std::string, std::any>> result, std::optional<std::string> error) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!state.data.actionPlan) {
@@ -64,7 +64,7 @@ State updateActionPlanStep(State state, double stepIndex, const std::string& sta
 
 }
 
-State updateWorkingMemory(State state, const std::string& key, const std::unordered_map<std::string, unknown>& value) {
+State updateWorkingMemory(State state, const std::string& key, const std::unordered_map<std::string, std::any>& value) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto workingMemory = state.data.workingMemory || {};

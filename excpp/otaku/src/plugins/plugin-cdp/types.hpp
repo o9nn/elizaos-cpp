@@ -1,10 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -21,7 +23,7 @@ namespace elizaos {
 /**
  * Networks supported by CDP corresponding to DEFAULT_RPC_URLS
  */
-using CdpNetwork = std::variant<, "ethereum", "base", "optimism", "arbitrum", "polygon", "base-sepolia">;
+using CdpNetwork = ;
 
 
 } // namespace elizaos

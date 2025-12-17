@@ -21,14 +21,14 @@ std::future<void> POST(NextRequest request) {
                     );
                     try {
                         const auto raw = fs.readFile(deployed, "utf8");
-                        const auto json = JSON.parse(raw);
+                        const auto json = /* JSON.parse */ raw;
                         const auto addr =;
                         (json["OTCModule#OTC"]) ||;
                         (json["OTCDeskModule#OTC"]) ||;
                         (json["ElizaOTCModule#ElizaOTC"]) ||;
                         (json["OTCModule#desk"]);
                         if (addr) {
-                            std::cout << "[Approve API] Using devnet address: " + std::to_string(addr) << std::endl;
+                            std::cout << "[Approve API] Using devnet address: " + addr << std::endl;
                             return addr;
                         }
                         } catch {
@@ -44,7 +44,7 @@ std::future<void> POST(NextRequest request) {
                     const auto RAW_PK = process.env.EVM_PRIVATE_KEY | std::nullopt;
                     const auto EVM_PRIVATE_KEY =;
                     RAW_PK && /^0x[0-9a-fA-F]{64}$/.test(RAW_PK);
-                    "0x" + std::to_string(string);
+                    "? (RAW_PK as " + "0x" + string;
                     : std::nullopt;
                     if (RAW_PK && !EVM_PRIVATE_KEY) {
                         console.warn(
@@ -63,7 +63,7 @@ std::future<void> POST(NextRequest request) {
                         offerId = body.offerId;
                         chainType = body.chain;
                         offerAddress = body.offerAddress;
-                        } else if (contentType.includes("application/x-www-form-urlencoded")) {
+                        } else if ((std::find(contentType.begin(), contentType.end(), "application/x-www-form-urlencoded") != contentType.end())) {
                             // Use type assertion for FormData as Next.js returns a compatible type
                             const auto form = (request.formData()) as {;
                                 get: (name: string) => FormDataEntryValue | nullptr;
@@ -106,8 +106,8 @@ std::future<void> POST(NextRequest request) {
                                     "solana/otc-program/target/idl/otc.json",
                                     );
                                     const auto keypairPath = path.join(process.cwd(), "solana/otc-program/id.json");
-                                    const auto idl = JSON.parse(fs.readFile(idlPath, "utf8"));
-                                    const auto keypairData = JSON.parse(fs.readFile(keypairPath, "utf8"));
+                                    const auto idl = /* JSON.parse */ fs.readFile(idlPath, "utf8");
+                                    const auto keypairData = /* JSON.parse */ fs.readFile(keypairPath, "utf8");
                                     const auto approverKeypair = Keypair.fromSecretKey(Uint8Array.from(keypairData));
 
                                     // Create provider with the approver keypair
@@ -278,8 +278,8 @@ std::future<void> POST(NextRequest request) {
                                                                                                 "contracts/deployments/eliza-otc-deployment.json",
                                                                                                 );
                                                                                                 const auto raw = fs.readFile(deploymentInfoPath, "utf8");
-                                                                                                const auto json = JSON.parse(raw);
-                                                                                                const auto testPk = "0x" + std::to_string(string);
+                                                                                                const auto json = /* JSON.parse */ raw;
+                                                                                                const auto testPk = "json.testWalletPrivateKey as " + "0x" + string;
 
                                                                                                 if (testPk && /^0x[0-9a-fA-F]{64}$/.test(testPk)) {
                                                                                                     account = privateKeyToAccount(testPk);
@@ -336,7 +336,7 @@ std::future<void> POST(NextRequest request) {
                                                                                                                         "contracts/deployments/eliza-otc-deployment.json",
                                                                                                                         );
                                                                                                                         const auto raw = fs.readFile(deploymentInfoPath, "utf8");
-                                                                                                                        const auto json = JSON.parse(raw);
+                                                                                                                        const auto json = /* JSON.parse */ raw;
                                                                                                                         const auto ownerAddr = json.accounts.owner;
 
                                                                                                                         fetch("http://127.0.0.1:8545", {
@@ -386,13 +386,13 @@ std::future<void> POST(NextRequest request) {
                                                                                                                                                 offer.beneficiary &&;
                                                                                                                                                 offer.beneficiary != "0x0000000000000000000000000000000000000000";
                                                                                                                                                 ) {
-                                                                                                                                                    std::cout << "[Approve API] Offer found on attempt " + std::to_string(attempt) << std::endl;
+                                                                                                                                                    std::cout << "[Approve API] Offer found on attempt " + attempt << std::endl;
                                                                                                                                                     break;
                                                                                                                                                 }
 
                                                                                                                                                 if (attempt < maxPollAttempts) {
                                                                                                                                                     console.log(
-                                                                                                                                                    "[Approve API] Offer " + std::to_string(offerId) + " not found yet, waiting... (" + std::to_string(attempt) + "/" + std::to_string(maxPollAttempts) + ")"
+                                                                                                                                                    "[Approve API] Offer " + offerId + " not found yet, waiting... (" + attempt + "/" + maxPollAttempts + ")"
                                                                                                                                                     );
                                                                                                                                                     new Promise((resolve) => setTimeout(resolve, 2000));
                                                                                                                                                 }
@@ -404,7 +404,7 @@ std::future<void> POST(NextRequest request) {
                                                                                                                                             ) {
                                                                                                                                                 return NextResponse.json(;
                                                                                                                                                 {
-                                                                                                                                                    "Offer " + std::to_string(offerId) + " not found after " + std::to_string(maxPollAttempts) + " attempts. Transaction may still be pending."
+                                                                                                                                                    "error: " + "Offer " + offerId + " not found after " + maxPollAttempts + " attempts. Transaction may still be pending."
                                                                                                                                                     },
                                                                                                                                                     { status: 404 },
                                                                                                                                                     );
@@ -452,7 +452,7 @@ std::future<void> POST(NextRequest request) {
                                                                                                                                                             // Find the specific token associated with this offer
                                                                                                                                                             // Primary method: Use the on-chain tokenId (keccak256 hash of symbol) to look up token
                                                                                                                                                             std::string tokenAddress = nullptr;
-                                                                                                                                                            std::variant<"base", "solana"> tokenChain = "base";
+                                                                                                                                                            std::string tokenChain = "base";
 
                                                                                                                                                             // The offer.tokenId is a bytes32 (keccak256 of token symbol)
                                                                                                                                                             if (offer.tokenId) {
@@ -589,7 +589,7 @@ std::future<void> POST(NextRequest request) {
                                                                                                                                                                                                         });
 
                                                                                                                                                                                                         std::cout << "[Approve API] Sending approval tx..." << std::endl;
-                                                                                                                                                                                                        "0x" + std::to_string(string);
+                                                                                                                                                                                                        "const auto txHash: " + "0x" + string;
                                                                                                                                                                                                         walletClient.writeContract(approveRequest);
 
                                                                                                                                                                                                         std::cout << "[Approve API] Waiting for confirmation..." << txHash << std::endl;
@@ -600,7 +600,7 @@ std::future<void> POST(NextRequest request) {
                                                                                                                                                                                                             console.log("[Approve API] Approval receipt:", {
                                                                                                                                                                                                                 status: approvalReceipt.status,
                                                                                                                                                                                                                 blockNumber: approvalReceipt.blockNumber,
-                                                                                                                                                                                                                gasUsed: approvalReceipt.gasUsed.toString(),
+                                                                                                                                                                                                                gasUsed: approvalReceipt.std::to_string(gasUsed),
                                                                                                                                                                                                                 });
 
                                                                                                                                                                                                                 std::cout << "[Approve API] ✅ Offer approved:" << offerId << "tx:" << txHash << std::endl;
@@ -649,7 +649,7 @@ std::future<void> POST(NextRequest request) {
                                                                                                                                                                                                                             }
 
                                                                                                                                                                                                                             console.log("[Approve API] Calculated financial data:", {
-                                                                                                                                                                                                                                tokenAmount: offer.tokenAmount.toString(),
+                                                                                                                                                                                                                                tokenAmount: offer.std::to_string(tokenAmount),
                                                                                                                                                                                                                                 totalUsd,
                                                                                                                                                                                                                                 discountUsd,
                                                                                                                                                                                                                                 discountedUsd,
@@ -670,7 +670,7 @@ std::future<void> POST(NextRequest request) {
                                                                                                                                                                                                                                     const auto updatedQuote = quoteService.getQuoteByQuoteId(;
                                                                                                                                                                                                                                     matchingQuote.quoteId,
                                                                                                                                                                                                                                     );
-                                                                                                                                                                                                                                    updatedQuote.tokenAmount = offer.tokenAmount.toString();
+                                                                                                                                                                                                                                    updatedQuote.tokenAmount = offer.std::to_string(tokenAmount);
                                                                                                                                                                                                                                     updatedQuote.totalUsd = totalUsd;
                                                                                                                                                                                                                                     updatedQuote.discountUsd = discountUsd;
                                                                                                                                                                                                                                     updatedQuote.discountedUsd = discountedUsd;
@@ -678,7 +678,7 @@ std::future<void> POST(NextRequest request) {
                                                                                                                                                                                                                                     updatedQuote.paymentCurrency = paymentCurrency;
                                                                                                                                                                                                                                     updatedQuote.discountBps = discountBpsNum;
 
-                                                                                                                                                                                                                                    "quote:" + std::to_string(matchingQuote.quoteId)
+                                                                                                                                                                                                                                    "runtime.setCache(" + "quote:" + matchingQuote.quoteId
 
                                                                                                                                                                                                                                     console.log(
                                                                                                                                                                                                                                     "[Approve API] Updated quote with financial data:",
@@ -704,7 +704,7 @@ std::future<void> POST(NextRequest request) {
                                                                                                                                                                                                                                     "contracts/deployments/eliza-otc-deployment.json",
                                                                                                                                                                                                                                     );
                                                                                                                                                                                                                                     const auto raw = fs.readFile(deploymentInfoPath, "utf8");
-                                                                                                                                                                                                                                    const auto json = JSON.parse(raw);
+                                                                                                                                                                                                                                    const auto json = /* JSON.parse */ raw;
                                                                                                                                                                                                                                     const auto approver = json.accounts.approver;
                                                                                                                                                                                                                                     const auto agentAddr = json.accounts.agent;
                                                                                                                                                                                                                                     const auto candidates = [approver, agentAddr];
@@ -791,7 +791,7 @@ std::future<void> POST(NextRequest request) {
                                                                                                                                                                                                                                                                 requireApproverToFulfill,
                                                                                                                                                                                                                                                                 );
 
-                                                                                                                                                                                                                                                                "0x" + std::to_string(string);
+                                                                                                                                                                                                                                                                "auto fulfillTxHash: " + "0x" + string;
 
                                                                                                                                                                                                                                                                 // If approver-only fulfill is enabled, backend pays immediately after approval
                                                                                                                                                                                                                                                                 if (requireApproverToFulfill && !approvedOffer.paid) {
@@ -816,7 +816,7 @@ std::future<void> POST(NextRequest request) {
                                                                                                                                                                                                                                                                                 });
 
                                                                                                                                                                                                                                                                                 valueWei = requiredEth;
-                                                                                                                                                                                                                                                                                std::cout << "[Approve API] Required ETH:" << requiredEth.toString() << std::endl;
+                                                                                                                                                                                                                                                                                std::cout << "[Approve API] Required ETH:" << std::to_string(requiredEth) << std::endl;
                                                                                                                                                                                                                                                                                 } else {
                                                                                                                                                                                                                                                                                     // USDC payment - need to approve first
                                                                                                                                                                                                                                                                                     const auto usdcAddress = safeReadContract<Address>(publicClient, {;
@@ -833,7 +833,7 @@ std::future<void> POST(NextRequest request) {
                                                                                                                                                                                                                                                                                             args: [BigInt(offerId)],
                                                                                                                                                                                                                                                                                             });
 
-                                                                                                                                                                                                                                                                                            std::cout << "[Approve API] Required USDC:" << requiredUsdc.toString() << std::endl;
+                                                                                                                                                                                                                                                                                            std::cout << "[Approve API] Required USDC:" << std::to_string(requiredUsdc) << std::endl;
 
                                                                                                                                                                                                                                                                                             // Approve USDC
                                                                                                                                                                                                                                                                                             const auto erc20Abi = [;

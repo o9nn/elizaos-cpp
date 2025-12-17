@@ -1,11 +1,14 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".lib/logger.hpp"
+#include "lib/logger.hpp"
 #include "use-toast.hpp"
 
 namespace elizaos {

@@ -1,19 +1,21 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
-#include ".types.hpp"
-#include ".utils/log.hpp"
 #include "agents.hpp"
 #include "models.hpp"
 #include "problem-statement.hpp"
 #include "types.hpp"
+#include "utils/log.hpp"
 #include "utils/template.hpp"
 
 namespace elizaos {
@@ -89,7 +91,7 @@ public:
     std::vector<ModelOutput> filterParseableCompletions(const std::vector<ModelOutput>& completions);
     bool containsEdits(const std::vector<ModelOutput>& completions);
     std::future<std::vector<ModelOutput>> getCompletions(History history);
-    std::variant<0, 1> interpret(const std::string& response);
+    int interpret(const std::string& response);
     std::future<ActionSamplerOutput> getAction(ProblemStatement _problemStatement, Trajectory _trajectory, History history);
 
 private:
@@ -106,7 +108,7 @@ struct BaseActionSamplerConfig {
 /**
  * Union type for action sampler configurations
  */
-using ActionSamplerConfig = std::variant<, (BinaryTrajectoryComparisonConfig, (AskColleaguesConfig>;
+using ActionSamplerConfig = std::variant<, (BinaryTrajectoryComparisonConfig>;
 
 /**
  * Factory function to create action sampler from configuration

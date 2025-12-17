@@ -7,7 +7,7 @@ namespace elizaos {
 void TxToast() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto link = "https://solscan.io/tx/" + std::to_string(signature);
+    const auto link = "https://solscan.io/tx/" + signature;
 
     const auto linkToExplorer = [&]() {;
         // open in new tab

@@ -1,16 +1,19 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".types/default-reaction-object.hpp"
-#include ".types/forum-tag-object.hpp"
-#include ".types/overwrite-object.hpp"
-#include ".types/thread-member-object.hpp"
-#include ".types/thread-metadata.hpp"
+#include "types/default-reaction-object.hpp"
+#include "types/forum-tag-object.hpp"
+#include "types/overwrite-object.hpp"
+#include "types/thread-member-object.hpp"
+#include "types/thread-metadata.hpp"
 #include "user.hpp"
 
 namespace elizaos {

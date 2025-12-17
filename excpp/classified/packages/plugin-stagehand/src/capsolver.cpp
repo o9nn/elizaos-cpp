@@ -7,7 +7,7 @@ namespace elizaos {
 std::future<> detectCaptchaType(const std::any& page) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    type: 'turnstile' | 'recaptcha-v2' | 'recaptcha-v3' | 'hcaptcha' | nullptr;
+    type: "turnstile" | "recaptcha-v2" | "recaptcha-v3" | "hcaptcha" | nullptr;
     siteKey?: string;
 
 }
@@ -16,11 +16,11 @@ std::future<void> injectCaptchaSolution(const std::any& page, const std::string&
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     switch (captchaType) {
-        case 'turnstile':
+        // case "turnstile":
         page.evaluate((token: string) => {
             // This code runs in the browser context
             const auto doc = globalThis;
-            const auto textarea = doc.document.querySelector('[name="cf-turnstile-response"]');
+            const auto textarea = doc.document.querySelector("[name="cf-turnstile-response"]");
             if (textarea) {
                 textarea.value = token;
             }
@@ -32,15 +32,15 @@ std::future<void> injectCaptchaSolution(const std::any& page, const std::string&
             }, solution);
             break;
 
-            case 'recaptcha-v2':
-            case 'recaptcha-v3':
+            // case "recaptcha-v2":
+            // case "recaptcha-v3":
             page.evaluate((token: string) => {
                 // This code runs in the browser context
                 const auto doc = globalThis;
-                const auto textarea = doc.document.querySelector('[name="g-recaptcha-response"]');
+                const auto textarea = doc.document.querySelector("[name="g-recaptcha-response"]");
                 if (textarea) {
                     textarea.value = token;
-                    textarea.style.display = 'block';
+                    textarea.style.display = "block";
                 }
                 // Trigger any callbacks
                 const auto callback = doc.onRecaptchaSuccess || doc.recaptchaCallback;
@@ -50,16 +50,16 @@ std::future<void> injectCaptchaSolution(const std::any& page, const std::string&
                 }, solution);
                 break;
 
-                case 'hcaptcha':
+                // case "hcaptcha":
                 page.evaluate((token: string) => {
                     // This code runs in the browser context
                     const auto doc = globalThis;
-                    const auto textarea = doc.document.querySelector('[name="h-captcha-response"]');
+                    const auto textarea = doc.document.querySelector("[name="h-captcha-response"]");
                     if (textarea) {
                         textarea.value = token;
                     }
                     // Find the hCaptcha response input
-                    const auto input = doc.document.querySelector('[name="g-recaptcha-response"]');
+                    const auto input = doc.document.querySelector("[name="g-recaptcha-response"]");
                     if (input) {
                         input.value = token;
                     }

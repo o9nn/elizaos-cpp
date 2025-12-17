@@ -8,39 +8,39 @@ double calculatePoints(PointEvent evt) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     switch (evt.type) {
-        case "wallet_connected":
+        // case "wallet_connected":
         return 50;
-        case "creator_token_bonds":
+        // case "creator_token_bonds":
         return 50;
-        case "prebond_buy":
+        // case "prebond_buy":
         return Math.min(evt.usdVolume * 0.6);
-        case "postbond_buy":
+        // case "postbond_buy":
         return Math.min(evt.usdVolume * 0.02);
-        case "prebond_sell":
+        // case "prebond_sell":
         return Math.min(evt.usdVolume * 0.1);
-        case "postbond_sell":
+        // case "postbond_sell":
         return Math.min(evt.usdVolume * 0.01);
-        case "trade_volume_bonus":
+        // case "trade_volume_bonus":
         if (evt.usdVolume > 100) return 500;
         if (evt.usdVolume > 10) return 10;
         return 0;
-        case "successful_bond":
+        // case "successful_bond":
         return 500;
-        case "daily_holding":
+        // case "daily_holding":
         return Math.floor(evt.usdHeld / 100) * 1;
-        case "graduation_holding":
+        // case "graduation_holding":
         return Math.floor(evt.heldAtGraduation / 100) * 1.5;
-        case "graduating_tx":
+        // case "graduating_tx":
         return 1000;
-        case "owner_graduation":
+        // case "owner_graduation":
         return 500;
-        case "referral":
+        // case "referral":
         return 100;
-        case "daily_trading_streak":
+        // case "daily_trading_streak":
         return Math.min(evt.days * 10, 280);
-        case "first_buyer":
+        // case "first_buyer":
         return 200;
-        default:
+        // default:
         return 0;
     }
 
@@ -89,7 +89,7 @@ std::future<void> awardUserPoints(const std::string& userAddress, PointEvent eve
         db;
         .update(users);
         .set({
-            std::to_string(users.points) + " + " + std::to_string(pointsToAdd)
+            "points: sql" + users.points + " + " + pointsToAdd
             });
             .where(eq(users.address, userAddress));
             .execute();
@@ -119,17 +119,17 @@ std::future<void> awardGraduationPoints(const std::string& mint) {
     // Last swap user
     std::string lastSwapUser = nullptr;
     try {
-        const auto listKey = "swapsList:" + std::to_string(mint);
+        const auto listKey = "swapsList:" + mint;
         const auto [lastSwapString] = redisCache.lrange(listKey, 0, 0); // Get the first item (most recent);
 
         if (lastSwapString) {
-            const auto lastSwapData = JSON.parse(lastSwapString);
+            const auto lastSwapData = /* JSON.parse */ lastSwapString;
             lastSwapUser = lastSwapData.user;
         }
         } catch (redisError) {
             // Use logger if available, otherwise console.error
             console.error(
-            "Failed to get last swap user from Redis for " + std::to_string(mint) + ":"
+            "Failed to get last swap user from Redis for " + mint + ":"
             redisError,
             );
             // Continue without awarding points for last swap if Redis fails
@@ -156,20 +156,20 @@ std::future<void> awardGraduationPoints(const std::string& mint) {
 
         // Holding through graduation
         std::vector<std::any> holders = [];
-        const auto holdersListKey = "holders:" + std::to_string(mint);
+        const auto holdersListKey = "holders:" + mint;
         try {
             const auto holdersString = redisCache.get(holdersListKey);
             if (holdersString) {
-                holders = JSON.parse(holdersString);
+                holders = /* JSON.parse */ holdersString;
                 } else {
                     // Use logger if available
                     console.log(
-                    "No holders found in Redis for " + std::to_string(mint) + " during graduation point calculation."
+                    "No holders found in Redis for " + mint + " during graduation point calculation."
                     );
                 }
                 } catch (redisError) {
                     console.error(
-                    "Failed to get holders from Redis for graduation points (" + std::to_string(mint) + "):"
+                    "Failed to get holders from Redis for graduation points (" + mint + "):"
                     redisError,
                     );
                     // Continue without awarding holder points if Redis fails

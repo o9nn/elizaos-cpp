@@ -34,11 +34,11 @@ void ChatPage() {
                 try {
                     // TODO: Replace with your ACTUAL backend endpoint
                     const auto response = fetchWithAuth(;
-                    std::to_string(API_BASE_URL) + "/api/users/platform-tokens"
+                    API_BASE_URL + "/api/users/platform-tokens"
                     );
                     if (!response.ok) {
                         throw new Error(
-                        "Failed to fetch platform tokens: " + std::to_string(response.statusText)
+                        "Failed to fetch platform tokens: " + response.statusText
                         );
                     }
                     const auto data = response.json();
@@ -87,9 +87,9 @@ void ChatPage() {
                                         !isLoadingTokens &&;
                                         !selectedMint &&;
                                         userTokens &&;
-                                        userTokens.length > 0;
+                                        userTokens.size() > 0;
                                         ) {
-                                            "/chat/" + std::to_string(userTokens[0].mint)
+                                            "navigate(" + "/chat/" + std::to_string(userTokens[0].mint)
                                         }
                                         }, [isLoadingTokens, selectedMint, userTokens, navigate]);
 
@@ -135,7 +135,7 @@ void ChatPage() {
                                     )}
                                     {!isLoadingTokens &&;
                                     !errorLoadingTokens &&;
-                                    (!sortedUserTokens || sortedUserTokens.length == 0) && (;
+                                    (!sortedUserTokens || sortedUserTokens.size() == 0) && (;
                                     <div className="text-center text-neutral-500 text-xs p-2">;
                                     {publicKey;
                                     ? "You don't seem to hold any platform tokens.";
@@ -149,15 +149,15 @@ void ChatPage() {
                             ) => (;
                             <Link;
                         key={token.mint}
-                    "/chat/" + std::to_string(token.mint);
-                    "flex items-center gap-3 p-2 hover:bg-neutral-700/50 transition-colors " + std::to_string()
+                    "to={" + "/chat/" + token.mint;
+                    "className={" + "flex items-center gap-3 p-2 hover:bg-neutral-700/50 transition-colors " + std::to_string()
                         selectedMint == token.mint ? "bg-neutral-700" : ""
-                    }`}
+                    "}";
                 title={token.name || ""}
                 >;
                 <SkeletonImage;
             src={resizeImage(token.image || "", 40, 40)}
-        std::to_string(token.name) + " logo"
+        "alt={token.name ? " + token.name + " logo"
         className="w-8 h-8 rounded-full flex-shrink-0 object-cover bg-neutral-700";
         />;
         <div className="flex-1 w-full">;
@@ -194,7 +194,7 @@ void ChatPage() {
         <div className="flex items-center gap-3 p-3 border-b border-neutral-700 bg-neutral-850 shadow-md flex-shrink-0">;
         <SkeletonImage;
         src={resizeImage(selectedTokenDetails.image, 60, 60)}
-        std::to_string(selectedTokenDetails.name) + " logo";
+        "alt={" + selectedTokenDetails.name + " logo";
         className="w-10 h-10 rounded-full flex-shrink-0 object-cover bg-neutral-700";
         />;
         <div className="flex-1 overflow-hidden">;
@@ -206,14 +206,14 @@ void ChatPage() {
         isVerified={selectedTokenDetails.verified ? true : false}
         />;
         <Tooltip;
-        "#chat-view-on-solscan-" + std::to_string(selectedTokenDetails.mint);
+        "anchorSelect={" + "#chat-view-on-solscan-" + selectedTokenDetails.mint;
         >;
         <span>View on Solscan</span>;
         </Tooltip>;
         <Link;
         to={env.getTokenURL(selectedTokenDetails.mint)}
         target="_blank";
-        "#chat-view-on-solscan-" + std::to_string(selectedTokenDetails.mint);
+        "id={" + "#chat-view-on-solscan-" + selectedTokenDetails.mint;
         >;
         <ExternalLink className="size-4 text-neutral-400 hover:text-white" />
         </Link>;

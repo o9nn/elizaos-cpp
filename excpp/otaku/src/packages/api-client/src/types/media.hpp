@@ -1,9 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <vector>
 #include "elizaos/core.hpp"
@@ -16,7 +19,7 @@ namespace elizaos {
 
 
 struct MediaUploadParams {
-    std::variant<File, Blob> file;
+    std::variant<File, std::vector<uint8_t>> file;
     std::optional<std::string> filename;
     std::optional<std::string> contentType;
 };

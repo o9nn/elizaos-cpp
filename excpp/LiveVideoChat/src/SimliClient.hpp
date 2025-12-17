@@ -1,10 +1,13 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -18,8 +21,8 @@ struct SimliClientConfig {
     std::string apiKey;
     std::string faceID;
     bool handleSilence;
-    std::shared_ptr<HTMLVideoElement> videoRef;
-    std::shared_ptr<HTMLAudioElement> audioRef;
+    std::shared_ptr<void*> videoRef;
+    std::shared_ptr<void*> audioRef;
 };
 
 class SimliClient {
@@ -36,7 +39,7 @@ public:
     void initializeSession();
     void negotiate();
     std::future<void> waitForIceGathering();
-    void sendAudioData(Uint8Array audioData);
+    void sendAudioData(const std::vector<uint8_t>& audioData);
     void close();
 };
 

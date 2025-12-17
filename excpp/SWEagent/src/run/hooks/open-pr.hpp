@@ -1,17 +1,19 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include "..environment/swe-env.hpp"
-#include "..types.hpp"
-#include "..utils/github.hpp"
-#include "..utils/log.hpp"
+#include "environment/swe-env.hpp"
 #include "types.hpp"
+#include "utils/github.hpp"
+#include "utils/log.hpp"
 
 namespace elizaos {
 
@@ -46,7 +48,7 @@ struct GitHubIssue {
     double number;
     std::string title;
     std::string state;
-    std::optional<unknown> assignee;
+    std::optional<std::any> assignee;
     bool locked;
 };
 

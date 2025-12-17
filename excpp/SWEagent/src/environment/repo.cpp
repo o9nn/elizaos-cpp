@@ -8,12 +8,12 @@ std::vector<std::string> getGitResetCommands(const std::string& baseCommit) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return [;
-    'git fetch',
-    'git status',
-    'git restore .',
-    'git reset --hard',
-    "git checkout " + std::to_string(baseCommit)
-    'git clean -fdq',
+    "git fetch",
+    "git status",
+    "git restore .",
+    "git reset --hard",
+    "git checkout " + baseCommit
+    "git clean -fdq",
     ];
 
 }
@@ -25,22 +25,22 @@ Repo repoFromSimplifiedInput(const std::string& input, std::string baseCommit = 
         if (type == 'auto') {
             // Auto-detect type
             if (input.includes('github.com')) {
-                type = 'github';
+                type = "github";
                 } else if (fs.existsSync(input)) {
-                    type = 'local';
+                    type = "local";
                     } else {
-                        type = 'preexisting';
+                        type = "preexisting";
                     }
                 }
 
                 switch (type) {
-                    case 'github':
-                    return new GithubRepo({ githubUrl: input, baseCommit, type: 'github', cloneTimeout: 500 });
-                    case 'local':
-                    return new LocalRepo({ path: input, baseCommit, type: 'local' });
-                    case 'preexisting':
-                    return new PreExistingRepo({ repoName: input, baseCommit, type: 'preexisting', reset: true });
-                    default:
+                    // case "github":
+                    return new GithubRepo({ githubUrl: input, baseCommit, type: "github", cloneTimeout: 500 });
+                    // case "local":
+                    return new LocalRepo({ path: input, baseCommit, type: "local" });
+                    // case "preexisting":
+                    return new PreExistingRepo({ repoName: input, baseCommit, type: "preexisting", reset: true });
+                    // default:
                     throw std::runtime_error(`Unknown repo type: ${type}`);
                 }
 

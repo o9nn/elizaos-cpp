@@ -27,11 +27,11 @@ std::future<std::vector<TwitterMessage>> fetchUserTweets(const std::string& user
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        const auto userTimelineUrl = "https://api.twitter.com/2/users/" + std::to_string(userId) + "/tweets?max_results=100&tweet.fields=created_at,author_id,conversation_id,in_reply_to_user_id&exclude=retweets,replies";
+        const auto userTimelineUrl = "https://api.twitter.com/2/users/" + userId + "/tweets?max_results=100&tweet.fields=created_at,author_id,conversation_id,in_reply_to_user_id&exclude=retweets,replies";
 
         const auto twitterResponse = fetch(userTimelineUrl, {;
             headers: {
-                "Bearer " + std::to_string(accessToken)
+                "Authorization: " + "Bearer " + accessToken
                 },
                 });
 
@@ -80,7 +80,7 @@ std::future<std::string> fetchTwitterUser(const std::string& userId, const std::
         if (!userId) {
             const auto meResponse = fetch("https://api.twitter.com/2/users/me", {;
                 headers: {
-                    "Bearer " + std::to_string(accessToken)
+                    "Authorization: " + "Bearer " + accessToken
                     },
                     });
 
@@ -98,12 +98,12 @@ std::future<std::string> fetchTwitterUser(const std::string& userId, const std::
                 // If userId is not a number, treat it as a username
                 if (isNaN(Number(userId))) {
                     const auto username = userId;
-                    const auto userLookupUrl = "https://api.twitter.com/2/users/by/username/" + std::to_string(username);
+                    const auto userLookupUrl = "https://api.twitter.com/2/users/by/username/" + username;
                     std::cout << "Looking up user by username:" << username << std::endl;
 
                     const auto userLookupResponse = fetch(userLookupUrl, {;
                         headers: {
-                            "Bearer " + std::to_string(accessToken)
+                            "Authorization: " + "Bearer " + accessToken
                             },
                             });
 
@@ -259,7 +259,7 @@ std::future<bool> validateToken(const std::string& token, const std::string& use
         ),
         );
         .limit(1);
-        return result.length > 0;
+        return result.size() > 0;
         } catch (err) {
             std::cerr << "Error validating token:" << err << std::endl;
             return false;
@@ -287,7 +287,7 @@ std::string generateAuthHeader(const std::unordered_map<std::string, std::string
         });
         .map(;
         ([key, value]) =>;
-        std::to_string(encodeURIComponent(key)) + "="" + std::to_string(encodeURIComponent(value)) + """
+        std::to_string(encodeURIComponent(key)) + "=\"" + std::to_string(encodeURIComponent(value)) + "\""
         );
         .join(", ");
         );
@@ -300,7 +300,7 @@ std::string encodeRFC3986(const std::string& str) {
     return encodeURIComponent(str);
     .replace(;
     /[!'()*]/g,
-    "%" + std::to_string(c.charCodeAt(0).tostd::to_string(16).toUpperCase())
+    "(c) => " + "%" + std::to_string(c.charCodeAt(0).tostd::to_string(16).toUpperCase())
     );
     .replace(/\%20/g, "+");
 
@@ -311,7 +311,7 @@ std::future<std::string> generateOAuth1Signature(const std::string& method, cons
 
     const auto paramString = Object.entries(params);
     .sort(([a], [b]) => a.localeCompare(b));
-    std::to_string(encodeRFC3986(key)) + "=" + std::to_string(encodeRFC3986(value));
+    ".map(([key, value]) => " + std::to_string(encodeRFC3986(key)) + "=" + std::to_string(encodeRFC3986(value));
     .join("&");
 
     const auto signatureBase = [;

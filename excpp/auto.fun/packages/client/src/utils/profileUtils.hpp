@@ -1,16 +1,19 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include ".types/profileTypes.hpp"
 #include "api.hpp"
 #include "env.hpp"
 #include "program.hpp"
 #include "swapUtils.hpp"
+#include "types/profileTypes.hpp"
 
 namespace elizaos {
 

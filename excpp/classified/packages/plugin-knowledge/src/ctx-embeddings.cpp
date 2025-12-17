@@ -8,12 +8,12 @@ std::string getContextualizationPrompt(const std::string& docContent, const std:
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!docContent || !chunkContent) {
-        std::cout << 'Document content or chunk content is missing for contextualization.' << std::endl;
-        return 'Error: Document or chunk content missing.';
+        std::cout << "Document content or chunk content is missing for contextualization." << std::endl;
+        return "Error: Document or chunk content missing.";
     }
 
     // Estimate if the chunk is already large relative to our target size
-    const auto chunkTokens = Math.ceil(chunkContent.length / DEFAULT_CHARS_PER_TOKEN);
+    const auto chunkTokens = Math.ceil(chunkContent.size() / DEFAULT_CHARS_PER_TOKEN);
 
     // If the chunk is already large, adjust the target max tokens to avoid excessive growth
     if (chunkTokens > maxTokens * 0.7) {
@@ -23,10 +23,10 @@ std::string getContextualizationPrompt(const std::string& docContent, const std:
     }
 
     return promptTemplate;
-    .replace('{doc_content}', docContent);
-    .replace('{chunk_content}', chunkContent);
-    .replace('{min_tokens}', minTokens.toString());
-    .replace('{max_tokens}', maxTokens.toString());
+    .replace("{doc_content}", docContent);
+    .replace("{chunk_content}", chunkContent);
+    .replace("{min_tokens}", std::to_string(minTokens));
+    .replace("{max_tokens}", std::to_string(maxTokens));
 
 }
 
@@ -56,12 +56,12 @@ std::string getPromptForMimeType(const std::string& mimeType, const std::string&
                 console.debug('Using standard PDF settings');
             }
             } else if (;
-            mimeType.includes('javascript') ||;
-            mimeType.includes('typescript') ||;
-            mimeType.includes('python') ||;
-            mimeType.includes('java') ||;
-            mimeType.includes('c++') ||;
-            mimeType.includes('code');
+            (std::find(mimeType.begin(), mimeType.end(), "javascript") != mimeType.end()) ||;
+            (std::find(mimeType.begin(), mimeType.end(), "typescript") != mimeType.end()) ||;
+            (std::find(mimeType.begin(), mimeType.end(), "python") != mimeType.end()) ||;
+            (std::find(mimeType.begin(), mimeType.end(), "java") != mimeType.end()) ||;
+            (std::find(mimeType.begin(), mimeType.end(), "c++") != mimeType.end()) ||;
+            (std::find(mimeType.begin(), mimeType.end(), "code") != mimeType.end());
             ) {
                 minTokens = CONTEXT_TARGETS.CODE.MIN_TOKENS;
                 maxTokens = CONTEXT_TARGETS.CODE.MAX_TOKENS;
@@ -69,8 +69,8 @@ std::string getPromptForMimeType(const std::string& mimeType, const std::string&
                 console.debug('Using code prompt template');
                 } else if (;
                 isTechnicalDocumentation(docContent) ||;
-                mimeType.includes('markdown') ||;
-                mimeType.includes('text/html');
+                (std::find(mimeType.begin(), mimeType.end(), "markdown") != mimeType.end()) ||;
+                (std::find(mimeType.begin(), mimeType.end(), "text/html") != mimeType.end());
                 ) {
                     minTokens = CONTEXT_TARGETS.TECHNICAL.MIN_TOKENS;
                     maxTokens = CONTEXT_TARGETS.TECHNICAL.MAX_TOKENS;
@@ -130,22 +130,22 @@ bool containsMathematicalContent(const std::string& content) {
 
     // Keyword analysis
     const auto mathKeywords = [;
-    'theorem',
-    'lemma',
-    'proof',
-    'equation',
-    'function',
-    'derivative',
-    'integral',
-    'matrix',
-    'vector',
-    'algorithm',
-    'constraint',
-    'coefficient',
+    "theorem",
+    "lemma",
+    "proof",
+    "equation",
+    "function",
+    "derivative",
+    "integral",
+    "matrix",
+    "vector",
+    "algorithm",
+    "constraint",
+    "coefficient",
     ];
 
     const auto contentLower = content.toLowerCase();
-    const auto mathKeywordCount = mathKeywords.filter((keyword) => contentLower.includes(keyword)).length;
+    const auto mathKeywordCount = mathKeywords.filter((keyword) => (std::find(contentLower.begin(), contentLower.end(), keyword) != contentLower.end())).size();
 
     // If multiple math keywords are present, it likely contains math
     return mathKeywordCount >= 2;
@@ -208,7 +208,7 @@ bool containsMathematicalContent(const std::string& content) {
     */
     export function getChunkWithContext(chunkContent: string, generatedContext: string): string {
         if (!generatedContext || generatedContext.trim() == '') {
-            std::cout << 'Generated context is empty. Falling back to original chunk content.' << std::endl;
+            std::cout << "Generated context is empty. Falling back to original chunk content." << std::endl;
             return chunkContent;
         }
 

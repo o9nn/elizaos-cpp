@@ -21,7 +21,7 @@ std::future<void> walkDir(const std::string& dir) {
                 walkDir(fullPath);
             }
             } else if (extensions.some((ext) => item.endsWith(ext))) {
-                files.push(fullPath);
+                files.push_back(fullPath);
             }
         }
 

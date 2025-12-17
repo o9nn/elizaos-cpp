@@ -76,7 +76,7 @@ void TokenHeader() {
     <div className="text-lg font-bold">;
     ${marketData.priceUsd.toFixed(4) || "—"}
     </div>;
-    "text-xs " + std::to_string(priceChangeColor);
+    "<div className={" + "text-xs " + priceChangeColor;
     {priceChange >= 0 ? "+"  = ""}
     {priceChange.toFixed(2)}% (24h);
     </div>;

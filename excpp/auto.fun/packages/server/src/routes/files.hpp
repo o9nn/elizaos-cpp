@@ -1,16 +1,18 @@
 #pragma once
+#include <algorithm>
 #include <any>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
-#include ".db.hpp"
-#include ".s3Client.hpp"
-#include ".util.hpp"
+#include "db.hpp"
+#include "s3Client.hpp"
+#include "util.hpp"
 
 namespace elizaos {
 
@@ -29,10 +31,10 @@ namespace elizaos {
 // Singleton S3 Client instance
 
 // Helper function to upload to R2/MinIO
-std::future<std::string> uploadToStorage(Buffer buffer, { contentType: string options, string } key);
+std::future<std::string> uploadToStorage(const std::vector<uint8_t>& buffer, { contentType: string options, string } key);
 
 // Define context variables for Hono
-using Variables = std::variant<std::any, nullptr>;
+using Variables = std::optional<std::any>;
 
 // Extend Context type for variables
   struct ContextVariableMap {

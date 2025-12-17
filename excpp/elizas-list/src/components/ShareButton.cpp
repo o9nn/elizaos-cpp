@@ -11,8 +11,8 @@ void ShareButton() {
 
     const auto handleShare = async () => {;
         const auto shareData = {;
-            "Check out " + std::to_string(project.name) + " on ELIZAS LIST"
-            "I found this awesome project on ELIZAS LIST: " + std::to_string(project.name)
+            "title: " + "Check out " + project.name + " on ELIZAS LIST"
+            "text: " + "I found this awesome project on ELIZAS LIST: " + project.name
             url: project.github,
             };
 
@@ -25,7 +25,7 @@ void ShareButton() {
                         setTimeout(() => setShared(false), 2000);
                     }
                     } catch (err) {
-                        std::cerr << 'Error sharing:' << err << std::endl;
+                        std::cerr << "Error sharing:" << err << std::endl;
                     }
                     };
 

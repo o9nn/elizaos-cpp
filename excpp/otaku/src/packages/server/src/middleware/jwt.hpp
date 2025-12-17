@@ -1,9 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "elizaos/core.hpp"
 
@@ -33,7 +36,7 @@ std::string generateAuthToken(const std::string& userId, const std::string& emai
  * Middleware to verify JWT token and extract user info
  * Requires authentication - returns 401 if no valid token
  */
-void requireAuth(AuthenticatedRequest req, Response res, NextFunction next);
+void requireAuth(AuthenticatedRequest req, const std::string& res, NextFunction next);
 
 /**
  * Optional middleware for endpoints that work with or without auth
@@ -48,13 +51,13 @@ void optionalAuth(AuthenticatedRequest req, NextFunction next);
  * - If X-API-KEY matches ELIZA_SERVER_AUTH_TOKEN, marks request as server-authenticated.
  * - Otherwise, returns 401.
  */
-void requireAuthOrApiKey(AuthenticatedRequest req, Response res, NextFunction next);
+void requireAuthOrApiKey(AuthenticatedRequest req, const std::string& res, NextFunction next);
 
 /**
  * Middleware to require admin access
  * Must be used after requireAuth middleware
  */
-void requireAdmin(AuthenticatedRequest req, Response res, NextFunction next);
+void requireAdmin(AuthenticatedRequest req, const std::string& res, NextFunction next);
 
 
 } // namespace elizaos

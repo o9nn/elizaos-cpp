@@ -16,7 +16,7 @@ std::future<void> handler(NextApiRequest req, NextApiResponse res) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (req.method != 'GET') {
-        return res.status(405).json({ error: 'Method not allowed' });
+        return res.status(405).json({ error: "Method not allowed" });
     }
 
     try {
@@ -29,7 +29,7 @@ std::future<void> handler(NextApiRequest req, NextApiResponse res) {
             trustScore: partner.trustScore
             }));
 
-            std::cout << "Returning " + std::to_string(formattedPartners.length) + " mock partners for trust scoreboard" << std::endl;
+            std::cout << "Returning " + formattedPartners.size() + " mock partners for trust scoreboard" << std::endl;
 
             // Return in expected ApiResponse format
             res.status(200).json({
@@ -37,10 +37,10 @@ std::future<void> handler(NextApiRequest req, NextApiResponse res) {
                 });
 
                 } catch (error) {
-                    std::cerr << 'API Error:' << error << std::endl;
+                    std::cerr << "API Error:" << error << std::endl;
                     res.status(500).json({
-                        error: 'Failed to fetch partner accounts',
-                        details: true /* instanceof check */ ? error.message : 'Unknown error'
+                        error: "Failed to fetch partner accounts",
+                        details: true /* instanceof check */ ? error.message : "Unknown error"
                         });
                     }
 

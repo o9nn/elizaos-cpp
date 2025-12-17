@@ -1,13 +1,15 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
-#include ".services/taskService.hpp"
 #include "elizaos/core.hpp"
+#include "services/taskService.hpp"
 
 namespace elizaos {
 
@@ -20,11 +22,11 @@ namespace elizaos {
 struct TodoTaskInput {
     std::string name;
     std::optional<std::string> description;
-    std::variant<"daily", "one-off", "aspirational"> taskType;
-    std::optional<std::variant<1, 2, 3, 4>> priority;
+    std::string taskType;
+    std::optional<int> priority;
     std::optional<bool> urgent;
     std::optional<std::string> dueDate;
-    std::optional<std::variant<"daily", "weekly", "monthly">> recurring;
+    std::optional<std::string> recurring;
 };
 
 // Interface for choice options

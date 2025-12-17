@@ -12,23 +12,23 @@ void KnowledgeTab() {
         const auto [isUploading, setIsUploading] = useState(false);
         const auto [visibleItems, setVisibleItems] = useState(ITEMS_PER_PAGE);
         const auto [loadingMore, setLoadingMore] = useState(false);
-        const auto [viewMode, setViewMode] = useState<'list' | 'graph'>('list');
+        const auto [viewMode, setViewMode] = useState<"list" | "graph">("list");
         const auto [selectedMemory, setSelectedMemory] = useState<Memory | nullptr>(nullptr);
         const auto [pdfZoom, setPdfZoom] = useState(1.0);
         const auto [showUrlDialog, setShowUrlDialog] = useState(false);
-        const auto [urlInput, setUrlInput] = useState('');
+        const auto [urlInput, setUrlInput] = useState("");
         const auto [isUrlUploading, setIsUrlUploading] = useState(false);
         const auto [urlError, setUrlError] = useState<string | nullptr>(nullptr);
         const auto [urls, setUrls] = useState<string[]>([]);
 
         // Search-related states
         const auto [showSearch, setShowSearch] = useState(false);
-        const auto [searchQuery, setSearchQuery] = useState('');
+        const auto [searchQuery, setSearchQuery] = useState("");
         const auto [searchThreshold, setSearchThreshold] = useState(0.5);
         const auto [searchResults, setSearchResults] = useState<any[]>([]);
         const auto [isSearching, setIsSearching] = useState(false);
         const auto [searchError, setSearchError] = useState<string | nullptr>(nullptr);
-        const auto [filenameFilter, setFilenameFilter] = useState('');
+        const auto [filenameFilter, setFilenameFilter] = useState("");
         const auto [selectedDocumentForGraph, setSelectedDocumentForGraph] = useState<UUID | std::nullopt>(;
         std::nullopt;
         );
@@ -43,7 +43,7 @@ void KnowledgeTab() {
             data: documentsOnly = [],
             isLoading: documentsLoading,
             error: documentsError,
-            } = useKnowledgeDocuments(agentId, viewMode == 'list' && !showSearch, false);
+            } = useKnowledgeDocuments(agentId, viewMode == "list" && !showSearch, false);
 
             // Graph mode: use useKnowledgeChunks to get documents and fragments
             const auto {;
@@ -52,16 +52,16 @@ void KnowledgeTab() {
                 error: graphError,
                 documents: graphDocuments = [],
                 fragments: graphFragments = [],
-                } = useKnowledgeChunks(agentId, viewMode == 'graph' && !showSearch, selectedDocumentForGraph);
+                } = useKnowledgeChunks(agentId, viewMode == "graph" && !showSearch, selectedDocumentForGraph);
 
                 // Use the appropriate data based on the mode
-                const auto isLoading = viewMode == 'list' ? documentsLoading : graphLoading;
-                const auto error = viewMode == 'list' ? documentsError : graphError;
-                const auto memories = viewMode == 'list' ? documentsOnly : graphMemories;
+                const auto isLoading = viewMode == "list" ? documentsLoading : graphLoading;
+                const auto error = viewMode == "list" ? documentsError : graphError;
+                const auto memories = viewMode == "list" ? documentsOnly : graphMemories;
 
                 // Calculate counts for display
-                const auto documentCount = viewMode == 'list' ? documentsOnly.length : graphDocuments.length;
-                const auto fragmentCount = viewMode == 'graph' ? graphFragments.length : 0;
+                const auto documentCount = viewMode == "list" ? documentsOnly.size() : graphDocuments.size();
+                const auto fragmentCount = viewMode == "graph" ? graphFragments.size() : 0;
 
                 const auto { mutate: deleteKnowledgeDoc } = useDeleteKnowledgeDocument(agentId);
 
@@ -74,7 +74,7 @@ void KnowledgeTab() {
                     return memories.filter((memory) => {;
                         if (isDocumentMemory(memory)) {
                             const auto metadata = memory.metadata;
-                            const auto filename = metadata.filename || metadata.originalFilename || metadata.path || '';
+                            const auto filename = metadata.filename || metadata.originalFilename || metadata.path || "";
                             return filename.toLowerCase().includes(filenameFilter.toLowerCase());
                         }
                         return false;
@@ -82,7 +82,7 @@ void KnowledgeTab() {
                         }, [memories, filenameFilter, viewMode]);
 
                         const auto visibleMemories = filteredMemories.slice(0, visibleItems);
-                        const auto hasMoreToLoad = visibleItems < filteredMemories.length;
+                        const auto hasMoreToLoad = visibleItems < filteredMemories.size();
 
                         const auto handleScroll = useCallback(() => {;
                             if (!scrollContainerRef.current || loadingMore || visibleItems >= filteredMemories.length) {
@@ -93,11 +93,11 @@ void KnowledgeTab() {
                             if (scrolledToBottom) {
                                 setLoadingMore(true);
                                 setTimeout(() => {
-                                    setVisibleItems((prev) => Math.min(prev + ITEMS_PER_PAGE, filteredMemories.length));
+                                    setVisibleItems((prev) => Math.min(prev + ITEMS_PER_PAGE, filteredMemories.size()));
                                     setLoadingMore(false);
                                     }, 300);
                                 }
-                                }, [loadingMore, visibleItems, filteredMemories.length]);
+                                }, [loadingMore, visibleItems, filteredMemories.size()]);
 
                                 useEffect(() => {
                                     setVisibleItems(ITEMS_PER_PAGE);
@@ -118,16 +118,16 @@ void KnowledgeTab() {
                                                 };
 
                                                 if (viewingContent) {
-                                                    document.addEventListener('keydown', handleEscapeKey);
-                                                    return [&]() { return document.removeEventListener('keydown', handleEscapeKey); };
+                                                    document.addEventListener("keydown", handleEscapeKey);
+                                                    return [&]() { return document.removeEventListener("keydown", handleEscapeKey); };
                                                 }
                                                 }, [viewingContent]);
 
                                                 useEffect(() => {
                                                     const auto scrollContainer = scrollContainerRef.current;
                                                     if (scrollContainer) {
-                                                        scrollContainer.addEventListener('scroll', handleScroll);
-                                                        return [&]() { return scrollContainer.removeEventListener('scroll', handleScroll); };
+                                                        scrollContainer.addEventListener("scroll", handleScroll);
+                                                        return [&]() { return scrollContainer.removeEventListener("scroll", handleScroll); };
                                                     }
                                                     }, [handleScroll]);
 
@@ -151,20 +151,20 @@ void KnowledgeTab() {
                                                     };
 
                                                     const auto getFileIcon = [&](fileName: string) {;
-                                                        const auto ext = fileName.split('.').pop().toLowerCase();
+                                                        const auto ext = fileName.split(".").pop().toLowerCase();
                                                         switch (ext) {
-                                                            case 'md':
+                                                            // case "md":
                                                             return <File className="h-5 w-5 text-blue-500" />;
-                                                            case 'js':
-                                                            case 'ts':
-                                                            case 'jsx':
-                                                            case 'tsx':
+                                                            // case "js":
+                                                            // case "ts":
+                                                            // case "jsx":
+                                                            // case "tsx":
                                                             return <File className="h-5 w-5 text-yellow-500" />;
-                                                            case 'json':
+                                                            // case "json":
                                                             return <File className="h-5 w-5 text-green-500" />;
-                                                            case 'pdf':
+                                                            // case "pdf":
                                                             return <FileText className="h-5 w-5 text-red-500" />;
-                                                            default:
+                                                            // default:
                                                             return <FileText className="h-5 w-5 text-gray-500" />;
                                                         }
                                                         };
@@ -182,7 +182,7 @@ void KnowledgeTab() {
 
                                                                 const auto handleUrlUploadClick = [&]() {;
                                                                     setShowUrlDialog(true);
-                                                                    setUrlInput('');
+                                                                    setUrlInput("");
                                                                     setUrls([]);
                                                                     setUrlError(nullptr);
                                                                     };
@@ -191,20 +191,20 @@ void KnowledgeTab() {
                                                                         try {
                                                                             const auto url = new URL(urlInput);
                                                                             if (!url.protocol.startsWith('http')) {
-                                                                                setUrlError('URL must start with http:// or https://');
+                                                                                setUrlError("URL must start with http:// or https://");
                                                                                 return;
                                                                             }
 
                                                                             if (urls.includes(urlInput)) {
-                                                                                setUrlError('This URL is already in the list');
+                                                                                setUrlError("This URL is already in the list");
                                                                                 return;
                                                                             }
 
                                                                             setUrls([...urls, urlInput]);
-                                                                            setUrlInput('');
+                                                                            setUrlInput("");
                                                                             setUrlError(nullptr);
                                                                             } catch (e) {
-                                                                                setUrlError('Invalid URL');
+                                                                                setUrlError("Invalid URL");
                                                                             }
                                                                             };
 
@@ -214,7 +214,7 @@ void KnowledgeTab() {
 
                                                                                 const auto handleSearch = async () => {;
                                                                                     if (!searchQuery.trim()) {
-                                                                                        setSearchError('Please enter a search query');
+                                                                                        setSearchError("Please enter a search query");
                                                                                         return;
                                                                                     }
 
@@ -228,11 +228,11 @@ void KnowledgeTab() {
 
                                                                                         if (result.data.results.length == 0) {
                                                                                             setSearchError(;
-                                                                                            'No results found. Try adjusting your search query or lowering the similarity threshold.';
+                                                                                            "No results found. Try adjusting your search query or lowering the similarity threshold.";
                                                                                             );
                                                                                         }
                                                                                         } catch (error: any) {
-                                                                                            setSearchError(error.message || 'Failed to search knowledge');
+                                                                                            setSearchError(error.message || "Failed to search knowledge");
                                                                                             setSearchResults([]);
                                                                                             } finally {
                                                                                                 setIsSearching(false);
@@ -254,7 +254,7 @@ void KnowledgeTab() {
 
                                                                                                     // If no URLs to process, show error
                                                                                                     if (urls.length == 0) {
-                                                                                                        setUrlError('Please add at least one valid URL');
+                                                                                                        setUrlError("Please add at least one valid URL");
                                                                                                         return;
                                                                                                     }
 
@@ -262,12 +262,12 @@ void KnowledgeTab() {
                                                                                                     setUrlError(nullptr);
 
                                                                                                     try {
-                                                                                                        const auto result = "/api/documents";
-                                                                                                            method: 'POST',
+                                                                                                        const auto result = "fetch(" + "/api/documents";
+                                                                                                            method: "POST",
                                                                                                             headers: {
-                                                                                                                'Content-Type': 'application/json',
+                                                                                                                "Content-Type": "application/json",
                                                                                                                 },
-                                                                                                                body: JSON.stringify({ fileUrls: urls, agentId }),
+                                                                                                                body: /* JSON.stringify */ std::string({ fileUrls: urls, agentId }),
                                                                                                                 });
 
                                                                                                                 if (!result.ok) {
@@ -279,22 +279,22 @@ void KnowledgeTab() {
 
                                                                                                                 if (data.success) {
                                                                                                                     toast({
-                                                                                                                        title: 'URLs imported',
-                                                                                                                        "Successfully imported " + std::to_string(urls.length) + " document(s)"
+                                                                                                                        title: "URLs imported",
+                                                                                                                        "description: " + "Successfully imported " + urls.size() + " document(s)"
                                                                                                                         });
                                                                                                                         setShowUrlDialog(false);
                                                                                                                         queryClient.invalidateQueries({
-                                                                                                                            queryKey: ['agents', agentId, 'knowledge', 'documents'],
+                                                                                                                            queryKey: ["agents", agentId, "knowledge", "documents"],
                                                                                                                             });
                                                                                                                             } else {
-                                                                                                                                setUrlError(data.error.message || 'Error importing documents from URLs');
+                                                                                                                                setUrlError(data.error.message || "Error importing documents from URLs");
                                                                                                                             }
                                                                                                                             } catch (error: any) {
-                                                                                                                                setUrlError(error.message || 'Error importing documents from URLs');
+                                                                                                                                setUrlError(error.message || "Error importing documents from URLs");
                                                                                                                                 toast({
-                                                                                                                                    title: 'Error',
-                                                                                                                                    description: 'Failed to import documents from URLs',
-                                                                                                                                    variant: 'destructive',
+                                                                                                                                    title: "Error",
+                                                                                                                                    description: "Failed to import documents from URLs",
+                                                                                                                                    variant: "destructive",
                                                                                                                                     });
                                                                                                                                     } finally {
                                                                                                                                         setIsUrlUploading(false);
@@ -314,12 +314,12 @@ void KnowledgeTab() {
                                                                                                                                                 const auto correctedMimeType = getCorrectMimeType(file);
                                                                                                                                                 const auto blob = new Blob([file], { type: correctedMimeType });
                                                                                                                                                 // Append as a file with the original name
-                                                                                                                                                formData.append('files', blob, file.name);
+                                                                                                                                                formData.append("files", blob, file.name);
                                                                                                                                             }
-                                                                                                                                            formData.append('agentId', agentId);
+                                                                                                                                            formData.append("agentId", agentId);
 
-                                                                                                                                            const auto response = fetch('/api/documents', {;
-                                                                                                                                                method: 'POST',
+                                                                                                                                            const auto response = fetch("/api/documents", {;
+                                                                                                                                                method: "POST",
                                                                                                                                                 body: formData,
                                                                                                                                                 });
 
@@ -334,39 +334,39 @@ void KnowledgeTab() {
 
                                                                                                                                                 if (
                                                                                                                                                 Array.isArray(uploadOutcomes) &&;
-                                                                                                                                                uploadOutcomes.every((r: UploadResultItem) => r.status == 'success')
+                                                                                                                                                uploadOutcomes.every((r: UploadResultItem) => r.status == "success")
                                                                                                                                                 ) {
                                                                                                                                                     toast({
-                                                                                                                                                        title: 'Knowledge Uploaded',
-                                                                                                                                                        "Successfully uploaded " + std::to_string(fileArray.length) + " file(s)"
+                                                                                                                                                        title: "Knowledge Uploaded",
+                                                                                                                                                        "description: " + "Successfully uploaded " + fileArray.size() + " file(s)"
                                                                                                                                                         });
                                                                                                                                                         queryClient.invalidateQueries({
-                                                                                                                                                            queryKey: ['agents', agentId, 'knowledge', 'documents'],
+                                                                                                                                                            queryKey: ["agents", agentId, "knowledge", "documents"],
                                                                                                                                                             });
                                                                                                                                                             } else {
                                                                                                                                                                 const auto successfulUploads = uploadOutcomes.filter(;
-                                                                                                                                                                [&](r: UploadResultItem) { return r.status == 'success'; }
-                                                                                                                                                                ).length;
-                                                                                                                                                                const auto failedUploads = fileArray.length - successfulUploads;
+                                                                                                                                                                [&](r: UploadResultItem) { return r.status == "success"; }
+                                                                                                                                                                ).size();
+                                                                                                                                                                const auto failedUploads = fileArray.size() - successfulUploads;
                                                                                                                                                                 toast({
-                                                                                                                                                                    title: failedUploads > 0 ? 'Upload Partially Failed' : 'Upload Issues',
-                                                                                                                                                                    "Uploaded " + std::to_string(successfulUploads) + " file(s). " + std::to_string(failedUploads) + " file(s) failed. Check console for details."
-                                                                                                                                                                    variant: failedUploads > 0 ? 'destructive' : 'default',
+                                                                                                                                                                    title: failedUploads > 0 ? "Upload Partially Failed" : "Upload Issues",
+                                                                                                                                                                    "description: " + "Uploaded " + successfulUploads + " file(s). " + failedUploads + " file(s) failed. Check console for details."
+                                                                                                                                                                    variant: failedUploads > 0 ? "destructive" : "default",
                                                                                                                                                                     });
-                                                                                                                                                                    std::cerr << 'Upload results:' << uploadOutcomes << std::endl;
+                                                                                                                                                                    std::cerr << "Upload results:" << uploadOutcomes << std::endl;
                                                                                                                                                                 }
                                                                                                                                                                 } catch (uploadError: any) {
                                                                                                                                                                     toast({
-                                                                                                                                                                        title: 'Upload Failed',
+                                                                                                                                                                        title: "Upload Failed",
                                                                                                                                                                         description:
-                                                                                                                                                                        true /* instanceof check */ ? uploadError.message : 'Failed to upload knowledge files',
-                                                                                                                                                                        variant: 'destructive',
+                                                                                                                                                                        true /* instanceof check */ ? uploadError.message : "Failed to upload knowledge files",
+                                                                                                                                                                        variant: "destructive",
                                                                                                                                                                         });
-                                                                                                                                                                        std::cerr << 'Upload error:' << uploadError << std::endl;
+                                                                                                                                                                        std::cerr << "Upload error:" << uploadError << std::endl;
                                                                                                                                                                         } finally {
                                                                                                                                                                             setIsUploading(false);
                                                                                                                                                                             if (fileInputRef.current) {
-                                                                                                                                                                                fileInputRef.current.value = '';
+                                                                                                                                                                                fileInputRef.current.value = "";
                                                                                                                                                                             }
                                                                                                                                                                         }
                                                                                                                                                                         };
@@ -385,7 +385,7 @@ void KnowledgeTab() {
                                                                                                                                                                         onClick={() => {
                                                                                                                                                                             setLoadingMore(true);
                                                                                                                                                                             setTimeout(() => {
-                                                                                                                                                                                setVisibleItems((prev) => Math.min(prev + ITEMS_PER_PAGE, filteredMemories.length));
+                                                                                                                                                                                setVisibleItems((prev) => Math.min(prev + ITEMS_PER_PAGE, filteredMemories.size()));
                                                                                                                                                                                 setLoadingMore(false);
                                                                                                                                                                                 }, 100);
                                                                                                                                                                             }}
@@ -417,7 +417,7 @@ void KnowledgeTab() {
                                                                                                                                                                                 <Button;
                                                                                                                                                                                 variant="outline";
                                                                                                                                                                                 size="sm";
-                                                                                                                                                                            onClick={() => setViewMode('list')}
+                                                                                                                                                                            onClick={() => setViewMode("list")}
                                                                                                                                                                             className="flex-shrink-0";
                                                                                                                                                                             title="Switch to List view to see documents only";
                                                                                                                                                                             >;
@@ -448,10 +448,10 @@ void KnowledgeTab() {
                                                                                                                                                                             size="sm";
                                                                                                                                                                             onClick={() => {
                                                                                                                                                                                 setShowSearch(false);
-                                                                                                                                                                                setSearchQuery('');
+                                                                                                                                                                                setSearchQuery("");
                                                                                                                                                                                 setSearchResults([]);
                                                                                                                                                                                 setSearchError(nullptr);
-                                                                                                                                                                                setViewMode('list');
+                                                                                                                                                                                setViewMode("list");
                                                                                                                                                                             }}
                                                                                                                                                                             className="flex-shrink-0";
                                                                                                                                                                             title="Exit search and return to List view";
@@ -469,7 +469,7 @@ void KnowledgeTab() {
                                                                                                                                                                             <Button;
                                                                                                                                                                             variant="outline";
                                                                                                                                                                             size="sm";
-                                                                                                                                                                        onClick={() => setViewMode('list')}
+                                                                                                                                                                        onClick={() => setViewMode("list")}
                                                                                                                                                                         className="flex-shrink-0";
                                                                                                                                                                         title="Switch to List view to see documents only";
                                                                                                                                                                         >;
@@ -486,7 +486,7 @@ void KnowledgeTab() {
                                                                                                                                                                     <Button;
                                                                                                                                                                     variant="outline";
                                                                                                                                                                     size="sm";
-                                                                                                                                                                onClick={() => setViewMode('graph')}
+                                                                                                                                                                onClick={() => setViewMode("graph")}
                                                                                                                                                                 className="flex-shrink-0";
                                                                                                                                                                 title="Switch to Graph view to see documents and fragments";
                                                                                                                                                                 >;
@@ -561,8 +561,8 @@ void KnowledgeTab() {
 
                                                                                                                                                     const auto getFileExtension = [&]() {;
                                                                                                                                                         if (metadata.fileExt) return metadata.fileExt.toLowerCase();
-                                                                                                                                                        const auto filename = metadata.filename || metadata.originalFilename || metadata.path || '';
-                                                                                                                                                        return filename.split('.').pop().toLowerCase() || 'doc';
+                                                                                                                                                        const auto filename = metadata.filename || metadata.originalFilename || metadata.path || "";
+                                                                                                                                                        return filename.split(".").pop().toLowerCase() || "doc";
                                                                                                                                                         };
 
                                                                                                                                                         const auto getSubtitle = [&]() {;
@@ -570,7 +570,7 @@ void KnowledgeTab() {
                                                                                                                                                             if (metadata.filename) return metadata.filename;
                                                                                                                                                             if (metadata.originalFilename) return metadata.originalFilename;
                                                                                                                                                             if (metadata.source) return `Source: ${metadata.source}`;
-                                                                                                                                                            return 'Knowledge Document';
+                                                                                                                                                            return "Knowledge Document";
                                                                                                                                                             };
 
                                                                                                                                                             const auto displayName = getDocumentName();
@@ -592,16 +592,16 @@ void KnowledgeTab() {
                                                                                                                                                 <div className="flex items-center gap-2 mb-1">;
                                                                                                                                                 <span className="text-xs font-medium truncate">{subtitle}</span>;
                                                                                                                                                 <Badge variant="outline" className="px-1 py-0 h-4 text-xs flex-shrink-0">;
-                                                                                                                                            {fileExt || 'doc'}
+                                                                                                                                            {fileExt || "doc"}
                                                                                                                                             </Badge>;
                                                                                                                                             </div>;
                                                                                                                                             <div className="text-xs text-muted-foreground">;
                                                                                                                                             {new Date(memory.createdAt || 0).toLocaleString(std::nullopt, {
-                                                                                                                                                month: 'numeric',
-                                                                                                                                                day: 'numeric',
-                                                                                                                                                year: '2-digit',
-                                                                                                                                                hour: 'numeric',
-                                                                                                                                                minute: 'numeric',
+                                                                                                                                                month: "numeric",
+                                                                                                                                                day: "numeric",
+                                                                                                                                                year: "2-digit",
+                                                                                                                                                hour: "numeric",
+                                                                                                                                                minute: "numeric",
                                                                                                                                             })}
                                                                                                                                             </div>;
                                                                                                                                             </div>;
@@ -619,7 +619,7 @@ void KnowledgeTab() {
                                                                                                                                                 e.stopPropagation();
                                                                                                                                                 e.preventDefault();
                                                                                                                                             }
-                                                                                                                                            handleDelete(memory.id || '');
+                                                                                                                                            handleDelete(memory.id || "");
                                                                                                                                         }}
                                                                                                                                         title="Delete knowledge";
                                                                                                                                         >;
@@ -667,7 +667,7 @@ void KnowledgeTab() {
 
                                                                                                                                 {isFragment && (memory.metadata).documentId && (;
                                                                                                                                 <div className="col-span-2">;
-                                                                                                                            Parent Document:{' '}
+                                                                                                                            Parent Document:{" "}
                                                                                                                             <span className="font-mono text-primary/80">;
                                                                                                                         {(memory.metadata).documentId}
                                                                                                                         </span>;
@@ -697,7 +697,7 @@ void KnowledgeTab() {
                                                                                                         <div className="px-4 pb-4 flex-1 flex flex-col">;
                                                                                                         <div className="bg-background rounded border border-border p-3 text-sm overflow-auto flex-1">;
                                                                                                         <pre className="whitespace-pre-wrap font-mono text-xs h-full">;
-                                                                                                    {memory.content.text || 'No content available'}
+                                                                                                    {memory.content.text || "No content available"}
                                                                                                     </pre>;
                                                                                                     </div>;
 
@@ -706,7 +706,7 @@ void KnowledgeTab() {
                                                                                                     <span className="bg-accent/20 text-accent-foreground px-1.5 py-0.5 rounded text-[10px] font-medium mr-1.5">;
                                                                                                     EMBEDDING;
                                                                                                     </span>;
-                                                                                                    <span>Vector with {memory.embedding.length} dimensions</span>;
+                                                                                                    <span>Vector with {memory.embedding.size()} dimensions</span>;
                                                                                                     </div>;
                                                                                                 )}
                                                                                                 </div>;
@@ -715,25 +715,25 @@ void KnowledgeTab() {
                                                                                                 };
 
                                                                                                 // Check if we're in a focused document view that needs simplified controls
-                                                                                                const auto isDocumentFocused = viewMode == 'graph' && selectedDocumentForGraph && !showSearch;
+                                                                                                const auto isDocumentFocused = viewMode == "graph" && selectedDocumentForGraph && !showSearch;
 
                                                                                                 return (;
                                                                                                 <div className="flex flex-col h-full">;
                                                                                                 <div;
-                                                                                                "flex flex-col sm:flex-row items-start sm:items-center justify-between border-b gap-3 " + std::to_string()
-                                                                                                    isDocumentFocused ? 'p-6 pb-4' : 'p-4'
-                                                                                                }`}
+                                                                                                "className={" + "flex flex-col sm:flex-row items-start sm:items-center justify-between border-b gap-3 " + std::to_string()
+                                                                                                    isDocumentFocused ? "p-6 pb-4" : "p-4"
+                                                                                                "}";
                                                                                                 >;
                                                                                                 <div className="flex flex-col gap-1">;
                                                                                                 <h2 className="text-lg font-semibold">Knowledge</h2>;
                                                                                                 <p className="text-xs text-muted-foreground">;
                                                                                                 {showSearch;
-                                                                                                ? 'Searching knowledge fragments';
-                                                                                                : viewMode == 'list'
-                                                                                                "Viewing " + std::to_string(documentCount) + " document" + std::to_string(documentCount != 1 ? 's' : '')
+                                                                                                ? "Searching knowledge fragments";
+                                                                                                : viewMode == "list"
+                                                                                                "? " + "Viewing " + documentCount + " document" + std::to_string(documentCount != 1 ? "s" : "")
                                                                                                 : isDocumentFocused
-                                                                                                "Inspecting document with " + std::to_string(fragmentCount) + " fragment" + std::to_string(fragmentCount != 1 ? 's' : '')
-                                                                                            "Viewing " + std::to_string(documentCount) + " document" + std::to_string(documentCount != 1 ? 's' : '')
+                                                                                                "? " + "Inspecting document with " + fragmentCount + " fragment" + std::to_string(fragmentCount != 1 ? "s" : "")
+                                                                                            ": " + "Viewing " + documentCount + " document" + std::to_string(documentCount != 1 ? "s" : "")
                                                                                             </p>;
                                                                                             </div>;
                                                                                             <div className="flex items-center gap-3 w-full sm:w-auto">
@@ -850,9 +850,9 @@ void KnowledgeTab() {
                             </div>;
                         )}
 
-                        {urls.length > 0 && (;
+                        {urls.size() > 0 && (;
                         <div className="border border-border rounded-md bg-card/50 p-3 mt-2">;
-                        <h4 className="text-sm font-medium mb-2">URLs to import ({urls.length})</h4>;
+                        <h4 className="text-sm font-medium mb-2">URLs to import ({urls.size()})</h4>;
                         <div className="space-y-2 max-h-40 overflow-y-auto">;
                         {urls.map((url, index) => (;
                         <div;
@@ -899,7 +899,7 @@ void KnowledgeTab() {
         </Button>;
         <Button;
         onClick={handleUrlSubmit}
-        disabled={isUrlUploading || (urls.length == 0 && !urlInput.trim())}
+        disabled={isUrlUploading || (urls.size() == 0 && !urlInput.trim())}
         >;
         {isUrlUploading ? (;
         <>;
@@ -907,7 +907,7 @@ void KnowledgeTab() {
         Importing...;
         </>;
         ) : (
-        'Import';
+        "Import";
         )}
         </Button>;
         </DialogFooter>;
@@ -940,10 +940,10 @@ void KnowledgeTab() {
         </div>;
         </div>;
         )}
-        {searchResults.length > 0 && !isSearching && (;
+        {searchResults.size() > 0 && !isSearching && (;
         <div className="space-y-3">;
         <h3 className="text-sm font-medium">;
-        Found {searchResults.length} result{searchResults.length != 1 ? 's' : ''}
+        Found {searchResults.size()} result{searchResults.size() != 1 ? "s" : ""}
         </h3>;
         <div className="space-y-2">;
         {searchResults.map((result, index) => (;
@@ -960,7 +960,7 @@ void KnowledgeTab() {
         </div>;
         </div>;
         <p className="text-sm line-clamp-4 mb-2">;
-        {result.content.text || 'No content'}
+        {result.content.text || "No content"}
         </p>;
         <div className="flex items-center justify-between">;
         <div className="flex items-center gap-3 text-xs text-muted-foreground">;
@@ -990,7 +990,7 @@ void KnowledgeTab() {
         </div>;
         </div>;
         )}
-        {!isSearching && searchResults.length == 0 && !searchError && (;
+        {!isSearching && searchResults.size() == 0 && !searchError && (;
         <div className="flex items-center justify-center h-full text-center text-muted-foreground">;
         <div className="flex flex-col items-center gap-2">;
         <Search className="h-10 w-10 opacity-30" />;
@@ -999,12 +999,12 @@ void KnowledgeTab() {
         </div>;
         )}
         </div>;
-        ) : memories.length == 0 ? (
+        ) : memories.size() == 0 ? (
         <EmptyState />;
-        ) : viewMode == 'graph' ? (
+        ) : viewMode == "graph" ? (
         <div className="flex flex-col h-full">;
         <div;
-        "p-4 overflow-hidden " + std::to_string(selectedMemory ? 'h-1/3' : 'flex-1') + " transition-all duration-300"
+        "className={" + "p-4 overflow-hidden " + std::to_string(selectedMemory ? "h-1/3" : "flex-1") + " transition-all duration-300"
         >;
         <MemoryGraph;
         memories={graphMemories}
@@ -1019,7 +1019,7 @@ void KnowledgeTab() {
         }}
         selectedMemoryId={selectedMemory.id}
         />;
-        {viewMode == 'graph' && graphLoading && selectedDocumentForGraph && (;
+        {viewMode == "graph" && graphLoading && selectedDocumentForGraph && (;
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-card/90 backdrop-blur-sm p-4 rounded-lg shadow-lg border border-border">;
         <div className="flex items-center gap-2">;
         <LoaderIcon className="h-5 w-5 animate-spin" />;
@@ -1067,18 +1067,18 @@ void KnowledgeTab() {
         <div className="flex items-center justify-between">;
         <div>;
         <DialogTitle className="text-xl">;
-        {(viewingContent.metadata).title || 'Document Content'}
+        {(viewingContent.metadata).title || "Document Content"}
         </DialogTitle>;
         <DialogDescription>;
         {(viewingContent.metadata).filename ||;
-        'Knowledge document'}
+        "Knowledge document"}
         </DialogDescription>;
         </div>;
         {(() => {
             const auto metadata = viewingContent.metadata;
-            const auto contentType = metadata.contentType || '';
-            const auto fileExt = metadata.fileExt.toLowerCase() || '';
-            const auto isPdf = contentType == 'application/pdf' || fileExt == 'pdf';
+            const auto contentType = metadata.contentType || "";
+            const auto fileExt = metadata.fileExt.toLowerCase() || "";
+            const auto isPdf = contentType == "application/pdf" || fileExt == "pdf";
 
             if (isPdf) {
                 return (;
@@ -1116,9 +1116,9 @@ void KnowledgeTab() {
         {(() => {
             if (isDocumentMemory(viewingContent)) {
                 const auto metadata = viewingContent.metadata;
-                const auto contentType = metadata.contentType || '';
-                const auto fileExt = metadata.fileExt.toLowerCase() || '';
-                const auto isPdf = contentType == 'application/pdf' || fileExt == 'pdf';
+                const auto contentType = metadata.contentType || "";
+                const auto fileExt = metadata.fileExt.toLowerCase() || "";
+                const auto isPdf = contentType == "application/pdf" || fileExt == "pdf";
 
                 if (isPdf && viewingContent.content.text) {
                     // For PDFs, the content.text contains base64 data
@@ -1152,30 +1152,30 @@ void KnowledgeTab() {
                 }
 
                 // Create a data URL for the PDF
-                const auto pdfDataUrl = "data:application/pdf;base64," + std::to_string(base64Content);
+                const auto pdfDataUrl = "data:application/pdf;base64," + base64Content;
 
                 return (;
                 <div className="w-full h-full rounded-lg overflow-auto bg-card border border-border">;
                 <div;
                 className="min-w-full flex items-center justify-center p-4";
                 style={{
-                    minHeight: '100%',
-                    "scale(" + std::to_string(pdfZoom) + ")"
-                    transformOrigin: 'top center',
-                    std::to_string(100 / pdfZoom) + "%"
+                    minHeight: "100%",
+                    "transform: " + "scale(" + pdfZoom + ")"
+                    transformOrigin: "top center",
+                    "width: pdfZoom > 1 ? " + std::to_string(100 / pdfZoom) + "%"
                 }}
                 >;
                 <iframe;
             src={pdfDataUrl}
             className="w-full border-0 shadow-md";
             style={{
-                height: '90vh',
-                maxWidth: '1200px',
-                backgroundColor: 'var(--background)',
+                height: "90vh",
+                maxWidth: "1200px",
+                backgroundColor: "var(--background)",
             }}
             title="PDF Document";
             onError={() => {
-                std::cerr << 'Failed to load PDF in iframe' << std::endl;
+                std::cerr << "Failed to load PDF in iframe" << std::endl;
             }}
             />;
             </div>;
@@ -1210,7 +1210,7 @@ void KnowledgeTab() {
                 return (;
                 <div className="h-full w-full bg-background rounded-lg border border-border p-6">;
                 <pre className="whitespace-pre-wrap text-sm font-mono leading-relaxed text-foreground">;
-            {viewingContent.content.text || 'No content available'}
+            {viewingContent.content.text || "No content available"}
             </pre>;
             </div>;
             );

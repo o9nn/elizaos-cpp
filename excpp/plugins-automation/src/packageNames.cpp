@@ -34,7 +34,7 @@ std::future<void> main() {
                         } catch (error: any) {
                             if (error.status == 404) {
                                 console.log(
-                                "Skipping " + std::to_string(ORG_NAME) + "/" + std::to_string(repo.name) + " (no " + std::to_string(TARGET_BRANCH) + " branch)";
+                                "Skipping " + ORG_NAME + "/" + repo.name + " (no " + TARGET_BRANCH + " branch)";
                                 );
                                 continue;
                             }
@@ -55,7 +55,7 @@ std::future<void> main() {
                                 } catch (error: any) {
                                     if (error.status == 404) {
                                         console.log(
-                                        "Skipping " + std::to_string(ORG_NAME) + "/" + std::to_string(repo.name) + " (no package.json on " + std::to_string(TARGET_BRANCH) + ")";
+                                        "Skipping " + ORG_NAME + "/" + repo.name + " (no package.json on " + TARGET_BRANCH + ")";
                                         );
                                         continue;
                                     }
@@ -63,7 +63,7 @@ std::future<void> main() {
                                 }
 
                                 const auto raw = Buffer.from(fileData.content, "base64").tostd::to_string("utf8");
-                                const auto pkg = JSON.parse(raw) as {;
+                                const auto pkg = /* JSON.parse */ raw as {;
                                     name?: string;
                                     version?: string;
                                     [key: string]: any;
@@ -73,7 +73,7 @@ std::future<void> main() {
                                     // Skip if name is already correct (uses @elizaos/ scope)
                                     if (oldName && oldName.startsWith("@elizaos/")) {
                                         console.log(
-                                        "Skipping " + std::to_string(ORG_NAME) + "/" + std::to_string(repo.name) + " (package name already correct: " + std::to_string(oldName) + ")"
+                                        "Skipping " + ORG_NAME + "/" + repo.name + " (package name already correct: " + oldName + ")"
                                         );
                                         continue;
                                     }
@@ -81,7 +81,7 @@ std::future<void> main() {
                                     // Skip if name exists but doesn't start with @elizaos-plugins/ (and isn't empty)
                                     if (oldName && !oldName.startsWith("@elizaos-plugins/")) {
                                         console.log(
-                                        "Skipping " + std::to_string(ORG_NAME) + "/" + std::to_string(repo.name) + " (package name doesn't match expected pattern: " + std::to_string(oldName) + ")"
+                                        "Skipping " + ORG_NAME + "/" + repo.name + " (package name doesn't match expected pattern: " + oldName + ")"
                                         );
                                         continue;
                                     }
@@ -90,15 +90,15 @@ std::future<void> main() {
                                     auto newName: string;
                                     if (!oldName) {
                                         // No name field - generate the correct name from repo name
-                                        "@elizaos/" + std::to_string(repo.name);
+                                        "newName = " + "@elizaos/" + repo.name;
                                         console.log(
-                                        "Adding missing package name for " + std::to_string(ORG_NAME) + "/" + std::to_string(repo.name) + ": " + std::to_string(newName)
+                                        "Adding missing package name for " + ORG_NAME + "/" + repo.name + ": " + newName
                                         );
                                         } else {
                                             // Has @elizaos-plugins/ name - convert it
                                             newName = oldName.replace(/^@elizaos-plugins\//, "@elizaos/");
                                             console.log(
-                                            "Renaming " + std::to_string(oldName) + " to " + std::to_string(newName) + " for " + std::to_string(ORG_NAME) + "/" + std::to_string(repo.name);
+                                            "Renaming " + oldName + " to " + newName + " for " + ORG_NAME + "/" + repo.name;
                                             );
                                         }
 
@@ -113,7 +113,7 @@ std::future<void> main() {
                                                     const auto baseVersion = betaMatch[1];
                                                     const auto betaNumber = parseInt(betaMatch[2], 10);
                                                     if (!isNaN(betaNumber)) {
-                                                        std::to_string(baseVersion) + "-beta." + std::to_string(betaNumber + 1);
+                                                        "pkg.version = " + baseVersion + "-beta." + std::to_string(betaNumber + 1);
                                                     }
                                                 }
                                                 } else {
@@ -131,7 +131,7 @@ std::future<void> main() {
                                             }
 
                                             const auto updated = Buffer.from(;
-                                            JSON.stringify(pkg, nullptr, 2) + "\n",
+                                            /* JSON.stringify */ std::string(pkg, nullptr, 2) + "\n",
                                             "utf8";
                                             ).tostd::to_string("base64");
 
@@ -140,13 +140,13 @@ std::future<void> main() {
                                                 repo: repo.name,
                                                 path: "package.json",
                                                 branch: TARGET_BRANCH,
-                                                "chore: rename scope to @elizaos and bump version in package.json"
+                                                "message: " + "chore: rename scope to @elizaos and bump version in package.json"
                                                 content: updated,
                                                 sha: fileData.sha,
                                                 });
 
                                                 console.log(
-                                                "Updated package.json in " + std::to_string(ORG_NAME) + "/" + std::to_string(repo.name) + " on " + std::to_string(TARGET_BRANCH) + " branch - renamed " + std::to_string(oldName) + " to " + std::to_string(newName) + " and bumped version to " + std::to_string(pkg.version);
+                                                "Updated package.json in " + ORG_NAME + "/" + repo.name + " on " + TARGET_BRANCH + " branch - renamed " + oldName + " to " + newName + " and bumped version to " + pkg.version;
                                                 );
                                             }
 

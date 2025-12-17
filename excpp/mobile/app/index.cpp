@@ -18,7 +18,7 @@ void Index() {
             justifyContent: "center",
         }}
         >;
-        "privyAppId";
+        "<Text>You have not set a valid " + "privyAppId";
         </View>;
         </SafeAreaView>;
         );
@@ -37,7 +37,7 @@ void Index() {
             justifyContent: "center",
         }}
         >;
-        "privyClientId";
+        "<Text>You have not set a valid " + "privyClientId";
         </View>;
         </SafeAreaView>;
         );

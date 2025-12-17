@@ -45,10 +45,10 @@ std::future<void> initializeAllSystems(IAgentRuntime runtime, const std::vector<
                                 runtime.ensureWorldExists(world);
                                 // await initializeOnboarding(runtime, world, config);
                                 // await startOnboardingDM(runtime, server, worldId);
-                                std::cout << 'world' << world << std::endl;
+                                std::cout << "world" << world << std::endl;
                             }
                             } catch (error) {
-                                std::cerr << 'Error initializing systems:' << error << std::endl;
+                                std::cerr << "Error initializing systems:" << error << std::endl;
                                 throw;
                             }
 
@@ -62,28 +62,28 @@ std::future<void> startOnboardingDM(IAgentRuntime runtime, Guild guild, UUID wor
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        std::cout << 'startOnboardingDM - worldId' << worldId << std::endl;
+        std::cout << "startOnboardingDM - worldId" << worldId << std::endl;
         try {
             const auto owner = guild.members.fetch(guild.ownerId);
             if (!owner) {
-                std::cerr << "Could not fetch owner with ID " + std::to_string(guild.ownerId) + " for server " + std::to_string(guild.id) << std::endl;
+                std::cerr << "Could not fetch owner with ID " + guild.ownerId + " for server " + guild.id << std::endl;
                 throw std::runtime_error(`Could not fetch owner with ID ${guild.ownerId}`);
             }
 
             const auto onboardingMessages = [;
-            'Hi! I need to collect some information to get set up. Is now a good time?',
-            'Hey there! I need to configure a few things. Do you have a moment?',
-            'Hello! Could we take a few minutes to get everything set up?',
+            "Hi! I need to collect some information to get set up. Is now a good time?",
+            "Hey there! I need to configure a few things. Do you have a moment?",
+            "Hello! Could we take a few minutes to get everything set up?",
             ];
 
-            const auto randomMessage = onboardingMessages[Math.floor(Math.random() * onboardingMessages.length)];
+            const auto randomMessage = onboardingMessages[Math.floor(Math.random() * onboardingMessages.size())];
             const auto msg = owner.send(randomMessage);
             const auto roomId = createUniqueUuid(runtime, msg.channel.id);
 
             runtime.ensureRoomExists({
                 id: roomId,
-                "Chat with " + std::to_string(owner.user.username)
-                source: 'discord',
+                "name: " + "Chat with " + owner.user.username
+                source: "discord",
                 type: ChannelType.DM,
                 channelId: msg.channelId,
                 serverId: guild.id,
@@ -107,16 +107,16 @@ std::future<void> startOnboardingDM(IAgentRuntime runtime, Guild guild, UUID wor
                         roomId: roomId,
                         content: {
                             text: randomMessage,
-                            actions: ['BEGIN_ONBOARDING'],
+                            actions: ["BEGIN_ONBOARDING"],
                             },
                             createdAt: Date.now(),
                             },
-                            'messages';
+                            "messages";
                             );
 
-                            std::cout << "Started settings DM with owner " + std::to_string(owner.id) + " for server " + std::to_string(guild.id) << std::endl;
+                            std::cout << "Started settings DM with owner " + owner.id + " for server " + guild.id << std::endl;
                             } catch (error) {
-                                std::cerr << "Error starting DM with owner: " + std::to_string(error) << std::endl;
+                                std::cerr << "Error starting DM with owner: " + error << std::endl;
                                 throw;
                             }
 
@@ -140,19 +140,19 @@ std::future<void> startTelegramOnboarding(IAgentRuntime runtime, World world, co
         });
 
         if (!ownerId) {
-            std::cout << 'no ownerId found' << std::endl;
+            std::cout << "no ownerId found" << std::endl;
         }
 
-        const auto telegramClient = runtime.getService('telegram');
+        const auto telegramClient = runtime.getService("telegram");
 
         // Fallback: send deep link to the group chat
         const auto onboardingMessageDeepLink = [;
-        "Hello @" + std::to_string(ownerUsername) + "! Could we take a few minutes to get everything set up?"
-        "Please click this link to start chatting with me: https://t.me/" + std::to_string(botUsername) + "?start=onboarding"
-        ].join(' ');
+        "Hello @" + ownerUsername + "! Could we take a few minutes to get everything set up?"
+        "Please click this link to start chatting with me: https://t.me/" + botUsername + "?start=onboarding"
+        ].join(" ");
 
         telegramClient.messageManager.sendMessage(chat.id, { text: onboardingMessageDeepLink });
-        std::cout << "Sent deep link to group chat " + std::to_string(chat.id) + " for owner " + std::to_string(ownerId || 'unknown') << std::endl;
+        std::cout << "Sent deep link to group chat " + chat.id + " for owner " + std::to_string(ownerId || "unknown") << std::endl;
 
 }
 

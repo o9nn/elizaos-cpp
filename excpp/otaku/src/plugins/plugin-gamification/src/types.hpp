@@ -1,9 +1,13 @@
 #pragma once
+#include <algorithm>
+#include <chrono>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "constants.hpp"
 
@@ -35,10 +39,10 @@ struct PointBalance {
     double allTimePoints;
     double weeklyPoints;
     double streakDays;
-    std::optional<Date> lastLoginDate;
+    std::optional<std::chrono::system_clock::time_point> lastLoginDate;
     double level;
     std::string levelName;
-    Date updatedAt;
+    std::chrono::system_clock::time_point updatedAt;
 };
 
 /**
@@ -54,7 +58,7 @@ struct UserSummary {
     double level;
     std::string levelName;
     double pointsNeeded;
-    std::optional<Date> lastLoginDate;
+    std::optional<std::chrono::system_clock::time_point> lastLoginDate;
     std::optional<double> swapsCompleted;
 };
 
@@ -79,7 +83,7 @@ struct ReferralCode {
     std::string code;
     std::optional<UUID> referrerId;
     std::string status;
-    Date createdAt;
+    std::chrono::system_clock::time_point createdAt;
 };
 
 /**
@@ -99,8 +103,8 @@ struct Campaign {
     std::string name;
     std::optional<GamificationEventType> actionType;
     double multiplier;
-    Date startAt;
-    Date endAt;
+    std::chrono::system_clock::time_point startAt;
+    std::chrono::system_clock::time_point endAt;
     bool active;
 };
 

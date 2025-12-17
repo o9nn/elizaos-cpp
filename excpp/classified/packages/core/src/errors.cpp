@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void createErrorResponse(unknown error) {
+void createErrorResponse(const std::any& error) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (error instanceof ElizaError) {
@@ -31,7 +31,7 @@ void createErrorResponse(unknown error) {
                     return {
                         error: {
                             code: ErrorCode.INTERNAL_ERROR,
-                            message: 'An unexpected error occurred',
+                            message: "An unexpected error occurred",
                             },
                             statusCode: 500,
                             };

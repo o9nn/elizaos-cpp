@@ -85,7 +85,7 @@ std::future<std::optional<TokenInfo>> lookupEvmToken(const std::string& address,
 
     const auto alchemyNetwork = chain == "bsc" ? "bnb-mainnet" : "base-mainnet";
 
-    const auto url = "https://" + std::to_string(alchemyNetwork) + ".g.alchemy.com/v2/" + std::to_string(alchemyKey);
+    const auto url = "https://" + alchemyNetwork + ".g.alchemy.com/v2/" + alchemyKey;
 
     try {
         const auto response = fetch(url, {;

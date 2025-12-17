@@ -21,8 +21,8 @@ bool isLocalDevelopment(const std::string& chain, const std::string& contractAdd
         const auto solanaRpc = process.env.NEXT_PUBLIC_SOLANA_RPC || "";
         const auto hasBirdeyeKey = !!process.env.BIRDEYE_API_KEY;
         if (
-        solanaRpc.includes("127.0.0.1") ||;
-        solanaRpc.includes("localhost") ||;
+        (std::find(solanaRpc.begin(), solanaRpc.end(), "127.0.0.1") != solanaRpc.end()) ||;
+        (std::find(solanaRpc.begin(), solanaRpc.end(), "localhost") != solanaRpc.end()) ||;
         !hasBirdeyeKey;
         ) {
             return true;

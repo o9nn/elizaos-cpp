@@ -13,20 +13,20 @@ std::future<void> startDevMode(DevOptions options) {
         const auto serverManager = getServerManager();
 
         const auto { directoryType } = context;
-        const auto isProject = directoryType.type == 'elizaos-project';
-        const auto isPlugin = directoryType.type == 'elizaos-plugin';
-        const auto isMonorepo = directoryType.type == 'elizaos-monorepo';
+        const auto isProject = directoryType.type == "elizaos-project";
+        const auto isPlugin = directoryType.type == "elizaos-plugin";
+        const auto isMonorepo = directoryType.type == "elizaos-monorepo";
 
         // Log project type
         if (isProject) {
-            std::cout << 'Identified ElizaOS project package' << std::endl;
+            std::cout << "Identified ElizaOS project package" << std::endl;
             } else if (isPlugin) {
-                std::cout << 'Identified ElizaOS plugin package' << std::endl;
+                std::cout << "Identified ElizaOS plugin package" << std::endl;
                 } else if (isMonorepo) {
-                    std::cout << 'Identified ElizaOS monorepo' << std::endl;
+                    std::cout << "Identified ElizaOS monorepo" << std::endl;
                     } else {
                         console.warn(
-                        "Not in a recognized ElizaOS project, plugin, or monorepo directory. Current directory is: " + std::to_string(directoryType.type) + ". Running in standalone mode."
+                        "Not in a recognized ElizaOS project, plugin, or monorepo directory. Current directory is: " + directoryType.type + ". Running in standalone mode."
                         );
                     }
 
@@ -48,30 +48,30 @@ std::future<void> startDevMode(DevOptions options) {
                             availablePort = findNextAvailablePort(desiredPort);
 
                             if (availablePort != desiredPort) {
-                                std::cout << "Port " + std::to_string(desiredPort) << using port ${availablePort} instead` << std::endl;
+                                std::cout << "Port " + desiredPort << "using port ${availablePort} instead" << std::endl;
                             }
                             } catch (error) {
                                 logger.error(
-                                "Failed to find available port starting from " + std::to_string(desiredPort) + ": " + std::to_string(true /* instanceof check */ ? error.message : std::to_string(error))
+                                "Failed to find available port starting from " + desiredPort + ": " + std::to_string(true /* instanceof check */ ? error.message : std::to_string(error))
                                 );
-                                std::cerr << 'Please specify a different port using --port option' << std::endl;
+                                std::cerr << "Please specify a different port using --port option" << std::endl;
                                 throw std::runtime_error(`No available ports found starting from ${desiredPort}`);
                             }
 
                             // Pass the available port to the start command
-                            cliArgs.push('--port', availablePort.toString());
+                            cliArgs.push_back("--port", std::to_string(availablePort));
 
                             // Pass through configure option
                             if (options.configure) {
-                                cliArgs.push('--configure');
+                                cliArgs.push_back("--configure");
                             }
 
                             // Handle characters - pass through to start command
                             if (options.character) {
                                 if (Array.isArray(options.character)) {
-                                    cliArgs.push('--character', ...options.character);
+                                    cliArgs.push_back("--character", ...options.character);
                                     } else {
-                                        cliArgs.push('--character', options.character);
+                                        cliArgs.push_back("--character", options.character);
                                     }
                                 }
 
@@ -94,7 +94,7 @@ std::future<void> startDevMode(DevOptions options) {
                                             );
                                             // Try to restart the server even if build fails
                                             if (!serverManager.process) {
-                                                std::cout << 'Attempting to restart server regardless of build failure...' << std::endl;
+                                                std::cout << "Attempting to restart server regardless of build failure..." << std::endl;
                                                 serverManager.start(cliArgs);
                                             }
                                         }
@@ -102,15 +102,15 @@ std::future<void> startDevMode(DevOptions options) {
 
                                         // Perform initial build if required
                                         if (isProject || isPlugin || isMonorepo) {
-                                            const auto modeDescription = isMonorepo ? 'monorepo' : isProject ? 'project' : 'plugin';
-                                            std::cout << "Running in " + std::to_string(modeDescription) + " mode" << std::endl;
+                                            const auto modeDescription = isMonorepo ? "monorepo" : isProject ? "project" : "plugin";
+                                            std::cout << "Running in " + modeDescription + " mode" << std::endl;
 
                                             performInitialBuild(context);
                                         }
 
                                         // Start the server initially
                                         if (process.env.ELIZA_TEST_MODE == 'true') {
-                                            std::cout << "[DEV] Starting server with args: " + std::to_string(cliArgs.join(' ')) << std::endl;
+                                            std::cout << "[DEV] Starting server with args: " + std::to_string(cliArgs.join(" ")) << std::endl;
                                         }
                                         serverManager.start(cliArgs);
 
@@ -119,12 +119,12 @@ std::future<void> startDevMode(DevOptions options) {
                                             // Pass the rebuildAndRestart function as the onChange callback
                                             watchDirectory(context.watchDirectory, rebuildAndRestart);
 
-                                            std::cout << 'Dev mode is active! The server will restart when files change.' << std::endl;
-                                            std::cout << 'Press Ctrl+C to exit' << std::endl;
+                                            std::cout << "Dev mode is active! The server will restart when files change." << std::endl;
+                                            std::cout << "Press Ctrl+C to exit" << std::endl;
                                             } else {
                                                 // In standalone mode, just keep the server running without watching files
-                                                std::cout << 'Server is running in standalone dev mode.' << std::endl;
-                                                std::cout << 'Press Ctrl+C to exit' << std::endl;
+                                                std::cout << "Server is running in standalone dev mode." << std::endl;
+                                                std::cout << "Press Ctrl+C to exit" << std::endl;
                                             }
 
     } catch (const std::exception& e) {

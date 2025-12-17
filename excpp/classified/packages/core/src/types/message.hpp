@@ -1,10 +1,14 @@
 #pragma once
+#include <algorithm>
+#include <chrono>
+#include <cstdint>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include "service.hpp"
 
@@ -70,21 +74,21 @@ struct MessageInfo {
     UUID channelId;
     UUID senderId;
     MessageContent content;
-    Date timestamp;
-    std::optional<Date> edited;
-    std::optional<Date> deleted;
+    std::chrono::system_clock::time_point timestamp;
+    std::optional<std::chrono::system_clock::time_point> edited;
+    std::optional<std::chrono::system_clock::time_point> deleted;
     std::optional<bool> pinned;
     UUID id;
     double messageCount;
     std::vector<UUID> participants;
-    Date lastMessageAt;
+    std::chrono::system_clock::time_point lastMessageAt;
 };
 
 struct MessageSendOptions {
     std::optional<UUID> replyTo;
     std::optional<bool> ephemeral;
     std::optional<bool> silent;
-    std::optional<Date> scheduled;
+    std::optional<std::chrono::system_clock::time_point> scheduled;
     std::optional<UUID> thread;
     std::optional<std::string> nonce;
 };
@@ -93,8 +97,8 @@ struct MessageSearchOptions {
     std::optional<std::string> query;
     std::optional<UUID> channelId;
     std::optional<UUID> senderId;
-    std::optional<Date> before;
-    std::optional<Date> after;
+    std::optional<std::chrono::system_clock::time_point> before;
+    std::optional<std::chrono::system_clock::time_point> after;
     std::optional<double> limit;
     std::optional<double> offset;
     std::optional<bool> hasAttachments;
@@ -113,7 +117,7 @@ struct MessageChannel {
     bool canDelete;
     bool canPin;
     bool canManage;
-    std::optional<Date> lastMessageAt;
+    std::optional<std::chrono::system_clock::time_point> lastMessageAt;
     std::optional<double> messageCount;
     std::optional<double> unreadCount;
 };

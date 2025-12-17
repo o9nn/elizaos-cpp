@@ -1,10 +1,12 @@
 #pragma once
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
+#include <unordered_set>
 #include <vector>
 
 namespace elizaos {
@@ -14,7 +16,7 @@ namespace elizaos {
 
 
 
-using TVariant = std::variant<"info", "destructive", "warning", "imported">;
+using TVariant = std::string;
 
 
 } // namespace elizaos

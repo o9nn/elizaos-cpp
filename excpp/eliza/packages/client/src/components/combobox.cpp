@@ -23,8 +23,8 @@ void MultiSelectCombobox(auto className, auto onSelect, auto initialSelected) {
                 }
                 };
 
-                document.addEventListener('mousedown', handleClickOutside);
-                return [&]() { return document.removeEventListener('mousedown', handleClickOutside); };
+                document.addEventListener("mousedown", handleClickOutside);
+                return [&]() { return document.removeEventListener("mousedown", handleClickOutside); };
                 }, []);
 
                 // Helper function to compare options using id if available, fallback to label
@@ -48,7 +48,7 @@ void MultiSelectCombobox(auto className, auto onSelect, auto initialSelected) {
                                 };
 
                                 const auto toggleSelection = [&](option: Option) {;
-                                    std::cout << '[MultiSelectCombobox] toggleSelection called with:' << option << std::endl;
+                                    std::cout << "[MultiSelectCombobox] toggleSelection called with:" << option << std::endl;
                                     setSelected((prev) => {
                                         const auto isCurrentlySelected = isOptionSelected(option);
                                         auto newSelection: Option[];
@@ -66,7 +66,7 @@ void MultiSelectCombobox(auto className, auto onSelect, auto initialSelected) {
                                                     newSelection = [...prev, option];
                                                 }
 
-                                                std::cout << '[MultiSelectCombobox] New selection:' << newSelection << std::endl;
+                                                std::cout << "[MultiSelectCombobox] New selection:" << newSelection << std::endl;
                                                 if (onSelect) onSelect(newSelection);
                                                 return newSelection;
                                                 });
@@ -94,13 +94,13 @@ void MultiSelectCombobox(auto className, auto onSelect, auto initialSelected) {
                                                                     };
 
                                                                     return (;
-                                                                    "relative w-80 " + std::to_string(className);
+                                                                    "<div className={" + "relative w-80 " + className;
                                                                     <div;
-                                                                "flex items-center gap-2 border p-2 bg-background rounded cursor-pointer " + std::to_string(isOpen ? 'border-primary' : 'border-input')
+                                                                "className={" + "flex items-center gap-2 border p-2 bg-background rounded cursor-pointer " + std::to_string(isOpen ? "border-primary" : "border-input")
                                                             onClick={() => setIsOpen(!isOpen)}
                                                             >;
                                                             <div className="flex flex-wrap gap-1 w-full">;
-                                                            {selected.length > 0 ? (;
+                                                            {selected.size() > 0 ? (;
                                                             <>;
                                                             {selected.slice(0, 3).map((item, index) => (;
                                                             <Badge;
@@ -118,7 +118,7 @@ void MultiSelectCombobox(auto className, auto onSelect, auto initialSelected) {
                                                 />;
                                                 </Badge>;
                                             ))}
-                                            {selected.length > 3 && (;
+                                            {selected.size() > 3 && (;
                                             <Badge;
                                             className="px-2 cursor-pointer";
                                             onClick={(e) => {
@@ -126,7 +126,7 @@ void MultiSelectCombobox(auto className, auto onSelect, auto initialSelected) {
                                                 removeExtraSelections();
                                             }}
                                             >;
-                                            +{selected.length - 3} more;
+                                            +{selected.size() - 3} more;
                                             </Badge>;
                                         )}
                                         </>;
@@ -138,15 +138,15 @@ void MultiSelectCombobox(auto className, auto onSelect, auto initialSelected) {
                                     </div>;
                                     {isOpen && (;
                                     <Card className="absolute left-0 mt-2 w-full shadow-md border border-border rounded z-40 max-h-60 overflow-y-auto">;
-                                    {options.length == 0 ? (;
+                                    {options.size() == 0 ? (;
                                     <div className="p-2 text-muted-foreground text-sm">No agents available</div>;
                                     ) : (
                                     options.map((option, index) => (;
                                     <div;
                                 key={option.id || option.label || index}
-                                "flex items-center gap-2 p-2 cursor-pointer rounded hover:bg-muted " + std::to_string()
-                                    isOptionSelected(option) ? 'bg-muted' : 'bg-card'
-                                }`}
+                                "className={" + "flex items-center gap-2 p-2 cursor-pointer rounded hover:bg-muted " + std::to_string()
+                                    isOptionSelected(option) ? "bg-muted" : "bg-card"
+                                "}";
                             onClick={() => toggleSelection(option)}
                             >;
                             <div className="bg-gray-500 rounded-full w-4 h-4 flex justify-center items-center overflow-hidden text-xs">;

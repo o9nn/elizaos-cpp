@@ -15,10 +15,10 @@ void StopAgentButton(auto variant, auto size, auto className, auto showIcon, aut
     const auto handleStopAgent = [&]() {;
         confirm(;
         {
-            title: 'Stop Agent',
-            "Are you sure you want to stop "" + std::to_string(agent.name) + ""?"
-            confirmText: 'Stop',
-            variant: 'destructive',
+            title: "Stop Agent",
+            "description: " + "Are you sure you want to stop \"" + agent.name + "\"?"
+            confirmText: "Stop",
+            variant: "destructive",
             },
             async () => {
                 try {
@@ -31,11 +31,11 @@ void StopAgentButton(auto variant, auto size, auto className, auto showIcon, aut
 
                     // Navigate to homepage if redirectToHome is true
                     if (redirectToHome) {
-                        navigate('/');
+                        navigate("/");
                     }
                     } catch (error) {
                         // If error occurs, don't navigate or call callback
-                        clientLogger.error('Error stopping agent:', error);
+                        clientLogger.error("Error stopping agent:", error);
                     }
                 }
                 );
@@ -68,8 +68,8 @@ void StopAgentButton(auto variant, auto size, auto className, auto showIcon, aut
     <ConfirmationDialog;
     open={isOpen}
     onOpenChange={onOpenChange}
-    title={options.title || ''}
-    description={options.description || ''}
+    title={options.title || ""}
+    description={options.description || ""}
     confirmText={options.confirmText}
     cancelText={options.cancelText}
     variant={options.variant}
