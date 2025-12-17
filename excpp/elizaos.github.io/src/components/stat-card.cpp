@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void StatCard(auto {
-  title, Icon icon, bg-primary/20" bgColor = "bg-primary/10 group-hover, auto children, auto className, auto modalContent, auto modalTitle, auto modalDescription, StatCardProps }) {
+void StatCard(Icon icon, auto bgColor, auto children, auto className, auto modalContent, auto modalTitle, auto modalDescription) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto HeaderContent = (;

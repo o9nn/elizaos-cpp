@@ -1,4 +1,5 @@
 #pragma once
+#include <any>
 #include <functional>
 #include <future>
 #include <memory>
@@ -18,11 +19,11 @@ namespace elizaos {
 class CausalInference {
 public:
     CausalInference();
-    std::future<CausalAnalysisResult> analyzeCausalRelationships(Record<string data, auto any>[], const std::vector<std::string>& variables, const std::vector<std::string>& treatments, const std::vector<std::string>& outcomes);
-    std::future<void> buildDAG(Record<string data, auto any>[], const std::vector<std::string>& variables);
-    std::future<std::vector<CausalEffect>> estimateCausalEffects(Record<string data, auto any>[], const std::vector<std::string>& treatments, const std::vector<std::string>& outcomes);
-    Promise< doubleMLEstimation(Record<string data, auto any>[], const std::string& treatment, const std::string& outcome);
-    std::future<SensitivityAnalysis> performSensitivityAnalysis(Record<string data, auto any>[], const std::vector<CausalEffect>& effects);
+    std::future<CausalAnalysisResult> analyzeCausalRelationships(const std::vector<std::unordered_map<std::string, std::any>>& data, const std::vector<std::string>& variables, const std::vector<std::string>& treatments, const std::vector<std::string>& outcomes);
+    std::future<void> buildDAG(const std::vector<std::unordered_map<std::string, std::any>>& data, const std::vector<std::string>& variables);
+    std::future<std::vector<CausalEffect>> estimateCausalEffects(const std::vector<std::unordered_map<std::string, std::any>>& data, const std::vector<std::string>& treatments, const std::vector<std::string>& outcomes);
+    Promise< doubleMLEstimation(const std::vector<std::unordered_map<std::string, std::any>>& data, const std::string& treatment, const std::string& outcome);
+    std::future<SensitivityAnalysis> performSensitivityAnalysis(const std::vector<std::unordered_map<std::string, std::any>>& data, const std::vector<CausalEffect>& effects);
 
 private:
     DAG dag_;

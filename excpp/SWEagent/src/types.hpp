@@ -25,7 +25,7 @@ namespace elizaos {
  */
 struct ToolCall {
     std::optional<std::string> id;
-    std::optional<'function'> type;
+    std::optional<std::string> type;
     std::string name;
 };
 
@@ -41,7 +41,7 @@ struct QueryObject {
  * Thinking block structure
  */
 struct ThinkingBlock {
-    'thinking' type;
+    std::string type;
     std::string content;
     std::optional<double> startTime;
     std::optional<double> endTime;
@@ -51,9 +51,9 @@ struct ThinkingBlock {
  * Cache control configuration
  */
 struct CacheControl {
-    std::variant<'ephemeral', 'persistent'> type;
+    std::string type;
     std::optional<double> maxAge;
-    std::optional<std::variant<'user', 'global'>> scope;
+    std::optional<std::string> scope;
 };
 
 /**
@@ -67,8 +67,8 @@ struct StepOutput {
     std::string observation;
     double executionTime;
     bool done;
-    std::optional<std::variant<double, std::string>> exitStatus;
-    std::optional<std::optional<std::string>> submission;
+    std::optional<std::optional<double>> exitStatus;
+    std::optional<std::string> submission;
     std::optional<std::optional<std::vector<ToolCall>>> toolCalls;
     std::optional<std::optional<std::vector<std::string>>> toolCallIds;
     std::optional<std::optional<std::vector<ThinkingBlock>>> thinkingBlocks;
@@ -79,7 +79,6 @@ struct StepOutput {
  */
 class StepOutputImpl {
 public:
-    std::variant<Record<string, string, double, bool, undefined>> toTemplateFormatDict();
 };
 
 /**
@@ -105,7 +104,7 @@ using Trajectory = std::vector<TrajectoryStep>;
 struct BaseHistoryItem {
     std::string role;
     std::optional<std::string> text;
-    std::optional<std::variant<'thought', 'action', 'observation', 'system', 'user', 'assistant', 'demonstration'>> messageType;
+    std::optional<std::string> messageType;
 };
 
 /**
@@ -121,8 +120,8 @@ using History = std::vector<HistoryItem>;
  * Agent information dictionary
  */
 struct AgentInfo {
-    std::optional<std::optional<std::string>> exitStatus;
-    std::optional<std::optional<std::string>> submission;
+    std::optional<std::string> exitStatus;
+    std::optional<std::string> submission;
     std::optional<std::string> editedFiles30;
     std::optional<std::string> editedFiles50;
     std::optional<std::string> editedFiles70;
@@ -156,12 +155,10 @@ struct ModelResponse {
 /**
  * Environment variable configuration
  */
-using EnvVariables = std::variant<Record<string, string, double, boolean>>;
 
 /**
  * Registry variables configuration
  */
-using RegistryVariables = std::variant<Record<string, string, double, boolean>>;
 
 /**
  * Parsed command arguments
@@ -202,7 +199,7 @@ struct SpinnerTask {
  * Instance statistics
  */
 struct InstanceStats {
-    std::optional<std::string> exitStatus;
+    std::string exitStatus;
     std::optional<std::string> result;
     std::optional<double> cost;
     std::optional<double> apiCalls;
@@ -248,7 +245,7 @@ using FileData = std::variant<std::unordered_map<std::string, unknown>, std::str
  */
 struct GithubIssue {
     std::string title;
-    std::optional<std::string> body;
+    std::string body;
     double number;
     std::string state;
     std::string created_at;

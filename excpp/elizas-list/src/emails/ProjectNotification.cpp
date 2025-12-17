@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void ProjectNotification(ProjectNotificationProps { project }) {
+void ProjectNotification() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

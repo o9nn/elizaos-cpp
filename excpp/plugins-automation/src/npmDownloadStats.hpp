@@ -1,5 +1,4 @@
 #pragma once
-#include <any>
 #include <functional>
 #include <future>
 #include <memory>
@@ -50,7 +49,6 @@ public:
     std::future<std::vector<PackageDownloads>> fetchPackageDownloads(const std::vector<PackageInfo>& packages);
     std::future<std::vector<VersionDownloads>> fetchVersionDownloads(const std::vector<PackageInfo>& packages);
     Promise< getDownloadStats(const std::string& packageName, const std::string& period);
-    void catch(const std::any& error);
     std::future<void> generateExcelReport(const std::vector<PackageInfo>& packages, const std::vector<PackageDownloads>& packageDownloads, const std::vector<VersionDownloads>& versionDownloads);
     void printSummary(const std::vector<PackageInfo>& packages, const std::vector<PackageDownloads>& packageDownloads);
     std::future<void> delay(double ms);

@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void ProjectPreview(PreviewProps { project }) {
+void ProjectPreview() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

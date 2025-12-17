@@ -24,10 +24,6 @@ public:
     std::future<void> initialize();
     std::future<void> stop();
     Promise< applyCharacterDiff(const std::string& diffXml, std::optional<ModificationOptions> options);
-    void if(auto this.isLocked);
-    void if(auto !validation.valid);
-    void if(auto options.focusAreas && options.focusAreas.length > 0);
-    void catch(auto error);
     std::future<bool> rollbackCharacter(const std::string& versionId);
     std::vector<CharacterModification> getCharacterHistory();
     std::vector<CharacterSnapshot> getCharacterSnapshots();

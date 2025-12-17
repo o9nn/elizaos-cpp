@@ -193,7 +193,7 @@ struct DefiTradesTokenResponse {
     std::optional<std::string> txType;
     std::optional<std::string> owner;
     std::optional<std::string> side;
-    std::optional<std::optional<std::string>> alias;
+    std::optional<std::string> alias;
     std::optional<double> pricePair;
     std::optional<DefiTradesTokenInfo> from;
     std::optional<DefiTradesTokenInfo> to;

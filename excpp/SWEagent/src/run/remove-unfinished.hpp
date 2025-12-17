@@ -19,12 +19,12 @@ namespace elizaos {
  */
 
 struct TrajectoryFile {
-    std::optional<std::optional<std::string>> submission;
+    std::optional<std::string> submission;
 };
 
 /**
  * Remove unfinished trajectories
  */
-std::future<void> removeUnfinished(const std::string& baseDir, boolean = true dryRun);
+std::future<void> removeUnfinished(const std::string& baseDir, bool dryRun = true);
 
 } // namespace elizaos

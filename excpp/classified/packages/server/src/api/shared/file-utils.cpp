@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::string createSecureUploadDir(const std::string& id, const std::variant<'agents', 'channels'>& type) {
+std::string createSecureUploadDir(const std::string& id, const std::string& type) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

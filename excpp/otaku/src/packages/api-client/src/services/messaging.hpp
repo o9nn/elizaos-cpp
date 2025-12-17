@@ -5,7 +5,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include ".lib/base-client.hpp"
 #include ".types/base.hpp"
@@ -59,18 +58,29 @@ public:
     Promise< addAgentToServer(UUID serverId, UUID agentId);
     Promise< removeAgentFromServer(UUID serverId, UUID agentId);
     std::future<Message> postMessage(UUID channelId, const std::string& content, std::optional<MessageMetadata> metadata);
-    Promise< getChannelMessages(UUID channelId, std::optional<std::variant<PaginationParams & { before: Date, string; after: Date, string }>> params);
+    Promise< getChannelMessages(UUID channelId, std::optional<PaginationParams> params);
     std::future<Message> getMessage(UUID messageId);
+    Promise< deleteMessage(UUID channelId, UUID messageId);
     std::future<Message> updateMessage(UUID messageId, const std::string& content);
+    Promise< searchMessages(MessageSearchParams params);
+    Promise< listServers();
+    Promise< getServerChannels(UUID serverId);
     std::future<MessageServer> createServer(ServerCreateParams params);
-    void for(auto const userId of userIds);
+    Promise< syncServerChannels(UUID serverId, ServerSyncParams params);
+    Promise< deleteServer(UUID serverId);
+    Promise< updateChannel(UUID channelId, ChannelUpdateParams params);
+    Promise< generateChannelTitle(const std::string& userMessage, UUID agentId);
+    Promise< generateChannelPrompts(UUID channelId, UUID agentId, double count = 4);
+    Promise< addUserToChannel(UUID channelId, UUID userId);
+    Promise< addUsersToChannel(UUID channelId, const std::vector<UUID>& userIds);
+    Promise< removeUserFromChannel(UUID channelId, UUID userId);
     std::future<CreateJobResponse> createJob(CreateJobRequest params);
     std::future<JobDetailsResponse> getJob(const std::string& jobId);
     std::future<JobListResponse> listJobs(std::optional<ListJobsParams> params);
     std::future<JobHealthResponse> getJobsHealth();
-    void catch(auto error);
-    std::future<JobDetailsResponse> pollJob(const std::string& jobId, number = 1000 interval, number = 30 maxAttempts);
-    std::future<JobDetailsResponse> createAndWaitForJob(CreateJobRequest params, number = 1000 pollInterval, number = 30 maxAttempts);
+    std::future<JobDetailsResponse> pollJob(const std::string& jobId, double interval = 1000, double maxAttempts = 30);
+    std::future<JobDetailsResponse> createAndWaitForJob(CreateJobRequest params, double pollInterval = 1000, double maxAttempts = 30);
+};
 
 
 } // namespace elizaos

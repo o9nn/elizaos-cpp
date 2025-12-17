@@ -61,7 +61,7 @@ bool isMajorUpdate(const std::string& currentVersion, const std::string& targetV
 
 }
 
-std::future<std::optional<std::string>> fetchLatestVersion(const std::string& packageName) {
+std::future<std::string> fetchLatestVersion(const std::string& packageName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {

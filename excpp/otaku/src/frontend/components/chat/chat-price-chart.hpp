@@ -27,11 +27,11 @@ struct MarketCapDataPoint {
     std::string date;
 };
 
-using ChartType = std::variant<'price', 'marketcap'>;
+using ChartType = std::variant<std::string, std::string>;
 
 struct PriceChartData {
     std::string token_identifier;
-    std::optional<std::string> token_symbol;
+    std::string token_symbol;
     std::string chain;
     std::string timeframe;
     std::optional<double> current_price;
@@ -50,7 +50,7 @@ struct ChatPriceChartProps {
     PriceChartData data;
 };
 
-void ChatPriceChart(ChatPriceChartProps { data });
+void ChatPriceChart();
 
 
 } // namespace elizaos

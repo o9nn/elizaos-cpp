@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void ProfileRepoNotice(auto {
-  userLogin, auto pageLoading, auto onCreateRepo, ProfileRepoNoticeProps }) {
+void ProfileRepoNotice(auto pageLoading, auto onCreateRepo) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!userLogin) return null; // Don't render if userLogin is not available

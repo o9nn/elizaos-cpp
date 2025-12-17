@@ -22,7 +22,7 @@ std::future<void> stopServer() {
 
 }
 
-std::future<void> startServer(const std::vector<string[] =>& args) {
+std::future<void> startServer(std::vector<std::string> args = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto server = getServerManager();
@@ -30,7 +30,7 @@ std::future<void> startServer(const std::vector<string[] =>& args) {
 
 }
 
-std::future<void> restartServer(const std::vector<string[] =>& args) {
+std::future<void> restartServer(std::vector<std::string> args = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto server = getServerManager();

@@ -35,15 +35,12 @@ struct Session {
 
 class HTTPGatewayWrapper {
 public:
-    HTTPGatewayWrapper(const std::string& configPath, double port, Console = console logger);
+    HTTPGatewayWrapper(const std::string& configPath, double port, Console logger = console);
     void start();
     void handleRequest(IncomingMessage req, ServerResponse res);
     void handleSSE(IncomingMessage req, ServerResponse res);
     std::future<void> handleMessage(IncomingMessage req, ServerResponse res);
-    Promise< checkPayment(const std::any& message, Record<string headers, auto string>);
-    void if(auto !this.paymentMiddleware || !message.params.name);
-    void for(auto const server of this.config.servers);
-    void if(auto !verification.authorized);
+    Promise< checkPayment(const std::any& message, const std::unordered_map<std::string, std::string>& headers);
     void processGatewayOutput(Session session);
     void sendSSE(ServerResponse res, const std::string& event, const std::any& data);
     std::unordered_map<std::string, std::string> extractHeaders(IncomingMessage req);

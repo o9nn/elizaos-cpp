@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::optional<std::string> getFirstAvailableField(Record<string obj, auto any>, const std::vector<std::string>& fields) {
+std::string getFirstAvailableField(const std::unordered_map<std::string, std::any>& obj, const std::vector<std::string>& fields) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     for (const auto& field : fields)

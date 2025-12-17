@@ -48,11 +48,11 @@ std::string getKnowledgePath();
 /**
  * Recursively get all files in a directory
  */
-std::vector<std::string> getAllFiles(const std::string& dirPath, const std::vector<string[] =>& files);
+std::vector<std::string> getAllFiles(const std::string& dirPath, std::vector<std::string> files = {});
 
 /**
  * Get content type based on file extension
  */
-std::optional<std::string> getContentType(const std::string& extension);
+std::string getContentType(const std::string& extension);
 
 } // namespace elizaos

@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::optional<std::string> extractSearchQuery(const std::string& text) {
+std::string extractSearchQuery(const std::string& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Patterns for query extraction

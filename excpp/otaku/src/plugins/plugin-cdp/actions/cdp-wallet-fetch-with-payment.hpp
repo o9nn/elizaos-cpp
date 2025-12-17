@@ -53,12 +53,11 @@ namespace elizaos {
 /**
  * Helper function to determine status indicator and prefix based on response status
  */
-void getStatusIndicators(double status, bool wasPaidRequest); {
 
 /**
  * Helper function to format and truncate response data
  */
-std::string formatResponseData(unknown responseData, number = 500 maxLength);
+std::string formatResponseData(unknown responseData, double maxLength = 500);
 
       // Check if CDP service is available
 

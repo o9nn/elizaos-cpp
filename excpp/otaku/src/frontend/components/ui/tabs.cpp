@@ -4,9 +4,7 @@
 
 namespace elizaos {
 
-void Tabs(auto {
-  className, ComponentProps<typeof TabsPrimitive.Root> ...props
-}) {
+void Tabs() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -19,9 +17,7 @@ void Tabs(auto {
 
 }
 
-void TabsList(auto {
-  className, ComponentProps<typeof TabsPrimitive.List> ...props
-}) {
+void TabsList() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -37,9 +33,7 @@ void TabsList(auto {
 
 }
 
-void TabsTrigger(auto {
-  className, ComponentProps<typeof TabsPrimitive.Trigger> ...props
-}) {
+void TabsTrigger() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -55,9 +49,7 @@ void TabsTrigger(auto {
 
 }
 
-void TabsContent(auto {
-  className, ComponentProps<typeof TabsPrimitive.Content> ...props
-}) {
+void TabsContent() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

@@ -44,7 +44,7 @@ struct WebSocketServiceWithSendMessage {
  * @param text The input string potentially containing the <response> tag.
  * @returns The extracted text content, or null if the tag is not found or empty.
  */
-std::optional<std::string> extractResponseText(const std::string& text);
+std::string extractResponseText(const std::string& text);
 
 /**
  * Represents media data containing a buffer of data and the media type.
@@ -55,6 +55,7 @@ std::optional<std::string> extractResponseText(const std::string& text);
 using MediaData = {
 
 // Helper functions for response ID tracking in serverless environment
+std::future<std::string> getLatestResponseId(IAgentRuntime runtime, const std::string& roomId);
 
 std::future<void> setLatestResponseId(IAgentRuntime runtime, const std::string& roomId, const std::string& responseId);
 

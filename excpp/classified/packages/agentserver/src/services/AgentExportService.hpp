@@ -34,8 +34,8 @@ struct ExportOptions {
 
 class AgentExportService {
 public:
-    AgentExportService(UUID private agentId, IAgentRuntime private runtime, AgentServer private serverInstance);
-    std::future<NodeJS::ReadableStream> exportToZip(ExportOptions = {} options);
+    AgentExportService();
+    std::future<NodeJS::ReadableStream> exportToZip(ExportOptions options = {});
     std::future<ExportManifest> exportDatabaseData(archiver::Archiver archive);
     std::future<double> exportUploadedFiles(archiver::Archiver archive);
     std::future<void> cleanup();

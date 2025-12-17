@@ -1,5 +1,4 @@
 #pragma once
-#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -22,6 +21,6 @@ struct Comment {
     std::string image;
 };
 
-void Comments(const std::any& { projectId });
+void Comments();
 
 } // namespace elizaos

@@ -23,7 +23,6 @@ std::string formatExperienceList(const std::vector<Experience>& experiences);
 
 std::string formatPatternSummary(const std::any& pattern);
 
-void getExperienceStats(const std::vector<Experience>& experiences); {
 
   // Count by type
 

@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void InputGroup(auto {
-  children, ComponentPropsWithoutRef<"span"> }) {
+void InputGroup() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -25,12 +24,7 @@ void InputGroup(auto {
 
 }
 
-void Input(auto {
-    className, std::optional<std::variant<{
-    className: string;
-    type:, "email", "number", "password", "search", "tel", "text", "url", DateType;
-  } & Omit<Headless::InputProps>> ...props
-  }, auto "as" | "className">, ForwardedRef<HTMLInputElement> ref) {
+void Input(ForwardedRef<HTMLInputElement> ref) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void FilterBar(auto { tags, FilterBarProps onFilterChange }) {
+void FilterBar() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [activeCategory, setActiveCategory] = useState<string | nullptr>(nullptr);

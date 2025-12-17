@@ -44,7 +44,7 @@ bool isCorePlugin(const std::string& pluginName) {
 
 }
 
-std::optional<std::string> getGitHubRepoPath(const std::string& pluginName, const std::optional<RegistryResponse>& registryData) {
+std::string getGitHubRepoPath(const std::string& pluginName, const std::optional<RegistryResponse>& registryData) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Skip core plugins
@@ -124,7 +124,7 @@ std::optional<std::string> getGitHubRepoPath(const std::string& pluginName, cons
 
 }
 
-std::future<std::optional<PluginPackageJson>> fetchPluginPackageJson(const std::string& pluginName, const std::optional<std::string>& repoPath) {
+std::future<std::optional<PluginPackageJson>> fetchPluginPackageJson(const std::string& pluginName, const std::string& repoPath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Skip core plugins
@@ -361,7 +361,7 @@ void useRequiredSecrets(const std::vector<std::string>& pluginNames) {
 
 }
 
-void validateRequiredSecrets(const std::vector<PluginSecret>& requiredSecrets, Record<string providedSecrets, auto string | null>) {
+void validateRequiredSecrets(const std::vector<PluginSecret>& requiredSecrets, const std::variant<Record<string, string, null>>& providedSecrets) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     isValid: boolean; missingSecrets: string[]
 }

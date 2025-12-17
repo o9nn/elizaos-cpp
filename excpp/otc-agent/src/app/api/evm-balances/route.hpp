@@ -37,7 +37,7 @@ struct CachedTokenMetadata {
 struct BulkMetadataCache {
 };
 
-std::future<void> setBulkMetadataCache(const std::string& chain, Record<string metadata, auto CachedTokenMetadata>);
+std::future<void> setBulkMetadataCache(const std::string& chain, const std::unordered_map<std::string, CachedTokenMetadata>& metadata);
 
 // Price cache TTL: 15 minutes
 
@@ -54,8 +54,9 @@ std::future<void> setCachedWalletBalances(const std::string& chain, const std::s
  * Cache an image URL to Vercel Blob storage
  * Returns the cached blob URL, or null if caching fails
  */
+std::future<std::string> cacheImageToBlob(const std::string& imageUrl);
 
-std::optional<std::string> getExtensionFromUrl(const std::string& url);
+std::string getExtensionFromUrl(const std::string& url);
 
 // Minimum thresholds to filter obvious dust
 // Very permissive - we want to show new tokens without prices
@@ -67,7 +68,7 @@ struct BulkPriceCache {
     double cachedAt;
 };
 
-std::future<void> setBulkPriceCache(const std::string& chain, Record<string prices, auto number>);
+std::future<void> setBulkPriceCache(const std::string& chain, const std::unordered_map<std::string, double>& prices);
 
 /**
  * Fetch token balances using Alchemy's getTokenBalances + cached metadata

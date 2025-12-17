@@ -13,7 +13,7 @@ namespace elizaos {
 
 
 
-void cn(const std::vector<ClassValue>& ...inputs);
+void cn();
 
 // Predefined avatars available in the public/avatars folder
 

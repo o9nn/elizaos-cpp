@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void ScamWarning(std::optional<std::any> { isHidden }) {
+void ScamWarning() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!isHidden) return null;

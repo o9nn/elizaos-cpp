@@ -48,6 +48,7 @@ std::future<unknown> swapToken(Connection connection, PublicKey walletPublicKey,
  * @param {string} tokenSymbol - The token symbol to retrieve the address for.
  * @returns {Promise<string|null>} The token address if found, null otherwise.
  */
+std::future<std::string> getTokenFromWallet(IAgentRuntime runtime, const std::string& tokenSymbol);
 
 /**
  * Respond with a JSON markdown block containing only the extracted values. Use null for any values that cannot be determined.

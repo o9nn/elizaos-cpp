@@ -38,7 +38,7 @@ struct MigrationStep {
     std::optional<std::string> eventName;
 };
 
-std::future<MigrationStepResult> executeMigrationStep(TokenData token, MigrationStep step, MigrationStep nextStep, number = 3 retryCount, number = 2000 delay);
+std::future<MigrationStepResult> executeMigrationStep(TokenData token, MigrationStep step, MigrationStep nextStep, double retryCount = 3, double delay = 2000);
 
 std::future<bool> acquireMigrationLock(TokenData token);
 std::future<void> releaseMigrationLock(TokenData token);
@@ -46,7 +46,7 @@ std::future<void> saveMigrationState(TokenData token, const std::string& step);
 
 std::future<void> getMigrationState(TokenData token);
 
-std::future<void> safeUpdateTokenInDB(const std::optional<TokenData>& data, auto retries = 3, auto delay = 2000);
+std::future<void> safeUpdateTokenInDB(const std::optional<TokenData>& data, auto retries, auto delay);
 
 std::future<void> checkMigratingTokens(double limit);
 

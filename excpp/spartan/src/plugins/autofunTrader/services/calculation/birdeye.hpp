@@ -19,12 +19,9 @@ namespace elizaos {
 
 class BirdeyeService {
 public:
-    BirdeyeService(const std::string& private apiKey);
+    BirdeyeService();
     void getBirdeyeFetchOptions();
     Promise< getTokenMarketData(const std::string& tokenAddress);
-    void if(auto !response.ok || !volResponse.ok || !priceHistoryResponse.ok);
-    void if(auto !data.data);
-    void catch(auto error);
     std::future<std::any> getTokensMarketData(const std::vector<std::string>& tokenAddresses);
     void getEmptyMarketData();
 };

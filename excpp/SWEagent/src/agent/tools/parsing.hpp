@@ -4,6 +4,7 @@
 #include <memory>
 #include <optional>
 #include <string>
+#include <tuple>
 #include <unordered_map>
 #include <variant>
 #include <vector>
@@ -29,7 +30,7 @@ namespace elizaos {
  */
 class ThoughtActionParser {
 public:
-    [string, string] call(const std::variant<ModelOutput, std::string>& modelResponse, std::optional<std::vector<Command>> _commands, boolean = false strict);
+    std::tuple<std::string, std::string> call(const std::variant<ModelOutput, std::string>& modelResponse, std::optional<std::vector<Command>> _commands, bool strict = false);
 };
 
 /**
@@ -37,7 +38,7 @@ public:
  */
 class ActionOnlyParser {
 public:
-    [string, string] call(const std::variant<ModelOutput, std::string>& modelResponse, std::optional<std::vector<Command>> _commands, boolean = false strict);
+    std::tuple<std::string, std::string> call(const std::variant<ModelOutput, std::string>& modelResponse, std::optional<std::vector<Command>> _commands, bool strict = false);
 };
 
 /**
@@ -45,7 +46,7 @@ public:
  */
 class XMLThoughtActionParser {
 public:
-    [string, string] call(const std::variant<ModelOutput, std::string>& modelResponse, std::optional<std::vector<Command>> _commands, boolean = false strict);
+    std::tuple<std::string, std::string> call(const std::variant<ModelOutput, std::string>& modelResponse, std::optional<std::vector<Command>> _commands, bool strict = false);
 };
 
 /**
@@ -53,7 +54,7 @@ public:
  */
 class EditFormatParser {
 public:
-    [string, string] call(const std::variant<ModelOutput, std::string>& modelResponse, std::optional<std::vector<Command>> _commands, boolean = false strict);
+    std::tuple<std::string, std::string> call(const std::variant<ModelOutput, std::string>& modelResponse, std::optional<std::vector<Command>> _commands, bool strict = false);
 };
 
 /**
@@ -62,7 +63,7 @@ public:
 class FunctionCallingParser {
 public:
     std::string formatErrorMessage(std::optional<std::any> error);
-    [string, string] call(const std::variant<ModelOutput, std::string>& modelResponse, std::optional<std::vector<Command>> _commands, boolean = false strict);
+    std::tuple<std::string, std::string> call(const std::variant<ModelOutput, std::string>& modelResponse, std::optional<std::vector<Command>> _commands, bool strict = false);
 };
 
 /**
@@ -70,7 +71,7 @@ public:
  */
 class SingleBashCodeBlockParser {
 public:
-    [string, string] call(const std::variant<ModelOutput, std::string>& modelResponse, std::optional<std::vector<Command>> _commands, boolean = false strict);
+    std::tuple<std::string, std::string> call(const std::variant<ModelOutput, std::string>& modelResponse, std::optional<std::vector<Command>> _commands, bool strict = false);
 };
 
 /**
@@ -78,7 +79,7 @@ public:
  */
 class MultipleBashCodeBlocksParser {
 public:
-    [string, string] call(const std::variant<ModelOutput, std::string>& modelResponse, std::optional<std::vector<Command>> _commands, boolean = false strict);
+    std::tuple<std::string, std::string> call(const std::variant<ModelOutput, std::string>& modelResponse, std::optional<std::vector<Command>> _commands, bool strict = false);
 };
 
 /**
@@ -86,7 +87,7 @@ public:
  */
 class Identity {
 public:
-    [string, string] call(const std::variant<ModelOutput, std::string>& modelResponse, std::optional<std::vector<Command>> _commands, boolean = false _strict);
+    std::tuple<std::string, std::string> call(const std::variant<ModelOutput, std::string>& modelResponse, std::optional<std::vector<Command>> _commands, bool _strict = false);
 };
 
 /**
@@ -94,7 +95,7 @@ public:
  */
 class LastLineParser {
 public:
-    [string, string] call(const std::variant<ModelOutput, std::string>& modelResponse, std::optional<std::vector<Command>> _commands, boolean = false strict);
+    std::tuple<std::string, std::string> call(const std::variant<ModelOutput, std::string>& modelResponse, std::optional<std::vector<Command>> _commands, bool strict = false);
 };
 
 /**
@@ -105,6 +106,7 @@ AbstractParseFunction getParser(const std::string& parserName);
 /**
  * Main parse function used by tools
  */
+std::tuple<std::string, std::string> parseAction(const std::variant<ModelOutput, std::string>& modelResponse, std::variant<std::string, AbstractParseFunction> parseFunction = "thought_action", std::optional<std::vector<Command>> commands, bool strict = false);
 
 // Export types
 using ParseFunction = AbstractParseFunction;
@@ -112,13 +114,13 @@ using ParseFunction = AbstractParseFunction;
 // Identity parser for testing
 class IdentityParser {
 public:
-    [string, string] call(const std::variant<ModelOutput, std::string>& modelResponse, std::optional<std::vector<Command>> _commands, std::optional<bool> _strict);
+    std::tuple<std::string, std::string> call(const std::variant<ModelOutput, std::string>& modelResponse, std::optional<std::vector<Command>> _commands, std::optional<bool> _strict);
 };
 
 // Additional exports for compatibility
 class JsonParser {
 public:
-    [string, string] call(const std::variant<ModelOutput, std::string>& modelResponse, std::optional<std::vector<Command>> _commands, std::optional<bool> strict);
+    std::tuple<std::string, std::string> call(const std::variant<ModelOutput, std::string>& modelResponse, std::optional<std::vector<Command>> _commands, std::optional<bool> strict);
 };
 
 /**

@@ -1,6 +1,7 @@
 #pragma once
 #include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
@@ -17,6 +18,7 @@ namespace elizaos {
 
 
 // FIXME: change runtime to just pass the dataService in
+std::future<std::string> assessMarketCondition(IAgentRuntime runtime);
 
 double calculateVolatility(const std::vector<double>& priceHistory);
 

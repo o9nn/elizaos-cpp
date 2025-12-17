@@ -18,6 +18,6 @@ struct ConnectionErrorBannerProps {
     std::optional<std::string> className;
 };
 
-void ConnectionErrorBanner(ConnectionErrorBannerProps { className });
+void ConnectionErrorBanner();
 
 } // namespace elizaos

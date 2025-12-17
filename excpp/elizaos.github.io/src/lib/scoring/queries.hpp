@@ -69,7 +69,7 @@ std::future<void> getUserAggregatedScore(const std::string& username, std::optio
  * @param limit - Maximum number of results to return (default: 100)
  * @returns Array of scores over time with running totals
  */
-std::future<void> getUserScoreTrend(const std::string& username, AggregationPeriod = "daily" period, std::optional<std::string> startDate, std::optional<std::string> endDate, auto limit = 100);
+std::future<void> getUserScoreTrend(const std::string& username, AggregationPeriod period = "daily", std::optional<std::string> startDate, std::optional<std::string> endDate, auto limit);
 
 /**
  * Compare scores between users or teams
@@ -79,7 +79,7 @@ std::future<void> getUserScoreTrend(const std::string& username, AggregationPeri
  * @param endDate - End date string (YYYY-MM-DD)
  * @returns Comparative data for each user
  */
-std::future<void> compareUserScores(const std::vector<std::string>& usernames, AggregationPeriod = "monthly" period, std::optional<std::string> startDate, std::optional<std::string> endDate);
+std::future<void> compareUserScores(const std::vector<std::string>& usernames, AggregationPeriod period = "monthly", std::optional<std::string> startDate, std::optional<std::string> endDate);
 
 /**
  * Get activity heatmap data for visualizing user activity patterns

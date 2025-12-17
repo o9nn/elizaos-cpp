@@ -1,5 +1,4 @@
 #pragma once
-#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -26,8 +25,8 @@ std::string getSocialIcon(const std::string& type);
 
 using SortConfig = std::variant<{
 
-using TributeFilter = std::variant<'ALL', 'FULL', 'HALF', 'SMOL'>;
-using SocialFilter = std::variant<'ALL', 'HAS_TWITTER', 'NO_TWITTER'>;
+using TributeFilter = std::variant<std::string, std::string, std::string, std::string>;
+using SocialFilter = std::variant<std::string, std::string, std::string>;
 
 // Add this helper function near the top with the other helper functions
   
@@ -39,5 +38,5 @@ using SocialFilter = std::variant<'ALL', 'HAS_TWITTER', 'NO_TWITTER'>;
 
 std::string truncateAddress(const std::string& address);
 
-void TokenGrid(const std::any& { holdings }); 
+void TokenGrid(); 
 } // namespace elizaos

@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void TechnicalDocs(const std::any& { project }) {
+void TechnicalDocs() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [activeSection, setActiveSection] = useState(0);

@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void ReviewStep(auto {
-  formData, auto onBack, auto onNext, auto requiredChain, auto isConnectedToRequiredChain, auto onConnect, auto privyReady = true, auto selectedTokenSymbol = "TOKEN", ReviewStepProps }) {
+void ReviewStep(auto onBack, auto onNext, auto requiredChain, auto isConnectedToRequiredChain, auto onConnect, auto privyReady, auto selectedTokenSymbol) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

@@ -16,7 +16,7 @@ namespace elizaos {
 
 
 
-Buffer getWavHeader(double audioLength, double sampleRate, auto channelCount = 1, auto bitsPerSample = 16);
+Buffer getWavHeader(double audioLength, double sampleRate, auto channelCount, auto bitsPerSample);
 
 // Text Utils
 

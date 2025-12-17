@@ -31,7 +31,7 @@ namespace elizaos {
  // Buffer import
  // Import crypto for lock value
 
-std::optional<Token> sanitizeTokenForWebSocket(const std::optional<Token>& token, auto maxBytes = 95000);
+std::optional<Token> sanitizeTokenForWebSocket(const std::optional<Token>& token, auto maxBytes);
 std::optional<TokenDBData> convertTokenDataToDBData(const std::optional<TokenData>& tokenData);
 
 std::future<Token> updateTokenInDB(const std::optional<TokenData>& tokenData);

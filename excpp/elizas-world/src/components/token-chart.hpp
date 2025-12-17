@@ -1,5 +1,4 @@
 #pragma once
-#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -14,5 +13,5 @@ namespace elizaos {
 
 
 
-void TokenChart(const std::any& { holdings }); 
+void TokenChart(); 
 } // namespace elizaos

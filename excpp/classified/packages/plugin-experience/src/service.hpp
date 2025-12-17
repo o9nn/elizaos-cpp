@@ -22,11 +22,11 @@ namespace elizaos {
 class ExperienceService {
 public:
     ExperienceService(IAgentRuntime runtime);
-    std::future<ExperienceService> start(IAgentRuntime runtime);
+    static std::future<ExperienceService> start(IAgentRuntime runtime);
     std::future<void> loadExperiences();
     std::future<Experience> recordExperience(const std::optional<Experience>& experienceData);
     std::future<std::vector<Experience>> queryExperiences(ExperienceQuery query);
-    std::future<std::vector<Experience>> findSimilarExperiences(const std::string& text, number = 5 limit);
+    std::future<std::vector<Experience>> findSimilarExperiences(const std::string& text, double limit = 5);
     std::future<ExperienceAnalysis> analyzeExperiences(std::optional<std::string> domain, std::optional<ExperienceType> type);
     double cosineSimilarity(const std::vector<double>& a, const std::vector<double>& b);
     std::vector<std::string> findCommonPatterns(const std::vector<std::string>& texts);

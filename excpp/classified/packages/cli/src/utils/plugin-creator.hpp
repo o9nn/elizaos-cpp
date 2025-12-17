@@ -53,7 +53,7 @@ struct CreatorOptions {
 
 class PluginCreator {
 public:
-    PluginCreator(CreatorOptions = {} options);
+    PluginCreator(CreatorOptions options = {});
     void handleCancellation(const std::any& value);
     void registerCleanupHandlers();
     std::future<void> initializeAnthropic();
@@ -70,9 +70,7 @@ public:
     std::future<void> runClaudeCode();
     std::future<void> runClaudeCodeWithContext(const std::string& context);
     std::future<void> runClaudeCodeWithPrompt(const std::string& prompt);
-    void catch(const std::any& error);
     std::future<std::string> getBuildErrors();
-    void catch(const std::any& error);
     std::future<std::string> getTestErrors();
     std::future<ValidationResult> validateProductionReadiness();
     std::future<std::string> getAllPluginFiles();

@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void Input(auto { className, auto type, ComponentProps<"input"> ...props }) {
+void Input(auto type) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

@@ -16,5 +16,5 @@ struct PreviewProps {
     Project project;
 };
 
-void ProjectPreview(PreviewProps { project }); 
+void ProjectPreview(); 
 } // namespace elizaos

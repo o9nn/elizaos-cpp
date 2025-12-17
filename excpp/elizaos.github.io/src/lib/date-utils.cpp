@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::optional<std::string> extractDateFromTitle(const std::string& title) {
+std::string extractDateFromTitle(const std::string& title) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // First try to extract from parentheses (current format)
@@ -50,7 +50,7 @@ std::string denormalizeDate(const std::string& date) {
 
 }
 
-std::optional<std::string> extractDateFromFilename(const std::string& filename) {
+std::string extractDateFromFilename(const std::string& filename) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto dateMatch = filename.match(/\d{4}[-_]\d{2}[-_]\d{2}/);

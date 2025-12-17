@@ -21,12 +21,7 @@ public:
     void connect();
     void attemptReconnect();
     void triggerEvent(const std::string& event, unknown data);
-    void if(auto !this.eventHandlers[event]);
-    void if(auto !callback);
-    void if(auto this.eventHandlers[event]);
     std::function<void()> async(const std::string& event, std::optional<unknown> data);
-    void if(auto this.ws);
-    void if(auto this.reconnectTimer);
 
 private:
     std::string url_;

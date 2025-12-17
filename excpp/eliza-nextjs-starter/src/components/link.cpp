@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void Link(LinkProps & React::ComponentPropsWithoutRef<"a"> props, ForwardedRef<HTMLAnchorElement> ref) {
+void Link(LinkProps props, ForwardedRef<HTMLAnchorElement> ref) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

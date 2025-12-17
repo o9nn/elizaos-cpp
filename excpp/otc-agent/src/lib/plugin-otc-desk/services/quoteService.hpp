@@ -25,7 +25,7 @@ public:
     std::string serviceType() const;
     std::future<void> initialize();
     std::future<void> stop();
-    std::future<QuoteService> start(IAgentRuntime runtime);
+    static std::future<QuoteService> start(IAgentRuntime runtime);
     std::future<void> addToIndex(const std::string& quoteId, const std::string& entityId, std::optional<std::string> beneficiary);
     std::string generateQuoteId(const std::string& entityId);
     std::string generateQuoteSignature(const std::any& data);

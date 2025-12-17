@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void ProjectCard(auto { project, const std::any& index }) {
+void ProjectCard() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

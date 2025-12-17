@@ -20,7 +20,7 @@ std::future<std::unordered_map<std::string, std::string>> readEnvFile() {
 
 }
 
-std::future<void> writeEnvFile(Record<string envVars, auto string>) {
+std::future<void> writeEnvFile(const std::unordered_map<std::string, std::string>& envVars) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto service = getEnvFileService();

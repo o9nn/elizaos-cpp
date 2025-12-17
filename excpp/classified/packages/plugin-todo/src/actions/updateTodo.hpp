@@ -29,8 +29,8 @@ struct TaskUpdate {
     std::optional<std::string> description;
     std::optional<std::variant<1, 2, 3, 4>> priority;
     std::optional<bool> urgent;
-    std::optional<std::optional<std::string>> dueDate;
-    std::optional<std::variant<'daily', 'weekly', 'monthly'>> recurring;
+    std::optional<std::string> dueDate;
+    std::optional<std::string> recurring;
 };
 
 /**

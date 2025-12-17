@@ -59,7 +59,7 @@ std::future<void> GET(NextRequest request) {
 
 }
 
-std::optional<std::string> getExtensionFromUrl(const std::string& url) {
+std::string getExtensionFromUrl(const std::string& url) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {

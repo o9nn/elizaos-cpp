@@ -21,9 +21,8 @@ namespace elizaos {
 class ReferralService {
 public:
     DatabaseAdapter getDb();
-    std::future<ReferralService> start(IAgentRuntime runtime);
+    static std::future<ReferralService> start(IAgentRuntime runtime);
     Promise< getOrCreateCode(UUID userId);
-    void if(auto existing);
     std::future<ReferralStats> getReferralStats(UUID userId);
     std::future<void> stop();
     std::future<void> processReferralSignup(UUID userId, const std::string& referralCode);

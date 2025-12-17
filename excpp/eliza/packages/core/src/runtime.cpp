@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void if(auto this.adapter && 'runMigrations' in this.adapter) {
+void if() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     (this.adapter).runMigrations(p.schema, p.name);

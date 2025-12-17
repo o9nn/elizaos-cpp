@@ -9,7 +9,7 @@ std::future<> saveChannelUploadedFile(Express.Multer.File file, const std::strin
     filename: string; url: string
 }
 
-express::Router createChannelsRouter(Map<UUID agents, auto IAgentRuntime>, AgentServer serverInstance) {
+express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntime>& agents, AgentServer serverInstance) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

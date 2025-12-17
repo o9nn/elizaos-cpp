@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void PackageInfo(auto { name, PackageInfoProps type }) {
+void PackageInfo() {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

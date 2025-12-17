@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void SendModalContent(auto { tokens, auto userId, SendModalContentProps onSuccess }) {
+void SendModalContent(auto userId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

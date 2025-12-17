@@ -34,8 +34,8 @@ struct ImportResult {
 
 class AgentImportService {
 public:
-    AgentImportService(UUID private targetAgentId, AgentServer private serverInstance);
-    std::future<ImportResult> importFromZip(Buffer zipBuffer, ImportOptions = {} options);
+    AgentImportService();
+    std::future<ImportResult> importFromZip(Buffer zipBuffer, ImportOptions options = {});
     std::future<ExportManifest> validateAndReadManifest(AdmZip zip, bool validate);
     std::future<void> deleteExistingAgentData(unknown tx);
     std::future<void> importAgent(unknown tx, AdmZip zip);

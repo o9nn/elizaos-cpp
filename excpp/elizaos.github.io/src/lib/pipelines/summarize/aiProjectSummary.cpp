@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::future<std::optional<std::string>> generateProjectSummary(RepositoryMetrics metrics, AISummaryConfig config, const std::any& dateInfo, IntervalType intervalType) {
+std::future<std::string> generateProjectSummary(RepositoryMetrics metrics, AISummaryConfig config, const std::any& dateInfo, IntervalType intervalType) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

@@ -18,15 +18,7 @@ namespace elizaos {
 
 class ShellSecurityE2ETestSuite {
 public:
-    void if(auto !shellService);
-    void for(auto const cmd of traversalAttempts);
-    void for(auto const { cmd, auto safe } of testCommands);
-    void if(auto !shellService);
-    void for(auto const cmd of specialCharCommands);
-    void if(auto !shellService);
-    void for(auto const cmd of auditCommands);
-    void for(auto let i = 0; i < auditCommands.length; i++);
-    void if(auto response && response.attachments);
+};
 
 
 } // namespace elizaos

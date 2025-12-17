@@ -338,7 +338,7 @@ std::future<> fetchUrlContent(const std::string& url) {
     content: string; contentType: string
 }
 
-bool looksLikeBase64(std::optional<std::optional<std::string>> content) {
+bool looksLikeBase64(std::optional<std::string> content) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!content || content.length == 0) return false;
@@ -429,7 +429,7 @@ std::string generateContentBasedId(const std::string& content, const std::string
 
 }
 
-std::string extractFirstLines(const std::string& content, number = 10 maxLines) {
+std::string extractFirstLines(const std::string& content, double maxLines = 10) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto lines = content.split(/\r?\n/);

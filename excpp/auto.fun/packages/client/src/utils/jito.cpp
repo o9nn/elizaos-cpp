@@ -11,8 +11,7 @@ void getJitoEndpoint(JitoRegion region) {
 
 }
 
-std::future<void> sendTxUsingJito(auto {
-  serializedTx, auto region = "mainnet", const std::any& }) {
+std::future<void> sendTxUsingJito(auto region) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

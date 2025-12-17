@@ -21,7 +21,7 @@ struct TokenInfo {
     std::string symbol;
     std::string name;
     double decimals;
-    std::optional<std::string> logoUrl;
+    std::string logoUrl;
     std::string chain;
     std::optional<double> priceUsd;
 };

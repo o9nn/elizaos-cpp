@@ -28,7 +28,7 @@ namespace elizaos {
 /**
  * Extract search query from user message using improved patterns
  */
-std::optional<std::string> extractSearchQuery(const std::string& text);
+std::string extractSearchQuery(const std::string& text);
 
 /**
  * Helper action to get plugin details

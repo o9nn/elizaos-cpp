@@ -22,7 +22,7 @@ namespace elizaos {
 class GoalInitializationService {
 public:
     std::future<void> stop();
-    std::future<GoalInitializationService> start(IAgentRuntime runtime);
+    static std::future<GoalInitializationService> start(IAgentRuntime runtime);
     std::future<void> createInitialGoalsDeferred(IAgentRuntime runtime);
 };
 

@@ -25,22 +25,17 @@ struct UniqueWallet {
 
 class CSVService {
 public:
-    CSVService(string = "wallets::csv" csvFileName);
+    CSVService(std::string csvFileName = "wallets.csv");
     void loadWallets();
     std::vector<WalletEntry> getAllWalletEntries();
     std::vector<UniqueWallet> getUniqueWallets();
     std::vector<std::string> getWalletAddresses();
     Array< getWalletsForProcessing();
-    void if(auto !this.isLoaded);
      getStats();
-    void if(auto !this.isLoaded);
     std::optional<UniqueWallet> findWalletByAddress(const std::string& address);
     std::optional<WalletEntry> findWalletById(const std::string& id);
     std::vector<UniqueWallet> getWalletsWithMultipleIds();
      validateCSVFile();
-    void if(auto lines.length < 2);
-    void for(auto const row of sampleRows);
-    void catch(auto error);
     void reload();
     std::string exportToJSON(std::optional<std::string> filePath);
 

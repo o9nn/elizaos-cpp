@@ -34,7 +34,7 @@ struct Violation {
     std::optional<double> line;
     std::optional<double> column;
     std::string message;
-    std::variant<'error', 'warning'> severity;
+    std::string severity;
 };
 
 /**
@@ -42,7 +42,7 @@ struct Violation {
  */
 class PythonValidator {
 public:
-    PythonValidator(CodingRule[] = PYTHON_CODING_RULES _rules);
+    PythonValidator(std::vector<CodingRule> _rules = PYTHON_CODING_RULES);
     ValidationResult validate(const std::string& code, std::optional<std::string> filePath);
     bool hasTypeAnnotations(const std::string& code);
     double getLineNumber(const std::string& code, double index);
@@ -71,7 +71,7 @@ class TypeScriptValidator {
 /**
  * Factory function to get appropriate validator
  */
-std::variant<PythonValidator, TypeScriptValidator> getValidator(const std::variant<'python', 'typescript'>& language);
+std::variant<PythonValidator, TypeScriptValidator> getValidator(const std::string& language);
 
 /**
  * Validate a file based on its extension

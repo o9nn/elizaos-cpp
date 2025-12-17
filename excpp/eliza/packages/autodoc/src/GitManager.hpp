@@ -76,7 +76,7 @@ struct CreatePullRequestOptions {
  */
 class GitManager {
 public:
-    GitManager(Repository public repository);
+    GitManager();
     std::future<std::vector<PrModeFileChange>> getFilesInPullRequest(double pullNumber);
     std::future<void> createBranch(const std::string& branchName, const std::string& baseBranch);
     std::future<void> commitFile(const std::string& branchName, const std::string& filePath, const std::string& content, const std::string& message);

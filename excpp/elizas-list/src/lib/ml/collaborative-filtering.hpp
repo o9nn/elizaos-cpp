@@ -18,8 +18,8 @@ namespace elizaos {
 class CollaborativeFilter {
 public:
     void trainModel(const std::vector<UserProjectInteraction>& interactions);
-    std::future<std::vector<RecommendedProject>> getRecommendations(const std::string& userId, number = 10 n);
-    std::future<std::vector<RecommendedProject>> getSimilarProjects(const std::string& projectId, number = 5 n);
+    std::future<std::vector<RecommendedProject>> getRecommendations(const std::string& userId, double n = 10);
+    std::future<std::vector<RecommendedProject>> getSimilarProjects(const std::string& projectId, double n = 5);
     tf::Tensor1D calculateCosineSimilarity(tf::Tensor2D vector, tf::Tensor2D matrix);
 };
  

@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void ProjectSupport(const std::any& { project }) {
+void ProjectSupport() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

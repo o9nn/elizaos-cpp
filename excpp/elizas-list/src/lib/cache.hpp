@@ -18,8 +18,8 @@ namespace elizaos {
 
 class CacheManager {
 public:
-    void get(const std::string& key);
-    void set(const std::string& key, const std::any& data, number = 300 ttl);
+    static void get(const std::string& key);
+    static void set(const std::string& key, const std::any& data, double ttl = 300);
 };
  
 } // namespace elizaos

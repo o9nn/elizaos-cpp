@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 
 namespace elizaos {
@@ -31,7 +30,7 @@ using PaymentConfig = z::infer<typeof PaymentConfigSchema>;
 struct ServerConnection {
     McpServerConfig config;
     std::optional<Client> client;
-    std::variant<'connecting', 'connected', 'disconnected', 'error'> status;
+    std::string status;
     std::optional<Error> lastError;
     std::optional<Date> lastHealthCheck;
     std::optional<bool> tools;

@@ -18,6 +18,6 @@ struct ConsignmentRowProps {
     OTCConsignment consignment;
 };
 
-void ConsignmentRow(auto { consignment, ConsignmentRowProps onUpdate });
+void ConsignmentRow();
 
 } // namespace elizaos

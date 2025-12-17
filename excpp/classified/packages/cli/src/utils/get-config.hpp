@@ -6,7 +6,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include "elizaos/core.hpp"
 #include "resolve-utils.hpp"
@@ -92,6 +91,7 @@ std::future<void> storePgliteDataDir(const std::string& dataDir, const std::stri
  * Prompts the user for a Postgres URL, validates it, and stores it
  * @returns The configured Postgres URL or null if user cancels
  */
+std::future<std::string> promptAndStorePostgresUrl(const std::string& envFilePath);
 
 /**
  * Validates an OpenAI API key format
@@ -146,7 +146,7 @@ struct ProviderPromptConfig {
     std::string message;
     std::optional<std::string> placeholder;
     std::optional<std::string> initialValue;
-    std::variant<'text', 'password'> type;
+    std::string type;
     std::string successMessage;
 };
 
@@ -166,12 +166,14 @@ struct ProviderPromptConfig {
  * @param envFilePath Path to the .env file
  * @returns The configured OpenAI API key or null if user cancels
  */
+std::future<std::string> promptAndStoreOpenAIKey(const std::string& envFilePath);
 
 /**
  * Prompts the user for an Anthropic API key, validates it, and stores it
  * @param envFilePath Path to the .env file
  * @returns The configured Anthropic API key or null if user cancels
  */
+std::future<std::string> promptAndStoreAnthropicKey(const std::string& envFilePath);
 
 /**
  * Validates an Ollama API endpoint format
@@ -216,6 +218,7 @@ std::future<void> storeOllamaConfig(const std::any& config, const std::string& e
  * @param envFilePath Path to the .env file
  * @returns The configured Google API key or null if user cancels
  */
+std::future<std::string> promptAndStoreGoogleKey(const std::string& envFilePath);
 
 /**
  * Validates an OpenRouter API key format
@@ -236,12 +239,14 @@ std::future<void> storeOpenRouterKey(const std::string& key, const std::string& 
  * @param envFilePath Path to the .env file
  * @returns The configured OpenRouter API key or null if user cancels
  */
+std::future<std::string> promptAndStoreOpenRouterKey(const std::string& envFilePath);
 
 /**
  * Configures the database to use, either PGLite or PostgreSQL
  * @param reconfigure If true, force reconfiguration even if already configured
  * @returns The postgres URL if using Postgres, otherwise null
  */
+std::future<std::string> configureDatabaseSettings(auto reconfigure);
 
 // Main config schema
 /**

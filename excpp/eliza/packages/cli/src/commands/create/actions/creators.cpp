@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::future<void> createPlugin(const std::string& pluginName, const std::string& targetDir, auto isNonInteractive = false) {
+std::future<void> createPlugin(const std::string& pluginName, const std::string& targetDir, auto isNonInteractive) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -56,7 +56,7 @@ std::future<void> createPlugin(const std::string& pluginName, const std::string&
     }
 }
 
-std::future<void> createAgent(const std::string& agentName, const std::string& targetDir, auto isNonInteractive = false) {
+std::future<void> createAgent(const std::string& agentName, const std::string& targetDir, auto isNonInteractive) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -109,7 +109,7 @@ std::future<void> createAgent(const std::string& agentName, const std::string& t
     }
 }
 
-std::future<void> createTEEProject(const std::string& projectName, const std::string& targetDir, const std::string& database, const std::string& aiModel, std::optional<std::string> embeddingModel, auto isNonInteractive = false) {
+std::future<void> createTEEProject(const std::string& projectName, const std::string& targetDir, const std::string& database, const std::string& aiModel, std::optional<std::string> embeddingModel, auto isNonInteractive) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -155,7 +155,7 @@ std::future<void> createTEEProject(const std::string& projectName, const std::st
     }
 }
 
-std::future<void> createProject(const std::string& projectName, const std::string& targetDir, const std::string& database, const std::string& aiModel, std::optional<std::string> embeddingModel, auto isNonInteractive = false) {
+std::future<void> createProject(const std::string& projectName, const std::string& targetDir, const std::string& database, const std::string& aiModel, std::optional<std::string> embeddingModel, auto isNonInteractive) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

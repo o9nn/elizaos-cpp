@@ -34,7 +34,7 @@ struct ModelOutput {
  */
 struct ToolCall {
     std::string id;
-    'function' type;
+    std::string type;
     std::string name;
     std::string arguments;
 };

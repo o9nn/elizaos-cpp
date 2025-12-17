@@ -41,7 +41,7 @@ std::future<std::unordered_map<std::string, RegistryEntry>> getLocalRegistryInde
     }
 }
 
-void if(auto pluginState.plugin.init) {
+void if() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     pluginState.plugin.init({}, this.runtime);

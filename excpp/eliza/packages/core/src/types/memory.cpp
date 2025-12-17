@@ -4,7 +4,12 @@
 
 namespace elizaos {
 
-MessageMemory createMessageMemory(std::optional<std::any> params) {
+MessageMemory createMessageMemory(std::optional<{
+  id: UUID;
+  entityId: UUID;
+  agentId: UUID;
+  roomId: UUID;
+  content: Content> params) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return {
@@ -69,7 +74,7 @@ memory is Memory & isFragmentMemory(Memory memory) {
     metadata: FragmentMetadata
 }
 
-std::string getMemoryText(Memory memory, auto defaultValue = '') {
+std::string getMemoryText(Memory memory, auto defaultValue) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return memory.content.text || defaultValue;

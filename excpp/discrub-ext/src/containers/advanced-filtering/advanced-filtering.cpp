@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void AdvancedFiltering(AdvancedFilteringProps { isDm = false }) {
+void AdvancedFiltering() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { state: guildState, setPreFilterUserId } = useGuildSlice();

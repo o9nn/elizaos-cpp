@@ -1,5 +1,4 @@
 #pragma once
-#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -40,6 +39,6 @@ struct SocialLinks {
     std::string farcaster;
 };
 
-void AdminTokenDetails(const std::any& { address });
+void AdminTokenDetails();
 
 } // namespace elizaos

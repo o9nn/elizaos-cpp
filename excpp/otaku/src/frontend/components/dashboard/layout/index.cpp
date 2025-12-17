@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void DashboardPageLayout(auto {
-  children, auto header, DashboardPageLayoutProps }) {
+void DashboardPageLayout(auto header) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

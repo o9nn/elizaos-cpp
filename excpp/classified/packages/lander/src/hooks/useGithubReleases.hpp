@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include ".utils/repository.hpp"
 
@@ -43,12 +42,12 @@ struct GitHubRelease {
 };
 
 struct DownloadLink {
-    std::variant<'macOS', 'Windows', 'Linux'> platform;
-    std::optional<std::variant<'x64', 'arm64', 'universal'>> architecture;
+    std::string platform;
+    std::optional<std::string> architecture;
     std::string filename;
     std::string size;
     std::string downloadUrl;
-    std::variant<'installer', 'portable', 'dmg', 'appimage', 'deb'> type;
+    std::string type;
 };
 
       // macOS

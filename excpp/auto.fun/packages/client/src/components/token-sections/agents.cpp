@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void AgentsSection(isCreatorProp {
-  isCreator, const std::any& }) {
+void AgentsSection() {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -136,8 +135,8 @@ void AgentsSection(isCreatorProp {
                                             ]);
 
                                             std::vector<TokenAgent> fetchedAgents = [];
-                                            std::optional<std::string> agentsFetchError = nullptr;
-                                            std::optional<std::string> tokenFetchError = nullptr;
+                                            std::string agentsFetchError = nullptr;
+                                            std::string tokenFetchError = nullptr;
 
                                             // Process Agents Response
                                             if (agentsResult.status == "fulfilled" && agentsResult.value.ok) {

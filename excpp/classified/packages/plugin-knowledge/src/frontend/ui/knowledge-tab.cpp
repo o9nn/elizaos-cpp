@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void KnowledgeTab(const std::any& { agentId }) {
+void KnowledgeTab() {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

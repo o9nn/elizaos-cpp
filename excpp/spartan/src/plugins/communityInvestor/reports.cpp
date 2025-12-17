@@ -351,7 +351,7 @@ std::string formatTrendArrow(double trend) {
 
 }
 
-Array< calculatePeriodTrends(const std::vector<RecommenderMetricsHistory>& history, const std::variant<TimePeriod, null = null>& period) {
+Array< calculatePeriodTrends(const std::vector<RecommenderMetricsHistory>& history, std::optional<TimePeriod> period = std::nullopt) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     period: string;
@@ -465,7 +465,7 @@ std::string formatRecommenderReport(Entity entity, RecommenderMetrics metrics, c
 
 }
 
-std::string formatTopRecommendersOverview(const std::vector<Entity>& recommenders, Map<string metrics, auto RecommenderMetrics>, Map<string history, auto RecommenderMetricsHistory[]>) {
+std::string formatTopRecommendersOverview(const std::vector<Entity>& recommenders, const std::unordered_map<std::string, RecommenderMetrics>& metrics, const std::unordered_map<std::string, std::vector<RecommenderMetricsHistory>>& history) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto sortedRecommenders = [...recommenders].sort((a, b) => {;

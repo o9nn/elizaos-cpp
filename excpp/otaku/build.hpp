@@ -16,7 +16,7 @@ namespace elizaos {
  * Build script for backend
  */
 
-std::future<void> cleanBuild(auto outdir = 'dist');
+std::future<void> cleanBuild(auto outdir);
 
 std::future<void> copySharedModules();
 

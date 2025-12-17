@@ -66,8 +66,7 @@ bool shouldUseCustomLLM() {
 
 }
 
-std::future<double> processFragmentsSynchronously(auto {
-  runtime, auto documentId, auto fullDocumentText, auto agentId, auto contentType, auto roomId, auto entityId, auto worldId, auto documentTitle, std::optional<std::any> }) {
+std::future<double> processFragmentsSynchronously(auto documentId, auto fullDocumentText, auto agentId, auto contentType, auto roomId, auto entityId, auto worldId, auto documentTitle) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!fullDocumentText || fullDocumentText.trim() == '') {
@@ -187,18 +186,7 @@ std::future<std::string> extractTextFromDocument(Buffer fileBuffer, const std::s
     }
 }
 
-Memory createDocumentMemory(auto {
-  text, auto agentId, auto clientDocumentId, auto originalFilename, auto contentType, auto worldId, auto fileSize, auto documentId, auto customMetadata, std::optional<{
-  text: string;
-  agentId: UUID;
-  clientDocumentId: UUID;
-  originalFilename: string;
-  contentType: string;
-  worldId: UUID;
-  fileSize: number;
-  documentId: UUID;
-  customMetadata: Record<string> }, auto unknown>;
-}) {
+Memory createDocumentMemory(auto agentId, auto clientDocumentId, auto originalFilename, auto contentType, auto worldId, auto fileSize, auto documentId, auto customMetadata) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto fileExt = originalFilename.split('.').pop().toLowerCase() || '';
@@ -262,7 +250,7 @@ std::future<std::vector> generateContextsInBatch(IAgentRuntime runtime, const st
     contextualizedText: string; success: boolean; index: number
 }
 
-std::vector<std::any> prepareContextPrompts(const std::vector<std::string>& chunks, const std::string& fullDocumentText, std::optional<std::string> contentType, std::optional<std::vector<double>> batchIndices, auto isUsingCacheCapableModel = false) {
+std::vector<std::any> prepareContextPrompts(const std::vector<std::string>& chunks, const std::string& fullDocumentText, std::optional<std::string> contentType, std::optional<std::vector<double>> batchIndices, auto isUsingCacheCapableModel) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return chunks.map((chunkText, idx) => {;
@@ -413,8 +401,7 @@ void createRateLimiter(double requestsPerMinute, std::optional<double> tokensPer
 
 }
 
-void logKnowledgeGenerationSummary(auto {
-  totalChunks, auto savedCount, auto failedCount, auto ctxEnabled, auto providerLimits, const std::any& }) {
+void logKnowledgeGenerationSummary(auto savedCount, auto failedCount, auto ctxEnabled, auto providerLimits) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Only show summary for failed processing or debug mode

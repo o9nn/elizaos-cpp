@@ -20,7 +20,7 @@ struct ProjectNotificationProps {
     std::string url;
 };
 
-void ProjectNotification(ProjectNotificationProps { project });
+void ProjectNotification();
 
 
 } // namespace elizaos

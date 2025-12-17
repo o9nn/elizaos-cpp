@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::optional<std::string> extractFormType(const std::string& text) {
+std::string extractFormType(const std::string& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const std::unordered_map<std::string, std::vector<std::string>> formTypes = {;

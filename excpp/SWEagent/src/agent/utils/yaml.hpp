@@ -29,7 +29,6 @@ YamlData parseYAML(const std::string& yamlString);
 /**
  * Parse a multiline string (| or > indicators)
  */
-void parseMultilineString(const std::vector<std::string>& lines, double startIndex, double expectedIndent); {
 
 /**
  * Parse a key-value pair string into an object
@@ -44,6 +43,6 @@ YamlData parseValue(const std::string& value);
 /**
  * Convert an object to YAML string
  */
-std::string stringifyYAML(YamlData obj, number = 0 indent);
+std::string stringifyYAML(YamlData obj, double indent = 0);
 
 } // namespace elizaos

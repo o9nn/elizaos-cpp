@@ -6,7 +6,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include ".types.hpp"
 #include "elizaos/core.hpp"
@@ -22,7 +21,7 @@ namespace elizaos {
 struct GoalInput {
     std::string name;
     std::optional<std::string> description;
-    std::variant<'agent', 'entity'> ownerType;
+    std::string ownerType;
 };
 
 // Interface for similarity check result

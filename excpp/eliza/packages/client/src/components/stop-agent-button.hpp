@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 
 namespace elizaos {
@@ -16,8 +15,8 @@ namespace elizaos {
 
 struct StopAgentButtonProps {
     Agent agent;
-    std::optional<std::variant<'default', 'destructive', 'outline'>> variant;
-    std::optional<std::variant<'default', 'sm', 'lg', 'icon'>> size;
+    std::optional<std::string> variant;
+    std::optional<std::string> size;
     std::optional<std::string> className;
     std::optional<bool> showIcon;
     std::optional<bool> redirectToHome;

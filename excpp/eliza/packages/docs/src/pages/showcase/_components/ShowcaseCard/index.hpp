@@ -1,5 +1,4 @@
 #pragma once
-#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -16,11 +15,11 @@ namespace elizaos {
 
 
 
-void TagIcon(auto { label, const std::any& color });
+void TagIcon();
 
 std::string getShortLabel(const std::string& label);
 
-void ShowcaseCardTag(const std::any& { tags });
+void ShowcaseCardTag();
 
 
 } // namespace elizaos

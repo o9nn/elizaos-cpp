@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void PullRequestsListModalContent(auto {
-  pullRequests, PullRequestsListModalContentProps }) {
+void PullRequestsListModalContent() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

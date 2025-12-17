@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::future<void> getTopPullRequests(QueryParams = {} params, auto limit = 5) {
+std::future<void> getTopPullRequests(QueryParams params = {}, auto limit) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto whereConditions = buildCommonWhereConditions(params, rawPullRequests, [;
@@ -36,7 +36,7 @@ std::future<void> getTopPullRequests(QueryParams = {} params, auto limit = 5) {
 
 }
 
-std::future<void> getTopIssues(QueryParams = {} params, auto limit = 5) {
+std::future<void> getTopIssues(QueryParams params = {}, auto limit) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto whereConditions = [;
@@ -95,7 +95,7 @@ std::future<void> getTopIssues(QueryParams = {} params, auto limit = 5) {
 
 }
 
-std::future<void> getTopContributors(QueryParams = {} params, auto limit = 5) {
+std::future<void> getTopContributors(QueryParams params = {}, auto limit) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { dateRange } = params;
@@ -152,7 +152,7 @@ std::future<void> getTopContributors(QueryParams = {} params, auto limit = 5) {
 
 }
 
-std::future<void> getProjectMetrics(QueryParams = {} params) {
+std::future<void> getProjectMetrics(QueryParams params = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { repository, dateRange } = params;

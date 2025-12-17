@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void SortControls(auto { onSort, SortControlsProps currentSort }) {
+void SortControls() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

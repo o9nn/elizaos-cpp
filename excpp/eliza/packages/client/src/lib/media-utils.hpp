@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 
 namespace elizaos {
@@ -18,7 +17,7 @@ namespace elizaos {
 
 struct MediaInfo {
     std::string url;
-    std::variant<'image', 'video', 'unknown'> type;
+    std::string type;
     bool isEmbed;
 };
 
@@ -46,7 +45,6 @@ bool isVideoFileUrl(const std::string& url);
 /**
  * Checks if a URL is from a supported video platform
  */
-void getVideoPlatformInfo(const std::string& url); | null {
 
 /**
  * Parses URLs from text and identifies media types

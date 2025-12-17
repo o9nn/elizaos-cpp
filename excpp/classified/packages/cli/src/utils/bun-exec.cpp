@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::unordered_map<std::string, std::string> ensureBunInPath(Record<string env, auto string> = {}) {
+std::unordered_map<std::string, std::string> ensureBunInPath(std::unordered_map<std::string, std::string> env = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto enhancedEnv = { ...process.env, ...env };
@@ -63,11 +63,11 @@ std::future<std::string> readStreamSafe(const std::variant<ReadableStream, doubl
 
 }
 
-std::future<ExecResult> bunExec(const std::string& command, const std::vector<string[] =>& args, BunExecOptions = {} options) {
+std::future<ExecResult> bunExec(const std::string& command, std::vector<std::string> args = {}, BunExecOptions options = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        std::variant<Subprocess<'pipe', 'inherit', 'ignore'>> proc = nullptr;
+        std::variant<Subprocess<'pipe', std::string, 'ignore'>> proc = nullptr;
         std::optional<Timer> timeoutId = nullptr;
 
         try {
@@ -192,12 +192,12 @@ std::future<ExecResult> bunExec(const std::string& command, const std::vector<st
     }
 }
 
-std::future<> bunExecSimple(const std::string& command, const std::vector<string[] =>& args, BunExecOptions = {} options) {
+std::future<> bunExecSimple(const std::string& command, std::vector<std::string> args = {}, BunExecOptions options = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     stdout: string
 }
 
-std::future<ExecResult> bunExecInherit(const std::string& command, const std::vector<string[] =>& args, BunExecOptions = {} options) {
+std::future<ExecResult> bunExecInherit(const std::string& command, std::vector<std::string> args = {}, BunExecOptions options = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return bunExec(command, args, {;

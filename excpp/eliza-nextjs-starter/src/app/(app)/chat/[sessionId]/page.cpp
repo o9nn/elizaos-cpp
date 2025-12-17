@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::future<void> ChatPage(ChatPageProps { params }) {
+std::future<void> ChatPage() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { sessionId } = params;

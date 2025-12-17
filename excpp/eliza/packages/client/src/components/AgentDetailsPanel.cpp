@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void AgentDetailsPanel(AgentDetailsPanelProps { agent }) {
+void AgentDetailsPanel() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto isActive = agent.status == AgentStatus.ACTIVE;

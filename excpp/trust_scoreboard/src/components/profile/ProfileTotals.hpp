@@ -15,7 +15,7 @@ namespace elizaos {
 
 
 
-using View = std::variant<'profile', 'holdings'>;
+using View = std::variant<std::string, std::string>;
 
 struct ProfileTotalsProps {
 };

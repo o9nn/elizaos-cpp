@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include "elizaos/core.hpp"
 
@@ -31,7 +30,7 @@ struct TokenSignal {
     double value;
     double signal;
     double histogram;
-    std::variant<'increasing', 'decreasing', 'stable'> trend;
+    std::string trend;
     bool unusualActivity;
     double volatility;
     double mentionCount;

@@ -29,7 +29,6 @@ public:
     AudioCaptureService(IAgentRuntime runtime, AudioConfig config);
     std::future<void> initialize();
     Promise< checkAudioTools();
-    void catch(auto _error);
     void startTranscriptionLoop();
     std::variant<Promise<string, null>> recordAndTranscribe();
     std::future<void> recordAudio(const std::string& outputPath, double duration);

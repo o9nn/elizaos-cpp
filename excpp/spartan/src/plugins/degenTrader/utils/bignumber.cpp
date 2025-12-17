@@ -20,7 +20,7 @@ BigNumber toBN(const std::variant<std::string, double, BigNumber>& value) {
     }
 }
 
-std::string formatBN(BigNumber value, auto decimals = 18) {
+std::string formatBN(BigNumber value, auto decimals) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

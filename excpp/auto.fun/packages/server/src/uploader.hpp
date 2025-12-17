@@ -1,5 +1,7 @@
 #pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
@@ -27,8 +29,10 @@ namespace elizaos {
 void logUploadedFile(const std::string& objectKey, const std::string& publicUrl);
 
 // Get all logged files
-void getUploadedFiles(); {
+
+std::future<void> uploadWithS3(std::any options = {});
 
 // Function to upload a generated image to a predictable path for a token
+std::future<void> uploadGeneratedImage(double generationNumber, std::any options = {});
 
 } // namespace elizaos

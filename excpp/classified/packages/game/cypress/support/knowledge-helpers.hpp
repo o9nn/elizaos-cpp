@@ -45,23 +45,16 @@ struct UploadResponse {
 
 class KnowledgeTestHelper {
 public:
-    KnowledgeTestHelper(string = '00000000-0000-0000-0000-000000000001' agentId);
-    Cypress::Chainable<UploadResponse> uploadFile(const std::string& fileName, const std::string& content, string = 'text/plain' fileType);
+    KnowledgeTestHelper(std::string agentId = "00000000-0000-0000-0000-000000000001");
     Cypress::Chainable<UploadResponse> uploadFromUrl(const std::string& url);
     Cypress::Chainable<KnowledgeDocument[]> getDocuments();
     Cypress::Chainable<KnowledgeChunk[]> getDocumentChunks(const std::string& documentId);
-    Cypress::Chainable<KnowledgeSearchResult[]> search(const std::string& query, number = 10 count);
+    Cypress::Chainable<KnowledgeSearchResult[]> search(const std::string& query, double count = 10);
     Cypress::Chainable<void> deleteDocument(const std::string& documentId);
-    Cypress::Chainable<void> waitForDocumentProcessing(const std::string& documentId, number = 30000 maxWaitTime);
+    Cypress::Chainable<void> waitForDocumentProcessing(const std::string& documentId, double maxWaitTime = 30000);
     Cypress::Chainable<boolean> verifyDocumentExists(const std::string& documentId);
-    Cypress::Chainable<void> cleanupTestDocuments(const std::vector<string[] =>& testFileNames);
-    Cypress::Chainable< createTestDocuments();
-    void validateApiResponse(const std::any& response, boolean = true expectedSuccessStatus);
-    Cypress::Chainable<string[]> testFileTypes();
-
-private:
-    std::string agentId_;
-};
+    Cypress::Chainable<void> cleanupTestDocuments(std::vector<std::string> testFileNames = {});
+    void validateApiResponse(const std::any& response, bool expectedSuccessStatus = true);
 
 // Cypress commands for easier usage in tests
     struct Chainable {

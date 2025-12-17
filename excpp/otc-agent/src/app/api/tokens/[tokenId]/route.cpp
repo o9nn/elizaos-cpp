@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::future<void> GET(NextRequest request, const std::any& { params }) {
+std::future<void> GET(NextRequest request) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

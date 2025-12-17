@@ -451,7 +451,7 @@ std::future<void> POST(NextRequest request) {
 
                                                                                                                                                             // Find the specific token associated with this offer
                                                                                                                                                             // Primary method: Use the on-chain tokenId (keccak256 hash of symbol) to look up token
-                                                                                                                                                            std::optional<std::string> tokenAddress = nullptr;
+                                                                                                                                                            std::string tokenAddress = nullptr;
                                                                                                                                                             std::variant<"base", "solana"> tokenChain = "base";
 
                                                                                                                                                             // The offer.tokenId is a bytes32 (keccak256 of token symbol)

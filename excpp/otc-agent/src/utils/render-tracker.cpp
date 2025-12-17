@@ -24,7 +24,7 @@ std::string summarizeValue(unknown value) {
 
 }
 
-std::unordered_map<std::string, std::string> getPropsSnapshot(Record<string props, auto unknown>) {
+std::unordered_map<std::string, std::string> getPropsSnapshot(const std::unordered_map<std::string, unknown>& props) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const std::unordered_map<std::string, std::string> snapshot = {};
@@ -39,7 +39,7 @@ std::unordered_map<std::string, std::string> getPropsSnapshot(Record<string prop
 
 }
 
-std::vector<std::string> findChanges(Record<string prev, auto string> | undefined, Record<string curr, auto string>) {
+std::vector<std::string> findChanges(const std::unordered_map<std::string, std::string>& prev, const std::unordered_map<std::string, std::string>& curr) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!prev) return ["(first render)"];
@@ -64,7 +64,7 @@ void MyComponent(MyProps props) {
     *
 }
 
-void trackRender(const std::string& componentName, std::optional<Record<string> props, auto unknown>, std::optional<Record<string> state, auto unknown>) {
+void trackRender(const std::string& componentName, std::optional<std::unordered_map<std::string, unknown>> props, std::optional<std::unordered_map<std::string, unknown>> state) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -174,7 +174,7 @@ void MyComponent(MyProps props) {
     *
 }
 
-void useRenderTracker(const std::string& componentName, std::optional<Record<string> props, auto unknown>, std::optional<Record<string> state, auto unknown>) {
+void useRenderTracker(const std::string& componentName, std::optional<std::unordered_map<std::string, unknown>> props, std::optional<std::unordered_map<std::string, unknown>> state) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     trackRender(componentName, props, state);

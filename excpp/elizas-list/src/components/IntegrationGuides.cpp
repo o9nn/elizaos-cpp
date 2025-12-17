@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void IntegrationGuides(const std::any& { project }) {
+void IntegrationGuides() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [activeFramework, setActiveFramework] = useState('react');

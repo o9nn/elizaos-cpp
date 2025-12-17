@@ -22,7 +22,7 @@ struct KnowledgeDocumentProperties {
     std::optional<double> position;
 };
 
-using DocumentMetadata = MemoryMetadata & KnowledgeDocumentProperties;
+using DocumentMetadata = MemoryMetadata;
 
 struct MemoryGraphProps {
     std::vector<Memory> memories;
@@ -45,6 +45,6 @@ struct MemoryGraphProps {
 
       // Find parent document
 
-void MemoryGraph(auto { memories, auto onNodeClick, MemoryGraphProps selectedMemoryId });
+void MemoryGraph(auto onNodeClick);
 
 } // namespace elizaos

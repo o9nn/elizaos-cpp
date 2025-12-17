@@ -6,7 +6,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include "elizaos/core.hpp"
 
@@ -43,7 +42,7 @@ std::future<void> initializePipeline(ModelName modelName);
 /**
  * Process embedding parameters to extract text input
  */
-std::string extractTextFromParams(const std::variant<TextEmbeddingParams, std::string>& params);
+std::string extractTextFromParams(const std::optional<TextEmbeddingParams>& params);
 
 /**
  * Generate embeddings for a single text input

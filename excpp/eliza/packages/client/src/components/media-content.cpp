@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void MediaContent(auto {
-  url, auto title, auto className, auto maxWidth = 600, auto maxHeight = 400, MediaContentProps }) {
+void MediaContent(auto title, auto className, auto maxWidth, auto maxHeight) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

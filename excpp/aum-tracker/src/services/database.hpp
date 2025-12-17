@@ -93,7 +93,7 @@ struct TokenPNL {
 class DatabaseService {
 public:
     DatabaseService();
-    DatabaseService getInstance();
+    static DatabaseService getInstance();
     void initializeDatabase();
     void initializeSystemMetrics();
     void upsertWalletBalance(WalletBalance balance);
@@ -103,26 +103,21 @@ public:
     void upsertTokenPrice(TokenPrice price);
     std::optional<TokenPrice> getTokenPrice(const std::string& mint);
     std::vector<TokenPrice> getAllTokenPrices();
-    std::vector<TokenPrice> getStaleTokenPrices(number = 30 olderThanMinutes);
-    void insertFetchLog(Omit<FetchLog log, auto "id">);
-    std::vector<FetchLog> getRecentFetchLogs(number = 100 limit);
-    std::vector<FetchLog> getFetchLogsByWallet(const std::string& walletAddress, number = 50 limit);
-    std::vector<FetchLog> getErrorLogs(number = 50 limit);
+    std::vector<TokenPrice> getStaleTokenPrices(double olderThanMinutes = 30);
+    std::vector<FetchLog> getRecentFetchLogs(double limit = 100);
+    std::vector<FetchLog> getFetchLogsByWallet(const std::string& walletAddress, double limit = 50);
+    std::vector<FetchLog> getErrorLogs(double limit = 50);
     void setSystemMetric(const std::string& name, const std::string& value);
     std::optional<SystemMetric> getSystemMetric(const std::string& name);
     std::vector<SystemMetric> getAllSystemMetrics();
      getPortfolioOverview();
-    void for(auto const row of tokenResults);
-    Array< getTopTokensByValue(number = 20 limit);
-    void for(auto const row of results);
+    Array< getTopTokensByValue(double limit = 20);
     void cleanup();
-    void insertPortfolioSnapshot(Omit<PortfolioSnapshot snapshot, auto "id">);
-    std::vector<PortfolioSnapshot> getPortfolioSnapshots(const std::string& walletAddress, number = 100 limit);
+    std::vector<PortfolioSnapshot> getPortfolioSnapshots(const std::string& walletAddress, double limit = 100);
     std::optional<PortfolioSnapshot> getLatestPortfolioSnapshot(const std::string& walletAddress);
     void upsertWalletPNL(WalletPNL pnl);
     std::optional<WalletPNL> getWalletPNL(const std::string& walletAddress);
     std::vector<WalletPNL> getAllWalletPNL();
-    void upsertTokenPNL(Omit<TokenPNL pnl, auto "id">);
     std::optional<TokenPNL> getTokenPNL(const std::string& walletAddress, const std::string& tokenMint);
     std::vector<TokenPNL> getWalletTokenPNL(const std::string& walletAddress);
     std::vector<TokenPNL> getTokenPNLByMint(const std::string& tokenMint);
@@ -131,7 +126,6 @@ public:
     double calculateCurrentWalletValue(const std::string& walletAddress);
     void close();
      healthCheck();
-    void catch(auto error);
 
 private:
     Database db_;

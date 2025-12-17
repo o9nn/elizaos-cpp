@@ -16,7 +16,7 @@ namespace elizaos {
 /**
  * Possible types for form fields
  */
-using FormFieldType = std::variant<, 'text', 'number', 'email', 'tel', 'url', 'textarea', 'choice', 'checkbox', 'date', 'time', 'datetime'>;
+using FormFieldType = std::variant<, std::string, std::string, std::string, std::string, std::string, std::string, std::string, std::string, std::string, std::string, std::string>;
 
 /**
  * Represents a single field in a form
@@ -46,7 +46,7 @@ struct FormStep {
 /**
  * Possible statuses for a form
  */
-using FormStatus = std::variant<'active', 'completed', 'cancelled'>;
+using FormStatus = std::variant<std::string, std::string, std::string>;
 
 /**
  * Represents a complete form instance
@@ -88,7 +88,7 @@ struct FormUpdateResult {
 
 // Extend the core service types with forms service
   struct ServiceTypeRegistry {
-    'FORMS' FORMS;
+    std::string FORMS;
 };
 
 // Export service type constant

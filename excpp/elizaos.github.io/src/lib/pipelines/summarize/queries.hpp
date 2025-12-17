@@ -1,5 +1,6 @@
 #pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
@@ -17,6 +18,7 @@ namespace elizaos {
 /**
  * Get metrics for a contributor within a time range
  */
+std::future<void> getContributorMetrics(auto dateRange);
 
 /**
  * Get summaries for a list of contributors for a specific interval.

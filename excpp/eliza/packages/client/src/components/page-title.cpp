@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void PageTitle(auto { title, std::optional<std::any> subtitle }) {
+void PageTitle() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

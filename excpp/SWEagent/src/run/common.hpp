@@ -21,12 +21,12 @@ namespace elizaos {
 /**
  * Shorten a string to a maximum length
  */
-std::string shortenString(const std::string& s, double maxLength, boolean = false shortenLeft);
+std::string shortenString(const std::string& s, double maxLength, bool shortenLeft = false);
 
 /**
  * Shorten strings in a nested object/array
  */
-unknown shortenStrings(unknown data, number = 30 maxLength);
+unknown shortenStrings(unknown data, double maxLength = 30);
 
 /**
  * Save predictions from agent run result

@@ -24,7 +24,7 @@ namespace elizaos {
 class ElizaClient {
 public:
     ElizaClient(ApiClientConfig config);
-    ElizaClient create(ApiClientConfig config);
+    static ElizaClient create(ApiClientConfig config);
 };
 
 

@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void ChainSelector(auto {
-  selected, auto onChange, ChainSelectorProps }) {
+void ChainSelector(auto onChange) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     useRenderTracker("ChainSelector");

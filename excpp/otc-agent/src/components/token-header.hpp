@@ -18,6 +18,6 @@ struct TokenHeaderProps {
     std::optional<TokenMarketData> marketData;
 };
 
-void TokenHeader(auto { token, TokenHeaderProps marketData });
+void TokenHeader();
 
 } // namespace elizaos

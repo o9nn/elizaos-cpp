@@ -19,8 +19,7 @@ namespace elizaos {
 class TimeSeriesAnalyzer {
 public:
     TimeSeriesAnalyzer();
-    Promise< forecast(const std::vector<std::any>& historicalData, number = 30 horizon);
-    void catch(auto error);
+    Promise< forecast(const std::vector<std::any>& historicalData, double horizon = 30);
     std::future<std::vector<double>> getLSTMPredictions(const std::vector<std::any>& historicalData, double horizon);
     void trainLSTM(const std::vector<std::any>& historicalData);
     std::future<std::vector<double>> getARIMAPredictions(const std::vector<std::any>& historicalData, double horizon);

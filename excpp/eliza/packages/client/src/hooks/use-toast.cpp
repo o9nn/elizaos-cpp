@@ -22,7 +22,7 @@ void dispatch(Action action) {
 
 }
 
-void toast(Toast { ...props }) {
+void toast() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto id = genId();

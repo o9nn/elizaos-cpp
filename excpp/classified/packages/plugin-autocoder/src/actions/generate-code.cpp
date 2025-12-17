@@ -119,7 +119,7 @@ std::vector<std::string> extractAPIs(const std::string& text) {
 
 }
 
-std::optional<std::string> extractProjectName(const std::string& text) {
+std::string extractProjectName(const std::string& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Look for quoted names

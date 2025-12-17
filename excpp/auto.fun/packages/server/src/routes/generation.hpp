@@ -86,7 +86,7 @@ namespace elizaos {
     // Custom max retries for endpoint
 
     // Function to generate metadata with the specified prompt data
-    std::future<void> generatePromptMetadata(auto maxRetries = MAX_RETRIES);
+    std::future<void> generatePromptMetadata(auto maxRetries);
 
     // Generate metadata with retries, passing env
 

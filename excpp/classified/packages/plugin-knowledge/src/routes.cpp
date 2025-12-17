@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void sendSuccess(const std::any& res, const std::any& data, auto status = 200) {
+void sendSuccess(const std::any& res, const std::any& data, auto status) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     res.writeHead(status, { 'Content-Type': 'application/json' });

@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void ChatMessages(auto {
-  messages, auto citationsMap, auto followUpPromptsMap, auto onFollowUpClick, ChatMessagesProps }) {
+void ChatMessages(auto citationsMap, auto followUpPromptsMap, auto onFollowUpClick) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     assert(;

@@ -28,7 +28,7 @@ namespace elizaos {
  * @param {Omit<Setting, 'value'>} configSetting - The configSetting object to create the Setting from.
  * @returns {Setting} A new Setting object created from the provided configSetting object.
  */
-Setting createSettingFromConfig(Omit<Setting configSetting, auto 'value'>);
+Setting createSettingFromConfig();
 
 /**
  * Retrieves the salt based on env variable SECRET_SALT
@@ -109,7 +109,7 @@ Character decryptedCharacter(Character character, IAgentRuntime _runtime);
  * @param {string} salt - The salt to use for encryption
  * @returns {Record<string, any>} - Object with encrypted values
  */
-std::unordered_map<std::string, std::any> encryptObjectValues(Record<string obj, auto any>, const std::string& salt);
+std::unordered_map<std::string, std::any> encryptObjectValues(const std::unordered_map<std::string, std::any>& obj, const std::string& salt);
 
 /**
  * Helper function to decrypt all string values in an object
@@ -117,7 +117,7 @@ std::unordered_map<std::string, std::any> encryptObjectValues(Record<string obj,
  * @param {string} salt - The salt to use for decryption
  * @returns {Record<string, any>} - Object with decrypted values
  */
-std::unordered_map<std::string, std::any> decryptObjectValues(Record<string obj, auto any>, const std::string& salt);
+std::unordered_map<std::string, std::any> decryptObjectValues(const std::unordered_map<std::string, std::any>& obj, const std::string& salt);
 
 
 } // namespace elizaos

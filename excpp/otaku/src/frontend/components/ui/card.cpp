@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void Card(auto { className, ComponentProps<"div"> ...props }) {
+void Card() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -20,7 +20,7 @@ void Card(auto { className, ComponentProps<"div"> ...props }) {
 
 }
 
-void CardHeader(auto { className, ComponentProps<"div"> ...props }) {
+void CardHeader() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -36,7 +36,7 @@ void CardHeader(auto { className, ComponentProps<"div"> ...props }) {
 
 }
 
-void CardTitle(auto { className, ComponentProps<"div"> ...props }) {
+void CardTitle() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -49,7 +49,7 @@ void CardTitle(auto { className, ComponentProps<"div"> ...props }) {
 
 }
 
-void CardDescription(auto { className, ComponentProps<"div"> ...props }) {
+void CardDescription() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -62,7 +62,7 @@ void CardDescription(auto { className, ComponentProps<"div"> ...props }) {
 
 }
 
-void CardAction(auto { className, ComponentProps<"div"> ...props }) {
+void CardAction() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -78,7 +78,7 @@ void CardAction(auto { className, ComponentProps<"div"> ...props }) {
 
 }
 
-void CardContent(auto { className, ComponentProps<"div"> ...props }) {
+void CardContent() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -91,7 +91,7 @@ void CardContent(auto { className, ComponentProps<"div"> ...props }) {
 
 }
 
-void CardFooter(auto { className, ComponentProps<"div"> ...props }) {
+void CardFooter() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

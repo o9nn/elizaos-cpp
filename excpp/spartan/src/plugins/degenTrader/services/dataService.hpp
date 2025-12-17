@@ -28,7 +28,7 @@ namespace elizaos {
 
 class DataService {
 public:
-    DataService(IAgentRuntime private runtime, WalletService private walletService);
+    DataService();
     std::future<void> initialize();
     std::future<void> stop();
     std::future<std::vector<TokenSignal>> getBirdeyeSignals();

@@ -29,15 +29,15 @@ struct AgentLogger {
  */
 class SweAgentLogger {
 public:
-    SweAgentLogger(const std::string& name, string = '' emoji);
+    SweAgentLogger(const std::string& name, std::string emoji = "");
     std::string formatMessage(const std::string& message);
-    void debug(const std::string& message, const std::vector<unknown>& ...args);
-    void info(const std::string& message, const std::vector<unknown>& ...args);
-    void warn(const std::string& message, const std::vector<unknown>& ...args);
-    void error(const std::string& message, const std::vector<unknown>& ...args);
-    void critical(const std::string& message, const std::vector<unknown>& ...args);
-    void warning(const std::string& message, const std::vector<unknown>& ...args);
-    void exception(const std::string& message, std::optional<Error> error, boolean = true includeStack);
+    void debug(const std::string& message);
+    void info(const std::string& message);
+    void warn(const std::string& message);
+    void error(const std::string& message);
+    void critical(const std::string& message);
+    void warning(const std::string& message);
+    void exception(const std::string& message, std::optional<Error> error, bool includeStack = true);
 
 private:
     pino::Logger logger_;
@@ -53,7 +53,7 @@ private:
  * @param emoji Optional emoji prefix for the logger
  * @returns AgentLogger instance
  */
-AgentLogger getLogger(const std::string& name, string = '' emoji);
+AgentLogger getLogger(const std::string& name, std::string emoji = "");
 
 /**
  * Set thread name for current thread/process
@@ -99,6 +99,6 @@ void setStreamHandlerLevels(const std::string& level);
 /**
  * Convenience function to get the default logger
  */
-void log(const std::string& message, string = 'info' level);
+void log(const std::string& message, std::string level = "info");
 
 } // namespace elizaos

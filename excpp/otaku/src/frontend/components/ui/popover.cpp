@@ -4,27 +4,21 @@
 
 namespace elizaos {
 
-void Popover(ComponentProps<typeof PopoverPrimitive.Root> {
-  ...props
-}) {
+void Popover() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return <PopoverPrimitive.Root data-slot="popover" {...props} />;
 
 }
 
-void PopoverTrigger(ComponentProps<typeof PopoverPrimitive.Trigger> {
-  ...props
-}) {
+void PopoverTrigger() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return <PopoverPrimitive.Trigger data-slot="popover-trigger" {...props} />;
 
 }
 
-void PopoverContent(auto {
-  className, auto align = "center", auto sideOffset = 4, ComponentProps<typeof PopoverPrimitive.Content> ...props
-}) {
+void PopoverContent(auto align, auto sideOffset) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -44,9 +38,7 @@ void PopoverContent(auto {
 
 }
 
-void PopoverAnchor(ComponentProps<typeof PopoverPrimitive.Anchor> {
-  ...props
-}) {
+void PopoverAnchor() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return <PopoverPrimitive.Anchor data-slot="popover-anchor" {...props} />;

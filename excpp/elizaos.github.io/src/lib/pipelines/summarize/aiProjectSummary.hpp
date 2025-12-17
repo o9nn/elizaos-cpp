@@ -1,6 +1,7 @@
 #pragma once
 #include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
@@ -65,6 +66,8 @@ struct ProjectMetricsForSummary {
     std::vector<FocusArea> focusAreas;
     std::vector<CompletedItem> completedItems;
 };
+
+std::future<std::string> generateProjectSummary(RepositoryMetrics metrics, AISummaryConfig config, const std::any& dateInfo, IntervalType intervalType);
 
 /**
  * Calculate appropriate max tokens based on prompt length and interval type

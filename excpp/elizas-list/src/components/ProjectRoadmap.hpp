@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 
 namespace elizaos {
@@ -18,7 +17,7 @@ struct RoadmapItem {
     std::string id;
     std::string title;
     std::string description;
-    std::variant<'planned', 'in-progress', 'completed'> status;
+    std::string status;
     std::string date;
     std::string name;
     std::string avatar;
@@ -28,5 +27,5 @@ struct RoadmapProps {
     std::vector<RoadmapItem> items;
 };
 
-void ProjectRoadmap(RoadmapProps { items }); 
+void ProjectRoadmap(); 
 } // namespace elizaos

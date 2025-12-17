@@ -1,6 +1,6 @@
 #pragma once
-#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
@@ -43,6 +43,7 @@ namespace elizaos {
  * @param {UUID} params.roomId - The ID of the room to retrieve entity details for
  * @returns {Promise<Array>} - A promise that resolves to an array of unique entity details
  */
+std::future<void> getEntityDetails(auto roomId);
 
 /**
  * Format the given entities into a string representation.
@@ -51,6 +52,6 @@ namespace elizaos {
  * @param {Entity[]} options.entities - The list of entities to format.
  * @returns {string} A formatted string representing the entities.
  */
-void formatEntities(const std::any& { entities });
+void formatEntities();
 
 } // namespace elizaos

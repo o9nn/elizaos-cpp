@@ -38,7 +38,7 @@ std::future<void> getUserAggregatedScore(const std::string& username, std::optio
 
 }
 
-std::future<> getScoresByTimePeriod(const std::string& username, AggregationPeriod = "daily" period, std::optional<std::string> startDate, std::optional<std::string> endDate, auto limit = 100) {
+std::future<> getScoresByTimePeriod(const std::string& username, AggregationPeriod period = "daily", std::optional<std::string> startDate, std::optional<std::string> endDate, auto limit) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     periodLabel: string;
@@ -51,7 +51,7 @@ std::future<> getScoresByTimePeriod(const std::string& username, AggregationPeri
 
 }
 
-std::future<void> getUserScoreTrend(const std::string& username, AggregationPeriod = "daily" period, std::optional<std::string> startDate, std::optional<std::string> endDate, auto limit = 100) {
+std::future<void> getUserScoreTrend(const std::string& username, AggregationPeriod period = "daily", std::optional<std::string> startDate, std::optional<std::string> endDate, auto limit) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Get scores by time period for this user
@@ -82,7 +82,7 @@ std::future<void> getUserScoreTrend(const std::string& username, AggregationPeri
 
 }
 
-std::future<void> compareUserScores(const std::vector<std::string>& usernames, AggregationPeriod = "monthly" period, std::optional<std::string> startDate, std::optional<std::string> endDate) {
+std::future<void> compareUserScores(const std::vector<std::string>& usernames, AggregationPeriod period = "monthly", std::optional<std::string> startDate, std::optional<std::string> endDate) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Ensure we have valid usernames

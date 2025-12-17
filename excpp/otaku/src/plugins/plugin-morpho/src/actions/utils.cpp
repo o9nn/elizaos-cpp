@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::string fmtUSD(BigNumber::Value v, auto dp = 2) {
+std::string fmtUSD(BigNumber::Value v, auto dp) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto n = toBN(v);
@@ -17,7 +17,7 @@ std::string fmtUSD(BigNumber::Value v, auto dp = 2) {
 
 }
 
-std::string fmtPct(const std::optional<double>& v, auto dp = 2) {
+std::string fmtPct(const std::optional<double>& v, auto dp) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (v == null || !isFinite(v)) return "—";
@@ -25,7 +25,7 @@ std::string fmtPct(const std::optional<double>& v, auto dp = 2) {
 
 }
 
-std::string fmtTok(BigNumber::Value v, const std::string& sym, auto dp = 6) {
+std::string fmtTok(BigNumber::Value v, const std::string& sym, auto dp) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto s = stripZeros(toBN(v).toFormat(dp));
@@ -33,7 +33,7 @@ std::string fmtTok(BigNumber::Value v, const std::string& sym, auto dp = 6) {
 
 }
 
-std::string fmtNum(BigNumber::Value v, auto dp = 2) {
+std::string fmtNum(BigNumber::Value v, auto dp) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto n = toBN(v);
@@ -41,7 +41,7 @@ std::string fmtNum(BigNumber::Value v, auto dp = 2) {
 
 }
 
-void shortHex(std::optional<std::string> id, auto prefix = 6, auto suffix = 6) {
+void shortHex(std::optional<std::string> id, auto prefix, auto suffix) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!id) return "";
@@ -50,7 +50,7 @@ void shortHex(std::optional<std::string> id, auto prefix = 6, auto suffix = 6) {
 
 }
 
-std::string fmtAbbrev(BigNumber::Value v, auto digits = 0) {
+std::string fmtAbbrev(BigNumber::Value v, auto digits) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto n = toBN(v);
@@ -82,14 +82,14 @@ std::string fmtAbbrev(BigNumber::Value v, auto digits = 0) {
 
 }
 
-std::string fmtTokCompact(BigNumber::Value v, const std::string& sym, auto digits = 0) {
+std::string fmtTokCompact(BigNumber::Value v, const std::string& sym, auto digits) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return std::to_string(fmtAbbrev(v, digits)) + " " + std::to_string(sym);
 
 }
 
-std::string formatDataList(const std::string& title, Array<{ name: string; data: Record<string items, auto string> }>) {
+std::string formatDataList(const std::string& title, const std::vector<std::any>& items) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto lines = "**" + std::to_string(title) + "**";
@@ -107,7 +107,7 @@ std::string formatDataList(const std::string& title, Array<{ name: string; data:
 
 }
 
-std::string formatItemDetails(const std::string& title, Record<string data, auto string>, std::optional<std::string> link) {
+std::string formatItemDetails(const std::string& title, const std::unordered_map<std::string, std::string>& data, std::optional<std::string> link) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto lines = "**" + std::to_string(title) + "**";

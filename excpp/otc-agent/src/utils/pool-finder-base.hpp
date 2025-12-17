@@ -21,7 +21,6 @@ namespace elizaos {
  * This wrapper allows us to use dynamic ABIs while maintaining type safety on return values.
  */
   // Cast is necessary for dynamic ABIs - viem's generics require compile-time inference
-  using ReadContractParams = Parameters<typeof client::readContract>[0];
 
 // Cache TTL for pool info (30 seconds)
 
@@ -182,7 +181,6 @@ struct PoolInfo {
 /**
  * Validate pool has sufficient liquidity
  */
-void validatePoolLiquidity(PoolInfo pool); {
 
 /**
  * Format pool info for display

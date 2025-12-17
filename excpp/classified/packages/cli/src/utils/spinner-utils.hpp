@@ -54,12 +54,12 @@ std::future<void> installDependenciesWithSpinner(const std::string& targetDir);
 /**
  * Build project with spinner
  */
-std::future<void> buildProjectWithSpinner(const std::string& targetDir, auto isPlugin = false);
+std::future<void> buildProjectWithSpinner(const std::string& targetDir, auto isPlugin);
 
 /**
  * Install plugin with spinner (non-critical, warns on failure)
  */
-std::future<void> installPluginWithSpinner(const std::string& pluginName, const std::string& targetDir, auto purpose = '');
+std::future<void> installPluginWithSpinner(const std::string& pluginName, const std::string& targetDir, auto purpose);
 
 /**
  * Create a task for use with clack.tasks()

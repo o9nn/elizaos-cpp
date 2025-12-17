@@ -60,6 +60,6 @@ Logger createLogger(LoggerConfig config);
 /**
  * Limit object depth for logging
  */
-unknown limitObjectDepth(unknown obj, number = 0 depth, number = 3 maxDepth);
+unknown limitObjectDepth(unknown obj, double depth = 0, double maxDepth = 3);
 
 } // namespace elizaos

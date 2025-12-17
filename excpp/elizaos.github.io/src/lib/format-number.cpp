@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::string formatCompactNumber(double number, auto maximumFractionDigits = 1) {
+std::string formatCompactNumber(double number, auto maximumFractionDigits) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto formatter = Intl.NumberFormat("en", {;

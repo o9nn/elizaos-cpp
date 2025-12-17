@@ -4,9 +4,7 @@
 
 namespace elizaos {
 
-void Slider(auto {
-  className, auto defaultValue, auto value, auto min = 0, auto max = 100, ComponentProps<typeof SliderPrimitive.Root> ...props
-}) {
+void Slider(auto defaultValue, auto value, auto min, auto max) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto _values = React.useMemo(;

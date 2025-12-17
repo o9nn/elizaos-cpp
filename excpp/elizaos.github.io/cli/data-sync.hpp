@@ -31,10 +31,8 @@ bool isUvInstalled();
 void printUvInstallInstructions();
 
 // Helper to get directory size recursively
-void getDirSize(const std::string& dir); {
 
 // Helper to get detailed directory info (up to 2 levels deep)
-void getDetailedDirInfo(const std::string& baseDir);[] {
 
     // First level subdirectories
 
@@ -58,10 +56,8 @@ std::string formatDirPath(const std::string& basePath, const std::string& fullPa
 std::string formatFilesAndSize(double files, double size);
 
 // Helper to get latest migration number from data branch journal
-double getLatestMigrationNumber(const std::string& worktreeDir, ReturnType<typeof createLogger> logger);
 
 // Helper to delete files in a directory while preserving .gitkeep files
-double deleteDataFiles(const std::string& directory, ReturnType<typeof createLogger> logger);
 
 // Configure commander
 

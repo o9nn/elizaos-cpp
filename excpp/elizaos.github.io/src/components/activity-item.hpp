@@ -24,5 +24,6 @@ struct ActivityItemProps {
     std::optional<std::string> className;
 };
 
+void ActivityItem(auto title, auto author, auto number, auto href, auto icon, auto metadata, auto className);
 
 } // namespace elizaos

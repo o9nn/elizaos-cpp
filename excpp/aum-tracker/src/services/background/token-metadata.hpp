@@ -31,21 +31,18 @@ struct TokenMetadataResponse {
 class TokenMetadataService {
 public:
     TokenMetadataService();
-    void addToQueue(const std::string& mint, number = 0 priority);
-    void addBatchToQueue(const std::vector<std::string>& mints, number = 0 priority);
+    void addToQueue(const std::string& mint, double priority = 0);
+    void addBatchToQueue(const std::vector<std::string>& mints, double priority = 0);
     bool isMetadataFresh(const std::string& lastUpdated);
     std::future<void> startProcessing();
     std::future<void> processTokenMetadata(TokenMetadataRequest request);
-    void for(auto let attempt = 0; attempt < maxRetries; attempt++);
      getQueueStatus();
     void clearQueue();
     std::vector<std::string> getTokensNeedingMetadata();
     void refreshStaleMetadata();
     Promise< healthCheck();
-    void if(auto !response.ok);
-    void catch(auto error);
     std::future<void> gracefulShutdown();
-    void startBackgroundRefresh(number = 60 intervalMinutes);
+    void startBackgroundRefresh(double intervalMinutes = 60);
     void printBatchSummary();
      getBatchStats();
 

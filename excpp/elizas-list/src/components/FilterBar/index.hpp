@@ -19,5 +19,5 @@ struct FilterBarProps {
     std::vector<Project> projects;
 };
 
-void FilterBar(auto { selectedTags, auto onTagSelect, FilterBarProps projects }); 
+void FilterBar(auto onTagSelect); 
 } // namespace elizaos

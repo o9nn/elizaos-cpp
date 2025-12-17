@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include "RecomendationsList.module.css.hpp"
 
@@ -18,11 +17,11 @@ namespace elizaos {
 struct Transaction {
     double id;
     std::string token;
-    std::variant<'buy', 'sell'> type;
+    std::string type;
     double price;
     double performance;
     std::string date;
-    std::variant<'success', 'pending', 'failed'> status;
+    std::string status;
 };
 
   // Add more mock transactions as needed

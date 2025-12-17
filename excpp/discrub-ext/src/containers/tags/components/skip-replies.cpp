@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void SkipReplies(auto {
-  skipReplies, auto messagesLoading, auto setSkipReplies, SkipRepliesProps }) {
+void SkipReplies(auto messagesLoading, auto setSkipReplies) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

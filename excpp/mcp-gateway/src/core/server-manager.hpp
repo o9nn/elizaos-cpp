@@ -18,7 +18,7 @@ namespace elizaos {
 
 class ServerManager {
 public:
-    ServerManager(Console = console logger);
+    ServerManager(Console logger = console);
     std::future<void> initializeServers(const std::vector<McpServerConfig>& serverConfigs);
     std::future<void> initializeServer(McpServerConfig config);
     Promise< getServerCapabilities(Client client);

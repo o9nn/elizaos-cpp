@@ -44,5 +44,6 @@ bool isMajorUpdate(const std::string& currentVersion, const std::string& targetV
 /**
  * Fetch latest package version from npm registry
  */
+std::future<std::string> fetchLatestVersion(const std::string& packageName);
 
 } // namespace elizaos

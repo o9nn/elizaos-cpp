@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::future<TypeCheckResult> runTypeCheck(const std::string& projectPath, boolean = true strict) {
+std::future<TypeCheckResult> runTypeCheck(const std::string& projectPath, bool strict = true) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto tsconfigPath = path.join(projectPath, 'tsconfig.json');

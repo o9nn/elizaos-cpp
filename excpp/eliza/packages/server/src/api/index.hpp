@@ -36,7 +36,7 @@ namespace elizaos {
 // Global reference to SocketIO router for log streaming
 // let socketIORouter: SocketIORouter | null = null; // This can be removed if router is managed within setupSocketIO scope correctly
 
-SocketIOServer setupSocketIO(http::Server server, Map<UUID agents, auto IAgentRuntime>, AgentServer serverInstance);
+SocketIOServer setupSocketIO(http::Server server, const std::unordered_map<UUID, IAgentRuntime>& agents, AgentServer serverInstance);
 
 // Setup log streaming integration with the logger
 void setupLogStreaming(SocketIOServer io, SocketIORouter router);

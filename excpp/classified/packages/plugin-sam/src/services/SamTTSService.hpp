@@ -32,11 +32,11 @@ struct SamTTSOptions {
 class SamTTSService {
 public:
     SamTTSService(std::optional<IAgentRuntime> runtime);
-    std::future<SamTTSService> start(IAgentRuntime runtime);
+    static std::future<SamTTSService> start(IAgentRuntime runtime);
     std::future<void> stop();
-    std::future<Uint8Array> generateAudio(const std::string& text, SamTTSOptions = {} options);
-    std::future<Uint8Array> speakText(const std::string& text, SamTTSOptions = {} options);
-    Uint8Array createWAVBuffer(Uint8Array audioData, number = 22050 sampleRate);
+    std::future<Uint8Array> generateAudio(const std::string& text, SamTTSOptions options = {});
+    std::future<Uint8Array> speakText(const std::string& text, SamTTSOptions options = {});
+    Uint8Array createWAVBuffer(Uint8Array audioData, double sampleRate = 22050);
     std::string capabilityDescription() const;
     std::future<bool> testSynthesis();
 

@@ -24,9 +24,7 @@ class FaceRecognition {
 public:
     std::future<void> initialize();
     Array< detectFaces(Buffer imageData, double width, double height);
-    void if(auto !this.initialized);
     Promise< recognizeFace(Float32Array descriptor);
-    void for(auto const [profileId, auto embeddings] of this.faceLibrary.embeddings);
     std::future<std::string> addOrUpdateFace(Float32Array descriptor, std::optional<std::optional<FaceProfile>> attributes);
     FaceProfile getFaceProfile(const std::string& profileId);
     std::vector<FaceProfile> getAllProfiles();

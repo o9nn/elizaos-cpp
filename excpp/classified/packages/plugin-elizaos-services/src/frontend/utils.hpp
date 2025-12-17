@@ -13,6 +13,6 @@ namespace elizaos {
 
 
 
-void cn(const std::vector<ClassValue>& ...inputs);
+void cn();
 
 } // namespace elizaos

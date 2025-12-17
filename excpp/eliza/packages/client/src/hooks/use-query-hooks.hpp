@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include "use-toast.hpp"
 
@@ -27,7 +26,7 @@ namespace elizaos {
  * @property {string} [worldId] - Optional ID of the world associated with the content.
  * @property {string} [id] - Optional ID field.
  */
-using ContentWithUser = Content & {
+using ContentWithUser = Content;
 
 // AgentLog type from the API
 using AgentLog = {
@@ -44,7 +43,7 @@ using AgentLog = {
  */
 
 struct NetworkInformation {
-    std::variant<'slow-2g', '2g', '3g', '4g', 'unknown'> effectiveType;
+    std::string effectiveType;
     bool saveData;
 };
 
@@ -71,7 +70,7 @@ struct NetworkInformation {
  *
  * @remark Polling frequency adapts to network conditions, using less frequent polling when offline or on slow connections.
  */
-void useAgents(auto options = {});
+void useAgents(auto options);
 
 // Hook for fetching a specific agent with smart polling
 /**
@@ -80,7 +79,7 @@ void useAgents(auto options = {});
  * @param {Object} options - Additional options to configure the query.
  * @returns {QueryResult} The result of the query containing agent data.
  */
-void useAgent(const std::optional<UUID>& agentId, auto options = {});
+void useAgent(const std::optional<UUID>& agentId, auto options);
 
 // Hook for starting an agent with optimistic updates
 /**
@@ -99,7 +98,7 @@ void useStartAgent();
 void useStopAgent();
 
 // Type for UI message list items
-using UiMessage = Content & {
+using UiMessage = Content; // Message ID
   // attachments and other Content props are inherited
 
 /**
@@ -161,6 +160,7 @@ void useDeleteLog();
 /**
  * Fetches memories for a specific agent, optionally filtered by channel
  */
+void useAgentMemories(UUID agentId, std::optional<std::string> tableName, std::optional<UUID> channelId);
 
 /**
  * Provides a mutation hook to delete a specific memory entry for an agent.
@@ -201,7 +201,7 @@ void useClearGroupChat();
  */
 using AgentPanel = {
 
-void useAgentPanels(const std::optional<UUID>& agentId, auto options = {});
+void useAgentPanels(const std::optional<UUID>& agentId, auto options);
 
 /**
  * Custom hook that combines useAgents with individual useAgent calls for detailed data
@@ -211,7 +211,6 @@ struct AgentsWithDetailsResult {
     std::vector<Agent> agents;
     bool isLoading;
     bool isError;
-    unknown error;
 };
 
 /**
@@ -228,7 +227,7 @@ void useAgentInternalActions(const std::optional<UUID>& agentId, std::optional<s
 
 void useDeleteAgentInternalLog();
 
-void useAgentInternalMemories(const std::optional<UUID>& agentId, const std::optional<UUID>& agentPerspectiveRoomId, string = 'messages' tableName, auto includeEmbedding = false);
+void useAgentInternalMemories(const std::optional<UUID>& agentId, const std::optional<UUID>& agentPerspectiveRoomId, std::string tableName = "messages", auto includeEmbedding);
 
 void useDeleteAgentInternalMemory();
 
@@ -237,13 +236,13 @@ void useDeleteAllAgentInternalMemories();
 void useUpdateAgentInternalMemory();
 
 // --- Hooks for Servers and Channels (GUI Navigation) ---
-void useServers(auto options = {});
+void useServers(auto options);
 
-void useChannels(UUID serverId, auto options = {});
+void useChannels(UUID serverId, auto options);
 
-void useChannelDetails(UUID channelId, auto options = {});
+void useChannelDetails(UUID channelId, auto options);
 
-void useChannelParticipants(UUID channelId, auto options = {});
+void useChannelParticipants(UUID channelId, auto options);
 
 void useDeleteChannelMessage();
 

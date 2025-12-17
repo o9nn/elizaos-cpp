@@ -13,6 +13,6 @@ namespace elizaos {
 
 
 
-void ThemeProvider(auto { children, ThemeProviderProps ...props });
+void ThemeProvider();
 
 } // namespace elizaos

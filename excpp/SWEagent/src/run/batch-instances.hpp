@@ -52,7 +52,6 @@ BatchInstance simpleToFullBatchInstance(SimpleBatchInstance simple, DeploymentCo
 /**
  * Slice specification to slice object
  */
-void sliceSpecToSlice(const std::string& sliceSpec); {
 
 /**
  * Simple seeded random number generator
@@ -62,7 +61,7 @@ std::function<double()> seededRandom(double seed);
 /**
  * Filter batch items
  */
-std::vector<BatchInstance> filterBatchItems(const std::vector<BatchInstance>& instances, std::optional<std::any> options);
+std::vector<BatchInstance> filterBatchItems(const std::vector<BatchInstance>& instances, std::any options = {});
 
 /**
  * Load instances from file
@@ -84,7 +83,7 @@ private:
 /**
  * Convert SWE-bench instance to SimpleBatchInstance
  */
-SimpleBatchInstance fromSWEBench(Record<string sweBenchInstance, auto unknown>);
+SimpleBatchInstance fromSWEBench(const std::unordered_map<std::string, unknown>& sweBenchInstance);
 
 /**
  * SWE-bench instances

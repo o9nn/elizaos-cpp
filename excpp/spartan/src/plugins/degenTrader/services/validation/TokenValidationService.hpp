@@ -18,11 +18,6 @@ namespace elizaos {
 class TokenValidationService {
 public:
     Promise< validateTokenForTrading(const std::string& tokenAddress);
-    void if(auto marketData.liquidity < this.tradingConfig.thresholds.minLiquidity);
-    void if(auto marketData.volume24h < this.tradingConfig.thresholds.minVolume);
-    void if(auto !tokenMetadata.verified);
-    void if(auto tokenMetadata.suspiciousAttributes.length > 0);
-    void catch(auto error);
     Promise< fetchTokenMetadata(const std::string& tokenAddress);
 
 private:

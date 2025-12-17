@@ -6,7 +6,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include "AuthenticationService.js.hpp"
 
@@ -30,7 +29,7 @@ struct CLIOption {
     std::string name;
     std::string description;
     std::optional<bool> required;
-    std::variant<'string', 'boolean'> type;
+    std::string type;
 };
 
 /**

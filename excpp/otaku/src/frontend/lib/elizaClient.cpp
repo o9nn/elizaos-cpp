@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void updateApiKey(const std::optional<std::string>& newKey) {
+void updateApiKey(const std::string& newKey) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (newKey) {

@@ -196,7 +196,7 @@ YamlData parseValue(const std::string& value) {
 
 }
 
-std::string stringifyYAML(YamlData obj, number = 0 indent) {
+std::string stringifyYAML(YamlData obj, double indent = 0) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const std::vector<std::string> lines = [];

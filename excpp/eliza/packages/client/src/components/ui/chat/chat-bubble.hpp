@@ -29,7 +29,7 @@ struct ChatBubbleAvatarProps {
 // ChatBubbleTimestamp
 
 // ChatBubbleAction
-using ChatBubbleActionProps = ComponentProps<typeof Button> & {
+using ChatBubbleActionProps = ComponentProps<typeof Button>;
 
 
 } // namespace elizaos

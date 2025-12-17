@@ -24,5 +24,6 @@ struct StatCardProps {
     std::optional<std::string> modalDescription;
 };
 
+void StatCard(Icon icon, auto bgColor, auto children, auto className, auto modalContent, auto modalTitle, auto modalDescription);
 
 } // namespace elizaos

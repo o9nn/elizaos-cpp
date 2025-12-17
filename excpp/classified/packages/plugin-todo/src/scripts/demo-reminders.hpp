@@ -25,7 +25,7 @@ std::future<void> setupReminderDemo(IAgentRuntime runtime);
 /**
  * Monitor reminder delivery for testing
  */
-std::future<void> monitorReminders(IAgentRuntime runtime, number = 60000 duration);
+std::future<void> monitorReminders(IAgentRuntime runtime, double duration = 60000);
 
 /**
  * Clean up demo tasks

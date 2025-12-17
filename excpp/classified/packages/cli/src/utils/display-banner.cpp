@@ -79,7 +79,7 @@ void isUtf8Locale() {
 
 }
 
-std::future<std::optional<std::string>> getLatestCliVersion(const std::string& currentVersion) {
+std::future<std::string> getLatestCliVersion(const std::string& currentVersion) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Skip version check if we're in monorepo context
@@ -178,7 +178,7 @@ std::future<bool> checkAndShowUpdateNotification(const std::string& currentVersi
 
 }
 
-std::future<void> displayBanner(boolean = false skipUpdateCheck) {
+std::future<void> displayBanner(bool skipUpdateCheck = false) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!isUtf8Locale()) {

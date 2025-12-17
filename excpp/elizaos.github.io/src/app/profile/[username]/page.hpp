@@ -19,5 +19,7 @@ using ProfilePageProps = {
 
 std::future<void> generateStaticParams();
 
+std::future<Metadata> generateMetadata();
+
 
 } // namespace elizaos

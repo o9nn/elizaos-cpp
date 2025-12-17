@@ -22,5 +22,6 @@ namespace elizaos {
 /**
  * Create a context for contributor pipelines
  */
+ContributorPipelineContext createContributorPipelineContext(auto logger, auto config, auto force);
 
 } // namespace elizaos

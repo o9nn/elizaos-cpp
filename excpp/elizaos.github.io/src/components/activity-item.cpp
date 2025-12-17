@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void ActivityItem(auto {
-  id, auto title, auto author, auto number, auto href, auto icon, auto metadata, auto className, ActivityItemProps }) {
+void ActivityItem(auto title, auto author, auto number, auto href, auto icon, auto metadata, auto className) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

@@ -13,7 +13,7 @@ namespace elizaos {
 
 // Extend the core service types with SAM service
   struct ServiceTypeRegistry {
-    'SAM_TTS' SAM_TTS;
+    std::string SAM_TTS;
 };
 
 // Export service type constant

@@ -38,7 +38,7 @@ std::future<std::vector<StaticParam>> generateStaticParams() {
 
 }
 
-std::future<void> IntervalSummaryPage(PageProps { params }) {
+std::future<void> IntervalSummaryPage() {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

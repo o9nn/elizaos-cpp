@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void RelatedProjects(auto { currentProject, RelatedProjectsProps onProjectClick }) {
+void RelatedProjects() {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

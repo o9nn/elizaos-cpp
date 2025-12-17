@@ -119,7 +119,7 @@ void compareMany(const std::vector<std::string>& paths) {
 
 }
 
-void comparePair(const std::string& newPath, const std::string& oldPath, boolean = false showSame) {
+void comparePair(const std::string& newPath, const std::string& oldPath, bool showSame = false) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto evaluatedIds = Array.from(getSubmitted(newPath)).sort();
@@ -170,7 +170,7 @@ void comparePair(const std::string& newPath, const std::string& oldPath, boolean
 
 }
 
-std::future<void> compareRuns(const std::vector<std::string>& paths, boolean = false showSame) {
+std::future<void> compareRuns(const std::vector<std::string>& paths, bool showSame = false) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void ThemeProvider(auto { children, ThemeProviderProps ...props }) {
+void ThemeProvider() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return <NextThemesProvider {...props}>{children}</NextThemesProvider>;

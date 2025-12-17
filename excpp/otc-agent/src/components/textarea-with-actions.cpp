@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void ChatForm(auto { input, auto onInputChange, auto onSubmit, auto isLoading, auto placeholder }, auto ref) {
+void ChatForm(auto onInputChange, auto onSubmit, auto isLoading, auto ref) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto handleKeyDown = [&](e: React.KeyboardEvent<HTMLTextAreaElement>) {;
@@ -71,7 +71,7 @@ void ChatForm(auto { input, auto onInputChange, auto onSubmit, auto isLoading, a
 
 }
 
-void TextareaWithActions(auto { input, auto onInputChange, auto onSubmit, auto isLoading, auto placeholder }, auto ref) {
+void TextareaWithActions(auto onInputChange, auto onSubmit, auto isLoading, auto ref) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

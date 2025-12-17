@@ -39,11 +39,11 @@ void compareMany(const std::vector<std::string>& paths);
 /**
  * Compare a pair of runs
  */
-void comparePair(const std::string& newPath, const std::string& oldPath, boolean = false showSame);
+void comparePair(const std::string& newPath, const std::string& oldPath, bool showSame = false);
 
 /**
  * Main function to compare runs
  */
-std::future<void> compareRuns(const std::vector<std::string>& paths, boolean = false showSame);
+std::future<void> compareRuns(const std::vector<std::string>& paths, bool showSame = false);
 
 } // namespace elizaos

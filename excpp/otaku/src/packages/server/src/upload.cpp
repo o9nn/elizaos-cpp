@@ -13,7 +13,7 @@ std::string generateSecureFilename(const std::string& originalName) {
 
 }
 
-std::string ensureUploadDir(const std::string& id, const std::variant<'agents', 'channels'>& type) {
+std::string ensureUploadDir(const std::string& id, const std::string& type) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -50,7 +50,7 @@ bool validateMediaFile(Express.Multer.File file) {
 
 }
 
-std::future<> processUploadedFile(Express.Multer.File file, const std::string& targetId, const std::variant<'agents', 'channels'>& type) {
+std::future<> processUploadedFile(Express.Multer.File file, const std::string& targetId, const std::string& type) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     filename: string; path: string; url: string
 }

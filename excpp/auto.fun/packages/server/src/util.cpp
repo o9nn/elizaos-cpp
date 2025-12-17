@@ -264,7 +264,7 @@ std::future<std::vector<Token>> bulkUpdatePartialTokens(const std::vector<Token>
 
 }
 
-std::future<> execWithdrawTx(Transaction tx, Connection connection, const std::any& wallet, auto maxRetries = 1) {
+std::future<> execWithdrawTx(Transaction tx, Connection connection, const std::any& wallet, auto maxRetries) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     signature: string; logs: string[]
 }

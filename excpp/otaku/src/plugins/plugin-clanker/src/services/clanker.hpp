@@ -30,7 +30,7 @@ public:
     ClankerService(IAgentRuntime runtime);
     Promise< getOrCreateWallet(const std::string& accountName);
     std::future<void> initialize(IAgentRuntime runtime);
-    std::future<ClankerService> start(IAgentRuntime runtime);
+    static std::future<ClankerService> start(IAgentRuntime runtime);
     std::future<DeployResult> deployToken(TokenDeployParams params, const std::string& accountName);
     std::future<void> stop();
 

@@ -25,6 +25,7 @@ std::future<std::string> getGlobalEnvPath();
  * Get the path to the local .env file in the current directory
  * @returns The path to the local .env file or null if not found
  */
+std::future<std::string> getLocalEnvPath();
 
 /**
  * Parse an .env file and return the key-value pairs

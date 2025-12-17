@@ -13,5 +13,6 @@ namespace elizaos {
 
 
 
+void Input(auto placeholder, auto value, auto onChange, auto className, auto disabled, auto ref, auto multiple, auto accept);
 
 } // namespace elizaos

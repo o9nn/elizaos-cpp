@@ -23,6 +23,6 @@ struct UseAutoScrollOptions {
     std::optional<bool> smooth;
 };
 
-void useAutoScroll(UseAutoScrollOptions = {} options);
+void useAutoScroll(UseAutoScrollOptions options = {});
 
 } // namespace elizaos

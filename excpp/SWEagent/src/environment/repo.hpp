@@ -5,7 +5,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include ".utils/github.hpp"
 #include ".utils/log.hpp"
@@ -101,6 +100,6 @@ using RepoConfig = z::infer<typeof RepoConfigSchema>;
 /**
  * Factory function to create repo from simplified input
  */
-Repo repoFromSimplifiedInput(const std::string& input, string = 'HEAD' baseCommit, const std::variant<'local', 'github', 'preexisting', 'auto' = 'auto'>& type);
+Repo repoFromSimplifiedInput(const std::string& input, std::string baseCommit = "HEAD", std::string type = "auto");
 
 } // namespace elizaos

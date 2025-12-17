@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void SignInModal(SignInModalProps { isOpen }) {
+void SignInModal() {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

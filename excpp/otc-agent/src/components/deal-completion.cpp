@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void DealCompletion(DealCompletionProps { quote }) {
+void DealCompletion() {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

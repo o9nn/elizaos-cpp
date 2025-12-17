@@ -61,6 +61,7 @@ struct Channel {
 void App();
 
 // Inner component that has access to useSidebar
+void AppContent(auto userId, auto connected, auto channels, auto activeChannelId, auto isCreatingChannel, auto isNewChatMode, auto currentView, auto userProfile, auto totalBalance, auto isLoadingChannels, auto walletRef, auto handleNewChat, auto handleChannelSelect, auto handleBalanceChange, auto setChannels, auto setActiveChannelId, auto setIsNewChatMode, auto updateUserProfile, auto signOut, auto isSignedIn, auto agentId, auto navigate);
 
 // Wrap App with CDP Provider (if configured) and LoadingPanelProvider
 

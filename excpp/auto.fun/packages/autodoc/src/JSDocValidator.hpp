@@ -19,7 +19,7 @@ namespace elizaos {
  */
 class JSDocValidator {
 public:
-    JSDocValidator(AIService private aiService);
+    JSDocValidator();
     std::future<std::string> validateAndFixJSDoc(const std::string& fileName, const std::string& code, const std::string& originalComment);
     bool isValidTypeScript(const std::string& code);
     std::string fixCommonJSDocIssues(const std::string& comment);

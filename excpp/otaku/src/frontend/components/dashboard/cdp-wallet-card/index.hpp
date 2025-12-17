@@ -33,7 +33,7 @@ struct Token {
     std::string balanceFormatted;
     std::optional<double> usdValue;
     std::optional<double> usdPrice;
-    std::optional<std::string> contractAddress;
+    std::string contractAddress;
     std::string chain;
     double decimals;
     std::optional<std::string> icon;
@@ -64,9 +64,9 @@ struct Transaction {
     double timestamp;
     std::string blockNum;
     std::string explorerUrl;
-    std::variant<'sent', 'received'> direction;
-    std::optional<std::optional<std::string>> icon;
-    std::optional<std::optional<std::string>> contractAddress;
+    std::string direction;
+    std::optional<std::string> icon;
+    std::optional<std::string> contractAddress;
 };
 
 struct CDPWalletCardProps {

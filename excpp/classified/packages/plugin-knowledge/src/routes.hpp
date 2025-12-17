@@ -39,7 +39,7 @@ struct MulterFile {
 };
 
 // Helper to send success response
-void sendSuccess(const std::any& res, const std::any& data, auto status = 200);
+void sendSuccess(const std::any& res, const std::any& data, auto status);
 
 // Helper to send error response
 void sendError(const std::any& res, double status, const std::string& code, const std::string& message, std::optional<std::string> details);

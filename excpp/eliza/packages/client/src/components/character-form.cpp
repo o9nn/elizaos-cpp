@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void CharacterForm(auto {
-  characterValue, auto setCharacterValue, auto title, auto description, auto onSubmit, auto onDelete, auto onReset, auto onStopAgent, auto isDeleting = false, auto isStopping = false, auto customComponents = [], auto onTemplateChange, auto secretPanelRef, CharacterFormProps }) {
+void CharacterForm(auto setCharacterValue, auto title, auto description, auto onSubmit, auto onDelete, auto onReset, auto onStopAgent, auto isDeleting, auto isStopping, auto customComponents, auto onTemplateChange, auto secretPanelRef) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { toast } = useToast();

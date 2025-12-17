@@ -15,7 +15,7 @@ namespace elizaos {
 
 // Extend the core service types with shell service
   struct ServiceTypeRegistry {
-    'SHELL' SHELL;
+    std::string SHELL;
 };
 
 

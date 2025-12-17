@@ -49,7 +49,7 @@ std::future<std::string> getEnvFilePath();
  *
  * @param envVars - A record of environment variable key-value pairs to write.
  */
-std::future<void> writeEnvFile(Record<string envVars, auto string>);
+std::future<void> writeEnvFile(const std::unordered_map<std::string, std::string>& envVars);
 
 /**
  * Prompts the user to enter a value for a specific environment variable based on the provided configuration.
@@ -60,6 +60,7 @@ std::future<void> writeEnvFile(Record<string envVars, auto string>);
  * @param config - The configuration describing the environment variable to prompt for.
  * @returns The entered or existing value, or an empty string if an optional variable is skipped.
  */
+std::future<std::string> promptForEnvVar(EnvVarConfig config);
 
 /**
  * Prompts the user to enter missing or invalid environment variables required for a specified plugin.

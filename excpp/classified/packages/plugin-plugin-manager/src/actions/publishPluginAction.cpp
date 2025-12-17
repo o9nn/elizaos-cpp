@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::optional<std::string> extractPluginInfo(const std::string& text) {
+std::string extractPluginInfo(const std::string& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Look for file paths
@@ -43,7 +43,7 @@ std::optional<std::string> extractPluginInfo(const std::string& text) {
 
 }
 
-std::future<std::optional<std::string>> resolvePluginPath(const std::string& pluginInfo) {
+std::future<std::string> resolvePluginPath(const std::string& pluginInfo) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Check if it's already a path

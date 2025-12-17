@@ -24,5 +24,7 @@ namespace elizaos {
 
 using ConfigProps = {
 
+void Config(auto onChangeSettings, auto visibleSettings, auto containerProps);
+
 
 } // namespace elizaos

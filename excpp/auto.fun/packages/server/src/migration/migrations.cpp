@@ -95,7 +95,7 @@ std::future<std::optional<TokenData>> getToken(const std::string& mint) {
 
 }
 
-std::future<MigrationStepResult> executeMigrationStep(TokenData token, MigrationStep step, MigrationStep nextStep, number = 3 retryCount, number = 2000 delay) {
+std::future<MigrationStepResult> executeMigrationStep(TokenData token, MigrationStep step, MigrationStep nextStep, double retryCount = 3, double delay = 2000) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     std::cout << "[Migrate] Starting " + std::to_string(step.name) + " for token " + std::to_string(token.mint) << std::endl;
@@ -220,7 +220,7 @@ std::future<void> getMigrationState(TokenData token) {
 
 }
 
-std::future<void> safeUpdateTokenInDB(const std::optional<TokenData>& data, auto retries = 3, auto delay = 2000) {
+std::future<void> safeUpdateTokenInDB(const std::optional<TokenData>& data, auto retries, auto delay) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

@@ -1,5 +1,4 @@
 #pragma once
-#include <any>
 #include <functional>
 #include <future>
 #include <memory>
@@ -18,6 +17,6 @@ namespace elizaos {
 // Check if we're in local development mode (no external API calls needed)
 bool isLocalDevelopment(const std::string& chain, const std::string& contractAddress);
 
-std::future<void> GET(NextRequest request, const std::any& { params });
+std::future<void> GET(NextRequest request);
 
 } // namespace elizaos

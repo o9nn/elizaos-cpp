@@ -5,7 +5,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include ".types.hpp"
 #include "elizaos/core.hpp"
@@ -23,8 +22,7 @@ namespace elizaos {
  */
 class CharacterModificationDatabaseAdapter {
 public:
-    CharacterModificationDatabaseAdapter(IDatabaseAdapter private adapter);
-    std::variant<Promise<'sqlite', 'postgres', 'unknown'>> getDatabaseType();
+    CharacterModificationDatabaseAdapter();
     std::future<void> initializeSchema();
     std::future<void> initializeSQLiteSchema();
     std::future<void> initializePostgreSQLSchema();
@@ -37,13 +35,10 @@ public:
     std::future<void> markModificationsRolledBack(UUID agentId, double fromVersion);
     std::future<void> saveRateLimitAttempt(UUID agentId, bool successful);
     Promise< checkRateLimit(UUID agentId);
-    void catch(auto error);
     Promise< getLockStatus(UUID agentId);
-    void catch(auto error);
     std::future<void> setLockStatus(UUID agentId, bool locked, std::optional<std::string> lockedBy, std::optional<std::string> lockReason);
     std::future<void> saveEvolutionRecommendation(UUID agentId, const std::optional<UUID>& roomId, UUID conversationId, const std::string& recommendation, const std::string& analysisResult);
     Array< getUnprocessedRecommendations(UUID agentId);
-    void catch(auto error);
 };
 
 

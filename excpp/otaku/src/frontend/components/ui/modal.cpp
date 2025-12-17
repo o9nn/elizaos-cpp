@@ -4,9 +4,7 @@
 
 namespace elizaos {
 
-void Modal(auto { 
-  children, auto onClose, auto closeOnBackdropClick = true, auto closeOnEsc = true, auto showCloseButton = true, ModalProps className = ''
-}) {
+void Modal(auto onClose, auto closeOnBackdropClick, auto closeOnEsc, auto showCloseButton, auto className) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto isMobile = useIsMobile();

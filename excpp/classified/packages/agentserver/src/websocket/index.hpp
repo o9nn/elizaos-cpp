@@ -57,7 +57,7 @@ struct WebSocketOutgoingMessage {
 
 class WebSocketRouter {
 public:
-    WebSocketRouter(Map<UUID agents, auto IAgentRuntime>, AgentServer serverInstance);
+    WebSocketRouter(const std::unordered_map<UUID, IAgentRuntime>& agents, AgentServer serverInstance);
     void setupServer(WebSocketServer wss);
     void handleNewConnection(WebSocket ws, IncomingMessage request);
     void handleMessage(WebSocket ws, Buffer data);

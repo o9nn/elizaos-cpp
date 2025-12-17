@@ -13,7 +13,7 @@ namespace elizaos {
 
 
 
-void Skeleton(auto { className, ComponentProps<"div"> ...props });
+void Skeleton();
 
 
 } // namespace elizaos

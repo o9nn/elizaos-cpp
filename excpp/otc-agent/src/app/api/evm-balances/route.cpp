@@ -19,7 +19,7 @@ std::future<std::unordered_map<std::string, CachedTokenMetadata>> getBulkMetadat
 
 }
 
-std::future<void> setBulkMetadataCache(const std::string& chain, Record<string metadata, auto CachedTokenMetadata>) {
+std::future<void> setBulkMetadataCache(const std::string& chain, const std::unordered_map<std::string, CachedTokenMetadata>& metadata) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -66,7 +66,7 @@ std::future<void> setCachedWalletBalances(const std::string& chain, const std::s
 
 }
 
-std::future<std::optional<std::string>> cacheImageToBlob(const std::optional<std::string>& imageUrl) {
+std::future<std::string> cacheImageToBlob(const std::string& imageUrl) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!imageUrl) return null;
@@ -114,7 +114,7 @@ std::future<std::optional<std::string>> cacheImageToBlob(const std::optional<std
 
 }
 
-std::optional<std::string> getExtensionFromUrl(const std::string& url) {
+std::string getExtensionFromUrl(const std::string& url) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -153,7 +153,7 @@ std::future<std::unordered_map<std::string, double>> getBulkPriceCache(const std
 
 }
 
-std::future<void> setBulkPriceCache(const std::string& chain, Record<string prices, auto number>) {
+std::future<void> setBulkPriceCache(const std::string& chain, const std::unordered_map<std::string, double>& prices) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {

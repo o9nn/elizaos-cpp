@@ -34,7 +34,7 @@ public:
     ElizaClient(ApiClientConfig config);
     void setAuthToken(const std::string& token);
     void clearAuthToken();
-    ElizaClient create(ApiClientConfig config);
+    static ElizaClient create(ApiClientConfig config);
 
 private:
     std::vector<std::any> services_;

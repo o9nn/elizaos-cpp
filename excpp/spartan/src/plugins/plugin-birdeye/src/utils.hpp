@@ -41,7 +41,7 @@ namespace elizaos {
 
 class BirdeyeApiError {
 public:
-    BirdeyeApiError(double public status, const std::string& message);
+    BirdeyeApiError(const std::string& message);
 };
 
 // Time-related types and constants

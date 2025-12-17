@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void ChatMessage(auto {
-  message, auto i, auto citations, auto followUpPrompts, auto onFollowUpClick, ChatMessageProps }) {
+void ChatMessage(auto i, auto citations, auto followUpPrompts, auto onFollowUpClick) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [isSourcesExpanded, setIsSourcesExpanded] = useState(false);

@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void cn(const std::vector<ClassValue>& ...inputs) {
+void cn() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return twMerge(clsx(inputs));

@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void Chat(auto {
-  chatType, auto contextId, auto serverId, auto initialDmChannelId, UnifiedChatViewProps }) {
+void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { toast } = useToast();

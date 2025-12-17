@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 
 namespace elizaos {
@@ -17,7 +16,7 @@ namespace elizaos {
  * Attachment type for messages
  */
 struct MessageAttachment {
-    std::variant<'image', 'file', 'audio', 'video', 'document'> type;
+    std::string type;
     std::string url;
     std::optional<std::string> name;
     std::optional<double> size;
@@ -29,7 +28,7 @@ struct MessageAttachment {
  */
 struct SessionMessageMetadata {
     std::optional<std::string> source;
-    std::optional<std::variant<'low', 'normal', 'high'>> priority;
+    std::optional<std::string> priority;
     std::optional<std::vector<std::string>> tags;
     std::optional<std::string> thought;
     std::optional<std::vector<std::string>> actions;
@@ -127,7 +126,7 @@ struct SessionInfoResponse {
  * Health check response
  */
 struct SessionsHealthResponse {
-    std::variant<'healthy', 'unhealthy'> status;
+    std::string status;
     double activeSessions;
     std::string timestamp;
 };

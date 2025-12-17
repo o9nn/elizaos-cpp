@@ -5,7 +5,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 
 namespace elizaos {
@@ -26,7 +25,7 @@ struct CoverageReport {
     double tested;
 };
 
-std::variant<'commands', 'utils', 'types', 'other'> categorizeFile(const std::string& filePath);
+std::string categorizeFile(const std::string& filePath);
 
 std::future<CoverageReport> generateCoverageReport();
 

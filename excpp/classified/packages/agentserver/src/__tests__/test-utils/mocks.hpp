@@ -1,4 +1,5 @@
 #pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -24,6 +25,7 @@ IAgentRuntime createMockAgentRuntime(std::optional<std::optional<IAgentRuntime>>
 /**
  * Creates a mock DatabaseAdapter with message server methods
  */
+DatabaseAdapter createMockDatabaseAdapter(std::optional<std::any> overrides);
 
 /**
  * Creates a mock Express Request

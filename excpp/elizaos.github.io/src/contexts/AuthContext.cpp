@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void AuthProvider(AuthProviderProps { children }) {
+void AuthProvider() {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

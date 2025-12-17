@@ -1,5 +1,4 @@
 #pragma once
-#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -50,10 +49,12 @@ std::string formatTimestamp(double timestamp);
 
 void generateLogChart(const std::vector<LogEntry>& logs);
 
-void LogChart(const std::any& { data });
+void LogChart();
 
 void LoadingIndicator();
 
-void AgentLogViewer(auto { agentName, AgentLogViewerProps level });
+void EmptyState(auto searchQuery);
+
+void AgentLogViewer();
 
 } // namespace elizaos

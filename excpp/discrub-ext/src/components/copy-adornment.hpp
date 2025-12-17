@@ -16,5 +16,7 @@ namespace elizaos {
 
 using CopyAdornmentProps = {
 
+void CopyAdornment(auto copyName, auto disabled);
+
 
 } // namespace elizaos

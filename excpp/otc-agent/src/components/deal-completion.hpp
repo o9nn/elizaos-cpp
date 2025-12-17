@@ -43,6 +43,6 @@ struct DealCompletionProps {
     std::optional<std::variant<"evm", "solana">> chain;
 };
 
-void DealCompletion(DealCompletionProps { quote });
+void DealCompletion();
 
 } // namespace elizaos

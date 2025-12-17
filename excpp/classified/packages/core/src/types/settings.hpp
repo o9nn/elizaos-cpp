@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 
 namespace elizaos {
@@ -22,7 +21,7 @@ struct Setting {
     std::string name;
     std::string description;
     std::string usageDescription;
-    std::variant<std::string, bool> value;
+    std::optional<bool> value;
     bool required;
     std::optional<bool> public;
     std::optional<bool> secret;

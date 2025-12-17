@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void ClaimFees(const std::any& { tokenMint }) {
+void ClaimFees() {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

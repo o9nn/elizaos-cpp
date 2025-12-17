@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void SecurityStatusItem(auto {
-  title, auto value, auto status, auto variant, auto className, SecurityStatusItemProps }) {
+void SecurityStatusItem(auto value, auto status, auto variant, auto className) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -23,7 +22,7 @@ void SecurityStatusItem(auto {
 
 }
 
-void SecurityStatus(SecurityStatusProps { statuses }) {
+void SecurityStatus() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

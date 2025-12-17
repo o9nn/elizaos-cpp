@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include "markdown.hpp"
 
@@ -18,7 +17,7 @@ namespace elizaos {
 struct AnimatedMarkdownProps {
     std::string children;
     std::optional<std::string> className;
-    std::optional<std::variant<'user', 'agent'>> variant;
+    std::optional<std::string> variant;
     std::optional<bool> shouldAnimate;
     std::optional<std::string> messageId;
 };

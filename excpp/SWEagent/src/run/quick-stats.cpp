@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::future<std::string> quickStats(string = '::' directory) {
+std::future<std::string> quickStats(std::string directory = ".") {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto dir = path.resolve(directory);

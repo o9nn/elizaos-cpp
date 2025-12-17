@@ -1,5 +1,4 @@
 #pragma once
-#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -54,6 +53,6 @@ struct UploadResultItem {
 
 // Hook for deleting knowledge documents
 
-void KnowledgeTab(const std::any& { agentId });
+void KnowledgeTab();
 
 } // namespace elizaos

@@ -67,7 +67,7 @@ std::future<void> initializePipeline(ModelName modelName) {
     }
 }
 
-std::string extractTextFromParams(const std::variant<TextEmbeddingParams, std::string>& params) {
+std::string extractTextFromParams(const std::optional<TextEmbeddingParams>& params) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

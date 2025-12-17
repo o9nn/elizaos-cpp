@@ -54,6 +54,7 @@ bool shouldUseCustomLLM();
  * @param params Fragment parameters
  * @returns Number of fragments processed
  */
+std::future<double> processFragmentsSynchronously(auto documentId, auto fullDocumentText, auto agentId, auto contentType, auto roomId, auto entityId, auto worldId, auto documentTitle);
 
 // DOCUMENT EXTRACTION & MEMORY FUNCTIONS
 
@@ -71,6 +72,7 @@ std::future<std::string> extractTextFromDocument(Buffer fileBuffer, const std::s
  * @param params Document parameters
  * @returns Memory object for the main document
  */
+Memory createDocumentMemory(auto agentId, auto clientDocumentId, auto originalFilename, auto contentType, auto worldId, auto fileSize, auto documentId, auto customMetadata);
 
 // CHUNKING AND FRAGMENT PROCESSING
 
@@ -150,7 +152,7 @@ std::future<std::vector> generateContextsInBatch(IAgentRuntime runtime, const st
 /**
  * Prepare prompts for contextualization
  */
-std::vector<std::any> prepareContextPrompts(const std::vector<std::string>& chunks, const std::string& fullDocumentText, std::optional<std::string> contentType, std::optional<std::vector<double>> batchIndices, auto isUsingCacheCapableModel = false);
+std::vector<std::any> prepareContextPrompts(const std::vector<std::string>& chunks, const std::string& fullDocumentText, std::optional<std::string> contentType, std::optional<std::vector<double>> batchIndices, auto isUsingCacheCapableModel);
 
 // UTILITY FUNCTIONS
 
@@ -178,5 +180,6 @@ void createRateLimiter(double requestsPerMinute, std::optional<double> tokensPer
 /**
  * Logs a comprehensive summary of the knowledge generation process
  */
+void logKnowledgeGenerationSummary(auto savedCount, auto failedCount, auto ctxEnabled, auto providerLimits);
 
 } // namespace elizaos

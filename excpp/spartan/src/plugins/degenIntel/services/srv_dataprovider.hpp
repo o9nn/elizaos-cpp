@@ -1,7 +1,6 @@
 #pragma once
 #include <any>
 #include <functional>
-#include <future>
 #include <memory>
 #include <optional>
 #include <string>
@@ -18,17 +17,15 @@ namespace elizaos {
 
 class TradeDataProviderService {
 public:
-    TradeDataProviderService(IAgentRuntime public runtime);
+    TradeDataProviderService();
     void registerDataProvder(const std::any& dataProvider);
     void interested_trending(auto handler);
     void checkPositions();
     void updateTrending();
     void interested_priceDelta(auto chain, auto token, auto handler);
     void getTokenInfo(auto chain, auto address);
-    void start(IAgentRuntime runtime);
-    void stop(IAgentRuntime runtime);
-    std::future<void> start();
-    std::future<void> stop();
+    static void start(IAgentRuntime runtime);
+    static void stop(IAgentRuntime runtime);
     bool isServiceRunning();
 };
 

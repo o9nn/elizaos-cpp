@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void AgentAvatarStack(auto {
-  agentIds, auto agentNames, auto agentAvatars, auto size = 'md', auto maxStack = 2, auto showExtraTooltip = false, AgentAvatarStackProps }) {
+void AgentAvatarStack(auto agentNames, auto agentAvatars, auto size, auto maxStack, auto showExtraTooltip) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [hoveredIndex, setHoveredIndex] = useState<number | nullptr>(nullptr);

@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 
 namespace elizaos {
@@ -18,14 +17,14 @@ struct SplitButtonAction {
     ReactNode label;
     std::optional<ReactNode> icon;
     std::optional<bool> disabled;
-    std::optional<std::variant<'default', 'destructive'>> variant;
+    std::optional<std::string> variant;
 };
 
 struct SplitButtonProps {
     SplitButtonAction mainAction;
     std::vector<SplitButtonAction> actions;
-    std::optional<std::variant<'default', 'outline', 'secondary', 'ghost', 'link', 'destructive'>> variant;
-    std::optional<std::variant<'default', 'sm', 'lg', 'icon'>> size;
+    std::optional<std::string> variant;
+    std::optional<std::string> size;
     std::optional<bool> disabled;
     std::optional<std::string> className;
 };

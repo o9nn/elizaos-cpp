@@ -39,15 +39,15 @@ struct Session {
 
 class SSEServerTransport {
 public:
-    SSEServerTransport(SSEServerOptions options, Console = console logger);
+    SSEServerTransport(SSEServerOptions options, Console logger = console);
     std::future<void> start();
     std::future<void> close();
     void setMCPServer(Server server);
     void handleRequest(IncomingMessage req, ServerResponse res);
     void handleSSE(IncomingMessage req, ServerResponse res);
     std::future<void> handleMessage(IncomingMessage req, ServerResponse res);
-    std::future<bool> checkPaymentForToolCall(JSONRPCRequest message, Record<string headers, auto string>, ServerResponse res);
-    std::future<JSONRPCResponse> processMessage(JSONRPCRequest message, Record<string headers, auto string>);
+    std::future<bool> checkPaymentForToolCall(JSONRPCRequest message, const std::unordered_map<std::string, std::string>& headers, ServerResponse res);
+    std::future<JSONRPCResponse> processMessage(JSONRPCRequest message, const std::unordered_map<std::string, std::string>& headers);
     void sendSSE(ServerResponse res, const std::string& event, unknown data);
     std::unordered_map<std::string, std::string> extractHeaders(IncomingMessage req);
     std::string generateSessionId();
@@ -55,7 +55,6 @@ public:
 
 private:
     HTTPServer httpServer_;
-    Required<SSEServerOptions> options_;
     Console logger_;
 };
 

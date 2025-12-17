@@ -4,9 +4,7 @@
 
 namespace elizaos {
 
-void Separator(auto {
-  className, auto orientation = "horizontal", auto decorative = true, ComponentProps<typeof SeparatorPrimitive.Root> ...props
-}) {
+void Separator(auto orientation, auto decorative) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

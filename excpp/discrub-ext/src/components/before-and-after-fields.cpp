@@ -4,10 +4,7 @@
 
 namespace elizaos {
 
-void BeforeAndAfterFields(auto {
-  disabled, "Messages After" afterProps = {
-    toolTipTitle, "Search messages from after the provided date" toolTipDescription, "Messages After" label, auto }, "Messages Before" beforeProps = {
-    toolTipTitle, "Search messages from before the provided date" toolTipDescription, "Messages Before" label, auto }, BeforeAndAfterFieldsProps }) {
+void BeforeAndAfterFields(auto afterProps, "Search messages from after the provided date" toolTipDescription, "Messages After" label, auto beforeProps, "Search messages from before the provided date" toolTipDescription, "Messages Before" label) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto {;

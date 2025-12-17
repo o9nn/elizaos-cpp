@@ -1,5 +1,6 @@
 #pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
@@ -23,5 +24,6 @@ void getJitoEndpoint(JitoRegion region);
  * @param args.serialisedTx - A single transaction to be sent, in serialised form
  * @param args.region - The region of the Jito endpoint to use
  */
+std::future<void> sendTxUsingJito(auto region);
 
 } // namespace elizaos

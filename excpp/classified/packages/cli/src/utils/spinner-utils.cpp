@@ -106,7 +106,7 @@ std::future<void> installDependenciesWithSpinner(const std::string& targetDir) {
     }
 }
 
-std::future<void> buildProjectWithSpinner(const std::string& targetDir, auto isPlugin = false) {
+std::future<void> buildProjectWithSpinner(const std::string& targetDir, auto isPlugin) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -134,7 +134,7 @@ std::future<void> buildProjectWithSpinner(const std::string& targetDir, auto isP
     }
 }
 
-std::future<void> installPluginWithSpinner(const std::string& pluginName, const std::string& targetDir, auto purpose = '') {
+std::future<void> installPluginWithSpinner(const std::string& pluginName, const std::string& targetDir, auto purpose) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

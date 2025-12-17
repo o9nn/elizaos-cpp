@@ -15,9 +15,6 @@ namespace elizaos {
 // 
 
 // class StarterService {
-    void start(IAgentRuntime runtime);
-    void stop(IAgentRuntime runtime);
-    void stop();
 
   // add services here
 

@@ -5,7 +5,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include "elizaos/core.hpp"
 #include "types.hpp"
@@ -22,15 +21,13 @@ namespace elizaos {
 class RobotService {
 public:
     RobotService(IAgentRuntime runtime);
-    std::future<Service> start(IAgentRuntime runtime);
-    std::future<void> stop(IAgentRuntime runtime);
-    std::future<void> stop();
+    static std::future<Service> start(IAgentRuntime runtime);
+    static std::future<void> stop(IAgentRuntime runtime);
     std::future<Buffer> captureScreen();
     Buffer createMockPNG(double width, double height);
-    Buffer downscaleImage(Buffer imageBuffer, number = 1024 maxSize);
+    Buffer downscaleImage(Buffer imageBuffer, double maxSize = 1024);
     double calculatePixelDifference(Buffer buffer1, Buffer buffer2);
      shouldTriggerAIProcessing(Buffer currentScreenshot);
-    void if(auto !this.config.changeDetection.enabled || !this.previousScreenshot);
     std::future<std::string> performLocalOCR(Buffer image);
     bool isValidImageBuffer(Buffer buffer);
     std::future<std::string> performAIOCR(Buffer image);
@@ -43,7 +40,6 @@ public:
     std::future<void> updateContext();
     std::future<ScreenContext> getContext();
     void moveMouse(double x, double y);
-    void click(const std::variant<"left", "right", "middle" = "left">& button, boolean = false dblclick);
     void typeText(const std::string& text);
     void setChangeDetectionThreshold(double threshold);
     void enableChangeDetection(bool enabled);

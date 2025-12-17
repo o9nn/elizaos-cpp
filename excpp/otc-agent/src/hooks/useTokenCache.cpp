@@ -64,7 +64,7 @@ std::future<std::optional<Token>> fetchTokenFromChain(const std::string& tokenId
 
 }
 
-void useTokenCache(const std::optional<std::string>& tokenId) {
+void useTokenCache(const std::string& tokenId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [token, setToken] = useState<Token | nullptr>(nullptr);
@@ -196,7 +196,7 @@ std::future<void> refreshMarketData() {
 
 }
 
-void useMarketDataRefresh(const std::optional<std::string>& tokenId, const std::optional<Token>& token) {
+void useMarketDataRefresh(const std::string& tokenId, const std::optional<Token>& token) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [marketData, setMarketData] = useState<TokenMarketData | nullptr>(nullptr);

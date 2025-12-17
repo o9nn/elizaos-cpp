@@ -16,17 +16,9 @@ namespace elizaos {
 
 class ApiError {
 public:
-    ApiError(const std::string& public code, const std::string& message, std::optional<std::string> public details, std::optional<double> public status);
+    ApiError(const std::string& message);
 };
 
-    void if(auto this.baseUrl);
-    void if(auto options.params);
-    void if(auto options.body instanceof FormData);
-
-      // Handle empty responses (204 No Content)
-    void catch(auto error);
-    void if(auto !response.ok);
-    void catch(auto error);
     void setAuthToken(const std::string& token);
     void clearAuthToken();
 

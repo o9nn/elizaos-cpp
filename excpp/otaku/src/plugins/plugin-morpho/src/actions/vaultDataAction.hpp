@@ -24,7 +24,7 @@ struct VaultInfoParams {
 
 using VaultInfoInput = {
 
-using VaultInfoActionResult = ActionResult & { input: VaultInfoInput };
+using VaultInfoActionResult = ActionResult;
 
  * Action: GET_MORPHO_VAULT_INFO
 

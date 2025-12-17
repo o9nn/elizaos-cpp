@@ -208,7 +208,7 @@ void ExampleCustomStyledModal() {
 
 }
 
-void SendModal(auto { isOpen, auto onClose, auto tokens, SendModalProps userId }) {
+void SendModal(auto onClose, auto tokens) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     *   if (!isOpen) return null;

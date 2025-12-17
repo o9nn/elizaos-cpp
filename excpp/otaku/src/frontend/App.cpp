@@ -586,8 +586,7 @@ void App() {
     }
 }
 
-void AppContent(auto {
-  agent, auto userId, auto connected, auto channels, auto activeChannelId, auto isCreatingChannel, auto isNewChatMode, auto currentView, auto userProfile, auto totalBalance, auto isLoadingChannels, auto walletRef, auto handleNewChat, auto handleChannelSelect, auto handleBalanceChange, auto setChannels, auto setActiveChannelId, auto setIsNewChatMode, auto updateUserProfile, auto signOut, auto isSignedIn, auto agentId, auto navigate, const std::any& }) {
+void AppContent(auto userId, auto connected, auto channels, auto activeChannelId, auto isCreatingChannel, auto isNewChatMode, auto currentView, auto userProfile, auto totalBalance, auto isLoadingChannels, auto walletRef, auto handleNewChat, auto handleChannelSelect, auto handleBalanceChange, auto setChannels, auto setActiveChannelId, auto setIsNewChatMode, auto updateUserProfile, auto signOut, auto isSignedIn, auto agentId, auto navigate) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { setOpenMobile } = useSidebar();

@@ -28,7 +28,7 @@ class SweBenchEvaluate {
 public:
     SweBenchEvaluate(std::optional<std::any> params);
     std::string runId() const;
-    std::vector<std::string> getSbCall(const std::string& predsPath, boolean = false submitOnly);
+    std::vector<std::string> getSbCall(const std::string& predsPath, bool submitOnly = false);
     void checkRunningCalls();
     void onInstanceCompleted(const std::any& _params);
     void moveSbCliReport();

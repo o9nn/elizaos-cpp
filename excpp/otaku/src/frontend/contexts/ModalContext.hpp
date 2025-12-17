@@ -1,5 +1,4 @@
 #pragma once
-#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -17,7 +16,7 @@ namespace elizaos {
 struct ModalState {
     bool isVisible;
     std::optional<ReactNode> content;
-    std::optional<std::string> id;
+    std::string id;
     std::optional<ModalOptions> options;
 };
 
@@ -32,7 +31,7 @@ struct ModalContextType {
     bool isVisible;
 };
 
-void ModalProvider(const std::any& { children });
+void ModalProvider();
 
 // Custom hook to use the modal
 void useModal();

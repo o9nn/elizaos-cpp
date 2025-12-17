@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 
 namespace elizaos {
@@ -16,13 +15,14 @@ namespace elizaos {
 
 struct ButtonProps {
     ReactNode children;
-    std::optional<std::variant<'default', 'outline', 'ghost', 'destructive'>> variant;
-    std::optional<std::variant<'default', 'sm', 'lg', 'icon'>> size;
+    std::optional<std::string> variant;
+    std::optional<std::string> size;
     std::optional<std::string> className;
     std::optional<bool> disabled;
     std::optional<std::string> title;
-    std::optional<std::variant<'button', 'submit', 'reset'>> type;
+    std::optional<std::string> type;
 };
 
+void Button(auto variant, auto size, auto className, auto onClick, auto disabled, auto title, auto type);
 
 } // namespace elizaos

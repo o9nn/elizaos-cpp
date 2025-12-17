@@ -6,7 +6,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include ".hyperfy/src/core/systems/System.hpp"
 
@@ -42,8 +41,8 @@ public:
     void postTick();
     void start();
     std::future<void> publishAudioStream(Buffer audioBuffer);
-    std::future<Int16Array> convertToPcm(Buffer buffer, auto sampleRate = 48000);
-    std::variant<'mp3', 'wav', 'pcm'> detectAudioFormat(Buffer buffer);
+    std::future<Int16Array> convertToPcm(Buffer buffer, auto sampleRate);
+    std::string detectAudioFormat(Buffer buffer);
 };
 
 } // namespace elizaos

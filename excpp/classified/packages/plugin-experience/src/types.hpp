@@ -15,7 +15,7 @@ namespace elizaos {
 
 // Extend the core service types with experience service
   struct ServiceTypeRegistry {
-    'EXPERIENCE' EXPERIENCE;
+    std::string EXPERIENCE;
 };
 
 // Export service type constant
@@ -75,7 +75,7 @@ struct ExperienceAnalysis {
 
 struct ExperienceEvent {
     UUID experienceId;
-    std::variant<'created', 'accessed', 'updated', 'superseded'> eventType;
+    std::string eventType;
     double timestamp;
 };
 

@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void ConfirmationDialog(auto {
-  open, auto onOpenChange, auto title, auto description, auto confirmText = 'Confirm', auto cancelText = 'Cancel', auto onConfirm, auto variant = 'destructive', ConfirmationDialogProps }) {
+void ConfirmationDialog(auto onOpenChange, auto title, auto description, auto confirmText, auto cancelText, auto onConfirm, auto variant) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto handleConfirm = [&]() {;

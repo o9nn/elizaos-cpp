@@ -23,7 +23,7 @@ struct UserSegment {
 
 class UserSegmentation {
 public:
-    std::future<std::vector<UserSegment>> generateSegments();
+    static std::future<std::vector<UserSegment>> generateSegments();
 };
  
 } // namespace elizaos

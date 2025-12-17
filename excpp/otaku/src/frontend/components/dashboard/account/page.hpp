@@ -31,7 +31,7 @@ struct AccountPageProps {
 };
 
 // Compress and convert image to base64
-std::future<std::string> compressImage(File file, number = 500 maxSizeKB);
+std::future<std::string> compressImage(File file, double maxSizeKB = 500);
 
 // Predefined avatars in the public/avatars folder
 
@@ -39,7 +39,7 @@ struct AvatarPickerModalProps {
     std::string currentAvatar;
 };
 
-void AvatarPickerModal(auto { currentAvatar, auto onSelectAvatar, AvatarPickerModalProps onUploadCustom });
+void AvatarPickerModal(auto onSelectAvatar);
 
 
 } // namespace elizaos

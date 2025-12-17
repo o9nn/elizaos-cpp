@@ -32,7 +32,7 @@ bool isRunningFromLocalCli() {
 
 }
 
-std::optional<std::string> getLocalCliPath() {
+std::string getLocalCliPath() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto localCliPath = path.join(;

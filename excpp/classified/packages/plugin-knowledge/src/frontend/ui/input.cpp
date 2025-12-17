@@ -4,9 +4,7 @@
 
 namespace elizaos {
 
-void Input(auto {
-  type = 'text', auto placeholder, auto value, auto onChange, auto className = '', auto disabled = false, auto ref, auto multiple, auto accept, InputProps ...props
-}) {
+void Input(auto placeholder, auto value, auto onChange, auto className, auto disabled, auto ref, auto multiple, auto accept) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

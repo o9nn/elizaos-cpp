@@ -18,7 +18,7 @@ namespace elizaos {
 
 class WebSocketClient {
 public:
-    WebSocketClient(auto /*  - Remove if Env is not used */);
+    WebSocketClient();
     std::future<void> emit(const std::string& room, const std::string& event, const std::any& data);
     std::future<void> emitToClient(const std::string& clientId, const std::string& event, const std::any& data);
     void to(const std::string& room);

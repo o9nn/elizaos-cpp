@@ -32,6 +32,6 @@ namespace elizaos {
 /**
  * Extract form type from user message
  */
-std::optional<std::string> extractFormType(const std::string& text);
+std::string extractFormType(const std::string& text);
 
 } // namespace elizaos

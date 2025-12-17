@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void PHProvider(const std::any& { children }) {
+void PHProvider() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return <PostHogProvider client={posthog}>{children}</PostHogProvider>;

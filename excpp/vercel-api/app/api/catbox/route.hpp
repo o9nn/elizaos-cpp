@@ -22,14 +22,14 @@ struct RequestError {
 };
 
 // Helper function to extract file ID from catbox URL
-std::optional<std::string> extractFileIdFromUrl(const std::string& url);
+std::string extractFileIdFromUrl(const std::string& url);
 
 std::future<void> POST(NextRequest request);
 
 std::future<void> GET(NextRequest request);
 
 // Helper function to get content type from file extension
-std::optional<std::string> getContentTypeFromExtension(const std::string& filename);
+std::string getContentTypeFromExtension(const std::string& filename);
 
 // Handle CORS preflight requests
 std::future<void> OPTIONS();

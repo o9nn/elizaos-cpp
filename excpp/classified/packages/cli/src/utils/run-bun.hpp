@@ -22,6 +22,6 @@ namespace elizaos {
  * @param {string} cwd - The current working directory in which to run the command.
  * @returns {Promise<void>} A Promise that resolves when the command has finished running.
  */
-std::future<void> runBunCommand(const std::vector<std::string>& args, const std::string& cwd, auto silent = false);
+std::future<void> runBunCommand(const std::vector<std::string>& args, const std::string& cwd, auto silent);
 
 } // namespace elizaos

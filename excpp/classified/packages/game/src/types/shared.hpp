@@ -44,7 +44,7 @@ struct WebSocketMessage {
 struct ConfigurationValue {
     std::string key;
     std::variant<std::string, double, bool> value;
-    std::variant<'string', 'number', 'boolean', 'url', 'api_key'> type;
+    std::string type;
 };
 
 struct ValidationResult {
@@ -67,14 +67,14 @@ struct RuntimeSettings {
 // Log entry types
 struct LogEntry {
     std::variant<std::string, Date> timestamp;
-    std::variant<'debug', 'info', 'warn', 'error'> level;
+    std::string level;
     std::string message;
     std::optional<std::string> source;
 };
 
 // HTTP Request/Response types
 struct HttpRequestOptions {
-    std::optional<std::variant<'GET', 'POST', 'PUT', 'DELETE', 'PATCH'>> method;
+    std::optional<std::string> method;
     std::optional<double> timeout;
 };
 
@@ -82,7 +82,7 @@ struct HttpRequestOptions {
 struct ModelProvider {
     std::string name;
     std::string displayName;
-    std::variant<'available', 'not_configured', 'error'> status;
+    std::string status;
     std::string message;
     std::optional<std::vector<std::string>> models;
 };
@@ -97,7 +97,7 @@ struct ModelInfo {
 // Memory and Knowledge types - Extended from @elizaos/core
 struct MemoryEntry {
     std::string id;
-    std::variant<'knowledge', 'conversation', 'goal', 'user', 'relationship'> type;
+    std::string type;
     std::variant<Date, std::string> createdAt;
     std::optional<std::variant<Date, std::string>> updatedAt;
     std::optional<double> importance;
@@ -122,7 +122,7 @@ struct Todo {
     std::string name;
     std::optional<std::string> title;
     std::optional<std::string> description;
-    std::variant<'daily', 'one-off', 'aspirational'> type;
+    std::string type;
     bool isCompleted;
     std::optional<double> priority;
     std::variant<std::string, Date> createdAt;
@@ -132,14 +132,14 @@ struct Todo {
 // Capability and Status types
 struct CapabilityStatus {
     bool enabled;
-    std::variant<'active', 'inactive', 'error'> status;
+    std::string status;
     std::optional<std::string> error;
     std::optional<std::variant<std::string, Date>> lastUsed;
 };
 
 struct AgentStatus {
     std::string name;
-    std::variant<'online', 'offline', 'thinking'> status;
+    std::string status;
     std::optional<std::string> lastThought;
     std::optional<std::string> lastAction;
     std::optional<std::string> currentGoal;
@@ -162,7 +162,7 @@ using KnowledgeFile = KnowledgeItem;
 struct BackupInfo {
     std::string id;
     std::variant<std::string, Date> timestamp;
-    std::variant<'manual', 'automatic', 'shutdown'> backup_type;
+    std::string backup_type;
     double size_bytes;
     std::vector<BackupComponent> components;
     BackupMetadata metadata;
@@ -191,7 +191,7 @@ struct RestoreOptions {
 // Container and System types
 struct ContainerInfo {
     std::string name;
-    std::variant<'running', 'stopped', 'error'> status;
+    std::string status;
     std::optional<double> uptime;
     std::vector<LogEntry> logs;
 };
@@ -211,7 +211,7 @@ using UnsubscribeFunction = std::function<void()>;
 // API Response types for Tauri
 
 struct HealthCheckResponse {
-    std::variant<'healthy', 'unhealthy'> status;
+    std::string status;
     bool database;
 };
 
@@ -260,7 +260,7 @@ struct TabContentResponse {
 struct OllamaModelStatus {
     bool models_ready;
     std::vector<std::string> missing_models;
-    std::optional<std::string> downloading;
+    std::string downloading;
     std::optional<double> progress;
 };
 

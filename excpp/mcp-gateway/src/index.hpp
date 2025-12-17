@@ -18,7 +18,7 @@ namespace elizaos {
 
 
 
-using TransportMode = std::variant<'stdio', 'sse'>;
+using TransportMode = std::variant<std::string, std::string>;
 
 /**
  * Main entry point for the MCP Gateway Server

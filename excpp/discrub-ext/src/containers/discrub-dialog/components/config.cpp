@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void Config(auto {
-  settings, auto onChangeSettings, auto visibleSettings = [], auto containerProps, ConfigProps }) {
+void Config(auto onChangeSettings, auto visibleSettings, auto containerProps) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto handleChange = async (setting: DiscrubSetting, value: string) => {;

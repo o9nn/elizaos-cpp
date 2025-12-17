@@ -23,5 +23,6 @@ WalletAdapterNetwork getSolanaNetwork();
  */
 std::string getSolanaEndpoint();
 
+void SolanaWalletProvider();
 
 } // namespace elizaos

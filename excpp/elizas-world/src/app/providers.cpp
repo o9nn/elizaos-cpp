@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void Providers(const std::any& { children }) {
+void Providers() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [queryClient] = useState(() => new QueryClient({;

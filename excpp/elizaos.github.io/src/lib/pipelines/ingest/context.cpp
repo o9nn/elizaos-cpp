@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-IngestionPipelineContext createIngestionContext(auto {
-  repoId, auto logger, auto config, auto dateRange, auto force = false, auto githubToken, CreateIngestionContextOptions }) {
+IngestionPipelineContext createIngestionContext(auto logger, auto config, auto dateRange, auto force, auto githubToken) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Create a GitHub client with the provided logger or a child logger

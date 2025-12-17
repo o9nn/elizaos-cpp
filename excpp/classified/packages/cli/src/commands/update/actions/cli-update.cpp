@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::future<bool> performCliUpdate(GlobalUpdateOptions = {} options) {
+std::future<bool> performCliUpdate(GlobalUpdateOptions options = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

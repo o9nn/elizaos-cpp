@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::optional<std::string> tryLoadFile(const std::string& filePath) {
+std::string tryLoadFile(const std::string& filePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Use synchronous module loading to maintain backward compatibility
@@ -13,7 +13,7 @@ std::optional<std::string> tryLoadFile(const std::string& filePath) {
 
 }
 
-std::future<std::optional<std::string>> tryLoadFileAsync(const std::string& filePath) {
+std::future<std::string> tryLoadFileAsync(const std::string& filePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Since this is a deprecated function delegating to server,

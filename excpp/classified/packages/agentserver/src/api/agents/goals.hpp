@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include ".shared/response-utils.hpp"
 #include "elizaos/core.hpp"
@@ -20,7 +19,7 @@ struct Goal {
     std::string id;
     std::string name;
     std::string description;
-    std::variant<'active', 'completed', 'paused'> status;
+    std::string status;
     double progress;
     std::string createdAt;
     std::string updatedAt;

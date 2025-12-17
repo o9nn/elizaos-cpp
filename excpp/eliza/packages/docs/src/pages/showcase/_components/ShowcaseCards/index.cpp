@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-JSX::Element ShowcaseCards(const std::any& { users }) {
+JSX::Element ShowcaseCards() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Keep only unique entries by title

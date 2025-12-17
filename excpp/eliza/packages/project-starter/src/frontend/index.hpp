@@ -1,5 +1,4 @@
 #pragma once
-#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -33,7 +32,7 @@ void ExampleRoute();
 /**
  * Example provider component
  */
-void ExampleProvider(const std::any& { agentId });
+void ExampleProvider();
 
 // Initialize the application - no router needed for iframe
 

@@ -65,7 +65,7 @@ struct MessageServiceStructure {
 
 // Extend the core service types with message bus service
   struct ServiceTypeRegistry {
-    'MESSAGE_BUS_SERVICE' MESSAGE_BUS_SERVICE;
+    std::string MESSAGE_BUS_SERVICE;
 };
 
 // Export service type constant

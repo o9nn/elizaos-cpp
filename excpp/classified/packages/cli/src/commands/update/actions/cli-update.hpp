@@ -22,6 +22,6 @@ namespace elizaos {
  *
  * Handles CLI updates with automatic migration from npm to bun when appropriate, and supports both global and local installation scenarios.
  */
-std::future<bool> performCliUpdate(GlobalUpdateOptions = {} options);
+std::future<bool> performCliUpdate(GlobalUpdateOptions options = {});
 
 } // namespace elizaos

@@ -37,8 +37,8 @@ struct MessageServiceMessage {
 class MessageBusService {
 public:
     MessageBusService(IAgentRuntime runtime);
-    std::future<Service> start(IAgentRuntime runtime);
-    std::future<void> stop(IAgentRuntime runtime);
+    static std::future<Service> start(IAgentRuntime runtime);
+    static std::future<void> stop(IAgentRuntime runtime);
     void connectToMessageBus();
     std::future<void> fetchValidChannelIds();
     std::future<std::vector<std::string>> getChannelParticipants(UUID channelId);
@@ -47,8 +47,6 @@ public:
     std::future<bool> validateServerSubscription(MessageServiceMessage message);
     std::future<bool> validateNotSelfMessage(MessageServiceMessage message);
     Promise< ensureWorldAndRoomExist(MessageServiceMessage message);
-    void catch(const std::any& error);
-    void catch(const std::any& error);
     std::future<UUID> ensureAuthorEntityExists(MessageServiceMessage message);
     Memory createAgentMemory(MessageServiceMessage message, UUID agentAuthorEntityId, UUID agentRoomId, UUID agentWorldId);
     void handleIncomingMessage(MessageServiceMessage message);
@@ -58,7 +56,6 @@ public:
     void notifyMessageComplete(std::optional<UUID> channelId, std::optional<UUID> serverId);
     std::unordered_map<std::string, std::string> getAuthHeaders();
     std::string getCentralMessageServerUrl();
-    std::future<void> stop();
 };
 
 // Minimal plugin definition to register the service

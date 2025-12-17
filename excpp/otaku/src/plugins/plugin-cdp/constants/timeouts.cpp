@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::future<void> waitForTxConfirmation(PublicClient publicClient, `0x${string}` hash, string = "transaction" operationType, number = TX_CONFIRMATION_TIMEOUT timeout) {
+std::future<void> waitForTxConfirmation(PublicClient publicClient, `0x${string}` hash, std::string operationType = "transaction", double timeout = TX_CONFIRMATION_TIMEOUT) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

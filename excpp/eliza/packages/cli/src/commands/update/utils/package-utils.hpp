@@ -20,17 +20,17 @@ namespace elizaos {
 /**
  * Check for available updates
  */
-std::future<UpdateCheckResult> checkForUpdates(Record<string dependencies, auto string>);
+std::future<UpdateCheckResult> checkForUpdates(const std::unordered_map<std::string, std::string>& dependencies);
 
 /**
  * Display update summary
  */
-void displayUpdateSummary(Record<string updates, auto PackageUpdate>);
+void displayUpdateSummary(const std::unordered_map<std::string, PackageUpdate>& updates);
 
 /**
  * Update package.json with new versions
  */
-std::future<void> updatePackageJson(const std::string& packageJsonPath, Record<string updates, auto PackageUpdate>);
+std::future<void> updatePackageJson(const std::string& packageJsonPath, const std::unordered_map<std::string, PackageUpdate>& updates);
 
 /**
  * Install dependencies using the detected package manager

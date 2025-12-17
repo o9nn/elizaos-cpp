@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::future<> startMonitoringBatch(auto batchSize = 10) {
+std::future<> startMonitoringBatch(auto batchSize) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     processed: number; total: number
 }

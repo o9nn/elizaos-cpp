@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include "service.hpp"
 
@@ -18,7 +17,7 @@ namespace elizaos {
 struct PostMedia {
     UUID id;
     std::string url;
-    std::variant<'image', 'video', 'audio', 'document'> type;
+    std::string type;
     std::string mimeType;
     double size;
     std::optional<double> width;
@@ -89,7 +88,7 @@ struct PostInfo {
     std::optional<Date> editedAt;
     std::optional<Date> scheduledAt;
     PostEngagement engagement;
-    std::variant<'public', 'private', 'followers', 'friends', 'unlisted'> visibility;
+    std::string visibility;
     std::optional<UUID> replyTo;
     UUID id;
     double position;
@@ -127,7 +126,7 @@ struct PostSearchOptions {
     std::optional<bool> hasMedia;
     std::optional<bool> hasLocation;
     std::optional<PostInfo['visibility']> visibility;
-    std::optional<std::variant<'date', 'engagement', 'relevance'>> sortBy;
+    std::optional<std::string> sortBy;
 };
 
 struct PostAnalytics {

@@ -13,5 +13,13 @@ namespace elizaos {
 
 
 
+void TooltipProvider();
+
+void Tooltip();
+
+void TooltipTrigger();
+
+void TooltipContent(auto sideOffset, auto children);
+
 
 } // namespace elizaos

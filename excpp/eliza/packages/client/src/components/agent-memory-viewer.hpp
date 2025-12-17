@@ -38,6 +38,6 @@ struct AgentMemoryViewerProps {
     std::optional<UUID> channelId;
 };
 
-void AgentMemoryViewer(auto { agentId, auto agentName, AgentMemoryViewerProps channelId });
+void AgentMemoryViewer(auto agentName);
 
 } // namespace elizaos

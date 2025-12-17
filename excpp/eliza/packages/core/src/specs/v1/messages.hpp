@@ -1,6 +1,6 @@
 #pragma once
-#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
@@ -18,13 +18,14 @@ namespace elizaos {
 /**
  * Get details for a list of actors.
  */
+std::future<void> getActorDetails(auto roomId);
 
 /**
  * Format actors into a string
  * @param actors - list of actors
  * @returns string
  */
-void formatActors(const std::any& { actors });
+void formatActors();
 
 /**
  * Format messages into a string

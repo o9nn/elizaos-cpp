@@ -50,7 +50,7 @@ void loadEnvironmentVariables(std::optional<std::string> envPath);
 /**
  * Parse config file content
  */
-std::any parseConfigFile(const std::string& content, const std::variant<'yaml', 'json'>& format);
+std::any parseConfigFile(const std::string& content, const std::string& format);
 
 /**
  * Merge two config objects deeply

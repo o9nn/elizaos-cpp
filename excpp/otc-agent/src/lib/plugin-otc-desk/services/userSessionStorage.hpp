@@ -35,7 +35,7 @@ public:
     UserSessionStorageService(IAgentRuntime runtime);
     std::future<void> initialize();
     std::future<void> stop();
-    std::future<UserSessionStorageService> start(IAgentRuntime runtime);
+    static std::future<UserSessionStorageService> start(IAgentRuntime runtime);
     std::future<UserSessionMemory> getOrCreateSession(const std::string& entityId, const std::string& walletAddress);
     std::future<void> checkRateLimit(const std::string& entityId, const std::string& walletAddress);
     std::future<void> incrementQuoteCount(const std::string& entityId, const std::string& walletAddress);

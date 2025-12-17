@@ -25,7 +25,7 @@ struct VaultPositionsParams {
 
 using VaultPositionsInput = {
 
-using VaultPositionsActionResult = ActionResult & { input: VaultPositionsInput };
+using VaultPositionsActionResult = ActionResult;
 
 // Helper functions to format vault position data
 std::string normalizeUnitsFromApi(const std::variant<std::string, double>& raw, double decimals);

@@ -24,16 +24,25 @@ public:
     void setupEventListeners();
     std::future<void> handleShellCommandExecuted(std::optional<std::any> params);
     std::future<void> handleAgentNamed(const std::any& _params);
-    std::future<void> handleGoalCreated({ goalData: Record<string _params, auto unknown> });
-    std::future<void> handleTodoCreated({ todoData: Record<string _params, auto unknown> });
-    std::future<void> handleFormSubmitted(std::optional<{ details: Record<string> params, auto unknown> });
+    std::future<void> handleGoalCreated(const std::any& _params);
+    std::future<void> handleTodoCreated(const std::any& _params);
+    std::future<void> handleBrowserActionPerformed(std::optional<std::any> params);
+    std::future<void> handleFormSubmitted(std::optional<std::any> params);
+    std::future<void> handleVisionActionPerformed(std::optional<std::any> params);
+    std::future<void> handleMicrophoneUsed(std::optional<std::any> _params);
+    std::future<void> handleCapabilityUsed(std::optional<std::any> params);
     std::future<void> trackShellCommand(const std::string& command, double exitCode);
-    std::future<void> trackGoalCreation(Record<string goalData, auto unknown>);
-    std::future<void> trackTodoCreation(Record<string todoData, auto unknown>);
+    std::future<void> trackGoalCreation(const std::unordered_map<std::string, unknown>& goalData);
+    std::future<void> trackTodoCreation(const std::unordered_map<std::string, unknown>& todoData);
     std::future<void> trackAgentNaming(const std::string& name);
-    std::future<void> trackAction(const std::string& actionType, std::optional<Record<string> details, auto unknown>);
+    std::future<void> trackAction(const std::string& actionType, std::optional<std::unordered_map<std::string, unknown>> details);
     std::unordered_map<std::string, unknown> getProgressionStatus();
     void cleanup();
+
+private:
+    IAgentRuntime runtime_;
+    CapabilityProgressionService progressionService_;
+};
 
 
 } // namespace elizaos

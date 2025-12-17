@@ -17,6 +17,6 @@ namespace elizaos {
 
 
 
-void Providers(PropsWithChildren { children });
+void Providers();
 
 } // namespace elizaos

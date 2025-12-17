@@ -21,14 +21,14 @@ namespace elizaos {
  */
 class ProgressivePluginService {
 public:
-    ProgressivePluginService(std::optional<IAgentRuntime> runtime, std::optional<Record<string> availablePlugins, auto Plugin[]>);
-    void setAvailablePlugins(Record<string plugins, auto Plugin[]>);
+    ProgressivePluginService(std::optional<IAgentRuntime> runtime, std::optional<std::unordered_map<std::string, std::vector<Plugin>>> availablePlugins);
+    void setAvailablePlugins(const std::unordered_map<std::string, std::vector<Plugin>>& plugins);
     std::future<void> registerCapabilityPlugins(const std::string& capability);
     bool hasPluginsForCapability(const std::string& capability);
     std::vector<Plugin> getPluginsForCapability(const std::string& capability);
     bool isPluginRegistered(const std::string& pluginName);
     std::vector<std::string> getAvailableCapabilities();
-    std::future<ProgressivePluginService> start(IAgentRuntime runtime);
+    static std::future<ProgressivePluginService> start(IAgentRuntime runtime);
     std::future<void> stop();
 
 private:

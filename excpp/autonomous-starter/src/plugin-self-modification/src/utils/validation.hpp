@@ -19,6 +19,6 @@ ValidationResult validateCharacterDiff(CharacterDiff diff);
 
 bool validateDataType(const std::any& value, const std::string& expectedType);
 
-bool validateModificationRate(const std::vector<std::any>& recentModifications, number = 5 maxPerHour, number = 20 maxPerDay);
+bool validateModificationRate(const std::vector<std::any>& recentModifications, double maxPerHour = 5, double maxPerDay = 20);
 
 } // namespace elizaos

@@ -22,12 +22,12 @@ struct ElizaBuildOptions {
     std::optional<std::string> root;
     std::optional<std::vector<std::string>> entrypoints;
     std::optional<std::string> outdir;
-    std::optional<std::variant<'node', 'bun', 'browser'>> target;
+    std::optional<std::string> target;
     std::optional<std::vector<std::string>> external;
-    std::optional<std::variant<bool, 'linked', 'inline', 'external'>> sourcemap;
+    std::optional<std::variant<bool, std::string>> sourcemap;
     std::optional<bool> minify;
     std::optional<std::vector<BunPlugin>> plugins;
-    std::optional<std::variant<'esm', 'cjs'>> format;
+    std::optional<std::string> format;
     std::optional<bool> isCli;
     std::optional<bool> generateDts;
 };
@@ -50,12 +50,12 @@ std::future<void> copyAssets(const std::vector<std::any>& assets);
 /**
  * Generate TypeScript declarations using tsc
  */
-std::future<void> generateDts(auto tsconfigPath = './tsconfig.build.json', auto throwOnError = true);
+std::future<void> generateDts(auto tsconfigPath, auto throwOnError);
 
 /**
  * Clean build artifacts with proper error handling and retry logic
  */
-std::future<void> cleanBuild(auto outdir = 'dist', auto maxRetries = 3);
+std::future<void> cleanBuild(auto outdir, auto maxRetries);
 
 /**
  * Watch files for changes and trigger rebuilds with proper cleanup
@@ -92,7 +92,7 @@ struct BuildRunnerOptions {
 /**
  * Run a build with optional watch mode support
  */
-std::future<void> runBuild(std::optional<BuildRunnerOptions & { isRebuild: boolean }> options);
+std::future<void> runBuild(std::optional<BuildRunnerOptions> options);
 
 /**
  * Create a standardized build runner with watch mode support

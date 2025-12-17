@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::future<void> scanDirectory(const std::string& dir, string = dir baseDir) {
+std::future<void> scanDirectory(const std::string& dir, std::string baseDir = dir) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto entries = fs.readdir(dir, { withFileTypes: true });

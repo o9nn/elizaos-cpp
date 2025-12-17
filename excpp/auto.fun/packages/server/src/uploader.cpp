@@ -28,15 +28,7 @@ void getUploadedFiles() {
     [key: string]: string
 }
 
-std::future<void> uploadWithS3(const std::variant<ArrayBuffer, Buffer, Uint8Array, object>& // Removed env parameter
-  data, std::optional<{
-    isJson: boolean;
-    contentType: string;
-    filename: string;
-    metadata: Record<string> options, std::optional<string; // Allow specifying base path like 'token-metadata' or 'token-images'
-    cacheControl: string; // Optional Cache-Control header value
-  } = {}> string>; // For custom metadata
-    basePath) {
+std::future<void> uploadWithS3(std::any options = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -135,9 +127,7 @@ std::future<void> uploadWithS3(const std::variant<ArrayBuffer, Buffer, Uint8Arra
     }
 }
 
-std::future<void> uploadGeneratedImage(const std::variant<ArrayBuffer, Buffer, Uint8Array>& // Removed env parameter
-  data, const std::string& // Accept Buffer/Uint8Array directly
-  tokenMint, double generationNumber, std::optional<std::any> options) {
+std::future<void> uploadGeneratedImage(double generationNumber, std::any options = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

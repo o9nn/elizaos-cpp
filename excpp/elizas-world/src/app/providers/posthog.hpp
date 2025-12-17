@@ -1,5 +1,4 @@
 #pragma once
-#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -14,5 +13,5 @@ namespace elizaos {
 
 
 
-void PHProvider(const std::any& { children }); 
+void PHProvider(); 
 } // namespace elizaos

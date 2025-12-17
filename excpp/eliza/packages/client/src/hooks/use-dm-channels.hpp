@@ -26,7 +26,7 @@ void useGetOrCreateDmChannel();
 /**
  * Hook to fetch all DM conversations (channels marked as DMs) for a specific agent.
  */
-void useDmChannelsForAgent(UUID agentId, UUID = '00000000-0000-0000-0000-000000000000' as UUID serverId);
+void useDmChannelsForAgent(UUID agentId, UUID serverId = '00000000-0000-0000-0000-000000000000' as UUID);
 
 /**
  * Hook to create a new, distinct DM channel (conversation) with an agent.

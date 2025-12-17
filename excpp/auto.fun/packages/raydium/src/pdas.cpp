@@ -34,7 +34,7 @@ anchor.web3.PublicKey getNftTokenFaucet(anchor.web3.PublicKey programId, anchor.
 
 }
 
-anchor.web3.PublicKey getLockedLiquidity(anchor.web3.PublicKey positionNft, anchor.web3.PublicKey = LOCKING_PROGRAM lockingProgram) {
+anchor.web3.PublicKey getLockedLiquidity(anchor.web3.PublicKey positionNft, anchor.web3.PublicKey lockingProgram = LOCKING_PROGRAM) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return anchor.web3.PublicKey.findProgramAddressSync(;

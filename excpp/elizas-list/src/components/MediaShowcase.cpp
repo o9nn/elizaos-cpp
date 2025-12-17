@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void MediaShowcase(MediaShowcaseProps { media }) {
+void MediaShowcase() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [activeIndex, setActiveIndex] = useState(0);

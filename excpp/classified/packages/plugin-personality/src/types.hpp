@@ -13,7 +13,7 @@ namespace elizaos {
 
 // Extend the core service types with character management service
   struct ServiceTypeRegistry {
-    'CHARACTER_MANAGEMENT' CHARACTER_MANAGEMENT;
+    std::string CHARACTER_MANAGEMENT;
 };
 
 // Export service type constant

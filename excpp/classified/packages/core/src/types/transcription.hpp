@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include "service.hpp"
 
@@ -20,7 +19,7 @@ struct TranscriptionOptions {
     std::optional<std::string> model;
     std::optional<double> temperature;
     std::optional<std::string> prompt;
-    std::optional<std::variant<'json', 'text', 'srt', 'vtt', 'verbose_json'>> response_format;
+    std::optional<std::string> response_format;
     std::optional<bool> word_timestamps;
     std::optional<bool> segment_timestamps;
 };
@@ -66,37 +65,13 @@ struct TextToSpeechOptions {
     std::optional<std::string> voice;
     std::optional<std::string> model;
     std::optional<double> speed;
-    std::optional<std::variant<'mp3', 'wav', 'flac', 'aac'>> format;
-    std::optional<std::variant<'mp3', 'opus', 'aac', 'flac'>> response_format;
+    std::optional<std::string> format;
+    std::optional<std::string> response_format;
 };
 
 /**
  * Interface for audio transcription and speech services
  */
-
-  /**
-   * Real-time speech to text from audio stream
-   * @param audioStream - Audio stream or buffer
-   * @param options - Speech to text options
-   * @returns Promise resolving to transcription result
-   */
-
-  /**
-   * Convert text to speech
-   * @param text - Text to convert to speech
-   * @param options - Text to speech options
-   * @returns Promise resolving to audio buffer
-   */
-
-  /**
-   * Get supported languages for transcription
-   * @returns Promise resolving to array of supported language codes
-   */
-
-  /**
-   * Get available voices for text to speech
-   * @returns Promise resolving to array of available voices
-   */
 
 
 } // namespace elizaos

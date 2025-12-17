@@ -5,7 +5,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include "elizaos/core.hpp"
 
@@ -17,12 +16,12 @@ namespace elizaos {
 
 
 struct ServerHealth {
-    std::variant<'healthy', 'degraded', 'unhealthy'> status;
+    std::string status;
     double uptime;
     Date timestamp;
     std::optional<std::string> version;
     std::optional<Record<> checks;
-    std::variant<'pass', 'fail'> status;
+    std::string status;
     std::optional<std::string> message;
 };
 
@@ -46,7 +45,7 @@ struct ServerDebugInfo {
 };
 
 struct LogSubmitParams {
-    std::variant<'debug', 'info', 'warn', 'error'> level;
+    std::string level;
     std::string message;
     std::optional<std::string> source;
 };

@@ -19,6 +19,6 @@ struct LogoProps {
     std::optional<std::string> className;
 };
 
-void Logo(auto { width = 120, auto height = 32, LogoProps className = "" });
+void Logo(auto height, auto className);
 
 } // namespace elizaos

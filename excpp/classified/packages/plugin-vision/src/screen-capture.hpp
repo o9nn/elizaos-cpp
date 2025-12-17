@@ -19,7 +19,6 @@ class ScreenCaptureService {
 public:
     ScreenCaptureService(VisionConfig config);
     Promise< getScreenInfo();
-    void catch(auto error);
     std::future<ScreenCapture> captureScreen();
     std::future<void> captureScreenToFile(const std::string& outputPath);
     std::optional<ScreenTile> getActiveTile();

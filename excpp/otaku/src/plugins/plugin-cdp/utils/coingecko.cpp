@@ -96,7 +96,7 @@ std::future<std::optional<TokenMetadata>> getTokenMetadata(const std::string& ad
 
 }
 
-std::future<std::optional<std::string>> resolveTokenSymbol(const std::string& symbol, const std::string& network) {
+std::future<std::string> resolveTokenSymbol(const std::string& symbol, const std::string& network) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto lowerSymbol = symbol.toLowerCase();

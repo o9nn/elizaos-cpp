@@ -13,5 +13,7 @@ namespace elizaos {
 
 
 
+void Button(auto variant, auto size, auto asChild);
+
 
 } // namespace elizaos

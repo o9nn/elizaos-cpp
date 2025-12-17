@@ -28,7 +28,7 @@ struct WalletOperationResult {
 
 class WalletService {
 public:
-    WalletService(IAgentRuntime private runtime);
+    WalletService();
     std::future<void> initialize();
     std::future<void> stop();
     void getWallet();

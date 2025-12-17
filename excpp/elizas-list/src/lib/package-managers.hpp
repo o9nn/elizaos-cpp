@@ -25,8 +25,8 @@ struct PackageInfo {
 
 class PackageManagerClient {
 public:
-    std::future<PackageInfo> getNpmInfo(const std::string& packageName);
-    std::future<PackageInfo> getPyPiInfo(const std::string& packageName);
+    static std::future<PackageInfo> getNpmInfo(const std::string& packageName);
+    static std::future<PackageInfo> getPyPiInfo(const std::string& packageName);
 };
  
 } // namespace elizaos

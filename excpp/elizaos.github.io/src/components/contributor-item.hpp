@@ -23,5 +23,6 @@ struct ContributorItemProps {
     double score;
 };
 
+void ContributorItem(auto href, auto stats, auto score, auto className, auto children);
 
 } // namespace elizaos

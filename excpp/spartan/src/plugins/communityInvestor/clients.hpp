@@ -26,7 +26,6 @@ namespace elizaos {
  * It can either be a key-value pair object with string, number, boolean, null or undefined values,
  * or an instance of the URLSearchParams class.
  */
-using QueryParams = std::variant<Record<string, string, double, bool, nullptr, undefined>, URLSearchParams>;
 
 /**
  * Interface representing retry options for a retry mechanism.
@@ -60,7 +59,7 @@ struct RetryOptions {
  */
 class RequestError {
 public:
-    RequestError(const std::string& message, std::optional<Response> public response);
+    RequestError(const std::string& message);
 };
 
 /**
@@ -81,8 +80,8 @@ public:
 
 class JupiterClient {
 public:
-    void getQuote(const std::string& inputMint, const std::string& outputMint, const std::string& amount, auto slippageBps = 50);
-    void swap(const std::any& quoteData, const std::string& walletPublicKey);
+    static void getQuote(const std::string& inputMint, const std::string& outputMint, const std::string& amount, auto slippageBps);
+    static void swap(const std::any& quoteData, const std::string& walletPublicKey);
 };
 
 /**
@@ -98,10 +97,8 @@ using DexscreenerOptions = {
 
 class DexscreenerClient {
 public:
-    DexscreenerClient(IAgentRuntime private runtime);
-    void createFromRuntime(IAgentRuntime runtime);
-    void if(auto options.expires);
-    void if(auto options.expires);
+    DexscreenerClient();
+    static void createFromRuntime(IAgentRuntime runtime);
     std::future<DexScreenerData> search(const std::string& address, std::optional<DexscreenerOptions> options);
     std::variant<Promise<DexScreenerPair, null>> searchForHighestLiquidityPair(const std::string& address, std::optional<std::string> chain, std::optional<DexscreenerOptions> options);
 };
@@ -111,8 +108,8 @@ public:
  */
 class HeliusClient {
 public:
-    HeliusClient(const std::string& private readonly apiKey, IAgentRuntime _runtime);
-    void createFromRuntime(IAgentRuntime runtime);
+    HeliusClient(IAgentRuntime _runtime);
+    static void createFromRuntime(IAgentRuntime runtime);
     std::future<std::vector<HolderData>> fetchHolderList(const std::string& address, std::optional<std::any> options);
 
 private:
@@ -134,10 +131,8 @@ using CoingeckoOptions = {
  */
 class CoingeckoClient {
 public:
-    CoingeckoClient(const std::string& private readonly apiKey, IAgentRuntime private readonly runtime);
-    void createFromRuntime(IAgentRuntime runtime);
-    void if(auto options.expires);
-    void if(auto options.expires);
+    CoingeckoClient();
+    static void createFromRuntime(IAgentRuntime runtime);
     std::future<Prices> fetchPrices(std::optional<CoingeckoOptions> options);
     void fetchGlobal();
     void fetchCategories();
@@ -168,7 +163,7 @@ using WalletTokenList = {
 /**
  * Represents a type that can either be "solana" or "ethereum" for the BirdeyeXChain.
  */
-using BirdeyeXChain = std::variant<'solana', 'ethereum'>;
+using BirdeyeXChain = std::variant<std::string, std::string>;
 
 /**
  * Type representing headers for BirdeyeClient.
@@ -192,14 +187,11 @@ using BirdeyeRequestOptions = {
 
 class BirdeyeClient {
 public:
-    BirdeyeClient(const std::string& private readonly apiKey, IAgentRuntime private readonly runtime);
-    void if(auto !res.success || !res.data);
-    void createFromRuntime(IAgentRuntime runtime);
-    void if(auto options.expires && !forceRefresh);
-    void if(auto options.expires);
+    BirdeyeClient();
+    static void createFromRuntime(IAgentRuntime runtime);
     std::future<double> fetchPrice(const std::string& address, std::optional<BirdeyeRequestOptions> options);
     std::future<Prices> fetchPrices();
-    std::future<TokenOverview> fetchTokenOverview(const std::string& address, std::optional<BirdeyeRequestOptions> options, auto forceRefresh = false);
+    std::future<TokenOverview> fetchTokenOverview(const std::string& address, std::optional<BirdeyeRequestOptions> options, auto forceRefresh);
     std::future<TokenSecurityData> fetchTokenSecurity(const std::string& address, std::optional<BirdeyeRequestOptions> options);
     std::future<TokenTradeData> fetchTokenTradeData(const std::string& address, std::optional<BirdeyeRequestOptions> options);
     void fetchWalletTokenList(const std::string& address, std::optional<BirdeyeRequestOptions> options);

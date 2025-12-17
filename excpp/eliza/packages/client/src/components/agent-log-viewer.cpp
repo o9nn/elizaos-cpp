@@ -79,7 +79,7 @@ void generateLogChart(const std::vector<LogEntry>& logs) {
 
 }
 
-void LogChart(const std::any& { data }) {
+void LogChart() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto maxValue = Math.max(...data.map((d) => d.total), 1);
@@ -178,8 +178,7 @@ void LoadingIndicator() {
 
 }
 
-void EmptyState(auto {
-  selectedLevel, auto searchQuery, const std::any& }) {
+void EmptyState(auto searchQuery) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -198,7 +197,7 @@ void EmptyState(auto {
 
 }
 
-void AgentLogViewer(auto { agentName, AgentLogViewerProps level }) {
+void AgentLogViewer() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [selectedLevel, setSelectedLevel] = useState(level || 'all');

@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void Card(auto {
-  number, auto title, auto description, auto button, auto onClick, auto disabled, ICard }) {
+void Card(auto title, auto description, auto button, auto onClick, auto disabled) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

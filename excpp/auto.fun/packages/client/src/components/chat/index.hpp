@@ -30,11 +30,11 @@ using ChatTier = (typeof CHAT_TIERS)[number];
 struct ChatMessage {
     std::string id;
     std::string author;
-    std::optional<std::optional<std::string>> displayName;
-    std::optional<std::optional<std::string>> profileImage;
+    std::optional<std::string> displayName;
+    std::optional<std::string> profileImage;
     std::string tokenMint;
     std::string message;
-    std::optional<std::optional<std::string>> parentId;
+    std::optional<std::string> parentId;
     ChatTier tier;
     std::optional<double> replyCount;
     std::string timestamp;

@@ -279,7 +279,7 @@ std::future<> getProviderStatus(IAgentRuntime runtime) {
 
 }
 
-std::future<void> setSelectedProvider(IAgentRuntime runtime, const std::optional<std::string>& provider) {
+std::future<void> setSelectedProvider(IAgentRuntime runtime, const std::string& provider) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

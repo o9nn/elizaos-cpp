@@ -34,7 +34,7 @@ public:
     std::future<void> startElizaServer();
     std::future<void> startTauriApp();
     std::future<void> runIntegrationTests();
-    void catch(auto error);
+    $ log();
     std::future<void> generateReport();
     std::future<void> cleanup();
 };

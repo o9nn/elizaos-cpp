@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void AddTaskForm(const std::any& { worlds }) {
+void AddTaskForm() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [name, setName] = useState('');

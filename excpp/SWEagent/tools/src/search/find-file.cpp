@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void findFile(const std::string& fileName, string = '::/' dir) {
+void findFile(const std::string& fileName, std::string dir = "./") {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Check if directory exists

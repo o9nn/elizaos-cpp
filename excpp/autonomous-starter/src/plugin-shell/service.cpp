@@ -9,8 +9,8 @@ std::variant<Omit<FileOperationEntry, "timestamp", "command", "cwd">> parseFileO
 
     const auto parts = command.trim().split(/\s+/);
     const auto cmd = parts[0].toLowerCase();
-    std::optional<std::string> operationType = nullptr;
-    std::optional<std::string> target = nullptr;
+    std::string operationType = nullptr;
+    std::string target = nullptr;
     std::string secondaryTarget = std::nullopt;
 
     // Simple keywords for operations

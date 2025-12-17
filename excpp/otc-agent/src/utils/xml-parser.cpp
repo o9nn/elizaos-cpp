@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::optional<std::string> extractXMLFromMessage(const std::string& messageText) {
+std::string extractXMLFromMessage(const std::string& messageText) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Try to find XML between comment markers first

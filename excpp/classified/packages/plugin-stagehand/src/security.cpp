@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void validateSecureAction(const std::optional<std::string>& url, UrlValidator validator) {
+void validateSecureAction(const std::string& url, UrlValidator validator) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

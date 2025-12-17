@@ -15,12 +15,11 @@ namespace elizaos {
 
 
 
-using TavilyClient = ReturnType<typeof tavily>;
 
 class TavilyService {
 public:
     TavilyService(IAgentRuntime runtime);
-    std::future<TavilyService> start(IAgentRuntime runtime);
+    static std::future<TavilyService> start(IAgentRuntime runtime);
     std::future<void> initialize(IAgentRuntime runtime);
     std::string capabilityDescription() const;
     std::future<void> stop();

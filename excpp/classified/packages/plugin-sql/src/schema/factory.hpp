@@ -15,17 +15,11 @@ namespace elizaos {
 
 
 
-using DatabaseType = std::variant<'postgres', 'pglite'>;
+using DatabaseType = std::variant<std::string, std::string>;
 
 // Type helpers for cross-database compatibility
 // Since Pglite uses PostgreSQL dialect, we use the same types for both
 using TableFn = PgTableFn;
-using UuidColumn = ReturnType<typeof pgUuid>;
-using TextColumn = ReturnType<typeof pgText>;
-using JsonColumn = ReturnType<typeof pgJsonb>;
-using BooleanColumn = ReturnType<typeof pgBoolean>;
-using TimestampColumn = ReturnType<typeof pgTimestamp>;
-using IntegerColumn = ReturnType<typeof pgInteger>;
 
 /**
  * Schema factory to create database-specific column types
@@ -33,7 +27,7 @@ using IntegerColumn = ReturnType<typeof pgInteger>;
  */
 class SchemaFactory {
 public:
-    SchemaFactory(DatabaseType public dbType);
+    SchemaFactory();
     TableFn table() const;
     void uuid(const std::string& name);
     void text(const std::string& name);

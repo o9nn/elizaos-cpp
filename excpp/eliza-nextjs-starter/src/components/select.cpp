@@ -4,9 +4,7 @@
 
 namespace elizaos {
 
-void Select(auto {
-    className, auto multiple, std::optional<{ className: string } & Omit<Headless::SelectProps> ...props
-  }, auto "as" | "className">, ForwardedRef<HTMLSelectElement> ref) {
+void Select(auto multiple, ForwardedRef<HTMLSelectElement> ref) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

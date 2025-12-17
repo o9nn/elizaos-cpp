@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include ".types/shared.hpp"
 
@@ -22,7 +21,7 @@ struct ModelDownloadProgress {
     double percentage;
     double speed_mbps;
     double eta_seconds;
-    std::variant<'Downloading', 'Completed', 'Failed', 'AlreadyExists'> status;
+    std::string status;
 };
 
 struct StartupStatus {
@@ -34,7 +33,7 @@ struct StartupStatus {
 };
 
 struct UserConfig {
-    std::variant<'OpenAI', 'Anthropic', 'Ollama'> ai_provider;
+    std::string ai_provider;
     std::optional<std::string> api_key;
     std::optional<bool> use_local_ollama;
     std::optional<bool> postgres_enabled;

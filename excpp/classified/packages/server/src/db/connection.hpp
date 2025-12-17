@@ -5,7 +5,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include "elizaos/core.hpp"
 #include "schema.hpp"
@@ -17,7 +16,6 @@ namespace elizaos {
 
 
 
-using DatabaseConnection = std::variant<ReturnType<typeof drizzle>, ReturnType<typeof drizzlePglite>>;
 
 struct ConnectionOptions {
     std::optional<std::string> postgresUrl;

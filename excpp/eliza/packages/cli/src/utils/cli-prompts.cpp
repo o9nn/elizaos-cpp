@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::future<std::vector<std::string>> promptForMultipleItems(const std::string& fieldName, const std::vector<string[] =>& initial) {
+std::future<std::vector<std::string>> promptForMultipleItems(const std::string& fieldName, std::vector<std::string> initial = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto items = [...initial];

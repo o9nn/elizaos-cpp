@@ -1,11 +1,9 @@
 #pragma once
 #include <functional>
-#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include "config/config.hpp"
 #include "elizaos/core.hpp"
@@ -45,7 +43,7 @@ struct TokenSignal {
     double value;
     double signal;
     double histogram;
-    std::variant<'increasing', 'decreasing', 'stable'> trend;
+    std::string trend;
     bool unusualActivity;
     double volatility;
     double mentionCount;
@@ -79,11 +77,9 @@ struct TradingConfig {
 
 class DegenTradingService {
 public:
-    DegenTradingService(IAgentRuntime public runtime);
-    void start(IAgentRuntime runtime);
-    void stop(IAgentRuntime runtime);
-    std::future<void> start();
-    std::future<void> stop();
+    DegenTradingService();
+    static void start(IAgentRuntime runtime);
+    static void stop(IAgentRuntime runtime);
     bool isServiceRunning();
 
 private:

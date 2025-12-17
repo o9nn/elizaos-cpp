@@ -1,5 +1,4 @@
 #pragma once
-#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -20,13 +19,8 @@ namespace elizaos {
  */
 class X402PaymentClient {
 public:
-    X402PaymentClient(GatewayConfig config, Console = console logger);
+    X402PaymentClient(GatewayConfig config, Console logger = console);
     AxiosInstance createServerClient(const std::string& serverId, std::optional<std::string> serverWallet);
-    this::axiosInstance;
-
-    try createServerClient(auto config.serverId, auto config.serverWallet);
-    void catch(const std::any& error);
-    void catch(const std::any& error);
     std::string getWalletAddress();
     bool isEnabled();
 

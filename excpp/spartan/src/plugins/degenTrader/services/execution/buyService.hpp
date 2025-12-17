@@ -32,11 +32,6 @@ public:
     std::future<void> handleBuySignal(const std::any& params);
     std::future<void> updateExpectedOutAmount(BuySignalMessage signal);
     Promise< executeBuy(BuySignalMessage signal);
-    void if(auto !signal);
-    void if(auto !validation.isValid);
-    void if(auto buyAmount <= 0);
-    void if(auto result.success);
-    void catch(auto error);
 
 private:
     TokenValidationService validationService_;

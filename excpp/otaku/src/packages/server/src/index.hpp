@@ -71,8 +71,6 @@ bool isWebUIEnabled();
 class AgentServer {
 public:
     AgentServer();
-    void if(auto !this.elizaOS);
-    void for(auto const id of agentIds);
     std::future<void> stopAgents(const std::vector<UUID>& agentIds);
     std::vector<IAgentRuntime> getAllAgents();
     IAgentRuntime getAgent(UUID agentId);
@@ -84,22 +82,30 @@ public:
     void registerMiddleware(ServerMiddleware middleware);
     std::future<void> start(double port);
     std::future<void> stop();
-    std::future<MessageServer> createServer(Omit<MessageServer data, auto 'id' | 'createdAt' | 'updatedAt'>);
+    std::future<MessageServer> createServer();
     std::future<std::vector<MessageServer>> getServers();
     std::variant<Promise<MessageServer, null>> getServerById(UUID serverId);
     std::variant<Promise<MessageServer, null>> getServerBySourceType(const std::string& sourceType);
-    std::future<MessageChannel> createChannel(Omit<MessageChannel data, std::optional<UUID }> 'id' | 'createdAt' | 'updatedAt'> & { id, std::optional<std::vector<UUID>> participantIds);
+    std::future<MessageChannel> createChannel(std::optional<std::vector<UUID>> participantIds);
     std::future<void> addParticipantsToChannel(UUID channelId, const std::vector<UUID>& userIds);
+    std::future<std::vector<MessageChannel>> getChannelsForServer(UUID serverId);
+    std::variant<Promise<MessageChannel, null>> getChannelDetails(UUID channelId);
+    std::future<std::vector<UUID>> getChannelParticipants(UUID channelId);
     std::future<void> deleteMessage(UUID messageId);
     std::future<MessageChannel> updateChannel(UUID channelId, std::optional<std::any> updates);
     std::future<void> deleteChannel(UUID channelId);
     std::future<void> clearChannelMessages(UUID channelId);
     std::future<MessageChannel> findOrCreateCentralDmChannel(UUID user1Id, UUID user2Id, UUID messageServerId);
-    std::future<CentralRootMessage> createMessage(Omit<CentralRootMessage data, auto 'id' | 'createdAt' | 'updatedAt'>);
+    std::future<CentralRootMessage> createMessage();
+    std::future<std::vector<CentralRootMessage>> getMessagesForChannel(UUID channelId, double limit = 50, std::optional<Date> beforeTimestamp);
+    std::variant<Promise<CentralRootMessage, null>> updateMessage(UUID messageId, std::optional<std::any> patch);
     std::future<void> removeParticipantFromChannel();
     std::future<void> addAgentToServer(UUID serverId, UUID agentId);
     std::future<void> removeAgentFromServer(UUID serverId, UUID agentId);
+    std::future<std::vector<UUID>> getAgentsForServer(UUID serverId);
+    std::future<std::vector<UUID>> getServersForAgent(UUID agentId);
     void registerSignalHandlers();
+};
 
 // Export loader utilities
 

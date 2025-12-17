@@ -14,7 +14,7 @@ namespace elizaos {
 
 class MyDocument {
 public:
-    void getInitialProps(DocumentContext ctx);
+    static void getInitialProps(DocumentContext ctx);
     void render();
 };
 

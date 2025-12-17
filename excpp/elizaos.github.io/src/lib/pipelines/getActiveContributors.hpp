@@ -17,7 +17,7 @@ namespace elizaos {
 
 
 
-std::future<void> getActiveContributors(QueryParams = {} params);
+std::future<void> getActiveContributors(QueryParams params = {});
 
     // Create query params for the interval
 

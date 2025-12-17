@@ -4,13 +4,7 @@
 
 namespace elizaos {
 
-void MuiImg(auto {
-  sx, auto props, {
-  sx: SxProps;
-  props: React.DetailedHTMLProps<
-    React.ImgHTMLAttributes<HTMLImageElement> }, auto HTMLImageElement
-  >;
-}) {
+void MuiImg(auto props) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return <StyledImg {...props} sx={sx} />;

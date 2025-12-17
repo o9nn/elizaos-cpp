@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void useFileUpload(auto { agentId, auto channelId, UseFileUploadProps chatType }) {
+void useFileUpload(auto channelId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [selectedFiles, setSelectedFiles] = useState<UploadingFile[]>([]);

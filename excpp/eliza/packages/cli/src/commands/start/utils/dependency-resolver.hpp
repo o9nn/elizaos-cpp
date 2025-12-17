@@ -19,6 +19,6 @@ namespace elizaos {
  *
  * Performs topological sorting of plugins to ensure dependencies are loaded in the correct order, with support for test dependencies.
  */
-std::vector<Plugin> resolvePluginDependencies(Map<string availablePlugins, auto Plugin>, boolean = false isTestMode);
+std::vector<Plugin> resolvePluginDependencies(const std::unordered_map<std::string, Plugin>& availablePlugins, bool isTestMode = false);
 
 } // namespace elizaos

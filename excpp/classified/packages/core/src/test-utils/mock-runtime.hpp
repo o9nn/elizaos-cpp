@@ -17,16 +17,16 @@ namespace elizaos {
 /**
  * Simple mock runtime for tests - just use createMockRuntime() and cast to IAgentRuntime when needed
  */
-std::optional<IAgentRuntime> createMockRuntime(const std::optional<IAgentRuntime>& overrides);
+std::optional<IAgentRuntime> createMockRuntime(std::optional<IAgentRuntime> overrides = {});
 
 /**
  * Simple mock memory creator
  */
-Memory createMockMemory(const std::string& text, const std::optional<Memory>& overrides);
+Memory createMockMemory(const std::string& text, std::optional<Memory> overrides = {});
 
 /**
  * Simple mock state creator
  */
-State createMockState(const std::optional<State>& overrides);
+State createMockState(std::optional<State> overrides = {});
 
 } // namespace elizaos

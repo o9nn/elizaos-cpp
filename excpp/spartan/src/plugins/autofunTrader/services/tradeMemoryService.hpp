@@ -6,7 +6,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include "analyticsService.hpp"
 #include "base/BaseTradeService.hpp"
@@ -25,7 +24,7 @@ struct TradeMemory {
     UUID id;
     std::string tokenAddress;
     std::string chain;
-    std::variant<'BUY', 'SELL'> type;
+    std::string type;
     std::string amount;
     std::string price;
     Date timestamp;
@@ -43,7 +42,7 @@ public:
     std::future<void> storeTrade(TradeMemory trade);
     std::future<std::vector<TradeMemory>> getTradesForToken(const std::string& tokenAddress, const std::string& chain);
     std::future<TradeMemory> createTrade(std::optional<std::any> params);
-    std::future<std::vector<TradeMemory>> getRecentTrades(number = 10 limit);
+    std::future<std::vector<TradeMemory>> getRecentTrades(double limit = 10);
     std::future<std::vector<TradeMemory>> searchTrades(const std::string& query);
     std::future<void> deleteTrade(UUID tradeId);
 };

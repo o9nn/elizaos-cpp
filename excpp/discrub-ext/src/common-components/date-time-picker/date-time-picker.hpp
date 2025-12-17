@@ -14,7 +14,7 @@ namespace elizaos {
 
 
 
-using DateTimePickerProps = std::variant<TextFieldProps & {
+using DateTimePickerProps = std::variant<TextFieldProps, std::function<void()>>;
 
 
 } // namespace elizaos

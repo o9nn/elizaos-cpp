@@ -12,9 +12,6 @@ namespace elizaos {
 // Manual refinement required for production use
 
 // class StarterService {
-    void start(IAgentRuntime runtime);
-    void stop(IAgentRuntime runtime);
-    void stop();
 
   // services go here
 

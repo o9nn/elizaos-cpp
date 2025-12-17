@@ -20,31 +20,6 @@ namespace elizaos {
  */
 class AutoCoderScenariosTestSuite {
 public:
-    void if(auto !codeGenService);
-    void if(auto !result.success);
-    void for(auto const file of requiredFiles);
-    void if(auto !indexFile);
-    void if(auto !codeGenService);
-    void if(auto !result.success);
-    void for(auto const file of requiredFiles);
-    void if(auto !indexFile);
-    void if(auto !characterFile);
-    void if(auto !character.name || !character.bio);
-    void if(auto result.agentId);
-    void if(auto !codeGenService);
-    void if(auto !result.success);
-    void if(auto !result.files);
-    void if(auto !hasKeywordFiltering);
-    void if(auto !codeGenService);
-    void if(auto !result.success);
-    void if(auto !result.files);
-    void if(auto !hasCaching);
-    void if(auto !hasErrorHandling);
-    void if(auto !codeGenService);
-    void if(auto !result.success);
-    void if(auto !result.files || result.files.length <= 5);
-    void for(auto const file of requiredFiles);
-    void if(auto !hasTests);
 };
 
 

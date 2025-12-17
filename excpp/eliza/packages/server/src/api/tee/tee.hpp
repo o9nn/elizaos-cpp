@@ -18,6 +18,6 @@ namespace elizaos {
 // /**
 //  * TEE (Trusted Execution Environment) security functionality
 //  */
-// express::Router createTeeRouter(Map<string agents, auto IAgentRuntime>);
+// express::Router createTeeRouter(const std::unordered_map<std::string, IAgentRuntime>& agents);
 
 } // namespace elizaos

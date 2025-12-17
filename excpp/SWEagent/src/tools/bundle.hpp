@@ -22,7 +22,7 @@ namespace elizaos {
  * Bundle configuration
  */
 struct BundleConfig {
-    std::optional<std::optional<std::string>> stateCommand;
+    std::optional<std::string> stateCommand;
 };
 
 /**
@@ -32,7 +32,7 @@ class Bundle {
 public:
     Bundle(std::optional<std::any> config);
     void validateTools();
-    std::optional<std::string> stateCommand() const;
+    std::string stateCommand() const;
     BundleConfig config() const;
     std::vector<Command> commands() const;
 

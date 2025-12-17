@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void LeaderboardPage(auto { agentId, LeaderboardPageProps userId }) {
+void LeaderboardPage() {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

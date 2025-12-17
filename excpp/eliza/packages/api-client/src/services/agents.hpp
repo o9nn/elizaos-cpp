@@ -1,4 +1,5 @@
 #pragma once
+#include <any>
 #include <functional>
 #include <future>
 #include <memory>
@@ -28,7 +29,7 @@ public:
     Promise< stopAgent(UUID agentId);
     Promise< getWorlds();
     Promise< addAgentToWorld(UUID agentId, UUID worldId);
-    std::future<AgentWorldSettings> updateAgentWorldSettings(UUID agentId, UUID worldId, Record<string settings, auto any>);
+    std::future<AgentWorldSettings> updateAgentWorldSettings(UUID agentId, UUID worldId, const std::unordered_map<std::string, std::any>& settings);
     Promise< getAgentPanels(UUID agentId);
     std::future<std::vector<AgentLog>> getAgentLogs(UUID agentId, std::optional<AgentLogsParams> params);
     Promise< deleteAgentLog(UUID agentId, UUID logId);

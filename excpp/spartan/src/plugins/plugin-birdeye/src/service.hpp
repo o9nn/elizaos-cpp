@@ -21,19 +21,15 @@ namespace elizaos {
 
 class BirdeyeService {
 public:
-    BirdeyeService(IAgentRuntime protected runtime);
-    void getBirdeyeFetchOptions(auto chain = 'solana');
+    BirdeyeService();
+    void getBirdeyeFetchOptions(auto chain);
     void getTrending();
     void getToken(auto chain, auto ca);
     Promise< getTokenMarketData(const std::string& tokenAddress);
-    void if(auto !response.ok || !volResponse.ok || !priceHistoryResponse.ok);
-    void if(auto !data.data);
-    void catch(auto error);
     std::future<std::any> getTokensMarketData(const std::vector<std::string>& tokenAddresses);
     void lookupToken(auto chain, auto ca);
-    std::future<BirdeyeService> start(IAgentRuntime runtime);
-    void stop(IAgentRuntime runtime);
-    std::future<void> stop();
+    static std::future<BirdeyeService> start(IAgentRuntime runtime);
+    static void stop(IAgentRuntime runtime);
     void getEmptyMarketData();
 };
 

@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void RebelsRanking(auto { rebels, RebelsRankingProps maxHeight = '65vh' }) {
+void RebelsRanking(auto maxHeight) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

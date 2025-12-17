@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 
 namespace elizaos {
@@ -24,7 +23,7 @@ struct SplitButtonProps {
     std::vector<SplitButtonOption> options;
     std::optional<std::string> defaultValue;
     std::optional<std::string> value;
-    std::optional<std::variant<'default', 'destructive'>> variant;
+    std::optional<std::string> variant;
     std::optional<std::string> className;
     std::optional<std::string> buttonClassName;
     std::optional<std::string> dropdownClassName;

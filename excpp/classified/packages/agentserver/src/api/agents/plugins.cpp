@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-express::Router createAgentPluginsRouter(Map<UUID agents, auto IAgentRuntime>, AgentServer _serverInstance) {
+express::Router createAgentPluginsRouter(const std::unordered_map<UUID, IAgentRuntime>& agents, AgentServer _serverInstance) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

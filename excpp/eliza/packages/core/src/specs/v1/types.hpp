@@ -518,7 +518,7 @@ struct IDatabaseAdapter {
     std::optional<std::optional<UUID>> userId;
     std::optional<bool> onlyInProgress;
     std::optional<double> count;
-    std::variant<'FOLLOWED', 'MUTED'> state;
+    std::string state;
     std::optional<UUID> id;
     UUID agentId;
     std::optional<double> limit;
@@ -566,7 +566,7 @@ struct IRAGKnowledgeManager {
     std::optional<std::string> searchText;
     std::string path;
     std::string content;
-    std::variant<'pdf', 'md', 'txt'> type;
+    std::string type;
     bool isShared;
 };
 
@@ -578,15 +578,11 @@ enum CacheStore {
 struct ICacheManager {
 };
 
-    ServiceType serviceType() const;
-    void if(auto !Service.instance);
-    ServiceType serviceType() const;
-
 struct IAgentRuntime {
     UUID agentId;
     std::string serverUrl;
     IDatabaseAdapter databaseAdapter;
-    std::optional<std::string> token;
+    std::string token;
     ModelProviderName modelProvider;
     ModelProviderName imageModelProvider;
     ModelProviderName imageVisionModelProvider;
@@ -606,7 +602,7 @@ struct IAgentRuntime {
     std::vector<ClientInstance> clients;
     std::optional<HandlerCallback> callback;
     std::optional<HandlerCallback> callback;
-    std::optional<std::string> source;
+    std::string source;
     std::optional<std::string> source;
 };
 

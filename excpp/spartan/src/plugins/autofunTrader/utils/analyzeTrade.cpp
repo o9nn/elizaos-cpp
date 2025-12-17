@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::future<std::variant<'bullish', 'neutral', 'bearish'>> assessMarketCondition(IAgentRuntime runtime) {
+std::future<std::string> assessMarketCondition(IAgentRuntime runtime) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {

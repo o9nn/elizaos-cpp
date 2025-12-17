@@ -24,7 +24,7 @@ BigNumber toBN(const std::variant<std::string, double, BigNumber>& value);
 /**
  * Formats a BigNumber to a human readable string
  */
-std::string formatBN(BigNumber value, auto decimals = 18);
+std::string formatBN(BigNumber value, auto decimals);
 
 
 } // namespace elizaos

@@ -16,7 +16,7 @@ namespace elizaos {
 
 class ApiError {
 public:
-    ApiError(const std::string& message, std::optional<double> public statusCode);
+    ApiError(const std::string& message);
 };
 
       // Remove old requests

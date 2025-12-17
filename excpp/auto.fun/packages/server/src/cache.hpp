@@ -29,16 +29,13 @@ public:
     void onModuleStart();
     void initialize();
     std::variant<Promise<number, null>> getSolPrice();
-    std::future<void> setSolPrice(double price, number = 30 ttlSeconds);
+    std::future<void> setSolPrice(double price, double ttlSeconds = 30);
     std::variant<Promise<number, null>> getTokenPrice(const std::string& mint);
-    std::future<void> setTokenPrice(const std::string& mint, double price, number = 300 ttlSeconds);
-    std::future<void> setMetadata(const std::string& key, const std::any& data, number = 3600 ttlSeconds);
-    void if(auto cachedData.length > 0);
-    void catch(auto error);
+    std::future<void> setTokenPrice(const std::string& mint, double price, double ttlSeconds = 300);
+    std::future<void> setMetadata(const std::string& key, const std::any& data, double ttlSeconds = 3600);
     std::future<void> cleanupOldCacheEntries(const std::string& type, const std::string& symbol);
 
 private:
-    ReturnType<typeof getDB> db_;
 };
 
 

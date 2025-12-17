@@ -25,7 +25,7 @@ struct MarketInfoParams {
 
 using MarketInfoInput = {
 
-using MarketInfoActionResult = ActionResult & { input: MarketInfoInput };
+using MarketInfoActionResult = ActionResult;
 
  * Action: GET_MORPHO_MARKET_INFO
 

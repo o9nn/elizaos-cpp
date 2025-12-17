@@ -4,6 +4,7 @@
 #include <memory>
 #include <optional>
 #include <string>
+#include <tuple>
 #include <unordered_map>
 #include <variant>
 #include <vector>
@@ -30,7 +31,7 @@ namespace elizaos {
  */
 class ActionParser {
 public:
-    [string, string] parse(ModelResponse modelResponse, const std::vector<Command>& _commands, boolean = false _strict);
+    std::tuple<std::string, std::string> parse(ModelResponse modelResponse, const std::vector<Command>& _commands, bool _strict = false);
 };
 
 /**
@@ -38,7 +39,7 @@ public:
  */
 class ActionOnlyParser {
 public:
-    [string, string] parse(ModelResponse modelResponse, const std::vector<Command>& _commands, boolean = false _strict);
+    std::tuple<std::string, std::string> parse(ModelResponse modelResponse, const std::vector<Command>& _commands, bool _strict = false);
 };
 
 /**
@@ -46,7 +47,7 @@ public:
  */
 class ThoughtActionParser {
 public:
-    [string, string] parse(ModelResponse modelResponse, const std::vector<Command>& _commands, boolean = false strict);
+    std::tuple<std::string, std::string> parse(ModelResponse modelResponse, const std::vector<Command>& _commands, bool strict = false);
 };
 
 /**
@@ -54,7 +55,7 @@ public:
  */
 class XMLThoughtActionParser {
 public:
-    [string, string] parse(ModelResponse modelResponse, const std::vector<Command>& _commands, boolean = false strict);
+    std::tuple<std::string, std::string> parse(ModelResponse modelResponse, const std::vector<Command>& _commands, bool strict = false);
 };
 
 /**
@@ -62,7 +63,6 @@ public:
  */
 class FunctionCallingParser extends AbstractParseFunction {
   type = 'function_calling';
-  errorMessage = `{%- if error_code == "missing" -%}
 
     // Find the command
 
@@ -89,10 +89,8 @@ class FunctionCallingParser extends AbstractParseFunction {
 class JsonParser extends AbstractParseFunction {
   type = 'json';
 
-  parse(modelResponse: ModelResponse, _commands: Command[], _strict: boolean = false): [string, string] {
     const message = modelResponse.message || '';
 
-    try {
       const thought = parsed.thought || '';
       const command = parsed.command || parsed.action || '';
 
@@ -101,7 +99,6 @@ class JsonParser extends AbstractParseFunction {
       }
 
       return [thought, command];
-    } catch (error) {
       if (error instanceof FormatError) {
         throw error;
       }
@@ -125,7 +122,6 @@ class Identity extends AbstractParseFunction {
   type = 'identity';
   errorMessage = 'It seems like something went wrong with your output. Please try again.';
 
-  parse(modelResponse: ModelResponse, _commands: Command[], _strict: boolean = false): [string, string] {
     const message = modelResponse.message || '';
     return [message, message];
   }

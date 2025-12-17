@@ -182,7 +182,7 @@ std::future<void> installFromGit(const std::string& gitRepo, const std::string& 
     }
 }
 
-void if(auto pluginState.plugin.init) {
+void if() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     pluginState.plugin.init({}, this.runtime);

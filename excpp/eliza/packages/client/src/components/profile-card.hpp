@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include "ui/button.hpp"
 #include "ui/card.hpp"
@@ -20,7 +19,7 @@ struct ButtonConfig {
     std::optional<std::string> label;
     std::optional<ReactNode> icon;
     std::optional<std::string> className;
-    std::optional<std::variant<'default', 'sm', 'lg', 'icon'>> size;
+    std::optional<std::string> size;
     std::optional<bool> disabled;
 };
 

@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void DateNavigation(auto {
-  prevDate, auto nextDate, auto currentDate, auto intervalType, DateNavigationProps }) {
+void DateNavigation(auto nextDate, auto currentDate, auto intervalType) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

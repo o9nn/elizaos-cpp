@@ -34,7 +34,6 @@ struct ProblemStatement {
 /**
  * Base class for built-in problem statements
  */
-
     ExtraFields getExtraFields();
 
 /**
@@ -87,7 +86,6 @@ class GithubIssue {
 public:
     GithubIssue(std::optional<std::any> config);
      parseGithubUrl(const std::string& url);
-    void if(auto !match);
     std::future<std::string> getProblemStatementAsync();
     std::string getProblemStatement();
     ExtraFields getExtraFields();
@@ -103,23 +101,27 @@ private:
  */
 class SWEBenchMultimodalProblemStatement {
 public:
-    SWEBenchMultimodalProblemStatement(std::optional<{
-    text: string;
-    issueImages: string[];
-    disableImageProcessing: boolean;
-    extraFields: Record<string> config, std::optional<string;
-  }> any>;
+    SWEBenchMultimodalProblemStatement(std::optional<std::any> config);
     std::string getProblemStatementForEnv();
     std::string getProblemStatement();
     std::future<std::string> getProblemStatementAsync();
-    std::optional<std::string> downloadAndConvertImageSync(const std::string& url);
+    std::string downloadAndConvertImageSync(const std::string& url);
+    std::variant<Promise<string, null>> downloadAndConvertImage(const std::string& url);
     ExtraFields getExtraFields();
     std::string toString();
+
+private:
+    std::string id_;
+    std::string text_;
+    std::vector<std::string> issueImages_;
+    bool disableImageProcessing_;
+    ExtraFields extraFields_;
+};
 
 /**
  * Factory function to create problem statement from simplified input
  */
-ProblemStatement problemStatementFromSimplifiedInput(const std::string& input, const std::variant<'text', 'text_file', 'github_issue', 'swe_bench_multimodal'>& type);
+ProblemStatement problemStatementFromSimplifiedInput(const std::string& input, const std::string& type);
 
 /**
  * Type for problem statement configurations

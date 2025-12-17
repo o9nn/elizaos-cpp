@@ -5,7 +5,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include "elizaos/core.hpp"
 
@@ -18,7 +17,7 @@ namespace elizaos {
 
 struct EmbeddingQueueItem {
     Memory memory;
-    std::variant<'high', 'normal', 'low'> priority;
+    std::string priority;
     double retryCount;
     double maxRetries;
     double addedAt;
@@ -32,7 +31,7 @@ struct EmbeddingQueueItem {
  */
 class EmbeddingGenerationService {
 public:
-    std::future<Service> start(IAgentRuntime runtime);
+    static std::future<Service> start(IAgentRuntime runtime);
     std::future<void> initialize();
     std::future<void> handleEmbeddingRequest(EmbeddingGenerationPayload payload);
     void makeRoomInQueue();
@@ -43,7 +42,6 @@ public:
     std::future<void> stop();
     double getQueueSize();
      getQueueStats();
-    void for(auto const item of this.queue);
     void clearQueue();
 };
 

@@ -36,22 +36,20 @@ bool isGithubIssueUrl(const std::string& dataPath);
 /**
  * Parse GitHub issue URL
  */
-void parseGhIssueUrl(const std::string& issueUrl); {
 
 /**
  * Parse GitHub repository URL
  */
-void parseGhRepoUrl(const std::string& repoUrl); {
 
 /**
  * Get GitHub issue data
  */
-std::future<std::any> getGhIssueData(const std::string& issueUrl, string = '' token);
+std::future<std::any> getGhIssueData(const std::string& issueUrl, std::string token = "");
 
 /**
  * Get problem statement from GitHub issue
  */
-std::future<std::string> getProblemStatementFromGithubIssue(const std::string& owner, const std::string& repo, const std::string& issueNumber, string = '' token);
+std::future<std::string> getProblemStatementFromGithubIssue(const std::string& owner, const std::string& repo, const std::string& issueNumber, std::string token = "");
 
 /**
  * Get associated commit URLs for an issue

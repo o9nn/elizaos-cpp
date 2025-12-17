@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void Loader(auto {
-  className, auto isFullscreen, std::optional<std::any> }) {
+void Loader(auto isFullscreen) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 
 namespace elizaos {
@@ -19,7 +18,7 @@ struct ConfirmationOptions {
     std::string description;
     std::optional<std::string> confirmText;
     std::optional<std::string> cancelText;
-    std::optional<std::variant<'default', 'destructive'>> variant;
+    std::optional<std::string> variant;
 };
 
 void useConfirmation();

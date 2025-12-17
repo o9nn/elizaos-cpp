@@ -20,5 +20,6 @@ struct NavigationButtonProps {
     bool isVisible;
 };
 
+void NavigationButton(auto direction, auto isVisible);
 
 } // namespace elizaos

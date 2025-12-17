@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void TVNoise(auto {
-  className, auto opacity = 0.03, auto intensity = 0.1, auto speed = 60, TVNoiseProps }) {
+void TVNoise(auto opacity, auto intensity, auto speed) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto canvasRef = useRef<HTMLCanvasElement>(nullptr);

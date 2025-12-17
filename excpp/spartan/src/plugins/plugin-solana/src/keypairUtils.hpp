@@ -39,6 +39,6 @@ struct KeypairResult {
  * @param {boolean} [requirePrivateKey=true] - Specify whether the private key is required. Default is true.
  * @returns {Promise<KeypairResult>} The keypair result object containing the keypair or public key.
  */
-std::future<KeypairResult> getWalletKey(IAgentRuntime runtime, auto requirePrivateKey = true);
+std::future<KeypairResult> getWalletKey(IAgentRuntime runtime, auto requirePrivateKey);
 
 } // namespace elizaos

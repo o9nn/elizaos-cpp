@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include "_components/ShowcaseCards.hpp"
 #include "_components/ShowcaseFilters.hpp"
@@ -21,7 +20,7 @@ namespace elizaos {
 
 void ShowcaseHeader();
 
-void filterUsers(const std::vector<User>& users, const std::string& search, const std::vector<std::string>& selectedTags, const std::variant<'OR', 'AND'>& operator);
+void filterUsers(const std::vector<User>& users, const std::string& search, const std::vector<std::string>& selectedTags, const std::string& operator);
 
 
 } // namespace elizaos

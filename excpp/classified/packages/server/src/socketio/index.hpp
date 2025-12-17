@@ -17,7 +17,7 @@ namespace elizaos {
 
 class SocketIORouter {
 public:
-    SocketIORouter(Map<UUID agents, auto IAgentRuntime>, AgentServer serverInstance);
+    SocketIORouter(const std::unordered_map<UUID, IAgentRuntime>& agents, AgentServer serverInstance);
     void setupListeners(SocketIOServer io);
     void handleNewConnection(Socket socket, SocketIOServer _io);
     void handleGenericMessage(Socket socket, const std::any& data);

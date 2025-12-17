@@ -1,5 +1,4 @@
 #pragma once
-#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -15,6 +14,6 @@ namespace elizaos {
 
 
 
-void SolPriceProvider(const std::any& { children });
+void SolPriceProvider();
 
 } // namespace elizaos

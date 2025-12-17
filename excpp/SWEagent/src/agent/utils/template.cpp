@@ -4,13 +4,13 @@
 
 namespace elizaos {
 
-std::string renderTemplate(const std::string& template, Record<string context, auto any>) {
+std::string renderTemplate(const std::string& template, const std::unordered_map<std::string, std::any>& context) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return template.replace(/\{\{([^}]+)\}\;
 }
 
-std::string renderAdvancedTemplate(const std::string& template, Record<string context, auto any>) {
+std::string renderAdvancedTemplate(const std::string& template, const std::unordered_map<std::string, std::any>& context) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     auto result = template;
@@ -52,7 +52,7 @@ std::string renderAdvancedTemplate(const std::string& template, Record<string co
 
 }
 
-bool evaluateCondition(const std::string& condition, Record<string context, auto any>) {
+bool evaluateCondition(const std::string& condition, const std::unordered_map<std::string, std::any>& context) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Handle simple variable checks

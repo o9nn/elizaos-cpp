@@ -50,7 +50,6 @@ namespace elizaos {
 /**
  * Gets the next missing environment variable that needs to be configured
  */
-void getNextMissingEnvVar(EnvVarMetadata envVars); | null {
 
 /**
  * Set environment variable action

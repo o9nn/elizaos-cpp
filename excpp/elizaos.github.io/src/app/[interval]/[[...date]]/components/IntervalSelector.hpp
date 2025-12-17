@@ -16,5 +16,6 @@ namespace elizaos {
 /**
  * Component for switching between different interval views
  */
+void IntervalSelector(auto currentDate);
 
 } // namespace elizaos

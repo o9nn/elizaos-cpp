@@ -78,12 +78,15 @@ public:
     std::future<void> initialize();
     std::future<void> stop();
     std::future<TradeExecutionResult> generateSignal();
-    std::future<void> updateExpectedOutAmount(std::optional<SellSignalMessage & { expectedOutAmount: string; slippage: number }> signal);
+    std::future<void> updateExpectedOutAmount(std::optional<SellSignalMessage> signal);
     void autofunSell(auto signal, auto slippageBps);
-    void if(auto !signal);
-    void if(auto !tokenBalance);
-    void if(auto result.success);
-    void catch(auto error);
+    Promise< executeSell(std::optional<SellSignalMessage> signal);
+
+private:
+    TokenValidationService validationService_;
+    TradeCalculationService calculationService_;
+    TradeMemoryService tradeMemoryService_;
+};
 
 
 } // namespace elizaos

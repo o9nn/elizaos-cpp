@@ -20,15 +20,7 @@ namespace elizaos {
  */
 class SpartanTestSuite {
 public:
-    SpartanTestSuite(number = 15000 completionTimeout);
-    void if(auto !this.scenarioService);
-    void if(auto !completed);
-    void if(auto !this.scenarioService);
-    void if(auto !completed);
-    void if(auto !this.scenarioService);
-    void if(auto !completed);
-    void if(auto !this.scenarioService);
-    void if(auto !completed);
+    SpartanTestSuite(double completionTimeout = 15000);
 
 private:
     std::any scenarioService_;

@@ -1,4 +1,5 @@
 #pragma once
+#include <any>
 #include <functional>
 #include <future>
 #include <memory>
@@ -22,7 +23,7 @@ std::future<void> updateRepositoryLastFetched(const std::string& repoId, const s
 /**
  * Ensure users exist in the database
  */
-std::future<void> ensureUsersExist(Map<string userData, std::optional<string }>> { avatarUrl, std::optional<std::vector<std::string>> botUsers);
+std::future<void> ensureUsersExist(std::optional<std::unordered_map<std::string, std::any>> userData, std::optional<std::vector<std::string>> botUsers);
 
 /**
  * Ensure labels exist in the database

@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::vector<> handleBrowserError(Error error, std::optional<std::any> callback, std::optional<std::string> action) {
+std::tuple<> handleBrowserError(Error error, std::optional<std::any> callback, std::optional<std::string> action) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (error instanceof StagehandError) {

@@ -38,7 +38,6 @@ struct TransactionLog {
 // The client type is inferred, we only need to specify the return type
 // Uses type assertion to bypass viem's strict authorizationList requirement
 
-void useOTC(); {
   // OTC address from env vars or deployment config
 
   // Use wagmi's public client which automatically handles all configured chains

@@ -4,9 +4,7 @@
 
 namespace elizaos {
 
-void Button(auto {
-  color, auto outline, auto plain, auto className, auto children, auto type = "button", ButtonProps ...props
-}) {
+void Button(auto outline, auto plain, auto className, auto children, auto type) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto classes = clsx(;
@@ -35,7 +33,7 @@ void Button(auto {
 
 }
 
-void TouchTarget(const std::any& { children }) {
+void TouchTarget() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

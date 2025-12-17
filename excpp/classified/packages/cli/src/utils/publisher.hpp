@@ -5,7 +5,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include "elizaos/core.hpp"
 #include "github.hpp"
@@ -26,8 +25,8 @@ struct PackageJson {
     std::optional<std::string> url;
     std::optional<std::vector<std::string>> keywords;
     std::optional<std::vector<std::string>> categories;
-    std::optional<std::variant<'node', 'browser', 'universal'>> platform;
-    std::optional<std::variant<'plugin', 'project'>> packageType;
+    std::optional<std::string> platform;
+    std::optional<std::string> packageType;
     std::optional<std::string> type;
 };
 
@@ -73,7 +72,7 @@ std::future<bool> publishToNpm(const std::string& cwd);
  * - For projects or when {@link skipRegistry} is true, registry updates are skipped and only the GitHub repository is updated.
  * - For plugins, registry updates include metadata and index updates, and a pull request to the registry repository.
  */
-std::future<bool> publishToGitHub(const std::string& cwd, PackageJson packageJson, const std::string& username, auto skipRegistry = false, auto isTest = false);> {
+std::future<bool> publishToGitHub(const std::string& cwd, PackageJson packageJson, const std::string& username, auto skipRegistry, auto isTest);> {
   // Get GitHub credentials using getGitHubCredentials which will prompt if needed
 
   // Validate required package type

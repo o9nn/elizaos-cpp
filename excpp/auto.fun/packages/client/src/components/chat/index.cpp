@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void Chat(std::optional<std::any> { maxHeight = "600px" }) {
+void Chat() {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -537,7 +537,7 @@ void Chat(std::optional<std::any> { maxHeight = "600px" }) {
                                                                                                                                                 if (isSendingMessage) return; // Prevent double sends
 
                                                                                                                                                 const auto messageText = selectedImage ? imageCaption.trim() : chatInput.trim();
-                                                                                                                                                std::optional<std::string> mediaBase64 = nullptr;
+                                                                                                                                                std::string mediaBase64 = nullptr;
 
                                                                                                                                                 // Check if there's content to send (either text or an image)
                                                                                                                                                 if (!messageText && !selectedImage) {

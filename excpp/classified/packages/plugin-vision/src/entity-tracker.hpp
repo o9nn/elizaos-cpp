@@ -5,7 +5,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include "elizaos/core.hpp"
 
@@ -19,11 +18,10 @@ namespace elizaos {
 class EntityTracker {
 public:
     EntityTracker(const std::string& worldId);
-    std::future<std::vector<TrackedEntity>> updateEntities(const std::vector<DetectedObject>& detectedObjects, const std::vector<PersonInfo>& people, std::optional<Map<string> faceProfiles, auto string>, std::optional<IAgentRuntime> // Maps person ID to face profile ID
-    runtime);
+    std::future<std::vector<TrackedEntity>> updateEntities(const std::vector<DetectedObject>& detectedObjects, const std::vector<PersonInfo>& people, std::optional<std::unordered_map<std::string, std::string>> faceProfiles);
     std::future<TrackedEntity> trackPerson(PersonInfo person, const std::string& faceProfileId, double timestamp);
     std::future<TrackedEntity> trackObject(DetectedObject obj, double timestamp);
-    std::optional<TrackedEntity> findMatchingEntity(BoundingBox boundingBox, const std::variant<'person', 'object'>& entityType, std::optional<std::string> faceProfileId);
+    std::optional<TrackedEntity> findMatchingEntity(BoundingBox boundingBox, const std::string& entityType, std::optional<std::string> faceProfileId);
     double calculateDistance(BoundingBox box1, BoundingBox box2);
     void updateWorldState(const std::unordered_set<std::string>& seenEntityIds, double timestamp);
     std::future<void> syncWithRuntime(IAgentRuntime runtime, const std::vector<TrackedEntity>& frameEntities);

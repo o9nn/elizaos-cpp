@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void TxToast(const std::any& { signature }) {
+void TxToast() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto link = "https://solscan.io/tx/" + std::to_string(signature);

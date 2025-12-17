@@ -48,8 +48,9 @@ struct SubmissionStepProps {
     std::string selectedTokenSymbol;
     std::optional<std::string> selectedTokenName;
     std::optional<std::string> selectedTokenAddress;
-    std::optional<std::optional<std::string>> selectedTokenLogoUrl;
+    std::optional<std::string> selectedTokenLogoUrl;
 };
 
+void SubmissionStepComponent(auto consignerAddress, auto chain, auto activeFamily, auto selectedTokenDecimals, auto selectedTokenSymbol, auto selectedTokenName, auto selectedTokenAddress, auto selectedTokenLogoUrl, auto onApproveToken, auto onCreateConsignment, auto getBlockExplorerUrl, auto onBack);
 
 } // namespace elizaos

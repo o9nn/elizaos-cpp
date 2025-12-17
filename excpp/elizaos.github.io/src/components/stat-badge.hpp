@@ -13,5 +13,6 @@ namespace elizaos {
 
 
 
+void StatBadge(auto labelEnd, auto value, auto variant, auto className);
 
 } // namespace elizaos

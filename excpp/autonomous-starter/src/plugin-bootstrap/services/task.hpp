@@ -39,14 +39,13 @@ namespace elizaos {
  */
 class TaskService {
 public:
-    std::future<TaskService> start(IAgentRuntime runtime);
+    static std::future<TaskService> start(IAgentRuntime runtime);
     void createTestTasks();
     void startTimer();
     std::future<std::vector<Task>> validateTasks(const std::vector<Task>& tasks);
     void checkTasks();
     void executeTask(Task task);
-    void stop(IAgentRuntime runtime);
-    void stop();
+    static void stop(IAgentRuntime runtime);
 };
 
 

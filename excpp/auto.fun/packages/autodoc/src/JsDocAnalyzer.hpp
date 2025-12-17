@@ -75,10 +75,10 @@ struct Location {
  */
 class JsDocAnalyzer {
 public:
-    JsDocAnalyzer(TypeScriptParser public typeScriptParser);
+    JsDocAnalyzer();
     node is TSESTree::VariableDeclaration isVariableDeclaration(TSESTree::Node node);
     bool isConstDeclaration(TSESTree::Node node);
-    bool isLongEnough(TSESTree::Node node, auto minLines = 10);
+    bool isLongEnough(TSESTree::Node node, auto minLines);
     node is TSESTree::ExportNamedDeclaration isExportDeclaration(TSESTree::Node node);
     bool isSignificantConstant(TSESTree::VariableDeclaration node);
     node is TSESTree::ClassDeclaration isClassDeclaration(TSESTree::Node node);

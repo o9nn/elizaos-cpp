@@ -71,7 +71,6 @@ double calculateCost(const std::string& modelName, double inputTokens, double ou
 /**
  * Get model token limits
  */
-void getModelLimits(const std::string& modelName); {
 
     // Try to find a base model
 

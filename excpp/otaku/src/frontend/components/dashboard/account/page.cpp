@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::future<std::string> compressImage(File file, number = 500 maxSizeKB) {
+std::future<std::string> compressImage(File file, double maxSizeKB = 500) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -68,7 +68,7 @@ std::future<std::string> compressImage(File file, number = 500 maxSizeKB) {
     }
 }
 
-void AvatarPickerModal(auto { currentAvatar, auto onSelectAvatar, AvatarPickerModalProps onUploadCustom }) {
+void AvatarPickerModal(auto onSelectAvatar) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -112,7 +112,7 @@ void AvatarPickerModal(auto { currentAvatar, auto onSelectAvatar, AvatarPickerMo
 
 }
 
-void AccountPage(auto { totalBalance = 0, auto userProfile, auto onUpdateProfile, auto agentId, AccountPageProps userId }) {
+void AccountPage(auto userProfile, auto onUpdateProfile, auto agentId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

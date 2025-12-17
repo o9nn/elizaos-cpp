@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void SubmissionStepComponent(auto {
-  formData, auto consignerAddress, auto chain, auto activeFamily, auto selectedTokenDecimals, auto selectedTokenSymbol, auto selectedTokenName, auto selectedTokenAddress, auto selectedTokenLogoUrl, auto onApproveToken, auto onCreateConsignment, auto getBlockExplorerUrl, auto onBack, SubmissionStepProps }) {
+void SubmissionStepComponent(auto consignerAddress, auto chain, auto activeFamily, auto selectedTokenDecimals, auto selectedTokenSymbol, auto selectedTokenName, auto selectedTokenAddress, auto selectedTokenLogoUrl, auto onApproveToken, auto onCreateConsignment, auto getBlockExplorerUrl, auto onBack) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

@@ -28,7 +28,7 @@ struct ClaudeTool {
 using ClaudeContent = std::variant<, std::string, Array<{
 
 struct ClaudeMessage {
-    std::variant<'user', 'assistant'> role;
+    std::string role;
     ClaudeContent content;
 };
 
@@ -47,10 +47,10 @@ struct ClaudeMessagesRequest {
 
 struct ClaudeResponse {
     std::string id;
-    'message' type;
-    'assistant' role;
+    std::string type;
+    std::string role;
     std::string model;
-    std::variant<'text', 'tool_use'> type;
+    std::string type;
     std::optional<std::string> text;
     std::optional<std::string> id;
     std::optional<std::string> name;
@@ -62,10 +62,10 @@ struct ClaudeResponse {
 
 // OpenAI-style types for compatibility
 struct OpenAIMessage {
-    std::variant<'system', 'user', 'assistant', 'tool'> role;
+    std::string role;
     std::optional<std::string> text;
     std::string id;
-    'function' type;
+    std::string type;
     std::string name;
     std::string arguments;
     std::optional<std::string> tool_call_id;
@@ -77,7 +77,7 @@ struct OpenAIMessage {
  */
 class ClaudeProxy {
 public:
-    ClaudeProxy(IAgentRuntime private runtime);
+    ClaudeProxy();
     std::future<ClaudeResponse> processRequest(ClaudeMessagesRequest claudeRequest);
     std::future<ClaudeResponse> makeAnthropicProxyRequest(ClaudeMessagesRequest claudeRequest);
     std::future<InferenceProvider> selectProvider();

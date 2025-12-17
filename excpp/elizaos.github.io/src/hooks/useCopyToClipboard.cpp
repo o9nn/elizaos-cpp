@@ -24,7 +24,7 @@ bool fallbackCopy(const std::string& text) {
 
 }
 
-std::function<void()> useCopyToClipboard() {
+std::tuple<bool, std::function<std::future<bool>(std::string)>> useCopyToClipboard() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [copied, setCopied] = useState<boolean>(false);

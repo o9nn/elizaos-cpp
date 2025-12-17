@@ -51,7 +51,7 @@ void resetElizaClient() {
 
 }
 
-void updateApiClientApiKey(const std::optional<std::string>& newApiKey) {
+void updateApiClientApiKey(const std::string& newApiKey) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto getLocalStorageApiKey = "eliza-api-key-" + std::to_string(window.location.origin);

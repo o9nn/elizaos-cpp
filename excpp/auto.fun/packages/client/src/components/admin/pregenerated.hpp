@@ -20,7 +20,7 @@ struct PreGeneratedToken {
     std::string ticker;
     std::string description;
     std::string prompt;
-    std::optional<std::string> image;
+    std::string image;
     std::string createdAt;
     double used;
 };

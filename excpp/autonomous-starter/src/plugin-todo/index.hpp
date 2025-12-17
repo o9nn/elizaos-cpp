@@ -33,11 +33,10 @@ namespace elizaos {
  */
 class TodoService {
 public:
-    TodoService(IAgentRuntime protected runtime);
-    std::future<TodoService> start(IAgentRuntime runtime);
-    std::future<void> stop(IAgentRuntime runtime);
-    std::future<void> stop();
-    std::future<void> init(Record<string config, auto string>);
+    TodoService();
+    static std::future<TodoService> start(IAgentRuntime runtime);
+    static std::future<void> stop(IAgentRuntime runtime);
+    std::future<void> init(const std::unordered_map<std::string, std::string>& config);
 };
 
 /**

@@ -118,8 +118,7 @@ LoadingState loadingReducer(LoadingState state, LoadingAction action) {
 
 }
 
-void TokenSelectionStep(auto {
-  formData, auto updateFormData, auto onNext, auto onTokenSelect, TokenSelectionProps }) {
+void TokenSelectionStep(auto updateFormData, auto onNext, auto onTokenSelect) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

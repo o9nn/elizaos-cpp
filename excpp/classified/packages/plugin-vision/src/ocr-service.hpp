@@ -26,13 +26,8 @@ public:
     OCRResult convertTesseractResult(Tesseract::RecognizeResult result);
     Promise< extractStructuredData(Buffer imageBuffer);
     Array< detectTables(OCRResult ocrResult);
-    void for(auto const block of ocrResult.blocks);
-    void if(auto sortedRows.length >= 2);
     Array< detectForms(OCRResult ocrResult);
-    void for(auto let i = 0; i < ocrResult.blocks.length - 1; i++);
     Array< detectLists(OCRResult ocrResult);
-    void for(auto const block of ocrResult.blocks);
-    void if(auto listItems.length > 0);
     bool isInitialized();
     std::future<void> dispose();
 };

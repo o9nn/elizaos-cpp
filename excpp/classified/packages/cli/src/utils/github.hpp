@@ -51,6 +51,7 @@ std::future<bool> forkExists(const std::string& token, const std::string& repo, 
 /**
  * Fork a repository
  */
+std::future<std::string> forkRepository(const std::string& token, const std::string& owner, const std::string& repo);
 
 /**
  * Check if a branch exists in a repository
@@ -60,20 +61,22 @@ std::future<bool> branchExists(const std::string& token, const std::string& owne
 /**
  * Create a new branch in a repository
  */
-std::future<bool> createBranch(const std::string& token, const std::string& owner, const std::string& repo, const std::string& branch, auto baseBranch = 'main');
+std::future<bool> createBranch(const std::string& token, const std::string& owner, const std::string& repo, const std::string& branch, auto baseBranch);
 
 /**
  * Get content of a file from a repository
  */
+std::future<std::string> getFileContent(const std::string& token, const std::string& owner, const std::string& repo, const std::string& path, auto branch);
 
 /**
  * Create or update a file in a repository
  */
-std::future<bool> updateFile(const std::string& token, const std::string& owner, const std::string& repo, const std::string& path, const std::string& content, const std::string& message, auto branch = 'main');
+std::future<bool> updateFile(const std::string& token, const std::string& owner, const std::string& repo, const std::string& path, const std::string& content, const std::string& message, auto branch);
 
 /**
  * Create a pull request
  */
+std::future<std::string> createPullRequest(const std::string& token, const std::string& owner, const std::string& repo, const std::string& title, const std::string& body, const std::string& head, auto base);
 
 /**
  * Get authenticated user information
@@ -135,6 +138,6 @@ std::future<bool> ensureDirectory(const std::string& token, const std::string& r
 /**
  * Push local code to GitHub repository
  */
-std::future<bool> pushToGitHub(const std::string& cwd, const std::string& repoUrl, auto branch = 'main');
+std::future<bool> pushToGitHub(const std::string& cwd, const std::string& repoUrl, auto branch);
 
 } // namespace elizaos

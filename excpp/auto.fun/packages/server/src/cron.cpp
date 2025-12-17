@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::optional<Token> sanitizeTokenForWebSocket(const std::optional<Token>& token, auto maxBytes = 95000) {
+std::optional<Token> sanitizeTokenForWebSocket(const std::optional<Token>& token, auto maxBytes) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto clone = { ...token };

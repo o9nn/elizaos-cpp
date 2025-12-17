@@ -17,5 +17,6 @@ struct ChatMessagesProps {
     std::vector<ChatMessageType> messages;
 };
 
+void ChatMessages(auto citationsMap, auto followUpPromptsMap, auto onFollowUpClick);
 
 } // namespace elizaos

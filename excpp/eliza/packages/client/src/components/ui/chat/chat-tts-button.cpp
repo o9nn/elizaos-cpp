@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void ChatTtsButton(auto { agentId, const std::any& text }) {
+void ChatTtsButton() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { toast } = useToast();

@@ -29,8 +29,8 @@ public:
     std::string readFile(const std::string& filePath);
     void writeFile(const std::string& filePath, const std::string& content);
     std::string truncate(const std::string& content);
-    std::string formatOutput(const std::string& content, const std::string& descriptor, number = 1 initLine);
-    void view(const std::string& filePath, std::optional<[number> viewRange, auto number]);
+    std::string formatOutput(const std::string& content, const std::string& descriptor, double initLine = 1);
+    void view(const std::string& filePath, std::optional<[number> viewRange);
     void create(const std::string& filePath, const std::string& fileText);
     void strReplace(const std::string& filePath, const std::string& oldStr, std::optional<std::string> newStr);
     void insert(const std::string& filePath, double insertLine, const std::string& newStr);

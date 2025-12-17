@@ -35,8 +35,8 @@ struct InteractiveEnvOptions {
 /**
  * Reset operation types
  */
-using ResetTarget = std::variant<'localEnv', 'cache', 'localDb'>;
-using ResetAction = std::variant<'reset', 'deleted', 'skipped', 'warning'>;
+using ResetTarget = std::variant<std::string, std::string, std::string>;
+using ResetAction = std::variant<std::string, std::string, std::string, std::string>;
 
 /**
  * Reset item configuration

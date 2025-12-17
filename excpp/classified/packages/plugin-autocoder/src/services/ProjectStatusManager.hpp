@@ -5,7 +5,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include "elizaos/core.hpp"
 
@@ -36,19 +35,18 @@ public:
  */
 class ProjectStatusManager {
 public:
-    ProjectStatusManager(IAgentRuntime protected runtime);
+    ProjectStatusManager();
     std::string capabilityDescription() const;
-    std::future<Service> start(IAgentRuntime runtime);
-    std::future<void> start();
+    static std::future<Service> start(IAgentRuntime runtime);
     std::future<void> stop();
     std::string createProject(const std::string& name, ProjectType type);
     void updateStatus(const std::string& projectId, const std::optional<ProjectStatusUpdate>& updates);
     void updateStep(const std::string& projectId, const std::string& step, std::optional<std::string> message);
-    void updateFileStatus(const std::string& projectId, const std::string& filePath, const std::variant<'pending', 'generating', 'complete', 'error'>& status);
-    void updateValidation(const std::string& projectId, const std::variant<'lint', 'typeCheck', 'tests', 'build'>& type, bool passed, std::optional<std::vector<std::string>> errors);
+    void updateFileStatus(const std::string& projectId, const std::string& filePath, const std::string& status);
+    void updateValidation(const std::string& projectId, const std::string& type, bool passed, std::optional<std::vector<std::string>> errors);
     ProjectStatusUpdate getProject(const std::string& projectId);
     std::vector<ProjectStatusUpdate> getActiveProjects();
-    std::vector<ProjectHistory> getHistory(number = 50 limit);
+    std::vector<ProjectHistory> getHistory(double limit = 50);
     void moveToHistory(ProjectStatusUpdate project);
     void broadcastUpdate(ProjectStatusUpdate project);
      getStatusSummary();

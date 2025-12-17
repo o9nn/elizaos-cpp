@@ -43,7 +43,7 @@ struct ActionSamplerOutput {
  * Configuration for AskColleagues sampler
  */
 struct AskColleaguesConfig {
-    'ask_colleagues' type;
+    std::string type;
     double nSamples;
 };
 
@@ -54,7 +54,7 @@ struct AskColleaguesConfig {
 class AskColleagues {
 public:
     AskColleagues(AskColleaguesConfig config, AbstractModel model, ToolHandler tools);
-    AskColleagues fromConfig(AskColleaguesConfig config, AbstractModel model, ToolHandler tools);
+    static AskColleagues fromConfig(AskColleaguesConfig config, AbstractModel model, ToolHandler tools);
     std::string getColleagueDiscussion(const std::vector<ModelOutput>& completions);
     std::future<ActionSamplerOutput> getAction(ProblemStatement _problemStatement, Trajectory _trajectory, History history);
 
@@ -66,7 +66,7 @@ private:
  * Configuration for BinaryTrajectoryComparison sampler
  */
 struct BinaryTrajectoryComparisonConfig {
-    'binary_trajectory_comparison' type;
+    std::string type;
     double minNSamples;
     double maxNSamples;
     std::optional<double> comparisonTemperature;
@@ -82,7 +82,7 @@ struct BinaryTrajectoryComparisonConfig {
 class BinaryTrajectoryComparison {
 public:
     BinaryTrajectoryComparison(BinaryTrajectoryComparisonConfig config, AbstractModel model, ToolHandler tools);
-    BinaryTrajectoryComparison fromConfig(BinaryTrajectoryComparisonConfig config, AbstractModel model, ToolHandler tools);
+    static BinaryTrajectoryComparison fromConfig(BinaryTrajectoryComparisonConfig config, AbstractModel model, ToolHandler tools);
     std::string formatTrajectory(Trajectory trajectory);
     History formatMessages(std::optional<std::any> params);
     std::vector<ModelOutput> filterDuplicates(const std::vector<ModelOutput>& completions);
@@ -106,7 +106,7 @@ struct BaseActionSamplerConfig {
 /**
  * Union type for action sampler configurations
  */
-using ActionSamplerConfig = std::variant<, (BinaryTrajectoryComparisonConfig & BaseActionSamplerConfig), (AskColleaguesConfig & BaseActionSamplerConfig)>;
+using ActionSamplerConfig = std::variant<, (BinaryTrajectoryComparisonConfig, (AskColleaguesConfig>;
 
 /**
  * Factory function to create action sampler from configuration

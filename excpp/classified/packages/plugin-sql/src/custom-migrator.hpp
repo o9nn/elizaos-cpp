@@ -30,7 +30,6 @@ std::string extractErrorMessage(unknown error);
  * Extract detailed error information including stack trace for logging
  * Returns both the clean message and stack trace for comprehensive debugging
  */
-void extractErrorDetails(unknown error); {
 
 struct ColumnDefinition {
     std::string name;
@@ -76,13 +75,10 @@ public:
     std::vector<ColumnDefinition> parseColumns(const std::any& table);
     std::vector<ColumnDefinition> parseColumnsFallback(const std::any& table);
     std::vector<ForeignKeyDefinition> parseForeignKeys(const std::any& table);
-    std::optional<std::string> extractReferencedTableName(const std::any& reference);
+    std::string extractReferencedTableName(const std::any& reference);
     std::vector<IndexDefinition> parseIndexes(const std::any& table);
      parseCheckConstraints(const std::any& table);
-    void if(auto tableConfig && tableConfig.extraConfigBuilder);
-     parseCompositePrimaryKey(const std::any& table, std::optional<Map<string> propertyToColumnMap, auto string>);
-    void if(auto !tableConfig);
-    void if(auto tableConfig && tableConfig.extraConfigBuilder);
+     parseCompositePrimaryKey(const std::any& table, std::optional<std::unordered_map<std::string, std::string>> propertyToColumnMap);
     std::string getSQLType(const std::any& column, const std::string& columnName);
     std::string mapDrizzleColumnType(const std::string& columnType, const std::any& config, const std::string& columnName);
     std::string getSQLTypeFromDataType(const std::string& dataType, const std::string& columnName);
@@ -93,7 +89,7 @@ public:
 
 class PluginNamespaceManager {
 public:
-    PluginNamespaceManager(DrizzleDB private db);
+    PluginNamespaceManager();
     std::future<std::string> getPluginSchema(const std::string& pluginName);
     std::future<void> ensureNamespace(const std::string& schemaName);
     std::future<std::vector<std::string>> introspectExistingTables(const std::string& schemaName);
@@ -106,12 +102,12 @@ public:
 
 class ExtensionManager {
 public:
-    ExtensionManager(DrizzleDB private db);
+    ExtensionManager();
     std::future<void> installRequiredExtensions(const std::vector<std::string>& requiredExtensions);
 };
 
 // Topological sort for dependency ordering
-std::vector<std::string> topologicalSort(Map<string tables, auto TableDefinition>);
+std::vector<std::string> topologicalSort(const std::unordered_map<std::string, TableDefinition>& tables);
 
 std::future<void> runPluginMigrations(DrizzleDB db, const std::string& pluginName, const std::any& schema);
 

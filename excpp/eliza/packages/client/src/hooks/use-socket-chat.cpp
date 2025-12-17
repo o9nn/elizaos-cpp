@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void useSocketChat(auto {
-  channelId, auto currentUserId, auto contextId, auto chatType, auto allAgents, auto messages, auto onAddMessage, auto onUpdateMessage, auto onDeleteMessage, auto onClearMessages, auto onInputDisabledChange, UseSocketChatProps }) {
+void useSocketChat(auto currentUserId, auto contextId, auto chatType, auto allAgents, auto messages, auto onAddMessage, auto onUpdateMessage, auto onDeleteMessage, auto onClearMessages, auto onInputDisabledChange) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto socketIOManager = SocketIOManager.getInstance();

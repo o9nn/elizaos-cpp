@@ -24,8 +24,6 @@ struct TavilySearchResponse {
 class TavilySearchPlugin {
 public:
     TavilySearchPlugin(TavilyPluginConfig config);
-    void if(auto !response.ok);
-    void catch(auto error);
 
 private:
     TavilyPluginConfig config_;

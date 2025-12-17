@@ -19,7 +19,7 @@ struct ChatMessageAction {
 struct ChatMessage {
     std::string id;
     std::string name;
-    std::optional<std::string> text;
+    std::string text;
     std::string senderId;
     std::string roomId;
     double createdAt;

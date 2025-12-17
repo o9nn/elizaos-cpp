@@ -13,5 +13,14 @@ namespace elizaos {
 
 
 
+void Dialog(auto className, auto children, auto variant);
+
+void DialogTitle();
+
+void DialogDescription();
+
+void DialogBody();
+
+void DialogActions();
 
 } // namespace elizaos

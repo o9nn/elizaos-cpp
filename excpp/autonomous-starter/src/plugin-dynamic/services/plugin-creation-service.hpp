@@ -72,7 +72,7 @@ class PluginCreationService {
 public:
     PluginCreationService(std::optional<IAgentRuntime> runtime);
     std::future<void> stop();
-    std::future<PluginCreationService> start(IAgentRuntime runtime);
+    static std::future<PluginCreationService> start(IAgentRuntime runtime);
     std::future<void> initialize(IAgentRuntime runtime);
     std::future<std::string> createPlugin(PluginSpecification specification, std::optional<std::string> apiKey);
     std::vector<PluginCreationJob> getAllJobs();
@@ -92,10 +92,8 @@ public:
     std::future<bool> testPlugin(PluginCreationJob job);
     std::future<bool> validatePlugin(PluginCreationJob job);
     Promise< runCommand(PluginCreationJob job, const std::string& command, const std::vector<std::string>& args, const std::string& description);
-    void if(auto outputSize < maxOutputSize);
     std::any parseTestResults(const std::string& output);
     Promise<Array< collectCodeFiles(const std::string& dirPath);
-    void for(auto const entry of entries);
     std::future<void> prepareNextIteration(PluginCreationJob job);
     std::future<void> notifyPluginReady(PluginCreationJob job);
     std::future<void> ensureWorkspaceDirs();

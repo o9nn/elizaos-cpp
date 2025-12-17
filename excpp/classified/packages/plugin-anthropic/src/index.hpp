@@ -23,7 +23,7 @@ namespace elizaos {
 class AnthropicValidationService {
 public:
     AnthropicValidationService(IAgentRuntime runtime);
-    std::future<AnthropicValidationService> start(IAgentRuntime runtime);
+    static std::future<AnthropicValidationService> start(IAgentRuntime runtime);
     std::future<void> stop();
     std::future<bool> isValid();
 };

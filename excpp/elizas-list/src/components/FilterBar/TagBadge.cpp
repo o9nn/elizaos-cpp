@@ -4,9 +4,7 @@
 
 namespace elizaos {
 
-void TagBadge(auto { 
-  tag, auto selected, auto onClick, auto showIcon = true, TagBadgeProps showTrending = true 
-}) {
+void TagBadge(auto selected, auto onClick, auto showIcon, auto showTrending) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto metadata = TAG_METADATA[tag] || {};

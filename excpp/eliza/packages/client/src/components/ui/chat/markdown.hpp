@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include "code-block.hpp"
 
@@ -18,7 +17,7 @@ namespace elizaos {
 struct MarkdownProps {
     std::string children;
     std::optional<std::string> className;
-    std::optional<std::variant<'user', 'agent'>> variant;
+    std::optional<std::string> variant;
 };
 
   // Code blocks

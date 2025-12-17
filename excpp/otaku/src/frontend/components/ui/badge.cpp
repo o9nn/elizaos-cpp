@@ -4,10 +4,7 @@
 
 namespace elizaos {
 
-void Badge(auto {
-  className, auto variant, auto asChild = false, std::optional<ComponentProps<"span"> &
-  VariantProps<typeof badgeVariants> & { asChild: boolean }> ...props
-}) {
+void Badge(auto variant, auto asChild) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto Comp = asChild ? Slot : "span";

@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::future<std::optional<PoolInfo>> findBestPool(const std::string& tokenAddress, number = 8453 chainId) {
+std::future<std::optional<PoolInfo>> findBestPool(const std::string& tokenAddress, double chainId = 8453) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

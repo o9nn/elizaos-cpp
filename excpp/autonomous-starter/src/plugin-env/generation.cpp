@@ -54,7 +54,7 @@ std::optional<GenerationScript> generateScript(const std::string& varName, const
     const auto lowerName = varName.toLowerCase();
     const auto lowerDesc = description.toLowerCase() || "";
 
-    std::optional<std::string> script = nullptr;
+    std::string script = nullptr;
     std::vector<std::string> dependencies = [];
 
     // Determine script type based on variable characteristics

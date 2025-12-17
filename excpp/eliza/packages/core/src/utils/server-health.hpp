@@ -5,7 +5,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 
 namespace elizaos {
@@ -24,7 +23,7 @@ struct ServerHealthOptions {
     std::optional<double> pollInterval;
     std::optional<double> requestTimeout;
     std::optional<std::string> host;
-    std::optional<std::variant<'http', 'https'>> protocol;
+    std::optional<std::string> protocol;
 };
 
 /**

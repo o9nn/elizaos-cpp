@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void MobileHeader(MobileHeaderProps { onHomeClick }) {
+void MobileHeader() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { currentUser } = useCDPWallet();

@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include ".services/TauriService.hpp"
 
@@ -17,8 +16,8 @@ namespace elizaos {
 
 struct AgentLog {
     std::string timestamp;
-    std::variant<'agent', 'system', 'error'> type;
-    std::variant<'info', 'warn', 'error', 'debug'> level;
+    std::string type;
+    std::string level;
     std::string message;
 };
 

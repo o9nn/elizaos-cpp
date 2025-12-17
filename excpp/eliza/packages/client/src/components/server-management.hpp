@@ -17,6 +17,6 @@ struct ServerManagementProps {
     bool open;
 };
 
-void ServerManagement(auto { open, ServerManagementProps onOpenChange });
+void ServerManagement();
 
 } // namespace elizaos

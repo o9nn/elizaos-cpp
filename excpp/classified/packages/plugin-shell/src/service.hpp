@@ -1,5 +1,4 @@
 #pragma once
-#include <any>
 #include <functional>
 #include <future>
 #include <memory>
@@ -44,13 +43,10 @@ struct FileOperationEntry {
 class ShellService {
 public:
     ShellService(IAgentRuntime runtime);
-    std::future<ShellService> start(IAgentRuntime runtime);
+    static std::future<ShellService> start(IAgentRuntime runtime);
     Promise< executeCommand(const std::string& command);
-    void catch(const std::any& e);
-    void catch(const std::any& e);
-    void if(auto this.history.length > this.maxHistoryLength);
-    std::vector<ShellHistoryEntry> getHistory(auto count = 10);
-    std::vector<FileOperationEntry> getFileOperationHistory(auto count = 10);
+    std::vector<ShellHistoryEntry> getHistory(auto count);
+    std::vector<FileOperationEntry> getFileOperationHistory(auto count);
     std::string getCurrentWorkingDirectory();
     void clearHistory();
     std::future<void> stop();

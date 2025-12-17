@@ -4,12 +4,7 @@
 
 namespace elizaos {
 
-void Button(auto {
-  className, auto variant, auto size, auto asChild = false, std::optional<ComponentProps<'button'> &
-  VariantProps<typeof buttonVariants> & {
-    asChild: boolean;
-  }> ...props
-}) {
+void Button(auto variant, auto size, auto asChild) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto Comp = asChild ? Slot : 'button';

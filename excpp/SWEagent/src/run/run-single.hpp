@@ -45,7 +45,7 @@ std::string getDefaultOutputDir(const std::string& outputDir, ProblemStatement p
 class RunSingle {
 public:
     RunSingle(std::optional<std::any> config);
-    std::future<RunSingle> fromConfig(RunSingleConfig config);
+    static std::future<RunSingle> fromConfig(RunSingleConfig config);
     void addHook(RunHook hook);
     std::future<AgentRunResult> run();
     std::future<void> applyPatchLocally(const std::string& patch);

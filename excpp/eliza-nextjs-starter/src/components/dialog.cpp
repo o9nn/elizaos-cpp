@@ -4,14 +4,7 @@
 
 namespace elizaos {
 
-void Dialog(auto {
-  size = "lg", auto className, auto children, auto variant = "modal", std::optional<std::variant<{
-  size: keyof typeof sizes;
-  className: string;
-  children: React::ReactNode;
-  variant: "modal", "slideout";
-} & Omit<Headless::DialogProps>> ...props
-}, auto "as" | "className">) {
+void Dialog(auto className, auto children, auto variant) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -56,11 +49,7 @@ void Dialog(auto {
 
 }
 
-void DialogTitle(auto {
-  className, std::optional<{ className: string } & Omit<
-  Headless::DialogTitleProps> ...props
-}, auto "as" | "className"
->) {
+void DialogTitle() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -75,11 +64,7 @@ void DialogTitle(auto {
 
 }
 
-void DialogDescription(auto {
-  className, std::optional<{ className: string } & Omit<
-  Headless::DescriptionProps<typeof Text>> ...props
-}, auto "as" | "className"
->) {
+void DialogDescription() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -92,18 +77,14 @@ void DialogDescription(auto {
 
 }
 
-void DialogBody(auto {
-  className, ComponentPropsWithoutRef<"div"> ...props
-}) {
+void DialogBody() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return <div {...props} className={clsx(className, "mt-6")} />;
 
 }
 
-void DialogActions(auto {
-  className, ComponentPropsWithoutRef<"div"> ...props
-}) {
+void DialogActions() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

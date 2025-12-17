@@ -5,7 +5,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include ".bun-exec.js.hpp"
 #include "constants.hpp"
@@ -25,7 +24,7 @@ struct RegistrySettings {
     std::string registry;
     std::optional<std::string> username;
     std::optional<bool> useNpm;
-    std::optional<std::variant<'node', 'browser', 'universal'>> platform;
+    std::optional<std::string> platform;
 };
 
 struct DataDirStatus {
@@ -77,7 +76,7 @@ struct PluginMetadata {
 /**
  * Saves the registry index to the cache file
  */
-std::future<void> saveRegistryCache(Record<string registry, auto string>);
+std::future<void> saveRegistryCache(const std::unordered_map<std::string, std::string>& registry);
 
 /**
  * Gets a local copy of the registry index without requiring GitHub authentication.
@@ -108,6 +107,7 @@ std::vector<std::string> normalizePluginName(const std::string& pluginName);
  * @returns {Promise<string | null>} The repository URL for the plugin, or null if not found.
  * @throws {Error} If an error occurs while retrieving the repository URL.
  */
+std::future<std::string> getPluginRepository(const std::string& pluginName);
 
 /**
  * Check if a GitHub repository has a specific branch
@@ -122,6 +122,8 @@ std::vector<std::string> normalizePluginName(const std::string& pluginName);
 std::future<bool> repoHasBranch(const std::string& repoUrl, const std::string& branchName);
 
 std::future<std::string> getBestBranch(const std::string& repoUrl);
+
+std::future<std::string> getPluginVersion(const std::string& pluginName, std::optional<std::string> version);
 
 /**
  * Attempts to get package details from the registry
@@ -138,6 +140,7 @@ std::future<std::string> getBestBranch(const std::string& repoUrl);
 /**
  * Gets the best matching version of a plugin based on runtime version
  */
+std::future<std::string> getBestPluginVersion(const std::string& packageName, const std::string& runtimeVersion);
 
 std::future<DataDirStatus> checkDataDir();
 

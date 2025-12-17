@@ -25,6 +25,6 @@ ElizaClient getElizaClient();
 // Function to reset the singleton (useful for API key changes)
 void resetElizaClient();
 
-void updateApiClientApiKey(const std::optional<std::string>& newApiKey);
+void updateApiClientApiKey(const std::string& newApiKey);
 
 } // namespace elizaos

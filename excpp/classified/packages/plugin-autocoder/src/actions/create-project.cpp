@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::optional<std::string> extractProjectName(const std::string& text) {
+std::string extractProjectName(const std::string& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Look for quoted names

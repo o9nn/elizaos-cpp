@@ -1,5 +1,6 @@
 #pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
@@ -20,11 +21,13 @@ namespace elizaos {
 // XML template for command extraction
 
 // Helper function to extract command from natural language
+std::future<std::string> extractCommandFromMessage(IAgentRuntime runtime, Memory message);
 
 // New helper function to quote arguments for shell commands like find and grep
 std::string quoteShellArgs(const std::string& command);
 
 // Helper function to save execution record to message feed
+std::future<void> saveExecutionRecord(IAgentRuntime runtime, Memory messageContext, const std::string& text, std::optional<std::vector<std::string>> actions, std::optional<std::vector<Media>> attachments);
 
       // No direct shell output to attach here, so save a simple record
 

@@ -1,5 +1,4 @@
 #pragma once
-#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -14,6 +13,6 @@ namespace elizaos {
 
 
 
-void SummaryContentSkeleton(std::optional<std::any> { className });
+void SummaryContentSkeleton();
 
 } // namespace elizaos

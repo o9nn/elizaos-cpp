@@ -30,7 +30,7 @@ struct VisionModelConfig {
     double maxTokens;
 };
 
-using Pose = std::variant<'sitting', 'standing', 'lying', 'walking', 'unknown'>;
+using Pose = std::variant<std::string, std::string, std::string, std::string, std::string>;
 
 struct PoseLandmark {
     std::string name;
@@ -53,7 +53,7 @@ public:
     std::vector<PoseLandmark> generatePlausibleKeypoints(const std::any& boundingBox, Pose pose, const std::string& _facing);
     std::vector<PersonInfo> convertPosesToPersonInfo(const std::vector<poseDetection::Pose>& poses);
     Pose determinePoseFromKeypoints(const std::vector<poseDetection::Keypoint>& keypoints);
-    std::variant<'camera', 'away', 'left', 'right'> determineFacingDirection(const std::vector<poseDetection::Keypoint>& keypoints);
+    std::string determineFacingDirection(const std::vector<poseDetection::Keypoint>& keypoints);
     std::future<void> dispose();
 
 private:

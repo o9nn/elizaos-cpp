@@ -32,13 +32,11 @@ CreateOptions validateCreateOptions(const std::any& options);
  * Validates a project name according to npm package naming rules.
  * Special case: "." is allowed for current directory projects.
  */
-void validateProjectName(const std::string& name); {
   // Special case for current directory
 
 /**
  * Processes and validates a plugin name.
  */
-void processPluginName(const std::string& name); {
     // Remove common prefixes and suffixes
 
 /**

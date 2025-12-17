@@ -26,11 +26,11 @@ void saveDemo(unknown data, const std::string& file, const std::string& trajPath
 /**
  * Convert trajectory to action demo
  */
-void convertTrajToActionDemo(const std::string& trajPath, const std::string& outputFile, boolean = false includeUser);
+void convertTrajToActionDemo(const std::string& trajPath, const std::string& outputFile, bool includeUser = false);
 
 /**
  * Main function for traj-to-demo conversion
  */
-void trajToDemo(const std::string& trajPath, string = '::/demos' outputDir, string = '' suffix, boolean = false overwrite, boolean = false includeUser);
+void trajToDemo(const std::string& trajPath, std::string outputDir = "./demos", std::string suffix = "", bool overwrite = false, bool includeUser = false);
 
 } // namespace elizaos

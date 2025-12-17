@@ -20,5 +20,6 @@ struct MissingSecretsDialogProps {
     std::optional<std::string> description;
 };
 
+void MissingSecretsDialog(auto onOpenChange, auto missingSecrets, auto onConfirm, auto onCancel);
 
 } // namespace elizaos

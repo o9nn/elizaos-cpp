@@ -1,5 +1,6 @@
 #pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
@@ -35,5 +36,6 @@ namespace elizaos {
 
       // Generate the first prompt
 
+std::future<std::string> extractPluginNameFromMessage(IAgentRuntime runtime, const std::string& text);
 
 } // namespace elizaos

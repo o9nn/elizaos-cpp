@@ -41,10 +41,7 @@ using LogStreamData = {
 class EventAdapter {
 public:
     EventAdapter();
-    void if(auto !this.events[eventName]);
-    void if(auto this.events[eventName]);
-    void emit(const std::string& eventName, const std::vector<std::any>& ...args);
-    void if(auto !this.events[eventName]);
+    void emit(const std::string& eventName);
     double listenerCount(const std::string& eventName);
     Evt<any> _getEvt(const std::string& eventName);
 };
@@ -63,7 +60,7 @@ public:
     void evtChannelCleared();
     void evtChannelDeleted();
     void evtLogStream();
-    SocketIOManager getInstance();
+    static SocketIOManager getInstance();
     void initialize(const std::string& entityId, std::optional<std::string> serverId);
     std::future<void> joinChannel(const std::string& channelId, std::optional<std::string> serverId);
     std::future<void> joinRoom(const std::string& roomId);
@@ -77,10 +74,10 @@ public:
     std::unordered_set<std::string> getActiveChannels();
     std::unordered_set<std::string> getActiveRooms();
     bool isSocketConnected();
-    std::optional<std::string> getEntityId();
-    std::optional<std::string> getServerId();
+    std::string getEntityId();
+    std::string getServerId();
     void setActiveSessionChannelId(const std::string& sessionChannelId);
-    std::optional<std::string> getActiveSessionChannelId();
+    std::string getActiveSessionChannelId();
     void clearActiveSessionChannelId();
     void disconnect();
 };

@@ -27,21 +27,21 @@ namespace elizaos {
 /**
  * Creates a structured ElizaOS API error
  */
-ElizaOSAPIError createElizaOSError(const std::string& message, double status, std::optional<std::string> code, std::optional<std::any> details, auto retryable = false);
+ElizaOSAPIError createElizaOSError(const std::string& message, double status, std::optional<std::string> code, std::optional<std::any> details, auto retryable);
 
 struct ElizaOSAPIResponse {
     std::string id;
-    std::variant<'chat::completion', 'chat.completion.chunk'> object;
+    std::string object;
     double created;
     std::string model;
     double index;
-    std::variant<'system', 'user', 'assistant', 'tool'> role;
-    std::optional<std::string> content;
+    std::string role;
+    std::string content;
     std::string id;
-    'function' type;
+    std::string type;
     std::string name;
     std::string arguments;
-    std::variant<'stop', 'length', 'tool_calls', 'content_filter'> finish_reason;
+    std::string finish_reason;
     double prompt_tokens;
     double completion_tokens;
     double total_tokens;
@@ -53,14 +53,14 @@ struct ElizaOSAPIResponse {
 
 struct ElizaOSChatCompletionRequest {
     std::string model;
-    std::variant<'system', 'user', 'assistant', 'tool'> role;
-    std::variant<'text', 'image_url'> type;
+    std::string role;
+    std::string type;
     std::optional<std::string> text;
     std::string url;
-    std::optional<std::variant<'low', 'high', 'auto'>> detail;
+    std::optional<std::string> detail;
     std::optional<std::string> name;
     std::string id;
-    'function' type;
+    std::string type;
     std::string name;
     std::string arguments;
     std::optional<std::string> tool_call_id;
@@ -71,10 +71,10 @@ struct ElizaOSChatCompletionRequest {
     std::optional<double> presence_penalty;
     std::optional<std::variant<std::string, std::vector<std::string>>> stop;
     std::optional<bool> stream;
-    'function' type;
+    std::string type;
     std::string name;
     std::string description;
-    'function' type;
+    std::string type;
     std::optional<std::string> user;
 };
 

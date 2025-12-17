@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void StopAgentButton(auto {
-  agent, auto variant = 'destructive', auto size = 'default', auto className = '', auto showIcon = true, auto redirectToHome = false, auto onStopComplete, StopAgentButtonProps }) {
+void StopAgentButton(auto variant, auto size, auto className, auto showIcon, auto redirectToHome, auto onStopComplete) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { stopAgent, isAgentStopping } = useAgentManagement();

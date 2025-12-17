@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::string formatFlake8Output(const std::string& currentErrors, const std::string& previousErrorsString, [number replacementWindow, auto number], double replacementNLines, boolean = false showLineNumbers) {
+std::string formatFlake8Output(const std::string& currentErrors, const std::string& previousErrorsString, [number replacementWindow, double replacementNLines, bool showLineNumbers = false) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!currentErrors.trim()) {
@@ -54,7 +54,7 @@ std::vector<Flake8ErrorClass> parseFlake8Output(const std::string& output) {
 
 }
 
-std::vector<Flake8ErrorClass> updatePreviousErrors(const std::vector<Flake8ErrorClass>& previousErrors, [number replacementWindow, auto number], double replacementNLines) {
+std::vector<Flake8ErrorClass> updatePreviousErrors(const std::vector<Flake8ErrorClass>& previousErrors, [number replacementWindow, double replacementNLines) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [startLine, endLine] = replacementWindow;

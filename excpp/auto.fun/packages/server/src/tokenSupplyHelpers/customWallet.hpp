@@ -21,7 +21,7 @@ struct CustomWallet {
 
 class Wallet {
 public:
-    Wallet(Keypair private keypair);
+    Wallet();
     void publicKey() const;
     void signTransaction(const std::any& tx);
     void signAllTransactions(const std::vector<std::any>& txs);

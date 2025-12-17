@@ -32,7 +32,6 @@ std::optional<WalletLinkingData> parseWalletLinkingDataFromReadme(const std::str
  * @param wallets Array of wallet information to store.
  * @returns The updated README content string.
  */
-void generateUpdatedReadmeWithWalletInfo(const std::string& currentReadme, const std::vector<LinkedWallet>& wallets); {
   // Validate wallets array using Zod before generating content
 
   // Validate the complete data structure

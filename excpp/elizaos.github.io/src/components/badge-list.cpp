@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void BadgeList(auto {
-  items, auto className, bg-emerald-500/20 dark:text-emerald-500" badgeClassName = "border-0 bg-emerald-500/15 text-emerald-600 hover, BadgeListProps }) {
+void BadgeList(auto className, auto badgeClassName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

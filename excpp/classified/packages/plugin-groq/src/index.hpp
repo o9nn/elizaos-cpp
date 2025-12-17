@@ -23,7 +23,7 @@ namespace elizaos {
 class GroqValidationService {
 public:
     GroqValidationService(IAgentRuntime runtime);
-    std::future<GroqValidationService> start(IAgentRuntime runtime);
+    static std::future<GroqValidationService> start(IAgentRuntime runtime);
     std::future<void> stop();
     std::future<bool> isValid();
 };
@@ -89,12 +89,10 @@ std::any getTracer(IAgentRuntime runtime);
 /**
  * Generate text using Groq API with retry handling for rate limits
  */
-std::future<void> generateGroqText(ReturnType<typeof createGroq> groq, const std::string& model, std::optional<std::any> params);
 
 /**
  * Generate object using Groq API with consistent error handling
  */
-std::future<void> generateGroqObject(ReturnType<typeof createGroq> groq, const std::string& model, ObjectGenerationParams params);
 
     // Register the validation service
 

@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::variant<PythonValidator, TypeScriptValidator> getValidator(const std::variant<'python', 'typescript'>& language) {
+std::variant<PythonValidator, TypeScriptValidator> getValidator(const std::string& language) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return language == 'python' ? new PythonValidator() : new TypeScriptValidator();

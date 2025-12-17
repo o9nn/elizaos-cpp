@@ -16,8 +16,8 @@ namespace elizaos {
 
 class RateLimiter {
 public:
-    std::future<bool> checkLimit(const std::string& key, number = 100 limit, number = 3600 window);
-    std::future<double> getRemainingLimit(const std::string& key);
+    static std::future<bool> checkLimit(const std::string& key, double limit = 100, double window = 3600);
+    static std::future<double> getRemainingLimit(const std::string& key);
 };
  
 } // namespace elizaos

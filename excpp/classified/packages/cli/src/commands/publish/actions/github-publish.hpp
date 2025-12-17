@@ -18,6 +18,6 @@ namespace elizaos {
 /**
  * Publish package to GitHub and optionally to registry
  */
-std::future<PublishResult> publishToGitHubAction(const std::string& cwd, PackageJson packageJson, Credentials credentials, boolean = false skipRegistry, boolean = false dryRun);
+std::future<PublishResult> publishToGitHubAction(const std::string& cwd, PackageJson packageJson, Credentials credentials, bool skipRegistry = false, bool dryRun = false);
 
 } // namespace elizaos

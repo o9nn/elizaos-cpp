@@ -52,7 +52,6 @@ public:
     ReconciliationService();
     std::future<OnChainOffer> readContractOffer(const std::variant<std::string, double>& offerId);
     Promise< reconcileQuote(const std::string& quoteId);
-    void if(auto !dbQuote.offerId);
     Promise< reconcileAllActive();
     Promise< verifyQuoteState(const std::string& quoteId);
     Promise< healthCheck();

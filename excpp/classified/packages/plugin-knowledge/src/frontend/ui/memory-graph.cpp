@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void MemoryGraph(auto { memories, auto onNodeClick, MemoryGraphProps selectedMemoryId }) {
+void MemoryGraph(auto onNodeClick) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto graphRef = useRef<any>(nullptr);

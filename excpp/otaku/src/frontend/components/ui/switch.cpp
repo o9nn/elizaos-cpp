@@ -4,9 +4,7 @@
 
 namespace elizaos {
 
-void Switch(auto {
-  className, ComponentProps<typeof SwitchPrimitive.Root> ...props
-}) {
+void Switch() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

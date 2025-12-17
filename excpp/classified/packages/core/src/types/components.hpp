@@ -108,6 +108,6 @@ struct ActionContext {
 /**
  * Helper function to create ActionResult with proper defaults
  */
-ActionResult createActionResult(const std::optional<ActionResult>& partial);
+ActionResult createActionResult(std::optional<ActionResult> partial = {});
 
 } // namespace elizaos

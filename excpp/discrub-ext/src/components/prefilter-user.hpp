@@ -18,5 +18,7 @@ namespace elizaos {
 
 using PrefilterUserProps = {
 
+void PrefilterUser(auto purge, auto disabled);
+
 
 } // namespace elizaos

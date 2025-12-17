@@ -11,7 +11,7 @@ std::future<void> createProjectDirectories(const std::string& targetDir) {
 
 }
 
-std::future<void> setupAIModelConfig(const std::string& aiModel, const std::string& envFilePath, auto isNonInteractive = false) {
+std::future<void> setupAIModelConfig(const std::string& aiModel, const std::string& envFilePath, auto isNonInteractive) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -183,7 +183,7 @@ bool hasValidApiKey(const std::string& content, const std::string& keyName) {
 
 }
 
-std::future<void> setupEmbeddingModelConfig(const std::string& embeddingModel, const std::string& envFilePath, auto isNonInteractive = false) {
+std::future<void> setupEmbeddingModelConfig(const std::string& embeddingModel, const std::string& envFilePath, auto isNonInteractive) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -319,7 +319,7 @@ std::future<void> installDependencies(const std::string& targetDir) {
 
 }
 
-std::future<void> setupProjectEnvironment(const std::string& targetDir, const std::string& database, const std::string& aiModel, std::optional<std::string> embeddingModel, auto isNonInteractive = false) {
+std::future<void> setupProjectEnvironment(const std::string& targetDir, const std::string& database, const std::string& aiModel, std::optional<std::string> embeddingModel, auto isNonInteractive) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Create project directories first

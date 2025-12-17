@@ -1,4 +1,5 @@
 #pragma once
+#include <any>
 #include <functional>
 #include <future>
 #include <memory>
@@ -24,16 +25,19 @@ namespace elizaos {
 class GoalDataManager {
 public:
     GoalDataManager(IAgentRuntime runtime);
-    std::variant<Promise<UUID, null>> createGoal(std::optional<std::variant<{
-    agentId: UUID;
-    ownerType: 'agent', 'entity';
-    ownerId: UUID;
-    name: string;
-    description: string;
-    metadata: Record<string>> params, std::optional<string[];
-  }> any>;
+    std::variant<Promise<UUID, null>> createGoal(std::optional<std::any> params);
+    std::future<std::vector<GoalData>> getGoals(std::optional<std::any> filters);
+    std::variant<Promise<GoalData, null>> getGoal(UUID goalId);
+    std::future<bool> updateGoal(UUID goalId, std::optional<std::any> updates);
     std::future<bool> deleteGoal(UUID goalId);
-    std::future<double> countGoals(const std::variant<'agent', 'entity'>& ownerType, UUID ownerId, std::optional<bool> isCompleted);
+    std::future<std::vector<GoalData>> getUncompletedGoals(std::optional<std::string> ownerType, std::optional<UUID> ownerId);
+    std::future<std::vector<GoalData>> getCompletedGoals(std::optional<std::string> ownerType, std::optional<UUID> ownerId);
+    std::future<double> countGoals(const std::string& ownerType, UUID ownerId, std::optional<bool> isCompleted);
+    std::future<std::vector<GoalData>> getAllGoalsForOwner(const std::string& ownerType, UUID ownerId);
+
+private:
+    IAgentRuntime runtime_;
+};
 
 /**
  * Creates a GoalDataManager instance
@@ -50,18 +54,24 @@ GoalDataManager createGoalDataService(IAgentRuntime runtime);
 class GoalService {
 public:
     std::future<void> stop();
-    std::future<GoalService> start(IAgentRuntime runtime);
+    static std::future<GoalService> start(IAgentRuntime runtime);
     std::optional<GoalDataManager> getDataManager();
-    std::variant<Promise<UUID, null>> createGoal(std::optional<std::variant<{
-    agentId: UUID;
-    ownerType: 'agent', 'entity';
-    ownerId: UUID;
-    name: string;
-    description: string;
-    metadata: Record<string>> params, std::optional<string[];
-  }> any>;
+    std::variant<Promise<UUID, null>> createGoal(std::optional<std::any> params);
+    std::future<std::vector<GoalData>> getGoals(std::optional<std::any> filters);
+    std::variant<Promise<GoalData, null>> getGoal(UUID goalId);
+    std::future<bool> updateGoal(UUID goalId, std::optional<std::any> updates);
     std::future<bool> deleteGoal(UUID goalId);
-    std::future<double> countGoals(const std::variant<'agent', 'entity'>& ownerType, UUID ownerId, std::optional<bool> isCompleted);
+    std::future<std::vector<GoalData>> getUncompletedGoals(std::optional<std::string> ownerType, std::optional<UUID> ownerId);
+    std::future<std::vector<GoalData>> getCompletedGoals(std::optional<std::string> ownerType, std::optional<UUID> ownerId);
+    std::future<double> countGoals(const std::string& ownerType, UUID ownerId, std::optional<bool> isCompleted);
+    std::future<std::vector<GoalData>> getAllGoalsForOwner(const std::string& ownerType, UUID ownerId);
+
+private:
+    UUID agentId_;
+    std::string ownerType_;
+    UUID ownerId_;
+    std::string name_;
+};
 
 
 } // namespace elizaos

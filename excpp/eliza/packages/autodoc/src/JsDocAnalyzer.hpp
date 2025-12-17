@@ -53,7 +53,7 @@ using AST_NODE_TYPES = {
  * Represents types of nodes that are documentable.
  * @typedef {("ClassDeclaration" | "FunctionDeclaration" | "TSTypeAliasDeclaration" | "TSEnumDeclaration" | "MethodDefinition" | "TSMethodSignature" | "TSInterfaceDeclaration" | "TSPropertySignature" | "VariableDeclaration")} DocumentableNodeType
  */
-using DocumentableNodeType = std::variant<, 'ClassDeclaration', 'FunctionDeclaration', 'TSTypeAliasDeclaration', 'TSEnumDeclaration', 'MethodDefinition', 'TSMethodSignature', 'TSInterfaceDeclaration', 'TSPropertySignature', 'VariableDeclaration'>;
+using DocumentableNodeType = std::variant<, std::string, std::string, std::string, std::string, std::string, std::string, std::string, std::string, std::string>;
 
 /**
  * Represents a location within a data structure, specified by a start and end index.
@@ -75,10 +75,10 @@ struct Location {
  */
 class JsDocAnalyzer {
 public:
-    JsDocAnalyzer(TypeScriptParser public typeScriptParser);
+    JsDocAnalyzer();
     node is TSESTree::VariableDeclaration isVariableDeclaration(TSESTree::Node node);
     bool isConstDeclaration(TSESTree::Node node);
-    bool isLongEnough(TSESTree::Node node, auto minLines = 10);
+    bool isLongEnough(TSESTree::Node node, auto minLines);
     node is TSESTree::ExportNamedDeclaration isExportDeclaration(TSESTree::Node node);
     bool isSignificantConstant(TSESTree::VariableDeclaration node);
     node is TSESTree::ClassDeclaration isClassDeclaration(TSESTree::Node node);

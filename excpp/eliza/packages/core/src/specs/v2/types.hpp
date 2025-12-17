@@ -75,15 +75,15 @@ using ModelTypeName = std::variant<(typeof ModelType)[keyof typeof ModelType], s
  * ```
  */
 struct ServiceTypeRegistry {
-    'transcription' TRANSCRIPTION;
-    'video' VIDEO;
-    'browser' BROWSER;
-    'pdf' PDF;
-    'aws_s3' REMOTE_FILES;
-    'web_search' WEB_SEARCH;
-    'email' EMAIL;
-    'tee' TEE;
-    'task' TASK;
+    std::string TRANSCRIPTION;
+    std::string VIDEO;
+    std::string BROWSER;
+    std::string PDF;
+    std::string REMOTE_FILES;
+    std::string WEB_SEARCH;
+    std::string EMAIL;
+    std::string TEE;
+    std::string TASK;
 };
 
 /**
@@ -163,7 +163,7 @@ enum MemoryType {
  * - `room`: The memory is scoped to a specific room or channel.
  * This is used in `MemoryMetadata` to control how memories are stored and retrieved based on context.
  */
-using MemoryScope = std::variant<'shared', 'private', 'room'>;
+using MemoryScope = std::variant<std::string, std::string, std::string>;
 
 /**
  * Base interface for all memory metadata types.
@@ -480,7 +480,7 @@ struct IDatabaseAdapter {
     std::optional<UUID> roomId;
     std::optional<UUID> worldId;
     std::optional<UUID> entityId;
-    std::variant<'FOLLOWED', 'MUTED'> state;
+    std::string state;
     UUID sourceEntityId;
     UUID targetEntityId;
     std::optional<std::vector<std::string>> tags;
@@ -866,7 +866,7 @@ struct Setting {
     std::string name;
     std::string description;
     std::string usageDescription;
-    std::variant<std::string, bool> value;
+    std::optional<bool> value;
     bool required;
     std::optional<bool> public;
     std::optional<bool> secret;
@@ -1078,7 +1078,6 @@ enum SOCKET_MESSAGE_TYPE {
 /**
  * Factory function to create a new message memory with proper defaults
  */
-MessageMemory createMessageMemory(std::optional<std::any> params);
 
 /**
  * Generic service interface that provides better type checking for services
@@ -1156,12 +1155,12 @@ struct ServiceError {
  * @param defaultValue Optional default value if no text is found
  * @returns The text content or default value
  */
-std::string getMemoryText(Memory memory, auto defaultValue = '');
+std::string getMemoryText(Memory memory, auto defaultValue);
 
 /**
  * Safely create a ServiceError from any caught error
  */
-ServiceError createServiceError(unknown error, auto code = 'UNKNOWN_ERROR');
+ServiceError createServiceError(unknown error, auto code);
 
 /**
  * Replace 'any' types with more specific types
@@ -1276,8 +1275,8 @@ using ServiceConfig = std::unordered_map<std::string, unknown>;
  * to manage UI state and interaction capabilities
  */
 struct ControlMessage {
-    'control' type;
-    std::variant<'disable_input', 'enable_input'> action;
+    std::string type;
+    std::string action;
     std::optional<std::string> target;
     UUID roomId;
 };
@@ -1286,8 +1285,6 @@ struct ControlMessage {
  * Client instance
  */
     std::future<void> stop();
-    std::future<Service> start(IAgentRuntime _runtime);
-    std::future<unknown> stop(IAgentRuntime _runtime);
 
 
 } // namespace elizaos

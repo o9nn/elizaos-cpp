@@ -190,7 +190,7 @@ void startCoinCreation() {
 
 }
 
-void animate(auto time = 0) {
+void animate(auto time) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     requestAnimationFrame(animate);

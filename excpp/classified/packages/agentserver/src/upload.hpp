@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include "api/shared/constants.hpp"
 #include "api/shared/file-utils.hpp"
@@ -21,7 +20,7 @@ namespace elizaos {
 std::string generateSecureFilename(const std::string& originalName);
 
 // Helper function to create upload directory
-std::string ensureUploadDir(const std::string& id, const std::variant<'agents', 'channels'>& type);
+std::string ensureUploadDir(const std::string& id, const std::string& type);
 
 // Multer memory storage
 

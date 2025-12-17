@@ -16,12 +16,6 @@ namespace elizaos {
 
 class VisionCaptureLogTestSuite {
 public:
-    void if(auto !visionService);
-    void if(auto imageBuffer);
-    void if(auto imageBase64);
-    void if(auto scene);
-    void catch(auto error);
-    void if(auto waitTime > 0);
 };
 
 

@@ -180,7 +180,7 @@ std::future<void> getDailyMetrics(const std::string& date) {
 
 }
 
-std::future<std::optional<std::string>> getIntervalSummaryContent(const std::string& dateStr, IntervalType intervalType) {
+std::future<std::string> getIntervalSummaryContent(const std::string& dateStr, IntervalType intervalType) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {

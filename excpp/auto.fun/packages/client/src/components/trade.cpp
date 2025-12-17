@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void Trade(const std::any& { token }) {
+void Trade() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto queryClient = useQueryClient();

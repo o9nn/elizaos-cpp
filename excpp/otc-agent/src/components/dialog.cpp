@@ -4,14 +4,7 @@
 
 namespace elizaos {
 
-void Dialog(auto {
-  size = "lg", auto className, auto children, auto variant = "modal", std::optional<std::variant<{
-  size: keyof typeof sizes;
-  className: string;
-  children: React::ReactNode;
-  variant: "modal", "slideout";
-} & Omit<Headless::DialogProps>> ...props
-}, auto "as" | "className">) {
+void Dialog(auto className, auto children, auto variant) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

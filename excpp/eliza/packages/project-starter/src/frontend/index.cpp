@@ -30,7 +30,7 @@ void ExampleRoute() {
 
 }
 
-void ExampleProvider(const std::any& { agentId }) {
+void ExampleProvider() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

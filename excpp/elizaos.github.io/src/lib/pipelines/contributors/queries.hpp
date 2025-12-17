@@ -17,26 +17,26 @@ namespace elizaos {
 /**
  * Get PR data and file paths for a contributor
  */
-std::future<void> getContributorPRs(const std::string& username, PaginatedQueryParams = {} params);
+std::future<void> getContributorPRs(const std::string& username, PaginatedQueryParams params = {});
 
 /**
  * Get aggregated pull request metrics for a contributor
  */
-std::future<void> getContributorPRMetrics(const std::string& username, QueryParams = {} params);
+std::future<void> getContributorPRMetrics(const std::string& username, QueryParams params = {});
 
 /**
  * Get aggregated issue metrics for a contributor
  */
-std::future<void> getContributorIssueMetrics(const std::string& username, QueryParams = {} params);
+std::future<void> getContributorIssueMetrics(const std::string& username, QueryParams params = {});
 
 /**
  * Get aggregated review metrics for a contributor
  */
-std::future<void> getContributorReviewMetrics(const std::string& username, QueryParams = {} params);
+std::future<void> getContributorReviewMetrics(const std::string& username, QueryParams params = {});
 
 /**
  * Get aggregated comment metrics for a contributor
  */
-std::future<void> getContributorCommentMetrics(const std::string& username, QueryParams = {} params);
+std::future<void> getContributorCommentMetrics(const std::string& username, QueryParams params = {});
 
 } // namespace elizaos

@@ -26,22 +26,22 @@ namespace elizaos {
  * ```
  */
 struct ServiceTypeRegistry {
-    'transcription' TRANSCRIPTION;
-    'video' VIDEO;
-    'browser' BROWSER;
-    'pdf' PDF;
-    'aws_s3' REMOTE_FILES;
-    'web_search' WEB_SEARCH;
-    'email' EMAIL;
-    'tee' TEE;
-    'task' TASK;
-    'wallet' WALLET;
-    'lp_pool' LP_POOL;
-    'token_data' TOKEN_DATA;
-    'database_migration' DATABASE_MIGRATION;
-    'PLUGIN_MANAGER' PLUGIN_MANAGER;
-    'PLUGIN_CONFIGURATION' PLUGIN_CONFIGURATION;
-    'PLUGIN_USER_INTERACTION' PLUGIN_USER_INTERACTION;
+    std::string TRANSCRIPTION;
+    std::string VIDEO;
+    std::string BROWSER;
+    std::string PDF;
+    std::string REMOTE_FILES;
+    std::string WEB_SEARCH;
+    std::string EMAIL;
+    std::string TEE;
+    std::string TASK;
+    std::string WALLET;
+    std::string LP_POOL;
+    std::string TOKEN_DATA;
+    std::string DATABASE_MIGRATION;
+    std::string PLUGIN_MANAGER;
+    std::string PLUGIN_CONFIGURATION;
+    std::string PLUGIN_USER_INTERACTION;
 };
 
 /**
@@ -88,7 +88,6 @@ struct ServiceClassMap {
  * Client instance
  */
     std::future<void> stop();
-    std::future<unknown> stop(IAgentRuntime _runtime);
 
 /**
  * Generic service interface that provides better type checking for services
@@ -125,6 +124,6 @@ struct ServiceError {
 /**
  * Safely create a ServiceError from any caught error
  */
-ServiceError createServiceError(unknown error, auto code = 'UNKNOWN_ERROR');
+ServiceError createServiceError(unknown error, auto code);
 
 } // namespace elizaos

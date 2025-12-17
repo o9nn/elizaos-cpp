@@ -37,7 +37,7 @@ std::string cleanModelName(const std::string& modelName);
  * @param batchSize Maximum number of texts to process in each batch (default: 20)
  * @returns Array of embedding results with success indicators
  */
-std::future<std::vector> generateTextEmbeddingsBatch(IAgentRuntime runtime, const std::vector<std::string>& texts, number = 20 batchSize);>> {
+std::future<std::vector> generateTextEmbeddingsBatch(IAgentRuntime runtime, const std::vector<std::string>& texts, double batchSize = 20);>> {
 
   // Process texts in batches
 
@@ -138,7 +138,7 @@ std::future<std::vector> generateTextEmbeddingsBatch(IAgentRuntime runtime, cons
 /**
  * Logs cache metrics if available in the result
  */
-void logCacheMetrics(GenerateTextResult<any result, auto any>);
+void logCacheMetrics(GenerateTextResult<any, any> result);
 
 /**
  * Generates text using Ollama

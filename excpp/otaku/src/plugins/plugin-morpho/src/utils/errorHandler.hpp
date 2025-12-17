@@ -26,11 +26,10 @@ private:
 
 class ErrorHandler {
 public:
-    MorphoError handle(const std::any& error);
-    MorphoErrorResponse createResponse(MorphoError error);
-    void for(auto let attempt = 1; attempt <= maxRetries; attempt++);
-    bool isRecoverableError(MorphoError error);
-    std::string getSuggestion(MorphoError error);
+    static MorphoError handle(const std::any& error);
+    static MorphoErrorResponse createResponse(MorphoError error);
+    static bool isRecoverableError(MorphoError error);
+    static std::string getSuggestion(MorphoError error);
 };
 
 

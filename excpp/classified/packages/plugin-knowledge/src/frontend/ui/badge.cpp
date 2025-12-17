@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void Badge(auto { children, auto variant = 'default', BadgeProps className = '' }) {
+void Badge(auto variant, auto className) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto baseClasses = 'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium';

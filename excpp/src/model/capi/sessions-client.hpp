@@ -37,8 +37,8 @@ struct SessionUploadOptions {
 
 class SessionsClient {
 public:
-    SessionsClient(std::optional<std::string> endpoint, SessionUploadOptions = {} options);
-    std::future<bool> uploadSessionLog(SessionLogData logData, SessionUploadOptions = {} options);
+    SessionsClient(std::optional<std::string> endpoint, SessionUploadOptions options = {});
+    std::future<bool> uploadSessionLog(SessionLogData logData, SessionUploadOptions options = {});
     std::future<Response> performUpload(const std::string& endpoint, SessionLogData logData, std::optional<double> timeoutMs);
     std::future<void> delay(double ms);
     std::future<bool> healthCheck(std::optional<std::string> endpoint);

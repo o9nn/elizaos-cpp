@@ -13,7 +13,7 @@ namespace elizaos {
 
 // Extend the core service types with autonomous service
   struct ServiceTypeRegistry {
-    'AUTONOMOUS' AUTONOMOUS;
+    std::string AUTONOMOUS;
 };
 
 // Export service type constant

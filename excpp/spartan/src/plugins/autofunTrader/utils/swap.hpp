@@ -5,7 +5,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 
 namespace elizaos {
@@ -20,7 +19,7 @@ struct SwapParams {
     std::string toToken;
     double amount;
     double slippage;
-    std::optional<std::variant<'ExactIn', 'ExactOut'>> swapMode;
+    std::optional<std::string> swapMode;
 };
 
   // Create transaction

@@ -35,7 +35,7 @@ struct ChannelParticipantsResponse {
     std::optional<std::vector<UUID>> data;
 };
 
-using SelectableAgent = Agent & { id: UUID; name: string };
+using SelectableAgent = Agent; name: string };
 
 
 } // namespace elizaos

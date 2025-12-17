@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void SummaryCard(auto {
-  summaries, auto intervalType, auto className, SummaryCardProps }) {
+void SummaryCard(auto intervalType, auto className) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [currentIndex, setCurrentIndex] = React.useState(0);

@@ -1,5 +1,4 @@
 #pragma once
-#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -34,7 +33,7 @@ void KnowledgeRoute();
 /**
  * Knowledge provider component
  */
-void KnowledgeProvider(const std::any& { agentId });
+void KnowledgeProvider();
 
 // Initialize the application - no router needed for iframe
 

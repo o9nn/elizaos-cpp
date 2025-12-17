@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void TagIcon(auto { label, const std::any& color }) {
+void TagIcon() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -41,7 +41,7 @@ std::string getShortLabel(const std::string& label) {
 
 }
 
-void ShowcaseCardTag(const std::any& { tags }) {
+void ShowcaseCardTag() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -62,7 +62,7 @@ void ShowcaseCardTag(const std::any& { tags }) {
 
 }
 
-void ShowcaseCard(const std::any& { user }) {
+void ShowcaseCard() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Function to convert title to documentation link

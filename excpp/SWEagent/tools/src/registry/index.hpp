@@ -26,7 +26,6 @@ public:
     EnvRegistry(std::optional<std::string> envFile);
     void loadData();
     void saveData();
-    unknown get(const std::string& key, unknown = '' defaultValue, boolean = true fallbackToEnv);
     void set(const std::string& key, unknown value);
     void delete(const std::string& key);
     std::unordered_map<std::string, std::any> getAll();

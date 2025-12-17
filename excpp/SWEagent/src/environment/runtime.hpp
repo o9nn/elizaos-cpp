@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 
 namespace elizaos {
@@ -23,7 +22,7 @@ namespace elizaos {
 struct BashAction {
     std::string command;
     std::optional<double> timeout;
-    std::optional<std::variant<'silent', 'ignore'>> check;
+    std::optional<std::string> check;
 };
 
 /**
@@ -38,7 +37,7 @@ struct BashActionResult {
  * Interrupt action for stopping running commands
  */
 struct BashInterruptAction {
-    'interrupt' type;
+    std::string type;
 };
 
 /**

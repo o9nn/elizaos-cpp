@@ -21,7 +21,6 @@ public:
     PredictiveAnalytics();
     void initialize();
     Promise< predictProjectSuccess(const std::string& projectId);
-    void catch(auto error);
     Promise< predictUserEngagement(const std::string& userId);
 
 private:

@@ -4,9 +4,7 @@
 
 namespace elizaos {
 
-void DashboardCard(auto {
-  title, auto subtitle, auto addon, auto intent = "default", auto children, auto className, DashboardCardProps ...props
-}) {
+void DashboardCard(auto subtitle, auto addon, auto intent, auto children, auto className) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

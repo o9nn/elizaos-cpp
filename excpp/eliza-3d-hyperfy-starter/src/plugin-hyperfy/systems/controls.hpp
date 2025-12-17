@@ -6,7 +6,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include ".hyperfy/src/core/extras/Vector3Enhanced.js.hpp"
 #include ".hyperfy/src/core/systems/System.js.hpp"
@@ -34,14 +33,12 @@ public:
     AgentControls(const std::any& world);
     void setKey(const std::string& keyName, bool isDown);
     void postLateUpdate();
-    void startRandomWalk(number = RANDOM_WALK_DEFAULT_INTERVAL interval, number = RANDOM_WALK_DEFAULT_MAX_DISTANCE maxDistance, number = 30000 duration);
-    std::future<void> followEntity(const std::string& entityId, number = FOLLOW_STOP_DISTANCE stopDistance);
+    void startRandomWalk(double interval = RANDOM_WALK_DEFAULT_INTERVAL, double maxDistance = RANDOM_WALK_DEFAULT_MAX_DISTANCE, double duration = 30000);
+    std::future<void> followEntity(const std::string& entityId, double stopDistance = FOLLOW_STOP_DISTANCE);
     std::future<void> goto(double x, double z);
-    std::future<void> rotateTo(const std::variant<'front', 'back', 'left', 'right'>& direction, number = 500 duration);
+    std::future<void> rotateTo(const std::string& direction, double duration = 500);
     void stopRandomWalk();
-    void stopNavigation(string = "commanded" reason);
     void stopRotation();
-    void stopAllActions(string = "stopAllActions called" reason);
     bool getIsNavigating();
     bool getIsWalkingRandomly();
     bool _validatePlayerState(const std::string& caller);

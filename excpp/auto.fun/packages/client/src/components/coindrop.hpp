@@ -302,7 +302,7 @@ struct CoinDropProps {
     // Animation loop
 
     // Add to the animation loop to log active coins periodically
-    void animate(auto time = 0);
+    void animate(auto time);
 
     // Start animation
 

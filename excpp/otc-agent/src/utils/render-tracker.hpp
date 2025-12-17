@@ -37,12 +37,12 @@ std::string summarizeValue(unknown value);
 /**
  * Get a props summary for debugging
  */
-std::unordered_map<std::string, std::string> getPropsSnapshot(Record<string props, auto unknown>);
+std::unordered_map<std::string, std::string> getPropsSnapshot(const std::unordered_map<std::string, unknown>& props);
 
 /**
  * Find what changed between two snapshots
  */
-std::vector<std::string> findChanges(Record<string prev, auto string> | undefined, Record<string curr, auto string>);
+std::vector<std::string> findChanges(const std::unordered_map<std::string, std::string>& prev, const std::unordered_map<std::string, std::string>& curr);
 
 /**
  * Track a component render. Call this at the top of your component.
@@ -57,7 +57,7 @@ std::vector<std::string> findChanges(Record<string prev, auto string> | undefine
  * void MyComponent(MyProps props);
  * ```
  */
-void trackRender(const std::string& componentName, std::optional<Record<string> props, auto unknown>, std::optional<Record<string> state, auto unknown>);
+void trackRender(const std::string& componentName, std::optional<std::unordered_map<std::string, unknown>> props, std::optional<std::unordered_map<std::string, unknown>> state);
 
 /**
  * React hook version of trackRender for easier integration.
@@ -67,6 +67,6 @@ void trackRender(const std::string& componentName, std::optional<Record<string> 
  * void MyComponent(MyProps props);
  * ```
  */
-void useRenderTracker(const std::string& componentName, std::optional<Record<string> props, auto unknown>, std::optional<Record<string> state, auto unknown>);
+void useRenderTracker(const std::string& componentName, std::optional<std::unordered_map<std::string, unknown>> props, std::optional<std::unordered_map<std::string, unknown>> state);
 
 } // namespace elizaos

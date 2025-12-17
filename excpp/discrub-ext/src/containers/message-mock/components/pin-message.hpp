@@ -13,7 +13,7 @@ namespace elizaos {
 
 
 
-using PinMessageProps = AuthorNameProps & DateProps;
+using PinMessageProps = AuthorNameProps;
 
 
 } // namespace elizaos

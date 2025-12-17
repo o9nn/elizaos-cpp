@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void SplitButton(auto {
-  options, auto defaultValue = '0', auto value, auto onValueChange, auto onClick, auto variant = 'default', auto className = '', auto buttonClassName = '', auto dropdownClassName = '', auto disabled = false, ariaLabel = 'Options' 'aria-label', SplitButtonProps }) {
+void SplitButton(auto defaultValue, auto value, auto onValueChange, auto onClick, auto variant, auto className, auto buttonClassName, auto dropdownClassName, auto disabled) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [internalValue, setInternalValue] = useState(defaultValue);

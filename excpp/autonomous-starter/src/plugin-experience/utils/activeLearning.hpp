@@ -44,7 +44,7 @@ public:
     std::vector<[Experience, Experience]> findContradictions(const std::vector<Experience>& experiences);
     std::vector<Experience> findUnvalidatedHypotheses(const std::vector<Experience>& experiences);
     std::vector<Experiment> generateExperiments(const std::vector<Experience>& lowConfidenceExperiences, const std::string& domain);
-    std::vector<Experiment> generateContradictionExperiments(Array<[Experience contradictions, auto Experience]>, const std::string& domain);
+    std::vector<Experiment> generateContradictionExperiments(const std::vector<[Experience, Experience]>& contradictions, const std::string& domain);
     std::vector<Experiment> generateValidationExperiments(const std::vector<Experience>& unvalidatedHypotheses, const std::string& domain);
     std::vector<Experiment> generateLearningCurriculum(const std::vector<Experience>& experiences, std::optional<std::string> targetDomain);
 

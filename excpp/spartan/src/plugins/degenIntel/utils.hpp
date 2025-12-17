@@ -15,8 +15,8 @@ namespace elizaos {
 
 
 
-std::future<void> acquireService(IAgentRuntime runtime, auto serviceType, auto asking = '', auto retries = 10);
+std::future<void> acquireService(IAgentRuntime runtime, auto serviceType, auto asking, auto retries);
 
-std::future<void> askLlmObject(IAgentRuntime runtime, Object ask, const std::vector<std::string>& requiredFields, auto maxRetries = 3);
+std::future<void> askLlmObject(IAgentRuntime runtime, Object ask, const std::vector<std::string>& requiredFields, auto maxRetries);
 
 } // namespace elizaos

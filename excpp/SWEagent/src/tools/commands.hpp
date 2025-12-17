@@ -5,7 +5,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 
 namespace elizaos {
@@ -40,15 +39,16 @@ struct IArgument {
  */
 class ArgumentImpl {
 public:
-    ArgumentImpl(std::optional<{
-    name: string;
-    type: string;
-    items: Record<string> config, std::optional<std::variant<std::vector<string;
-    required: boolean;
-    enum: string>, null;
-    argumentFormat: string;
-  }>> string> | null;
+    ArgumentImpl(std::optional<std::any> config);
     void validateArgumentFormat();
+
+private:
+    std::string name_;
+    std::string type_;
+    std::string description_;
+    bool required_;
+    std::string argumentFormat_;
+};
 
 /**
  * Command definition
@@ -62,8 +62,8 @@ public:
 
 private:
     std::string name_;
-    std::optional<std::string> docstring_;
-    std::optional<std::string> signature_;
+    std::string docstring_;
+    std::string signature_;
     std::vector<IArgument> arguments_;
 };
 

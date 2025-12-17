@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-ActionResult createActionResult(const std::optional<ActionResult>& partial) {
+ActionResult createActionResult(std::optional<ActionResult> partial = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return {

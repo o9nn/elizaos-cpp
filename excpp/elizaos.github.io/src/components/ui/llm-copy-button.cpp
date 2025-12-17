@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void LlmCopyButton(auto {
-  metrics, auto summaryContent, auto className, LlmCopyButtonProps }) {
+void LlmCopyButton(auto summaryContent, auto className) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [includeStats, setIncludeStats] = useState(true);

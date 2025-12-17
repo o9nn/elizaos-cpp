@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void NavigationButton(auto {
-  href, auto direction, auto isVisible, NavigationButtonProps }) {
+void NavigationButton(auto direction, auto isVisible) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto Icon = direction == "prev" ? ChevronLeft : ChevronRight;

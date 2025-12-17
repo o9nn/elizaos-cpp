@@ -13,5 +13,25 @@ namespace elizaos {
 
 
 
+void Select();
+
+void SelectGroup();
+
+void SelectValue();
+
+void SelectTrigger(auto size, auto children);
+
+void SelectContent(auto children, auto position);
+
+void SelectLabel();
+
+void SelectItem(auto children);
+
+void SelectSeparator();
+
+void SelectScrollUpButton();
+
+void SelectScrollDownButton();
+
 
 } // namespace elizaos

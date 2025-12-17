@@ -17,5 +17,5 @@ struct StatsBarProps {
     std::vector<Project> projects;
 };
 
-void StatsBar(StatsBarProps { projects }); 
+void StatsBar(); 
 } // namespace elizaos

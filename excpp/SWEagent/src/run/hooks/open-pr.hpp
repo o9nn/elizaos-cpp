@@ -61,7 +61,7 @@ struct ProblemStatementWithGithubUrl {
 
 class OpenPRHook {
 public:
-    OpenPRHook(OpenPRConfig = { skipIfCommitsReferenceIssue: true } config);
+    OpenPRHook(OpenPRConfig config = { skipIfCommitsReferenceIssue: true });
     void onInit(const std::any& run);
     std::future<void> onInstanceCompleted(const std::any& params);
     std::future<bool> shouldOpenPR(AgentRunResult result);

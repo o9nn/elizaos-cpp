@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void TokenStatus(const std::any& { token }) {
+void TokenStatus() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto status = token.status;

@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 
 namespace elizaos {
@@ -15,8 +14,8 @@ namespace elizaos {
 
 // Extend the core service types with todo service
   struct ServiceTypeRegistry {
-    'TODO' TODO;
-    'TODO_REMINDER' TODO_REMINDER;
+    std::string TODO;
+    std::string TODO_REMINDER;
 };
 
 // Export service type constant
@@ -24,7 +23,6 @@ namespace elizaos {
 /**
  * Type for todo metadata
  */
-using TodoMetadata = std::variant<Record<string, string, double, bool, nullptr, undefined>>;
 
 /**
  * Todo-specific types
@@ -37,7 +35,7 @@ struct TodoData {
     UUID entityId;
     std::string name;
     std::optional<std::string> description;
-    std::variant<'one-off', 'daily'> type;
+    std::string type;
     double priority;
     bool isUrgent;
     bool isCompleted;
@@ -56,7 +54,7 @@ struct CreateTodoInput {
     UUID entityId;
     std::string name;
     std::optional<std::string> description;
-    std::variant<'one-off', 'daily'> type;
+    std::string type;
     std::optional<double> priority;
     std::optional<bool> isUrgent;
     std::optional<Date> dueDate;
@@ -67,7 +65,7 @@ struct CreateTodoInput {
 struct UpdateTodoInput {
     std::optional<std::string> name;
     std::optional<std::string> description;
-    std::optional<std::variant<'one-off', 'daily'>> type;
+    std::optional<std::string> type;
     std::optional<double> priority;
     std::optional<bool> isUrgent;
     std::optional<bool> isCompleted;

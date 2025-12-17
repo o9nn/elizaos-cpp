@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void AgentCard(auto { agent, auto onSelect, AgentCardProps isSelected }) {
+void AgentCard(auto onSelect) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

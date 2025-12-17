@@ -162,8 +162,7 @@ std::future<std::optional<Entity>> findEntityByName(IAgentRuntime runtime, Memor
 
 }
 
-std::future<void> getEntityDetails(auto {
-  runtime, auto roomId, const std::any& }) {
+std::future<void> getEntityDetails(auto roomId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Parallelize the two async operations
@@ -216,7 +215,7 @@ std::future<void> getEntityDetails(auto {
 
 }
 
-void formatEntities(const std::any& { entities }) {
+void formatEntities() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto entityStrings = entities.map((entity: Entity) => {;

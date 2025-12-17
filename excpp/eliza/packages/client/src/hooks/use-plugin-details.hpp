@@ -47,8 +47,8 @@ struct PluginDetails {
 
 // Registry types (same as in use-plugins.ts)
 struct GitVersionInfo {
-    std::optional<std::string> version;
-    std::optional<std::string> branch;
+    std::string version;
+    std::string branch;
 };
 
 struct PluginGitInfo {
@@ -59,8 +59,8 @@ struct PluginGitInfo {
 
 struct PluginNpmInfo {
     std::string repo;
-    std::optional<std::string> v0;
-    std::optional<std::string> v1;
+    std::string v0;
+    std::string v1;
 };
 
 struct PluginSupport {
@@ -95,7 +95,7 @@ bool isCorePlugin(const std::string& pluginName);
 /**
  * Get GitHub repo path from registry data
  */
-std::optional<std::string> getGitHubRepoPath(const std::string& pluginName, const std::optional<RegistryResponse>& registryData);
+std::string getGitHubRepoPath(const std::string& pluginName, const std::optional<RegistryResponse>& registryData);
 
 /**
  * Fetches package.json for a single plugin from GitHub
@@ -119,7 +119,6 @@ void useRequiredSecrets(const std::vector<std::string>& pluginNames);
 /**
  * Check if all required secrets are provided
  */
-void validateRequiredSecrets(const std::vector<PluginSecret>& requiredSecrets, Record<string providedSecrets, auto string | null>); {
 
 
 } // namespace elizaos

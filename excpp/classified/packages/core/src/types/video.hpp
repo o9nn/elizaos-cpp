@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include "service.hpp"
 
@@ -42,7 +41,7 @@ struct VideoFormat {
 
 struct VideoDownloadOptions {
     std::optional<std::string> format;
-    std::optional<std::variant<'best', 'worst', 'bestvideo', 'bestaudio', std::string>> quality;
+    std::optional<std::string> quality;
     std::optional<std::string> outputPath;
     std::optional<bool> audioOnly;
     std::optional<bool> videoOnly;

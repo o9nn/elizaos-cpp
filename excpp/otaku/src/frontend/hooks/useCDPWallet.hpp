@@ -39,7 +39,6 @@ void useCDPWallet();
 /**
  * Type definition for the wallet info returned by useCDPWallet
  */
-using CDPWalletInfo = ReturnType<typeof useCDPWallet>;
 
 
 } // namespace elizaos

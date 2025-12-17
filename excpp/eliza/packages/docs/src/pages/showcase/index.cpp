@@ -21,7 +21,7 @@ void ShowcaseHeader() {
 
 }
 
-void filterUsers(const std::vector<User>& users, const std::string& search, const std::vector<std::string>& selectedTags, const std::variant<'OR', 'AND'>& operator) {
+void filterUsers(const std::vector<User>& users, const std::string& search, const std::vector<std::string>& selectedTags, const std::string& operator) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // First deduplicate the input array

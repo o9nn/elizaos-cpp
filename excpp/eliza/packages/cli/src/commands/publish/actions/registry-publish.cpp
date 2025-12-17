@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::future<bool> updateRegistryIndex(PackageMetadata packageMetadata, auto dryRun = false) {
+std::future<bool> updateRegistryIndex(PackageMetadata packageMetadata, auto dryRun) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -97,7 +97,7 @@ std::future<bool> updateRegistryIndex(PackageMetadata packageMetadata, auto dryR
 
 }
 
-std::future<bool> savePackageToRegistry(PackageMetadata packageMetadata, auto dryRun = false) {
+std::future<bool> savePackageToRegistry(PackageMetadata packageMetadata, auto dryRun) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {

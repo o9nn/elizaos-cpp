@@ -17,7 +17,7 @@ namespace elizaos {
 
 struct SpeechConversationParams {
     std::variant<Blob, Buffer, std::string> audio;
-    std::optional<std::variant<'mp3', 'wav', 'ogg', 'webm'>> format;
+    std::optional<std::string> format;
     std::optional<std::string> language;
 };
 
@@ -32,12 +32,12 @@ struct SpeechGenerateParams {
 struct AudioSynthesizeParams {
     UUID messageId;
     std::optional<std::string> voice;
-    std::optional<std::variant<'mp3', 'wav', 'ogg'>> format;
+    std::optional<std::string> format;
 };
 
 struct TranscribeParams {
     std::variant<Blob, Buffer, std::string> audio;
-    std::optional<std::variant<'mp3', 'wav', 'ogg', 'webm'>> format;
+    std::optional<std::string> format;
     std::optional<std::string> language;
 };
 

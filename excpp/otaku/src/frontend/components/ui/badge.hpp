@@ -13,5 +13,7 @@ namespace elizaos {
 
 
 
+void Badge(auto variant, auto asChild);
+
 
 } // namespace elizaos

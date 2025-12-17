@@ -27,6 +27,7 @@ void isUtf8Locale();
 // Cache for version check to avoid multiple network calls in same session
 
 // --- Utility: Get latest CLI version with caching ---
+std::future<std::string> getLatestCliVersion(const std::string& currentVersion);
 
 // --- Utility: Display compact, professional update notification ---
 void showUpdateNotification(const std::string& currentVersion, const std::string& latestVersion);
@@ -35,6 +36,6 @@ void showUpdateNotification(const std::string& currentVersion, const std::string
 std::future<bool> checkAndShowUpdateNotification(const std::string& currentVersion);
 
 // --- Main: Display banner and version, then check for updates ---
-std::future<void> displayBanner(boolean = false skipUpdateCheck);
+std::future<void> displayBanner(bool skipUpdateCheck = false);
 
 } // namespace elizaos

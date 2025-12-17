@@ -30,7 +30,7 @@ void KnowledgeRoute() {
 
 }
 
-void KnowledgeProvider(const std::any& { agentId }) {
+void KnowledgeProvider() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

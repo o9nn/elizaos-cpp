@@ -241,7 +241,7 @@ std::future<void> storePgliteDataDir(const std::string& dataDir, const std::stri
     }
 }
 
-std::future<std::optional<std::string>> promptAndStorePostgresUrl(const std::string& envFilePath) {
+std::future<std::string> promptAndStorePostgresUrl(const std::string& envFilePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     clack.intro('🗄️  PostgreSQL Configuration');
@@ -410,7 +410,7 @@ std::future<void> storeAnthropicKey(const std::string& key, const std::string& e
     }
 }
 
-std::future<std::optional<std::string>> promptAndStoreOpenAIKey(const std::string& envFilePath) {
+std::future<std::string> promptAndStoreOpenAIKey(const std::string& envFilePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const ProviderPromptConfig config = {;
@@ -444,7 +444,7 @@ std::future<std::optional<std::string>> promptAndStoreOpenAIKey(const std::strin
 
 }
 
-std::future<std::optional<std::string>> promptAndStoreAnthropicKey(const std::string& envFilePath) {
+std::future<std::string> promptAndStoreAnthropicKey(const std::string& envFilePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const ProviderPromptConfig config = {;
@@ -544,7 +544,7 @@ std::future<> promptAndStoreOllamaConfig(const std::string& envFilePath) {
     endpoint: string; model: string
 }
 
-std::future<std::optional<std::string>> promptAndStoreGoogleKey(const std::string& envFilePath) {
+std::future<std::string> promptAndStoreGoogleKey(const std::string& envFilePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const ProviderPromptConfig config = {;
@@ -625,7 +625,7 @@ std::future<void> storeOpenRouterKey(const std::string& key, const std::string& 
     }
 }
 
-std::future<std::optional<std::string>> promptAndStoreOpenRouterKey(const std::string& envFilePath) {
+std::future<std::string> promptAndStoreOpenRouterKey(const std::string& envFilePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const ProviderPromptConfig config = {;
@@ -659,7 +659,7 @@ std::future<std::optional<std::string>> promptAndStoreOpenRouterKey(const std::s
 
 }
 
-std::future<std::optional<std::string>> configureDatabaseSettings(auto reconfigure = false) {
+std::future<std::string> configureDatabaseSettings(auto reconfigure) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Set up directories and env file

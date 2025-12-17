@@ -115,7 +115,7 @@ struct TokenOverviewResponse {
     std::optional<std::string> serumV3Usdc;
     std::optional<std::string> serumV3Usdt;
     std::optional<std::string> website;
-    std::optional<std::optional<std::string>> telegram;
+    std::optional<std::string> telegram;
     std::optional<std::string> twitter;
     std::optional<std::string> description;
     std::optional<std::string> discord;
@@ -508,7 +508,7 @@ struct NewListingResponse {
     double decimals;
     std::string source;
     std::string liquidityAddedAt;
-    std::optional<std::string> logoURI;
+    std::string logoURI;
     double liquidity;
 };
 

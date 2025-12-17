@@ -1,5 +1,4 @@
 #pragma once
-#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -37,7 +36,7 @@ enum MemoryType {
  * - `room`: The memory is scoped to a specific room or channel.
  * This is used in `MemoryMetadata` to control how memories are stored and retrieved based on context.
  */
-using MemoryScope = std::variant<'shared', 'private', 'room'>;
+using MemoryScope = std::variant<std::string, std::string, std::string>;
 
 /**
  * Base interface for all memory metadata types.
@@ -85,7 +84,6 @@ struct Memory {
 /**
  * Factory function to create a new message memory with proper defaults
  */
-MessageMemory createMessageMemory(std::optional<std::any> params);
 
 /**
  * Type guard to check if a memory metadata is a DocumentMetadata
@@ -131,6 +129,6 @@ MessageMemory createMessageMemory(std::optional<std::any> params);
  * @param defaultValue Optional default value if no text is found
  * @returns The text content or default value
  */
-std::string getMemoryText(Memory memory, auto defaultValue = '');
+std::string getMemoryText(Memory memory, auto defaultValue);
 
 } // namespace elizaos

@@ -239,7 +239,7 @@ PgSelect buildTokensCountBaseQuery(const std::any& db, std::optional<std::any> p
 
 }
 
-std::future<void> processSwapEvent(const std::any& swap, boolean = true shouldEmitGlobal) {
+std::future<void> processSwapEvent(const std::any& swap, bool shouldEmitGlobal = true) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -354,7 +354,7 @@ std::future<void> processTokenInfo(PublicKey mintPublicKey, AccountInfo<Buffer> 
         auto uri = "";
         auto imageUrl = "";
         auto description = "";
-        std::optional<std::string> updateAuthority = nullptr;
+        std::string updateAuthority = nullptr;
         auto foundMetadata = false;
 
         // For SPL-2022 tokens, check for token metadata extension first
@@ -649,8 +649,7 @@ std::future<void> processTokenInfo(PublicKey mintPublicKey, AccountInfo<Buffer> 
     }
 }
 
-std::future<Response> checkBlockchainTokenBalance(const std::any& c, const std::string& // Use 'any' type for context or define a specific type
-  mint, const std::string& address, auto checkMultipleNetworks = false) {
+std::future<Response> checkBlockchainTokenBalance(const std::any& c, const std::string& address, auto checkMultipleNetworks) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Return type should be Response for Hono

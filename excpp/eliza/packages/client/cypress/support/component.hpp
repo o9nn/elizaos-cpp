@@ -40,13 +40,13 @@ namespace elizaos {
 // Create a default query client for tests
 
 // Mount with all common providers
-void mountWithProviders(ReactNode component, auto options = {});
+void mountWithProviders(ReactNode component, auto options);
 
 // Mount with just router (for simpler components)
-void mountWithRouter(ReactNode component, auto options = {});
+void mountWithRouter(ReactNode component, auto options);
 
 // Mount specifically for Radix UI components with DirectionProvider
-void mountRadix(ReactNode component, auto options = {});
+void mountRadix(ReactNode component, auto options);
 
 // Add commands
 

@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 
 namespace elizaos {
@@ -15,8 +14,8 @@ namespace elizaos {
 
 
 struct SortControlsProps {
-    std::variant<'date', 'name'> currentSort;
+    std::string currentSort;
 };
 
-void SortControls(auto { onSort, SortControlsProps currentSort }); 
+void SortControls(); 
 } // namespace elizaos

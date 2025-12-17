@@ -16,12 +16,12 @@ namespace elizaos {
 /**
  * Represents a type that can be one of four values: "solana", "base", "ethereum", or "L1".
  */
-using TChain = std::variant<'solana', 'base', 'ethereum', 'L1'>;
+using TChain = std::variant<std::string, std::string, std::string, std::string>;
 /**
  * Type representing different data providers.
  * Possible values are "birdeye" and "coinmarketcap".
  */
-using TDataProvider = std::variant<'birdeye', 'coinmarketcap'>;
+using TDataProvider = std::variant<std::string, std::string>;
 
 /**
  * Interface representing a token with various properties.

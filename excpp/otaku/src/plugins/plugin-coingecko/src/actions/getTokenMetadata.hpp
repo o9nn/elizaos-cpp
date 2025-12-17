@@ -20,7 +20,7 @@ double normalizeConfidence(double confidence);
 
 std::string formatConfidencePercentage(double confidence);
 
-std::string extractAttribute(Record<string metadata, auto unknown> | undefined, const std::variant<"name", "symbol">& key);
+std::string extractAttribute(const std::unordered_map<std::string, unknown>& metadata, const std::variant<"name", "symbol">& key);
 
 std::string describeCandidate(TokenMetadataCandidate candidate);
 

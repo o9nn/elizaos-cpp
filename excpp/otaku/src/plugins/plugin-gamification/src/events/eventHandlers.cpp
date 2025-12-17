@@ -12,7 +12,7 @@ double validateVolumeUsd(unknown volume) {
 
 }
 
-std::future<std::optional<UUID>> getUserIdFromMessage(ActionEventPayload['runtime'] runtime, std::optional<UUID> messageId, std::optional<UUID> roomId, std::optional<UUID> entityId) {
+std::future<std::optional<UUID>> getUserIdFromMessage(std::optional<UUID> messageId, std::optional<UUID> roomId, std::optional<UUID> entityId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Helper to resolve the actual user ID from an entity (handles agent-scoped entities)

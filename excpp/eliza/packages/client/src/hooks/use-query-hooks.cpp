@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void useAgents(auto options = {}) {
+void useAgents(auto options) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto network = useNetworkStatus();
@@ -31,7 +31,7 @@ void useAgents(auto options = {}) {
 
 }
 
-void useAgent(const std::optional<UUID>& agentId, auto options = {}) {
+void useAgent(const std::optional<UUID>& agentId, auto options) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -256,8 +256,7 @@ void useDeleteLog() {
 
 }
 
-void useAgentMemories(UUID agentId, std::optional<std::string> tableName, std::optional<UUID> channelId, auto // Changed from roomId to channelId
-  includeEmbedding = false) {
+void useAgentMemories(UUID agentId, std::optional<std::string> tableName, std::optional<UUID> channelId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto queryKey = channelId;
@@ -434,7 +433,7 @@ void useClearGroupChat() {
 
 }
 
-void useAgentPanels(const std::optional<UUID>& agentId, auto options = {}) {
+void useAgentPanels(const std::optional<UUID>& agentId, auto options) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -572,7 +571,7 @@ void useDeleteAgentInternalLog() {
 
 }
 
-void useAgentInternalMemories(const std::optional<UUID>& agentId, const std::optional<UUID>& agentPerspectiveRoomId, string = 'messages' tableName, auto includeEmbedding = false) {
+void useAgentInternalMemories(const std::optional<UUID>& agentId, const std::optional<UUID>& agentPerspectiveRoomId, std::string tableName = "messages", auto includeEmbedding) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return useQuery<CoreMemory[], Error>({;
@@ -702,7 +701,7 @@ void useUpdateAgentInternalMemory() {
 
 }
 
-void useServers(auto options = {}) {
+void useServers(auto options) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto network = useNetworkStatus();
@@ -719,7 +718,7 @@ void useServers(auto options = {}) {
 
 }
 
-void useChannels(UUID serverId, auto options = {}) {
+void useChannels(UUID serverId, auto options) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto network = useNetworkStatus();
@@ -738,7 +737,7 @@ void useChannels(UUID serverId, auto options = {}) {
 
 }
 
-void useChannelDetails(UUID channelId, auto options = {}) {
+void useChannelDetails(UUID channelId, auto options) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Allow undefined
@@ -758,7 +757,7 @@ void useChannelDetails(UUID channelId, auto options = {}) {
 
 }
 
-void useChannelParticipants(UUID channelId, auto options = {}) {
+void useChannelParticipants(UUID channelId, auto options) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Allow undefined

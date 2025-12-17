@@ -141,7 +141,7 @@ RelationshipV2 toV2RelationshipEnhanced(Relationship relationship, UUID agentId)
 
 }
 
-Relationship createV1Relationship(UUID userA, UUID userB, string = RELATIONSHIP_STATUSES::UNKNOWN status, std::optional<UUID> roomId) {
+Relationship createV1Relationship(UUID userA, UUID userB, std::string status = RELATIONSHIP_STATUSES.UNKNOWN, std::optional<UUID> roomId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return {

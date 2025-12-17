@@ -35,6 +35,6 @@ std::future<std::string> getEnvFilePath();
  *
  * @param envVars - A record of environment variable key-value pairs to write.
  */
-std::future<void> writeEnvFile(Record<string envVars, auto string>);
+std::future<void> writeEnvFile(const std::unordered_map<std::string, std::string>& envVars);
 
 } // namespace elizaos

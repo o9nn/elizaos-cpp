@@ -41,8 +41,7 @@ std::future<void> generateStaticParams() {
 
 }
 
-std::future<Metadata> generateMetadata(auto {
-  params, ProfilePageProps }) {
+std::future<Metadata> generateMetadata() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { username } = params;
@@ -61,7 +60,7 @@ std::future<Metadata> generateMetadata(auto {
 
 }
 
-std::future<void> ProfilePage(ProfilePageProps { params }) {
+std::future<void> ProfilePage() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { username } = params;

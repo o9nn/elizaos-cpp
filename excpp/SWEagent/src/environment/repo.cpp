@@ -18,7 +18,7 @@ std::vector<std::string> getGitResetCommands(const std::string& baseCommit) {
 
 }
 
-Repo repoFromSimplifiedInput(const std::string& input, string = 'HEAD' baseCommit, const std::variant<'local', 'github', 'preexisting', 'auto' = 'auto'>& type) {
+Repo repoFromSimplifiedInput(const std::string& input, std::string baseCommit = "HEAD", std::string type = "auto") {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

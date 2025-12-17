@@ -5,7 +5,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include ".lib/base-client.hpp"
 
@@ -28,7 +27,7 @@ struct Token {
     std::string balanceFormatted;
     double usdValue;
     double usdPrice;
-    std::optional<std::string> contractAddress;
+    std::string contractAddress;
     std::string chain;
     double decimals;
     std::optional<std::string> icon;
@@ -57,7 +56,7 @@ struct Transaction {
     double timestamp;
     std::string blockNum;
     std::string explorerUrl;
-    std::variant<'sent', 'received'> direction;
+    std::string direction;
 };
 
 struct WalletInfo {
@@ -162,9 +161,9 @@ struct CoinGeckoToken {
     std::string id;
     std::string symbol;
     std::string name;
-    std::optional<std::string> contractAddress;
-    std::optional<std::string> chain;
-    std::optional<std::string> icon;
+    std::string contractAddress;
+    std::string chain;
+    std::string icon;
     std::optional<double> price;
     std::optional<double> decimals;
     std::optional<std::optional<double>> marketCap;

@@ -32,7 +32,7 @@ std::string getGlobalNodeModulesPath();
 /**
  * Helper function to resolve a path within node_modules
  */
-std::string resolveNodeModulesPath(const std::string& repository, const std::vector<std::string>& ...segments);
+std::string resolveNodeModulesPath(const std::string& repository);
 
 /**
  * Helper function to read and parse package.json

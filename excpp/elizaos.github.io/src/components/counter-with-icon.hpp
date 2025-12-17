@@ -22,5 +22,6 @@ struct CounterWithIconProps {
     std::optional<std::string> className;
 };
 
+void CounterWithIcon(auto label, auto value, auto iconClassName, auto className);
 
 } // namespace elizaos

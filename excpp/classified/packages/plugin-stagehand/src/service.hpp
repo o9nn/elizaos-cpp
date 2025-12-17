@@ -25,18 +25,17 @@ public:
 
 class StagehandService {
 public:
-    StagehandService(IAgentRuntime protected runtime);
-    void start(IAgentRuntime runtime);
-    void stop(IAgentRuntime runtime);
+    StagehandService();
+    static void start(IAgentRuntime runtime);
+    static void stop(IAgentRuntime runtime);
     void initialize();
-    void stop();
     std::future<BrowserSession> createSession(const std::string& sessionId);
     std::variant<Promise<BrowserSession, undefined>> getSession(const std::string& sessionId);
     std::variant<Promise<BrowserSession, undefined>> getCurrentSession();
     std::future<BrowserSession> getOrCreateSession();
     std::future<void> destroySession(const std::string& sessionId);
     StagehandWebSocketClient getClient();
-    std::future<void> waitForReady(auto maxAttempts = 60, auto delayMs = 3000);
+    std::future<void> waitForReady(auto maxAttempts, auto delayMs);
 
 private:
     StagehandProcessManager processManager_;

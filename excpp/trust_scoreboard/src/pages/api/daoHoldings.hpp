@@ -41,5 +41,5 @@ std::string formatCurrency(double amount);
 std::string calculatePercentage(double amount, double total);
 
 // Helper function to format token amounts
-std::string formatTokenAmount(double amount, auto decimals = 18);
+std::string formatTokenAmount(double amount, auto decimals);
 } // namespace elizaos

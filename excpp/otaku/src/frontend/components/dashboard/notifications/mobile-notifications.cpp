@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void SwipeableWrapper(auto { children, SwipeableWrapperProps onDelete }) {
+void SwipeableWrapper() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto handleDragEnd = [&](event: Event, info: PanInfo) {;
@@ -38,8 +38,7 @@ void SwipeableWrapper(auto { children, SwipeableWrapperProps onDelete }) {
 
 }
 
-void MobileNotifications(auto {
-  initialNotifications, MobileNotificationsProps }) {
+void MobileNotifications() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [notifications, setNotifications] =;

@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void Providers(PropsWithChildren { children }) {
+void Providers() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

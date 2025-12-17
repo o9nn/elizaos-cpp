@@ -54,5 +54,6 @@ using LoadingAction = std::variant<std::any, std::any>;
 
 LoadingState loadingReducer(LoadingState state, LoadingAction action);
 
+void TokenSelectionStep(auto updateFormData, auto onNext, auto onTokenSelect);
 
 } // namespace elizaos

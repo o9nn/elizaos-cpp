@@ -16,7 +16,7 @@ namespace elizaos {
 struct Contributor {
     std::string username;
     double totalScore;
-    std::optional<std::optional<std::string>> summary;
+    std::optional<std::string> summary;
 };
 
 struct ContributorsListModalContentProps {

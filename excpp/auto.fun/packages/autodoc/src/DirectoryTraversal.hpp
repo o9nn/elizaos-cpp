@@ -24,7 +24,7 @@ namespace elizaos {
  */
 class DirectoryTraversal {
 public:
-    DirectoryTraversal(Configuration private config, const std::vector<string[] =>& public prFiles);
+    DirectoryTraversal();
     std::string getAbsolutePath(const std::string& filePath);
     std::string getRelativePath(const std::string& filePath);
     std::vector<std::string> traverse();

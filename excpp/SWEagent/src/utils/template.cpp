@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::string renderTemplate(const std::string& template, Record<string context, auto unknown>) {
+std::string renderTemplate(const std::string& template, const std::unordered_map<std::string, unknown>& context) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!template) {
@@ -29,7 +29,7 @@ std::string renderTemplate(const std::string& template, Record<string context, a
 
 }
 
-std::string handleConditionals(const std::string& template, Record<string context, auto any>) {
+std::string handleConditionals(const std::string& template, const std::unordered_map<std::string, std::any>& context) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto conditionalRegex = /{%\s*if\s+(.*?)\s*%}(.*?)(?:{%\s*else\s*%}(.*?))?{%\s*endif\s*%}/gs;
@@ -41,7 +41,7 @@ std::string handleConditionals(const std::string& template, Record<string contex
 
 }
 
-std::string handleForLoops(const std::string& template, Record<string context, auto any>) {
+std::string handleForLoops(const std::string& template, const std::unordered_map<std::string, std::any>& context) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto forRegex = /{%\s*for\s+(\w+)\s+in\s+(\w+)\s*%}(.*?){%\s*endfor\s*%}/gs;
@@ -62,7 +62,7 @@ std::string handleForLoops(const std::string& template, Record<string context, a
 
 }
 
-std::string handleVariables(const std::string& template, Record<string context, auto any>) {
+std::string handleVariables(const std::string& template, const std::unordered_map<std::string, std::any>& context) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto variableRegex = /{{(\s*[\w.]+\s*)}}/g;
@@ -75,7 +75,7 @@ std::string handleVariables(const std::string& template, Record<string context, 
 
 }
 
-std::string handleFilters(const std::string& template, Record<string context, auto any>) {
+std::string handleFilters(const std::string& template, const std::unordered_map<std::string, std::any>& context) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto filterRegex = /{{(\s*[\w.]+\s*\|\s*\w+(?:\([^)]*\))?)\s*}}/g;
@@ -112,7 +112,7 @@ unknown getNestedValue(unknown obj, const std::string& path) {
 
 }
 
-bool evaluateCondition(const std::string& condition, Record<string context, auto unknown>) {
+bool evaluateCondition(const std::string& condition, const std::unordered_map<std::string, unknown>& context) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Handle simple variable checks

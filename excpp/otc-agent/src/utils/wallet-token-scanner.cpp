@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::future<std::vector<ScannedToken>> scanEvmTokens(const std::string& address, Chain chain, auto forceRefresh = false) {
+std::future<std::vector<ScannedToken>> scanEvmTokens(const std::string& address, Chain chain, auto forceRefresh) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -56,7 +56,7 @@ std::future<std::vector<ScannedToken>> scanEvmTokens(const std::string& address,
     }
 }
 
-std::future<std::vector<ScannedToken>> scanSolanaTokens(const std::string& address, auto forceRefresh = false) {
+std::future<std::vector<ScannedToken>> scanSolanaTokens(const std::string& address, auto forceRefresh) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -133,7 +133,7 @@ std::future<std::unordered_set<std::string>> getRegisteredAddresses(Chain chain)
 
 }
 
-std::future<std::vector<ScannedToken>> scanWalletTokens(const std::string& address, Chain chain, auto forceRefresh = false) {
+std::future<std::vector<ScannedToken>> scanWalletTokens(const std::string& address, Chain chain, auto forceRefresh) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

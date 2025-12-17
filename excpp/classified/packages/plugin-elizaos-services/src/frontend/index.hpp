@@ -1,5 +1,4 @@
 #pragma once
-#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -31,7 +30,7 @@ struct TimeResponse {
 /**
  * Time display component that fetches from backend
  */
-void TimeDisplay(const std::any& { apiBase });
+void TimeDisplay();
 
 /**
  * Main Example route component
@@ -41,7 +40,7 @@ void ExampleRoute();
 /**
  * Example provider component
  */
-void ExampleProvider(auto { agentId, const std::any& apiBase });
+void ExampleProvider();
 
 // Initialize the application - no router needed for iframe
 

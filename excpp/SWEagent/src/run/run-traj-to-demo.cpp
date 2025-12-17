@@ -19,7 +19,7 @@ void saveDemo(unknown data, const std::string& file, const std::string& trajPath
 
 }
 
-void convertTrajToActionDemo(const std::string& trajPath, const std::string& outputFile, boolean = false includeUser) {
+void convertTrajToActionDemo(const std::string& trajPath, const std::string& outputFile, bool includeUser = false) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto traj = JSON.parse(fs.readFileSync(trajPath, 'utf-8'));
@@ -62,7 +62,7 @@ void convertTrajToActionDemo(const std::string& trajPath, const std::string& out
 
 }
 
-void trajToDemo(const std::string& trajPath, string = '::/demos' outputDir, string = '' suffix, boolean = false overwrite, boolean = false includeUser) {
+void trajToDemo(const std::string& trajPath, std::string outputDir = "./demos", std::string suffix = "", bool overwrite = false, bool includeUser = false) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

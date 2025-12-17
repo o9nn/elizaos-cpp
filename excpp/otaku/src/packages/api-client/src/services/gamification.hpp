@@ -5,7 +5,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include ".lib/base-client.hpp"
 #include "elizaos/core.hpp"
@@ -28,7 +27,7 @@ struct LeaderboardEntry {
 };
 
 struct LeaderboardResponse {
-    std::variant<'weekly', 'all_time'> scope;
+    std::string scope;
     std::vector<LeaderboardEntry> entries;
     double userRank;
     double limit;
@@ -44,7 +43,7 @@ struct UserSummary {
     double level;
     std::string levelName;
     double pointsNeeded;
-    std::optional<std::string> lastLoginDate;
+    std::string lastLoginDate;
     std::optional<double> swapsCompleted;
 };
 
@@ -62,7 +61,6 @@ struct ReferralCodeResponse {
 
 class GamificationService {
 public:
-    std::future<LeaderboardResponse> getLeaderboard(UUID agentId, const std::variant<'weekly', 'all_time' = 'weekly'>& scope, number = 50 limit, std::optional<UUID> userId);
     std::future<UserSummary> getUserSummary(UUID agentId, UUID userId);
     std::future<ReferralCodeResponse> getReferralCode(UUID agentId, UUID userId);
 };

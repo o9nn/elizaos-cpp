@@ -35,8 +35,8 @@ struct CLIInfo {
 };
 
 struct PackageManagerInfo {
-    'bun' name;
-    std::optional<std::string> version;
+    std::string name;
+    std::string version;
     bool global;
     bool isNpx;
     bool isBunx;
@@ -47,7 +47,7 @@ struct PathInfo {
     std::string envFilePath;
     std::string configPath;
     std::string pluginsDir;
-    std::optional<std::string> monorepoRoot;
+    std::string monorepoRoot;
     std::string packageJsonPath;
 };
 
@@ -75,7 +75,7 @@ public:
     std::future<OSInfo> getOSInfo();
     std::future<CLIInfo> getCLIInfo();
     std::future<PackageManagerInfo> getPackageManagerInfo();
-    std::optional<std::string> findMonorepoRoot(const std::string& startDir);
+    std::string findMonorepoRoot(const std::string& startDir);
     std::future<PathInfo> getPathInfo();
     std::future<EnvInfo> getEnvInfo();
     std::future<UserEnvironmentInfo> getInfo(std::optional<std::string> directory);

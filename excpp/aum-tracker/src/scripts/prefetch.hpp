@@ -40,7 +40,7 @@ struct PrefetchStats {
 
 class PrefetchService {
 public:
-    PrefetchService(const std::optional<PrefetchConfig>& config);
+    PrefetchService(std::optional<PrefetchConfig> config = {});
     std::future<void> handleShutdown();
     void printProgress();
     void printFinalStats();
@@ -48,11 +48,6 @@ public:
     std::future<void> refreshPrices();
     std::future<void> run();
     std::future<void> runHealthCheck();
-
-private:
-    PrefetchConfig config_;
-    PrefetchStats stats_;
-};
 
 // CLI interface
 std::future<void> main();

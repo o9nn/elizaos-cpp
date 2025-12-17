@@ -73,7 +73,7 @@ std::string normalizeS3Url(const std::string& url);
 
     // Convert to base64
 
-bool looksLikeBase64(std::optional<std::optional<std::string>> content);
+bool looksLikeBase64(std::optional<std::string> content);
 
 /**
  * Generates a consistent UUID for a document based on its content.
@@ -93,6 +93,6 @@ std::string generateContentBasedId(const std::string& content, const std::string
  * @param maxLines Maximum number of lines to extract
  * @returns The extracted lines as a single string
  */
-std::string extractFirstLines(const std::string& content, number = 10 maxLines);
+std::string extractFirstLines(const std::string& content, double maxLines = 10);
 
 } // namespace elizaos

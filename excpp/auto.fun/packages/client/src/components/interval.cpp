@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void Interval(auto {
-  ms, auto resolver, const std::any& }) {
+void Interval(auto resolver) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto value = useInterval({ ms, resolver });

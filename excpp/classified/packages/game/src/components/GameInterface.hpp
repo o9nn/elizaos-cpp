@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include ".hooks/useTauriChat.hpp"
 #include ".services/TauriService.hpp"
@@ -30,7 +29,7 @@ namespace elizaos {
 };
 
 struct OutputLine {
-    std::variant<'user', 'agent', 'system', 'error'> type;
+    std::string type;
     std::string content;
     Date timestamp;
 };
@@ -96,7 +95,7 @@ struct Goal {
 struct Todo {
     std::string id;
     std::string name;
-    std::variant<'daily', 'one-off', 'aspirational'> type;
+    std::string type;
     bool isCompleted;
     std::optional<double> priority;
 };

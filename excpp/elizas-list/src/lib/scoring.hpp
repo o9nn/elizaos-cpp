@@ -17,12 +17,12 @@ namespace elizaos {
 
 class ProjectScorer {
 public:
-    std::future<double> calculateScore(Project currentProject, Project candidateProject);
-    std::future<double> calculateTagScore(Project current, Project candidate);
-    double calculateMetricsScore(Project project);
-    double calculateRecencyScore(Project project);
-    std::future<double> calculateUserBehaviorScore(const std::string& currentId, const std::string& candidateId);
-    std::future<double> calculatePopularityTrendScore(Project project);
+    static std::future<double> calculateScore(Project currentProject, Project candidateProject);
+    static std::future<double> calculateTagScore(Project current, Project candidate);
+    static double calculateMetricsScore(Project project);
+    static double calculateRecencyScore(Project project);
+    static std::future<double> calculateUserBehaviorScore(const std::string& currentId, const std::string& candidateId);
+    static std::future<double> calculatePopularityTrendScore(Project project);
 };
  
 } // namespace elizaos

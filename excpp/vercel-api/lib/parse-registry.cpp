@@ -81,7 +81,7 @@ std::string guessNpmName(const std::string& jsName) {
 
 }
 
-std::future<[string, VersionInfo]> processRepo(const std::string& npmId, const std::string& gitRef, Octokit octokit) {
+std::future<std::tuple<std::string, VersionInfo>> processRepo(const std::string& npmId, const std::string& gitRef, Octokit octokit) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto parsed = parseGitRef(gitRef);

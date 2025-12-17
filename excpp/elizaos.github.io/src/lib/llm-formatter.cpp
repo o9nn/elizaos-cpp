@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::string sanitizeBodyText(const std::optional<std::string>& text, auto maxLength = 500) {
+std::string sanitizeBodyText(const std::string& text, auto maxLength) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!text) return "";
@@ -22,7 +22,7 @@ std::string sanitizeBodyText(const std::optional<std::string>& text, auto maxLen
 
 }
 
-std::string formatDataForLLM(IntervalMetrics metrics, const std::optional<std::string>& summaryContent, FormatOptions options) {
+std::string formatDataForLLM(IntervalMetrics metrics, const std::string& summaryContent, FormatOptions options) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const std::vector<std::string> parts = [];

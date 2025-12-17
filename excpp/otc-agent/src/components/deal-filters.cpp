@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void DealFilters(auto {
-  filters, auto onFiltersChange, DealFiltersProps }) {
+void DealFilters(auto onFiltersChange) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     useRenderTracker("DealFilters");

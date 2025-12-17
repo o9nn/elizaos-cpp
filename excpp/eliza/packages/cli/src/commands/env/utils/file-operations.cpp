@@ -12,7 +12,7 @@ std::future<std::string> getGlobalEnvPath() {
 
 }
 
-std::future<std::optional<std::string>> getLocalEnvPath() {
+std::future<std::string> getLocalEnvPath() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto localEnvPath = path.join(process.cwd(), '.env');

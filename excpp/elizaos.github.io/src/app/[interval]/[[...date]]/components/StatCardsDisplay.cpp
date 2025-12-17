@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::future<void> StatCardsDisplay(StatCardsDisplayProps { metrics }) {
+std::future<void> StatCardsDisplay() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto timeframeTitle = formatTimeframeTitle(;

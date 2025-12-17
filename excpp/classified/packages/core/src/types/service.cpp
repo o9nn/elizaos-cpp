@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-ServiceError createServiceError(unknown error, auto code = 'UNKNOWN_ERROR') {
+ServiceError createServiceError(unknown error, auto code) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (error instanceof Error) {

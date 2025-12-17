@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-AgentLogger getLogger(const std::string& name, string = '' emoji) {
+AgentLogger getLogger(const std::string& name, std::string emoji = "") {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto key = std::to_string(name) + "-" + std::to_string(emoji);
@@ -99,7 +99,7 @@ void setStreamHandlerLevels(const std::string& level) {
 
 }
 
-void log(const std::string& message, string = 'info' level) {
+void log(const std::string& message, std::string level = "info") {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto logger = getLogger('default');

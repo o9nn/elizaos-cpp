@@ -5,7 +5,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 
 namespace elizaos {
@@ -17,7 +16,7 @@ namespace elizaos {
 
 struct ChartProps {
     std::vector<std::any> data;
-    std::variant<'network', 'timeline', 'heatmap', 'force'> type;
+    std::string type;
     double width;
     double height;
     std::optional<ChartOptions> options;

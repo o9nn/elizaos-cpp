@@ -19,38 +19,38 @@ namespace elizaos {
 // Base error class for all vision-related errors
 class VisionError {
 public:
-    VisionError(const std::string& message, const std::string& code, auto recoverable = false, std::optional<Record<string> context, auto any>);
+    VisionError(const std::string& message, const std::string& code, auto recoverable, std::optional<std::unordered_map<std::string, std::any>> context);
 };
 
 // Specific error types
 class CameraError {
 public:
-    CameraError(const std::string& message, std::optional<Record<string> context, auto any>);
+    CameraError(const std::string& message, std::optional<std::unordered_map<std::string, std::any>> context);
 };
 
 class ScreenCaptureError {
 public:
-    ScreenCaptureError(const std::string& message, std::optional<Record<string> context, auto any>);
+    ScreenCaptureError(const std::string& message, std::optional<std::unordered_map<std::string, std::any>> context);
 };
 
 class ModelInitializationError {
 public:
-    ModelInitializationError(const std::string& message, const std::string& modelName, std::optional<Record<string> context, auto any>);
+    ModelInitializationError(const std::string& message, const std::string& modelName, std::optional<std::unordered_map<std::string, std::any>> context);
 };
 
 class ProcessingError {
 public:
-    ProcessingError(const std::string& message, std::optional<Record<string> context, auto any>);
+    ProcessingError(const std::string& message, std::optional<std::unordered_map<std::string, std::any>> context);
 };
 
 class ConfigurationError {
 public:
-    ConfigurationError(const std::string& message, std::optional<Record<string> context, auto any>);
+    ConfigurationError(const std::string& message, std::optional<std::unordered_map<std::string, std::any>> context);
 };
 
 class APIError {
 public:
-    APIError(const std::string& message, std::optional<double> statusCode, std::optional<std::string> endpoint, std::optional<Record<string> context, auto any>);
+    APIError(const std::string& message, std::optional<double> statusCode, std::optional<std::string> endpoint, std::optional<std::unordered_map<std::string, std::any>> context);
 };
 
 // Error recovery strategies
@@ -70,8 +70,7 @@ public:
 // Circuit breaker for external services
 class CircuitBreaker {
 public:
-    private readonly name);
-    void catch(auto error);
+    CircuitBreaker();
     void onSuccess();
     void onFailure();
     std::string getState();
@@ -82,8 +81,8 @@ public:
 class VisionErrorHandler {
 public:
     VisionErrorHandler();
-    VisionErrorHandler getInstance();
-    CircuitBreaker getCircuitBreaker(const std::string& name, auto threshold = 5, auto timeout = 60000);
+    static VisionErrorHandler getInstance();
+    CircuitBreaker getCircuitBreaker(const std::string& name, auto threshold, auto timeout);
     std::future<bool> handle(const std::any& error);
     void resetCircuitBreaker(const std::string& name);
     void resetAllCircuitBreakers();

@@ -16,7 +16,7 @@ std::future<> generateTextEmbedding(IAgentRuntime runtime, const std::string& te
     embedding: number[]
 }
 
-std::future<std::vector> generateTextEmbeddingsBatch(IAgentRuntime runtime, const std::vector<std::string>& texts, number = 20 batchSize) {
+std::future<std::vector> generateTextEmbeddingsBatch(IAgentRuntime runtime, const std::vector<std::string>& texts, double batchSize = 20) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     embedding: number[] | nullptr; success: boolean; error?: any; index: number
 }
@@ -199,7 +199,7 @@ std::future<GenerateTextResult<any, any>> generateGoogleText(const std::string& 
 
 }
 
-std::future<GenerateTextResult<any, any>> generateOpenRouterText(ModelConfig config, const std::string& prompt, const std::string& system, const std::string& modelName, double maxTokens, std::optional<std::string> cacheDocument, std::optional<std::any> cacheOptions, auto autoCacheContextualRetrieval = true) {
+std::future<GenerateTextResult<any, any>> generateOpenRouterText(ModelConfig config, const std::string& prompt, const std::string& system, const std::string& modelName, double maxTokens, std::optional<std::string> cacheDocument, std::optional<std::any> cacheOptions, auto autoCacheContextualRetrieval) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto openrouter = createOpenRouter({;
@@ -449,7 +449,7 @@ std::future<GenerateTextResult<any, any>> generateStandardOpenRouterText(const s
 
 }
 
-void logCacheMetrics(GenerateTextResult<any result, auto any>) {
+void logCacheMetrics(GenerateTextResult<any, any> result) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (result.usage && (result.usage as any).cacheTokens) {

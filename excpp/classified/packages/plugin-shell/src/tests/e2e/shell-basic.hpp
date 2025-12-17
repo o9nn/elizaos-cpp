@@ -18,9 +18,6 @@ namespace elizaos {
 
 class ShellBasicE2ETestSuite {
 public:
-    void if(auto !callbackCalled);
-    void if(auto !shellService);
-    void if(auto history.length < 2);
 };
 
 

@@ -4,9 +4,7 @@
 
 namespace elizaos {
 
-void Skeleton(auto {
-  className, HTMLAttributes<HTMLDivElement> ...props
-}) {
+void Skeleton() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

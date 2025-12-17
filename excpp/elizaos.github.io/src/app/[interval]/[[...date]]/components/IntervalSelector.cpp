@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void IntervalSelector(auto {
-  currentInterval, auto currentDate, const std::any& }) {
+void IntervalSelector(auto currentDate) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto intervals = [;

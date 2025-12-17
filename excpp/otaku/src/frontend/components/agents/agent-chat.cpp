@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void AgentChat(AgentChatProps { agent }) {
+void AgentChat() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [messages, setMessages] = useState<Message[]>([;

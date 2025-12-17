@@ -26,20 +26,20 @@ struct Token {
     std::string balanceFormatted;
     std::optional<double> usdValue;
     std::optional<double> usdPrice;
-    std::optional<std::string> contractAddress;
+    std::string contractAddress;
     std::string chain;
     double decimals;
     std::optional<std::string> icon;
 };
 
-using ChainNetwork = std::variant<'base', 'ethereum', 'polygon'>;
+using ChainNetwork = std::variant<std::string, std::string, std::string>;
 
 struct TokenDetailModalContentProps {
     Token token;
 };
 
-using TimeFrame = std::variant<'1h', '24h', '7d', '30d', '1y'>;
-using ChartType = std::variant<'price', 'marketcap'>;
+using TimeFrame = std::variant<std::string, std::string, std::string, std::string, std::string>;
+using ChartType = std::variant<std::string, std::string>;
 
 struct PriceDataPoint {
     double timestamp;
@@ -53,6 +53,6 @@ struct MarketCapDataPoint {
     std::string date;
 };
 
-void TokenDetailModalContent(TokenDetailModalContentProps { token });
+void TokenDetailModalContent();
 
 } // namespace elizaos

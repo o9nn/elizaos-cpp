@@ -156,7 +156,7 @@ std::future<void> generatePreGeneratedTokens();
 std::future<void> checkAndReplenishTokens(std::optional<double> threshold);
 
 // Helper function to generate an enhanced prompt using the token metadata
-std::future<std::string> generateEnhancedPrompt(const std::string& userPrompt, std::optional<std::any> tokenMetadata, MediaType = MediaType::IMAGE mediaType);
+std::future<std::string> generateEnhancedPrompt(const std::string& userPrompt, std::optional<std::any> tokenMetadata, MediaType mediaType = MediaType.IMAGE);
 
 // Function to generate additional images for a token
 std::future<void> generateAdditionalTokenImages(const std::string& tokenMint, const std::string& description);

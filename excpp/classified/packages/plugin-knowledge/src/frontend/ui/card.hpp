@@ -18,16 +18,16 @@ struct CardProps {
     std::optional<std::string> className;
 };
 
-void Card(auto { children, CardProps className = '' });
+void Card(auto className);
 
-void CardHeader(auto { children, CardProps className = '' });
+void CardHeader(auto className);
 
-void CardFooter(auto { children, CardProps className = '' });
+void CardFooter(auto className);
 
-void CardTitle(auto { children, CardProps className = '' });
+void CardTitle(auto className);
 
-void CardDescription(auto { children, CardProps className = '' });
+void CardDescription(auto className);
 
-void CardContent(auto { children, CardProps className = '' });
+void CardContent(auto className);
 
 } // namespace elizaos

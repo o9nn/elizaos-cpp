@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void SolPriceProvider(const std::any& { children }) {
+void SolPriceProvider() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { data: solPrice, isLoading, error } = useSolPrice();

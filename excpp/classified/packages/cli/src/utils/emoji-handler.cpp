@@ -103,7 +103,7 @@ bool areEmojisEnabled() {
 
 }
 
-std::string withEmoji(EmojiKey key, const std::string& message, boolean = true spacing) {
+std::string withEmoji(EmojiKey key, const std::string& message, bool spacing = true) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto emoji = getEmoji(key);

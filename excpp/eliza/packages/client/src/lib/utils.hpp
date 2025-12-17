@@ -18,7 +18,7 @@ namespace elizaos {
  * * @param {...ClassValue} inputs - Array of class names to be combined.
  * @returns { string } - Combined class names as a single string.
  */
-void cn(const std::vector<ClassValue>& ...inputs);
+void cn();
 
 /**
  * Converts a character name to a URL-friendly format by replacing spaces with hyphens

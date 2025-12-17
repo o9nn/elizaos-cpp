@@ -5,7 +5,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 
 namespace elizaos {
@@ -19,7 +18,7 @@ struct PaymentVerificationResult {
     bool authorized;
     std::optional<std::string> error;
     std::string amount;
-    std::variant<'x402', 'apiKey', 'free'> method;
+    std::string method;
 };
 
 struct PaymentRequirements {
@@ -44,17 +43,17 @@ struct PaymentRequirements {
  */
 class PaymentMiddleware {
 public:
-    PaymentMiddleware(GatewayConfig config, Console = console logger);
-    std::future<PaymentVerificationResult> verifyPayment(const std::string& toolName, const std::string& serverId, std::optional<Record<string> headers, auto string>);
-    PaymentVerificationResult verifyApiKey(std::optional<Record<string> headers, auto string>, std::optional<ToolPricing> pricing);
-    std::future<PaymentVerificationResult> verifyX402Payment(std::optional<Record<string> headers, auto string>, std::optional<ToolPricing> pricing, std::optional<std::string> toolName, std::optional<std::string> requestUrl);
+    PaymentMiddleware(GatewayConfig config, Console logger = console);
+    std::future<PaymentVerificationResult> verifyPayment(const std::string& toolName, const std::string& serverId, std::optional<std::unordered_map<std::string, std::string>> headers);
+    PaymentVerificationResult verifyApiKey(std::optional<std::unordered_map<std::string, std::string>> headers, std::optional<ToolPricing> pricing);
+    std::future<PaymentVerificationResult> verifyX402Payment(std::optional<std::unordered_map<std::string, std::string>> headers, std::optional<ToolPricing> pricing, std::optional<std::string> toolName, std::optional<std::string> requestUrl);
     ToolPricing getToolPricing(const std::string& toolName, const std::string& serverId);
     PaymentRequirements generatePaymentRequiredResponse(const std::string& toolName, const std::string& serverId, std::optional<std::string> requestUrl);
     std::string parseAmountToAtomicUnits(const std::string& amount);
     std::string getUsdcAddress(const std::string& network);
-    std::variant<'passthrough', 'markup', 'absorb'> getServerPaymentMode(const std::string& serverId);
+    std::string getServerPaymentMode(const std::string& serverId);
     std::string calculateMarkup(const std::string& downstreamPrice, const std::string& markup);
-    std::unordered_map<std::string, std::string> extractPaymentHeaders(std::optional<Record<string> headers, auto string>);
+    std::unordered_map<std::string, std::string> extractPaymentHeaders(std::optional<std::unordered_map<std::string, std::string>> headers);
     void getStats();
 
 private:

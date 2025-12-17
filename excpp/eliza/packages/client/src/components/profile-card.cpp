@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void ProfileCard(auto { title, auto content, auto buttons, ProfileCardProps className }) {
+void ProfileCard(auto content, auto buttons) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

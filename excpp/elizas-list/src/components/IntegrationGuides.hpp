@@ -1,5 +1,4 @@
 #pragma once
-#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -12,5 +11,5 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-void IntegrationGuides(const std::any& { project }); 
+void IntegrationGuides(); 
 } // namespace elizaos

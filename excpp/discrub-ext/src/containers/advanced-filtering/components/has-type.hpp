@@ -19,7 +19,7 @@ namespace elizaos {
 
 using HasTypeProps = {
 
-void HasType(HasTypeProps { disabled });
+void HasType();
 
 
 } // namespace elizaos

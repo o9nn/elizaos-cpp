@@ -45,9 +45,9 @@ using TokenRecommendation = z::infer<typeof tokenRecommendationSchema>;
  * Transform functions to convert database objects to schema-validated objects
  */
 
-TokenPerformance transformTokenPerformance(const std::any& dbToken, auto chain = 'unknown');
+TokenPerformance transformTokenPerformance(const std::any& dbToken, auto chain);
 
-Transaction transformTransaction(const std::any& dbTx, auto positionId = 'unknown', auto chain = 'unknown');
+Transaction transformTransaction(const std::any& dbTx, auto positionId, auto chain);
 
 Position transformPosition(const std::any& dbPos);
 

@@ -5,7 +5,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 
 namespace elizaos {
@@ -16,8 +15,8 @@ namespace elizaos {
 
 
 struct CaptchaInfo {
-    std::variant<'turnstile', 'recaptcha-v2', 'recaptcha-v3', 'hcaptcha'> type;
-    std::optional<std::string> siteKey;
+    std::string type;
+    std::string siteKey;
 };
 
 std::future<CaptchaInfo> detectCaptchaType(Page page);

@@ -21,7 +21,7 @@ struct TokenMetadata {
     std::string farcaster;
     std::string website;
     std::string discord;
-    std::optional<std::string> imageBase64;
+    std::string imageBase64;
     std::string tokenMint;
     double decimals;
     double supply;

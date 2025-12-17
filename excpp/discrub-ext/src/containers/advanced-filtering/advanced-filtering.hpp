@@ -19,7 +19,7 @@ namespace elizaos {
 
 using AdvancedFilteringProps = {
 
-void AdvancedFiltering(AdvancedFilteringProps { isDm = false });
+void AdvancedFiltering();
 
 
 } // namespace elizaos

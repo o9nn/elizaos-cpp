@@ -49,7 +49,7 @@ std::future<std::unordered_map<std::string, std::string>> readEnvFile() {
 
 }
 
-std::future<void> writeEnvFile(Record<string envVars, auto string>) {
+std::future<void> writeEnvFile(const std::unordered_map<std::string, std::string>& envVars) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -81,7 +81,7 @@ std::future<void> writeEnvFile(Record<string envVars, auto string>) {
 
 }
 
-std::future<std::optional<std::string>> promptForEnvVar(EnvVarConfig config) {
+std::future<std::string> promptForEnvVar(EnvVarConfig config) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // If the key already exists in the environment and is valid, use that

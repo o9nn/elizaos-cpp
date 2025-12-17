@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void Settings(auto { settings, SettingsProps onChangeSettings }) {
+void Settings() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto visibleSettings = [;

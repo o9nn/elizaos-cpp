@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-express::Router createGroupMemoryRouter(Map<UUID agents, auto IAgentRuntime>, AgentServer serverInstance) {
+express::Router createGroupMemoryRouter(const std::unordered_map<UUID, IAgentRuntime>& agents, AgentServer serverInstance) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

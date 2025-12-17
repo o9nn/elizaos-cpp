@@ -45,7 +45,7 @@ std::vector<std::string> extractRequirements(const std::string& text);
 
 std::vector<std::string> extractAPIs(const std::string& text);
 
-std::optional<std::string> extractProjectName(const std::string& text);
+std::string extractProjectName(const std::string& text);
 
 std::string getNextStepPrompt(const std::any& form, const std::string& completedStepId);
 

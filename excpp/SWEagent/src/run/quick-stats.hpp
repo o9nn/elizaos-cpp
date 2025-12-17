@@ -20,7 +20,7 @@ namespace elizaos {
 /**
  * Calculate statistics from .traj files
  */
-std::future<std::string> quickStats(string = '::' directory);
+std::future<std::string> quickStats(std::string directory = ".");
 
 /**
  * Recursively find all .traj files in a directory

@@ -55,6 +55,6 @@ std::vector<std::string> findTrajFiles(const std::string& dir);
 /**
  * Main function for inspector CLI
  */
-std::future<void> inspectorCli(string = '::' trajectoryPath, std::optional<std::string> dataPath);
+std::future<void> inspectorCli(std::string trajectoryPath = ".", std::optional<std::string> dataPath);
 
 } // namespace elizaos

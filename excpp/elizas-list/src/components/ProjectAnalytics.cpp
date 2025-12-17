@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void ProjectAnalytics(const std::any& { project }) {
+void ProjectAnalytics() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

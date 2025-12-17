@@ -17,6 +17,6 @@ namespace elizaos {
  * https://docs.expo.dev/guides/color-schemes/
  */
 
-void useThemeColor(std::optional<std::any> props, keyof typeof Colors.light & keyof typeof Colors.dark colorName);
+void useThemeColor(std::optional<std::any> props, keyof typeof Colors::light colorName);
 
 } // namespace elizaos

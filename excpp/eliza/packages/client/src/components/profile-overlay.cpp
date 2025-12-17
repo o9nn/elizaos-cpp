@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void ProfileOverlay(auto { isOpen, auto onClose, ProfileOverlayProps agentId }) {
+void ProfileOverlay(auto onClose) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!isOpen) return null;

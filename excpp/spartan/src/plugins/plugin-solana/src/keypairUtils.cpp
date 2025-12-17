@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::future<KeypairResult> getWalletKey(IAgentRuntime runtime, auto requirePrivateKey = true) {
+std::future<KeypairResult> getWalletKey(IAgentRuntime runtime, auto requirePrivateKey) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

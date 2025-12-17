@@ -166,7 +166,7 @@ std::future<bool> publishToNpm(const std::string& cwd) {
 
 }
 
-std::future<bool> publishToGitHub(const std::string& cwd, PackageJson packageJson, const std::string& username, auto skipRegistry = false, auto isTest = false) {
+std::future<bool> publishToGitHub(const std::string& cwd, PackageJson packageJson, const std::string& username, auto skipRegistry, auto isTest) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     success: boolean; prUrl?: string
 }

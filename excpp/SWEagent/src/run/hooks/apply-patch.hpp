@@ -37,11 +37,11 @@ void printPatchMessage(const std::string& patchOutputFile);
  */
 class SaveApplyPatchHook {
 public:
-    SaveApplyPatchHook(boolean = false applyPatchLocally, boolean = true showSuccessMessage);
+    SaveApplyPatchHook(bool applyPatchLocally = false, bool showSuccessMessage = true);
     void onInit(std::optional<std::any> run);
     void onInstanceStart(const std::any& params);
     void onInstanceCompleted(const std::any& params);
-    std::optional<std::string> savePatch(const std::string& instanceId, AgentInfo info);
+    std::string savePatch(const std::string& instanceId, AgentInfo info);
     void applyPatch(const std::string& patchFile, const std::string& localDir);
 
 private:

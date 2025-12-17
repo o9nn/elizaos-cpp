@@ -19,19 +19,18 @@ namespace elizaos {
  * Get top pull requests for a repository in a time period
  */
 
-std::future<void> getTopPullRequests(QueryParams = {} params, auto limit = 5); /**
+std::future<void> getTopPullRequests(QueryParams params = {}, auto limit); /**
  * Get top issues for a repository in a time period
  */
 
-std::future<void> getTopIssues(QueryParams = {} params, auto limit = 5); /**
+std::future<void> getTopIssues(QueryParams params = {}, auto limit); /**
  * Get top contributors ranked by activity score
  */
 
-std::future<void> getTopContributors(QueryParams = {} params, auto limit = 5); /**
+std::future<void> getTopContributors(QueryParams params = {}, auto limit); /**
  * Get project metrics for a specific time interval
  */
 
-std::future<void> getProjectMetrics(QueryParams = {} params);
-using RepositoryMetrics = Awaited<ReturnType<typeof getProjectMetrics>>;
+std::future<void> getProjectMetrics(QueryParams params = {});
 
 } // namespace elizaos

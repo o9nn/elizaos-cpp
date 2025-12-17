@@ -29,10 +29,10 @@ struct Experiment {
 
 class ABTestingService {
 public:
-    std::future<std::string> assignVariant(const std::string& experimentId, const std::string& userId);
-    void trackConversion(const std::string& experimentId, const std::string& userId, const std::string& conversionType, std::optional<double> value);
-    void getResults(const std::string& experimentId);
-    void calculateStatistics(const std::vector<std::any>& results);
+    static std::future<std::string> assignVariant(const std::string& experimentId, const std::string& userId);
+    static void trackConversion(const std::string& experimentId, const std::string& userId, const std::string& conversionType, std::optional<double> value);
+    static void getResults(const std::string& experimentId);
+    static void calculateStatistics(const std::vector<std::any>& results);
 };
  
 } // namespace elizaos

@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void ArrayInput(auto { title, auto data, ArrayInputProps onChange }) {
+void ArrayInput(auto data) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [inputValue, setInputValue] = useState('');

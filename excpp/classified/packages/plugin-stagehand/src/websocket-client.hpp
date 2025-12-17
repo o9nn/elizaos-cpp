@@ -26,7 +26,7 @@ struct StagehandMessage {
 
 class StagehandWebSocketClient {
 public:
-    StagehandWebSocketClient(const std::string& private serverUrl);
+    StagehandWebSocketClient();
     std::future<void> connect();
     std::future<void> attemptReconnect();
     std::future<StagehandMessage> sendMessage(const std::string& type, const std::any& data);

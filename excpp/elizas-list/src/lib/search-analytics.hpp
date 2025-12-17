@@ -17,5 +17,5 @@ namespace elizaos {
 
 std::future<void> trackSearch(const std::string& query, std::optional<std::string> userId);
 
-std::future<void> getPopularSearches(auto limit = 10); 
+std::future<void> getPopularSearches(auto limit); 
 } // namespace elizaos

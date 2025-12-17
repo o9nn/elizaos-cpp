@@ -28,7 +28,7 @@ struct MarketTransferParams {
 
 using MarketTransferInput = {
 
-using MarketTransferActionResult = ActionResult & { input: MarketTransferInput };
+using MarketTransferActionResult = ActionResult;
 
 std::string getOperationEmoji(const std::string& intent);
 

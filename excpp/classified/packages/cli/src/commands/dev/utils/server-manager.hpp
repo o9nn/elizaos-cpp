@@ -29,6 +29,7 @@ struct ServerState {
 /**
  * Check if a local CLI exists and return its path
  */
+std::future<std::string> getLocalCliPath();
 
 /**
  * Set up environment with proper module resolution paths
@@ -38,7 +39,7 @@ std::unordered_map<std::string, std::string> setupEnvironment();
 /**
  * Start the server process with the given arguments
  */
-std::future<void> startServerProcess(const std::vector<string[] =>& args);
+std::future<void> startServerProcess(std::vector<std::string> args = {});
 
 /**
  * Stop the currently running server process
@@ -48,7 +49,7 @@ std::future<bool> stopServerProcess();
 /**
  * Restart the server process
  */
-std::future<void> restartServerProcess(const std::vector<string[] =>& args);
+std::future<void> restartServerProcess(std::vector<std::string> args = {});
 
 /**
  * Check if the server is currently running
@@ -91,12 +92,12 @@ std::future<bool> stopServer();
 /**
  * Start the server with given arguments
  */
-std::future<void> startServer(const std::vector<string[] =>& args);
+std::future<void> startServer(std::vector<std::string> args = {});
 
 /**
  * Restart the server with given arguments
  */
-std::future<void> restartServer(const std::vector<string[] =>& args);
+std::future<void> restartServer(std::vector<std::string> args = {});
 
 /**
  * Check if the server is currently running

@@ -4,6 +4,7 @@
 #include <memory>
 #include <optional>
 #include <string>
+#include <tuple>
 #include <unordered_map>
 #include <variant>
 #include <vector>
@@ -50,7 +51,7 @@ struct ToolConfig {
     std::optional<bool> enableBashTool;
     std::optional<std::string> formatErrorTemplate;
     std::optional<std::string> commandDocs;
-    std::optional<std::optional<std::string>> submitCommandEndName;
+    std::optional<std::string> submitCommandEndName;
     std::optional<std::variant<Array<string, string[]>>> resetCommands;
     std::optional<double> executionTimeout;
     std::optional<double> installTimeout;
@@ -70,14 +71,14 @@ struct ToolConfig {
  */
 class ToolHandler {
 public:
-    ToolHandler(ToolConfig = {} config);
+    ToolHandler(ToolConfig config = {});
     std::vector<Command> getCommandsFromBundles();
-    ToolHandler fromConfig(ToolConfig config);
     std::future<void> install(SWEEnv env);
     std::future<void> uploadBundle(SWEEnv _env, Bundle bundle);
     std::future<void> reset(SWEEnv env);
     bool shouldBlockAction(const std::string& action);
     bool checkForSubmissionCmd(const std::string& observation);
+    std::tuple<std::string, std::string> parseActions(const std::variant<std::string, ModelResponse>& output);
     std::string guardMultilineInput(const std::string& action);
 
 

@@ -34,11 +34,11 @@ bool shouldUpdateSupply(const std::any& token);
 
 std::future<bool> isValidSwapTx(Connection connection, const std::string& signature, const std::string& mint);
 
-std::future<void> processLastValidSwap(const std::any& token, double solPriceUSD, auto limit = 5);
+std::future<void> processLastValidSwap(const std::any& token, double solPriceUSD, auto limit);
 
-std::future<double> updateHoldersCache(const std::string& mint, boolean = false imported);
+std::future<double> updateHoldersCache(const std::string& mint, bool imported = false);
 
 // Function to process a token update and emit WebSocket events
-std::future<void> processTokenUpdateEvent(const std::any& tokenData, boolean = false shouldEmitGlobal, boolean = false isNewTokenEvent, auto // Add the new flag);
+std::future<void> processTokenUpdateEvent(const std::any& tokenData, bool shouldEmitGlobal = false, bool isNewTokenEvent = false);
 
 } // namespace elizaos

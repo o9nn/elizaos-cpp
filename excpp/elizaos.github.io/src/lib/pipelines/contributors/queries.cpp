@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::future<void> getContributorPRs(const std::string& username, PaginatedQueryParams = {} params) {
+std::future<void> getContributorPRs(const std::string& username, PaginatedQueryParams params = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto whereConditions = [;
@@ -24,7 +24,7 @@ std::future<void> getContributorPRs(const std::string& username, PaginatedQueryP
 
 }
 
-std::future<void> getContributorPRMetrics(const std::string& username, QueryParams = {} params) {
+std::future<void> getContributorPRMetrics(const std::string& username, QueryParams params = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto whereConditions = [;
@@ -58,7 +58,7 @@ std::future<void> getContributorPRMetrics(const std::string& username, QueryPara
 
 }
 
-std::future<void> getContributorIssueMetrics(const std::string& username, QueryParams = {} params) {
+std::future<void> getContributorIssueMetrics(const std::string& username, QueryParams params = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Build where conditions
@@ -96,7 +96,7 @@ std::future<void> getContributorIssueMetrics(const std::string& username, QueryP
 
 }
 
-std::future<void> getContributorReviewMetrics(const std::string& username, QueryParams = {} params) {
+std::future<void> getContributorReviewMetrics(const std::string& username, QueryParams params = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Build where conditions for reviews
@@ -131,7 +131,7 @@ std::future<void> getContributorReviewMetrics(const std::string& username, Query
 
 }
 
-std::future<void> getContributorCommentMetrics(const std::string& username, QueryParams = {} params) {
+std::future<void> getContributorCommentMetrics(const std::string& username, QueryParams params = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Build where conditions for reviews

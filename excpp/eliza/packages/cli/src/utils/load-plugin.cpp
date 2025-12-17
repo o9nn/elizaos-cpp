@@ -20,7 +20,7 @@ std::string getGlobalNodeModulesPath() {
 
 }
 
-std::string resolveNodeModulesPath(const std::string& repository, const std::vector<std::string>& ...segments) {
+std::string resolveNodeModulesPath(const std::string& repository) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return path.resolve(process.cwd(), 'node_modules', repository, ...segments);

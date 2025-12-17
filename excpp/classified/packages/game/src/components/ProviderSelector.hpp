@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 
 namespace elizaos {
@@ -18,14 +17,14 @@ struct Provider {
     std::string display_name;
     bool enabled;
     bool requires_api_key;
-    std::variant<'available', 'not_configured', 'error'> status;
+    std::string status;
     std::string message;
 };
 
 struct ProviderStatus {
     std::vector<Provider> providers;
     std::string active;
-    std::optional<std::string> selected;
+    std::string selected;
     std::vector<std::string> preferences;
 };
 

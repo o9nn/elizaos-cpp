@@ -231,6 +231,6 @@ std::string formatRecommenderReport(Entity entity, RecommenderMetrics metrics, c
  * @param {Map<string, RecommenderMetricsHistory[]>} history - The map of historical metrics data
  * @returns {string} The formatted top recommenders overview in XML format
  */
-std::string formatTopRecommendersOverview(const std::vector<Entity>& recommenders, Map<string metrics, auto RecommenderMetrics>, Map<string history, auto RecommenderMetricsHistory[]>);
+std::string formatTopRecommendersOverview(const std::vector<Entity>& recommenders, const std::unordered_map<std::string, RecommenderMetrics>& metrics, const std::unordered_map<std::string, std::vector<RecommenderMetricsHistory>>& history);
 
 } // namespace elizaos

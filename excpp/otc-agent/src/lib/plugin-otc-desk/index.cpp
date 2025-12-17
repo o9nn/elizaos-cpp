@@ -14,7 +14,7 @@ EntitySourceMetadata getEntitySourceMetadata(const std::optional<Entity>& entity
 
 }
 
-std::optional<std::string> extractResponseText(const std::string& text) {
+std::string extractResponseText(const std::string& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!text) return null;
@@ -56,7 +56,7 @@ std::optional<std::string> extractResponseText(const std::string& text) {
 
 }
 
-std::future<std::optional<std::string>> getLatestResponseId(IAgentRuntime runtime, const std::string& roomId) {
+std::future<std::string> getLatestResponseId(IAgentRuntime runtime, const std::string& roomId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

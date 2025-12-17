@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void displayAgent(const std::optional<Agent>& data, auto title = 'Agent Review') {
+void displayAgent(const std::optional<Agent>& data, auto title) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     logHeader(title);

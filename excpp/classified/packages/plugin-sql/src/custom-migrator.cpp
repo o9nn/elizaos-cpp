@@ -28,7 +28,7 @@ std::string camelToSnakeCase(const std::string& str) {
 
 }
 
-std::vector<std::string> topologicalSort(Map<string tables, auto TableDefinition>) {
+std::vector<std::string> topologicalSort(const std::unordered_map<std::string, TableDefinition>& tables) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const std::vector<std::string> sorted = [];

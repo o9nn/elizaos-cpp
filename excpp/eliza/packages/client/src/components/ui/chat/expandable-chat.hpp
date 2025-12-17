@@ -14,8 +14,8 @@ namespace elizaos {
 
 
 
-using ChatPosition = std::variant<'bottom-right', 'bottom-left'>;
-using ChatSize = std::variant<'sm', 'md', 'lg', 'xl', 'full'>;
+using ChatPosition = std::variant<std::string, std::string>;
+using ChatSize = std::variant<std::string, std::string, std::string, std::string, std::string>;
 
 
 } // namespace elizaos

@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::future<void> GET(Request request, const std::any& { params }) {
+std::future<void> GET(Request request) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto startTime = Date.now();

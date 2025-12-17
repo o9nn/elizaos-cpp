@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::optional<IAgentRuntime> createMockRuntime(const std::optional<IAgentRuntime>& overrides) {
+std::optional<IAgentRuntime> createMockRuntime(std::optional<IAgentRuntime> overrides = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return {
@@ -17,7 +17,7 @@ std::optional<IAgentRuntime> createMockRuntime(const std::optional<IAgentRuntime
 
 }
 
-Memory createMockMemory(const std::string& text, const std::optional<Memory>& overrides) {
+Memory createMockMemory(const std::string& text, std::optional<Memory> overrides = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return {
@@ -32,7 +32,7 @@ Memory createMockMemory(const std::string& text, const std::optional<Memory>& ov
 
 }
 
-State createMockState(const std::optional<State>& overrides) {
+State createMockState(std::optional<State> overrides = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return {

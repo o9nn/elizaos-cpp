@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void ChatInterface(auto { agent, auto userId, auto serverId, auto channelId, auto isNewChatMode = false, auto onChannelCreated, ChatInterfaceProps onActionCompleted }) {
+void ChatInterface(auto userId, auto serverId, auto channelId, auto isNewChatMode, auto onChannelCreated) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::future<void> getActiveContributors(QueryParams = {} params) {
+std::future<void> getActiveContributors(QueryParams params = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Find contributors with any activity in the time range

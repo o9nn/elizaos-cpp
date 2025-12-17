@@ -17,7 +17,7 @@ namespace elizaos {
 
 class StagehandError {
 public:
-    StagehandError(const std::string& message, const std::string& public code, const std::string& public userMessage, boolean = true isRetryable, std::optional<std::any> details);
+    StagehandError(const std::string& message, bool isRetryable = true, std::optional<std::any> details);
 
 private:
     bool recoverable_;

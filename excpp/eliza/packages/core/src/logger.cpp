@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-bool parseBooleanFromText(const std::optional<std::string>& value) {
+bool parseBooleanFromText(const std::string& value) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!value) return false;

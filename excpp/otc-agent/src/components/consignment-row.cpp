@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void ConsignmentRow(auto { consignment, ConsignmentRowProps onUpdate }) {
+void ConsignmentRow() {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

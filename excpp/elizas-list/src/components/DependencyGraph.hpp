@@ -29,5 +29,5 @@ struct DependencyGraphProps {
     std::vector<DependencyLink> links;
 };
 
-void DependencyGraph(DependencyGraphProps { dependencies }); 
+void DependencyGraph(); 
 } // namespace elizaos

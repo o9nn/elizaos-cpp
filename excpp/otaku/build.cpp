@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::future<void> cleanBuild(auto outdir = 'dist') {
+std::future<void> cleanBuild(auto outdir) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (existsSync(outdir)) {

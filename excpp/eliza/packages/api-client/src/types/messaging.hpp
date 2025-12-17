@@ -5,7 +5,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include "base.hpp"
 #include "elizaos/core.hpp"
@@ -60,7 +59,7 @@ struct MessageSubmitParams {
 
 struct MessageCompleteParams {
     UUID messageId;
-    std::variant<'completed', 'failed'> status;
+    std::string status;
     std::optional<std::string> error;
 };
 

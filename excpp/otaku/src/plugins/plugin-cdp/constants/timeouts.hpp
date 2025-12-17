@@ -36,7 +36,7 @@ namespace elizaos {
  * @param timeout Timeout in milliseconds (defaults to TX_CONFIRMATION_TIMEOUT)
  * @throws Error if transaction reverts or times out
  */
-std::future<void> waitForTxConfirmation(PublicClient publicClient, `0x${string}` hash, string = "transaction" operationType, number = TX_CONFIRMATION_TIMEOUT timeout);
+std::future<void> waitForTxConfirmation(PublicClient publicClient, `0x${string}` hash, std::string operationType = "transaction", double timeout = TX_CONFIRMATION_TIMEOUT);
 
 
 } // namespace elizaos

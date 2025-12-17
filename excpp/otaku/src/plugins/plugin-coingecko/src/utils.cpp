@@ -90,12 +90,12 @@ std::optional<double> usd(const std::any& obj, const std::vector<std::string>& p
 
 }
 
-void choosePlatform(const std::any& data, std::optional<std::optional<std::string>> preferredPlatform) {
+void choosePlatform(const std::any& data, std::optional<std::string> preferredPlatform) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     platformKey: string | nullptr; address: string | nullptr; decimals: number | nullptr
 }
 
-std::string platformToNet(std::optional<std::optional<std::string>> p) {
+std::string platformToNet(std::optional<std::string> p) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     switch (p) {
@@ -117,7 +117,7 @@ std::string platformToNet(std::optional<std::optional<std::string>> p) {
 
 }
 
-std::any formatCoinMetadata(const std::string& requestId, const std::any& data, std::optional<std::optional<std::string>> preferredPlatform) {
+std::any formatCoinMetadata(const std::string& requestId, const std::any& data, std::optional<std::string> preferredPlatform) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const std::any md = data.market_data || {};

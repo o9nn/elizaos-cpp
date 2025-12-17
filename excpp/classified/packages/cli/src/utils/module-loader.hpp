@@ -24,10 +24,6 @@ class ModuleLoader {
 public:
     ModuleLoader(std::optional<std::string> projectPath);
     std::string detectProjectPath();
-    void if(auto isLocalModule);
-    void catch(auto error);
-    void if(auto isLocalModule);
-    void catch(auto error);
     void setupEnvironment();
     void clearCache();
     std::string resolve(const std::string& moduleName);

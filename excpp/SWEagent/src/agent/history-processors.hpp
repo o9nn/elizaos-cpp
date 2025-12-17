@@ -118,7 +118,6 @@ public:
     ImageParsingHistoryProcessor(std::optional<std::any> config);
     History process(History history);
     Array< parseImageContent(const std::string& content);
-    void if(auto text);
 
 private:
     RegExp pattern_;

@@ -156,7 +156,7 @@ void AdminUsersList() {
 
 }
 
-void AdminUserDetails(const std::any& { address }) {
+void AdminUserDetails() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Fetch user data from the API

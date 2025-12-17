@@ -54,7 +54,7 @@ std::string calculateHash(unknown data) {
 
 }
 
-void debounced(Parameters<T> ...args) {
+void debounced() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (timeoutId) {
@@ -68,7 +68,7 @@ void debounced(Parameters<T> ...args) {
 
 }
 
-void throttled(Parameters<T> ...args) {
+void throttled() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto now = Date.now();

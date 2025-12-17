@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void Chart(ChartProps { token }) {
+void Chart() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto chartContainerRef = useRef<HTMLDivElement>(nullptr);

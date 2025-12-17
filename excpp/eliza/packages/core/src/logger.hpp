@@ -16,7 +16,7 @@ namespace elizaos {
 
 
 // Local utility function to avoid circular dependency
-bool parseBooleanFromText(const std::optional<std::string>& value);
+bool parseBooleanFromText(const std::string& value);
 
 /**
  * Interface representing a log entry.

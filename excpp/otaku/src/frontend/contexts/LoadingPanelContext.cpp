@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void LoadingPanelProvider(const std::any& { children }) {
+void LoadingPanelProvider() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [state, setState] = useState<LoadingPanelState>({;

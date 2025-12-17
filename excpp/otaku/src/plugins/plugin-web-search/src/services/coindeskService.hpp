@@ -5,7 +5,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include "elizaos/core.hpp"
 
@@ -53,8 +52,8 @@ struct CoinDeskSearchOptions {
     std::optional<std::string> endDate;
     std::optional<std::string> publishedAfter;
     std::optional<std::string> publishedBefore;
-    std::optional<std::variant<'published', 'updated', 'relevance'>> sortBy;
-    std::optional<std::variant<'asc', 'desc'>> sortOrder;
+    std::optional<std::string> sortBy;
+    std::optional<std::string> sortOrder;
     std::optional<bool> includeBody;
     std::optional<bool> includeSummary;
     std::optional<bool> includeThumbnail;
@@ -62,12 +61,12 @@ struct CoinDeskSearchOptions {
 
 class CoinDeskService {
 public:
-    std::future<CoinDeskService> start(IAgentRuntime runtime);
+    static std::future<CoinDeskService> start(IAgentRuntime runtime);
     std::future<void> initialize(IAgentRuntime runtime);
-    std::future<CoinDeskNewsResponse> searchNews(CoinDeskSearchOptions = {} options);
-    std::future<CoinDeskNewsResponse> getLatestHeadlines(number = 10 limit);
-    std::future<CoinDeskNewsResponse> searchByCategory(const std::string& category, number = 10 limit);
-    std::future<CoinDeskNewsResponse> searchByDateRange(const std::string& query, const std::string& startDate, const std::string& endDate, number = 10 limit);
+    std::future<CoinDeskNewsResponse> searchNews(CoinDeskSearchOptions options = {});
+    std::future<CoinDeskNewsResponse> getLatestHeadlines(double limit = 10);
+    std::future<CoinDeskNewsResponse> searchByCategory(const std::string& category, double limit = 10);
+    std::future<CoinDeskNewsResponse> searchByDateRange(const std::string& query, const std::string& startDate, const std::string& endDate, double limit = 10);
     bool isConfigured();
     std::future<void> stop();
 

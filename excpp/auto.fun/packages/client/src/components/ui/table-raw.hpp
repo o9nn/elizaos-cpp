@@ -13,17 +13,17 @@ namespace elizaos {
 
 
 
-void Table(auto { className, ComponentProps<"table"> ...props });
+void Table();
 
-void TableHeader(auto { className, ComponentProps<"thead"> ...props });
+void TableHeader();
 
-void TableBody(auto { className, ComponentProps<"tbody"> ...props });
+void TableBody();
 
-void TableRow(auto { className, ComponentProps<"tr"> ...props });
+void TableRow();
 
-void TableHead(auto { className, ComponentProps<"th"> ...props });
+void TableHead();
 
-void TableCell(auto { className, ComponentProps<"td"> ...props });
+void TableCell();
 
 
 } // namespace elizaos

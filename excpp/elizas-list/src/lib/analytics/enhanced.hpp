@@ -5,7 +5,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include ".monitoring/logger.hpp"
 #include ".monitoring/metrics.hpp"
@@ -26,12 +25,12 @@ struct UserSession {
 
 class EnhancedAnalytics {
 public:
-    void trackProjectView(const std::string& projectId, UserSession session, std::optional<std::string> referrer);
-    void trackUserBehavior(const std::variant<'click', 'scroll', 'hover'>& type, Record<string data, auto any>, UserSession session);
-    void getProjectInsights(const std::string& projectId);
-    void getViewStats(const std::string& projectId);
-    void getTrendAnalysis(const std::string& projectId);
-    void calculateTrends(const std::vector<std::any>& timeSeriesData);
+    static void trackProjectView(const std::string& projectId, UserSession session, std::optional<std::string> referrer);
+    static void trackUserBehavior(const std::string& type, const std::unordered_map<std::string, std::any>& data, UserSession session);
+    static void getProjectInsights(const std::string& projectId);
+    static void getViewStats(const std::string& projectId);
+    static void getTrendAnalysis(const std::string& projectId);
+    static void calculateTrends(const std::vector<std::any>& timeSeriesData);
 };
  
 } // namespace elizaos

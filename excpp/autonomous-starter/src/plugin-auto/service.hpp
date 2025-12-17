@@ -17,8 +17,6 @@ namespace elizaos {
 
 
     std::future<void> stop();
-    std::future<Service> start(IAgentRuntime runtime);
-    std::future<void> stop(IAgentRuntime runtime);
     void setupWorld();
     void loop();
 

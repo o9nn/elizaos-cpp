@@ -91,7 +91,7 @@ namespace elizaos {
       // Try to capture input params even in failure
         // If we can't get params, just use empty object
 
-std::string formatBridgeResponse(RelayStatus status, ResolvedBridgeRequest request, const std::string& requestId, const std::vector<std::vector<std::any>>& collectedTxHashes, std::optional<std::string> tokenSymbol);
+std::string formatBridgeResponse(RelayStatus status, ResolvedBridgeRequest request, const std::string& requestId, std::vector<std::any> collectedTxHashes = {}, std::optional<std::string> tokenSymbol);
 
 std::string getChainName(double chainId);
 

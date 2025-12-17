@@ -51,7 +51,7 @@ struct ProjectStructure {
 struct EntryPoint {
     std::string path;
     std::string description;
-    std::variant<'single', 'batch', 'other'> type;
+    std::string type;
 };
 
 struct ClassInfo {
@@ -76,7 +76,7 @@ struct ToolsInfo {
 struct Inspector {
     std::string name;
     std::string path;
-    std::variant<'cli', 'web'> type;
+    std::string type;
     std::string description;
 };
 
@@ -84,15 +84,16 @@ struct Inspector {
  * Coding guidelines configuration
  */
 struct CodingGuidelines {
-    std::variant<'python', 'typescript'> language;
+    std::string language;
     std::string version;
     std::vector<CodingRule> rules;
 };
 
 struct CodingRule {
     std::string id;
+    std::string category;
     std::string rule;
-    std::optional<std::variant<'required', 'recommended', 'optional'>> enforcement;
+    std::optional<std::string> enforcement;
     std::optional<std::vector<std::string>> alternatives;
 };
 

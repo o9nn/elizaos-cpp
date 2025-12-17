@@ -17,12 +17,6 @@ namespace elizaos {
 
 class VisionAutonomyE2ETestSuite {
 public:
-    void if(auto !visionService);
-    void if(auto updateIntervals.length > 0);
-    void if(auto !visionService);
-    void for(auto const scenario of scenarios);
-    void if(auto !visionService);
-    void if(auto !isActive);
 };
 
 

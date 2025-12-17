@@ -53,11 +53,11 @@ struct ProviderRateLimits {
  * Options for text generation overrides
  */
 struct TextGenerationOptions {
-    std::optional<std::variant<'anthropic', 'openai', 'openrouter', 'google', 'ollama'>> provider;
+    std::optional<std::string> provider;
     std::optional<std::string> modelName;
     std::optional<double> maxTokens;
     std::optional<std::string> cacheDocument;
-    'ephemeral' type;
+    std::string type;
     std::optional<bool> autoCacheContextualRetrieval;
 };
 
@@ -77,7 +77,7 @@ struct AddKnowledgeOptions {
 
 // Extend the core service types with knowledge service
   struct ServiceTypeRegistry {
-    'knowledge' KNOWLEDGE;
+    std::string KNOWLEDGE;
 };
 
 // Export service type constant

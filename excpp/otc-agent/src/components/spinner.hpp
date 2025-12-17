@@ -13,5 +13,6 @@ namespace elizaos {
 
 
 
+void LoadingSpinner(auto size);
 
 } // namespace elizaos

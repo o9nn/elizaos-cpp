@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void MiniappProvider(const std::any& { children }) {
+void MiniappProvider() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     useRenderTracker("MiniappProvider");

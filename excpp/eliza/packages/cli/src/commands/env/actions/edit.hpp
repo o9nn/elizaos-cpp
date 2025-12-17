@@ -26,7 +26,7 @@ namespace elizaos {
  * @param fromMainMenu - Whether this command was called from the main menu (affects return behavior)
  * @returns Promise<boolean> - Whether to return to main menu
  */
-std::future<bool> editEnvVars(EditEnvOptions options, auto fromMainMenu = false);
+std::future<bool> editEnvVars(EditEnvOptions options, auto fromMainMenu);
 
 /**
  * Helper function to add a new environment variable
@@ -34,6 +34,6 @@ std::future<bool> editEnvVars(EditEnvOptions options, auto fromMainMenu = false)
  * @param envVars Current environment variables
  * @param yes Whether to auto-confirm prompts
  */
-std::future<void> addNewVariable(const std::string& envPath, EnvVars envVars, auto yes = false);
+std::future<void> addNewVariable(const std::string& envPath, EnvVars envVars, auto yes);
 
 } // namespace elizaos

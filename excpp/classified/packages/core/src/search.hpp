@@ -247,8 +247,8 @@ struct TokenizerOptions {
  */
 class Tokenizer {
 public:
-    Tokenizer(TokenizerOptions = {} options);
-    TokenizationResult tokenize(const std::string& text, auto includeStats = false);
+    Tokenizer(TokenizerOptions options = {});
+    TokenizationResult tokenize(const std::string& text, auto includeStats);
     std::string cleanText(const std::string& text);
     bool isValidToken(const std::string& token);
     std::string stemWord(const std::string& word);
@@ -303,10 +303,10 @@ struct SearchResult {
  */
 class BM25 {
 public:
-    BM25(std::optional<std::vector<std::any>> docs, BM25Options = {} options);
+    BM25(std::optional<std::vector<std::any>> docs, BM25Options options = {});
     void recalculateAverageLength();
-    std::vector<SearchResult> search(const std::string& query, auto topK = 10);
-    std::vector<SearchResult> searchPhrase(const std::string& phrase, auto topK = 10);
+    std::vector<SearchResult> search(const std::string& query, auto topK);
+    std::vector<SearchResult> searchPhrase(const std::string& phrase, auto topK);
     double calculatePhraseScore(const std::vector<std::string>& phraseTokens, double docIndex);
     std::future<void> addDocument(const std::any& doc);
     double calculateIdf(double termIndex);

@@ -16,23 +16,23 @@ namespace elizaos {
 struct GitHubUser {
     double id;
     std::string login;
-    std::optional<std::string> name;
+    std::string name;
     std::string avatar_url;
     std::string html_url;
 };
 
 struct AuthContextType {
     std::optional<GitHubUser> user;
-    std::optional<std::string> token;
+    std::string token;
     bool isLoading;
-    std::optional<std::string> error;
+    std::string error;
 };
 
 struct AuthProviderProps {
     ReactNode children;
 };
 
-void AuthProvider(AuthProviderProps { children });
+void AuthProvider();
 
 // Hook to use the auth context
 void useAuth();

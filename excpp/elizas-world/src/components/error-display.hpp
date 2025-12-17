@@ -18,5 +18,5 @@ struct ErrorDisplayProps {
     std::variant<Error, unknown> error;
 };
 
-void ErrorDisplay(ErrorDisplayProps { error }); 
+void ErrorDisplay(); 
 } // namespace elizaos

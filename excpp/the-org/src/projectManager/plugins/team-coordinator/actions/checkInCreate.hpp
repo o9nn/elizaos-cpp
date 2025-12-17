@@ -5,7 +5,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include "elizaos/core.hpp"
 
@@ -36,7 +35,7 @@ struct CheckInSchedule {
     std::optional<std::string> teamMemberUserName;
     std::string checkInType;
     std::string channelId;
-    std::variant<'DAILY', 'WEEKLY', 'BI-WEEKLY', 'MONTHLY', 'WEEKDAYS'> frequency;
+    std::string frequency;
     std::string checkInTime;
     std::string source;
     std::string createdAt;

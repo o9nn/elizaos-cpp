@@ -116,6 +116,7 @@ bool isCacheValid(const std::string& key);
  * @param network - Network name
  * @returns Token address or null if not found
  */
+std::future<std::string> resolveTokenSymbol(const std::string& symbol, const std::string& network);
 
 /**
  * Resolve token to address
@@ -149,7 +150,6 @@ void clearTokenCache();
 /**
  * Get cache statistics
  */
-void getCacheStats(); {
 
 /**
  * Add a hardcoded token address for a specific network

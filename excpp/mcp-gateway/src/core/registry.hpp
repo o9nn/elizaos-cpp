@@ -17,8 +17,8 @@ namespace elizaos {
 
 class GatewayRegistry {
 public:
-    GatewayRegistry(GatewayConfig config, Console = console logger);
-    std::future<void> refresh(Map<string connections, auto ServerConnection>);
+    GatewayRegistry(GatewayConfig config, Console logger = console);
+    std::future<void> refresh(const std::unordered_map<std::string, ServerConnection>& connections);
     std::future<void> collectTools(const std::string& serverId, ServerConnection connection);
     std::future<void> collectResources(const std::string& serverId, ServerConnection connection);
     std::future<void> collectPrompts(const std::string& serverId, ServerConnection connection);

@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-ProblemStatement problemStatementFromSimplifiedInput(const std::string& input, const std::variant<'text', 'text_file', 'github_issue', 'swe_bench_multimodal'>& type) {
+ProblemStatement problemStatementFromSimplifiedInput(const std::string& input, const std::string& type) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

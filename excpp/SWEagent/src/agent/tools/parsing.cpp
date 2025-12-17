@@ -39,7 +39,7 @@ AbstractParseFunction getParser(const std::string& parserName) {
     }
 }
 
-[string, string] parseAction(const std::variant<ModelOutput, std::string>& modelResponse, const std::variant<std::string, AbstractParseFunction = 'thought_action'>& parseFunction, std::optional<std::vector<Command>> commands, boolean = false strict) {
+std::tuple<std::string, std::string> parseAction(const std::variant<ModelOutput, std::string>& modelResponse, std::variant<std::string, AbstractParseFunction> parseFunction = "thought_action", std::optional<std::vector<Command>> commands, bool strict = false) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     auto parser: AbstractParseFunction;

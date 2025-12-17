@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include "elizaos/core.hpp"
 
@@ -123,7 +122,7 @@ namespace elizaos {
 // Type definitions for API requests and responses
 struct TodoApiRequest {
     std::optional<std::string> name;
-    std::optional<std::variant<'daily', 'one-off', 'aspirational'>> type;
+    std::optional<std::string> type;
     std::optional<double> priority;
     std::optional<std::string> dueDate;
     std::optional<bool> isUrgent;

@@ -4,17 +4,17 @@
 
 namespace elizaos {
 
-std::future<> execWithdrawTxSafe(Transaction tx, Connection connection, const std::any& wallet, PublicKey mint, auto maxRetries = 5) {
+std::future<> execWithdrawTxSafe(Transaction tx, Connection connection, const std::any& wallet, PublicKey mint, auto maxRetries) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     signature: string; logs: string[]
 }
 
-std::future<> execWithdrawTx(Transaction tx, Connection connection, const std::any& wallet, auto maxRetries = 1) {
+std::future<> execWithdrawTx(Transaction tx, Connection connection, const std::any& wallet, auto maxRetries) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     signature: string; logs: string[]
 }
 
-std::future<> submitWithdrawTx(Transaction tx, Connection connection, const std::any& wallet, auto maxRetries = 1) {
+std::future<> submitWithdrawTx(Transaction tx, Connection connection, const std::any& wallet, auto maxRetries) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     signature: string
 }

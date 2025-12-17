@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void AgentMemoryViewer(auto { agentId, auto agentName, AgentMemoryViewerProps channelId }) {
+void AgentMemoryViewer(auto agentName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [selectedType, setSelectedType] = useState<MemoryType>(MemoryType.all);

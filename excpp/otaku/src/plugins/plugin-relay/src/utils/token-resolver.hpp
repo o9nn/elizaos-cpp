@@ -50,6 +50,8 @@ std::string getCacheKey(const std::string& network, const std::string& address);
 
 bool isCacheValid(const std::string& key);
 
+std::future<std::string> resolveTokenSymbol(const std::string& symbol, const std::string& network);
+
 std::future<`0x> resolveTokenToAddress(const std::string& token, const std::string& network);` | null> {
   
   // Handle native gas tokens
@@ -68,7 +70,6 @@ std::future<double> getTokenDecimals(const std::string& address, const std::stri
 
 void clearTokenCache();
 
-void getCacheStats(); {
 
 void addHardcodedTokenAddress(const std::string& network, const std::string& symbol, const std::string& address);
 

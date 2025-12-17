@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void PausedIndicator(const std::any& { show }) {
+void PausedIndicator() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void Textarea(auto { className, ComponentProps<'textarea'> ...props }) {
+void Textarea() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

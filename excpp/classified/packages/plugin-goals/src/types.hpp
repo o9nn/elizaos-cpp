@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 
 namespace elizaos {
@@ -15,7 +14,7 @@ namespace elizaos {
 
 // Extend the core service types with goals service
   struct ServiceTypeRegistry {
-    'goals' GOALS;
+    std::string GOALS;
 };
 
 // Export service type constant
@@ -26,10 +25,10 @@ namespace elizaos {
 struct GoalData {
     UUID id;
     UUID agentId;
-    std::variant<'agent', 'entity'> ownerType;
+    std::string ownerType;
     UUID ownerId;
     std::string name;
-    std::optional<std::optional<std::string>> description;
+    std::optional<std::string> description;
     bool isCompleted;
     std::optional<std::optional<Date>> completedAt;
     Date createdAt;

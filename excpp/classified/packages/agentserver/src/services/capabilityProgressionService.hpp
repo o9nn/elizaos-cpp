@@ -5,7 +5,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include "elizaos/core.hpp"
 
@@ -26,7 +25,7 @@ struct ProgressionLevel {
 };
 
 struct UnlockCondition {
-    std::variant<'action_performed', 'form_submitted', 'capability_used', 'agent_named'> type;
+    std::string type;
     std::optional<std::string> capability;
     std::optional<std::string> action;
     std::string description;
@@ -43,7 +42,7 @@ struct ProgressionState {
 class CapabilityProgressionService {
 public:
     CapabilityProgressionService(std::optional<IAgentRuntime> runtime);
-    std::future<CapabilityProgressionService> start(IAgentRuntime runtime);
+    static std::future<CapabilityProgressionService> start(IAgentRuntime runtime);
     std::vector<ProgressionLevel> initializeProgressionLevels();
     std::future<void> unlockAllLevels();
     std::future<void> checkProgressionConditions();
@@ -54,7 +53,7 @@ public:
     std::future<void> injectUnlockMessage(ProgressionLevel level);
     std::future<void> recordAgentNamed(const std::string& name);
     std::future<void> recordCapabilityUsed(const std::string& capability);
-    std::future<void> recordFormSubmitted(std::optional<Record<string> formData, auto unknown>);
+    std::future<void> recordFormSubmitted(std::optional<std::unordered_map<std::string, unknown>> formData);
     std::future<void> recordActionPerformed(const std::string& actionName);
     double getCurrentLevel();
     std::vector<std::string> getUnlockedCapabilities();
@@ -62,7 +61,7 @@ public:
     std::vector<ProgressionLevel> getAvailableLevels();
     bool isCapabilityUnlocked(const std::string& capability);
     bool isUnlockedModeEnabled();
-    std::future<void> setProgressionMode(const std::variant<'progression', 'unlocked'>& mode);
+    std::future<void> setProgressionMode(const std::string& mode);
     void resetProgression();
     std::future<void> stop();
 

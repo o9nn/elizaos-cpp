@@ -48,7 +48,7 @@ void useGetOrCreateDmChannel() {
 
 }
 
-void useDmChannelsForAgent(UUID agentId, UUID = '00000000-0000-0000-0000-000000000000' as UUID serverId) {
+void useDmChannelsForAgent(UUID agentId, UUID serverId = '00000000-0000-0000-0000-000000000000' as UUID) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto currentUserId = getEntityId();

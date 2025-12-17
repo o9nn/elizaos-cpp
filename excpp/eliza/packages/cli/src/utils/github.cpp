@@ -49,7 +49,7 @@ std::future<bool> forkExists(const std::string& token, const std::string& repo, 
 
 }
 
-std::future<std::optional<std::string>> forkRepository(const std::string& token, const std::string& owner, const std::string& repo) {
+std::future<std::string> forkRepository(const std::string& token, const std::string& owner, const std::string& repo) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -96,7 +96,7 @@ std::future<bool> branchExists(const std::string& token, const std::string& owne
 
 }
 
-std::future<bool> createBranch(const std::string& token, const std::string& owner, const std::string& repo, const std::string& branch, auto baseBranch = 'main') {
+std::future<bool> createBranch(const std::string& token, const std::string& owner, const std::string& repo, const std::string& branch, auto baseBranch) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -292,7 +292,7 @@ std::future<bool> createBranch(const std::string& token, const std::string& owne
 
 }
 
-std::future<std::optional<std::string>> getFileContent(const std::string& token, const std::string& owner, const std::string& repo, const std::string& path, auto branch = 'main') {
+std::future<std::string> getFileContent(const std::string& token, const std::string& owner, const std::string& repo, const std::string& path, auto branch) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -319,7 +319,7 @@ std::future<std::optional<std::string>> getFileContent(const std::string& token,
 
 }
 
-std::future<bool> updateFile(const std::string& token, const std::string& owner, const std::string& repo, const std::string& path, const std::string& content, const std::string& message, auto branch = 'main') {
+std::future<bool> updateFile(const std::string& token, const std::string& owner, const std::string& repo, const std::string& path, const std::string& content, const std::string& message, auto branch) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -408,7 +408,7 @@ std::future<bool> updateFile(const std::string& token, const std::string& owner,
 
 }
 
-std::future<std::optional<std::string>> createPullRequest(const std::string& token, const std::string& owner, const std::string& repo, const std::string& title, const std::string& body, const std::string& head, auto base = 'main') {
+std::future<std::string> createPullRequest(const std::string& token, const std::string& owner, const std::string& repo, const std::string& title, const std::string& body, const std::string& head, auto base) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -579,12 +579,12 @@ std::future<bool> ensureDirectory(const std::string& token, const std::string& r
 
 }
 
-std::future<> createGitHubRepository(const std::string& token, const std::string& repoName, const std::string& description, auto isPrivate = false, const std::vector<string[] =>& topics) {
+std::future<> createGitHubRepository(const std::string& token, const std::string& repoName, const std::string& description, auto isPrivate, std::vector<std::string> topics = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     success: boolean; repoUrl?: string; message?: string
 }
 
-std::future<bool> pushToGitHub(const std::string& cwd, const std::string& repoUrl, auto branch = 'main') {
+std::future<bool> pushToGitHub(const std::string& cwd, const std::string& repoUrl, auto branch) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {

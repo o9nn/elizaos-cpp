@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void MultiSelectCombobox(auto {
-  options = [], auto className = '', auto onSelect, auto initialSelected = [], MultiSelectComboboxProps }) {
+void MultiSelectCombobox(auto className, auto onSelect, auto initialSelected) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [selected, setSelected] = useState<Option[]>(initialSelected);

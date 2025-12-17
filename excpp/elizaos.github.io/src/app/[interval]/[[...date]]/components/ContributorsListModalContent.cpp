@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void ContributorsListModalContent(auto {
-  contributors, ContributorsListModalContentProps }) {
+void ContributorsListModalContent() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

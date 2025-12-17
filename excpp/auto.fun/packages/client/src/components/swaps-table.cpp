@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void SwapsTable(const std::any& { token }) {
+void SwapsTable() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { paused, setPause } = usePause();

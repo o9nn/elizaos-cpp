@@ -24,7 +24,7 @@ using UserScoreMetrics = z::infer<typeof UserScoreMetricsSchema>;
  * Interface for userDailyScores with typed metrics
  */
 
-using UserScoreWithMetrics = InferSelectModel<typeof userDailyScores> & {
+using UserScoreWithMetrics = InferSelectModel<typeof userDailyScores>;
 
 enum TagType {
 }

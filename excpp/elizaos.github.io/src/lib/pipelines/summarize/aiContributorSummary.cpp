@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::future<std::optional<std::string>> generateAISummaryForContributor(ContributorMetricsForSummary metrics, AISummaryConfig config, IntervalType intervalType) {
+std::future<std::string> generateAISummaryForContributor(ContributorMetricsForSummary metrics, AISummaryConfig config, IntervalType intervalType) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

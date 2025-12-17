@@ -4,14 +4,7 @@
 
 namespace elizaos {
 
-void Table(auto {
-  bleed = false, auto dense = false, auto grid = false, auto striped = false, auto className, auto children, std::optional<{
-  bleed: boolean;
-  dense: boolean;
-  grid: boolean;
-  striped: boolean;
-} & React::ComponentPropsWithoutRef<"div">> ...props
-}) {
+void Table(auto dense, auto grid, auto striped, auto className, auto children) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -47,9 +40,7 @@ void Table(auto {
 
 }
 
-void TableHead(auto {
-  className, ComponentPropsWithoutRef<"thead"> ...props
-}) {
+void TableHead() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -68,13 +59,7 @@ void TableBody(ComponentPropsWithoutRef<"tbody"> props) {
 
 }
 
-void TableRow(auto {
-  href, auto target, auto title, auto className, std::optional<{
-  href: string;
-  target: string;
-  title: string;
-} & React::ComponentPropsWithoutRef<"tr">> ...props
-}) {
+void TableRow(auto target, auto title, auto className) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { striped } = useContext(TableContext);
@@ -103,9 +88,7 @@ void TableRow(auto {
 
 }
 
-void TableHeader(auto {
-  className, ComponentPropsWithoutRef<"th"> ...props
-}) {
+void TableHeader() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { bleed, grid } = useContext(TableContext);
@@ -125,9 +108,7 @@ void TableHeader(auto {
 
 }
 
-void TableCell(auto {
-  className, auto children, ComponentPropsWithoutRef<"td"> ...props
-}) {
+void TableCell(auto children) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { bleed, dense, grid, striped } = useContext(TableContext);

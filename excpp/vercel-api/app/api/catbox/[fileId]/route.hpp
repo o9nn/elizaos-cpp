@@ -23,7 +23,7 @@ struct RequestError {
 };
 
 // Helper function to get content type from file extension
-std::optional<std::string> getContentTypeFromExtension(const std::string& filename);
+std::string getContentTypeFromExtension(const std::string& filename);
 
 std::future<void> GET(NextRequest request, const std::any& context);
 

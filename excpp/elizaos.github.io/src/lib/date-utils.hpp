@@ -19,7 +19,7 @@ namespace elizaos {
  * Extracts date from a title string in format "elizaos Eliza (2025-01-12)"
  * First tries to extract from parentheses, then falls back to direct date pattern matching
  */
-std::optional<std::string> extractDateFromTitle(const std::string& title);
+std::string extractDateFromTitle(const std::string& title);
 
 /**
  * Validates if a string is in YYYY-MM-DD format
@@ -41,7 +41,7 @@ std::string denormalizeDate(const std::string& date);
 /**
  * Extracts date from any filename containing a date pattern YYYY-MM-DD or YYYY_MM_DD
  */
-std::optional<std::string> extractDateFromFilename(const std::string& filename);
+std::string extractDateFromFilename(const std::string& filename);
 
 /**
  * Converts a date to YYYY-MM-DD format string
@@ -73,7 +73,6 @@ std::string generateIntervalName(TimeInterval interval);
 /**
  * Get time period text based on interval type
  */
-void getTimePeriodText(IntervalType intervalType); {
 
 struct DateRangeOptions {
     std::optional<std::string> after;
@@ -134,7 +133,6 @@ std::string getIntervalTypeTitle(IntervalType intervalType);
  * @param intervalType - The type of interval (day, week, month).
  * @returns An object containing the intervalStart and intervalEnd as UTCDate objects.
  */
-void calculateIntervalBoundaries(UTCDate date, IntervalType intervalType); {
 
       // Ensure we start from the Sunday of the week containing the date
 
@@ -171,7 +169,6 @@ void calculateIntervalBoundaries(UTCDate date, IntervalType intervalType); {
 std::vector<std::string> formatIntervalForPath(TimeInterval interval); /**
  * Find adjacent intervals using the same logic as generateTimeIntervalsForDateRange
  */
-void findAdjacentIntervals(TimeInterval currentInterval, const std::string& latestDate); {
 
   // Generate a range of intervals spanning before and after the current date
   // We'll use a wider date range around the current interval

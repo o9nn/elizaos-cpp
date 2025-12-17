@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::future<bool> editEnvVars(EditEnvOptions options, auto fromMainMenu = false) {
+std::future<bool> editEnvVars(EditEnvOptions options, auto fromMainMenu) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { yes } = options;
@@ -168,7 +168,7 @@ std::future<bool> editEnvVars(EditEnvOptions options, auto fromMainMenu = false)
 
 }
 
-std::future<void> addNewVariable(const std::string& envPath, EnvVars envVars, auto yes = false) {
+std::future<void> addNewVariable(const std::string& envPath, EnvVars envVars, auto yes) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (yes) {

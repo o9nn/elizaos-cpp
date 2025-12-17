@@ -21,6 +21,6 @@ namespace elizaos {
  */
 std::future<void> GET(NextRequest request);
 
-std::optional<std::string> getExtensionFromUrl(const std::string& url);
+std::string getExtensionFromUrl(const std::string& url);
 
 } // namespace elizaos

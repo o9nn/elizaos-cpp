@@ -16,8 +16,8 @@ namespace elizaos {
 
 class TestTimeoutManager {
 public:
-    TestTimeoutManager getInstance();
-    void startTimeout(const std::string& testName, number = 30000 duration);
+    static TestTimeoutManager getInstance();
+    void startTimeout(const std::string& testName, double duration = 30000);
     void clearTimeout(const std::string& testName);
     void clearAll();
 };

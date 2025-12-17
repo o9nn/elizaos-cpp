@@ -83,7 +83,7 @@ void useOTC() {
 
 }
 
-Promise<`0x$ writeContractAsync(std::optional<ReadContractConfig & { value: bigint }> config) {
+Promise<`0x$ writeContractAsync(std::optional<ReadContractConfig> config) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     string;
 }

@@ -13,9 +13,9 @@ namespace elizaos {
 
 class MetricsService {
 public:
-    void recordApiLatency(const std::string& path, double latency);
-    void recordProjectView(const std::string& projectId, std::optional<std::string> userId);
-    void getMetrics();
+    static void recordApiLatency(const std::string& path, double latency);
+    static void recordProjectView(const std::string& projectId, std::optional<std::string> userId);
+    static void getMetrics();
 };
  
 } // namespace elizaos

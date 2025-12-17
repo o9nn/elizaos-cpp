@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::future<void> generatePromptMetadata(auto maxRetries = MAX_RETRIES) {
+std::future<void> generatePromptMetadata(auto maxRetries) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

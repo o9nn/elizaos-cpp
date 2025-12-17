@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::string shortenString(const std::string& s, double maxLength, boolean = false shortenLeft) {
+std::string shortenString(const std::string& s, double maxLength, bool shortenLeft = false) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (s.length <= maxLength) {
@@ -19,7 +19,7 @@ std::string shortenString(const std::string& s, double maxLength, boolean = fals
 
 }
 
-unknown shortenStrings(unknown data, number = 30 maxLength) {
+unknown shortenStrings(unknown data, double maxLength = 30) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (typeof data == 'string') {

@@ -23,7 +23,7 @@ namespace elizaos {
  */
 class ComponentService {
 public:
-    ComponentService(IAgentRuntime private runtime);
+    ComponentService();
     std::variant<Promise<Component, null>> getComponent(UUID entityId, const std::string& componentType);
     std::future<bool> createComponent(const std::any& params);
     std::future<bool> updateComponent(const std::any& params);

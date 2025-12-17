@@ -18,7 +18,7 @@ namespace elizaos {
 
 using SettingsProps = {
 
-void Settings(auto { settings, SettingsProps onChangeSettings });
+void Settings();
 
 
 } // namespace elizaos

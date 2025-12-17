@@ -105,10 +105,10 @@ struct MultiStepActionResult {
         // Emit run ended event on successful completion
         // Emit run ended event with error
 
-using StrategyMode = std::variant<'simple', 'actions', 'none'>;
+using StrategyMode = std::variant<std::string, std::string, std::string>;
 using StrategyResult = std::variant<{
 
-std::future<StrategyResult> runMultiStepCore(auto { runtime, auto message, auto state, { runtime: IAgentRuntime callback }, Memory message, State state, std::optional<HandlerCallback }> callback);
+std::future<StrategyResult> runMultiStepCore(auto message, auto state, Memory message, State state, std::optional<HandlerCallback }> callback);
 
 /**
  * Handles message deletion events by removing the corresponding memory from the agent's memory store.

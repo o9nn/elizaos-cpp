@@ -13,6 +13,8 @@ namespace elizaos {
 
 
 
+void InputGroup();
+
 using DateType = (typeof dateTypes)[number];
 
 

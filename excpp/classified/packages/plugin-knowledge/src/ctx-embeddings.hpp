@@ -83,7 +83,7 @@ namespace elizaos {
  * @param maxTokens - Maximum target token length for the result.
  * @returns The formatted prompt string.
  */
-std::string getContextualizationPrompt(const std::string& docContent, const std::string& chunkContent, auto minTokens = CONTEXT_TARGETS.DEFAULT.MIN_TOKENS, auto maxTokens = CONTEXT_TARGETS.DEFAULT.MAX_TOKENS, auto promptTemplate = CONTEXTUAL_CHUNK_ENRICHMENT_PROMPT_TEMPLATE);
+std::string getContextualizationPrompt(const std::string& docContent, const std::string& chunkContent, auto minTokens, auto maxTokens, auto promptTemplate);
 
 /**
  * Generates a caching-compatible prompt string for contextual enrichment.
@@ -95,7 +95,6 @@ std::string getContextualizationPrompt(const std::string& docContent, const std:
  * @param maxTokens - Maximum target token length for the result.
  * @returns Object containing the prompt and appropriate system message.
  */
-void getCachingContextualizationPrompt(const std::string& chunkContent, std::optional<std::string> contentType, auto minTokens = CONTEXT_TARGETS.DEFAULT.MIN_TOKENS, auto maxTokens = CONTEXT_TARGETS.DEFAULT.MAX_TOKENS); {
 
   // Estimate if the chunk is already large relative to our target size
 
@@ -122,7 +121,6 @@ std::string getPromptForMimeType(const std::string& mimeType, const std::string&
  * @param chunkContent - The content of the specific chunk.
  * @returns Object containing prompt text and system message.
  */
-void getCachingPromptForMimeType(const std::string& mimeType, const std::string& chunkContent); {
 
   // Determine appropriate token targets based on content type
 

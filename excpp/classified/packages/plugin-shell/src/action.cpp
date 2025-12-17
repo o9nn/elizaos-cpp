@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::future<std::optional<std::string>> extractCommandFromMessage(IAgentRuntime runtime, Memory message) {
+std::future<std::string> extractCommandFromMessage(IAgentRuntime runtime, Memory message) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto messageText = message.content.text;
@@ -95,8 +95,7 @@ std::string quoteShellArgs(const std::string& command) {
 
 }
 
-std::future<void> saveExecutionRecord(IAgentRuntime runtime, Memory messageContext, auto // To get roomId, const std::string& worldId
-  thought, const std::string& text, std::optional<std::vector<std::string>> actions, std::optional<Media[] // Added attachments parameter> attachments) {
+std::future<void> saveExecutionRecord(IAgentRuntime runtime, Memory messageContext, const std::string& text, std::optional<std::vector<std::string>> actions, std::optional<Media[] // Added attachments parameter> attachments) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const Memory memory = {;

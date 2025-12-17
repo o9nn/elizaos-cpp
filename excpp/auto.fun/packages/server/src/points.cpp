@@ -46,7 +46,7 @@ double calculatePoints(PointEvent evt) {
 
 }
 
-std::future<void> awardUserPoints(const std::string& userAddress, PointEvent event, auto description = "") {
+std::future<void> awardUserPoints(const std::string& userAddress, PointEvent event, auto description) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto db = getDB();
@@ -119,7 +119,7 @@ std::future<void> awardGraduationPoints(const std::string& mint) {
     const auto redisCache = createRedisCache();
 
     // Last swap user
-    std::optional<std::string> lastSwapUser = nullptr;
+    std::string lastSwapUser = nullptr;
     try {
         const auto listKey = "swapsList:" + std::to_string(mint);
         const auto [lastSwapString] = redisCache.lrange(listKey, 0, 0); // Get the first item (most recent);
@@ -197,7 +197,7 @@ std::future<void> awardGraduationPoints(const std::string& mint) {
 
 }
 
-std::future<> distributeWeeklyPoints(auto weeklyPool = 1_000_000, auto capPercent = 0.02) {
+std::future<> distributeWeeklyPoints(auto weeklyPool, auto capPercent) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     distributed: number; unassigned: number
 }

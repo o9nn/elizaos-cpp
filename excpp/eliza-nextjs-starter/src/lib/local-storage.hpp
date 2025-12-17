@@ -18,6 +18,6 @@ namespace elizaos {
  * Handles potential exceptions during Local Storage access (e.g., in private browsing).
  * @returns {string | null} The seed string or null if Local Storage is unavailable.
  */
-std::optional<std::string> getOrGenerateSeed();
+std::string getOrGenerateSeed();
 
 } // namespace elizaos

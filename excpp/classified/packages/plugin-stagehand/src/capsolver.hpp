@@ -39,12 +39,11 @@ public:
     std::future<std::string> createTask(CaptchaTask task);
     std::future<std::any> getTaskResult(const std::string& taskId);
     std::future<std::string> solveTurnstile(const std::string& websiteURL, const std::string& websiteKey, std::optional<std::string> proxy, std::optional<std::string> userAgent);
-    std::future<std::string> solveRecaptchaV2(const std::string& websiteURL, const std::string& websiteKey, auto isInvisible = false, std::optional<std::string> proxy);
-    std::future<std::string> solveRecaptchaV3(const std::string& websiteURL, const std::string& websiteKey, const std::string& pageAction, auto minScore = 0.7, std::optional<std::string> proxy);
+    std::future<std::string> solveRecaptchaV2(const std::string& websiteURL, const std::string& websiteKey, auto isInvisible, std::optional<std::string> proxy);
+    std::future<std::string> solveRecaptchaV3(const std::string& websiteURL, const std::string& websiteKey, const std::string& pageAction, auto minScore, std::optional<std::string> proxy);
     std::future<std::string> solveHCaptcha(const std::string& websiteURL, const std::string& websiteKey, std::optional<std::string> proxy);
 
 private:
-    Required<CapSolverConfig> config_;
 };
 
 /**

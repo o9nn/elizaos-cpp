@@ -48,7 +48,7 @@ bool isAvailableNow(const std::vector<std::string>& workDays, const std::any& wo
 
 }
 
-Date calculateNextCheckIn(const std::vector<std::string>& workDays, const std::any& workHours, const std::string& timeZone, number = 24 frequencyHours) {
+Date calculateNextCheckIn(const std::vector<std::string>& workDays, const std::any& workHours, const std::string& timeZone, double frequencyHours = 24) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto now = new Date();
@@ -131,7 +131,7 @@ std::string formatDate(Date date, std::optional<std::string> timeZone) {
 
 }
 
-std::variant<'ON_TRACK', 'AT_RISK', 'DELAYED'> getProjectStatus(double completionPercentage, double elapsedTimePercentage) {
+std::string getProjectStatus(double completionPercentage, double elapsedTimePercentage) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto difference = completionPercentage - elapsedTimePercentage;

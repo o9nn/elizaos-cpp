@@ -1,5 +1,4 @@
 #pragma once
-#include <any>
 #include <functional>
 #include <future>
 #include <memory>
@@ -54,12 +53,9 @@ public:
     std::future<std::string> uploadFile(const std::string& key, const std::variant<Buffer, Uint8Array>& data, std::optional<std::string> contentType);
     std::future<Buffer> downloadFile(const std::string& key);
     std::future<void> deleteFile(const std::string& key);
-    std::future<std::string> getSignedUrl(const std::string& key, const std::variant<'get', 'put' = 'get'>& operation, number = 3600 expiresIn);
     std::future<bool> fileExists(const std::string& key);
-    std::future<std::vector<std::string>> listFiles(std::optional<std::string> prefix, number = 1000 maxKeys);
+    std::future<std::vector<std::string>> listFiles(std::optional<std::string> prefix, double maxKeys = 1000);
     Promise< getFileMetadata(const std::string& key);
-    void if(auto !this.s3Client || !this.awsSDK);
-    void catch(const std::any& error);
 
 private:
     std::string bucket_;
@@ -72,9 +68,8 @@ private:
 class ElizaOSService {
 public:
     ElizaOSService(IAgentRuntime runtime);
-    std::future<ElizaOSService> start(IAgentRuntime runtime);
+    static std::future<ElizaOSService> start(IAgentRuntime runtime);
     std::future<void> stop();
-    std::future<void> stop(IAgentRuntime runtime);
     ElizaOSStorageService getStorage();
 
 private:

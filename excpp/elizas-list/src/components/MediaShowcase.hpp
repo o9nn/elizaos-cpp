@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 
 namespace elizaos {
@@ -15,11 +14,11 @@ namespace elizaos {
 
 
 struct MediaShowcaseProps {
-    std::variant<'video', 'gif'> type;
+    std::string type;
     std::string url;
     std::optional<std::string> thumbnail;
     std::string title;
 };
 
-void MediaShowcase(MediaShowcaseProps { media }); 
+void MediaShowcase(); 
 } // namespace elizaos

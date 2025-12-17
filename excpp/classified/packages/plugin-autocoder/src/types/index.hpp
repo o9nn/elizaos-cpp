@@ -20,12 +20,12 @@ namespace elizaos {
 /**
  * Project type enumeration
  */
-using ProjectType = std::variant<'plugin', 'agent', 'workflow', 'mcp', 'full-stack'>;
+using ProjectType = std::variant<std::string, std::string, std::string, std::string, std::string>;
 
 /**
  * Project status
  */
-using ProjectStatus = std::variant<'planning', 'generating', 'testing', 'completed', 'failed'>;
+using ProjectStatus = std::variant<std::string, std::string, std::string, std::string, std::string>;
 
 /**
  * WebSocket-related types
@@ -36,7 +36,7 @@ using ProjectStatus = std::variant<'planning', 'generating', 'testing', 'complet
  * Autocoder WebSocket message types
  */
 struct AutocoderWebSocketMessage {
-    std::variant<'PROJECT_UPDATE', 'PROJECT_COMPLETE', 'PROJECT_ERROR', 'STATUS_UPDATE'> type;
+    std::string type;
     std::variant<ProjectUpdateData, ProjectCompleteData, ProjectErrorData, StatusUpdateData> data;
     std::optional<double> timestamp;
 };
@@ -88,7 +88,7 @@ struct ProjectMetadata {
     std::optional<std::vector<std::string>> keyFeatures;
     std::optional<std::vector<std::string>> requiredPlugins;
     std::optional<std::vector<std::string>> externalServices;
-    std::optional<std::variant<'simple', 'moderate', 'complex'>> complexity;
+    std::optional<std::string> complexity;
     std::optional<std::string> estimatedTime;
     std::string path;
     std::string content;

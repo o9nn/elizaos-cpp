@@ -38,24 +38,13 @@ using TokenDetails = {
 class ExternalToken {
 public:
     ExternalToken(const std::string& mint, RedisCache redisClient);
-    std::future<ExternalToken> create(const std::string& mint, std::optional<RedisCache> redisClient);
+    static std::future<std::future<ExternalToken>> create(const std::string& mint, std::optional<RedisCache> redisClient);
     void registerWebhook();
     void updateAllData();
-    std::variant<Promise<TokenDetails, null>> updateMarketAndHolders(auto forceUpdate = false);
+    std::variant<Promise<TokenDetails, null>> updateMarketAndHolders(auto forceUpdate);
     Promise< fetchMarketData();
-    void if(auto !token);
-    new Date();
-      const tokenSupplyUi = token.token?.info?.circulatingSupply
-        : 0;
-      const tokenDecimals = token.token?.decimals ?? 9; // Default or fetch dynamically
-      const tokenSupply = tokenSupplyUi
-      const marketCap =
-            : 0;
-
-      const newTokenData = Date(auto createdAt * 1000);
-    void catch(auto error);
     std::future<std::vector<std::any>> _fetchHolderData(double tokenSupply);
-    std::future<std::vector<ProcessedSwap>> updateLatestSwapData(auto BATCH_LIMIT = 200);
+    std::future<std::vector<ProcessedSwap>> updateLatestSwapData(auto BATCH_LIMIT);
     std::future<void> fetchHistoricalSwapData();
     std::future<void> insertProcessedSwaps(const std::vector<ProcessedSwap>& processedSwaps);
 

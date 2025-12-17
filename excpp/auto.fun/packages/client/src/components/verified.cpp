@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void Verified(std::optional<std::any> { isVerified }) {
+void Verified() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!isVerified) return null;

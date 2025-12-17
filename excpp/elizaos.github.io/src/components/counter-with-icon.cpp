@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void CounterWithIcon(Icon {
-  icon, auto label, auto value, auto iconClassName, auto className, CounterWithIconProps }) {
+void CounterWithIcon(auto label, auto value, auto iconClassName, auto className) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

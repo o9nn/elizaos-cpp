@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::optional<std::string> getCliDirectory() {
+std::string getCliDirectory() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -51,7 +51,7 @@ std::future<bool> verifyPluginImport(const std::string& repository, const std::s
 
 }
 
-std::future<bool> attemptInstallation(const std::string& packageName, const std::string& versionString, const std::string& directory, const std::string& context, auto skipVerification = false) {
+std::future<bool> attemptInstallation(const std::string& packageName, const std::string& versionString, const std::string& directory, const std::string& context, auto skipVerification) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     logger.debug(`Attempting to install plugin ${context}...`);
@@ -90,7 +90,7 @@ std::future<bool> attemptInstallation(const std::string& packageName, const std:
 
 }
 
-std::future<bool> installPlugin(const std::string& packageName, const std::string& cwd, std::optional<std::string> versionSpecifier, auto skipVerification = false) {
+std::future<bool> installPlugin(const std::string& packageName, const std::string& cwd, std::optional<std::string> versionSpecifier, auto skipVerification) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     logger.debug(`Installing plugin: ${packageName}`);
@@ -125,7 +125,7 @@ std::future<bool> installPlugin(const std::string& packageName, const std::strin
     const auto cache = fetchPluginRegistry();
     const auto possible = normalizePluginName(packageName);
 
-    std::optional<std::string> key = nullptr;
+    std::string key = nullptr;
     for (const auto& name : possible)
         if (cache.registry[name]) {
             key = name;

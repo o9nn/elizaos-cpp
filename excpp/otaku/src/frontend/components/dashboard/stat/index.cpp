@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void DashboardStat(auto {
-  label, auto value, auto description, auto icon, auto tag, auto intent, auto direction, DashboardStatProps }) {
+void DashboardStat(auto value, auto description, auto icon, auto tag, auto intent, auto direction) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto Icon = icon;

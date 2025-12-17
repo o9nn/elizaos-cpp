@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include "service.hpp"
 
@@ -25,8 +24,8 @@ struct PdfExtractionResult {
 };
 
 struct PdfGenerationOptions {
-    std::optional<std::variant<'A4', 'A3', 'Letter'>> format;
-    std::optional<std::variant<'portrait', 'landscape'>> orientation;
+    std::optional<std::string> format;
+    std::optional<std::string> orientation;
     std::optional<double> top;
     std::optional<double> bottom;
     std::optional<double> left;
@@ -36,8 +35,8 @@ struct PdfGenerationOptions {
 };
 
 struct PdfConversionOptions {
-    std::optional<std::variant<'high', 'medium', 'low'>> quality;
-    std::optional<std::variant<'pdf', 'pdf/a'>> outputFormat;
+    std::optional<std::string> quality;
+    std::optional<std::string> outputFormat;
     std::optional<bool> compression;
 };
 

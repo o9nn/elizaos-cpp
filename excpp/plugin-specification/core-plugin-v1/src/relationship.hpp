@@ -79,7 +79,7 @@ RelationshipV2 toV2RelationshipEnhanced(Relationship relationship, UUID agentId)
 /**
  * Creates a new V1 relationship with default values
  */
-Relationship createV1Relationship(UUID userA, UUID userB, string = RELATIONSHIP_STATUSES::UNKNOWN status, std::optional<UUID> roomId);
+Relationship createV1Relationship(UUID userA, UUID userB, std::string status = RELATIONSHIP_STATUSES.UNKNOWN, std::optional<UUID> roomId);
 
 /**
  * Checks if two relationships represent the same connection (bidirectional)

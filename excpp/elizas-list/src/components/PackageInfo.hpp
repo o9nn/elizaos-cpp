@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 
 namespace elizaos {
@@ -16,8 +15,8 @@ namespace elizaos {
 
 struct PackageInfoProps {
     std::string name;
-    std::variant<'npm', 'pypi'> type;
+    std::string type;
 };
 
-void PackageInfo(auto { name, PackageInfoProps type }); 
+void PackageInfo(); 
 } // namespace elizaos

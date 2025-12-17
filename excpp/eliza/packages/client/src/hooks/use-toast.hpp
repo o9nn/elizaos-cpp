@@ -23,7 +23,7 @@ namespace elizaos {
  * @property {ToastActionElement} [action] - The action element displayed in the toast.
  */
 
-using ToasterToast = ToastProps & {
+using ToasterToast = ToastProps;
 
 /**
  * Variable to hold the count value.
@@ -96,14 +96,13 @@ void dispatch(Action action);
 /**
  * Represents a Toast object without the "id" property.
  */
-using Toast = Omit<ToasterToast, 'id'>;
 
 /**
  * Creates a new toast message with the given properties.
  * @param {Toast} props - The props for the toast message.
  * @returns {Object} An object containing the id of the toast, a function to dismiss the toast, and a function to update the toast.
  */
-void toast(Toast { ...props });
+void toast();
 
 /**
  * Custom hook for managing toast messages.

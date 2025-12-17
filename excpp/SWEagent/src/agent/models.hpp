@@ -53,7 +53,7 @@ using ReplayModelConfig = z::infer<typeof ReplayModelConfigSchema>;
  * Instant empty submit model configuration
  */
 struct InstantEmptySubmitModelConfig {
-    'instant_empty_submit' name;
+    std::string name;
     std::optional<double> delay;
 };
 
@@ -61,7 +61,7 @@ struct InstantEmptySubmitModelConfig {
  * Human thought model configuration
  */
 struct HumanThoughtModelConfig {
-    'human_thought' name;
+    std::string name;
     std::optional<bool> catchEof;
 };
 
@@ -93,7 +93,6 @@ public:
  */
     void resetStats();
     InstanceStats getStats();
-
     void checkCostLimits();
 
 /**
@@ -104,7 +103,6 @@ public:
     HumanModel(HumanModelConfig config, ToolConfig tools);
     void loadReadlineHistory();
     void updateStats();
-    std::variant<Promise<ModelOutput, ModelOutput[]>> query(History _history, const std::variant<std::string, number = '> '>& actionPrompt, std::optional<double> n);
     void handleRaiseCommands(const std::string& action);
 
 private:
@@ -118,9 +116,9 @@ class LiteLLMModel {
 public:
     LiteLLMModel(GenericAPIModelConfig config, ToolConfig tools);
     std::vector<std::string> getApiKeys();
-    std::optional<std::string> chooseApiKey();
+    std::string chooseApiKey();
     std::future<void> sleep();
-    std::variant<Promise<ModelOutput, ModelOutput[]>> query(History history, std::optional<double> temperature, number = 1 n);
+    std::variant<Promise<ModelOutput, ModelOutput[]>> query(History history, std::optional<double> temperature, double n = 1);
     std::future<std::vector<ModelOutput>> singleQuery(const std::vector<HistoryItem>& messages, std::optional<double> n, std::optional<double> temperature);
     void updateStatsFromResponse(APIResponse response);
     double calculateCost(double inputTokens, double outputTokens);
@@ -136,7 +134,6 @@ private:
  */
 class HumanThoughtModel {
 public:
-    std::variant<Promise<ModelOutput, ModelOutput[]>> query(History _history, const std::variant<std::string, number = '> '>& actionPrompt, std::optional<double> n);
 };
 
 /**

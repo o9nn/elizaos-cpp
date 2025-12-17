@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::string formatEnvVarStatus(EnvVarConfig config, boolean = false showValues) {
+std::string formatEnvVarStatus(EnvVarConfig config, bool showValues = false) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto statusIcon = {;
@@ -48,7 +48,7 @@ std::string formatEnvVarStatus(EnvVarConfig config, boolean = false showValues) 
 
 }
 
-std::string generateEnvStatusMessage(EnvVarMetadata envVars, boolean = false showValues) {
+std::string generateEnvStatusMessage(EnvVarMetadata envVars, bool showValues = false) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto plugins = Object.keys(envVars);

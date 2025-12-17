@@ -27,7 +27,7 @@ struct CodeBlockPlaceholder {
  * Type for reconstructed response
  */
 struct ReconstructedResponse {
-    'reconstructed_response' type;
+    std::string type;
     std::optional<std::string> thought;
     std::optional<std::string> message;
     std::string language;
@@ -48,7 +48,7 @@ struct ReflectionResponse {
  * Type for unstructured response
  */
 struct UnstructuredResponse {
-    'unstructured_response' type;
+    std::string type;
     std::string content;
 };
 

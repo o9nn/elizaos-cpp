@@ -49,10 +49,9 @@ namespace elizaos {
 
 class StarterService {
 public:
-    StarterService(IAgentRuntime protected runtime);
-    void start(IAgentRuntime runtime);
-    void stop(IAgentRuntime runtime);
-    void stop();
+    StarterService();
+    static void start(IAgentRuntime runtime);
+    static void stop(IAgentRuntime runtime);
 };
 
       // Set all environment variables at once

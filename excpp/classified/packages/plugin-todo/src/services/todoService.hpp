@@ -28,8 +28,8 @@ struct TodoData {
     UUID roomId;
     UUID entityId;
     std::string name;
-    std::optional<std::optional<std::string>> description;
-    std::variant<'daily', 'one-off', 'aspirational'> type;
+    std::optional<std::string> description;
+    std::string type;
     std::optional<std::optional<double>> priority;
     bool isUrgent;
     bool isCompleted;
@@ -72,7 +72,7 @@ TodoDataManager createTodoDataService(IAgentRuntime runtime);
 class TodoService {
 public:
     std::future<void> stop();
-    std::future<TodoService> start(IAgentRuntime runtime);
+    static std::future<TodoService> start(IAgentRuntime runtime);
     std::optional<TodoDataManager> getDataService();
     std::variant<Promise<UUID, null>> createTodo(std::optional<std::any> params);
     std::future<std::vector<TodoData>> getTodos(std::optional<std::any> filters);

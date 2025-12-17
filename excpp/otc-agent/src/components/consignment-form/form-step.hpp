@@ -34,5 +34,6 @@ struct FormStepProps {
     std::optional<std::string> selectedTokenSymbol;
 };
 
+void FormStep(auto updateFormData, auto onNext, auto onBack, auto selectedTokenBalance, auto selectedTokenDecimals, auto selectedTokenSymbol);
 
 } // namespace elizaos

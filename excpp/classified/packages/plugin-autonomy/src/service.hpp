@@ -23,7 +23,7 @@ namespace elizaos {
 class AutonomyService {
 public:
     AutonomyService(IAgentRuntime runtime);
-    std::future<AutonomyService> start(IAgentRuntime runtime);
+    static std::future<AutonomyService> start(IAgentRuntime runtime);
     std::future<void> initialize();
     void setupSettingsMonitoring();
     std::future<void> startLoop();

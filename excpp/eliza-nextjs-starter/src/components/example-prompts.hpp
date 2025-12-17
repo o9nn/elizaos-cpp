@@ -16,6 +16,6 @@ namespace elizaos {
 struct ExamplePromptsProps {
 };
 
-void ExamplePrompts(ExamplePromptsProps { onPromptSelect });
+void ExamplePrompts();
 
 } // namespace elizaos

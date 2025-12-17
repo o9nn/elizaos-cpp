@@ -19,7 +19,7 @@ std::unordered_map<std::string, double> loadCachedScores() {
 
 }
 
-void saveScoresToCache(Record<string scores, auto number>) {
+void saveScoresToCache(const std::unordered_map<std::string, double>& scores) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {

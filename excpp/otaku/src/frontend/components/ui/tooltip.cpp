@@ -4,9 +4,7 @@
 
 namespace elizaos {
 
-void TooltipProvider(auto {
-  delayDuration = 0, ComponentProps<typeof TooltipPrimitive.Provider> ...props
-}) {
+void TooltipProvider() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -19,9 +17,7 @@ void TooltipProvider(auto {
 
 }
 
-void Tooltip(ComponentProps<typeof TooltipPrimitive.Root> {
-  ...props
-}) {
+void Tooltip() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -32,18 +28,14 @@ void Tooltip(ComponentProps<typeof TooltipPrimitive.Root> {
 
 }
 
-void TooltipTrigger(ComponentProps<typeof TooltipPrimitive.Trigger> {
-  ...props
-}) {
+void TooltipTrigger() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return <TooltipPrimitive.Trigger data-slot="tooltip-trigger" {...props} />;
 
 }
 
-void TooltipContent(auto {
-  className, auto sideOffset = 0, auto children, ComponentProps<typeof TooltipPrimitive.Content> ...props
-}) {
+void TooltipContent(auto sideOffset, auto children) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

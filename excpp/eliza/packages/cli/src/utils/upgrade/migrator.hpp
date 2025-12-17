@@ -1,5 +1,4 @@
 #pragma once
-#include <any>
 #include <functional>
 #include <future>
 #include <memory>
@@ -40,15 +39,12 @@ struct MigratorOptions {
 
 class PluginMigrator {
 public:
-    PluginMigrator(MigratorOptions = {} options);
+    PluginMigrator(MigratorOptions options = {});
     void registerCleanupHandlers();
     std::future<void> initializeAnthropic();
     std::future<MigrationResult> migrate(const std::string& input);
     std::future<bool> runMigrationWithTestLoop();
     std::future<bool> runProductionValidationLoop();
-    void catch(const std::any& installError);
-    void if(auto packageJson.scripts.test);
-    void catch(const std::any& error);
     std::future<std::string> getTestErrors();
     std::future<void> trackChangedFiles(const std::string& initialCommit);
     std::future<ProductionValidationResult> validateProductionReadiness();

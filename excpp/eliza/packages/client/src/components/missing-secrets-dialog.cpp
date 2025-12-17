@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void MissingSecretsDialog(auto {
-  open, auto onOpenChange, auto missingSecrets, auto onConfirm, auto onCancel, MissingSecretsDialogProps }) {
+void MissingSecretsDialog(auto onOpenChange, auto missingSecrets, auto onConfirm, auto onCancel) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

@@ -17,9 +17,9 @@ namespace elizaos {
 
 class StagehandProcessManager {
 public:
-    StagehandProcessManager(number = 3456 serverPort);
+    StagehandProcessManager(double serverPort = 3456);
      getBinaryName();
-    std::optional<std::string> findBinary();
+    std::string findBinary();
     std::future<void> start();
     std::future<void> waitForServer();
     std::future<void> stop();

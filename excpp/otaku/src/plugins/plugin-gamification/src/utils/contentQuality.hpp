@@ -61,14 +61,12 @@ double calculateEntropy(const std::string& text);
 /**
  * Check for consecutive repeated characters
  */
-void checkRepeatedChars(const std::string& text); {
   
   // Also check if single char dominates
 
 /**
  * Check for repeated words (copy-pasta indicator)
  */
-void checkRepeatedWords(const std::string& text); {
 
   // Count word repetitions
   
@@ -77,22 +75,18 @@ void checkRepeatedWords(const std::string& text); {
 /**
  * Check for keyboard mash patterns
  */
-void checkKeyboardMash(const std::string& text); {
 
 /**
  * Check emoji spam
  */
-void checkEmojiSpam(const std::string& text); {
 
 /**
  * Check URL spam
  */
-void checkUrlSpam(const std::string& text); {
 
 /**
  * Check special character spam (ASCII art, etc.)
  */
-void checkSpecialCharSpam(const std::string& text); {
 
 /**
  * Check for common spam phrases

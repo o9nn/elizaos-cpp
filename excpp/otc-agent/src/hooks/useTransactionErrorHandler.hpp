@@ -13,7 +13,7 @@ namespace elizaos {
 
 
 
-using TransactionError = Error & {
+using TransactionError = Error;
 
 void useTransactionErrorHandler();
 

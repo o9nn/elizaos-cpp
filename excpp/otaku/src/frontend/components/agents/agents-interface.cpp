@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void AgentsInterface(AgentsInterfaceProps { agents }) {
+void AgentsInterface() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [selectedAgentId, setSelectedAgentId] = useState<number | nullptr>(nullptr);

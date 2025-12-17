@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void LoadingPanel(auto { title, auto messages, auto type = 'loading', LoadingPanelProps onClose }) {
+void LoadingPanel(auto messages, auto type) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto messageArray = Array.isArray(messages) ? messages : [messages];

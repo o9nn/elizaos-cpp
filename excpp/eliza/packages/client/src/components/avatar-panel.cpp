@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void AvatarPanel(auto { characterValue, AvatarPanelProps setCharacterValue }) {
+void AvatarPanel() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [avatar, setAvatar] = useState<string | nullptr>(characterValue.settings.avatar || nullptr);

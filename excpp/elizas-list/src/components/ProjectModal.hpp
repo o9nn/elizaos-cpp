@@ -17,5 +17,5 @@ struct ProjectModalProps {
     std::optional<Project> project;
 };
 
-void ProjectModal(auto { project, ProjectModalProps onClose }); 
+void ProjectModal(); 
 } // namespace elizaos

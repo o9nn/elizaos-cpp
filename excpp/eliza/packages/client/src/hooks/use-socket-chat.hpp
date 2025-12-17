@@ -24,5 +24,6 @@ struct UseSocketChatProps {
     std::vector<UiMessage> messages;
 };
 
+void useSocketChat(auto currentUserId, auto contextId, auto chatType, auto allAgents, auto messages, auto onAddMessage, auto onUpdateMessage, auto onDeleteMessage, auto onClearMessages, auto onInputDisabledChange);
 
 } // namespace elizaos

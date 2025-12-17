@@ -1,5 +1,4 @@
 #pragma once
-#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -17,17 +16,17 @@ namespace elizaos {
 
 struct LoadingPanelState {
     bool isVisible;
-    std::variant<'loading', 'success', 'error'> type;
+    std::string type;
     std::string title;
     std::variant<std::string, std::vector<std::string>> messages;
-    std::optional<std::string> id;
+    std::string id;
 };
 
 struct LoadingPanelContextType {
     bool isVisible;
 };
 
-void LoadingPanelProvider(const std::any& { children });
+void LoadingPanelProvider();
 
 // Custom hook to use the loading panel
 void useLoadingPanel();

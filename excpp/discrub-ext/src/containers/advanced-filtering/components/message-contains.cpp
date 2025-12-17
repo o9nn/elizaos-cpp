@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void MessageContains(MessageContainsProps { disabled }) {
+void MessageContains() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto inputRef = useRef<HTMLInputElement | HTMLTextAreaElement | Maybe>(nullptr);

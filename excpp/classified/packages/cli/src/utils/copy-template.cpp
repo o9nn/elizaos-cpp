@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::future<void> copyDir(const std::string& src, const std::string& dest, const std::vector<string[] =>& exclude) {
+std::future<void> copyDir(const std::string& src, const std::string& dest, std::vector<std::string> exclude = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Ensure paths are properly resolved as absolute paths
@@ -91,7 +91,7 @@ std::string getPackageName(const std::string& templateType) {
 
 }
 
-std::future<void> copyTemplate(const std::variant<'project', 'project-starter', 'project-tee-starter', 'plugin', 'plugin-quick'>& templateType, const std::string& targetDir) {
+std::future<void> copyTemplate(const std::string& templateType, const std::string& targetDir) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -120,7 +120,7 @@ std::future<void> copyTemplate(const std::variant<'project', 'project-starter', 
         path.resolve(__dirname, '..', '..', 'templates', packageName),
         ];
 
-        std::optional<std::string> templateDir = nullptr;
+        std::string templateDir = nullptr;
         for (const auto& possiblePath : possibleTemplatePaths)
             if (existsSync(possiblePath)) {
                 templateDir = possiblePath;

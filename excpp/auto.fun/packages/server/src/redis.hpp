@@ -30,7 +30,7 @@ using RedisCache = RedisCacheService;
 
 class RedisCacheService {
 public:
-    RedisCacheService(RedisPool public redisPool);
+    RedisCacheService();
     std::future<bool> isPoolReady();
     std::future<double> publish(const std::string& channel, const std::string& message);
     void getKey(const std::string& key);
@@ -39,7 +39,7 @@ public:
     std::future<double> del(const std::string& key);
     std::future<bool> exists(const std::string& key);
     std::future<double> ttl(const std::string& key);
-    std::future<double> lpush(const std::string& key, const std::vector<std::string>& ...values);
+    std::future<double> lpush(const std::string& key);
     std::future<std::vector<std::string>> lrange(const std::string& key, double start, double stop);
     std::future<double> llen(const std::string& key);
     std::variant<Promise<"OK", null>> ltrim(const std::string& key, double start, double stop);
@@ -47,7 +47,6 @@ public:
     std::future<double> sadd(const std::string& key, const std::variant<std::string, std::vector<std::string>>& member);
     std::future<double> srem(const std::string& key, const std::variant<std::string, std::vector<std::string>>& member);
     std::future<std::vector<std::string>> smembers(const std::string& key);
-    void if(auto ttlInSeconds);
     std::future<bool> acquireLock(const std::string& lockKey, const std::string& lockValue, double ttlMilliseconds);
     std::future<void> defineReleaseLockScript(Redis client);
     std::future<bool> releaseLock(const std::string& lockKey, const std::string& lockValue);
@@ -66,7 +65,7 @@ struct RedisPoolOptions {
 
 class RedisPool {
 public:
-    RedisPool(RedisPoolOptions = {} options);
+    RedisPool(RedisPoolOptions options = {});
     std::future<Redis> acquire();
     std::future<void> release(Redis client);
     std::future<void> destroy();

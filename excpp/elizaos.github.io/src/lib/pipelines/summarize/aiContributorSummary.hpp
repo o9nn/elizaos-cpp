@@ -1,5 +1,6 @@
 #pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
@@ -21,6 +22,7 @@ using ContributorMetricsForSummary = Awaited<
 /**
  * Generate an AI summary of a contributor's activity
  */
+std::future<std::string> generateAISummaryForContributor(ContributorMetricsForSummary metrics, AISummaryConfig config, IntervalType intervalType);
 
 /**
  * Format contributor metrics into a structured prompt

@@ -67,7 +67,7 @@ struct QuoteAccepted {
 /**
  * Extract XML from message text
  */
-std::optional<std::string> extractXMLFromMessage(const std::string& messageText);
+std::string extractXMLFromMessage(const std::string& messageText);
 
 /**
  * Parse quote from XML
@@ -87,7 +87,6 @@ bool messageContainsQuote(const std::string& messageText);
 /**
  * Parse any XML type from message
  */
-void parseMessageXML(const std::string& messageText); {
 
   // Try parsing as quote
 

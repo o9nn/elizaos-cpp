@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void ApiKeyDialog(auto { open, auto onOpenChange, ApiKeyDialogProps onApiKeySaved }) {
+void ApiKeyDialog(auto onOpenChange) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [apiKey, setApiKey] = useState('');

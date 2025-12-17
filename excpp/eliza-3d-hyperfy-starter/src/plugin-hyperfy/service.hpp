@@ -32,26 +32,22 @@ namespace elizaos {
 
 class HyperfyService {
 public:
-    HyperfyService(IAgentRuntime protected runtime);
+    HyperfyService();
     std::optional<UUID> currentWorldId();
     std::optional<std::any> getWorld();
-    std::future<HyperfyService> start(IAgentRuntime runtime);
-    std::future<void> stop(IAgentRuntime runtime);
+    static std::future<HyperfyService> start(IAgentRuntime runtime);
+    static std::future<void> stop(IAgentRuntime runtime);
     std::future<void> connect(std::optional<std::any> config);
     void subscribeToHyperfyEvents();
     Promise< uploadCharacterAssets();
-      !this.world.assetsUrl);
-    void catch(const std::any& uploadError);
-    void catch(const std::any& error);
     void startAppearancePolling();
     void stopAppearancePolling();
     bool isConnected();
     std::optional<std::any> getEntityById(const std::string& entityId);
-    std::optional<std::string> getEntityName(const std::string& entityId);
+    std::string getEntityName(const std::string& entityId);
     std::future<void> handleDisconnect();
     std::future<void> disconnect();
     std::future<void> changeName(const std::string& newName);
-    std::future<void> stop();
     void startChatSubscription();
     void getEmoteManager();
     void getBehaviorManager();

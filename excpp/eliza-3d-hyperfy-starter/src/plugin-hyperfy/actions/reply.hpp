@@ -1,4 +1,5 @@
 #pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -25,7 +26,7 @@ namespace elizaos {
  * @type {string}
  */
 
-std::optional<std::string> getFirstAvailableField(Record<string obj, auto any>, const std::vector<std::string>& fields);
+std::string getFirstAvailableField(const std::unordered_map<std::string, std::any>& obj, const std::vector<std::string>& fields);
 
 std::optional<Content> extractReplyContent(Memory response, const std::vector<std::string>& replyFieldKeys);
 

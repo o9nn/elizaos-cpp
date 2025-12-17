@@ -37,7 +37,7 @@ namespace elizaos {
  */
 class JsDocGenerator {
 public:
-    JsDocGenerator(AIService public aiService);
+    JsDocGenerator();
     std::future<std::string> generateComment(ASTQueueItem queueItem);
     std::future<std::string> generateClassComment(ASTQueueItem queueItem);
     std::string buildPrompt(ASTQueueItem queueItem);

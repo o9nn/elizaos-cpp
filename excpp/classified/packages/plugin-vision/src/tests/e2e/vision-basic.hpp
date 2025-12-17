@@ -18,29 +18,6 @@ namespace elizaos {
 
 class VisionBasicE2ETestSuite {
 public:
-    void if(auto !visionService);
-    void if(auto !isActive || !cameraInfo);
-    void if(auto isValid);
-    void if(auto !callbackCalled);
-    void if(auto !callbackResponse || !callbackResponse.text);
-    void if(auto !isValid);
-    void if(auto !callbackCalled);
-    void if(auto !callbackResponse || !callbackResponse.text);
-    void if(auto callbackResponse.thought);
-    void if(auto isValid);
-    void if(auto !callbackCalled);
-    void if(auto !callbackResponse || !callbackResponse.text);
-    void if(auto !isValid);
-    void if(auto !callbackCalled);
-    void if(auto !callbackResponse || !callbackResponse.text);
-    void if(auto state.values.visionAvailable && state.values.sceneDescription);
-    void if(auto !visionService);
-    void if(auto !updatedScene);
-    void if(auto !visionService);
-    void if(auto !scene);
-    void if(auto scene.objects.length > 0);
-    void if(auto scene.people.length > 0);
-    void if(auto scene.changePercentage > 10);
 };
 
 

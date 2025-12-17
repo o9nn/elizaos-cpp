@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void mountWithProviders(ReactNode component, auto options = {}) {
+void mountWithProviders(ReactNode component, auto options) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto queryClient = createTestQueryClient();
@@ -35,7 +35,7 @@ void mountWithProviders(ReactNode component, auto options = {}) {
 
 }
 
-void mountWithRouter(ReactNode component, auto options = {}) {
+void mountWithRouter(ReactNode component, auto options) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto queryClient = createTestQueryClient();
@@ -66,7 +66,7 @@ void mountWithRouter(ReactNode component, auto options = {}) {
 
 }
 
-void mountRadix(ReactNode component, auto options = {}) {
+void mountRadix(ReactNode component, auto options) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto queryClient = createTestQueryClient();

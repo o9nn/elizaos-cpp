@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::future<UpdateCheckResult> checkForUpdates(Record<string dependencies, auto string>) {
+std::future<UpdateCheckResult> checkForUpdates(const std::unordered_map<std::string, std::string>& dependencies) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const std::unordered_map<std::string, PackageUpdate> updates = {};
@@ -28,7 +28,7 @@ std::future<UpdateCheckResult> checkForUpdates(Record<string dependencies, auto 
 
 }
 
-void displayUpdateSummary(Record<string updates, auto PackageUpdate>) {
+void displayUpdateSummary(const std::unordered_map<std::string, PackageUpdate>& updates) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     std::cout << '\nAvailable updates:' << std::endl;
@@ -40,7 +40,7 @@ void displayUpdateSummary(Record<string updates, auto PackageUpdate>) {
 
 }
 
-std::future<void> updatePackageJson(const std::string& packageJsonPath, Record<string updates, auto PackageUpdate>) {
+std::future<void> updatePackageJson(const std::string& packageJsonPath, const std::unordered_map<std::string, PackageUpdate>& updates) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto content = fs.readFile(packageJsonPath, 'utf8');

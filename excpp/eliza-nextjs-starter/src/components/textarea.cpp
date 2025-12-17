@@ -4,11 +4,7 @@
 
 namespace elizaos {
 
-void Textarea(auto {
-    className, auto resizable = true, std::optional<{ className: string; resizable: boolean } & Omit<
-    Headless::TextareaProps> ...props
-  }, auto "as" | "className"
-  >, ForwardedRef<HTMLTextAreaElement> ref) {
+void Textarea(auto resizable, ForwardedRef<HTMLTextAreaElement> ref) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

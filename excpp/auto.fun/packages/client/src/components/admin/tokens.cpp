@@ -395,7 +395,7 @@ void AdminTokensList() {
 
 }
 
-void AdminTokenDetails(const std::any& { address }) {
+void AdminTokenDetails() {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

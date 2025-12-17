@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void useAutoScroll(UseAutoScrollOptions = {} options) {
+void useAutoScroll(UseAutoScrollOptions options = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { smooth = false } = options;

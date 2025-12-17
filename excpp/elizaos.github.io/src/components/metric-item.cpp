@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void MetricItem(Icon {
-  icon, auto value, auto label, auto valueClassName, auto iconClassName, auto iconBgClassName = "bg-primary/10", MetricItemProps }) {
+void MetricItem(auto value, auto label, auto valueClassName, auto iconClassName, auto iconBgClassName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

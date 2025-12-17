@@ -51,7 +51,6 @@ namespace elizaos {
 /**
  * Get project component by path
  */
-void getComponentByPath(const std::string& path); | null {
   // Check entry points
 
   // Check main classes

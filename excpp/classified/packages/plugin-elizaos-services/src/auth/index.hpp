@@ -40,11 +40,11 @@ namespace elizaos {
  */
 class QuickAuthSetup {
 public:
-    void initializeForCLI(const std::any& runtime);
-    void initializeForAgent(const std::any& runtime);
-    void initializeForGUI(const std::any& runtime);
-    void quickValidation(const std::any& _runtime);
-    void getTestKeys();
+    static void initializeForCLI(const std::any& runtime);
+    static void initializeForAgent(const std::any& runtime);
+    static void initializeForGUI(const std::any& runtime);
+    static void quickValidation(const std::any& _runtime);
+    static void getTestKeys();
 };
 
 /**
@@ -52,12 +52,9 @@ public:
  */
 class AuthStatusChecker {
 public:
-    Promise< isProductionReady(const std::any& _runtime);
-    void if(auto testKeyProviders.length > 0);
-    void if(auto !hasEmbeddings);
-    void catch(auto _error);
-    void getHealthReport(const std::any& _runtime);
-    double calculateHealthScore(const std::any& status);
+    static Promise< isProductionReady(const std::any& _runtime);
+    static void getHealthReport(const std::any& _runtime);
+    static double calculateHealthScore(const std::any& status);
 
 private:
     bool ready_;

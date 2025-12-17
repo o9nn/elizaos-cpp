@@ -24,8 +24,7 @@ void getDealScore(OTCConsignment c) {
 
 }
 
-void TokenDealsSection(auto {
-  token, auto marketData, auto consignments, TokenDealsSectionProps }) {
+void TokenDealsSection(auto marketData, auto consignments) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto router = useRouter();

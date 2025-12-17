@@ -9,9 +9,10 @@ std::future<Record<string> getSolanaMetadataCache() {
     symbol: string; name: string; logoURI: string | nullptr
 }
 
-std::future<void> setSolanaMetadataCache(Record<
-    string metadata, const std::variant<string; name: string; logoURI: string, null }
-  >>& { symbol) {
+std::future<void> setSolanaMetadataCache(const std::variant<Record<
+    string,
+    { symbol: string; name: string; logoURI: string, null }
+  >>& metadata) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -42,7 +43,7 @@ std::future<std::unordered_map<std::string, double>> getSolanaPriceCache() {
 
 }
 
-std::future<void> setSolanaPriceCache(Record<string prices, auto number>) {
+std::future<void> setSolanaPriceCache(const std::unordered_map<std::string, double>& prices) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -96,7 +97,7 @@ std::future<std::optional<Response>> fetchWithIpfsGatewayFallback(const std::str
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Extract IPFS hash from various URL formats
-    std::optional<std::string> ipfsHash = nullptr;
+    std::string ipfsHash = nullptr;
 
     // Match various IPFS URL patterns
     const auto patterns = [;
@@ -145,7 +146,7 @@ std::future<std::optional<Response>> fetchWithIpfsGatewayFallback(const std::str
 
 }
 
-std::future<std::optional<std::string>> cacheImageToBlob(const std::optional<std::string>& imageUrl) {
+std::future<std::string> cacheImageToBlob(const std::string& imageUrl) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!imageUrl) return null;
@@ -194,7 +195,7 @@ std::future<std::optional<std::string>> cacheImageToBlob(const std::optional<std
 
 }
 
-std::optional<std::string> getExtensionFromUrl(const std::string& url) {
+std::string getExtensionFromUrl(const std::string& url) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -627,7 +628,7 @@ std::future<void> GET(NextRequest request) {
                                                                                         const auto rawLogoUrl = meta.logoURI || nullptr;
 
                                                                                         // Get reliable URL: blob cache > reliable URL > null
-                                                                                        std::optional<std::string> logoURI = nullptr;
+                                                                                        std::string logoURI = nullptr;
                                                                                         if (rawLogoUrl) {
                                                                                             if (rawLogoUrl.includes("blob.vercel-storage.com")) {
                                                                                                 logoURI = rawLogoUrl;

@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void Button(auto {
-  children, auto variant = 'default', auto size = 'default', auto className = '', auto onClick, auto disabled = false, auto title, auto type = 'button', ButtonProps }) {
+void Button(auto variant, auto size, auto className, auto onClick, auto disabled, auto title, auto type) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto baseClasses =;

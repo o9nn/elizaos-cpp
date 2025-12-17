@@ -16,7 +16,7 @@ namespace elizaos {
 
 using FeatureItem = {
 
-void Feature(auto {title, auto Svg, FeatureItem description});
+void Feature(auto Svg);
 
 
 } // namespace elizaos

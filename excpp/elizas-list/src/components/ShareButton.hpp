@@ -18,5 +18,5 @@ struct ShareButtonProps {
     std::string github;
 };
 
-void ShareButton(ShareButtonProps { project }); 
+void ShareButton(); 
 } // namespace elizaos

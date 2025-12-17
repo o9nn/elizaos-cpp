@@ -26,7 +26,7 @@ struct ChatSession {
 };
 
 struct ChatSessionsProps {
-    std::optional<std::string> userId;
+    std::string userId;
     std::optional<std::string> currentSessionId;
     std::optional<bool> showSwitcher;
 };

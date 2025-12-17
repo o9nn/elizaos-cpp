@@ -94,7 +94,7 @@ std::string calculatePercentage(double amount, double total) {
 
 }
 
-std::string formatTokenAmount(double amount, auto decimals = 18) {
+std::string formatTokenAmount(double amount, auto decimals) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (amount / Math.pow(10, decimals)).toFixed(4);

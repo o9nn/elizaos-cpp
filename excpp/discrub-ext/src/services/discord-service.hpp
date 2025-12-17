@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include ".classes/attachment.hpp"
 #include ".classes/channel.hpp"
@@ -43,11 +42,8 @@ using SearchMessageResult = std::vector<{
 class DiscordService {
 public:
     DiscordService(std::optional<AppSettings> settings);
-    void if(auto this.searchDelaySecs > 0);
-    void if(auto this.deleteDelaySecs > 0);
-    void while(auto !requestComplete);
-    void catch(auto e);
-    std::function<void()> URLSearchParams(const std::variant<preFilterUserId, , "null">& {
+            apiResponse = blob();
+    std::function<void()> URLSearchParams(std::optional<searchAfterDate
          this::generateSnowflake(searchAfterDate> min_id);
 };
 

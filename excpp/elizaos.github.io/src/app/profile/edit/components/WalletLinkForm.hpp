@@ -23,5 +23,6 @@ struct WalletLinkFormProps {
 // Basic regex for Solana address (Base58, 32-44 chars)
 // For more robust validation, consider @solana/web3.js PublicKey.isOnCurve or similar
 
+void WalletLinkForm(auto onSubmit, auto isProcessing);
 
 } // namespace elizaos

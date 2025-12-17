@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void DependencyGraph(DependencyGraphProps { dependencies }) {
+void DependencyGraph() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto graphRef = useRef<any>();

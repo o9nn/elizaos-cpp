@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::future<StrategyResult> runMultiStepCore(auto { runtime, auto message, auto state, { runtime: IAgentRuntime callback }, Memory message, State state, std::optional<HandlerCallback }> callback) {
+std::future<StrategyResult> runMultiStepCore(auto message, auto state, Memory message, State state, std::optional<HandlerCallback }> callback) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void StatsBar(StatsBarProps { projects }) {
+void StatsBar() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto uniqueAuthors = new Set(projects.map(p => p.author.github)).size;

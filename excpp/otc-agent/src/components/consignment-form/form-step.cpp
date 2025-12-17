@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void FormStep(auto {
-  formData, auto updateFormData, auto onNext, auto onBack, auto selectedTokenBalance = "0", auto selectedTokenDecimals = 18, auto selectedTokenSymbol = "TOKEN", FormStepProps }) {
+void FormStep(auto updateFormData, auto onNext, auto onBack, auto selectedTokenBalance, auto selectedTokenDecimals, auto selectedTokenSymbol) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [showAdvanced, setShowAdvanced] = useState(false);

@@ -13,5 +13,13 @@ namespace elizaos {
 
 
 
+void Tabs();
+
+void TabsList();
+
+void TabsTrigger();
+
+void TabsContent();
+
 
 } // namespace elizaos

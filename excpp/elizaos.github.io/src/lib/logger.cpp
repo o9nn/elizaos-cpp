@@ -105,7 +105,7 @@ Logger createLogger(LoggerConfig config) {
 
 }
 
-unknown limitObjectDepth(unknown obj, number = 0 depth, number = 3 maxDepth) {
+unknown limitObjectDepth(unknown obj, double depth = 0, double maxDepth = 3) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (depth >= maxDepth) {

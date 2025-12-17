@@ -33,8 +33,7 @@ std::string getSolanaEndpoint() {
 
 }
 
-void SolanaWalletProvider(auto {
-  children, const std::any& }) {
+void SolanaWalletProvider() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     useRenderTracker("SolanaWalletProvider");

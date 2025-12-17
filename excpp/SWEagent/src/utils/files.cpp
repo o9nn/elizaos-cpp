@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-unknown loadFile(const std::optional<std::string>& filepath) {
+unknown loadFile(const std::string& filepath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!filepath) {

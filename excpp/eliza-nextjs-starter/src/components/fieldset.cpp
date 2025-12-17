@@ -4,9 +4,7 @@
 
 namespace elizaos {
 
-void Fieldset(auto {
-  className, std::optional<{ className: string } & Omit<Headless::FieldsetProps> ...props
-}, auto "as" | "className">) {
+void Fieldset() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -21,9 +19,7 @@ void Fieldset(auto {
 
 }
 
-void Legend(auto {
-  className, std::optional<{ className: string } & Omit<Headless::LegendProps> ...props
-}, auto "as" | "className">) {
+void Legend() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -39,9 +35,7 @@ void Legend(auto {
 
 }
 
-void FieldGroup(auto {
-  className, ComponentPropsWithoutRef<"div"> ...props
-}) {
+void FieldGroup() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -54,9 +48,7 @@ void FieldGroup(auto {
 
 }
 
-void Field(auto {
-  className, std::optional<{ className: string } & Omit<Headless::FieldProps> ...props
-}, auto "as" | "className">) {
+void Field() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -76,9 +68,7 @@ void Field(auto {
 
 }
 
-void Label(auto {
-  className, std::optional<{ className: string } & Omit<Headless::LabelProps> ...props
-}, auto "as" | "className">) {
+void Label() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -94,11 +84,7 @@ void Label(auto {
 
 }
 
-void Description(auto {
-  className, std::optional<{ className: string } & Omit<
-  Headless::DescriptionProps> ...props
-}, auto "as" | "className"
->) {
+void Description() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -114,11 +100,7 @@ void Description(auto {
 
 }
 
-void ErrorMessage(auto {
-  className, std::optional<{ className: string } & Omit<
-  Headless::DescriptionProps> ...props
-}, auto "as" | "className"
->) {
+void ErrorMessage() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

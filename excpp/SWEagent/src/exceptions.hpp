@@ -1,4 +1,5 @@
 #pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -30,7 +31,7 @@ public:
  */
 class FunctionCallingFormatError {
 public:
-    FunctionCallingFormatError(const std::string& message, const std::variant<, 'missing', 'multiple', 'incorrect_args', 'invalid_json', 'invalid_command', 'missing_arg', 'unexpected_arg'>& errorCode, Record<string extraInfo, auto any> = {});
+    FunctionCallingFormatError(const std::string& message, const std::variant<, std::string>& errorCode, std::unordered_map<std::string, std::any> extraInfo = {});
 
 /**
  * Exception for context window exceeded
@@ -149,7 +150,7 @@ public:
  */
 class BashIncorrectSyntaxError {
 public:
-    BashIncorrectSyntaxError(std::optional<std::string> message, std::optional<Record<string> extraInfo, auto any>);
+    BashIncorrectSyntaxError(std::optional<std::string> message, std::optional<std::unordered_map<std::string, std::any>> extraInfo);
 };
 
 

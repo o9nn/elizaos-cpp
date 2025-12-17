@@ -26,7 +26,7 @@ struct EditableProfileHeaderProps {
     bool isUploading;
     bool isGenerating;
     bool isSaving;
-    std::optional<std::string> editError;
+    std::string editError;
 };
 
 using Tab = std::variant<"held", "created">;

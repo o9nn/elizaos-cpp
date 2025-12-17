@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void Logo(auto { width = 360, auto height = 128, LogoProps className = "" }) {
+void Logo(auto height, auto className) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

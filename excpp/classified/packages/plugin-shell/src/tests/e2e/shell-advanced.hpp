@@ -18,10 +18,6 @@ namespace elizaos {
 
 class ShellAdvancedE2ETestSuite {
 public:
-    void if(auto !shellService);
-    void for(auto const expectedFile of expectedFiles);
-    void if(auto !shellService);
-    void if(auto !shellService);
 };
 
 

@@ -22,7 +22,7 @@ public:
     std::string formatComponents(FileDocsGroup fileGroup);
     std::string formatFilePath(const std::string& filePath);
     std::string formatJSDoc(const std::string& jsDoc, std::optional<std::string> _code);
-    std::string truncateCodeBlock(const std::string& code, auto maxLength = 8000);
+    std::string truncateCodeBlock(const std::string& code, auto maxLength);
 };
 
 

@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::future<Response> fetchWithTimeout(const std::string& resource, std::optional<RequestInit & { timeout: number } = {}> options) {
+std::future<Response> fetchWithTimeout(const std::string& resource, RequestInit options = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { timeout = 8000 } = options;
@@ -22,7 +22,7 @@ std::future<Response> fetchWithTimeout(const std::string& resource, std::optiona
 
 }
 
-std::string formatCurrency(const std::optional<double>& value, number = 2 decimals) {
+std::string formatCurrency(const std::optional<double>& value, double decimals = 2) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (value == null || value == undefined || isNaN(value)) {

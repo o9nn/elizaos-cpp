@@ -38,10 +38,10 @@ public:
     RunBatchProgressManager(double _numInstances, std::optional<std::string> yamlReportPath);
     double nCompleted() const;
     void updateExitStatusTable();
-    std::string shortenStr(const std::string& s, double maxLen, boolean = false shortenLeft);
+    std::string shortenStr(const std::string& s, double maxLen, bool shortenLeft = false);
     void updateInstanceStatus(const std::string& instanceId, const std::string& message);
     void onInstanceStart(const std::string& instanceId);
-    void onInstanceEnd(const std::string& instanceId, const std::optional<std::string>& exitStatus);
+    void onInstanceEnd(const std::string& instanceId, const std::string& exitStatus);
     void onUncaughtException(const std::string& instanceId, Error exception);
     void printReport();
     std::unordered_map<std::string, std::any> getOverviewData();

@@ -33,20 +33,15 @@ namespace elizaos {
  */
 class DocumentationGenerator {
 public:
-    DocumentationGenerator(DirectoryTraversal public directoryTraversal, TypeScriptParser public typeScriptParser, JsDocAnalyzer public jsDocAnalyzer, JsDocGenerator public jsDocGenerator, GitManager public gitManager, Configuration public configuration, AIService public aiService);
+    DocumentationGenerator();
     Promise< generate(std::optional<double> pullNumber);
-    void if(auto pullNumber);
-    void for(auto const fileChange of fileChanges);
-    void if(auto this.missingJsDocQueue.length > 0);
     void processNode(TSESTree::Node node, const std::string& filePath, TSESTree::Program ast);
     std::future<void> updateFileWithJSDoc(const std::string& filePath, const std::string& jsDoc, double insertLine);
     std::string getNodeCode(const std::string& filePath, TSESTree::Node node);
     std::future<std::string> getFileContent(const std::string& contentsUrl);
     Promise< generatePRContent(std::optional<double> pullNumber);
-    void catch(auto error);
     std::string generateDefaultPRBody();
     Promise< analyzeCodebase();
-    void for(auto const filePath of this.typeScriptFiles);
 
 private:
     JSDocValidator jsDocValidator_;

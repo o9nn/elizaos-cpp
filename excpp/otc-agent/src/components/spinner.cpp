@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void LoadingSpinner(auto {
-  className, auto size = 16, std::optional<std::any> }) {
+void LoadingSpinner(auto size) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

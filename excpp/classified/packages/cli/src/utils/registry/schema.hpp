@@ -20,7 +20,7 @@ namespace elizaos {
  * - "client"
  * - "plugin"
  */
-using PluginType = std::variant<'adapter', 'client', 'plugin'>;
+using PluginType = std::variant<std::string, std::string, std::string>;
 
 // TODO: we should handle this better later
 /**

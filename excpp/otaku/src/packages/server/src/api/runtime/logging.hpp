@@ -21,7 +21,7 @@ namespace elizaos {
 /**
  * Defines a type `LogLevel` as the keys of the `LOG_LEVELS` object.
  */
-using LogLevel = std::variant<keyof typeof LOG_LEVELS, 'all'>;
+using LogLevel = std::variant<keyof typeof LOG_LEVELS, std::string>;
 
 /**
  * Represents a log entry with specific properties.

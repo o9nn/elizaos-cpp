@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void AudioPlayer(auto {
-  src, auto albumArt, auto lyrics, auto showControls = true, auto className = "", AudioPlayerProps }) {
+void AudioPlayer(auto albumArt, auto lyrics, auto showControls, auto className) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [isEditingLyrics, setIsEditingLyrics] = useState(false);

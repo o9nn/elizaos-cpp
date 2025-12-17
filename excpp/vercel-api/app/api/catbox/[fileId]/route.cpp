@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::optional<std::string> getContentTypeFromExtension(const std::string& filename) {
+std::string getContentTypeFromExtension(const std::string& filename) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto ext = filename.split('.').pop().toLowerCase();

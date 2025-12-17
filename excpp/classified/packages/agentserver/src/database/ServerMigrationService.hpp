@@ -24,7 +24,7 @@ using DrizzleDatabase = std::function<void()>;
  */
 class ServerMigrationService {
 public:
-    ServerMigrationService(DrizzleDatabase private db);
+    ServerMigrationService();
     std::future<void> runMigrations();
     std::future<void> createMessageServersTable();
     std::future<void> createChannelsTable();

@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::string formatBridgeResponse(RelayStatus status, ResolvedBridgeRequest request, const std::string& requestId, const std::vector<std::vector<std::any>>& collectedTxHashes, std::optional<std::string> tokenSymbol) {
+std::string formatBridgeResponse(RelayStatus status, ResolvedBridgeRequest request, const std::string& requestId, std::vector<std::any> collectedTxHashes = {}, std::optional<std::string> tokenSymbol) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto statusIndicator = status.status == "success" ? "" : status.status == "pending" ? "" : "";

@@ -22,7 +22,6 @@ namespace elizaos {
  * @param xp - Current experience points
  * @returns Level based on the XP (1-99)
  */
-void calculateLevelStats(double xp); {
   // Ensure XP is not negative
 
   // Maximum standard level in Runescape is 99

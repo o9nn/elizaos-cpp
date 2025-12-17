@@ -16,7 +16,7 @@ bool isValidSolanaAddress(const std::string& address) {
 
 }
 
-std::future<std::any> fetchWithRetry(const std::string& url, RequestInit = {} options, const std::variant<'solana', 'base' = 'solana'>& chain, auto maxRetries = 3) {
+std::future<std::any> fetchWithRetry(const std::string& url, RequestInit options = {}, std::string chain = "solana", auto maxRetries) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

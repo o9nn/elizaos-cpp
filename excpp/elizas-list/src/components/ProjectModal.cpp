@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void ProjectModal(auto { project, ProjectModalProps onClose }) {
+void ProjectModal() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!project) return null;

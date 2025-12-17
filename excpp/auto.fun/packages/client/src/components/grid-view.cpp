@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void GridView(const std::any& { data }) {
+void GridView() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

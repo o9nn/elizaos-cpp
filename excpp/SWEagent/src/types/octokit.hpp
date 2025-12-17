@@ -15,8 +15,7 @@ namespace elizaos {
   class Octokit {
 public:
     Promise< get(const std::any& params);
-    Promise< create(Record<string params, auto unknown>);
-    Promise< get(const std::any& params);
+    Promise< create(const std::unordered_map<std::string, unknown>& params);
 };
 
 

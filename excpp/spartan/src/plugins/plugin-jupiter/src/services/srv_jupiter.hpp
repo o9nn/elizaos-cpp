@@ -18,26 +18,23 @@ namespace elizaos {
 
 class JupiterService {
 public:
-    JupiterService(IAgentRuntime public runtime);
+    JupiterService();
     void registerProvider(const std::any& provider);
-    Promise< getQuote(auto {
-    inputMint, auto outputMint, auto amount, auto slippageBps, auto platformFeeBps = 200, std::optional<std::any> });
-    void if(auto !this.swapApi);
-    void if(auto !quoteResponseData);
-    void catch(auto error);
+    Promise< getQuote(auto outputMint, auto amount, auto slippageBps, auto platformFeeBps);
+    std::future<SwapResponse> executeSwap(auto userPublicKey);
     std::future<bool> confirmTransaction(Connection connection, const std::string& signature);
-    std::future<double> getTokenPrice(const std::string& tokenMint, const std::string& quoteMint, number = 6 inputDecimals);
-    void catch(auto error);
-    void if(auto !response.ok);
-    void catch(auto error);
-    void if(auto !response.ok);
-    void catch(auto error);
-    void for(auto const token1 of commonTokens);
-    void catch(auto error);
-    void start(IAgentRuntime runtime);
-    void stop(IAgentRuntime runtime);
-    std::future<void> start();
-    std::future<void> stop();
+    std::future<double> getTokenPrice(const std::string& tokenMint, const std::string& quoteMint, double inputDecimals = 6);
+    void getBestRoute(auto outputMint, auto amount);
+    std::future<double> getPriceImpact(auto outputMint, auto amount);
+    std::future<double> getMinimumReceived(auto outputMint, auto amount, auto slippageBps);
+    Promise< estimateGasFees(auto outputMint, auto amount);
+    std::future<double> findBestSlippage(auto outputMint, auto amount);
+    Promise< getTokenPair(auto outputMint);
+    Promise<Array< getHistoricalPrices(auto outputMint, auto timeframe);
+    Array< findArbitragePaths(auto amount, auto maxHops);
+    static void start(IAgentRuntime runtime);
+    static void stop(IAgentRuntime runtime);
     bool isServiceRunning();
+};
 
 } // namespace elizaos

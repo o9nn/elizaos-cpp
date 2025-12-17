@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void MemoryEditOverlay(auto {
-  isOpen, auto onClose, auto memory, auto agentId, MemoryEditOverlayProps }) {
+void MemoryEditOverlay(auto onClose, auto memory, auto agentId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { toast } = useToast();

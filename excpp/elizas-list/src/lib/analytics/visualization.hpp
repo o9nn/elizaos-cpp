@@ -23,8 +23,8 @@ struct InteractionData {
 
 class AnalyticsVisualization {
 public:
-    ChartConfiguration generateTimeSeriesChart(const std::vector<TimeSeriesDataPoint>& data);
-    ChartConfiguration generateHeatmap(InteractionData data);
+    static ChartConfiguration generateTimeSeriesChart(const std::vector<TimeSeriesDataPoint>& data);
+    static ChartConfiguration generateHeatmap(InteractionData data);
 };
  
 } // namespace elizaos

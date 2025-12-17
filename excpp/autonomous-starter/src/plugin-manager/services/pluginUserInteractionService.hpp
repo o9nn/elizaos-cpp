@@ -20,21 +20,16 @@ namespace elizaos {
 class PluginUserInteractionService {
 public:
     PluginUserInteractionService(IAgentRuntime runtime);
-    std::future<PluginUserInteractionService> start(IAgentRuntime runtime);
+    static std::future<PluginUserInteractionService> start(IAgentRuntime runtime);
     std::future<void> initialize();
     std::future<ConfigurationDialog> initiateConfigurationDialog(PluginConfigurationRequest request, const std::string& userId);
     Promise< processUserResponse(const std::string& dialogId, const std::string& userId, const std::string& response);
-    void if(auto !dialog);
-    void if(auto dialog.currentVariable);
-    void if(auto nextMissing);
     std::string generatePromptForVariable(PluginEnvironmentVariable varInfo);
     std::future<void> cancelDialog(const std::string& dialogId);
     std::vector<ConfigurationDialog> getActiveDialogs();
     ConfigurationDialog getDialogById(const std::string& dialogId);
     ConfigurationDialog getDialogByUser(const std::string& userId);
     Promise< validateUserResponse(PluginEnvironmentVariable varInfo, const std::string& value);
-    void if(auto varInfo.required);
-    void if(auto varInfo.validation);
     std::future<void> applyDialogConfiguration(ConfigurationDialog dialog);
     std::future<void> createDialogMemory(ConfigurationDialog dialog, const std::string& userId);
     std::future<void> cleanupCompletedDialogs();

@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void Table(auto { className, ComponentProps<"table"> ...props }) {
+void Table() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -22,7 +22,7 @@ void Table(auto { className, ComponentProps<"table"> ...props }) {
 
 }
 
-void TableHeader(auto { className, ComponentProps<"thead"> ...props }) {
+void TableHeader() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -35,7 +35,7 @@ void TableHeader(auto { className, ComponentProps<"thead"> ...props }) {
 
 }
 
-void TableBody(auto { className, ComponentProps<"tbody"> ...props }) {
+void TableBody() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -48,7 +48,7 @@ void TableBody(auto { className, ComponentProps<"tbody"> ...props }) {
 
 }
 
-void TableRow(auto { className, ComponentProps<"tr"> ...props }) {
+void TableRow() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -64,7 +64,7 @@ void TableRow(auto { className, ComponentProps<"tr"> ...props }) {
 
 }
 
-void TableHead(auto { className, ComponentProps<"th"> ...props }) {
+void TableHead() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -80,7 +80,7 @@ void TableHead(auto { className, ComponentProps<"th"> ...props }) {
 
 }
 
-void TableCell(auto { className, ComponentProps<"td"> ...props }) {
+void TableCell() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

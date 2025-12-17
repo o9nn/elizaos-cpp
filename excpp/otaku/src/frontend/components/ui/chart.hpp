@@ -21,6 +21,10 @@ using ChartContextProps = {
 
 void useChart();
 
+void ChartContainer(auto className, auto children, auto config);
+
+void ChartLegendContent(auto hideIcon, auto payload, auto verticalAlign, auto nameKey);
+
 // Helper to extract item config from a payload.
 void getPayloadConfigFromPayload(ChartConfig config, unknown payload, const std::string& key);
 

@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include "constants.hpp"
 
@@ -79,7 +78,7 @@ struct ReferralCode {
     UUID userId;
     std::string code;
     std::optional<UUID> referrerId;
-    std::variant<'active', 'inactive'> status;
+    std::string status;
     Date createdAt;
 };
 

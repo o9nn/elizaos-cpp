@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void ContributorItem(auto {
-  username, auto href, auto stats, auto score, auto className, auto children, ContributorItemProps }) {
+void ContributorItem(auto href, auto stats, auto score, auto className, auto children) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

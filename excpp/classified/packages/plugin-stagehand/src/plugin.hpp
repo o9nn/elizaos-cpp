@@ -22,7 +22,7 @@ namespace elizaos {
 // Configuration schema
 
 // Helper function to extract URL from text
-std::optional<std::string> extractUrl(const std::string& text);
+std::string extractUrl(const std::string& text);
 
 // Browser navigation action
 

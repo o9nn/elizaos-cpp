@@ -20,9 +20,9 @@ namespace elizaos {
 
 using AgentSidebarProps = std::variant<{
 
-using FixedTabValue = std::variant<'details', 'actions', 'logs', 'memories'>;
+using FixedTabValue = std::variant<std::string, std::string, std::string, std::string>;
 using TabValue = std::variant<FixedTabValue, std::string>;
 
-void AgentSidebar(auto { agentId, auto agentName, AgentSidebarProps channelId });
+void AgentSidebar(auto agentName);
 
 } // namespace elizaos

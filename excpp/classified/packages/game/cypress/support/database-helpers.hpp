@@ -5,7 +5,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 
 namespace elizaos {
@@ -55,30 +54,16 @@ struct TableData {
     bool hasPrev;
     std::string search;
     std::string orderBy;
-    std::variant<'ASC', 'DESC'> orderDir;
+    std::string orderDir;
 };
 
 class DatabaseTestHelper {
 public:
-    DatabaseTestHelper(string = 'http://localhost:7777' backendUrl);
-    Cypress::Chainable<string> authenticate(string = 'admin' username, string = 'password123' password);
+    DatabaseTestHelper(std::string backendUrl = "http://localhost:7777");
     Cypress::Chainable<DatabaseTable[]> getTables();
-    Cypress::Chainable<TableData> getTableData(const std::string& tableName, std::optional<std::any> options);
-    Cypress::Chainable<any> getRecord(const std::string& tableName, const std::string& recordId);
-    Cypress::Chainable<any> createRecord(const std::string& tableName, Record<string recordData, auto any>);
-    Cypress::Chainable<any> updateRecord(const std::string& tableName, const std::string& recordId, Record<string updateData, auto any>);
-    Cypress::Chainable<any> deleteRecord(const std::string& tableName, const std::string& recordId);
-    Cypress::Chainable<any> createTestMemory(const std::optional<std::any>& customData);
-    Cypress::Chainable<any> createTestAgent(const std::optional<std::any>& customData);
-    Cypress::Chainable<void> cleanupTestRecords(const std::string& tableName, string = 'test-' searchPattern);
-    Cypress::Chainable<void> waitForTableRowCount(const std::string& tableName, double expectedCount, number = 10000 timeout);
-    Cypress::Chainable<boolean> verifyRecordExists(const std::string& tableName, Record<string searchCriteria, auto any>);
+    Cypress::Chainable<TableData> getTableData(const std::string& tableName, std::any options = {});
     std::unordered_map<std::string, std::string> getAuthHeaders();
     std::unordered_map<std::string, std::any> generateTestData(const std::string& tableName);
-
-private:
-    std::string backendUrl_;
-};
 
 // Cypress commands for database testing
     struct Chainable {

@@ -39,10 +39,10 @@ struct ChatInterfaceProps {
     Agent agent;
     std::string userId;
     std::string serverId;
-    std::optional<std::string> channelId;
+    std::string channelId;
     std::optional<bool> isNewChatMode;
 };
 
-void ChatInterface(auto { agent, auto userId, auto serverId, auto channelId, auto isNewChatMode = false, auto onChannelCreated, ChatInterfaceProps onActionCompleted });
+void ChatInterface(auto userId, auto serverId, auto channelId, auto isNewChatMode, auto onChannelCreated);
 
 } // namespace elizaos

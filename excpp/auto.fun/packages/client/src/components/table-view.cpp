@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void TableView(auto {
-  data, auto sortBy, auto sortOrder, auto setSortBy, auto setSortOrder, TableViewProps }) {
+void TableView(auto sortBy, auto sortOrder, auto setSortBy, auto setSortOrder) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto navigate = useNavigate();

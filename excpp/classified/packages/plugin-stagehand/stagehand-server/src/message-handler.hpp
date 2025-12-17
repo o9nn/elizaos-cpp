@@ -35,7 +35,7 @@ struct Response {
 
 class MessageHandler {
 public:
-    MessageHandler(SessionManager private sessionManager, Logger private logger);
+    MessageHandler();
     std::future<Response> handleMessage(Message message, const std::string& clientId);
     std::future<Response> handleCreateSession(const std::string& requestId, const std::string& clientId);
     std::future<Response> handleDestroySession(const std::string& requestId, const std::string& sessionId);

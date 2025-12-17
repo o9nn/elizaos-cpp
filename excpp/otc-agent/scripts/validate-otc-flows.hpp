@@ -36,7 +36,7 @@ namespace elizaos {
 
 // UTILITIES
 
-void log(const std::string& category, const std::string& message, std::optional<Record<string> data, auto unknown>);
+void log(const std::string& category, const std::string& message, std::optional<std::unordered_map<std::string, unknown>> data);
 
 void section(const std::string& title);
 

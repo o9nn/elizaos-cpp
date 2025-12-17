@@ -5,7 +5,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include "service.hpp"
 
@@ -21,7 +20,7 @@ struct MessageParticipant {
     std::string name;
     std::optional<std::string> username;
     std::optional<std::string> avatar;
-    std::optional<std::variant<'online', 'offline', 'away', 'busy'>> status;
+    std::optional<std::string> status;
 };
 
 struct MessageAttachment {
@@ -46,7 +45,7 @@ struct MessageReaction {
 struct MessageReference {
     UUID messageId;
     UUID channelId;
-    std::variant<'reply', 'forward', 'quote'> type;
+    std::string type;
 };
 
 struct MessageContent {
@@ -106,7 +105,7 @@ struct MessageSearchOptions {
 struct MessageChannel {
     UUID id;
     std::string name;
-    std::variant<'text', 'voice', 'dm', 'group', 'announcement', 'thread'> type;
+    std::string type;
     std::optional<std::string> description;
     std::optional<std::vector<MessageParticipant>> participants;
     bool canSend;

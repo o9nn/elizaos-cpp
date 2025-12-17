@@ -4,13 +4,13 @@
 
 namespace elizaos {
 
-std::future<std::vector<CodexTokenEvent>> fetchCodexTokenEvents(const std::string& tokenAddress, double startTimestamp, double endTimestamp, number = 1399811149 networkId) {
+std::future<std::vector<CodexTokenEvent>> fetchCodexTokenEvents(const std::string& tokenAddress, double startTimestamp, double endTimestamp, double networkId = 1399811149) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
         const auto apiUrl = "https://graph.codex.io/graphql";
         std::vector<CodexTokenEvent> allItems = [];
-        std::optional<std::string> cursor = nullptr;
+        std::string cursor = nullptr;
 
         do {
             const auto query = `query {;
@@ -92,7 +92,7 @@ std::future<std::vector<CodexTokenEvent>> fetchCodexTokenEvents(const std::strin
     }
 }
 
-std::future<> fetchCodexTokenPrice(const std::string& tokenAddress, number = 1399811149 networkId) {
+std::future<> fetchCodexTokenPrice(const std::string& tokenAddress, double networkId = 1399811149) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     currentPrice: number;
@@ -112,7 +112,7 @@ Array< convertCodexEventsToPriceFeed(const std::vector<CodexTokenEvent>& events)
 
 }
 
-std::future<std::vector<CandleData>> fetchCodexBars(const std::string& tokenAddress, double startTimestamp, double endTimestamp, CodexBarResolution = "1" resolution, number = 1399811149 networkId, string = "token1" quoteToken) {
+std::future<std::vector<CandleData>> fetchCodexBars(const std::string& tokenAddress, double startTimestamp, double endTimestamp, CodexBarResolution resolution = "1", double networkId = 1399811149, std::string quoteToken = "token1") {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto apiUrl = "https://graph.codex.io/graphql";

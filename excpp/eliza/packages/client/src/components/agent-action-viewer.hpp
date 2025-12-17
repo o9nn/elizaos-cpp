@@ -32,19 +32,21 @@ std::string getModelUsageType(const std::string& modelType);
 
 void formatDate(double timestamp);
 
-void getModelIcon(auto modelType = '');
+void getModelIcon(auto modelType);
 
 void formatTokenUsage(const std::any& usage);
 
-void truncateText(const std::string& text, auto maxLength = 100);
+void truncateText(const std::string& text, auto maxLength);
 
 void copyToClipboard(const std::string& text);
 
 void groupActionsByDate(const std::vector<AgentLog>& actions);
 
 // Components
-void ActionCard(auto { action, ActionCardProps onDelete });
+void ActionCard();
 
-void AgentActionViewer(auto { agentId, AgentActionViewerProps roomId });
+void EmptyState(auto searchQuery);
+
+void AgentActionViewer();
 
 } // namespace elizaos

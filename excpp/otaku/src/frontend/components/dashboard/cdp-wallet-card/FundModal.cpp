@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void FundModalContent(auto { walletAddress, FundModalContentProps shortAddress }) {
+void FundModalContent() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { hideModal } = useModal();

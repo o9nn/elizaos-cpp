@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 
 namespace elizaos {
@@ -15,7 +14,7 @@ namespace elizaos {
 struct SystemEnvironment {
     std::string nodeVersion;
     std::string platform;
-    std::variant<'development', 'production', 'test'> environment;
+    std::string environment;
     bool authentication;
     bool tee;
     std::vector<std::string> plugins;

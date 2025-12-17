@@ -14,7 +14,7 @@ namespace elizaos {
 
 
 
-void Badge(auto { className, auto variant, BadgeProps ...props });
+void Badge(auto variant);
 
 
 } // namespace elizaos

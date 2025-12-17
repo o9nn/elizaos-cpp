@@ -34,7 +34,7 @@ void parseGhRepoUrl(const std::string& repoUrl) {
     owner: string; repo: string
 }
 
-std::future<std::any> getGhIssueData(const std::string& issueUrl, string = '' token) {
+std::future<std::any> getGhIssueData(const std::string& issueUrl, std::string token = "") {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { owner, repo, issueNumber } = parseGhIssueUrl(issueUrl);
@@ -53,7 +53,7 @@ std::future<std::any> getGhIssueData(const std::string& issueUrl, string = '' to
 
 }
 
-std::future<std::string> getProblemStatementFromGithubIssue(const std::string& owner, const std::string& repo, const std::string& issueNumber, string = '' token) {
+std::future<std::string> getProblemStatementFromGithubIssue(const std::string& owner, const std::string& repo, const std::string& issueNumber, std::string token = "") {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const std::unordered_map<std::string, std::string> headers = {;
@@ -71,7 +71,7 @@ std::future<std::string> getProblemStatementFromGithubIssue(const std::string& o
 
 }
 
-std::future<std::vector<std::string>> getAssociatedCommitUrls(const std::string& org, const std::string& repo, const std::string& issueNumber, string = '' token) {
+std::future<std::vector<std::string>> getAssociatedCommitUrls(const std::string& org, const std::string& repo, const std::string& issueNumber, std::string token = "") {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const std::unordered_map<std::string, std::string> headers = {;

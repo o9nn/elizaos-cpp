@@ -48,7 +48,7 @@ std::optional<YieldPool> shapeYieldPool(RawYieldPool raw) {
 
 }
 
-std::optional<double> normalizeNullableNumber(const std::variant<double, std::string>& value) {
+std::optional<double> normalizeNullableNumber(const std::optional<double>& value) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (typeof value == "number" && Number.isFinite(value)) {

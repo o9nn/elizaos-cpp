@@ -13,7 +13,7 @@ namespace elizaos {
 
 // Extend the core service types with stagehand service
   struct ServiceTypeRegistry {
-    'STAGEHAND' STAGEHAND;
+    std::string STAGEHAND;
 };
 
 // Export service type constant

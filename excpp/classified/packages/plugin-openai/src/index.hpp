@@ -23,7 +23,7 @@ namespace elizaos {
 class OpenAIValidationService {
 public:
     OpenAIValidationService(IAgentRuntime runtime);
-    std::future<OpenAIValidationService> start(IAgentRuntime runtime);
+    static std::future<OpenAIValidationService> start(IAgentRuntime runtime);
     std::future<void> stop();
     std::future<bool> isValid();
 };

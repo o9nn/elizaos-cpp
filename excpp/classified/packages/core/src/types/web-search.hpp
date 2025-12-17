@@ -5,7 +5,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include "service.hpp"
 
@@ -25,8 +24,8 @@ struct SearchOptions {
     std::optional<Date> end;
     std::optional<std::string> fileType;
     std::optional<std::string> site;
-    std::optional<std::variant<'relevance', 'date', 'popularity'>> sortBy;
-    std::optional<std::variant<'strict', 'moderate', 'off'>> safeSearch;
+    std::optional<std::string> sortBy;
+    std::optional<std::string> safeSearch;
 };
 
 struct SearchResult {

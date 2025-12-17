@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void NFTDetailModalContent(auto { nft, auto userId, NFTDetailModalContentProps onSuccess }) {
+void NFTDetailModalContent(auto userId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

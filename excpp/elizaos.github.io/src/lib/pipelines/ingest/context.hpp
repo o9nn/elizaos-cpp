@@ -33,5 +33,6 @@ struct CreateIngestionContextOptions {
 /**
  * Create a context for ingestion pipeline
  */
+IngestionPipelineContext createIngestionContext(auto logger, auto config, auto dateRange, auto force, auto githubToken);
 
 } // namespace elizaos

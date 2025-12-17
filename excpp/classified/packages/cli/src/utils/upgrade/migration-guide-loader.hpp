@@ -5,7 +5,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include "elizaos/core.hpp"
 
@@ -20,7 +19,7 @@ struct MigrationGuide {
     std::string name;
     std::string path;
     std::string content;
-    std::variant<'basic', 'advanced', 'testing', 'completion'> category;
+    std::string category;
     std::vector<std::string> keywords;
 };
 
@@ -39,9 +38,9 @@ public:
     std::string getEmbeddedMigrationGuide();
     std::string getEmbeddedTestingGuide();
     std::string getEmbeddedCompletionGuide();
-    std::vector<GuideSearchResult> searchGuides(const std::string& query, number = 3 limit);
+    std::vector<GuideSearchResult> searchGuides(const std::string& query, double limit = 3);
     std::optional<MigrationGuide> getGuide(const std::string& name);
-    std::vector<MigrationGuide> getGuidesByCategory(MigrationGuide['category'] category);
+    std::vector<MigrationGuide> getGuidesByCategory();
     std::vector<GuideSearchResult> getRelevantGuidesForIssue(const std::string& issue);
     std::string generateMigrationContext();
     std::string getAllGuidesContent();

@@ -16,13 +16,13 @@ using RawRegistry = std::unordered_map<std::string, std::string>; // <npmName> â
 
 struct VersionInfo {
     std::string repo;
-    std::optional<std::string> version;
-    std::optional<std::string> branch;
-    std::optional<std::string> version;
-    std::optional<std::string> branch;
-    std::optional<std::string> repo;
-    std::optional<std::optional<std::string>> v0;
-    std::optional<std::optional<std::string>> v1;
+    std::string version;
+    std::string branch;
+    std::string version;
+    std::string branch;
+    std::string repo;
+    std::optional<std::string> v0;
+    std::optional<std::string> v1;
     bool v0;
     bool v1;
 };

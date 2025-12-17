@@ -47,8 +47,6 @@ public:
     void update(double delta);
     void lateUpdate(double delta);
     void buildCSM();
-    void if(auto changes.model);
-    void if(auto changes.shadows);
 };
 
 

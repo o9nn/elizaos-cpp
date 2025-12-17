@@ -13,7 +13,7 @@ namespace elizaos {
 
 
 
-void Textarea(auto { className, ComponentProps<'textarea'> ...props });
+void Textarea();
 
 
 } // namespace elizaos

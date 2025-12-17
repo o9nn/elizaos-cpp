@@ -1,12 +1,10 @@
 #pragma once
 #include <any>
 #include <functional>
-#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include "..types.hpp"
 #include ".agents.hpp"
@@ -31,10 +29,9 @@ namespace elizaos {
 class ShellAgent {
 public:
     ShellAgent(std::optional<std::any> config);
-    ShellAgent fromConfig(AgentConfig config);
+    static ShellAgent fromConfig(AgentConfig config);
     void humanStepIn();
     void humanStepOut();
-    std::future<AgentRunResult> run(AgentEnvironment env, const std::variant<ProblemStatement, ProblemStatementConfig>& problemStatement, string = '::' outputDir);
 };
 
 

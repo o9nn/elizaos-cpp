@@ -21,8 +21,8 @@ struct FormatOptions {
 };
 
 // Helper to sanitize body content: remove HTML comments, make it single-line and escape newlines
-std::string sanitizeBodyText(const std::optional<std::string>& text, auto maxLength = 500);
+std::string sanitizeBodyText(const std::string& text, auto maxLength);
 
-std::string formatDataForLLM(IntervalMetrics metrics, const std::optional<std::string>& summaryContent, FormatOptions options);
+std::string formatDataForLLM(IntervalMetrics metrics, const std::string& summaryContent, FormatOptions options);
 
 } // namespace elizaos

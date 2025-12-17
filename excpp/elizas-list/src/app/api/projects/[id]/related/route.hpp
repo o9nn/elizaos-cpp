@@ -1,5 +1,4 @@
 #pragma once
-#include <any>
 #include <functional>
 #include <future>
 #include <memory>
@@ -15,5 +14,5 @@ namespace elizaos {
 
 
 
-std::future<void> GET(Request request, const std::any& { params }); 
+std::future<void> GET(Request request); 
 } // namespace elizaos

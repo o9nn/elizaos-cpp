@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-bool isLoudEnough(Buffer pcmBuffer, auto threshold = 1000) {
+bool isLoudEnough(Buffer pcmBuffer, auto threshold) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     auto sum = 0;

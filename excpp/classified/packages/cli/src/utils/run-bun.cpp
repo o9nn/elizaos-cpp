@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::future<void> runBunCommand(const std::vector<std::string>& args, const std::string& cwd, auto silent = false) {
+std::future<void> runBunCommand(const std::vector<std::string>& args, const std::string& cwd, auto silent) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

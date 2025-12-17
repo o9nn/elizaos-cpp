@@ -26,8 +26,8 @@ namespace elizaos {
 
 class AIService {
 public:
-    AIService(Configuration private configuration);
-    std::future<std::string> generateComment(const std::string& prompt, auto isFAQ = false);
+    AIService();
+    std::future<std::string> generateComment(const std::string& prompt, auto isFAQ);
     void handleAPIError(Error error);
 
 private:

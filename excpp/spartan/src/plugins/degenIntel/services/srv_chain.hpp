@@ -19,14 +19,12 @@ namespace elizaos {
 
 class TradeChainService {
 public:
-    TradeChainService(IAgentRuntime public runtime);
+    TradeChainService();
     std::future<double> registerChain(const std::any& provider);
     void listActiveChains();
     void makeKeypair(auto regName);
-    void start(IAgentRuntime runtime);
-    void stop(IAgentRuntime runtime);
-    std::future<void> start();
-    std::future<void> stop();
+    static void start(IAgentRuntime runtime);
+    static void stop(IAgentRuntime runtime);
     bool isServiceRunning();
 };
 

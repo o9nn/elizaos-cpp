@@ -53,7 +53,7 @@ private:
 class RunBatch {
 public:
     RunBatch(std::optional<std::any> config);
-    RunBatch fromConfig(RunBatchConfig config);
+    static RunBatch fromConfig(RunBatchConfig config);
     void addHook(RunHook hook);
     std::future<void> main();
     std::future<void> mainSingleWorker();

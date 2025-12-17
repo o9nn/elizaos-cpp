@@ -39,32 +39,23 @@ struct SecurityConfig {
  */
 class UrlValidator {
 public:
-    UrlValidator(const std::optional<SecurityConfig>& config);
-     validateUrl(const std::string& url);
-    void if(auto isLocalhost && !this.config.allowLocalhost);
-    void if(auto this.config.blockedDomains);
-    void if(auto this.config.allowedDomains && this.config.allowedDomains.length > 0);
-    void catch(auto error);
+    UrlValidator(std::optional<SecurityConfig> config = {});
     void updateConfig(const std::optional<SecurityConfig>& config);
-
-private:
-    SecurityConfig config_;
-};
 
 /**
  * Input sanitization utilities
  */
 class InputSanitizer {
 public:
-    std::string sanitizeText(const std::string& input);
-    std::string sanitizeSelector(const std::string& selector);
-    std::string sanitizeFilePath(const std::string& path);
+    static std::string sanitizeText(const std::string& input);
+    static std::string sanitizeSelector(const std::string& selector);
+    static std::string sanitizeFilePath(const std::string& path);
 };
 
 /**
  * Security middleware for actions
  */
-void validateSecureAction(const std::optional<std::string>& url, UrlValidator validator);
+void validateSecureAction(const std::string& url, UrlValidator validator);
 
 /**
  * Create a default URL validator instance
@@ -83,7 +74,7 @@ struct RateLimitConfig {
  */
 class RateLimiter {
 public:
-    RateLimiter(RateLimitConfig private config);
+    RateLimiter();
     bool checkActionLimit(const std::string& userId);
     bool checkSessionLimit(const std::string& userId);
 };

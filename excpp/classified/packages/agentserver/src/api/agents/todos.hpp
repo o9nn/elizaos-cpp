@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include ".shared/response-utils.hpp"
 #include "elizaos/core.hpp"
@@ -20,7 +19,7 @@ struct Todo {
     std::string id;
     std::string task;
     bool completed;
-    std::variant<'low', 'medium', 'high'> priority;
+    std::string priority;
     std::optional<std::string> dueDate;
     std::string createdAt;
     std::optional<std::string> completedAt;

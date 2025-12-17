@@ -26,6 +26,6 @@ struct Contributor {
     double totalScore;
 };
 
-std::future<void> StatCardsDisplay(StatCardsDisplayProps { metrics });
+std::future<void> StatCardsDisplay();
 
 } // namespace elizaos

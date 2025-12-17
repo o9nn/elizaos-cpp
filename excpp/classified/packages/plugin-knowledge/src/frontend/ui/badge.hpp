@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 
 namespace elizaos {
@@ -16,10 +15,10 @@ namespace elizaos {
 
 struct BadgeProps {
     ReactNode children;
-    std::optional<std::variant<'default', 'outline', 'secondary', 'destructive'>> variant;
+    std::optional<std::string> variant;
     std::optional<std::string> className;
 };
 
-void Badge(auto { children, auto variant = 'default', BadgeProps className = '' });
+void Badge(auto variant, auto className);
 
 } // namespace elizaos

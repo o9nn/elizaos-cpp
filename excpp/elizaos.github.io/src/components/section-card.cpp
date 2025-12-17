@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void SectionCard(auto {
-  title, Icon icon, auto children, auto className, auto contentClassName, auto headerClassName = "py-4", auto noPadding = false, SectionCardProps }) {
+void SectionCard(Icon icon, auto children, auto className, auto contentClassName, auto headerClassName, auto noPadding) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

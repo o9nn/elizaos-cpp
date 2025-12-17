@@ -25,6 +25,6 @@ struct UseFileUploadProps {
     std::variant<ChannelType::DM, ChannelType::GROUP> chatType;
 };
 
-void useFileUpload(auto { agentId, auto channelId, UseFileUploadProps chatType });
+void useFileUpload(auto channelId);
 
 } // namespace elizaos

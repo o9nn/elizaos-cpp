@@ -51,12 +51,10 @@ std::future<void> detokenizeText(ModelTypeName model, const std::vector<double>&
 /**
  * Generate text using Groq API
  */
-std::future<void> generateGroqText(ReturnType<typeof createGroq> groq, const std::string& model, std::optional<std::any> params);
 
 /**
  * Generate object using Groq API
  */
-std::future<void> generateGroqObject(ReturnType<typeof createGroq> groq, const std::string& model, ObjectGenerationParams params);
 
       throw Error("Missing GROQ_API_KEY in environment variables");
 

@@ -23,5 +23,6 @@ struct MetricItemProps {
     std::optional<std::string> iconBgClassName;
 };
 
+void MetricItem(auto value, auto label, auto valueClassName, auto iconClassName, auto iconBgClassName);
 
 } // namespace elizaos

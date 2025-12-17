@@ -51,7 +51,9 @@ struct PrivySolanaWallet {
 };
 
 // Window type extension for Phantom wallet detection
-using PhantomWindow = Window & {
+using PhantomWindow = Window;
+
+void MultiWalletProvider();
 
 // Default values for SSR/prerendering
 

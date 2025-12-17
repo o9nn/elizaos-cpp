@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::string getContextualizationPrompt(const std::string& docContent, const std::string& chunkContent, auto minTokens = CONTEXT_TARGETS.DEFAULT.MIN_TOKENS, auto maxTokens = CONTEXT_TARGETS.DEFAULT.MAX_TOKENS, auto promptTemplate = CONTEXTUAL_CHUNK_ENRICHMENT_PROMPT_TEMPLATE) {
+std::string getContextualizationPrompt(const std::string& docContent, const std::string& chunkContent, auto minTokens, auto maxTokens, auto promptTemplate) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!docContent || !chunkContent) {
@@ -30,7 +30,7 @@ std::string getContextualizationPrompt(const std::string& docContent, const std:
 
 }
 
-void getCachingContextualizationPrompt(const std::string& chunkContent, std::optional<std::string> contentType, auto minTokens = CONTEXT_TARGETS.DEFAULT.MIN_TOKENS, auto maxTokens = CONTEXT_TARGETS.DEFAULT.MAX_TOKENS) {
+void getCachingContextualizationPrompt(const std::string& chunkContent, std::optional<std::string> contentType, auto minTokens, auto maxTokens) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     prompt: string; systemPrompt: string
 }

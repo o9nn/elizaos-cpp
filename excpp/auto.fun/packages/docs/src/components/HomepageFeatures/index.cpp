@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void Feature(auto {title, auto Svg, FeatureItem description}) {
+void Feature(auto Svg) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

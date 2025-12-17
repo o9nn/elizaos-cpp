@@ -23,9 +23,9 @@ namespace elizaos {
 class BuildManager {
 public:
     BuildManager(IAgentRuntime runtime);
-    void translate(auto entityId, [number position, auto number, auto number]);
-    void rotate(auto entityId, [number quaternion, auto number, auto number, auto number]);
-    void scale(auto entityId, [number scale, auto number, auto number]);
+    void translate(auto entityId, [number position, auto number);
+    void rotate(auto entityId, [number quaternion, auto number, auto number);
+    void scale(auto entityId, [number scale, auto number);
     void duplicate(auto entityId);
     void delete(auto entityId);
     void importEntity(const std::string& url, std::optional<std::any> position, std::optional<std::any> quaternion);

@@ -23,7 +23,7 @@ struct ChatMessageListComponentProps {
     std::string currentClientEntityId;
     std::optional<Agent> targetAgentData;
     std::vector<std::optional<Agent>> allAgents;
-    std::optional<std::string> animatedMessageId;
+    std::string animatedMessageId;
     std::optional<std::shared_ptr<HTMLDivElement>> scrollRef;
     std::optional<std::optional<std::shared_ptr<HTMLDivElement>>> contentRef;
     bool isAtBottom;

@@ -19,6 +19,6 @@ namespace elizaos {
 /**
  * Load a file (JSON or YAML)
  */
-unknown loadFile(const std::optional<std::string>& filepath);
+unknown loadFile(const std::string& filepath);
 
 } // namespace elizaos

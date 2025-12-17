@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void AboutModalContent(AboutModalContentProps { onClose }) {
+void AboutModalContent() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

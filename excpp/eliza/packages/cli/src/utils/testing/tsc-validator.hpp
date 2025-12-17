@@ -21,6 +21,6 @@ struct TypeCheckResult {
     std::vector<std::string> warnings;
 };
 
-std::future<TypeCheckResult> runTypeCheck(const std::string& projectPath, boolean = true strict);
+std::future<TypeCheckResult> runTypeCheck(const std::string& projectPath, bool strict = true);
 
 } // namespace elizaos

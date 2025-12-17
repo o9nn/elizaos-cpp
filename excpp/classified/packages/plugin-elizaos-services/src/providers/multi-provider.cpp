@@ -42,7 +42,7 @@ std::optional<ProviderConfig> getAvailableProvider(IAgentRuntime runtime, ModelT
 
 }
 
-std::optional<std::string> getProviderApiKey(IAgentRuntime runtime, const std::string& providerName) {
+std::string getProviderApiKey(IAgentRuntime runtime, const std::string& providerName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const std::unordered_map<std::string, std::string> keyMap = {;

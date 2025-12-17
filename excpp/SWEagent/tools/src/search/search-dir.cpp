@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void searchDir(const std::string& searchTerm, string = '::/' dir) {
+void searchDir(const std::string& searchTerm, std::string dir = "./") {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

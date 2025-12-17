@@ -22,5 +22,7 @@ struct ModalProps {
     std::optional<std::string> className;
 };
 
+void Modal(auto onClose, auto closeOnBackdropClick, auto closeOnEsc, auto showCloseButton, auto className);
+
 
 } // namespace elizaos

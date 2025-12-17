@@ -43,7 +43,7 @@ std::optional<ProviderConfig> getAvailableProvider(IAgentRuntime runtime, ModelT
 /**
  * Get API key for a specific provider
  */
-std::optional<std::string> getProviderApiKey(IAgentRuntime runtime, const std::string& providerName);
+std::string getProviderApiKey(IAgentRuntime runtime, const std::string& providerName);
 
 /**
  * Make API request to provider with proper error handling

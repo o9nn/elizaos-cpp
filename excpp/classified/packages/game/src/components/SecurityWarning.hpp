@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 
 namespace elizaos {
@@ -22,7 +21,7 @@ namespace elizaos {
 
 struct SecurityWarningProps {
     std::string capability;
-    std::variant<'low', 'medium', 'high', 'critical'> riskLevel;
+    std::string riskLevel;
     std::string description;
     std::vector<std::string> risks;
     bool isVisible;

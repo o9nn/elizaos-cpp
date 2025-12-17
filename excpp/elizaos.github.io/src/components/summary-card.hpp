@@ -17,5 +17,6 @@ using Summary = {
 
 using SummaryCardProps = std::vector<{
 
+void SummaryCard(auto intervalType, auto className);
 
 } // namespace elizaos

@@ -13,7 +13,7 @@ namespace elizaos {
 
 
 
-std::optional<std::string> tryLoadFile(const std::string& filePath);
+std::string tryLoadFile(const std::string& filePath);
 
 bool isAllStrings(const std::vector<unknown>& arr);
 

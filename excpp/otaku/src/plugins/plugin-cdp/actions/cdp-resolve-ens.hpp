@@ -22,7 +22,7 @@ struct ResolveEnsParams {
 
 using ResolveEnsInput = {
 
-using ResolveEnsActionResult = ActionResult & { input: ResolveEnsInput };
+using ResolveEnsActionResult = ActionResult;
 
 struct EnsDataResponse {
     std::optional<std::string> address;

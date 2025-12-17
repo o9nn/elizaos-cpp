@@ -20,7 +20,7 @@ namespace elizaos {
 std::unordered_map<std::string, double> loadCachedScores();
 
 // Helper to save scores to cache
-void saveScoresToCache(Record<string scores, auto number>);
+void saveScoresToCache(const std::unordered_map<std::string, double>& scores);
 
 std::future<DexScreenerResponse> fetchDexScreenerData(const std::vector<std::string>& tokenAddresses);
 

@@ -13,5 +13,7 @@ namespace elizaos {
 
 
 
+void Slider(auto defaultValue, auto value, auto min, auto max);
+
 
 } // namespace elizaos

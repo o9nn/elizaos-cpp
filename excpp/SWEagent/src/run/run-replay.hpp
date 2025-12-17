@@ -47,7 +47,7 @@ struct RunReplayConfig {
 class RunReplay {
 public:
     RunReplay(std::optional<std::any> config);
-    RunReplay fromConfig(RunReplayConfig config);
+    static RunReplay fromConfig(RunReplayConfig config);
     std::string instanceId() const;
     std::optional<RunSingleConfig> getConfigFromAgent();
     void createActionsFile();

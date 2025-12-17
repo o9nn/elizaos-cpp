@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::future<std::vector<std::string>> findAllSourceFiles(const std::string& dir, const std::vector<string[] =>& files) {
+std::future<std::vector<std::string>> findAllSourceFiles(const std::string& dir, std::vector<std::string> files = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto entries = readdir(dir);
@@ -31,7 +31,7 @@ std::future<std::vector<std::string>> findAllSourceFiles(const std::string& dir,
 
 }
 
-std::future<std::vector<std::string>> findAllTestFiles(const std::string& dir, const std::vector<string[] =>& files) {
+std::future<std::vector<std::string>> findAllTestFiles(const std::string& dir, std::vector<std::string> files = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -55,7 +55,7 @@ std::future<std::vector<std::string>> findAllTestFiles(const std::string& dir, c
 
 }
 
-std::variant<'commands', 'utils', 'types', 'other'> categorizeFile(const std::string& filePath) {
+std::string categorizeFile(const std::string& filePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (filePath.includes('/commands/')) return 'commands';

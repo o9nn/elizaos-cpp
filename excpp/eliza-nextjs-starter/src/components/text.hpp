@@ -13,5 +13,12 @@ namespace elizaos {
 
 
 
+void Text();
+
+void TextLink();
+
+void Strong();
+
+void Code();
 
 } // namespace elizaos

@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-ActionResult & createErrorResult(const std::string& errorMsg, const std::string& errorCode, Record<string inputParams, auto unknown>, std::optional<HandlerCallback> callback) {
+ActionResult & createErrorResult(const std::string& errorMsg, const std::string& errorCode, const std::unordered_map<std::string, unknown>& inputParams, std::optional<HandlerCallback> callback) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     input: Record<string, unknown>
 }
@@ -14,7 +14,7 @@ void getStatusIndicators(double status, bool wasPaidRequest) {
     emoji: string; prefix: string
 }
 
-std::string formatResponseData(unknown responseData, number = 500 maxLength) {
+std::string formatResponseData(unknown responseData, double maxLength = 500) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (typeof responseData == 'string') {

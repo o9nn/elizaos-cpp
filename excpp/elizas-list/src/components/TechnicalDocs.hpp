@@ -1,5 +1,4 @@
 #pragma once
-#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -21,5 +20,5 @@ struct DocSection {
     std::optional<std::string> code;
 };
 
-void TechnicalDocs(const std::any& { project }); 
+void TechnicalDocs(); 
 } // namespace elizaos

@@ -52,7 +52,7 @@ WorkItemType categorizeWorkItem(const std::string& text) {
 
 }
 
-std::optional<std::string> extractAreaFromPath(const std::string& path) {
+std::string extractAreaFromPath(const std::string& path) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto parts = path.split("/");

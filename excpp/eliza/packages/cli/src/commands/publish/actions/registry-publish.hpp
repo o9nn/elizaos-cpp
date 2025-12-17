@@ -20,11 +20,11 @@ namespace elizaos {
 /**
  * Update the registry index with the package information
  */
-std::future<bool> updateRegistryIndex(PackageMetadata packageMetadata, auto dryRun = false);
+std::future<bool> updateRegistryIndex(PackageMetadata packageMetadata, auto dryRun);
 
 /**
  * Save package metadata to registry
  */
-std::future<bool> savePackageToRegistry(PackageMetadata packageMetadata, auto dryRun = false);
+std::future<bool> savePackageToRegistry(PackageMetadata packageMetadata, auto dryRun);
 
 } // namespace elizaos

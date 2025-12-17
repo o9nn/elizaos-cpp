@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include ".types.hpp"
 #include "elizaos/core.hpp"
@@ -26,7 +25,7 @@ struct ExperienceChain {
 struct ExperienceRelationship {
     std::string fromId;
     std::string toId;
-    std::variant<'causes', 'contradicts', 'supports', 'supersedes', 'related'> type;
+    std::string type;
     double strength;
 };
 

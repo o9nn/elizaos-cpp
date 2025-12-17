@@ -56,7 +56,7 @@ std::unordered_map<std::string, std::string> exportAllRulesToCursor() {
 
 }
 
-void getLanguageConfig(const std::variant<'python', 'typescript'>& language) {
+void getLanguageConfig(const std::string& language) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return language == 'python' ? GENERAL_CODING_GUIDELINES : TYPESCRIPT_CODING_GUIDELINES;

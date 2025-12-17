@@ -4,9 +4,7 @@
 
 namespace elizaos {
 
-void Text(auto {
-  className, ComponentPropsWithoutRef<"p"> ...props
-}) {
+void Text() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -22,9 +20,7 @@ void Text(auto {
 
 }
 
-void TextLink(auto {
-  className, ComponentPropsWithoutRef<typeof Link> ...props
-}) {
+void TextLink() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -39,9 +35,7 @@ void TextLink(auto {
 
 }
 
-void Strong(auto {
-  className, ComponentPropsWithoutRef<"strong"> ...props
-}) {
+void Strong() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -53,9 +47,7 @@ void Strong(auto {
 
 }
 
-void Code(auto {
-  className, ComponentPropsWithoutRef<"code"> ...props
-}) {
+void Code() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

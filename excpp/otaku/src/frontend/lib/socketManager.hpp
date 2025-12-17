@@ -1,4 +1,5 @@
 #pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -18,10 +19,9 @@ namespace elizaos {
 class SocketManager {
 public:
     void connect(const std::string& userId);
-    void joinChannel(const std::string& channelId, const std::string& serverId, std::optional<Record<string> metadata, auto any>);
+    void joinChannel(const std::string& channelId, const std::string& serverId, std::optional<std::unordered_map<std::string, std::any>> metadata);
     void leaveChannel(const std::string& channelId);
-    void sendMessage(const std::string& channelId, const std::string& message, const std::string& serverId, std::optional<Record<string> metadata, auto any>);
-    void if(auto !this.socket);
+    void sendMessage(const std::string& channelId, const std::string& message, const std::string& serverId, std::optional<std::unordered_map<std::string, std::any>> metadata);
     void disconnect();
     bool isConnected();
 };

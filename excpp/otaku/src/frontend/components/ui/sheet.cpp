@@ -4,43 +4,35 @@
 
 namespace elizaos {
 
-void Sheet(ComponentProps<typeof SheetPrimitive.Root> { ...props }) {
+void Sheet() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return <SheetPrimitive.Root data-slot="sheet" {...props} />;
 
 }
 
-void SheetTrigger(ComponentProps<typeof SheetPrimitive.Trigger> {
-  ...props
-}) {
+void SheetTrigger() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return <SheetPrimitive.Trigger data-slot="sheet-trigger" {...props} />;
 
 }
 
-void SheetClose(ComponentProps<typeof SheetPrimitive.Close> {
-  ...props
-}) {
+void SheetClose() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return <SheetPrimitive.Close data-slot="sheet-close" {...props} />;
 
 }
 
-void SheetPortal(ComponentProps<typeof SheetPrimitive.Portal> {
-  ...props
-}) {
+void SheetPortal() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return <SheetPrimitive.Portal data-slot="sheet-portal" {...props} />;
 
 }
 
-void SheetOverlay(auto {
-  className, ComponentProps<typeof SheetPrimitive.Overlay> ...props
-}) {
+void SheetOverlay() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -56,12 +48,7 @@ void SheetOverlay(auto {
 
 }
 
-void SheetContent(auto {
-  className, auto children, auto closeButton = true, auto side = "right", std::optional<ComponentProps<typeof SheetPrimitive.Content> & {
-  side: "top" | "right" | "bottom" | "left";
-  closeButton: boolean;
-}> ...props
-}) {
+void SheetContent(auto children, auto closeButton, auto side) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -96,7 +83,7 @@ void SheetContent(auto {
 
 }
 
-void SheetHeader(auto { className, ComponentProps<"div"> ...props }) {
+void SheetHeader() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -109,7 +96,7 @@ void SheetHeader(auto { className, ComponentProps<"div"> ...props }) {
 
 }
 
-void SheetFooter(auto { className, ComponentProps<"div"> ...props }) {
+void SheetFooter() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -122,9 +109,7 @@ void SheetFooter(auto { className, ComponentProps<"div"> ...props }) {
 
 }
 
-void SheetTitle(auto {
-  className, ComponentProps<typeof SheetPrimitive.Title> ...props
-}) {
+void SheetTitle() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -137,9 +122,7 @@ void SheetTitle(auto {
 
 }
 
-void SheetDescription(auto {
-  className, ComponentProps<typeof SheetPrimitive.Description> ...props
-}) {
+void SheetDescription() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

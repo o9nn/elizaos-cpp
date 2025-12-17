@@ -19,8 +19,8 @@ struct SignInModalProps {
     bool isOpen;
 };
 
-using AuthMethod = std::variant<'email', 'sms', 'google'>;
-using AuthStep = std::variant<'credentials', 'verification'>;
+using AuthMethod = std::variant<std::string, std::string, std::string>;
+using AuthStep = std::variant<std::string, std::string>;
 
 /**
  * Sign In Modal Component
@@ -36,7 +36,7 @@ using AuthStep = std::variant<'credentials', 'verification'>;
  * - Cannot be dismissed until authenticated
  * - Clear step-by-step flow
  */
-void SignInModal(SignInModalProps { isOpen });
+void SignInModal();
 
 
 } // namespace elizaos

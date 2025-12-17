@@ -1,11 +1,9 @@
 #pragma once
-#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 
 namespace elizaos {
@@ -37,11 +35,12 @@ namespace elizaos {
     // Dark mode
     // Icon
 
-using ButtonProps = std::variant<(, { color?: keyof typeof styles::colors>; outline?: never; plain?: never }
+
+void Button(auto outline, auto plain, auto className, auto children, auto type);
 
 /**
  * Expand the hit area to at least 44×44px on touch devices
  */
-void TouchTarget(const std::any& { children });
+void TouchTarget();
 
 } // namespace elizaos

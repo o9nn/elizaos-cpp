@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 
 namespace elizaos {
@@ -138,7 +137,7 @@ struct SessionInfoResponse {
  * Health check response
  */
 struct HealthCheckResponse {
-    std::variant<'healthy', 'unhealthy'> status;
+    std::string status;
     double activeSessions;
     std::string timestamp;
 };

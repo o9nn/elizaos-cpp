@@ -87,7 +87,7 @@ void loadEnvironmentVariables(std::optional<std::string> envPath) {
 
 }
 
-std::any parseConfigFile(const std::string& content, const std::variant<'yaml', 'json'>& format) {
+std::any parseConfigFile(const std::string& content, const std::string& format) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

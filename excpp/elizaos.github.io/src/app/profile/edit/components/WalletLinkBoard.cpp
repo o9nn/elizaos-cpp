@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void WalletLinkBoard(auto {
-  userLogin, auto walletSection, auto readmeContent, auto defaultBranch, WalletLinkBoardProps }) {
+void WalletLinkBoard(auto walletSection, auto readmeContent, auto defaultBranch) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [copied, copyToClipboard] = useCopyToClipboard();

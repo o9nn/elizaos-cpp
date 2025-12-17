@@ -28,29 +28,29 @@ class KnowledgeService {
 public:
     KnowledgeService(IAgentRuntime runtime, std::optional<std::optional<KnowledgeConfig>> config);
     std::future<void> loadInitialDocuments();
-    std::future<KnowledgeService> start(IAgentRuntime runtime);
-    std::future<void> stop(IAgentRuntime runtime);
-    std::future<void> stop();
+    static std::future<KnowledgeService> start(IAgentRuntime runtime);
+    static std::future<void> stop(IAgentRuntime runtime);
     Promise< addKnowledge(AddKnowledgeOptions options);
-    void catch(auto error);
-    Promise< processDocument(passedAgentId {
-    agentId, auto clientDocumentId, auto contentType, auto originalFilename, auto worldId, auto content, auto roomId, auto entityId, auto metadata, AddKnowledgeOptions });
-    void if(auto isPdfFile);
-    void catch(const std::any& e);
+    Promise< processDocument(auto clientDocumentId, auto contentType, auto originalFilename, auto worldId, auto content, auto roomId, auto entityId, auto metadata);
         // Routes always send base64, but docs-loader sends plain text
 
         // First, check if this looks like base64
-    void catch(const std::any& error);
+        if (looksLikeBase64(content)) files();
     void handleProcessingError(const std::any& error, const std::string& context);
     std::future<bool> checkExistingKnowledge(UUID knowledgeId);
+    std::future<std::vector<KnowledgeItem>> getKnowledge(Memory message, std::optional<std::any> scope);
     std::future<void> enrichConversationMemoryWithRAG(UUID memoryId, std::optional<std::any> ragMetadata);
     void setPendingRAGMetadata(const std::any& ragMetadata);
     std::future<void> enrichRecentMemoriesWithPendingRAG();
     std::future<void> processCharacterKnowledge(const std::vector<std::string>& items);
-    void if(auto existingDocument);
-    void for(auto const fragment of fragments);
     std::future<void> processDocumentFragment(Memory fragment);
+    std::future<std::vector<Memory>> splitAndCreateFragments(KnowledgeItem document, double overlap, const std::any& scope);
+    std::future<std::vector<Memory>> getMemories(std::optional<std::any> params);
     std::future<void> deleteMemory(UUID memoryId);
+
+private:
+    Semaphore knowledgeProcessingSemaphore_;
+};
 
 
 } // namespace elizaos

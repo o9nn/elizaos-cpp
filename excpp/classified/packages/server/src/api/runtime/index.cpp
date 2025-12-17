@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-express::Router runtimeRouter(Map<UUID agents, auto IAgentRuntime>, AgentServer serverInstance) {
+express::Router runtimeRouter(const std::unordered_map<UUID, IAgentRuntime>& agents, AgentServer serverInstance) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto router = express.Router();

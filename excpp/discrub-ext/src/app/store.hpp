@@ -24,7 +24,6 @@ namespace elizaos {
 
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
-using RootState = ReturnType<typeof store::getState>;
 // Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
 using AppDispatch = typeof store::dispatch;
 

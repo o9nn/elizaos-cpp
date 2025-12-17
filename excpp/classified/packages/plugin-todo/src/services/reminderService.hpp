@@ -5,7 +5,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include "elizaos/core.hpp"
 #include "notificationManager.hpp"
@@ -41,18 +40,17 @@ struct TodoReminderConfig {
  */
 class TodoReminderService {
 public:
-    std::future<TodoReminderService> start(IAgentRuntime runtime);
+    static std::future<TodoReminderService> start(IAgentRuntime runtime);
     void loadConfiguration();
     std::future<void> initialize();
     void startReminderLoop();
     std::future<void> checkTasksForReminders();
     std::future<void> processTodoReminder(TodoData todo);
-    std::future<void> sendReminder(TodoData todo, const std::variant<'overdue', 'upcoming', 'daily', 'system'>& reminderType, const std::variant<'low', 'medium', 'high'>& priority);
+    std::future<void> sendReminder(TodoData todo, const std::string& reminderType, const std::string& priority);
     std::string formatReminderTitle(TodoData todo, const std::string& reminderType);
     std::string formatReminderBody(TodoData todo, const std::string& reminderType);
     std::future<void> processBatchReminders();
     std::future<void> stop();
-    std::future<void> stop(IAgentRuntime runtime);
 };
 
 

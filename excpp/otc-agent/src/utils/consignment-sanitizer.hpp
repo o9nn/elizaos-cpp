@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 
 namespace elizaos {
@@ -16,7 +15,6 @@ namespace elizaos {
 // Sensitive fields that should not be exposed to buyers
 // These reveal the seller's negotiation bounds which would let buyers game the system
 
-using SanitizedConsignment = std::variant<Omit<
 
 /**
  * Sanitize consignment to hide negotiation terms from non-owners.
@@ -29,6 +27,6 @@ SanitizedConsignment sanitizeConsignmentForBuyer(OTCConsignment consignment);
  * Check if a caller is the owner of a consignment.
  * Handles both Solana (case-sensitive) and EVM (case-insensitive) addresses.
  */
-bool isConsignmentOwner(OTCConsignment consignment, const std::optional<std::string>& callerAddress);
+bool isConsignmentOwner(OTCConsignment consignment, const std::string& callerAddress);
 
 } // namespace elizaos

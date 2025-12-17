@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void ProjectRoadmap(RoadmapProps { items }) {
+void ProjectRoadmap() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [filter, setFilter] = useState<RoadmapItem['status'] | 'all'>('all');

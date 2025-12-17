@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::string generateRandomString(number = 32 length) {
+std::string generateRandomString(double length = 32) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return randomBytes(length / 2).tostd::to_string("hex");
@@ -23,7 +23,7 @@ std::future<std::string> generateCodeChallenge(const std::string& codeVerifier) 
 
 }
 
-std::future<std::vector<TwitterMessage>> fetchUserTweets(const std::string& userId, const std::string& accessToken, boolean = false useTestData) {
+std::future<std::vector<TwitterMessage>> fetchUserTweets(const std::string& userId, const std::string& accessToken, bool useTestData = false) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -65,7 +65,7 @@ std::future<std::vector<TwitterMessage>> fetchUserTweets(const std::string& user
     }
 }
 
-std::future<std::string> fetchTwitterUser(const std::string& userId, const std::string& accessToken, boolean = false useTestData) {
+std::future<std::string> fetchTwitterUser(const std::string& userId, const std::string& accessToken, bool useTestData = false) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -197,7 +197,7 @@ std::future<void> storeAccessToken(const std::string& userId, const std::string&
     }
 }
 
-std::future<std::optional<std::string>> getRefreshToken(const std::string& userId) {
+std::future<std::string> getRefreshToken(const std::string& userId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -276,7 +276,7 @@ std::string getNormalizedTimestamp() {
 
 }
 
-std::string generateAuthHeader(Record<string oauthParams, auto string>, const std::string& signature) {
+std::string generateAuthHeader(const std::unordered_map<std::string, std::string>& oauthParams, const std::string& signature) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -306,7 +306,7 @@ std::string encodeRFC3986(const std::string& str) {
 
 }
 
-std::future<std::string> generateOAuth1Signature(const std::string& method, const std::string& url, Record<string params, auto string>, const std::string& consumerSecret, const std::string& tokenSecret) {
+std::future<std::string> generateOAuth1Signature(const std::string& method, const std::string& url, const std::unordered_map<std::string, std::string>& params, const std::string& consumerSecret, const std::string& tokenSecret) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto paramString = Object.entries(params);

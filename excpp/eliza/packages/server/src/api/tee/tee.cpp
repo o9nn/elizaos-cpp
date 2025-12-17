@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-express::Router createTeeRouter(Map<string agents, auto IAgentRuntime>) {
+express::Router createTeeRouter(const std::unordered_map<std::string, IAgentRuntime>& agents) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     //   const router = express.Router();

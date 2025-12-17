@@ -45,7 +45,6 @@ struct SolanaPoolInfo {
 
 // Devnet Mints
 
-// std::future<std::vector<SolanaPoolInfo>> findMeteoraPools(Connection //   connection, PublicKey
-// //   mint);
+// std::future<std::vector<SolanaPoolInfo>> findMeteoraPools();
 
 } // namespace elizaos

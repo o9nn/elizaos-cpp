@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 
 namespace elizaos {
@@ -18,7 +17,7 @@ struct CodeBlockCodeProps {
     std::string code;
     std::optional<std::string> language;
     std::optional<std::string> className;
-    std::optional<std::variant<'user', 'agent'>> variant;
+    std::optional<std::string> variant;
 };
 
 

@@ -16,8 +16,8 @@ namespace elizaos {
 // Registry configuration - centralized for maintainability
 
 struct GitVersionInfo {
-    std::optional<std::string> version;
-    std::optional<std::string> branch;
+    std::string version;
+    std::string branch;
 };
 
 struct PluginGitInfo {
@@ -28,8 +28,8 @@ struct PluginGitInfo {
 
 struct PluginNpmInfo {
     std::string repo;
-    std::optional<std::string> v0;
-    std::optional<std::string> v1;
+    std::string v0;
+    std::string v1;
 };
 
 struct PluginSupport {

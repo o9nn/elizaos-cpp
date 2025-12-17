@@ -28,7 +28,7 @@ namespace elizaos {
 class AgentAuthService {
 public:
     AgentAuthService(std::optional<IAgentRuntime> runtime);
-    std::future<AgentAuthService> start(IAgentRuntime runtime);
+    static std::future<AgentAuthService> start(IAgentRuntime runtime);
     void getAuthStatus();
     void validateApiKey(const std::string& provider, const std::string& apiKey);
     void testApiFunctionality(const std::string& provider);
@@ -55,12 +55,10 @@ private:
  */
 class AuthHelper {
 public:
-    std::future<bool> isProviderReady(IAgentRuntime runtime, const std::string& provider, std::optional<std::string> capability);
-    std::variant<Promise<string, null>> getBestProvider(IAgentRuntime runtime, const std::string& capability);
-    Promise< validateBeforeUse(IAgentRuntime runtime, const std::string& provider, const std::string& capability);
-    void if(auto !isReady);
-    void catch(auto error);
-    std::future<std::any> getDebugInfo(IAgentRuntime runtime);
+    static std::future<bool> isProviderReady(IAgentRuntime runtime, const std::string& provider, std::optional<std::string> capability);
+    static std::variant<Promise<string, null>> getBestProvider(IAgentRuntime runtime, const std::string& capability);
+    static Promise< validateBeforeUse(IAgentRuntime runtime, const std::string& provider, const std::string& capability);
+    static std::future<std::any> getDebugInfo(IAgentRuntime runtime);
 };
 
 

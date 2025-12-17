@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-TokenPerformance transformTokenPerformance(const std::any& dbToken, auto chain = 'unknown') {
+TokenPerformance transformTokenPerformance(const std::any& dbToken, auto chain) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto input = {;
@@ -39,7 +39,7 @@ TokenPerformance transformTokenPerformance(const std::any& dbToken, auto chain =
 
 }
 
-Transaction transformTransaction(const std::any& dbTx, auto positionId = 'unknown', auto chain = 'unknown') {
+Transaction transformTransaction(const std::any& dbTx, auto positionId, auto chain) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto type = typeof dbTx.type == 'string' ? dbTx.type.toLowerCase() : TransactionType.BUY;

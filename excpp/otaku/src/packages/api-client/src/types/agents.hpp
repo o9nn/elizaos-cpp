@@ -22,7 +22,7 @@ struct Agent {
     std::string name;
     std::optional<std::variant<std::string, std::vector<std::string>>> bio;
     std::optional<std::string> characterName;
-    std::variant<'active', 'inactive', 'stopped'> status;
+    std::string status;
     std::optional<bool> enabled;
     std::optional<Date> createdAt;
     std::optional<Date> updatedAt;

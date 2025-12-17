@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-express::Router createDatabaseRouter(Map<UUID agents, auto IAgentRuntime>, AgentServer _serverInstance) {
+express::Router createDatabaseRouter(const std::unordered_map<UUID, IAgentRuntime>& agents, AgentServer _serverInstance) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto router = express.Router();
@@ -389,7 +389,7 @@ express::Router createDatabaseRouter(Map<UUID agents, auto IAgentRuntime>, Agent
 
 }
 
-express::Router databaseRouter(Map<UUID agents, auto IAgentRuntime>, AgentServer serverInstance) {
+express::Router databaseRouter(const std::unordered_map<UUID, IAgentRuntime>& agents, AgentServer serverInstance) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto router = express.Router();

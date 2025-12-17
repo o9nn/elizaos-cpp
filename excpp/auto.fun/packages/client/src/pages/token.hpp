@@ -1,5 +1,4 @@
 #pragma once
-#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -31,7 +30,7 @@ namespace elizaos {
 // `;
 
 // Add a custom component for middle ellipsis
-void MiddleEllipsis(std::optional<std::any> { text });
+void MiddleEllipsis();
 
 // Helper to safely get tabs object from localStorage
 

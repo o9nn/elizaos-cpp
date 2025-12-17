@@ -5,7 +5,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include "elizaos/core.hpp"
 #include "elizaos/plugin-autonomy.hpp"
@@ -38,14 +37,14 @@ struct MediaStreamBuffer {
 
 // Validation result interfaces
 struct ValidationResults {
-    std::variant<'healthy', 'degraded', 'unhealthy'> overall;
+    std::string overall;
     double timestamp;
 };
 
 struct ValidationConfig {
-    std::variant<'healthy', 'unhealthy', 'not_loaded', 'degraded'> status;
-    std::optional<std::variant<'missing', 'present'>> apiKey;
-    std::optional<std::variant<'failed', 'success'>> status;
+    std::string status;
+    std::optional<std::string> apiKey;
+    std::optional<std::string> status;
     std::optional<std::string> message;
     std::optional<bool> modelAvailable;
     std::optional<std::string> model;
@@ -56,7 +55,7 @@ struct EnvironmentValue {
 };
 
 struct ServiceConfig {
-    std::variant<'loaded', 'not_loaded'> status;
+    std::string status;
 };
 
 struct AgentServerInstance {

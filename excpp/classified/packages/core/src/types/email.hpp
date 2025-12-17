@@ -24,7 +24,7 @@ struct EmailAttachment {
     std::string filename;
     std::variant<Buffer, std::string> content;
     std::optional<std::string> contentType;
-    std::optional<std::variant<'attachment', 'inline'>> contentDisposition;
+    std::optional<std::string> contentDisposition;
     std::optional<std::string> cid;
 };
 
@@ -42,7 +42,7 @@ struct EmailMessage {
     std::optional<std::string> messageId;
     std::optional<std::vector<std::string>> references;
     std::optional<std::string> inReplyTo;
-    std::optional<std::variant<'high', 'normal', 'low'>> priority;
+    std::optional<std::string> priority;
 };
 
 struct EmailSendOptions {
@@ -71,7 +71,7 @@ struct EmailSearchOptions {
 struct EmailFolder {
     std::string name;
     std::string path;
-    std::variant<'inbox', 'sent', 'drafts', 'trash', 'spam', 'custom'> type;
+    std::string type;
     std::optional<double> messageCount;
     std::optional<double> unreadCount;
     std::optional<std::vector<EmailFolder>> children;

@@ -1,11 +1,11 @@
 #pragma once
+#include <any>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include ".lib/base-client.hpp"
 #include ".types/base.hpp"
@@ -33,12 +33,23 @@ public:
     Promise< removeAgentFromChannel(UUID channelId, UUID agentId);
     Promise< deleteChannel(UUID channelId);
     Promise< clearChannelHistory(UUID channelId);
-    std::future<Message> postMessage(UUID channelId, const std::string& content, std::optional<Record<string> metadata, auto any>);
-    Promise< getChannelMessages(UUID channelId, std::optional<std::variant<PaginationParams & { before: Date, string; after: Date, string }>> params);
+    std::future<Message> postMessage(UUID channelId, const std::string& content, std::optional<std::unordered_map<std::string, std::any>> metadata);
+    Promise< getChannelMessages(UUID channelId, std::optional<PaginationParams> params);
     std::future<Message> getMessage(UUID messageId);
+    Promise< deleteMessage(UUID channelId, UUID messageId);
     std::future<Message> updateMessage(UUID messageId, const std::string& content);
+    Promise< searchMessages(MessageSearchParams params);
+    Promise< listServers();
+    Promise< getServerChannels(UUID serverId);
     std::future<MessageServer> createServer(ServerCreateParams params);
-    void for(auto const userId of userIds);
+    Promise< syncServerChannels(UUID serverId, ServerSyncParams params);
+    Promise< deleteServer(UUID serverId);
+    Promise< updateChannel(UUID channelId, ChannelUpdateParams params);
+    Promise< generateChannelTitle(UUID channelId, UUID agentId);
+    Promise< addUserToChannel(UUID channelId, UUID userId);
+    Promise< addUsersToChannel(UUID channelId, const std::vector<UUID>& userIds);
+    Promise< removeUserFromChannel(UUID channelId, UUID userId);
+};
 
 
 } // namespace elizaos

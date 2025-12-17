@@ -42,9 +42,9 @@ public:
     std::string getFilePath();
     std::future<std::unordered_map<std::string, std::string>> read();
     std::future<std::vector<EnvVarEntry>> readWithComments();
-    std::future<void> write(Record<string vars, auto string>, WriteOptions = {} options);
-    std::future<void> update(const std::string& key, const std::string& value, WriteOptions = {} options);
-    std::future<void> updateMany(Record<string updates, auto string>, WriteOptions = {} options);
+    std::future<void> write(const std::unordered_map<std::string, std::string>& vars, WriteOptions options = {});
+    std::future<void> update(const std::string& key, const std::string& value, WriteOptions options = {});
+    std::future<void> updateMany(const std::unordered_map<std::string, std::string>& updates, WriteOptions options = {});
     std::future<void> delete(const std::string& key);
     std::future<bool> exists(const std::string& key);
     std::future<std::string> backup();

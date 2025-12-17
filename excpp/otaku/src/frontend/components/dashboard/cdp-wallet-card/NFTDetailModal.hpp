@@ -38,6 +38,6 @@ struct NFTDetailModalContentProps {
     std::string userId;
 };
 
-void NFTDetailModalContent(auto { nft, auto userId, NFTDetailModalContentProps onSuccess });
+void NFTDetailModalContent(auto userId);
 
 } // namespace elizaos

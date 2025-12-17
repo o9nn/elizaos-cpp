@@ -26,14 +26,13 @@ struct SolanaMetadataCache {
     std::string name;
 };
 
-std::future<Record<string> getSolanaMetadataCache();>
 
 // Bulk price cache for Solana
 struct SolanaPriceCache {
     double cachedAt;
 };
 
-std::future<void> setSolanaPriceCache(Record<string prices, auto number>);
+std::future<void> setSolanaPriceCache(const std::unordered_map<std::string, double>& prices);
 
 struct CachedWalletResponse {
     std::string mint;
@@ -41,7 +40,7 @@ struct CachedWalletResponse {
     double decimals;
     std::string symbol;
     std::string name;
-    std::optional<std::string> logoURI;
+    std::string logoURI;
     double priceUsd;
     double balanceUsd;
     double cachedAt;
@@ -59,15 +58,16 @@ std::future<void> setCachedWalletResponse(const std::string& address, CachedWall
  * Cache an image URL to Vercel Blob storage
  * Returns the cached blob URL, or null if caching fails (don't return broken IPFS URLs)
  */
+std::future<std::string> cacheImageToBlob(const std::string& imageUrl);
 
-std::optional<std::string> getExtensionFromUrl(const std::string& url);
+std::string getExtensionFromUrl(const std::string& url);
 
 /**
  * Codex GraphQL response types
  */
 struct CodexBalanceItem {
     std::string balance;
-    std::optional<std::string> balanceUsd;
+    std::string balanceUsd;
     double shiftedBalance;
     std::string tokenAddress;
     std::string name;
@@ -75,7 +75,7 @@ struct CodexBalanceItem {
     std::string address;
     double decimals;
     double networkId;
-    std::optional<std::string> imageSmallUrl;
+    std::string imageSmallUrl;
 };
 
 /**

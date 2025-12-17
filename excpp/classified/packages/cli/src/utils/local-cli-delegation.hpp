@@ -32,7 +32,7 @@ bool isRunningFromLocalCli();
  * Gets the path to the local CLI installation if it exists
  * @returns the path to local CLI index.js or null if not found
  */
-std::optional<std::string> getLocalCliPath();
+std::string getLocalCliPath();
 
 /**
  * Sets up the environment for local CLI execution
@@ -71,6 +71,5 @@ bool hasLocalCli();
  * Gets information about the current CLI execution context
  * @returns object with CLI execution context information
  */
-void getCliContext(); {
 
 } // namespace elizaos

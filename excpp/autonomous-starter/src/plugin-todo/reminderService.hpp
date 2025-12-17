@@ -20,13 +20,12 @@ namespace elizaos {
  */
 class TodoReminderService {
 public:
-    std::future<TodoReminderService> start(IAgentRuntime runtime);
+    static std::future<TodoReminderService> start(IAgentRuntime runtime);
     void startTimer();
     void checkOverdueTasks();
     void sendReminder(Task task);
     void checkTasksNow();
     void stop();
-    void stop(IAgentRuntime runtime);
 };
 
 

@@ -18,11 +18,11 @@ namespace elizaos {
  */
 
 // Team member enums
-using WeekDay = std::variant<, 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'>;
+using WeekDay = std::variant<, std::string, std::string, std::string, std::string, std::string, std::string, std::string>;
 
-using EmploymentStatus = std::variant<'FULL_TIME', 'PART_TIME', 'CONTRACTOR', 'INTERN'>;
+using EmploymentStatus = std::variant<std::string, std::string, std::string, std::string>;
 
-using PlatformType = std::variant<'DISCORD', 'SLACK', 'TELEGRAM', 'EMAIL'>;
+using PlatformType = std::variant<std::string, std::string, std::string, std::string>;
 
 using Skill = std::string;
 
@@ -54,11 +54,11 @@ struct TeamMember {
 };
 
 // Project status types
-using ProjectStatus = std::variant<'PLANNING', 'IN_PROGRESS', 'ON_HOLD', 'COMPLETED', 'CANCELLED'>;
+using ProjectStatus = std::variant<std::string, std::string, std::string, std::string, std::string>;
 
-using TaskStatus = std::variant<'TODO', 'IN_PROGRESS', 'BLOCKED', 'COMPLETED', 'CANCELLED'>;
+using TaskStatus = std::variant<std::string, std::string, std::string, std::string, std::string>;
 
-using TaskPriority = std::variant<'LOW', 'MEDIUM', 'HIGH', 'URGENT'>;
+using TaskPriority = std::variant<std::string, std::string, std::string, std::string>;
 
 // Task interface
 struct Task {
@@ -114,7 +114,7 @@ struct Project {
 };
 
 // Daily update types
-using UpdateType = std::variant<'CHECK_IN', 'STATUS_UPDATE', 'BLOCKER_REPORT'>;
+using UpdateType = std::variant<std::string, std::string, std::string>;
 
 // Daily update interface
 struct DailyUpdate {
@@ -130,7 +130,7 @@ struct DailyUpdate {
 };
 
 struct TeamMemberUpdate {
-    'team-member-update' type;
+    std::string type;
     UUID updateId;
     UUID teamMemberId;
     std::optional<std::string> teamMemberName;
@@ -143,13 +143,13 @@ struct TeamMemberUpdate {
 };
 
 struct CheckInSchedule {
-    'team-member-checkin-schedule' type;
+    std::string type;
     std::string scheduleId;
-    std::optional<std::optional<std::string>> teamMemberName;
+    std::optional<std::string> teamMemberName;
     std::optional<std::string> teamMemberUserName;
     std::string checkInType;
     std::string channelId;
-    std::variant<'WEEKDAYS', 'DAILY', 'WEEKLY', 'BIWEEKLY', 'MONTHLY', 'CUSTOM'> frequency;
+    std::string frequency;
     std::string checkInTime;
     std::string createdAt;
     std::optional<std::string> source;

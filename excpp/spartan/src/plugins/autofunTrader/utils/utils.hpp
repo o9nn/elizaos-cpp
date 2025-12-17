@@ -6,7 +6,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include "elizaos/core.hpp"
 
@@ -25,7 +24,7 @@ bool isValidSolanaAddress(const std::string& address);
 /**
  * Fetches data with retry logic and proper error handling
  */
-std::future<std::any> fetchWithRetry(const std::string& url, RequestInit = {} options, const std::variant<'solana', 'base' = 'solana'>& chain, auto maxRetries = 3);
+std::future<std::any> fetchWithRetry(const std::string& url, RequestInit options = {}, std::string chain = "solana", auto maxRetries);
 
 /**
  * Decodes a base58 string to Uint8Array

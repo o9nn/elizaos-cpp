@@ -6,7 +6,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include "elizaos/core-plugin-v2.hpp"
 #include "messages.ts.hpp"
@@ -22,24 +21,7 @@ namespace elizaos {
 class AgentRuntime {
 public:
     AgentRuntime(std::optional<{
-    conversationLength: number; // number of messages to hold in the recent message cache
-    agentId: UUID; // ID of the agent
-    character: Character; // The character to use for the agent
-    token: string; // JWT token> opts, auto can be a JWT token if outside worker, std::optional<std::variant<string; // The URL of the worker
-    actions: Action[]; // Optional custom actions
-    evaluators: Evaluator[]; // Optional custom evaluators
-    plugins: Plugin[];
-    providers: Provider[];
-    modelProvider: ModelProviderName;
-
-    services: Service[]; // Map of service name to service instance
-    managers: IMemoryManager[]; // Map of table name to memory manager
-    databaseAdapter: IDatabaseAdapter; // The database adapter used for interacting with the database
-    fetch: typeof fetch, unknown;
-    speechModelPath: string;
-    cacheManager: ICacheManager;
-    logging: boolean;
-    // verifiableInferenceAdapter: IVerifiableInferenceAdapter;
+    token: string; // JWT token> opts);
     UUID agentId() const;
     std::string serverUrl() const;
     IDatabaseAdapter databaseAdapter() const;
@@ -78,12 +60,13 @@ public:
     std::future<void> processActions(Memory message, const std::vector<Memory>& responses, std::optional<State> state, std::optional<HandlerCallback> callback);
     void evaluate(Memory message, State state, std::optional<bool> didRespond, std::optional<HandlerCallback> callback);
     void ensureParticipantExists(UUID userId, UUID roomId);
-    void ensureUserExists(UUID userId, const std::optional<std::string>& userName, const std::optional<std::string>& name, std::optional<std::optional<std::string>> email, std::optional<std::optional<std::string>> source);
+    void ensureUserExists(UUID userId, const std::string& userName, const std::string& name, std::optional<std::string> email, std::optional<std::string> source);
     void ensureParticipantInRoom(UUID userId, UUID roomId);
     void ensureConnection(UUID userId, UUID roomId, std::optional<std::string> userName, std::optional<std::string> userScreenName, std::optional<std::string> source);
     void ensureRoomExists(UUID roomId);
-    void composeState(Memory message, const std::any& additionalKeys);
+    void composeState(Memory message, std::any additionalKeys = {});
     std::future<State> updateRecentMessageState(State state);
+};
 
 
 } // namespace elizaos

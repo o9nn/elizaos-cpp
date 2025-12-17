@@ -33,7 +33,7 @@ bool isLocalDevelopment(const std::string& chain, const std::string& contractAdd
 
 }
 
-std::future<void> GET(NextRequest request, const std::any& { params }) {
+std::future<void> GET(NextRequest request) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { tokenId } = params;

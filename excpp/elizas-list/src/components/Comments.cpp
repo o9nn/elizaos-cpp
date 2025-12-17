@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void Comments(const std::any& { projectId }) {
+void Comments() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { data: session } = useSession();

@@ -64,7 +64,7 @@ std::function<double()> seededRandom(double seed) {
 
 }
 
-std::vector<BatchInstance> filterBatchItems(const std::vector<BatchInstance>& instances, std::optional<std::any> options) {
+std::vector<BatchInstance> filterBatchItems(const std::vector<BatchInstance>& instances, std::any options = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     auto filtered = [...instances];
@@ -104,7 +104,7 @@ std::vector<BatchInstance> filterBatchItems(const std::vector<BatchInstance>& in
 
 }
 
-SimpleBatchInstance fromSWEBench(Record<string sweBenchInstance, auto unknown>) {
+SimpleBatchInstance fromSWEBench(const std::unordered_map<std::string, unknown>& sweBenchInstance) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto instanceId = sweBenchInstance.instance_id;

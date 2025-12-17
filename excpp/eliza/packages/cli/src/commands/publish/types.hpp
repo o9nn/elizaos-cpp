@@ -77,7 +77,7 @@ struct PackageJson {
     std::string version;
     std::optional<std::string> description;
     std::optional<std::string> type;
-    std::optional<std::variant<'node', 'browser', 'universal'>> platform;
+    std::optional<std::string> platform;
     std::string type;
     std::string url;
     std::optional<std::vector<std::string>> maintainers;
@@ -87,7 +87,7 @@ struct PackageJson {
     std::string url;
     std::optional<std::string> npmPackage;
     std::optional<std::string> githubRepo;
-    std::optional<std::variant<'plugin', 'project'>> packageType;
+    std::optional<std::string> packageType;
     std::string pluginType;
     std::string type;
 };

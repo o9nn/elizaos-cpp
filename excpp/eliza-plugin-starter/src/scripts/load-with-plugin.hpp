@@ -33,9 +33,8 @@ struct Plugin {
 // Cache Adapter Implementation
 class CompatibleCacheAdapter {
 public:
-    undefined) as T;
-  }
     std::future<void> delete(const std::string& key);
+};
 
 // Function to dynamically load plugins from ./src/plugins
 

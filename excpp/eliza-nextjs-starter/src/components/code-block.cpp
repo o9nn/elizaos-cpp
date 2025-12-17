@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void CodeBlock(auto { className, auto children }) {
+void CodeBlock() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [copySuccess, setCopySuccess] = useState("");

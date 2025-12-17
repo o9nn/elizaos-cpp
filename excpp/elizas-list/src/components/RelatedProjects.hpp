@@ -22,5 +22,5 @@ struct CachedProjects {
     double timestamp;
 };
 
-void RelatedProjects(auto { currentProject, RelatedProjectsProps onProjectClick }); 
+void RelatedProjects(); 
 } // namespace elizaos

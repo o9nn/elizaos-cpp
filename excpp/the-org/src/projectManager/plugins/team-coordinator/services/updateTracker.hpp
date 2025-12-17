@@ -27,9 +27,6 @@ public:
     void setupDiscordRetry();
     void setupTelegramRetry();
     Promise<Array< fetchUsersInChannel(const std::string& channelId);
-    void if(auto !this.client);
-    void if(auto !discordChannel);
-    void catch(unknown error);
     std::future<std::vector<std::string>> messageAllUsers(std::optional<Array<{
       id: string;
       username: string;
@@ -37,8 +34,6 @@ public:
       channelName: string;
       updatesFormat: string[];
     }>> users, CheckInSchedule schedule, std::optional<std::string> serverName);
-    void if(auto !teamMembersConfig || !teamMembersConfig.content.config);
-    void catch(unknown error);
     std::future<void> checkInServiceJob();
     std::future<void> stop();
 

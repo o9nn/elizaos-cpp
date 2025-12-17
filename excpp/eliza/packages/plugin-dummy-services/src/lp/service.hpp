@@ -20,10 +20,8 @@ namespace elizaos {
 class DummyLpService {
 public:
     std::string getDexName();
-    std::future<DummyLpService> start(IAgentRuntime runtime);
-    std::future<void> stop(IAgentRuntime runtime);
-    std::future<void> start(IAgentRuntime runtime);
-    std::future<void> stop();
+    static std::future<DummyLpService> start(IAgentRuntime runtime);
+    static std::future<void> stop(IAgentRuntime runtime);
     std::future<std::vector<PoolInfo>> getPools(std::optional<std::string> tokenAMint, std::optional<std::string> tokenBMint);
     Promise<TransactionResult & addLiquidity(std::optional<std::any> params);
     Promise<TransactionResult & removeLiquidity(const std::any& params);

@@ -40,12 +40,8 @@ public:
     std::future<JobDetailsResponse> getJob(const std::string& jobId);
     std::future<JobListResponse> list(std::optional<ListJobsParams> params);
     std::future<JobHealthResponse> health();
-    void if(auto result.success);
-    std::future<PollResult> poll(const std::string& jobId, PollOptions = {} options);
-    void if(auto result.success);
+    std::future<PollResult> poll(const std::string& jobId, PollOptions options = {});
     std::future<PollResult> createAndPoll(CreateJobRequest params, std::optional<PollOptions> pollOptions);
-    void while(auto attempts < maxAttempts);
-    void catch(auto error);
     std::future<std::string> ask(UUID userId, const std::string& content, std::optional<UUID> agentId, std::optional<PollOptions> pollOptions);
 
 

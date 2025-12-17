@@ -21,7 +21,7 @@ struct FundModalContentProps {
     std::string shortAddress;
 };
 
-void FundModalContent(auto { walletAddress, FundModalContentProps shortAddress });
+void FundModalContent();
 
 
 } // namespace elizaos

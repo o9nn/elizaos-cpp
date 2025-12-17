@@ -26,7 +26,7 @@ std::future<void> delay(double ms) {
 
 }
 
-std::future<std::optional<SolanaPoolInfo>> findBestSolanaPool(const std::string& tokenMint, const std::variant<"mainnet", "devnet" = "mainnet">& cluster, std::optional<Connection> rpcConnection) {
+std::future<std::optional<SolanaPoolInfo>> findBestSolanaPool(const std::string& tokenMint, std::variant<"mainnet", "devnet"> cluster = "mainnet", std::optional<Connection> rpcConnection) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -119,7 +119,7 @@ std::future<std::optional<SolanaPoolInfo>> findBestSolanaPool(const std::string&
     }
 }
 
-std::future<std::vector<SolanaPoolInfo>> findPumpSwapPools(Connection connection, PublicKey mint, const std::variant<"mainnet", "devnet">& cluster, boolean = false strict) {
+std::future<std::vector<SolanaPoolInfo>> findPumpSwapPools(Connection connection, PublicKey mint, const std::variant<"mainnet", "devnet">& cluster, bool strict = false) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -329,7 +329,7 @@ std::future<std::vector<SolanaPoolInfo>> findPumpSwapPools(Connection connection
     }
 }
 
-std::future<std::vector<SolanaPoolInfo>> findRaydiumPools(Connection connection, PublicKey mint, const std::variant<"mainnet", "devnet">& cluster, boolean = false strict) {
+std::future<std::vector<SolanaPoolInfo>> findRaydiumPools(Connection connection, PublicKey mint, const std::variant<"mainnet", "devnet">& cluster, bool strict = false) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -490,8 +490,7 @@ std::future<std::vector<SolanaPoolInfo>> findRaydiumPools(Connection connection,
     }
 }
 
-std::future<std::vector<SolanaPoolInfo>> findMeteoraPools(Connection //   connection, PublicKey
-// //   mint) {
+std::future<std::vector<SolanaPoolInfo>> findMeteoraPools() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     //   return [];

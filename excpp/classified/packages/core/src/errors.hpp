@@ -1,5 +1,4 @@
 #pragma once
-#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -28,7 +27,7 @@ enum ErrorCode {
 
 class ElizaError {
 public:
-    ElizaError(ErrorCode public code, const std::string& message, number = 500 public statusCode, std::optional<std::any> public details);
+    ElizaError(const std::string& message);
 };
 
 void createErrorResponse(unknown error);

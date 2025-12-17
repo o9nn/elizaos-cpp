@@ -18,12 +18,7 @@ namespace elizaos {
 
 class ShellStatefulE2ETestSuite {
 public:
-    void if(auto !shellService);
-    void if(auto !shellService);
-    void for(auto const { cmd, auto expected } of commands);
-    void if(auto !shellService);
-    void if(auto !shellService);
-    void catch(auto error);
+};
 
 
 } // namespace elizaos

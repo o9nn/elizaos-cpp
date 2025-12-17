@@ -22,7 +22,7 @@ struct SwipeableWrapperProps {
     ReactNode children;
 };
 
-void SwipeableWrapper(auto { children, SwipeableWrapperProps onDelete });
+void SwipeableWrapper();
 
 
 } // namespace elizaos

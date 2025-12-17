@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 
 namespace elizaos {
@@ -60,7 +59,7 @@ struct DevContext {
  * File change event
  */
 struct FileChangeEvent {
-    std::variant<'add', 'change', 'unlink'> type;
+    std::string type;
     std::string path;
 };
 

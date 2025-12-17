@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void TransactionsAndHolders(const std::any& { token }) {
+void TransactionsAndHolders() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [mode, setMode] = useState<"transactions" | "holders">("transactions");

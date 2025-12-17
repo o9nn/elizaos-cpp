@@ -22,7 +22,7 @@ namespace elizaos {
 
 class TaskService {
 public:
-    TaskService(IAgentRuntime protected override runtime, BuyService private buyService, SellService private sellService);
+    TaskService();
     std::future<void> registerTasks();
     std::future<void> stop();
     void registerSellTasks();

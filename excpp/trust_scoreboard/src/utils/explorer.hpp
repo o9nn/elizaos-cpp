@@ -14,5 +14,5 @@ namespace elizaos {
 
 
 
-void getExplorerUrl(const std::string& endpoint, const std::variant<'inspector', PublicKey, std::string>& viewTypeOrItemAddress, auto itemType = 'address' // | 'tx' | 'block');
+void getExplorerUrl(const std::string& endpoint, const std::variant<std::string, PublicKey>& viewTypeOrItemAddress, auto itemType);
 } // namespace elizaos

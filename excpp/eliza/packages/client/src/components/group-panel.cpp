@@ -16,7 +16,7 @@ agent is SelectableAgent isAgentSelectable(const std::optional<Agent>& agent) {
 
 }
 
-void GroupPanel(auto { onClose, GroupPanelProps channelId }) {
+void GroupPanel() {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

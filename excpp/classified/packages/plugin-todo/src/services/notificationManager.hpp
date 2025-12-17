@@ -5,7 +5,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include "elizaos/core.hpp"
 
@@ -30,8 +29,8 @@ struct NotificationPreferences {
 struct NotificationData {
     std::string title;
     std::string body;
-    std::variant<'overdue', 'upcoming', 'daily', 'system'> type;
-    std::optional<std::variant<'low', 'medium', 'high'>> priority;
+    std::string type;
+    std::optional<std::string> priority;
     std::optional<UUID> taskId;
     std::optional<UUID> roomId;
     std::string label;

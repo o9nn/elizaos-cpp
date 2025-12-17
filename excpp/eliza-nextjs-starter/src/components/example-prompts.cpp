@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void ExamplePrompts(ExamplePromptsProps { onPromptSelect }) {
+void ExamplePrompts() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

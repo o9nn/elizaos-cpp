@@ -38,7 +38,6 @@ public:
     std::future<void> waitForIceGathering();
     void sendAudioData(Uint8Array audioData);
     void close();
-    void if(auto event.persisted);
 };
 
 

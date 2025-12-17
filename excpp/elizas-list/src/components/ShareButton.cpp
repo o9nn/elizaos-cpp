@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void ShareButton(ShareButtonProps { project }) {
+void ShareButton() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [shared, setShared] = useState(false);

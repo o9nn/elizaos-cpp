@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void StartupFlow(StartupFlowProps { onComplete }) {
+void StartupFlow() {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

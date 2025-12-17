@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::vector<std::vector<double>> computePca(const std::vector<std::vector<double>>& data, auto dims = 2) {
+std::vector<std::vector<double>> computePca(const std::vector<std::vector<double>>& data, auto dims) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (data.length == 0) return [];

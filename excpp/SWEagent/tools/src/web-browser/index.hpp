@@ -5,7 +5,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 
 namespace elizaos {
@@ -26,7 +25,6 @@ public:
     std::future<void> openSite(const std::string& url);
     std::future<void> closeSite();
     std::future<void> screenshot(std::optional<std::string> filename);
-    std::future<void> click(double x, double y, const std::variant<'left', 'right' = 'left'>& button);
     std::future<void> type(const std::string& text);
     std::future<void> scroll(double deltaX, double deltaY);
     std::future<void> executeScript(const std::string& script);
@@ -36,7 +34,7 @@ public:
 // Web server for browser control (simplified)
 class BrowserServer {
 public:
-    BrowserServer(number = 8009 port);
+    BrowserServer(double port = 8009);
     void setupRoutes();
     void start();
 

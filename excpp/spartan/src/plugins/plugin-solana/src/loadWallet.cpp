@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::future<WalletResult> loadWallet(AgentRuntime runtime, boolean = true requirePrivateKey) {
+std::future<WalletResult> loadWallet(AgentRuntime runtime, bool requirePrivateKey = true) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

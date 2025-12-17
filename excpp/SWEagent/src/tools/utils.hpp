@@ -1,4 +1,5 @@
 #pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -36,7 +37,7 @@ std::string getSignature(Command cmd);
 /**
  * Generate command documentation
  */
-std::string generateCommandDocs(const std::vector<Command>& commands, const std::vector<std::string>& subroutineTypes, Record<string _kwargs, auto any>);
+std::string generateCommandDocs(const std::vector<Command>& commands, const std::vector<std::string>& subroutineTypes, const std::unordered_map<std::string, std::any>& _kwargs);
 
 /**
  * Format a single command for documentation

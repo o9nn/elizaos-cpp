@@ -1,5 +1,4 @@
 #pragma once
-#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -15,5 +14,5 @@ namespace elizaos {
 
 
 
-void Providers(const std::any& { children }); 
+void Providers(); 
 } // namespace elizaos

@@ -1,5 +1,4 @@
 #pragma once
-#include <any>
 #include <functional>
 #include <future>
 #include <memory>
@@ -21,9 +20,14 @@ namespace elizaos {
 
 class TradeCalculationService {
 public:
-    std::future<double> calculateOptimalBuyAmount(auto {
-    tokenAddress, auto walletBalance, auto signal, const std::any& });
+    std::future<double> calculateOptimalBuyAmount(auto walletBalance, auto signal);
     std::future<double> calculateDynamicSlippage(const std::string& tokenAddress, double tradeAmount, bool isSell);
+
+private:
+    std::string tokenAddress_;
+    double walletBalance_;
+    BuySignalMessage signal_;
+};
 
 
 } // namespace elizaos

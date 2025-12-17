@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void HasType(HasTypeProps { disabled }) {
+void HasType() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { state: messageState, setSelectedHasTypes } = useMessageSlice();

@@ -1,5 +1,6 @@
 #pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
@@ -16,7 +17,8 @@ namespace elizaos {
 
     // Temporarily disabled while migrating to new registry system
 
-std::optional<std::string> extractPluginInfo(const std::string& text);
+std::string extractPluginInfo(const std::string& text);
 
+std::future<std::string> resolvePluginPath(const std::string& pluginInfo);
 
 } // namespace elizaos

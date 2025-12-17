@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void DonationListButton(const std::any& { donation }) {
+void DonationListButton() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [collapsed, setCollapsed] = useState(true);

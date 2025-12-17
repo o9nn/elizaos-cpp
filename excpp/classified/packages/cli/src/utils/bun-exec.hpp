@@ -21,7 +21,7 @@ namespace elizaos {
 /**
  * Helper to ensure bun is in PATH for subprocess execution
  */
-std::unordered_map<std::string, std::string> ensureBunInPath(Record<string env, auto string> = {});
+std::unordered_map<std::string, std::string> ensureBunInPath(std::unordered_map<std::string, std::string> env = {});
 
 struct ExecResult {
     std::string stdout;
@@ -32,9 +32,9 @@ struct ExecResult {
 
 struct BunExecOptions {
     std::optional<std::string> cwd;
-    std::optional<std::variant<'pipe', 'inherit', 'ignore'>> stdio;
-    std::optional<std::variant<'pipe', 'inherit'>> stdout;
-    std::optional<std::variant<'pipe', 'inherit'>> stderr;
+    std::optional<std::string> stdio;
+    std::optional<std::string> stdout;
+    std::optional<std::string> stderr;
     std::optional<double> timeout;
     std::optional<AbortSignal> signal;
 };
@@ -42,12 +42,12 @@ struct BunExecOptions {
 // Define proper error types for better error handling
 class ProcessExecutionError {
 public:
-    ProcessExecutionError(const std::string& message, const std::optional<double>& public readonly exitCode, const std::string& public readonly stderr, const std::string& public readonly command);
+    ProcessExecutionError(const std::string& message);
 };
 
 class ProcessTimeoutError {
 public:
-    ProcessTimeoutError(const std::string& message, const std::string& public readonly command, double public readonly timeout);
+    ProcessTimeoutError(const std::string& message);
 };
 
 /**
@@ -99,7 +99,7 @@ std::future<std::string> readStreamSafe(const std::variant<ReadableStream, doubl
  * });
  * ```
  */
-std::future<ExecResult> bunExec(const std::string& command, const std::vector<string[] =>& args, BunExecOptions = {} options);
+std::future<ExecResult> bunExec(const std::string& command, std::vector<std::string> args = {}, BunExecOptions options = {});
 
 /**
  * Execute a command and only return stdout (similar to execa's simple usage)
@@ -135,7 +135,7 @@ std::future<ExecResult> bunExec(const std::string& command, const std::vector<st
  * // Run command that needs terminal colors
  * ```
  */
-std::future<ExecResult> bunExecInherit(const std::string& command, const std::vector<string[] =>& args, BunExecOptions = {} options);
+std::future<ExecResult> bunExecInherit(const std::string& command, std::vector<std::string> args = {}, BunExecOptions options = {});
 
 /**
  * Check if a command exists in the system PATH

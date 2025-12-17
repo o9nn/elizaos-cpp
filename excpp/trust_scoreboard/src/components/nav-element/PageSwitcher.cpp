@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void PageSwitcher(std::optional<std::any> { className }) {
+void PageSwitcher() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto pathname = usePathname();

@@ -25,7 +25,7 @@ std::future<EnvVars> parseEnvFile(const std::string& filePath) {
 
 }
 
-std::string serializeEnvObject(Record<string envObj, auto string>) {
+std::string serializeEnvObject(const std::unordered_map<std::string, std::string>& envObj) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return Object.entries(envObj);
@@ -34,7 +34,7 @@ std::string serializeEnvObject(Record<string envObj, auto string>) {
 
 }
 
-std::optional<std::string> getLocalEnvPath() {
+std::string getLocalEnvPath() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto envPath = resolveEnvFile();

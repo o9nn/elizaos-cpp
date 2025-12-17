@@ -16,9 +16,10 @@ namespace elizaos {
 struct WalletLinkBoardProps {
     std::string userLogin;
     std::string walletSection;
-    std::optional<std::string> readmeContent;
+    std::string readmeContent;
     std::string defaultBranch;
 };
 
+void WalletLinkBoard(auto walletSection, auto readmeContent, auto defaultBranch);
 
 } // namespace elizaos

@@ -38,8 +38,8 @@ public:
     std::future<void> testBasicStartup();
     std::future<void> testNamespaceHandling();
     std::future<void> testErrorHandling();
-    void catch(auto error);
-    std::future<std::string> runGatewayWithTimeout(std::optional<std::string> configPath, number = 5000 timeoutMs);
+    $ log();
+    std::future<std::string> runGatewayWithTimeout(std::optional<std::string> configPath, double timeoutMs = 5000);
     std::future<void> runCommand(const std::string& command, const std::vector<std::string>& args);
     void printResults();
 };

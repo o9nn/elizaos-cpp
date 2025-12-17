@@ -20,11 +20,11 @@ namespace elizaos {
 struct PendingGoalData {
     std::string name;
     std::optional<std::string> description;
-    std::variant<'daily', 'one-off', 'aspirational'> taskType;
+    std::string taskType;
     std::optional<std::variant<1, 2, 3, 4>> priority;
     std::optional<bool> urgent;
     std::optional<std::string> dueDate;
-    std::optional<std::variant<'daily', 'weekly', 'monthly'>> recurring;
+    std::optional<std::string> recurring;
     std::optional<std::vector<std::string>> tags;
 };
 

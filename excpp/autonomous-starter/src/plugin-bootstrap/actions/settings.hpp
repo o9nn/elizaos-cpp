@@ -137,7 +137,6 @@ std::string formatSettingsList(WorldSettings worldSettings);
 /**
  * Categorizes settings by their configuration status
  */
-void categorizeSettings(WorldSettings worldSettings); {
 
     // Skip internal settings
 

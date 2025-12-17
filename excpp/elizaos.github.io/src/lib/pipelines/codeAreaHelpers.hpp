@@ -24,7 +24,7 @@ WorkItemType categorizeWorkItem(const std::string& text);
 /**
  * Utility to extract area from a file path
  */
-std::optional<std::string> extractAreaFromPath(const std::string& path);
+std::string extractAreaFromPath(const std::string& path);
 
 /**
  * Check if a file is a common root configuration file that should be ignored

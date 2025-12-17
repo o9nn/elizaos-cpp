@@ -13,11 +13,25 @@ namespace elizaos {
 
 
 
-void Sheet(ComponentProps<typeof SheetPrimitive.Root> { ...props });
+void Sheet();
 
-void SheetHeader(auto { className, ComponentProps<"div"> ...props });
+void SheetTrigger();
 
-void SheetFooter(auto { className, ComponentProps<"div"> ...props });
+void SheetClose();
+
+void SheetPortal();
+
+void SheetOverlay();
+
+void SheetContent(auto children, auto closeButton, auto side);
+
+void SheetHeader();
+
+void SheetFooter();
+
+void SheetTitle();
+
+void SheetDescription();
 
 
 } // namespace elizaos

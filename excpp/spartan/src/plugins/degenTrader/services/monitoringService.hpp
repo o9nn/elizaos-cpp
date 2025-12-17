@@ -25,8 +25,8 @@ namespace elizaos {
 class MonitoringService {
 public:
     MonitoringService(IAgentRuntime runtime, DataService dataService, WalletService walletService, AnalyticsService analyticsService);
-    Promise< executeBuyTrade(auto {
-    tokenAddress, auto amount, auto slippage, const std::any& });
+    Promise< executeBuyTrade(auto amount, auto slippage);
+    Promise< executeSellTrade(auto amount, auto slippage);
     std::future<std::string> calculateExpectedAmount(const std::string& tokenAddress, double amount, bool isSell);
     std::future<void> initialize();
     std::future<void> stop();
@@ -36,6 +36,7 @@ public:
     std::future<void> setTrailingStop(const std::string& tokenAddress, double activationPrice, const std::string& amount);
     std::future<void> monitorPrices();
     std::future<void> checkPriceThresholds(const std::string& tokenAddress, double currentPrice, const std::any& position);
+};
 
 
 } // namespace elizaos

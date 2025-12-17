@@ -6,7 +6,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include "elizaos/core.hpp"
 #include "elizaos/plugin-forms.hpp"
@@ -108,7 +107,7 @@ struct PRDDocument {
     std::vector<std::string> functional;
     std::vector<std::string> nonFunctional;
     std::vector<std::string> technical;
-    std::variant<'clone-existing', 'extend-existing', 'new-plugin'> approach;
+    std::string approach;
     std::optional<std::string> basePlugin;
     std::vector<std::string> components;
     std::vector<std::string> dependencies;
@@ -120,9 +119,8 @@ struct PRDDocument {
 class CodeGenerationService {
 public:
     CodeGenerationService(IAgentRuntime runtime, std::optional<FormsService> formsService);
-    std::future<Service> start(IAgentRuntime runtime);
+    static std::future<Service> start(IAgentRuntime runtime);
     std::string capabilityDescription() const;
-    std::future<void> start();
     std::future<void> stop();
     std::future<ResearchResult> performResearch(CodeGenerationRequest request);
     std::future<PRDDocument> generatePRD(CodeGenerationRequest request, ResearchResult research);
@@ -150,8 +148,7 @@ public:
     std::future<GenerationResult> generateCodeWithoutSandbox(CodeGenerationRequest request);
     bool isTimeoutError(Error error);
      getTimeoutConfig();
-    void if(auto isLocal || isDev);
-    std::future<std::string> generateCodeWithTimeout(const std::string& prompt, number = 8000 maxTokens, std::optional<double> timeoutMs);
+    std::future<std::string> generateCodeWithTimeout(const std::string& prompt, double maxTokens = 8000, std::optional<double> timeoutMs);
     std::future<GenerationResult> generateCodeInChunks(CodeGenerationRequest request);
     std::future<std::vector<GenerationFile>> generateEssentialFiles(CodeGenerationRequest request);
     std::future<std::string> generateWithTimeout(const std::string& prompt, double maxTokens, double timeoutMs);

@@ -39,5 +39,6 @@ struct ReviewStepProps {
     std::optional<double> selectedTokenDecimals;
 };
 
+void ReviewStep(auto onBack, auto onNext, auto requiredChain, auto isConnectedToRequiredChain, auto onConnect, auto privyReady, auto selectedTokenSymbol);
 
 } // namespace elizaos

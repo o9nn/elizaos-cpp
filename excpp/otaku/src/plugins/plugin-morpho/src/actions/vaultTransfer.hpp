@@ -28,7 +28,7 @@ struct VaultTransferParams {
 
 using VaultTransferInput = std::variant<{
 
-using VaultTransferActionResult = ActionResult & { input: VaultTransferInput };
+using VaultTransferActionResult = ActionResult;
 
       // Read parameters from state
 

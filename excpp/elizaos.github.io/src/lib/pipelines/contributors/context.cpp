@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-ContributorPipelineContext createContributorPipelineContext(auto {
-  repoId, auto logger, auto config, auto force = false, std::optional<std::any> }) {
+ContributorPipelineContext createContributorPipelineContext(auto logger, auto config, auto force) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return {

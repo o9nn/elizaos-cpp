@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-std::future<void> getActorDetails(auto {
-  runtime, auto roomId, const std::any& }) {
+std::future<void> getActorDetails(auto roomId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -17,7 +16,7 @@ std::future<void> getActorDetails(auto {
     }
 }
 
-void formatActors(const std::any& { actors }) {
+void formatActors() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!actors || actors.length == 0) {

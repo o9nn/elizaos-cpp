@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include ".services/TauriService.hpp"
 
@@ -18,7 +17,7 @@ namespace elizaos {
 struct Backup {
     std::string id;
     std::string timestamp;
-    std::variant<'manual', 'automatic', 'shutdown'> backup_type;
+    std::string backup_type;
     double size_bytes;
     std::string name;
     std::string component_type;

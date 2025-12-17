@@ -587,15 +587,11 @@ enum CacheStore {
 struct ICacheManager {
 };
 
-    ServiceType serviceType() const;
-    void if(auto !Service.instance);
-    ServiceType serviceType() const;
-
 struct IAgentRuntime {
     UUID agentId;
     std::string serverUrl;
     IDatabaseAdapter databaseAdapter;
-    std::optional<std::string> token;
+    std::string token;
     ModelProviderName modelProvider;
     ModelProviderName imageModelProvider;
     ModelProviderName imageVisionModelProvider;
@@ -615,7 +611,7 @@ struct IAgentRuntime {
     std::vector<ClientInstance> clients;
     std::optional<HandlerCallback> callback;
     std::optional<HandlerCallback> callback;
-    std::optional<std::string> source;
+    std::string source;
     std::optional<std::string> source;
 };
 

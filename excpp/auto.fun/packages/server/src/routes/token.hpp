@@ -91,12 +91,13 @@ PgSelect buildTokensCountBaseQuery(const std::any& db, std::optional<std::any> p
 
     // Use the shared S3 client getter
 
-std::future<void> processSwapEvent(const std::any& swap, boolean = true shouldEmitGlobal);
+std::future<void> processSwapEvent(const std::any& swap, bool shouldEmitGlobal = true);
 
 // Helper function to process token info after finding it on a network
 std::future<void> processTokenInfo(PublicKey mintPublicKey, AccountInfo<Buffer> tokenInfo, Connection connection, const std::string& requestor);
 
 // Helper to check token balance directly on blockchain
+std::future<Response> checkBlockchainTokenBalance(const std::any& c, const std::string& address, auto checkMultipleNetworks);
 
   // const limit = isSearching ? 5 : Math.min(requestedLimit, MAX_LIMIT);
 

@@ -13,6 +13,6 @@ namespace elizaos {
 
 
 
-void CodeBlock(auto { className, auto children });
+void CodeBlock();
 
 } // namespace elizaos

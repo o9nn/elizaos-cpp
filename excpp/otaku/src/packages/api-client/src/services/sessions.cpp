@@ -33,7 +33,7 @@ std::string toTimestampString(const std::variant<Date, std::string, double>& val
 
 }
 
-asserts value is string validateRequiredParam(const std::optional<std::string>& value, const std::string& paramName) {
+asserts value is string validateRequiredParam(const std::string& value, const std::string& paramName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

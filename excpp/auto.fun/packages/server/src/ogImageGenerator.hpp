@@ -25,10 +25,10 @@ namespace elizaos {
 // --- Helper Functions ---
 
 // Simple fetch with timeout
-std::future<Response> fetchWithTimeout(const std::string& resource, std::optional<RequestInit & { timeout: number } = {}> options);
+std::future<Response> fetchWithTimeout(const std::string& resource, RequestInit options = {});
 
 // Format numbers nicely
-std::string formatCurrency(const std::optional<double>& value, number = 2 decimals);
+std::string formatCurrency(const std::optional<double>& value, double decimals = 2);
 
 std::string formatMarketCap(const std::optional<double>& value);
 

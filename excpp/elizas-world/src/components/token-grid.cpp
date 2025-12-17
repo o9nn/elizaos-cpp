@@ -74,7 +74,7 @@ std::string truncateAddress(const std::string& address) {
 
 }
 
-void TokenGrid(const std::any& { holdings }) {
+void TokenGrid() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [sortConfig, setSortConfig] = useState<SortConfig>({;

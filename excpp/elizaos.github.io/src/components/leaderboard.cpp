@@ -20,7 +20,7 @@ void LeaderboardFallback() {
 
 }
 
-void Leaderboard(auto { tabs, LeaderboardProps tags }) {
+void Leaderboard() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto router = useRouter();
@@ -217,8 +217,7 @@ void Leaderboard(auto { tabs, LeaderboardProps tags }) {
 
 }
 
-void PaginationControls(auto {
-  currentPage, auto totalPages, auto onPageChange, PaginationControlsProps }) {
+void PaginationControls(auto totalPages, auto onPageChange) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (totalPages <= 1) {

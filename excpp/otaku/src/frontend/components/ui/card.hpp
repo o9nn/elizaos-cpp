@@ -13,19 +13,19 @@ namespace elizaos {
 
 
 
-void Card(auto { className, ComponentProps<"div"> ...props });
+void Card();
 
-void CardHeader(auto { className, ComponentProps<"div"> ...props });
+void CardHeader();
 
-void CardTitle(auto { className, ComponentProps<"div"> ...props });
+void CardTitle();
 
-void CardDescription(auto { className, ComponentProps<"div"> ...props });
+void CardDescription();
 
-void CardAction(auto { className, ComponentProps<"div"> ...props });
+void CardAction();
 
-void CardContent(auto { className, ComponentProps<"div"> ...props });
+void CardContent();
 
-void CardFooter(auto { className, ComponentProps<"div"> ...props });
+void CardFooter();
 
 
 } // namespace elizaos

@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void RetryButton(auto { onClick, RetryButtonProps className }) {
+void RetryButton() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

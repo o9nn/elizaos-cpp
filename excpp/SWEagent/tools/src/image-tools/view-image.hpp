@@ -17,7 +17,7 @@ namespace elizaos {
  * Converted from tools/image_tools/bin/view_image
  */
 
-std::optional<std::string> getMimeType(const std::string& filename);
+std::string getMimeType(const std::string& filename);
 
 void viewImage(const std::string& imagePath);
 

@@ -23,5 +23,6 @@ struct SectionCardProps {
     std::optional<bool> noPadding;
 };
 
+void SectionCard(Icon icon, auto children, auto className, auto contentClassName, auto headerClassName, auto noPadding);
 
 } // namespace elizaos

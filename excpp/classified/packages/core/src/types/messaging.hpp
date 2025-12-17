@@ -5,7 +5,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 
 namespace elizaos {
@@ -39,8 +38,8 @@ enum SOCKET_MESSAGE_TYPE {
  * to manage UI state and interaction capabilities
  */
 struct ControlMessage {
-    'control' type;
-    std::variant<'disable_input', 'enable_input'> action;
+    std::string type;
+    std::string action;
     std::optional<std::string> target;
     UUID roomId;
 };

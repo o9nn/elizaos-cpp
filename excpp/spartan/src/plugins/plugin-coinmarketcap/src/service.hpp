@@ -18,17 +18,13 @@ namespace elizaos {
 
 class CoinmarketcapService {
 public:
-    CoinmarketcapService(IAgentRuntime protected runtime);
+    CoinmarketcapService();
     void getBirdeyeFetchOptions();
-    std::future<BirdeyeService> start(IAgentRuntime runtime);
-    void stop(IAgentRuntime runtime);
+    static std::future<BirdeyeService> start(IAgentRuntime runtime);
+    static void stop(IAgentRuntime runtime);
     Promise< getTokenMarketData(const std::string& tokenAddress);
-    void if(auto !response.ok || !volResponse.ok || !priceHistoryResponse.ok);
-    void if(auto !data.data);
-    void catch(auto error);
     std::future<std::any> getTokensMarketData(const std::vector<std::string>& tokenAddresses);
     void lookupToken(auto chain, auto ca);
-    std::future<void> stop();
 };
 
 

@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::string MaxTokens(const std::string& data, number = DEFAULT_MAX_WEB_SEARCH_CHARS maxTokens) {
+std::string MaxTokens(const std::string& data, double maxTokens = DEFAULT_MAX_WEB_SEARCH_CHARS) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Character-based truncation to cap response length

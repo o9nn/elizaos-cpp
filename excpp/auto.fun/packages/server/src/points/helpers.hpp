@@ -26,7 +26,7 @@ using PointEvent = std::variant<, std::any, std::any, { type: "prebond_buy">; us
 // helper calc points per event
 double calculatePoints(PointEvent evt);
 
-std::future<void> awardUserPoints(const std::string& userAddress, PointEvent event, auto description = "");
+std::future<void> awardUserPoints(const std::string& userAddress, PointEvent event, auto description);
 
 std::future<void> awardGraduationPoints(const std::string& mint);
 

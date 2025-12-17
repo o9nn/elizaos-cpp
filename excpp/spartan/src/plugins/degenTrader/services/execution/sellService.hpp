@@ -32,11 +32,14 @@ public:
     std::future<void> initialize();
     std::future<void> stop();
     std::future<void> handleSellSignal(const std::any& params);
-    std::future<void> updateExpectedOutAmount(std::optional<SellSignalMessage & { expectedOutAmount: string }> signal);
-    void if(auto !signal);
-    void if(auto !tokenBalance);
-    void if(auto result.success);
-    void catch(auto error);
+    std::future<void> updateExpectedOutAmount(std::optional<SellSignalMessage> signal);
+    Promise< executeSell(std::optional<SellSignalMessage> signal);
+
+private:
+    TokenValidationService validationService_;
+    TradeCalculationService calculationService_;
+    TradeMemoryService tradeMemoryService_;
+};
 
 
 } // namespace elizaos

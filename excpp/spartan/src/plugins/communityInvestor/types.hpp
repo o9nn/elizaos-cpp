@@ -223,7 +223,7 @@ struct Position {
     std::string chain;
     std::string walletAddress;
     std::string balance;
-    std::variant<'OPEN', 'CLOSED'> status;
+    std::string status;
     Date createdAt;
     std::optional<Date> closedAt;
     bool isSimulation;
@@ -233,7 +233,7 @@ struct Position {
     UUID recommendationId;
 };
 
-using PositionWithBalance = Position & {
+using PositionWithBalance = Position;
 
 /**
  * Unified transaction type enums to ensure consistency
@@ -283,8 +283,8 @@ using TokenMarketData = {
 struct MessageRecommendation {
     std::string tokenMentioned;
     bool isTicker;
-    std::variant<'positive', 'negative', 'neutral'> sentiment;
-    std::variant<'NONE', 'LOW', 'MEDIUM', 'HIGH'> conviction;
+    std::string sentiment;
+    std::string conviction;
     std::string quote;
 };
 
@@ -419,8 +419,8 @@ struct Recommendation {
     std::optional<std::string> tokenTicker;
     std::string tokenAddress;
     SupportedChain chain;
-    std::variant<'BUY', 'SELL'> recommendationType;
-    std::variant<'NONE', 'LOW', 'MEDIUM', 'HIGH'> conviction;
+    std::string recommendationType;
+    std::string conviction;
     std::string rawMessageQuote;
     std::optional<double> priceAtRecommendation;
     std::optional<RecommendationMetric> metrics;

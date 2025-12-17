@@ -30,7 +30,7 @@ std::future<State> refreshStateAfterAction(IAgentRuntime runtime, Memory message
 
 }
 
-State updateActionPlanStep(State state, double stepIndex, const std::variant<'completed', 'failed', 'pending'>& status, std::optional<Record<string> result, auto unknown>, std::optional<std::string> error) {
+State updateActionPlanStep(State state, double stepIndex, const std::string& status, std::optional<std::unordered_map<std::string, unknown>> result, std::optional<std::string> error) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!state.data.actionPlan) {
@@ -64,7 +64,7 @@ State updateActionPlanStep(State state, double stepIndex, const std::variant<'co
 
 }
 
-State updateWorkingMemory(State state, const std::string& key, Record<string value, auto unknown>) {
+State updateWorkingMemory(State state, const std::string& key, const std::unordered_map<std::string, unknown>& value) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto workingMemory = state.data.workingMemory || {};

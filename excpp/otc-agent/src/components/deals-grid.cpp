@@ -49,8 +49,7 @@ std::vector<TokenGroup> groupConsignmentsByToken(const std::vector<OTCConsignmen
 
 }
 
-void TokenGroupLoader(auto {
-  tokenGroup, const std::any& }) {
+void TokenGroupLoader() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     useRenderTracker("TokenGroupLoader", { tokenId: tokenGroup.tokenId });
@@ -92,7 +91,7 @@ void TokenGroupLoader(auto {
 
 }
 
-void DealsGrid(auto { filters, DealsGridProps searchQuery = "" }) {
+void DealsGrid(auto searchQuery) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     useRenderTracker("DealsGrid", {

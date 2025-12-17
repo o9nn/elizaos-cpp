@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void normalizeParams(Record<string q, auto string | undefined>) {
+void normalizeParams(const std::variant<Record<string, string, undefined>>& q) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto {;
@@ -33,7 +33,7 @@ void normalizeParams(Record<string q, auto string | undefined>) {
 
 }
 
-void makeCacheKey(Record<string params, auto string | number>) {
+void makeCacheKey(const std::variant<Record<string, string, number>>& params) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto json = JSON.stringify(params);

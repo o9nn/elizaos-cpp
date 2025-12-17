@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include "service.hpp"
 
@@ -17,7 +16,7 @@ namespace elizaos {
 
 struct BrowserNavigationOptions {
     std::optional<double> timeout;
-    std::optional<std::variant<'load', 'domcontentloaded', 'networkidle0', 'networkidle2'>> waitUntil;
+    std::optional<std::string> waitUntil;
     double width;
     double height;
     std::optional<std::string> userAgent;
@@ -29,7 +28,7 @@ struct ScreenshotOptions {
     double y;
     double width;
     double height;
-    std::optional<std::variant<'png', 'jpeg', 'webp'>> format;
+    std::optional<std::string> format;
     std::optional<double> quality;
     std::optional<bool> omitBackground;
 };

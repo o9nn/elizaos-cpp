@@ -21,7 +21,7 @@ SanitizedConsignment sanitizeConsignmentForBuyer(OTCConsignment consignment) {
 
 }
 
-bool isConsignmentOwner(OTCConsignment consignment, const std::optional<std::string>& callerAddress) {
+bool isConsignmentOwner(OTCConsignment consignment, const std::string& callerAddress) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!callerAddress) return false;

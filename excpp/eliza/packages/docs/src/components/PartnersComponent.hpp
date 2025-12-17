@@ -15,7 +15,7 @@ namespace elizaos {
 
 
 
-void PartnerCard(auto { partner });
+void PartnerCard();
 
 
 } // namespace elizaos

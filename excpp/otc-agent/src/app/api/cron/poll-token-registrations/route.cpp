@@ -181,7 +181,7 @@ std::future<void> pollSolanaRegistrations() {
         );
 
         auto processed = 0;
-        std::optional<std::string> lastProcessedSig = nullptr;
+        std::string lastProcessedSig = nullptr;
 
         for (int i = startIndex; i < signatures.length; i++) {
             const auto sig = signatures[i];

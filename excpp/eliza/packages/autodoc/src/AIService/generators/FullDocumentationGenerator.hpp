@@ -60,9 +60,8 @@ struct Troubleshooting {
 
 class FullDocumentationGenerator {
 public:
-    FullDocumentationGenerator(Configuration private configuration);
-    std::future<PluginDocumentation> generatePluginDocumentation(auto {
-    existingDocs, auto packageJson, auto todoItems, auto envUsages, const std::any& });
+    FullDocumentationGenerator();
+    std::future<PluginDocumentation> generatePluginDocumentation(auto packageJson, auto todoItems, auto envUsages);
     std::string formatOverviewSection(const std::any& overview);
     std::string formatFAQSection(const std::vector<FAQ>& faq);
     std::string formatTroubleshootingSection(Troubleshooting troubleshooting);
@@ -82,6 +81,13 @@ public:
     std::future<std::string> generateActionsDocumentation(const std::vector<std::string>& actionsFiles);
     std::future<std::string> generateProvidersDocumentation(const std::vector<std::string>& providersFiles);
     std::future<std::string> generateEvaluatorsDocumentation(const std::vector<std::string>& evaluatorsFiles);
+
+private:
+    TypeScriptParser typeScriptParser_;
+    CodeFormatter codeFormatter_;
+    DocumentOrganizer documentOrganizer_;
+    AIService aiService_;
+};
 
 
 } // namespace elizaos

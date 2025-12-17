@@ -1,4 +1,5 @@
 #pragma once
+#include <any>
 #include <functional>
 #include <future>
 #include <memory>
@@ -23,20 +24,18 @@ namespace elizaos {
  */
 class EnvManagerService {
 public:
-    std::future<EnvManagerService> start(IAgentRuntime runtime);
+    static std::future<EnvManagerService> start(IAgentRuntime runtime);
     std::future<void> initialize();
     std::future<void> scanPluginRequirements();
-    std::future<void> scanCharacterSecrets(Record<string secrets, auto any>, EnvVarMetadata envVars);
+    std::future<void> scanCharacterSecrets(const std::unordered_map<std::string, std::any>& secrets, EnvVarMetadata envVars);
     std::future<void> scanLoadedPlugins(EnvVarMetadata envVars);
     EnvVarConfig["type"] inferVariableType(const std::string& varName);
-    std::variant<std::future<Record<string, EnvVarConfig>, null>> getEnvVarsForPlugin(const std::string& pluginName);
     std::variant<Promise<EnvVarMetadata, null>> getAllEnvVars();
     std::future<bool> updateEnvVar(const std::string& pluginName, const std::string& varName, const std::optional<EnvVarConfig>& updates);
     std::future<bool> hasMissingEnvVars();
     Array< getMissingEnvVars();
     Array< getGeneratableEnvVars();
     std::future<void> stop();
-    std::future<void> stop(IAgentRuntime runtime);
 };
 
 

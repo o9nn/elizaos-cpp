@@ -13,5 +13,18 @@ namespace elizaos {
 
 
 
+void Fieldset();
+
+void Legend();
+
+void FieldGroup();
+
+void Field();
+
+void Label();
+
+void Description();
+
+void ErrorMessage();
 
 } // namespace elizaos

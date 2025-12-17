@@ -4,9 +4,7 @@
 
 namespace elizaos {
 
-void EVMLogo(auto {
-  className, SVGProps<SVGSVGElement> ...props
-}) {
+void EVMLogo() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

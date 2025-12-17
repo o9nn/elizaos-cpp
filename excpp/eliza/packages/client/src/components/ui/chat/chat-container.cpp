@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void ChatContainerRoot(auto { children, auto className, ChatContainerRootProps ...props }) {
+void ChatContainerRoot(auto className) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -21,7 +21,7 @@ void ChatContainerRoot(auto { children, auto className, ChatContainerRootProps .
 
 }
 
-void ChatContainerContent(auto { children, auto className, ChatContainerContentProps ...props }) {
+void ChatContainerContent(auto className) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -32,7 +32,7 @@ void ChatContainerContent(auto { children, auto className, ChatContainerContentP
 
 }
 
-void ChatContainerScrollAnchor(auto { className, ChatContainerScrollAnchorProps ...props }) {
+void ChatContainerScrollAnchor() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

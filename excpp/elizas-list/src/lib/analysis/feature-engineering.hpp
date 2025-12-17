@@ -1,4 +1,5 @@
 #pragma once
+#include <any>
 #include <functional>
 #include <future>
 #include <memory>
@@ -17,9 +18,9 @@ namespace elizaos {
 
 class FeatureEngineering {
 public:
-    std::future<EngineeredFeatures> engineerFeatures(Record<string data, auto any>[], FeatureConfig config);
-    void processNumericalFeatures(Record<string data, auto any>[], NumericalFeatureConfig config);
-    void processCategoricalFeatures(Record<string data, auto any>[], CategoricalFeatureConfig config);
+    std::future<EngineeredFeatures> engineerFeatures(const std::vector<std::unordered_map<std::string, std::any>>& data, FeatureConfig config);
+    void processNumericalFeatures(const std::vector<std::unordered_map<std::string, std::any>>& data, NumericalFeatureConfig config);
+    void processCategoricalFeatures(const std::vector<std::unordered_map<std::string, std::any>>& data, CategoricalFeatureConfig config);
 };
  
 } // namespace elizaos

@@ -47,7 +47,6 @@ void clearMatcherCache();
  *
  * @returns The size of the cache.
  */
-double getMatcherCacheSize(); /**
  * Type alias for a function that tests content against a specific pattern.
  */
 
@@ -62,7 +61,6 @@ using MatcherFunction = std::function<bool(MatchContent)>;
  * @throws Error if the pattern type is incompatible with the target type.
  */
 
-MatcherFunction createMatcher(TagPattern tagPattern); /**
  * Validates if a pattern type is compatible with a given target content type.
  *
  * @param patternType The pattern type (STRING, REGEX, GLOB)

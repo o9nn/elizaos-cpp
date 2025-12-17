@@ -22,10 +22,10 @@ public:
     void addTransaction(const std::string& hash);
     void updateTransaction(const std::string& hash, const std::optional<TransactionStatus>& status);
     TransactionStatus getTransaction(const std::string& hash);
-    std::future<TransactionStatus> waitForTransaction(const std::string& hash, const std::any& provider, number = 1 confirmations);
+    std::future<TransactionStatus> waitForTransaction(const std::string& hash, const std::any& provider, double confirmations = 1);
 };
 
-bigint estimateGasWithBuffer(bigint estimatedGas, number = 1::2 buffer);
+bigint estimateGasWithBuffer(bigint estimatedGas, double buffer = 1.2);
 
 
 } // namespace elizaos

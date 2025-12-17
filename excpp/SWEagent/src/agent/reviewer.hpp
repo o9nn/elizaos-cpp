@@ -37,7 +37,6 @@ struct ReviewSubmission {
 class ReviewSubmissionImpl {
 public:
     ReviewSubmissionImpl(const std::any& data);
-    std::unordered_map<std::string, unknown> toFormatDict(string = '' suffix);
 
 private:
     Trajectory trajectory_;
@@ -105,7 +104,7 @@ struct ReviewerConfig {
     TrajFormatterConfig trajFormatter;
     double nSample;
     double reduceByStd;
-    'reviewer' type;
+    std::string type;
 };
 
 /**
@@ -135,7 +134,7 @@ struct PreselectorConfig {
  * Configuration for chooser retry loop
  */
 struct ChooserRetryLoopConfig {
-    'chooser' type;
+    std::string type;
     ChooserConfig chooser;
     double maxAttempts;
     double minBudgetForNewAttempt;
@@ -146,7 +145,7 @@ struct ChooserRetryLoopConfig {
  * Configuration for score retry loop
  */
 struct ScoreRetryLoopConfig {
-    'score' type;
+    std::string type;
     ReviewerConfig reviewerConfig;
     double acceptScore;
     double maxAccepts;
@@ -166,8 +165,8 @@ public:
     TrajectoryFormatter(TrajFormatterConfig config);
     bool includeStep(TrajectoryStep item);
     bool includeStepOutput(TrajectoryStep item, double iStep, double nSteps);
-    std::string formatTrajectoryStep(TrajectoryStep step, double iStep, double nSteps, number = 1 iTraj);
-    std::string formatTrajectory(Trajectory trajectory, number = 1 iTraj);
+    std::string formatTrajectoryStep(TrajectoryStep step, double iStep, double nSteps, double iTraj = 1);
+    std::string formatTrajectory(Trajectory trajectory, double iTraj = 1);
 
 private:
     TrajFormatterConfig config_;

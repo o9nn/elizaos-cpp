@@ -11,7 +11,7 @@ std::optional<ChainUIConfig> getChainConfig(const std::string& chain) {
 
 }
 
-std::optional<std::string> getChainIcon(const std::string& chain) {
+std::string getChainIcon(const std::string& chain) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto config = getChainConfig(chain);
@@ -19,7 +19,7 @@ std::optional<std::string> getChainIcon(const std::string& chain) {
 
 }
 
-std::optional<std::string> getChainWalletIcon(const std::string& chain) {
+std::string getChainWalletIcon(const std::string& chain) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto config = getChainConfig(chain);
@@ -27,7 +27,7 @@ std::optional<std::string> getChainWalletIcon(const std::string& chain) {
 
 }
 
-std::optional<std::string> getNativeTokenIcon(const std::string& chain) {
+std::string getNativeTokenIcon(const std::string& chain) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto config = getChainConfig(chain);
@@ -35,7 +35,7 @@ std::optional<std::string> getNativeTokenIcon(const std::string& chain) {
 
 }
 
-std::optional<std::string> getNativeTokenSymbol(const std::string& chain) {
+std::string getNativeTokenSymbol(const std::string& chain) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto config = getChainConfig(chain);
@@ -51,7 +51,7 @@ std::string getChainColor(const std::string& chain) {
 
 }
 
-std::optional<std::string> getTxExplorerUrl(const std::string& chain, const std::string& txHash) {
+std::string getTxExplorerUrl(const std::string& chain, const std::string& txHash) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto config = getChainConfig(chain);
@@ -59,7 +59,7 @@ std::optional<std::string> getTxExplorerUrl(const std::string& chain, const std:
 
 }
 
-std::optional<std::string> getAddressExplorerUrl(const std::string& chain, const std::string& address) {
+std::string getAddressExplorerUrl(const std::string& chain, const std::string& address) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto config = getChainConfig(chain);
@@ -82,14 +82,14 @@ std::string getChainDisplayName(const std::string& chain) {
 
 }
 
-std::optional<std::string> getTokenIconBySymbol(const std::string& symbol) {
+std::string getTokenIconBySymbol(const std::string& symbol) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return TOKEN_ICONS[symbol.toUpperCase()] || nullptr;
 
 }
 
-std::optional<std::string> getTokenIcon(const std::string& symbol, std::optional<std::string> chain) {
+std::string getTokenIcon(const std::string& symbol, std::optional<std::string> chain) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Try to get from common token icons first

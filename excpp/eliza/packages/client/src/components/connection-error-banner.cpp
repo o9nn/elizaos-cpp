@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void ConnectionErrorBanner(ConnectionErrorBannerProps { className }) {
+void ConnectionErrorBanner() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { status, error } = useConnection();

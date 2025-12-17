@@ -24,7 +24,7 @@ struct UserProfileData {
     std::string id;
     std::string address;
     std::string displayName;
-    std::optional<std::string> profilePictureUrl;
+    std::string profilePictureUrl;
     double points;
     double rewardPoints;
     std::string createdAt;

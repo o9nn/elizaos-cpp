@@ -36,9 +36,8 @@ class VisionService {
 public:
     VisionService(IAgentRuntime runtime);
     VisionConfig parseConfig(IAgentRuntime runtime);
-    std::future<VisionService> start(IAgentRuntime runtime);
+    static std::future<VisionService> start(IAgentRuntime runtime);
     Promise< checkCameraTools();
-    void catch(auto _error);
     std::future<void> initialize();
     std::future<void> initializeScreenVision();
     std::future<void> initializeCameraVision();

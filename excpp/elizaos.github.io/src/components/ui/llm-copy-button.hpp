@@ -15,9 +15,10 @@ namespace elizaos {
 
 struct LlmCopyButtonProps {
     IntervalMetrics metrics;
-    std::optional<std::string> summaryContent;
+    std::string summaryContent;
     std::optional<std::string> className;
 };
 
+void LlmCopyButton(auto summaryContent, auto className);
 
 } // namespace elizaos

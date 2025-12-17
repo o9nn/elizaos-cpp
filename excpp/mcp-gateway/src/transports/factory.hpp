@@ -16,10 +16,10 @@ namespace elizaos {
 
 class TransportFactory {
 public:
-    Transport create(McpServerConfig config);
-    TransportConfig normalizeTransportConfig(McpServerConfig config);
-    std::vector<std::string> validateConfig(McpServerConfig config);
-    std::string getTransportDisplayName(McpServerConfig config);
+    static Transport create(McpServerConfig config);
+    static TransportConfig normalizeTransportConfig(McpServerConfig config);
+    static std::vector<std::string> validateConfig(McpServerConfig config);
+    static std::string getTransportDisplayName(McpServerConfig config);
 };
 
 

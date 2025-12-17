@@ -25,7 +25,7 @@ namespace elizaos {
 class OllamaValidationService {
 public:
     OllamaValidationService(const std::any& runtime);
-    std::future<OllamaValidationService> start(const std::any& runtime);
+    static std::future<OllamaValidationService> start(const std::any& runtime);
     std::future<void> stop();
     std::future<bool> isValid();
 };
@@ -57,14 +57,12 @@ std::string messagesToPrompt(const std::vector<std::any>& messages);
  *
  * Returns the generated text, or an error message if generation fails.
  */
-std::future<void> generateOllamaText(ReturnType<typeof createOllama> ollama, const std::string& model, std::optional<std::any> params);
 
 /**
  * Generates an object from the Ollama API using the specified model and parameters.
  *
  * Returns the generated object, or an empty object if generation fails.
  */
-std::future<void> generateOllamaObject(ReturnType<typeof createOllama> ollama, const std::string& model, ObjectGenerationParams params);
 
     // Register the validation service
 

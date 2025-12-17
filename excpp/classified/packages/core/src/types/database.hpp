@@ -5,7 +5,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 
 namespace elizaos {
@@ -66,7 +65,7 @@ struct IDatabaseAdapter {
     std::optional<UUID> roomId;
     std::optional<UUID> worldId;
     std::optional<UUID> entityId;
-    std::variant<'FOLLOWED', 'MUTED'> state;
+    std::string state;
     UUID sourceEntityId;
     UUID targetEntityId;
     std::optional<std::vector<std::string>> tags;

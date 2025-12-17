@@ -25,7 +25,7 @@ struct MarketPositionsParams {
 
 using MarketPositionsInput = {
 
-using MarketPositionsActionResult = ActionResult & { input: MarketPositionsInput };
+using MarketPositionsActionResult = ActionResult;
 
 // Helper function to format market position data
 void formatMarketPositionData(const std::vector<UserPosition>& positions);

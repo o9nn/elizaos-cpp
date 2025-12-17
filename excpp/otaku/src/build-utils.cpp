@@ -222,7 +222,7 @@ std::future<void> copyAssets(const std::vector<std::any>& assets) {
     }
 }
 
-std::future<void> generateDts(auto tsconfigPath = './tsconfig.build.json', auto throwOnError = true) {
+std::future<void> generateDts(auto tsconfigPath, auto throwOnError) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -256,7 +256,7 @@ std::future<void> generateDts(auto tsconfigPath = './tsconfig.build.json', auto 
     }
 }
 
-std::future<void> cleanBuild(auto outdir = 'dist', auto maxRetries = 3) {
+std::future<void> cleanBuild(auto outdir, auto maxRetries) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -317,7 +317,7 @@ std::future<void> cleanBuild(auto outdir = 'dist', auto maxRetries = 3) {
     }
 }
 
-std::future<void> runBuild(std::optional<BuildRunnerOptions & { isRebuild: boolean }> options) {
+std::future<void> runBuild(std::optional<BuildRunnerOptions> options) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

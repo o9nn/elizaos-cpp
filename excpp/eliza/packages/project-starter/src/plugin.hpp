@@ -51,9 +51,8 @@ namespace elizaos {
 class StarterService {
 public:
     StarterService(IAgentRuntime runtime);
-    void start(IAgentRuntime runtime);
-    void stop(IAgentRuntime runtime);
-    void stop();
+    static void start(IAgentRuntime runtime);
+    static void stop(IAgentRuntime runtime);
 };
 
   // Set lowest priority so real models take precedence

@@ -4,9 +4,7 @@
 
 namespace elizaos {
 
-void ProjectRating(auto { 
-  projectId, const std::any& initialRatings 
-}) {
+void ProjectRating() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { data: session } = useSession();

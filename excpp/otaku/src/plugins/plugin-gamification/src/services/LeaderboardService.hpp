@@ -20,7 +20,7 @@ class LeaderboardService {
 public:
     DatabaseAdapter getDb();
     bool isAgent(UUID userId);
-    std::future<LeaderboardService> start(IAgentRuntime runtime);
+    static std::future<LeaderboardService> start(IAgentRuntime runtime);
     void startSnapshotWorker();
     std::future<void> runSnapshotLoop();
     std::future<void> aggregateSnapshots();

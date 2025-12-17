@@ -5,7 +5,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 
 namespace elizaos {
@@ -17,8 +16,8 @@ namespace elizaos {
 
 class RecommendationEngine {
 public:
-    std::future<std::vector<Project>> getRelatedProjects(const std::string& projectId, auto limit = 4);
-    void updateUserBehavior(const std::string& userId, const std::string& projectId, const std::variant<'view', 'like', 'share'>& action);
+    static std::future<std::vector<Project>> getRelatedProjects(const std::string& projectId, auto limit);
+    static void updateUserBehavior(const std::string& userId, const std::string& projectId, const std::string& action);
 };
  
 } // namespace elizaos

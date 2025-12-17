@@ -21,13 +21,7 @@ void useSidebar() {
     }
 }
 
-void Sidebar(auto {
-  side = "left", auto variant = "sidebar", auto collapsible = "offcanvas", auto className, auto children, std::optional<ComponentProps<"div"> & {
-  side: "left" | "right";
-  variant: "sidebar" | "floating" | "inset";
-  collapsible: "offcanvas" | "icon" | "none";
-}> ...props
-}) {
+void Sidebar(auto variant, auto collapsible, auto className, auto children) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { isMobile, state, openMobile, setOpenMobile } = useSidebar();
@@ -121,9 +115,7 @@ void Sidebar(auto {
 
 }
 
-void SidebarTrigger(auto {
-  onClick, ComponentProps<typeof Button> ...props
-}) {
+void SidebarTrigger() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { toggleSidebar } = useSidebar();
@@ -146,7 +138,7 @@ void SidebarTrigger(auto {
 
 }
 
-void SidebarRail(auto { className, ComponentProps<"button"> ...props }) {
+void SidebarRail() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { toggleSidebar } = useSidebar();
@@ -174,7 +166,7 @@ void SidebarRail(auto { className, ComponentProps<"button"> ...props }) {
 
 }
 
-void SidebarInset(auto { className, ComponentProps<"main"> ...props }) {
+void SidebarInset() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -191,9 +183,7 @@ void SidebarInset(auto { className, ComponentProps<"main"> ...props }) {
 
 }
 
-void SidebarInput(auto {
-  className, ComponentProps<typeof Input> ...props
-}) {
+void SidebarInput() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -207,7 +197,7 @@ void SidebarInput(auto {
 
 }
 
-void SidebarHeader(auto { className, ComponentProps<"div"> ...props }) {
+void SidebarHeader() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -224,7 +214,7 @@ void SidebarHeader(auto { className, ComponentProps<"div"> ...props }) {
 
 }
 
-void SidebarFooter(auto { className, ComponentProps<"div"> ...props }) {
+void SidebarFooter() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -238,9 +228,7 @@ void SidebarFooter(auto { className, ComponentProps<"div"> ...props }) {
 
 }
 
-void SidebarSeparator(auto {
-  className, ComponentProps<typeof Separator> ...props
-}) {
+void SidebarSeparator() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -254,7 +242,7 @@ void SidebarSeparator(auto {
 
 }
 
-void SidebarContent(auto { className, ComponentProps<"div"> ...props }) {
+void SidebarContent() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -271,7 +259,7 @@ void SidebarContent(auto { className, ComponentProps<"div"> ...props }) {
 
 }
 
-void SidebarGroup(auto { className, ComponentProps<"div"> ...props }) {
+void SidebarGroup() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -288,9 +276,7 @@ void SidebarGroup(auto { className, ComponentProps<"div"> ...props }) {
 
 }
 
-void SidebarGroupLabel(auto {
-  className, auto asChild = false, std::optional<ComponentProps<"div"> & { asChild: boolean }> ...props
-}) {
+void SidebarGroupLabel(auto asChild) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto Comp = asChild ? Slot : "div";
@@ -310,9 +296,7 @@ void SidebarGroupLabel(auto {
 
 }
 
-void SidebarGroupAction(auto {
-  className, auto asChild = false, std::optional<ComponentProps<"button"> & { asChild: boolean }> ...props
-}) {
+void SidebarGroupAction(auto asChild) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto Comp = asChild ? Slot : "button";
@@ -334,9 +318,7 @@ void SidebarGroupAction(auto {
 
 }
 
-void SidebarGroupContent(auto {
-  className, ComponentProps<"div"> ...props
-}) {
+void SidebarGroupContent() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -350,7 +332,7 @@ void SidebarGroupContent(auto {
 
 }
 
-void SidebarMenu(auto { className, ComponentProps<"ul"> ...props }) {
+void SidebarMenu() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -364,7 +346,7 @@ void SidebarMenu(auto { className, ComponentProps<"ul"> ...props }) {
 
 }
 
-void SidebarMenuItem(auto { className, ComponentProps<"li"> ...props }) {
+void SidebarMenuItem() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -378,13 +360,7 @@ void SidebarMenuItem(auto { className, ComponentProps<"li"> ...props }) {
 
 }
 
-void SidebarMenuButton(auto {
-  asChild = false, auto isActive = false, auto variant = "default", auto size = "default", auto tooltip, auto className, std::optional<ComponentProps<"button"> & {
-  asChild: boolean;
-  isActive: boolean;
-  tooltip: string | ComponentProps<typeof TooltipContent>;
-} & VariantProps<typeof sidebarMenuButtonVariants>> ...props
-}) {
+void SidebarMenuButton(auto isActive, auto variant, auto size, auto tooltip, auto className) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto Comp = asChild ? Slot : "button";
@@ -425,12 +401,7 @@ void SidebarMenuButton(auto {
 
 }
 
-void SidebarMenuAction(auto {
-  className, auto asChild = false, auto showOnHover = false, std::optional<ComponentProps<"button"> & {
-  asChild: boolean;
-  showOnHover: boolean;
-}> ...props
-}) {
+void SidebarMenuAction(auto asChild, auto showOnHover) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto Comp = asChild ? Slot : "button";
@@ -457,9 +428,7 @@ void SidebarMenuAction(auto {
 
 }
 
-void SidebarMenuBadge(auto {
-  className, ComponentProps<"div"> ...props
-}) {
+void SidebarMenuBadge() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -478,11 +447,7 @@ void SidebarMenuBadge(auto {
 
 }
 
-void SidebarMenuSkeleton(auto {
-  className, auto showIcon = false, std::optional<ComponentProps<"div"> & {
-  showIcon: boolean;
-}> ...props
-}) {
+void SidebarMenuSkeleton(auto showIcon) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Random width between 50 to 90%.
@@ -517,7 +482,7 @@ void SidebarMenuSkeleton(auto {
 
 }
 
-void SidebarMenuSub(auto { className, ComponentProps<"ul"> ...props }) {
+void SidebarMenuSub() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -535,9 +500,7 @@ void SidebarMenuSub(auto { className, ComponentProps<"ul"> ...props }) {
 
 }
 
-void SidebarMenuSubItem(auto {
-  className, ComponentProps<"li"> ...props
-}) {
+void SidebarMenuSubItem() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -551,13 +514,7 @@ void SidebarMenuSubItem(auto {
 
 }
 
-void SidebarMenuSubButton(auto {
-  asChild = false, auto size = "md", auto isActive = false, auto className, std::optional<ComponentProps<"a"> & {
-  asChild: boolean;
-  size: "sm" | "md";
-  isActive: boolean;
-}> ...props
-}) {
+void SidebarMenuSubButton(auto size, auto isActive, auto className) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto Comp = asChild ? Slot : "a";

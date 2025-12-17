@@ -1,5 +1,4 @@
 #pragma once
-#include <any>
 #include <functional>
 #include <future>
 #include <memory>
@@ -53,7 +52,7 @@ struct CreatorOptions {
 
 class PluginCreator {
 public:
-    PluginCreator(CreatorOptions = {} options);
+    PluginCreator(CreatorOptions options = {});
     void registerCleanupHandlers();
     std::future<void> initializeAnthropic();
     std::future<CreationResult> create(std::optional<PluginSpecification> pluginSpec);
@@ -69,9 +68,7 @@ public:
     std::future<void> runClaudeCode();
     std::future<void> runClaudeCodeWithContext(const std::string& context);
     std::future<void> runClaudeCodeWithPrompt(const std::string& prompt);
-    void catch(const std::any& error);
     std::future<std::string> getBuildErrors();
-    void catch(const std::any& error);
     std::future<std::string> getTestErrors();
     std::future<ValidationResult> validateProductionReadiness();
     std::future<std::string> getAllPluginFiles();

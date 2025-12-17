@@ -19,14 +19,12 @@ namespace elizaos {
 class PluginConfigurationService {
 public:
     PluginConfigurationService(IAgentRuntime runtime);
-    std::future<PluginConfigurationService> start(IAgentRuntime runtime);
+    static std::future<PluginConfigurationService> start(IAgentRuntime runtime);
     std::future<void> initialize();
     Promise< parsePluginRequirements(const std::string& pluginPath);
-    void catch(auto error);
     std::future<std::unordered_map<std::string, std::string>> getPluginConfiguration(const std::string& pluginName);
-    std::future<void> setPluginConfiguration(const std::string& pluginName, Record<string config, auto string>, std::optional<Record<string> metadata, auto PluginEnvironmentVariable>);
-    Promise< validateConfiguration(const std::string& pluginName, Record<string config, auto string>, const std::vector<PluginEnvironmentVariable>& requirements);
-    void for(auto const req of requirements);
+    std::future<void> setPluginConfiguration(const std::string& pluginName, const std::unordered_map<std::string, std::string>& config, std::optional<std::unordered_map<std::string, PluginEnvironmentVariable>> metadata);
+    Promise< validateConfiguration(const std::string& pluginName, const std::unordered_map<std::string, std::string>& config, const std::vector<PluginEnvironmentVariable>& requirements);
     std::future<PluginConfigurationRequest> generateConfigurationRequest(const std::string& pluginName, const std::string& pluginPath);
     std::future<std::unordered_map<std::string, std::string>> applyConfigurationToEnvironment(const std::string& pluginName);
     std::future<bool> hasValidConfiguration(const std::string& pluginName, const std::string& pluginPath);

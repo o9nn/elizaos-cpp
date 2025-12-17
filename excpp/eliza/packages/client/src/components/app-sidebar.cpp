@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void AppSidebar(auto {
-  refreshHomePage, auto isMobile = false, std::optional<AppSidebarProps & { isMobile: boolean }> }) {
+void AppSidebar(auto isMobile) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto location = useLocation();

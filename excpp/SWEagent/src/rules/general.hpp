@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include "types.hpp"
 
@@ -36,7 +35,6 @@ namespace elizaos {
 /**
  * Helper function to validate code against rules
  */
-void validateAgainstRules(const std::string& code, CodingGuidelines guidelines); {
 
   // Basic validation examples (extend as needed)
     // Check for os.path usage
@@ -48,6 +46,6 @@ void validateAgainstRules(const std::string& code, CodingGuidelines guidelines);
 /**
  * Get applicable rules for a file
  */
-std::vector<CodingRule> getApplicableRules(const std::string& filePath, std::optional<std::variant<'python', 'typescript'>> language);
+std::vector<CodingRule> getApplicableRules(const std::string& filePath, std::optional<std::string> language);
 
 } // namespace elizaos

@@ -288,7 +288,7 @@ std::future<bool> isValidSwapTx(Connection connection, const std::string& signat
 
 }
 
-std::future<void> processLastValidSwap(const std::any& token, double solPriceUSD, auto limit = 5) {
+std::future<void> processLastValidSwap(const std::any& token, double solPriceUSD, auto limit) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto rpcUrl =;
@@ -319,7 +319,7 @@ std::future<void> processLastValidSwap(const std::any& token, double solPriceUSD
 
 }
 
-std::future<double> updateHoldersCache(const std::string& mint, boolean = false imported) {
+std::future<double> updateHoldersCache(const std::string& mint, bool imported = false) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto env = process.env;
@@ -484,7 +484,7 @@ std::future<double> updateHoldersCache(const std::string& mint, boolean = false 
 
 }
 
-std::future<void> processTokenUpdateEvent(const std::any& tokenData, boolean = false shouldEmitGlobal, boolean = false isNewTokenEvent, auto // Add the new flag) {
+std::future<void> processTokenUpdateEvent(const std::any& tokenData, bool shouldEmitGlobal = false, bool isNewTokenEvent = false) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

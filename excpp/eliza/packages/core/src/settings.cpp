@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-Setting createSettingFromConfig(Omit<Setting configSetting, auto 'value'>) {
+Setting createSettingFromConfig() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return {
@@ -331,7 +331,7 @@ Character decryptedCharacter(Character character, IAgentRuntime _runtime) {
 
 }
 
-std::unordered_map<std::string, std::any> encryptObjectValues(Record<string obj, auto any>, const std::string& salt) {
+std::unordered_map<std::string, std::any> encryptObjectValues(const std::unordered_map<std::string, std::any>& obj, const std::string& salt) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const std::unordered_map<std::string, std::any> result = {};
@@ -348,7 +348,7 @@ std::unordered_map<std::string, std::any> encryptObjectValues(Record<string obj,
 
 }
 
-std::unordered_map<std::string, std::any> decryptObjectValues(Record<string obj, auto any>, const std::string& salt) {
+std::unordered_map<std::string, std::any> decryptObjectValues(const std::unordered_map<std::string, std::any>& obj, const std::string& salt) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const std::unordered_map<std::string, std::any> result = {};

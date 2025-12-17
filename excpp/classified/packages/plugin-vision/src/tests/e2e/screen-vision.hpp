@@ -19,23 +19,6 @@ namespace elizaos {
 
 class ScreenVisionE2ETestSuite {
 public:
-    void if(auto !visionService);
-    void if(auto screenInfo);
-    void if(auto !visionService);
-    void if(auto !screenCapture);
-    void if(auto !firstTile);
-    void if(auto !visionService);
-    void if(auto !enhancedScene || !enhancedScene.screenAnalysis);
-    void if(auto screenAnalysis.activeTile);
-    void if(auto screenAnalysis.fullScreenOCR);
-    void if(auto screenAnalysis.uiElements && screenAnalysis.uiElements.length > 0);
-    void if(auto !visionService);
-    void for(auto const mode of modes);
-    void if(auto !callbackCalled);
-    void if(auto !visionService);
-    void if(auto !hasCamera && !hasScreen);
-    void if(auto enhancedScene);
-    void if(auto !visionService);
 };
 
 

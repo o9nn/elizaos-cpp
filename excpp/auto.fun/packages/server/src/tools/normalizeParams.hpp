@@ -13,8 +13,6 @@ namespace elizaos {
 
 
 
-void normalizeParams(Record<string q, auto string | undefined>);
 
-void makeCacheKey(Record<string params, auto string | number>);
 
 } // namespace elizaos

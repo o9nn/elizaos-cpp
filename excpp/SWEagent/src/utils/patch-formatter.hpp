@@ -4,6 +4,7 @@
 #include <memory>
 #include <optional>
 #include <string>
+#include <tuple>
 #include <unordered_map>
 #include <vector>
 
@@ -34,16 +35,10 @@ struct PatchFile {
 class PatchFormatter {
 public:
     std::vector<PatchFile> parsePatch(const std::string& patch);
-    [number[], number[]] mergeIntervals(const std::vector<double>& starts, const std::vector<double>& stops);
-    std::string formatFile(const std::string& text, const std::vector<double>& starts, const std::vector<double>& stops, std::optional<std::any> options);
-    std::unordered_map<std::string, std::vector<[number>, number[]]> getHunkLines(bool original, number = 50 contextLength);
+    static std::tuple<std::vector<double>, std::vector<double>> mergeIntervals(const std::vector<double>& starts, const std::vector<double>& stops);
+    std::string formatFile(const std::string& text, const std::vector<double>& starts, const std::vector<double>& stops, std::any options = {});
     void readFiles(bool original);
-    std::string concatFilesStrings(Map<string files, auto string>);
-    std::string getFilesStr(std::optional<std::any> options);
-
-private:
-    std::vector<PatchFile> parsedPatch_;
-};
+    std::string getFilesStr(std::any options = {});
 
 
 } // namespace elizaos

@@ -5,7 +5,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include "claude-proxy.hpp"
 #include "elizaos/core.hpp"
@@ -47,7 +46,7 @@ struct ProviderInfo {
     std::optional<std::string> name;
     Plugin plugin;
     std::string displayName;
-    std::variant<'available', 'not_configured', 'error'> status;
+    std::string status;
     std::string message;
 };
 
@@ -112,7 +111,7 @@ std::string getProviderConfigMessage(InferenceProvider provider);
 /**
  * Set the selected provider
  */
-std::future<void> setSelectedProvider(IAgentRuntime runtime, const std::optional<std::string>& provider);
+std::future<void> setSelectedProvider(IAgentRuntime runtime, const std::string& provider);
 
 /**
  * Set provider preferences

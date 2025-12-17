@@ -30,7 +30,7 @@ struct PluginItem {
     std::string example;
 };
 
-void AboutModalContent(AboutModalContentProps { onClose });
+void AboutModalContent();
 
 
 } // namespace elizaos

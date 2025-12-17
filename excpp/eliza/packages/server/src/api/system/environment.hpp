@@ -24,9 +24,9 @@ using EnvVars = std::unordered_map<std::string, std::string>;
  */
 std::future<EnvVars> parseEnvFile(const std::string& filePath);
 
-std::string serializeEnvObject(Record<string envObj, auto string>);
+std::string serializeEnvObject(const std::unordered_map<std::string, std::string>& envObj);
 
-std::optional<std::string> getLocalEnvPath();
+std::string getLocalEnvPath();
 
 /**
  * Resolves the path to the nearest `.env` file.

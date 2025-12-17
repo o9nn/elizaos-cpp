@@ -14,10 +14,10 @@ namespace elizaos {
 
 class Logger {
 public:
-    void info(const std::string& message, const std::vector<std::any>& ...args);
-    void debug(const std::string& message, const std::vector<std::any>& ...args);
+    void info(const std::string& message);
+    void debug(const std::string& message);
     void error(const std::string& message, std::optional<std::any> error);
-    void warn(const std::string& message, const std::vector<std::any>& ...args);
+    void warn(const std::string& message);
 };
 
 

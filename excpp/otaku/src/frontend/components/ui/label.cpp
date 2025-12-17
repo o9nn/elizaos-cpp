@@ -4,9 +4,7 @@
 
 namespace elizaos {
 
-void Label(auto {
-  className, ComponentProps<typeof LabelPrimitive.Root> ...props
-}) {
+void Label() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

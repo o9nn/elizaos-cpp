@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::future<std::optional<std::string>> getLocalCliPath() {
+std::future<std::string> getLocalCliPath() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto localCliPath = path.join(;
@@ -58,7 +58,7 @@ std::unordered_map<std::string, std::string> setupEnvironment() {
 
 }
 
-std::future<void> startServerProcess(const std::vector<string[] =>& args) {
+std::future<void> startServerProcess(std::vector<std::string> args = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     stopServerProcess();
@@ -189,7 +189,7 @@ std::future<bool> stopServerProcess() {
 
 }
 
-std::future<void> restartServerProcess(const std::vector<string[] =>& args) {
+std::future<void> restartServerProcess(std::vector<std::string> args = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     std::cout << 'Restarting server...' << std::endl;
@@ -228,14 +228,14 @@ std::future<bool> stopServer() {
 
 }
 
-std::future<void> startServer(const std::vector<string[] =>& args) {
+std::future<void> startServer(std::vector<std::string> args = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return startServerProcess(args);
 
 }
 
-std::future<void> restartServer(const std::vector<string[] =>& args) {
+std::future<void> restartServer(std::vector<std::string> args = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return restartServerProcess(args);

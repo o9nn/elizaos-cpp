@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::optional<std::string> getOrGenerateSeed() {
+std::string getOrGenerateSeed() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (typeof window == "undefined" || !window.localStorage) {

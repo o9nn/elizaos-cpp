@@ -1,5 +1,4 @@
 #pragma once
-#include <any>
 #include <functional>
 #include <future>
 #include <memory>
@@ -25,10 +24,13 @@ public:
     MessageManager(IAgentRuntime runtime);
     std::future<void> handleMessage(auto msg);
     std::future<void> sendMessage(const std::string& text);
-    void formatMessages(auto {
-    messages, auto entities, const std::any& });
-    void getRecentMessages(UUID roomId, auto count = 20);
+    void formatMessages(auto entities);
+    void getRecentMessages(UUID roomId, auto count);
     void getService();
+
+private:
+    IAgentRuntime runtime_;
+};
 
 
 } // namespace elizaos

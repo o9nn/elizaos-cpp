@@ -17,7 +17,7 @@ namespace elizaos {
  * Converted from tools/search/bin/search_dir
  */
 
-void searchDir(const std::string& searchTerm, string = '::/' dir);
+void searchDir(const std::string& searchTerm, std::string dir = "./");
 
 // CLI if run directly
 // CLI setup

@@ -24,7 +24,7 @@ namespace elizaos {
  * @returns {string | null} The contents of the file as a string, or null if an error occurred.
  * @throws {Error} If an error occurs while loading the file.
  */
-std::optional<std::string> tryLoadFile(const std::string& filePath);
+std::string tryLoadFile(const std::string& filePath);
 
 /**
  * Attempts to load a file from the given file path asynchronously.
@@ -34,6 +34,7 @@ std::optional<std::string> tryLoadFile(const std::string& filePath);
  * @returns {Promise<string | null>} The contents of the file as a string, or null if an error occurred.
  * @throws {Error} If an error occurs while loading the file.
  */
+std::future<std::string> tryLoadFileAsync(const std::string& filePath);
 
 /**
  * Load characters from a specified URL and return them as an array of Character objects.

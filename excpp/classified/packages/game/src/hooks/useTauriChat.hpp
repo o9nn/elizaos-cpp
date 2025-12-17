@@ -17,7 +17,7 @@ namespace elizaos {
 struct UseTauriChatReturn {
     bool isConnected;
     std::vector<TauriMessage> messages;
-    std::optional<std::string> error;
+    std::string error;
     bool isLoading;
 };
 

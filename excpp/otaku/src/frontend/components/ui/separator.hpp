@@ -13,5 +13,7 @@ namespace elizaos {
 
 
 
+void Separator(auto orientation, auto decorative);
+
 
 } // namespace elizaos

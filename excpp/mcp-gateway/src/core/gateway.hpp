@@ -21,7 +21,7 @@ namespace elizaos {
 
 class GatewayServer {
 public:
-    GatewayServer(GatewayConfig config, Console = console logger);
+    GatewayServer(GatewayConfig config, Console logger = console);
     void setupHandlers();
     std::future<void> start();
     std::future<void> connect(StdioServerTransport transport);

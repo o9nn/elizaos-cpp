@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 
 namespace elizaos {
@@ -32,7 +31,7 @@ namespace elizaos {
   }
 
   struct PosenetModelConfig {
-    std::optional<std::variant<'MobileNetV1', 'ResNet50'>> architecture;
+    std::optional<std::string> architecture;
     std::optional<double> outputStride;
     std::optional<double> multiplier;
 };

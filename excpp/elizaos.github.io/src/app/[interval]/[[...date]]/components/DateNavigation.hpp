@@ -16,11 +16,12 @@ namespace elizaos {
 
 
 struct DateNavigationProps {
-    std::optional<std::string> prevDate;
-    std::optional<std::string> nextDate;
+    std::string prevDate;
+    std::string nextDate;
     std::string currentDate;
     IntervalType intervalType;
 };
 
+void DateNavigation(auto nextDate, auto currentDate, auto intervalType);
 
 } // namespace elizaos

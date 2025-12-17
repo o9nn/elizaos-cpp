@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 
 namespace elizaos {
@@ -22,7 +21,7 @@ struct Contributor {
     std::string github;
     std::optional<std::string> twitter;
     std::optional<std::string> website;
-    std::variant<'code', 'design', 'docs', 'bug', 'feature'> type;
+    std::string type;
     double count;
     std::string title;
     std::string description;

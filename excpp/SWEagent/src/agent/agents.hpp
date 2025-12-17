@@ -5,6 +5,7 @@
 #include <memory>
 #include <optional>
 #include <string>
+#include <tuple>
 #include <unordered_map>
 #include <variant>
 #include <vector>
@@ -93,7 +94,7 @@ public:
     ToolHandler(ToolConfig config);
     std::future<void> install(AgentEnvironment env);
     std::future<std::unordered_map<std::string, std::string>> getState(AgentEnvironment env);
-    [string, string] parseActions(const std::variant<std::string, ModelOutput>& output);
+    std::tuple<std::string, std::string> parseActions(const std::variant<std::string, ModelOutput>& output);
     bool shouldBlockAction(const std::string& action);
     bool checkForSubmissionCmd(const std::string& observation);
     std::string guardMultilineInput(const std::string& action);
@@ -145,7 +146,7 @@ struct DefaultAgentConfig {
     ModelConfig model;
     double maxRequeries;
     std::optional<ActionSamplerConfig> actionSampler;
-    std::variant<'default', 'retry', 'shell'> type;
+    std::string type;
 };
 
 /**
@@ -155,7 +156,7 @@ struct RetryAgentConfig {
     std::string name;
     std::vector<DefaultAgentConfig> agentConfigs;
     RetryLoopConfig retryLoop;
-    'retry' type;
+    std::string type;
 };
 
 /**
@@ -168,7 +169,7 @@ struct ShellAgentConfig {
     std::vector<AbstractHistoryProcessor> historyProcessors;
     ModelConfig model;
     double maxRequeries;
-    'shell' type;
+    std::string type;
 };
 
 using AgentConfig = std::variant<DefaultAgentConfig, RetryAgentConfig, ShellAgentConfig>;
@@ -176,7 +177,6 @@ using AgentConfig = std::variant<DefaultAgentConfig, RetryAgentConfig, ShellAgen
 /**
  * Abstract base class for agents
  */
-    AbstractAgent fromConfig(AgentConfig _config);
 
 /**
  * Default agent implementation
@@ -184,27 +184,35 @@ using AgentConfig = std::variant<DefaultAgentConfig, RetryAgentConfig, ShellAgen
 class DefaultAgent {
 public:
     DefaultAgent(std::optional<std::any> config);
-    DefaultAgent fromConfig(DefaultAgentConfig config);
+    static DefaultAgent fromConfig(DefaultAgentConfig config);
     void addHook(AbstractAgentHook hook);
     History messages() const;
-    void appendHistory(HistoryItem & { agent: string; messageType: string } item);
-    std::future<void> setup(AgentEnvironment env, const std::variant<ProblemStatement, ProblemStatementConfig>& problemStatement, string = '::' outputDir);
-    std::unordered_map<std::string, unknown> getFormatDict(std::optional<Record<string> kwargs, auto unknown>);
+    void appendHistory(HistoryItem item);
+    std::unordered_map<std::string, unknown> getFormatDict(std::optional<std::unordered_map<std::string, unknown>> kwargs);
     void addSystemMessageToHistory();
     void addDemonstrationsToHistory();
     void addDemonstrationToHistory(const std::string& demonstrationPath);
-    void addInstanceTemplateToHistory(Record<string state, auto string>);
+    void addInstanceTemplateToHistory(const std::unordered_map<std::string, std::string>& state);
     Trajectory getTrajectory();
-
+     getTrajectoryData();
     std::future<StepOutput> forward(History history);
     std::future<StepOutput> handleAction(StepOutput step);
-    std::future<StepOutput> handleSubmission(StepOutput step, string = '' observation, boolean = false forceSubmission);
     void addStepToTrajectory(StepOutput step);
     std::future<StepOutput> forwardWithHandling(History history);
-    History getModelRequeryHistory(const std::string& errorTemplate, StepOutput step, Record<string kwargs, auto unknown>);
+    History getModelRequeryHistory(const std::string& errorTemplate, StepOutput step, const std::unordered_map<std::string, unknown>& kwargs);
     std::future<StepOutput> attemptAutosubmissionAfterError(StepOutput step);
     std::future<StepOutput> step();
-    std::future<AgentRunResult> run(AgentEnvironment env, const std::variant<ProblemStatement, ProblemStatementConfig>& problemStatement, string = '::' outputDir);
+
+private:
+    std::string name_;
+    AbstractModel model_;
+    TemplateConfig templates_;
+    ToolHandler tools_;
+    std::vector<AbstractHistoryProcessor> historyProcessors_;
+    double maxRequeries_;
+    AgentLogger logger_;
+    CombinedAgentHook chook_;
+};
 
 /**
  * Retry agent implementation
@@ -212,18 +220,26 @@ public:
 class RetryAgent {
 public:
     RetryAgent(RetryAgentConfig config);
-    std::variant<double, null; onSubmit(data: unknown): void; retry(): boolean }, null = null; // RetryLoop instance
-
-    RetryAgent fromConfig(RetryAgentConfig config);
+    static RetryAgent fromConfig(RetryAgentConfig config);
     void addHook(AbstractAgentHook hook);
-    void setup(AgentEnvironment env, const std::variant<ProblemStatement, ProblemStatementConfig>& problemStatement, string = '::' outputDir);
     DefaultAgent setupAgent();
     void nextAttempt();
     std::future<StepOutput> step();
     void finalizeAgentRun();
-    void if(auto choose && this.rloop);
-    void saveTrajectory(boolean = false choose);
-    std::future<AgentRunResult> run(AgentEnvironment env, const std::variant<ProblemStatement, ProblemStatementConfig>& problemStatement, string = '::' outputDir);
+     getTrajectoryData(bool choose = false);
+    void saveTrajectory(bool choose = false);
+
+private:
+    RetryAgentConfig config_;
+    Trajectory trajectory_;
+    History history_;
+    AgentInfo info_;
+    std::string replayConfig_;
+    std::string environment_;
+    InstanceStats totalInstanceAttemptStats_;
+    CombinedAgentHook chook_;
+    AgentLogger logger_;
+};
 
 /**
  * Factory function to get agent from configuration

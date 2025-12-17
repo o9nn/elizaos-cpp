@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void ServerManagement(auto { open, ServerManagementProps onOpenChange }) {
+void ServerManagement() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { toast } = useToast();

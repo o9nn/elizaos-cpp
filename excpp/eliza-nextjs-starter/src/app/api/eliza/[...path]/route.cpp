@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::future<void> GET(NextRequest request, const std::any& { params }) {
+std::future<void> GET(NextRequest request) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -45,7 +45,7 @@ std::future<void> GET(NextRequest request, const std::any& { params }) {
 
 }
 
-std::future<void> POST(NextRequest request, const std::any& { params }) {
+std::future<void> POST(NextRequest request) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -86,7 +86,7 @@ std::future<void> POST(NextRequest request, const std::any& { params }) {
 
 }
 
-std::future<void> PUT(NextRequest request, const std::any& { params }) {
+std::future<void> PUT(NextRequest request) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -127,7 +127,7 @@ std::future<void> PUT(NextRequest request, const std::any& { params }) {
 
 }
 
-std::future<void> DELETE(NextRequest request, const std::any& { params }) {
+std::future<void> DELETE(NextRequest request) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {

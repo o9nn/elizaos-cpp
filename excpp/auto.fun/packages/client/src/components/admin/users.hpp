@@ -1,5 +1,4 @@
 #pragma once
-#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -18,7 +17,7 @@ namespace elizaos {
 struct User {
     std::string id;
     std::string address;
-    std::optional<std::string> name;
+    std::string name;
     std::string createdAt;
     std::optional<std::string> lastActive;
     double points;
@@ -55,6 +54,6 @@ struct Transaction {
 
 void AdminUsersList();
 
-void AdminUserDetails(const std::any& { address });
+void AdminUserDetails();
 
 } // namespace elizaos

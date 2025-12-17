@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void Notifications(auto {
-  initialNotifications, NotificationsProps }) {
+void Notifications() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [notifications, setNotifications] =;

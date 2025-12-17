@@ -24,7 +24,7 @@ namespace elizaos {
  */
 class MultiChainWallet {
 public:
-    MultiChainWallet(Account account, std::optional<std::string> defaultRpcUrl, number = base::id initialChainId);
+    MultiChainWallet(Account account, std::optional<std::string> defaultRpcUrl, double initialChainId = base.id);
     WalletClient getWalletClient(double chainId);
     std::future<double> getChainId();
     std::future<void> switchChain(double chainId);

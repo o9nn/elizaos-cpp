@@ -37,7 +37,6 @@ struct ConfigurationData {
  * Represents a configuration object that holds various settings for a project.
  * Handles both absolute and relative paths for different operations.
  */
-class Configuration implements Omit<ConfigurationData, "rootDirectory"> {
   private _rootDirectory!: ConfigurationData["rootDirectory"];
   private readonly repoRoot: string;
   private _branch = "develop";
@@ -45,10 +44,6 @@ class Configuration implements Omit<ConfigurationData, "rootDirectory"> {
   private _generateReadme = false;
 
   public excludedDirectories: string[] = [];
-  public repository: Repository = {
-    owner: "elizaOS",
-    name: "eliza",
-    pullNumber: undefined,
   };
 
     // First try to get from environment variables

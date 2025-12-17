@@ -46,7 +46,6 @@ struct SolanaOracleInfo {
 /**
  * Validate oracle has sufficient data/liquidity
  */
-void validateSolanaOracle(SolanaOracleInfo oracle); {
 
     // PumpSwap/Pump.fun bonding curves typically have lower liquidity but are still valid
 
@@ -58,6 +57,5 @@ std::string formatOracleInfo(SolanaOracleInfo oracle);
 /**
  * Get registration cost estimate for Solana
  */
-void getSolanaRegistrationCost(); {
 
 } // namespace elizaos

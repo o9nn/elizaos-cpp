@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void IssuesListModalContent(auto {
-  issues, IssuesListModalContentProps }) {
+void IssuesListModalContent() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

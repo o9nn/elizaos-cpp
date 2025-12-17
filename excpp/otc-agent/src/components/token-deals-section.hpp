@@ -23,5 +23,6 @@ void getDealTerms(OTCConsignment c);
 
 void getDealScore(OTCConsignment c);
 
+void TokenDealsSection(auto marketData, auto consignments);
 
 } // namespace elizaos

@@ -25,13 +25,9 @@ namespace elizaos {
 
 class PluginDocumentationGenerator {
 public:
-    PluginDocumentationGenerator(AIService private aiService, GitManager private gitManager, Configuration private configuration);
-    std::future<void> generate(const std::vector<ASTQueueItem>& existingDocs, std::optional<std::string> branchName, const std::vector<TodoItem[] =>& todoItems, const std::vector<EnvUsage[] =>& envUsages);
+    PluginDocumentationGenerator();
+    std::future<void> generate(const std::vector<ASTQueueItem>& existingDocs, std::optional<std::string> branchName, std::vector<TodoItem> todoItems = {}, std::vector<EnvUsage> envUsages = {});
     std::string generateMarkdownContent(PluginDocumentation docs, const std::any& packageJson);
-
-private:
-    FullDocumentationGenerator fullDocumentationGenerator_;
-};
 
 
 } // namespace elizaos

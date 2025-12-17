@@ -5,7 +5,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include ".service.js.hpp"
 #include ".utils.js.hpp"
@@ -21,11 +20,11 @@ namespace elizaos {
 class PuppeteerManager {
 public:
     PuppeteerManager(IAgentRuntime runtime);
-    PuppeteerManager getInstance();
+    static PuppeteerManager getInstance();
     void init();
     void injectScripts(const std::vector<std::string>& scriptPaths);
-    std::future<std::string> snapshotFacingDirection(const std::variant<'front', 'back', 'left', 'right'>& direction);
-    std::future<std::string> snapshotViewToTarget([number targetPosition, auto number, auto number]);
+    std::future<std::string> snapshotFacingDirection(const std::string& direction);
+    std::future<std::string> snapshotViewToTarget([number targetPosition, auto number);
     std::future<std::string> snapshotEquirectangular();
     std::future<std::vector<double>> loadGlbBytes(const std::string& url);
     std::future<std::vector<double>> loadVRMBytes(const std::string& url);

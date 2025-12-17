@@ -43,10 +43,7 @@ using LogStreamData = {
 class EventAdapter {
 public:
     EventAdapter();
-    void if(auto !this.events[eventName]);
-    void if(auto this.events[eventName]);
-    void emit(const std::string& eventName, const std::vector<std::any>& ...args);
-    void if(auto !this.events[eventName]);
+    void emit(const std::string& eventName);
     double listenerCount(const std::string& eventName);
     Evt<any> _getEvt(const std::string& eventName);
 };
@@ -66,15 +63,15 @@ public:
     void evtChannelCleared();
     void evtChannelDeleted();
     void evtLogStream();
-    SocketIOManager getInstance();
-    bool isConnected();
+    static SocketIOManager getInstance();
+    static bool isConnected();
     bool isChannelActive(const std::string& channelId);
     void initialize(const std::string& clientEntityId);
     std::future<void> joinChannel(const std::string& channelId);
     std::future<void> joinRoom(const std::string& channelId);
     void leaveChannel(const std::string& channelId);
     void leaveRoom(const std::string& channelId);
-    std::future<void> sendMessage(const std::string& message, const std::string& channelId, const std::string& serverId, const std::string& source, std::optional<std::vector<std::any>> attachments, std::optional<std::string> messageId, std::optional<Record<string> metadata, auto any>);
+    std::future<void> sendMessage(const std::string& message, const std::string& channelId, const std::string& serverId, const std::string& source, std::optional<std::vector<std::any>> attachments, std::optional<std::string> messageId, std::optional<std::unordered_map<std::string, std::any>> metadata);
     std::future<void> subscribeToLogStream();
     std::future<void> unsubscribeFromLogStream();
     std::future<void> updateLogStreamFilters(std::optional<std::any> filters);

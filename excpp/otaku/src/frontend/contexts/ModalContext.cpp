@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void ModalProvider(const std::any& { children }) {
+void ModalProvider() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [state, setState] = useState<ModalState>({;

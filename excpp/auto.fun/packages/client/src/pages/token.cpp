@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void MiddleEllipsis(std::optional<std::any> { text }) {
+void MiddleEllipsis() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto elementRef = useRef<HTMLDivElement>(nullptr);

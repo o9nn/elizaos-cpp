@@ -19,7 +19,7 @@ std::optional<Chain> getViemChain(const std::string& network) {
 
 }
 
-std::optional<std::string> getRpcUrl(const std::string& network, const std::string& alchemyKey) {
+std::string getRpcUrl(const std::string& network, const std::string& alchemyKey) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto config = getChainConfig(network);
@@ -27,7 +27,7 @@ std::optional<std::string> getRpcUrl(const std::string& network, const std::stri
 
 }
 
-std::optional<std::string> getExplorerUrl(const std::string& network) {
+std::string getExplorerUrl(const std::string& network) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto config = getChainConfig(network);
@@ -35,7 +35,7 @@ std::optional<std::string> getExplorerUrl(const std::string& network) {
 
 }
 
-std::optional<std::string> getTxExplorerUrl(const std::string& network, const std::string& txHash) {
+std::string getTxExplorerUrl(const std::string& network, const std::string& txHash) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto explorerUrl = getExplorerUrl(network);
@@ -43,7 +43,7 @@ std::optional<std::string> getTxExplorerUrl(const std::string& network, const st
 
 }
 
-std::optional<std::string> getAddressExplorerUrl(const std::string& network, const std::string& address) {
+std::string getAddressExplorerUrl(const std::string& network, const std::string& address) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto explorerUrl = getExplorerUrl(network);
@@ -59,7 +59,7 @@ void getNativeTokenInfo(const std::string& network) {
 
 }
 
-std::optional<std::string> getCoingeckoPlatform(const std::string& network) {
+std::string getCoingeckoPlatform(const std::string& network) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto config = getChainConfig(network);

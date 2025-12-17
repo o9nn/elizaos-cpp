@@ -18,11 +18,10 @@ namespace elizaos {
 
 class CommunityManagerService {
 public:
-    CommunityManagerService(IAgentRuntime protected runtime);
-    std::future<CommunityManagerService> start(IAgentRuntime runtime);
-    std::future<void> stop(IAgentRuntime runtime);
-    std::future<void> stop();
-    std::future<std::optional<std::string>> getDiscordGreetChannelId(World world, auto guild);
+    CommunityManagerService();
+    static std::future<CommunityManagerService> start(IAgentRuntime runtime);
+    static std::future<void> stop(IAgentRuntime runtime);
+    std::future<std::string> getDiscordGreetChannelId(World world, auto guild);
     void getGreetingMessage(IAgentRuntime runtime, const std::string& userName, std::optional<std::string> greetingMessage);
     void onDiscordUserJoined(auto params);
     void onTelegramUserJoined(auto params);

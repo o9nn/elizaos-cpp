@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void AgentSidebar(auto { agentId, auto agentName, AgentSidebarProps channelId }) {
+void AgentSidebar(auto agentName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { currentTab: detailsTab, setTab: setDetailsTab } = useAgentTabState(agentId);

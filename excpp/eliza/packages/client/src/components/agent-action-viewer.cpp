@@ -61,7 +61,7 @@ void formatDate(double timestamp) {
 
 }
 
-void getModelIcon(auto modelType = '') {
+void getModelIcon(auto modelType) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (modelType == 'ACTION') return Zap;
@@ -89,7 +89,7 @@ void formatTokenUsage(const std::any& usage) {
 
 }
 
-void truncateText(const std::string& text, auto maxLength = 100) {
+void truncateText(const std::string& text, auto maxLength) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (text.length <= maxLength) return text;
@@ -124,7 +124,7 @@ void groupActionsByDate(const std::vector<AgentLog>& actions) {
 
 }
 
-void ActionCard(auto { action, ActionCardProps onDelete }) {
+void ActionCard() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [isExpanded, setIsExpanded] = useState(false);
@@ -495,8 +495,7 @@ void ActionCard(auto { action, ActionCardProps onDelete }) {
 
 }
 
-void EmptyState(auto {
-  selectedType, auto searchQuery, const std::any& }) {
+void EmptyState(auto searchQuery) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -520,7 +519,7 @@ void EmptyState(auto {
 
 }
 
-void AgentActionViewer(auto { agentId, AgentActionViewerProps roomId }) {
+void AgentActionViewer() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [selectedType, setSelectedType] = useState<ActionType>(ActionType.all);

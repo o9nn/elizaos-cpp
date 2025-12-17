@@ -24,7 +24,7 @@ struct CheckBalanceParams {
 
 using CheckBalanceInput = {
 
-using CheckBalanceActionResult = ActionResult & { input: CheckBalanceInput };
+using CheckBalanceActionResult = ActionResult;
 
 struct NormalizedTokenQuery {
     std::string canonicalSymbol;

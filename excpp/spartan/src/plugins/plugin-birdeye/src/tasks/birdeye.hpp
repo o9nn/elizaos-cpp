@@ -6,7 +6,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include "elizaos/core.hpp"
 
@@ -76,7 +75,7 @@ std::string makeBulletpointList(const std::vector<std::string>& array);
     void syncWalletHistory();
     void syncWalletPortfolio();
     void syncWallet();
-    std::future<bool> syncTrendingTokens(const std::variant<'solana', 'base'>& chain);
+    std::future<bool> syncTrendingTokens(const std::string& chain);
 
 
 } // namespace elizaos

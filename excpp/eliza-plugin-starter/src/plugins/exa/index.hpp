@@ -25,8 +25,6 @@ struct ExaSearchResponse {
 class ExaSearchPlugin {
 public:
     ExaSearchPlugin(ExaPluginConfig config);
-    void if(auto !response.ok);
-    void catch(auto error);
 
 private:
     ExaPluginConfig config_;

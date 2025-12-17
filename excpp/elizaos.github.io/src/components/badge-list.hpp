@@ -26,5 +26,6 @@ struct BadgeListProps {
     std::optional<std::string> badgeClassName;
 };
 
+void BadgeList(auto className, auto badgeClassName);
 
 } // namespace elizaos

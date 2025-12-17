@@ -22,9 +22,8 @@ namespace elizaos {
 class DevServerManager {
 public:
     std::future<void> stop();
-    std::future<void> start(const std::vector<string[] =>& args);
-    std::future<void> restart(const std::vector<string[] =>& args);
-};
+    std::future<void> start(std::vector<std::string> args = {});
+    std::future<void> restart(std::vector<std::string> args = {});
 
 // Global server instance
 
@@ -41,11 +40,11 @@ std::future<void> stopServer();
 /**
  * Start the server with given arguments
  */
-std::future<void> startServer(const std::vector<string[] =>& args);
+std::future<void> startServer(std::vector<std::string> args = {});
 
 /**
  * Restart the server with given arguments
  */
-std::future<void> restartServer(const std::vector<string[] =>& args);
+std::future<void> restartServer(std::vector<std::string> args = {});
 
 } // namespace elizaos

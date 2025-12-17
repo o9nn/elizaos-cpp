@@ -24,7 +24,7 @@ namespace elizaos {
  * Get the CLI's installation directory when running globally
  * @returns {string|null} - The path to the CLI's directory or null if not found
  */
-std::optional<std::string> getCliDirectory();
+std::string getCliDirectory();
 
 /**
  * Verifies if a plugin can be imported
@@ -40,7 +40,7 @@ std::future<bool> verifyPluginImport(const std::string& repository, const std::s
  * @param {string} directory - Directory to install in
  * @param {string} context - Description of the installation context for logging
  */
-std::future<bool> attemptInstallation(const std::string& packageName, const std::string& versionString, const std::string& directory, const std::string& context, auto skipVerification = false);
+std::future<bool> attemptInstallation(const std::string& packageName, const std::string& versionString, const std::string& directory, const std::string& context, auto skipVerification);
 
 /**
  * Asynchronously installs a plugin to a specified directory.
@@ -50,6 +50,6 @@ std::future<bool> attemptInstallation(const std::string& packageName, const std:
  * @param {string} versionSpecifier - The specific version of the plugin to install.
  * @returns {Promise<boolean>} - A Promise that resolves to true if the plugin is successfully installed, or false otherwise.
  */
-std::future<bool> installPlugin(const std::string& packageName, const std::string& cwd, std::optional<std::string> versionSpecifier, auto skipVerification = false);
+std::future<bool> installPlugin(const std::string& packageName, const std::string& cwd, std::optional<std::string> versionSpecifier, auto skipVerification);
 
 } // namespace elizaos

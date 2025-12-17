@@ -22,8 +22,8 @@ struct ProjectPlan {
     std::string id;
     std::string name;
     std::string description;
-    std::variant<'plugin', 'agent', 'workflow', 'mcp', 'full-stack'> type;
-    std::optional<std::variant<'planning', 'generating', 'testing', 'completed', 'failed'>> status;
+    std::string type;
+    std::optional<std::string> status;
     std::optional<std::string> formId;
     std::optional<std::string> projectName;
     std::optional<std::string> error;
@@ -43,7 +43,7 @@ struct ProjectPlan {
 
 struct ComponentSpec {
     std::string name;
-    std::variant<'service', 'action', 'provider', 'ui', 'database', 'api'> type;
+    std::string type;
     std::string description;
     std::vector<std::string> responsibilities;
     std::vector<std::string> interfaces;
@@ -53,23 +53,23 @@ struct ComponentSpec {
 struct DependencySpec {
     std::string name;
     std::string version;
-    std::variant<'runtime', 'dev', 'peer'> type;
+    std::string type;
     std::string purpose;
 };
 
 struct IntegrationSpec {
     std::string service;
-    std::variant<'api', 'webhook', 'database', 'event'> type;
+    std::string type;
     std::string purpose;
 };
 
 struct RequirementSpec {
     std::string id;
-    std::variant<'functional', 'non-functional', 'technical'> type;
-    std::variant<'must-have', 'should-have', 'nice-to-have'> priority;
+    std::string type;
+    std::string priority;
     std::string description;
     std::vector<std::string> acceptanceCriteria;
-    std::variant<'pending', 'in-progress', 'completed'> status;
+    std::string status;
 };
 
 struct Milestone {
@@ -78,15 +78,15 @@ struct Milestone {
     std::string description;
     std::vector<std::string> deliverables;
     std::optional<Date> dueDate;
-    std::variant<'pending', 'in-progress', 'completed'> status;
+    std::string status;
     std::vector<std::string> dependencies;
 };
 
 struct Risk {
     std::string id;
     std::string description;
-    std::variant<'low', 'medium', 'high'> impact;
-    std::variant<'low', 'medium', 'high'> likelihood;
+    std::string impact;
+    std::string likelihood;
     std::string mitigation;
 };
 
@@ -103,15 +103,14 @@ struct EffortEstimate {
     double testing;
     double documentation;
     double total;
-    std::variant<'low', 'medium', 'high'> confidence;
+    std::string confidence;
 };
 
 class ProjectPlanningService {
 public:
     ProjectPlanningService(IAgentRuntime runtime);
-    std::future<Service> start(IAgentRuntime runtime);
+    static std::future<Service> start(IAgentRuntime runtime);
     std::string capabilityDescription() const;
-    std::future<void> start();
     std::future<void> stop();
     std::future<ProjectPlan> createProjectPlan(std::optional<std::any> request);
     std::future<std::any> analyzeRequirements(const std::any& request);

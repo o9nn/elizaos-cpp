@@ -22,6 +22,6 @@ struct TauriInitializerProps {
  * Component that ensures Tauri API is initialized before rendering children
  * This solves the timing issue where TauriService tries to detect Tauri before it's available
  */
-void TauriInitializer(TauriInitializerProps { children });
+void TauriInitializer();
 
 } // namespace elizaos

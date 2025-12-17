@@ -32,7 +32,7 @@ public:
     void saveState();
     std::vector<std::string> loadFile(const std::string& filePath);
     void saveFile(const std::string& filePath, const std::vector<std::string>& lines);
-    void printWindow(boolean = true showLineNumbers, boolean = true showStatus);
+    void printWindow(bool showLineNumbers = true, bool showStatus = true);
     void open(const std::string& filePath, std::optional<double> line);
     void goto(double line);
     void scrollDown(std::optional<double> lines);

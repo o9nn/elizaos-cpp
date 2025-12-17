@@ -24,8 +24,8 @@ struct LeaderboardUser {
     double points;
     double totalXp;
     double totalLevel;
-    std::optional<std::optional<std::string>> avatarUrl;
-    std::optional<std::string> category;
+    std::optional<std::string> avatarUrl;
+    std::string category;
     std::vector<LinkedWallet> linkedWallets;
 };
 
@@ -41,12 +41,13 @@ struct LeaderboardProps {
     std::vector<LeaderboardTab> tabs;
 };
 
-void Leaderboard(auto { tabs, LeaderboardProps tags });
+void Leaderboard();
 
 struct PaginationControlsProps {
     double currentPage;
     double totalPages;
 };
 
+void PaginationControls(auto totalPages, auto onPageChange);
 
 } // namespace elizaos

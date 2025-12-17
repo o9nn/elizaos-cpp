@@ -1,5 +1,4 @@
 #pragma once
-#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -14,5 +13,5 @@ namespace elizaos {
 
 
 
-void FeaturedCarousel(const std::any& { projects }); 
+void FeaturedCarousel(); 
 } // namespace elizaos

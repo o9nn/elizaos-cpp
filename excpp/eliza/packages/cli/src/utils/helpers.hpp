@@ -16,7 +16,7 @@ namespace elizaos {
 /**
  * Display character
  */
-void displayAgent(const std::optional<Agent>& data, auto title = 'Agent Review');
+void displayAgent(const std::optional<Agent>& data, auto title);
 
 /**
  * Formats a conversation into a string

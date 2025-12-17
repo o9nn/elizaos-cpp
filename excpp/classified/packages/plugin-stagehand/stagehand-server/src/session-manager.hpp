@@ -25,7 +25,7 @@ struct BrowserSession {
 
 class SessionManager {
 public:
-    SessionManager(Logger private logger, PlaywrightInstaller private playwrightInstaller);
+    SessionManager();
     std::future<BrowserSession> createSession(const std::string& sessionId, const std::string& clientId);
     BrowserSession getSession(const std::string& sessionId);
     std::future<void> destroySession(const std::string& sessionId);

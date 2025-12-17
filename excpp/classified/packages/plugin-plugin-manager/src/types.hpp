@@ -5,7 +5,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include "elizaos/core.hpp"
 
@@ -18,9 +17,9 @@ namespace elizaos {
 
 // Service type declarations for plugin manager
   struct ServiceTypeRegistry {
-    'plugin_manager' PLUGIN_MANAGER;
-    'plugin_configuration' PLUGIN_CONFIGURATION;
-    'registry' REGISTRY;
+    std::string PLUGIN_MANAGER;
+    std::string PLUGIN_CONFIGURATION;
+    std::string REGISTRY;
 };
 
 enum PluginStatus {
@@ -47,7 +46,7 @@ struct PluginComponents {
 
 struct ComponentRegistration {
     std::string pluginId;
-    std::variant<'action', 'provider', 'evaluator', 'service', 'eventHandler'> componentType;
+    std::string componentType;
     std::string componentName;
     double timestamp;
 };
@@ -66,7 +65,7 @@ struct PluginState {
     std::optional<double> loadedAt;
     std::optional<double> unloadedAt;
     std::optional<std::string> version;
-    std::optional<std::variant<'unconfigured', 'partial', 'complete'>> configurationStatus;
+    std::optional<std::string> configurationStatus;
     std::optional<std::vector<PluginEnvironmentVariable>> requiredConfiguration;
     std::optional<std::vector<std::string>> configurationErrors;
     std::optional<PluginComponents> components;
@@ -92,7 +91,7 @@ struct PluginManagerConfig {
 };
 
 struct InstallProgress {
-    std::variant<'downloading', 'extracting', 'installing', 'validating', 'complete'> phase;
+    std::string phase;
     double progress;
     std::string message;
 };

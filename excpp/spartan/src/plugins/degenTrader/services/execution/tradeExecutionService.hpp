@@ -1,5 +1,4 @@
 #pragma once
-#include <any>
 #include <functional>
 #include <future>
 #include <memory>
@@ -22,16 +21,13 @@ namespace elizaos {
 
 class TradeExecutionService {
 public:
-    TradeExecutionService(IAgentRuntime protected runtime, WalletService protected walletService, DataService protected dataService, AnalyticsService protected analyticsService);
+    TradeExecutionService();
     std::future<void> initialize();
     std::future<void> stop();
-    Promise< executeBuyTrade(auto {
-    tokenAddress, auto amount, auto slippage, const std::any& });
-    void if(auto result.success);
-    void catch(auto error);
-    void if(auto result.success);
-    void catch(auto error);
+    Promise< executeBuyTrade(auto amount, auto slippage);
+    Promise< executeSellTrade(auto amount, auto slippage);
     std::future<std::string> calculateExpectedAmount(const std::string& tokenAddress, double amount, bool isSell);
+};
 
 
 } // namespace elizaos

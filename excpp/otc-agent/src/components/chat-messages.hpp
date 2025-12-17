@@ -19,5 +19,6 @@ struct ChatMessagesProps {
     std::optional<std::string> assistantName;
 };
 
+void ChatMessages(auto citationsMap, auto followUpPromptsMap, auto onFollowUpClick, auto assistantAvatarUrl, auto assistantName);
 
 } // namespace elizaos

@@ -1,5 +1,4 @@
 #pragma once
-#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -20,6 +19,6 @@ namespace elizaos {
 
 // Memoize Solana connectors at module level to prevent recreation
 
-void Providers(const std::any& { children });
+void Providers();
 
 } // namespace elizaos

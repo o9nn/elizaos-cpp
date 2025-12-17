@@ -4,9 +4,7 @@
 
 namespace elizaos {
 
-void StatBadge(auto {
-  labelStart, auto labelEnd, auto value, auto variant = "outline", auto className, StatBadgeProps ...props
-}) {
+void StatBadge(auto labelEnd, auto value, auto variant, auto className) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

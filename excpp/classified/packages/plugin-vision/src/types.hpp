@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 
 namespace elizaos {
@@ -14,7 +13,7 @@ namespace elizaos {
 
 // Extend the core service types with vision service
   struct ServiceTypeRegistry {
-    'VISION' VISION;
+    std::string VISION;
 };
 
 // Export service type constant
@@ -45,8 +44,8 @@ struct DetectedObject {
 
 struct PersonInfo {
     std::string id;
-    std::variant<'sitting', 'standing', 'lying', 'unknown'> pose;
-    std::variant<'camera', 'away', 'left', 'right', 'unknown'> facing;
+    std::string pose;
+    std::string facing;
     double confidence;
     BoundingBox boundingBox;
     std::string part;
@@ -65,7 +64,7 @@ struct VisionFrame {
     double width;
     double height;
     Buffer data;
-    std::variant<'rgb', 'rgba', 'jpeg', 'png'> format;
+    std::string format;
 };
 
 // Vision modes
@@ -139,7 +138,7 @@ struct VisionConfig {
     std::optional<VisionMode> visionMode;
     std::optional<double> screenCaptureInterval;
     std::optional<double> tileSize;
-    std::optional<std::variant<'sequential', 'priority', 'random'>> tileProcessingOrder;
+    std::optional<std::string> tileProcessingOrder;
     std::optional<bool> ocrEnabled;
     std::optional<bool> florence2Enabled;
     double x;
@@ -158,7 +157,7 @@ struct VisionConfig {
 // Entity tracking types
 struct TrackedEntity {
     std::string id;
-    std::variant<'person', 'object', 'pet'> entityType;
+    std::string entityType;
     double firstSeen;
     double lastSeen;
     BoundingBox lastPosition;
@@ -186,7 +185,7 @@ struct EntityAttributes {
     std::optional<std::vector<std::string>> accessories;
     std::optional<std::string> objectType;
     std::optional<std::string> color;
-    std::optional<std::variant<'small', 'medium', 'large'>> size;
+    std::optional<std::string> size;
     std::optional<std::string> description;
     std::optional<std::vector<std::string>> tags;
 };

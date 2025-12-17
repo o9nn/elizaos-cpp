@@ -25,11 +25,11 @@ struct TokenData {
     std::string mint;
     std::string name;
     std::string creator;
-    std::optional<std::string> website;
-    std::optional<std::string> twitter;
-    std::optional<std::string> telegram;
-    std::optional<std::string> discord;
-    std::optional<std::string> farcaster;
+    std::string website;
+    std::string twitter;
+    std::string telegram;
+    std::string discord;
+    std::string farcaster;
     bool hidden;
     bool featured;
     bool verified;

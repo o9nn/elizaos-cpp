@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void Badge(auto { className, auto variant, BadgeProps ...props }) {
+void Badge(auto variant) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return <div className={cn(badgeVariants({ variant }), className)} {...props} />;

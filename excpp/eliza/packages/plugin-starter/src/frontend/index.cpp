@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void TimeDisplay(const std::any& { apiBase }) {
+void TimeDisplay() {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -89,7 +89,7 @@ void ExampleRoute() {
 
 }
 
-void ExampleProvider(auto { agentId, const std::any& apiBase }) {
+void ExampleProvider() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void FeaturedCarousel(const std::any& { projects }) {
+void FeaturedCarousel() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [currentIndex, setCurrentIndex] = useState(0);

@@ -16,5 +16,7 @@ namespace elizaos {
 
 using SkipRepliesProps = {
 
+void SkipReplies(auto messagesLoading, auto setSkipReplies);
+
 
 } // namespace elizaos

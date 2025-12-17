@@ -5,7 +5,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 
 namespace elizaos {
@@ -34,7 +33,7 @@ bool isAvailableNow(const std::vector<std::string>& workDays, const std::any& wo
  * @param frequencyHours How often to check in (in hours)
  * @returns Date object for the next check-in
  */
-Date calculateNextCheckIn(const std::vector<std::string>& workDays, const std::any& workHours, const std::string& timeZone, number = 24 frequencyHours);
+Date calculateNextCheckIn(const std::vector<std::string>& workDays, const std::any& workHours, const std::string& timeZone, double frequencyHours = 24);
 
 /**
  * Formats a date to a human-readable string
@@ -50,6 +49,6 @@ std::string formatDate(Date date, std::optional<std::string> timeZone);
  * @param elapsedTimePercentage Percentage of elapsed time
  * @returns Status string
  */
-std::variant<'ON_TRACK', 'AT_RISK', 'DELAYED'> getProjectStatus(double completionPercentage, double elapsedTimePercentage);
+std::string getProjectStatus(double completionPercentage, double elapsedTimePercentage);
 
 } // namespace elizaos

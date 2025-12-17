@@ -57,7 +57,7 @@ public:
     VisionConfigOutput get();
     void update(const std::optional<VisionConfigInput>& updates);
     VisionConfig toLegacyFormat();
-    std::optional<VisionConfigInput> getPreset(const std::string& name);
+    static std::optional<VisionConfigInput> getPreset(const std::string& name);
 
 private:
     VisionConfigOutput config_;

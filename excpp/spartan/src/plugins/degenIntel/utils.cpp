@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::future<void> acquireService(IAgentRuntime runtime, auto serviceType, auto asking = '', auto retries = 10) {
+std::future<void> acquireService(IAgentRuntime runtime, auto serviceType, auto asking, auto retries) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     auto service = runtime.getService(serviceType);
@@ -21,7 +21,7 @@ std::future<void> acquireService(IAgentRuntime runtime, auto serviceType, auto a
 
 }
 
-std::future<void> askLlmObject(IAgentRuntime runtime, Object ask, const std::vector<std::string>& requiredFields, auto maxRetries = 3) {
+std::future<void> askLlmObject(IAgentRuntime runtime, Object ask, const std::vector<std::string>& requiredFields, auto maxRetries) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     std::optional<std::any> responseContent = nullptr;

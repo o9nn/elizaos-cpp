@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::optional<std::string> extractFileIdFromUrl(const std::string& url) {
+std::string extractFileIdFromUrl(const std::string& url) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto patterns = [;
@@ -237,7 +237,7 @@ std::future<void> GET(NextRequest request) {
 
 }
 
-std::optional<std::string> getContentTypeFromExtension(const std::string& filename) {
+std::string getContentTypeFromExtension(const std::string& filename) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto ext = filename.split('.').pop().toLowerCase();

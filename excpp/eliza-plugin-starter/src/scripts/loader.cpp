@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::optional<std::string> tryLoadFile(const std::string& filePath) {
+std::string tryLoadFile(const std::string& filePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Check for --characters flag

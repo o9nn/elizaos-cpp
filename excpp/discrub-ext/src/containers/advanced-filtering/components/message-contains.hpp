@@ -17,7 +17,7 @@ namespace elizaos {
 
 using MessageContainsProps = {
 
-void MessageContains(MessageContainsProps { disabled });
+void MessageContains();
 
 
 } // namespace elizaos

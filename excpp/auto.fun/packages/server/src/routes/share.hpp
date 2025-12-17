@@ -44,7 +44,7 @@ using TwitterMessage = z::infer<typeof TwitterMessageSchema>;
  * OAuth Utilities
  * ------------------------------------------------------------------
  */
-std::string generateRandomString(number = 32 length);
+std::string generateRandomString(double length = 32);
 
 std::future<std::string> generateCodeChallenge(const std::string& codeVerifier);
 
@@ -54,7 +54,7 @@ std::future<std::string> generateCodeChallenge(const std::string& codeVerifier);
  * ------------------------------------------------------------------
  */
 
-std::future<std::string> fetchTwitterUser(const std::string& userId, const std::string& accessToken, boolean = false useTestData);
+std::future<std::string> fetchTwitterUser(const std::string& userId, const std::string& accessToken, bool useTestData = false);
 
 /**
  * ------------------------------------------------------------------
@@ -64,6 +64,8 @@ std::future<std::string> fetchTwitterUser(const std::string& userId, const std::
 std::future<void> storeOAuthState(const std::string& state, const std::string& codeVerifier);
 
 std::future<void> storeAccessToken(const std::string& userId, const std::string& token, const std::string& refresh, double expiresIn);
+
+std::future<std::string> getRefreshToken(const std::string& userId);
 
 std::future<void> updateAccessToken(const std::string& userId, const std::string& token, const std::string& refresh, double expiresIn);
 
@@ -181,11 +183,11 @@ std::string getNormalizedTimestamp();
  * OAuth1 Signature Utilities
  * ------------------------------------------------------------------
  */
-std::string generateAuthHeader(Record<string oauthParams, auto string>, const std::string& signature);
+std::string generateAuthHeader(const std::unordered_map<std::string, std::string>& oauthParams, const std::string& signature);
 
 std::string encodeRFC3986(const std::string& str);
 
-std::future<std::string> generateOAuth1Signature(const std::string& method, const std::string& url, Record<string params, auto string>, const std::string& consumerSecret, const std::string& tokenSecret);
+std::future<std::string> generateOAuth1Signature(const std::string& method, const std::string& url, const std::unordered_map<std::string, std::string>& params, const std::string& consumerSecret, const std::string& tokenSecret);
 
 // Export the router
 

@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::optional<std::string> getMimeType(const std::string& filename) {
+std::string getMimeType(const std::string& filename) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto ext = path.extname(filename).toLowerCase();

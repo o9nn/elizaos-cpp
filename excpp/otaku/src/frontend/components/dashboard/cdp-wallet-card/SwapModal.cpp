@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void SwapModalContent(auto { tokens, auto userId, SwapModalContentProps onSuccess }) {
+void SwapModalContent(auto userId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

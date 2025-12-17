@@ -17,7 +17,7 @@ std::future<void> trackSearch(const std::string& query, std::optional<std::strin
 
 }
 
-std::future<void> getPopularSearches(auto limit = 10) {
+std::future<void> getPopularSearches(auto limit) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto searches = prisma.searchQuery.groupBy({;

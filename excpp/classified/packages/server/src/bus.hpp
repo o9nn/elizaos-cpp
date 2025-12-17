@@ -31,8 +31,6 @@ namespace elizaos {
 class InternalMessageBus {
 public:
     bool emit(const std::string& event, unknown data);
-    void if(auto e instanceof CustomEvent);
-    void if(auto wrappedHandler);
     void setMaxListeners(double n);
     void removeAllListeners(std::optional<std::string> event);
 };

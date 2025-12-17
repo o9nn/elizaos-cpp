@@ -22,20 +22,26 @@ namespace elizaos {
 class MessageDatabaseAdapter {
 public:
     void db() const;
-    std::future<MessageServer> createMessageServer(Omit<MessageServer data, auto 'id' | 'createdAt' | 'updatedAt'>);
+    std::future<MessageServer> createMessageServer();
     std::future<std::vector<MessageServer>> getMessageServers();
     std::variant<Promise<MessageServer, null>> getMessageServerById(UUID serverId);
-    std::future<MessageChannel> createChannel(Omit<MessageChannel data, std::optional<UUID }> 'id' | 'createdAt' | 'updatedAt'> & { id, std::optional<std::vector<UUID>> participantIds);
+    std::future<MessageChannel> createChannel(std::optional<std::vector<UUID>> participantIds);
     std::future<void> addChannelParticipants(UUID channelId, const std::vector<UUID>& userIds);
+    std::future<std::vector<MessageChannel>> getChannelsForServer(UUID serverId);
+    std::variant<Promise<MessageChannel, null>> getChannelDetails(UUID channelId);
+    std::future<std::vector<UUID>> getChannelParticipants(UUID channelId);
     std::future<MessageChannel> updateChannel(UUID channelId, std::optional<std::any> updates);
     std::future<void> deleteChannel(UUID channelId);
     std::future<MessageChannel> findOrCreateDmChannel(UUID user1Id, UUID user2Id, UUID messageServerId);
-    std::future<CentralRootMessage> createMessage(Omit<CentralRootMessage data, auto 'id' | 'createdAt' | 'updatedAt'>);
+    std::future<CentralRootMessage> createMessage();
+    std::future<std::vector<CentralRootMessage>> getMessagesForChannel(UUID channelId, double limit = 50, std::optional<Date> beforeTimestamp);
     std::future<void> deleteMessage(UUID messageId);
     std::future<void> addAgentToServer(UUID serverId, UUID agentId);
     std::future<void> removeAgentFromServer(UUID serverId, UUID agentId);
+    std::future<std::vector<UUID>> getAgentsForServer(UUID serverId);
     std::future<std::any> execute(const std::any& query);
     std::future<void> close();
+};
 
 
 } // namespace elizaos

@@ -17,7 +17,7 @@ namespace elizaos {
 
 
 struct FirecrawlScrapeOptions {
-    std::optional<std::variant<Array<'markdown', 'html', 'rawHtml', 'screenshot', 'links'>>> formats;
+    std::optional<std::variant<Array<'markdown', std::string, 'links'>>> formats;
     std::optional<bool> onlyMainContent;
     std::optional<std::vector<std::string>> includeTags;
     std::optional<std::vector<std::string>> excludeTags;
@@ -44,9 +44,9 @@ struct FirecrawlScrapeResponse {
 
 class FirecrawlService {
 public:
-    std::future<FirecrawlService> start(IAgentRuntime runtime);
+    static std::future<FirecrawlService> start(IAgentRuntime runtime);
     std::future<void> initialize(IAgentRuntime runtime);
-    std::future<FirecrawlScrapeResponse> scrape(const std::string& url, FirecrawlScrapeOptions = {} options);
+    std::future<FirecrawlScrapeResponse> scrape(const std::string& url, FirecrawlScrapeOptions options = {});
     bool isConfigured();
     std::future<void> stop();
 

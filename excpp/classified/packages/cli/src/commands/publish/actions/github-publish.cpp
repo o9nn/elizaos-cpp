@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::future<PublishResult> publishToGitHubAction(const std::string& cwd, PackageJson packageJson, Credentials credentials, boolean = false skipRegistry, boolean = false dryRun) {
+std::future<PublishResult> publishToGitHubAction(const std::string& cwd, PackageJson packageJson, Credentials credentials, bool skipRegistry = false, bool dryRun = false) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

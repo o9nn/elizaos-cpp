@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void TauriInitializer(TauriInitializerProps { children }) {
+void TauriInitializer() {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

@@ -99,7 +99,7 @@ std::future<unknown> swapToken(Connection connection, PublicKey walletPublicKey,
     }
 }
 
-std::future<std::optional<std::string>> getTokenFromWallet(IAgentRuntime runtime, const std::string& tokenSymbol) {
+std::future<std::string> getTokenFromWallet(IAgentRuntime runtime, const std::string& tokenSymbol) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

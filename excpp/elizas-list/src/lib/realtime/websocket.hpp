@@ -21,7 +21,7 @@ public:
     void setupWebSocket();
     void setupRedisSubscriber();
     void broadcastToProject(const std::string& projectId, const std::any& data);
-    void publishEvent(const std::string& projectId, const std::string& eventType, const std::any& data);
+    static void publishEvent(const std::string& projectId, const std::string& eventType, const std::any& data);
 
 private:
     WebSocketServer wss_;

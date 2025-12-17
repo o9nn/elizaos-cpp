@@ -1,4 +1,5 @@
 #pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -29,27 +30,27 @@ namespace elizaos {
  * @param context - Object containing values to replace in the template
  * @returns The rendered template string
  */
-std::string renderTemplate(const std::string& template, Record<string context, auto unknown>);
+std::string renderTemplate(const std::string& template, const std::unordered_map<std::string, unknown>& context);
 
 /**
  * Handle conditional blocks
  */
-std::string handleConditionals(const std::string& template, Record<string context, auto any>);
+std::string handleConditionals(const std::string& template, const std::unordered_map<std::string, std::any>& context);
 
 /**
  * Handle for loops
  */
-std::string handleForLoops(const std::string& template, Record<string context, auto any>);
+std::string handleForLoops(const std::string& template, const std::unordered_map<std::string, std::any>& context);
 
 /**
  * Handle variable substitution
  */
-std::string handleVariables(const std::string& template, Record<string context, auto any>);
+std::string handleVariables(const std::string& template, const std::unordered_map<std::string, std::any>& context);
 
 /**
  * Handle template filters
  */
-std::string handleFilters(const std::string& template, Record<string context, auto any>);
+std::string handleFilters(const std::string& template, const std::unordered_map<std::string, std::any>& context);
 
 /**
  * Get nested value from object using dot notation
@@ -59,7 +60,7 @@ unknown getNestedValue(unknown obj, const std::string& path);
 /**
  * Evaluate a condition in the given context
  */
-bool evaluateCondition(const std::string& condition, Record<string context, auto unknown>);
+bool evaluateCondition(const std::string& condition, const std::unordered_map<std::string, unknown>& context);
 
 /**
  * Apply a filter to a value

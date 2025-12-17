@@ -17,7 +17,7 @@ namespace elizaos {
 /**
  * Supported blockchain networks
  */
-using SupportedNetwork = std::variant<'base', 'ethereum', 'polygon', 'arbitrum', 'optimism', 'scroll', 'base-sepolia', 'ethereum-sepolia'>;
+using SupportedNetwork = std::variant<std::string, std::string, std::string, std::string, std::string, std::string, std::string, std::string>;
 
 /**
  * Chain configuration interface
@@ -64,22 +64,22 @@ std::optional<Chain> getViemChain(const std::string& network);
 /**
  * Helper: Get RPC URL for a network
  */
-std::optional<std::string> getRpcUrl(const std::string& network, const std::string& alchemyKey);
+std::string getRpcUrl(const std::string& network, const std::string& alchemyKey);
 
 /**
  * Helper: Get explorer URL for a network
  */
-std::optional<std::string> getExplorerUrl(const std::string& network);
+std::string getExplorerUrl(const std::string& network);
 
 /**
  * Helper: Get transaction explorer URL
  */
-std::optional<std::string> getTxExplorerUrl(const std::string& network, const std::string& txHash);
+std::string getTxExplorerUrl(const std::string& network, const std::string& txHash);
 
 /**
  * Helper: Get address explorer URL
  */
-std::optional<std::string> getAddressExplorerUrl(const std::string& network, const std::string& address);
+std::string getAddressExplorerUrl(const std::string& network, const std::string& address);
 
 /**
  * Helper: Get native token info for a network
@@ -89,7 +89,7 @@ void getNativeTokenInfo(const std::string& network);
 /**
  * Helper: Get CoinGecko platform ID for a network
  */
-std::optional<std::string> getCoingeckoPlatform(const std::string& network);
+std::string getCoingeckoPlatform(const std::string& network);
 
 /**
  * Helper: Check if a network is supported

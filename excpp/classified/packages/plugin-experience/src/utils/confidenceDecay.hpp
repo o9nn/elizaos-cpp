@@ -22,17 +22,11 @@ struct DecayConfig {
 
 class ConfidenceDecayManager {
 public:
-    ConfidenceDecayManager(const std::optional<DecayConfig>& config);
+    ConfidenceDecayManager(std::optional<DecayConfig> config = {});
     double getDecayedConfidence(Experience experience);
-    std::vector<Experience> getExperiencesNeedingReinforcement(const std::vector<Experience>& experiences, number = 0::3 threshold);
-    double calculateReinforcementBoost(Experience experience, number = 1::0 validationStrength);
+    std::vector<Experience> getExperiencesNeedingReinforcement(const std::vector<Experience>& experiences, double threshold = 0.3);
+    double calculateReinforcementBoost(Experience experience, double validationStrength = 1.0);
     DecayConfig getDomainSpecificDecay(Experience experience);
-    Array< getConfidenceTrend(Experience experience, number = 10 points);
-    void for(auto let i = 0; i < points; i++);
-
-private:
-    DecayConfig config_;
-};
 
 
 } // namespace elizaos

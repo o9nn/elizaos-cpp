@@ -1,5 +1,4 @@
 #pragma once
-#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -17,7 +16,6 @@ namespace elizaos {
 
 using UpdateTokenBody = z::infer<typeof updateTokenBodySchema>;
 
-void parseUpdateTokenRequest(const std::any& raw); {
 
 
 } // namespace elizaos

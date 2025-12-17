@@ -44,8 +44,8 @@ public:
     std::future<void> testDefaultPricing();
     std::future<void> testPaymentDisabled();
     std::future<void> testInvalidScenarios();
-    void catch(auto error);
-    std::future<std::string> runGatewayWithTimeout(const std::string& configPath, number = 8000 timeoutMs);
+    $ log();
+    std::future<std::string> runGatewayWithTimeout(const std::string& configPath, double timeoutMs = 8000);
     void printResults();
 };
 

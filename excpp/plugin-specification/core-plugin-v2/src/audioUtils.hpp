@@ -22,7 +22,7 @@ namespace elizaos {
  * @param {number} [bitsPerSample=16] - The number of bits per sample (default is 16).
  * @returns {Buffer} The WAV file header as a Buffer object.
  */
-Buffer getWavHeader(double audioLength, double sampleRate, auto channelCount = 1, auto bitsPerSample = 16);
+Buffer getWavHeader(double audioLength, double sampleRate, auto channelCount, auto bitsPerSample);
 
 /**
  * Prepends a WAV header to a readable stream of audio data.

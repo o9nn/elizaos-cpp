@@ -5,7 +5,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 
 namespace elizaos {
@@ -19,20 +18,20 @@ namespace elizaos {
 
 class SecurityUtils {
 public:
-    std::string getInstanceId();
-    std::string getSessionId();
-    std::string generateSecureId();
-    std::future<std::string> encryptData(const std::string& data, const std::string& _key);
-    std::future<std::string> decryptData(const std::string& encryptedData, const std::string& _key);
-    std::string sanitizeHtml(const std::string& html);
-    bool validateApiResponse(unknown response);
-    std::future<std::string> hashString(const std::string& str);
-    bool isSecureContext();
-    void storeApiKey(const std::string& provider, const std::string& key);
-    std::optional<std::string> getApiKey(const std::string& provider);
-    void clearApiKeys();
-    bool isRunningInTauri();
-     getEnvironmentInfo();
+    static std::string getInstanceId();
+    static std::string getSessionId();
+    static std::string generateSecureId();
+    static std::future<std::string> encryptData(const std::string& data, const std::string& _key);
+    static std::future<std::string> decryptData(const std::string& encryptedData, const std::string& _key);
+    static std::string sanitizeHtml(const std::string& html);
+    static bool validateApiResponse(unknown response);
+    static std::future<std::string> hashString(const std::string& str);
+    static bool isSecureContext();
+    static void storeApiKey(const std::string& provider, const std::string& key);
+    static std::string getApiKey(const std::string& provider);
+    static void clearApiKeys();
+    static bool isRunningInTauri();
+    static  getEnvironmentInfo();
 };
 
 /**
@@ -40,17 +39,13 @@ public:
  */
 class InputValidator {
 public:
-    bool validateSafeText(const std::string& input);
-    bool validateApiKey(const std::string& key);
-    bool validateUuid(const std::string& uuid);
-    std::string sanitizeInput(const std::string& input);
-     validateUserInput(const std::string& input);
-    void if(auto input.length > 2000);
-     validateConfigValue(const std::string& key, unknown value);
-     validateFileUpload(File file);
-    void if(auto !file);
-    void if(auto file.size > maxSize);
-    void if(auto !hasValidType && !hasValidExtension);
+    static bool validateSafeText(const std::string& input);
+    static bool validateApiKey(const std::string& key);
+    static bool validateUuid(const std::string& uuid);
+    static std::string sanitizeInput(const std::string& input);
+    static  validateUserInput(const std::string& input);
+    static  validateConfigValue(const std::string& key, unknown value);
+    static  validateFileUpload(File file);
 };
 
 /**
@@ -58,17 +53,16 @@ public:
  */
 class SecurityLogger {
 public:
-    void info(const std::string& message, std::optional<unknown> details);
-    void warn(const std::string& message, std::optional<unknown> details);
-    void error(const std::string& message, std::optional<unknown> details);
-    Array< getLogs(number = 100 limit);
-    void clearLogs();
-    void logSecurityEvent(const std::variant<, 'access_granted', 'access_revoked', 'invalid_input', 'security_warning', 'capability_change'>& eventType, const std::string& message, const std::variant<'low', 'medium', 'high' = 'medium'>& severity);
-    void addLog(const std::variant<'info', 'warn', 'error'>& level, const std::string& message, std::optional<unknown> details);
+    static void info(const std::string& message, std::optional<unknown> details);
+    static void warn(const std::string& message, std::optional<unknown> details);
+    static void error(const std::string& message, std::optional<unknown> details);
+    static Array< getLogs(double limit = 100);
+    static void clearLogs();
+    static void addLog(const std::string& level, const std::string& message, std::optional<unknown> details);
 
 private:
     double timestamp_;
-    std::variant<'info', 'warn', 'error'> level_;
+    std::string level_;
     std::string message_;
 };
 

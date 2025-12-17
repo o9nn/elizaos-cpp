@@ -13,5 +13,7 @@ namespace elizaos {
 
 
 
+void Skeleton();
+
 
 } // namespace elizaos

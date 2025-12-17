@@ -160,7 +160,7 @@ std::string normalizePackageName(const std::string& packageName) {
 
 }
 
-std::future<void> saveRegistryCache(Record<string registry, auto string>) {
+std::future<void> saveRegistryCache(const std::unordered_map<std::string, std::string>& registry) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -333,7 +333,7 @@ std::vector<std::string> normalizePluginName(const std::string& pluginName) {
 
 }
 
-std::future<std::optional<std::string>> getPluginRepository(const std::string& pluginName) {
+std::future<std::string> getPluginRepository(const std::string& pluginName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -474,7 +474,7 @@ std::future<std::optional<PluginMetadata>> getPluginMetadata(const std::string& 
     }
 }
 
-std::future<std::optional<std::string>> getPluginVersion(const std::string& pluginName, std::optional<std::string> version) {
+std::future<std::string> getPluginVersion(const std::string& pluginName, std::optional<std::string> version) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Skip metadata lookup to avoid auth requirements
@@ -540,7 +540,7 @@ std::future<> getPackageDetails(const std::string& packageName) {
 
 }
 
-std::future<std::optional<std::string>> getBestPluginVersion(const std::string& packageName, const std::string& runtimeVersion) {
+std::future<std::string> getBestPluginVersion(const std::string& packageName, const std::string& runtimeVersion) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto packageDetails = getPackageDetails(packageName);

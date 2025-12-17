@@ -1,11 +1,11 @@
 #pragma once
+#include <any>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include ".coreExtensions.hpp"
 #include ".types.hpp"
@@ -33,7 +33,7 @@ struct RegistryEntry {
 struct DynamicPluginInfo {
     std::string name;
     std::string version;
-    std::variant<'installed', 'loaded', 'active', 'inactive', 'error', 'needs_configuration'> status;
+    std::string status;
     std::string path;
     std::string name;
     std::string description;
@@ -80,17 +80,17 @@ void resetRegistryCache();
 class PluginManagerService {
 public:
     PluginManagerService(IAgentRuntime runtime, std::optional<PluginManagerConfig> config);
-    std::future<PluginManagerService> start(IAgentRuntime runtime, std::optional<PluginManagerConfig> config);
+    static std::future<PluginManagerService> start(IAgentRuntime runtime, std::optional<PluginManagerConfig> config);
     void storeOriginalComponents();
     void initializeRegistry();
     PluginState getPlugin(const std::string& id);
     std::vector<PluginState> getAllPlugins();
     std::vector<PluginState> getLoadedPlugins();
     void updatePluginState(const std::string& id, const std::optional<PluginState>& update);
-    std::future<void> loadPlugin(auto { pluginId, LoadPluginParams force = false });
-    std::future<void> unloadPlugin(UnloadPluginParams { pluginId });
+    std::future<void> loadPlugin(auto force);
+    std::future<void> unloadPlugin();
     std::future<std::string> registerPlugin(ElizaPlugin plugin);
-    void trackComponentRegistration(const std::string& pluginId, ComponentRegistration['componentType'] componentType, const std::string& componentName);
+    void trackComponentRegistration(const std::string& pluginId, const std::string& componentName);
     std::future<void> registerPluginComponents(ElizaPlugin plugin);
     std::future<void> unregisterPluginComponents(ElizaPlugin plugin);
     PluginComponents getPluginComponents(const std::string& pluginId);
@@ -100,15 +100,19 @@ public:
     std::vector<std::string> getProtectedPlugins();
     std::vector<std::string> getOriginalPlugins();
     bool canUnloadPlugin(const std::string& pluginName);
-    std::optional<std::string> getProtectionReason(const std::string& pluginName);
-    void if(auto !bundleExists);
-    void if(auto !hasNodeModules);
+    std::string getProtectionReason(const std::string& pluginName);
     std::future<std::string> loadInstalledPlugin(const std::string& pluginName);
+    std::future<std::unordered_map<std::string, RegistryEntry>> getAvailablePluginsFromRegistry();
     DynamicPluginInfo getInstalledPluginInfo(const std::string& pluginName);
     std::vector<DynamicPluginInfo> listInstalledPlugins();
     std::string getPluginInstallPath(const std::string& pluginName);
-    void if(auto !packageJson);
+    Promise< parsePluginMetadata(const std::string& pluginPath);
     std::future<ElizaPlugin> loadPluginModule(const std::string& pluginPath);
+    obj is ElizaPlugin isValidPlugin(const std::any& obj);
+
+private:
+    PluginManagerConfig pluginManagerConfig_;
+};
 
 
 } // namespace elizaos

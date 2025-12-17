@@ -90,7 +90,7 @@ public:
 
       class TestService {
 public:
-    void serviceType() const;
+    void serviceType();
     void start(IAgentRuntime runtime);
     void stop();
     void getData();

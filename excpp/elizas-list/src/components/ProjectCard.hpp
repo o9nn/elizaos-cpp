@@ -1,5 +1,4 @@
 #pragma once
-#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -14,6 +13,6 @@ namespace elizaos {
 
 
 
-void ProjectCard(auto { project, const std::any& index });
+void ProjectCard();
 
 } // namespace elizaos

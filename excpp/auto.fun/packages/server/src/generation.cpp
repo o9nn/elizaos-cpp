@@ -9,7 +9,7 @@ std::future<> checkRateLimits(const std::string& mint, MediaType type, std::opti
     allowed: boolean; remaining: number; message?: string
 }
 
-std::future<> checkTokenOwnership(const std::string& mint, const std::string& publicKey, const std::variant<"fast", "pro" = "fast">& mode, MediaType = MediaType::IMAGE mediaType) {
+std::future<> checkTokenOwnership(const std::string& mint, const std::string& publicKey, std::variant<"fast", "pro"> mode = "fast", MediaType mediaType = MediaType.IMAGE) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     allowed: boolean; message?: string
 }
@@ -651,7 +651,7 @@ std::future<double> getDailyGenerationCount(const std::any& db, const std::strin
 
 }
 
-std::future<std::optional<std::unordered_map<std::string, std::string>>> generateMetadata(auto maxRetries = 10) {
+std::future<std::optional<std::unordered_map<std::string, std::string>>> generateMetadata(auto maxRetries) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -899,7 +899,7 @@ std::future<void> checkAndReplenishTokens(std::optional<double> threshold) {
 
 }
 
-std::future<std::string> generateEnhancedPrompt(const std::string& userPrompt, std::optional<std::any> tokenMetadata, MediaType = MediaType::IMAGE mediaType) {
+std::future<std::string> generateEnhancedPrompt(const std::string& userPrompt, std::optional<std::any> tokenMetadata, MediaType mediaType = MediaType.IMAGE) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

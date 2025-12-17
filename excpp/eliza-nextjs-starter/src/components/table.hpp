@@ -13,7 +13,16 @@ namespace elizaos {
 
 
 
+void Table(auto dense, auto grid, auto striped, auto className, auto children);
+
+void TableHead();
+
 void TableBody(ComponentPropsWithoutRef<"tbody"> props);
 
+void TableRow(auto target, auto title, auto className);
+
+void TableHeader();
+
+void TableCell(auto children);
 
 } // namespace elizaos

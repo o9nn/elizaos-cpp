@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::optional<std::string> extractResponseText(const std::string& text) {
+std::string extractResponseText(const std::string& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!text) return null;

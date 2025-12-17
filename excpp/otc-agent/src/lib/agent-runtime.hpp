@@ -33,7 +33,7 @@ struct GlobalElizaState {
 class AgentRuntimeManager {
 public:
     AgentRuntimeManager();
-    AgentRuntimeManager getInstance();
+    static AgentRuntimeManager getInstance();
     bool isReady();
     std::future<AgentRuntime> getRuntime();
     std::future<AgentRuntime> createRuntime();

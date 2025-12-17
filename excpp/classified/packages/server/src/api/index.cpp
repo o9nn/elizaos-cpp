@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-SocketIOServer setupSocketIO(http::Server server, Map<UUID agents, auto IAgentRuntime>, AgentServer serverInstance) {
+SocketIOServer setupSocketIO(http::Server server, const std::unordered_map<UUID, IAgentRuntime>& agents, AgentServer serverInstance) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto io = new SocketIOServer(server, {;
@@ -67,7 +67,7 @@ void setupLogStreaming(SocketIOServer io, SocketIORouter router) {
 
 }
 
-express::RequestHandler createPluginRouteHandler(Map<UUID agents, auto IAgentRuntime>) {
+express::RequestHandler createPluginRouteHandler(const std::unordered_map<UUID, IAgentRuntime>& agents) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return [&](req, res, next) {;
@@ -342,7 +342,7 @@ express::RequestHandler createPluginRouteHandler(Map<UUID agents, auto IAgentRun
 
 }
 
-express::Router createApiRouter(Map<UUID agents, auto IAgentRuntime>, AgentServer // AgentServer is already serverInstance here serverInstance) {
+express::Router createApiRouter(const std::unordered_map<UUID, IAgentRuntime>& agents, AgentServer // AgentServer is already serverInstance here serverInstance) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto router = express.Router();

@@ -21,7 +21,6 @@ namespace elizaos {
     // Only filter if data is a record-like object
 
 // Parse GitHub reference
-void parseGitRef(const std::string& gitRef); | null {
 
 // Get GitHub branches
 std::future<void> getGitHubBranches(const std::string& owner, const std::string& repo, Octokit octokit);
@@ -38,7 +37,6 @@ std::future<VersionInfo['npm']> inspectNpm(const std::string& pkgName);
 std::string guessNpmName(const std::string& jsName);
 
 // Process a single repository
-std::future<[string, VersionInfo]> processRepo(const std::string& npmId, const std::string& gitRef, Octokit octokit);
 
 // Main function to parse registry
 

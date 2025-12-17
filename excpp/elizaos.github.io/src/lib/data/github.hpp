@@ -26,7 +26,7 @@ using GitHubFileContent = z::infer<typeof GitHubFileContentSchema>;
 using UpdateFileResponse = z::infer<typeof UpdateFileResponseSchema>;
 
 struct BatchFileContentResult {
-    std::optional<std::string> content;
+    std::string content;
     bool repoExists;
     bool fileExists;
 };
@@ -61,17 +61,17 @@ struct TokenBucket {
 // Define interfaces for the GraphQL response
 struct GitHubPageInfo {
     bool hasNextPage;
-    std::optional<std::string> endCursor;
+    std::string endCursor;
 };
 
 class RateLimitExceededError {
 public:
-    RateLimitExceededError(const std::string& message, Date public resetAt);
+    RateLimitExceededError(const std::string& message);
 };
 
 class SecondaryRateLimitError {
 public:
-    SecondaryRateLimitError(const std::string& message, double public waitTime);
+    SecondaryRateLimitError(const std::string& message);
 };
 
 /**
@@ -85,22 +85,15 @@ public:
     std::future<void> checkRateLimit();
     void refillTokenBucket(TokenBucket bucket);
     std::future<void> consumeTokens(TokenBucket bucket, double tokens);
-    std::future<void> checkSecondaryRateLimits(number = 1 cost);
-    void if(auto data.errors.length > 0);
-    void catch(auto error);
-    void if(auto error instanceof RateLimitExceededError);
-    void if(auto error instanceof SecondaryRateLimitError);
-    void while(auto hasNextPage);
+    std::future<void> checkSecondaryRateLimits(double cost = 1);
+    $ Error();
     void getAuthenticatedUser();
     void getRepo(const std::string& owner, const std::string& repoName);
-    void createRepo(const std::string& repoName, const std::string& description, boolean = true autoInit);
-    sha);
-    void fetchPullRequests(RepositoryConfig repository, FetchOptions = {} options);
-    void fetchIssues(RepositoryConfig repository, FetchOptions = {} options);
-    void fetchCommits(RepositoryConfig repository, FetchOptions = {} options);
-    void catch(auto error);
-    void if(auto error instanceof RateLimitExceededError);
-    void if(auto error instanceof SecondaryRateLimitError);
+    void createRepo(const std::string& repoName, const std::string& description, bool autoInit = true);
+    void updateFile(const std::string& owner, const std::string& repoName, const std::string& filePath, const std::string& message, const std::string& content);
+    void fetchPullRequests(RepositoryConfig repository, FetchOptions options = {});
+    void fetchIssues(RepositoryConfig repository, FetchOptions options = {});
+    void fetchCommits(RepositoryConfig repository, FetchOptions options = {});
     void fetchFileContent(const std::string& owner, const std::string& repo, const std::string& path);
 
 

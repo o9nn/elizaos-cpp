@@ -52,7 +52,7 @@ std::string getSignature(Command cmd) {
 
 }
 
-std::string generateCommandDocs(const std::vector<Command>& commands, const std::vector<std::string>& subroutineTypes, Record<string _kwargs, auto any>) {
+std::string generateCommandDocs(const std::vector<Command>& commands, const std::vector<std::string>& subroutineTypes, const std::unordered_map<std::string, std::any>& _kwargs) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const std::vector<std::string> docs = [];

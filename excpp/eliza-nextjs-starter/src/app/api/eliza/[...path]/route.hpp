@@ -1,5 +1,4 @@
 #pragma once
-#include <any>
 #include <functional>
 #include <future>
 #include <memory>
@@ -15,13 +14,13 @@ namespace elizaos {
 
 
 
-std::future<void> GET(NextRequest request, const std::any& { params });
+std::future<void> GET(NextRequest request);
 
-std::future<void> POST(NextRequest request, const std::any& { params });
+std::future<void> POST(NextRequest request);
 
-std::future<void> PUT(NextRequest request, const std::any& { params });
+std::future<void> PUT(NextRequest request);
 
-std::future<void> DELETE(NextRequest request, const std::any& { params });
+std::future<void> DELETE(NextRequest request);
 
 std::future<void> OPTIONS();
 

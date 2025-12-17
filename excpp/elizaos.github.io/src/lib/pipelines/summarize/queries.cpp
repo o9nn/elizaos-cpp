@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-std::future<void> getContributorMetrics(auto {
-  username, auto dateRange, const std::any& }) {
+std::future<void> getContributorMetrics(auto dateRange) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

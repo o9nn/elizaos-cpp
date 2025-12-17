@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include "base.hpp"
 #include "elizaos/core.hpp"
@@ -20,7 +19,7 @@ struct Agent {
     UUID id;
     std::string name;
     std::optional<std::string> description;
-    std::variant<'active', 'inactive', 'stopped'> status;
+    std::string status;
     Date createdAt;
     Date updatedAt;
 };
@@ -56,7 +55,7 @@ struct AgentPanel {
 struct AgentLog {
     UUID id;
     UUID agentId;
-    std::variant<'debug', 'info', 'warn', 'error'> level;
+    std::string level;
     std::string message;
     Date timestamp;
 };

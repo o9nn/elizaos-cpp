@@ -18,7 +18,7 @@ namespace elizaos {
 /**
  * Extract project name from user message
  */
-std::optional<std::string> extractProjectName(const std::string& text);
+std::string extractProjectName(const std::string& text);
 
 /**
  * Extract project type from user message

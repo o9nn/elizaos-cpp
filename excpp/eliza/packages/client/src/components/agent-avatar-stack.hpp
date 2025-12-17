@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include "elizaos/core.hpp"
 #include "ui/avatar.hpp"
@@ -20,7 +19,7 @@ namespace elizaos {
 struct AgentAvatarStackProps {
     std::vector<UUID> agentIds;
     std::vector<std::string> agentNames;
-    std::optional<std::variant<'sm', 'md', 'lg'>> size;
+    std::optional<std::string> size;
     std::optional<double> maxStack;
     std::optional<bool> showExtraTooltip;
 };

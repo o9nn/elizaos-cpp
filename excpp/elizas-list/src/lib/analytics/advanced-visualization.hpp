@@ -16,9 +16,9 @@ namespace elizaos {
 
 class AdvancedVisualization {
 public:
-    ChartConfiguration generateSegmentationSunburst(const std::vector<std::any>& segments);
-    ChartConfiguration generatePredictionGraph(const std::vector<std::any>& predictions);
-    void generateNetworkGraph(const std::any& data);
+    static ChartConfiguration generateSegmentationSunburst(const std::vector<std::any>& segments);
+    static ChartConfiguration generatePredictionGraph(const std::vector<std::any>& predictions);
+    static void generateNetworkGraph(const std::any& data);
 };
  
 } // namespace elizaos

@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::optional<std::string> extractPluginName(const std::string& text) {
+std::string extractPluginName(const std::string& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Look for explicit plugin names

@@ -54,18 +54,19 @@ struct ModalState {
     std::variant<"ETH", "USDC", "SOL"> currency;
     StepState step;
     bool isProcessing;
-    std::optional<std::string> error;
+    std::string error;
     bool requireApprover;
     bool contractValid;
-    std::optional<std::string> solanaTokenMint;
+    std::string solanaTokenMint;
     std::optional<TokenMetadata> tokenMetadata;
-    std::optional<std::string> completedTxHash;
-    std::optional<std::string> completedOfferId;
+    std::string completedTxHash;
+    std::string completedOfferId;
 };
 
 using ModalAction = std::variant<, { type: "SET_TOKEN_AMOUNT">; payload: number }
 
 ModalState modalReducer(ModalState state, ModalAction action);
 
+void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete);
 
 } // namespace elizaos

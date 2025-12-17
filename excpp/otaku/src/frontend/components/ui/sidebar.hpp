@@ -31,23 +31,49 @@ void useSidebar();
   // We add a state so that we can do data-state="expanded" or "collapsed".
   // This makes it easier to style the sidebar with Tailwind classes.
 
-void SidebarRail(auto { className, ComponentProps<"button"> ...props });
+void Sidebar(auto variant, auto collapsible, auto className, auto children);
 
-void SidebarInset(auto { className, ComponentProps<"main"> ...props });
+void SidebarTrigger();
 
-void SidebarHeader(auto { className, ComponentProps<"div"> ...props });
+void SidebarRail();
 
-void SidebarFooter(auto { className, ComponentProps<"div"> ...props });
+void SidebarInset();
 
-void SidebarContent(auto { className, ComponentProps<"div"> ...props });
+void SidebarInput();
 
-void SidebarGroup(auto { className, ComponentProps<"div"> ...props });
+void SidebarHeader();
 
-void SidebarMenu(auto { className, ComponentProps<"ul"> ...props });
+void SidebarFooter();
 
-void SidebarMenuItem(auto { className, ComponentProps<"li"> ...props });
+void SidebarSeparator();
 
-void SidebarMenuSub(auto { className, ComponentProps<"ul"> ...props });
+void SidebarContent();
+
+void SidebarGroup();
+
+void SidebarGroupLabel(auto asChild);
+
+void SidebarGroupAction(auto asChild);
+
+void SidebarGroupContent();
+
+void SidebarMenu();
+
+void SidebarMenuItem();
+
+void SidebarMenuButton(auto isActive, auto variant, auto size, auto tooltip, auto className);
+
+void SidebarMenuAction(auto asChild, auto showOnHover);
+
+void SidebarMenuBadge();
+
+void SidebarMenuSkeleton(auto showIcon);
+
+void SidebarMenuSub();
+
+void SidebarMenuSubItem();
+
+void SidebarMenuSubButton(auto size, auto isActive, auto className);
 
 
 } // namespace elizaos

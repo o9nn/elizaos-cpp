@@ -20,10 +20,10 @@ namespace elizaos {
 struct LoadingPanelProps {
     std::string title;
     std::variant<std::string, std::vector<std::string>> messages;
-    std::optional<std::variant<'loading', 'success', 'error'>> type;
+    std::optional<std::string> type;
 };
 
-void LoadingPanel(auto { title, auto messages, auto type = 'loading', LoadingPanelProps onClose });
+void LoadingPanel(auto messages, auto type);
 
 
 } // namespace elizaos

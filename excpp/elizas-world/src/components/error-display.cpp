@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void ErrorDisplay(ErrorDisplayProps { error }) {
+void ErrorDisplay() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto message = true /* instanceof check */ ? error.message : 'An unknown error occurred';

@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void CopyAdornment(auto {
-  copyValue, auto copyName, auto disabled = false, CopyAdornmentProps }) {
+void CopyAdornment(auto copyName, auto disabled) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [textCopied, setTextCopied] = useState(false);

@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void TokenHeader(auto { token, TokenHeaderProps marketData }) {
+void TokenHeader() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto priceChange = marketData.priceChange24h || 0;

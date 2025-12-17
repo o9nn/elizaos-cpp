@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::vector<Plugin> resolvePluginDependencies(Map<string availablePlugins, auto Plugin>, boolean = false isTestMode) {
+std::vector<Plugin> resolvePluginDependencies(const std::unordered_map<std::string, Plugin>& availablePlugins, bool isTestMode = false) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const std::vector<std::string> resolutionOrder = [];

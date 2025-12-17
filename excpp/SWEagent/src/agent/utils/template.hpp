@@ -1,4 +1,5 @@
 #pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -33,12 +34,12 @@ namespace elizaos {
  * Render a template with loops and conditionals
  * Supports {% for %}, {% if %}, {% endif %}, {% endfor %}
  */
-std::string renderAdvancedTemplate(const std::string& template, Record<string context, auto any>);
+std::string renderAdvancedTemplate(const std::string& template, const std::unordered_map<std::string, std::any>& context);
 
 /**
  * Simple condition evaluator for template conditionals
  */
-bool evaluateCondition(const std::string& condition, Record<string context, auto any>);
+bool evaluateCondition(const std::string& condition, const std::unordered_map<std::string, std::any>& context);
 
 /**
  * Template class for more complex rendering needs
@@ -46,7 +47,7 @@ bool evaluateCondition(const std::string& condition, Record<string context, auto
 class Template {
 public:
     Template(const std::string& template);
-    std::string render(Record<string context, auto any>);
+    std::string render(const std::unordered_map<std::string, std::any>& context);
 
 private:
     std::string template_;

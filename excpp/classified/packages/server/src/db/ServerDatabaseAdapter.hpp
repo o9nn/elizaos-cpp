@@ -6,6 +6,7 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
 #include "elizaos/core.hpp"
 #include "schema.hpp"
@@ -61,22 +62,26 @@ using DrizzleDatabase = std::function<void()>;
  */
 class ServerDatabaseAdapter {
 public:
-    ServerDatabaseAdapter(DrizzleDatabase private db);
-    std::future<MessageServer> createMessageServer(std::optional<{
-    id: UUID;
-    name: string;
-    sourceType: string;
-    sourceId: string;
-    metadata: Record<string> data, auto unknown>;
-  });
+    ServerDatabaseAdapter();
+    std::future<MessageServer> createMessageServer(std::optional<std::any> data);
+    std::future<std::vector<MessageServer>> getMessageServers();
+    std::variant<Promise<MessageServer, null>> getMessageServerById(UUID serverId);
+    std::future<Channel> createChannel(std::optional<std::any> data);
+    std::future<std::vector<Channel>> getChannelsForServer(UUID serverId);
     std::future<void> addAgentToServer(UUID serverId, UUID agentId);
+    std::future<std::vector<UUID>> getAgentsForServer(UUID serverId);
     std::future<void> removeAgentFromServer(UUID serverId, UUID agentId);
+    std::future<Message> createMessage(std::optional<std::any> data);
+    std::future<std::vector<Message>> getMessagesForChannel(const std::string& channelId, double limit = 50, double offset = 0);
     std::future<void> addParticipantToChannel(const std::string& channelId, UUID userId);
+    std::future<std::vector<UUID>> getParticipantsForChannel(const std::string& channelId);
     std::future<void> removeParticipantFromChannel(const std::string& channelId, UUID userId);
     std::future<Channel> findOrCreateDmChannel(UUID serverId, UUID entity1Id, UUID entity2Id);
+    std::variant<Promise<Channel, null>> getChannelDetails(const std::string& channelId);
     std::future<Channel> updateChannel(const std::string& channelId, std::optional<std::any> updates);
     std::future<void> deleteChannel(const std::string& channelId);
     std::future<void> deleteMessage(const std::string& messageId);
+};
 
 
 } // namespace elizaos

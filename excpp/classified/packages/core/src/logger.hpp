@@ -18,7 +18,7 @@ namespace elizaos {
 
 
 // Local utility function to avoid circular dependency
-bool parseBooleanFromText(const std::optional<std::string>& value);
+bool parseBooleanFromText(const std::string& value);
 
 /**
  * Interface representing a log entry.
@@ -57,22 +57,21 @@ void captureLogEntry(const std::string& level, const std::vector<std::any>& args
 class ElizaLogger {
 public:
     ElizaLogger(std::optional<std::any> config);
-    void log(const std::vector<std::any>& ...args);
-    void progress(const std::vector<std::any>& ...args);
-    void success(const std::vector<std::any>& ...args);
-    void fatal(const std::vector<std::any>& ...args);
-    void error(const std::vector<std::any>& ...args);
-    void warn(const std::vector<std::any>& ...args);
-    void info(const std::vector<std::any>& ...args);
-    void debug(const std::vector<std::any>& ...args);
-    void trace(const std::vector<std::any>& ...args);
-    void verbose(const std::vector<std::any>& ...args);
+    void log();
+    void progress();
+    void success();
+    void fatal();
+    void error();
+    void warn();
+    void info();
+    void debug();
+    void trace();
+    void verbose();
     std::vector<std::any> formatArgs(const std::vector<std::any>& args);
     bool isLevelEnabled(const std::string& level);
     ElizaLogger child(const std::any& bindings);
     void clear();
     void level() const;
-    void level(const std::string& newLevel);
     void levels() const;
     std::future<void> flush();
     void flushSync();

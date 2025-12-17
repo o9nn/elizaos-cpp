@@ -126,8 +126,7 @@ ModalState modalReducer(ModalState state, ModalAction action) {
 
 }
 
-void AcceptQuoteModal(auto {
-  isOpen, auto onClose, auto initialQuote, auto onComplete, AcceptQuoteModalProps }) {
+void AcceptQuoteModal(auto onClose, auto initialQuote, auto onComplete) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 
 namespace elizaos {
@@ -15,8 +14,8 @@ namespace elizaos {
 struct VoiceModel {
     std::string value;
     std::string label;
-    std::variant<'local', 'elevenlabs', 'openai', 'none'> provider;
-    std::optional<std::variant<'male', 'female'>> gender;
+    std::string provider;
+    std::optional<std::string> gender;
     std::optional<std::string> language;
     std::optional<std::vector<std::string>> features;
 };

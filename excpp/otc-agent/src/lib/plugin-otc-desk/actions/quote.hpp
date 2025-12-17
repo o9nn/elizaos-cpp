@@ -1,5 +1,6 @@
 #pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
@@ -16,7 +17,6 @@ namespace elizaos {
 
 // quote action - generate a new OTC quote and return an XML object to the frontend
 
-void parseQuoteRequest(const std::string& text); {
 
   // Parse token amount (various formats)
 
@@ -25,7 +25,6 @@ void parseQuoteRequest(const std::string& text); {
 
   // Parse payment currency
 
-void parseNegotiationRequest(const std::string& text); {
 
   // Token amount (reuse existing regex)
 
@@ -34,6 +33,8 @@ void parseNegotiationRequest(const std::string& text); {
   // Lockup period
 
   // Payment currency
+
+std::future<std::string> extractTokenContext(const std::string& text);
 
 // Worst possible deal defaults (lowest discount, longest lockup)
 

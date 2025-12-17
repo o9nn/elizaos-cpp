@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void PrefilterUser(auto {
-  isDm = false, auto purge = false, auto disabled = false, PrefilterUserProps }) {
+void PrefilterUser(auto purge, auto disabled) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { state: dmState, setPreFilterUserId: setDmPreFilterUserId } =;

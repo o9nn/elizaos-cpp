@@ -1,10 +1,12 @@
 #pragma once
+#include <any>
 #include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
 #include ".types.hpp"
 #include "elizaos/core.hpp"
@@ -58,26 +60,32 @@ std::future<void> installFromGit(const std::string& gitRepo, const std::string& 
 class PluginManagerService {
 public:
     PluginManagerService(IAgentRuntime runtime, std::optional<PluginManagerConfig> config);
-    std::future<PluginManagerService> start(IAgentRuntime runtime, std::optional<PluginManagerConfig> config);
+    static std::future<PluginManagerService> start(IAgentRuntime runtime, std::optional<PluginManagerConfig> config);
     void storeOriginalComponents();
     void initializeRegistry();
     PluginState getPlugin(const std::string& id);
     std::vector<PluginState> getAllPlugins();
     std::vector<PluginState> getLoadedPlugins();
     void updatePluginState(const std::string& id, const std::optional<PluginState>& update);
-    std::future<void> loadPlugin(auto {
-    pluginId, auto force = false, LoadPluginParams });
-    std::future<void> unloadPlugin(UnloadPluginParams { pluginId });
+    std::future<void> loadPlugin(auto force);
+    std::future<void> unloadPlugin();
     std::future<std::string> registerPlugin(Plugin plugin);
     std::future<void> registerPluginComponents(Plugin plugin);
     std::future<void> unregisterPluginComponents(Plugin plugin);
     std::future<void> stop();
     std::future<DynamicPluginInfo> installPluginFromRegistry(const std::string& pluginName, std::optional<std::string> version);
     std::future<std::string> loadInstalledPlugin(const std::string& pluginName);
+  > getAvailablePluginsFromRegistry();
     DynamicPluginInfo getInstalledPluginInfo(const std::string& pluginName);
     std::vector<DynamicPluginInfo> listInstalledPlugins();
     std::string getPluginInstallPath(const std::string& pluginName);
-    void if(auto !packageJson);
+    Promise< parsePluginMetadata(const std::string& pluginPath);
+    std::variant<Promise<Plugin, null>> loadPluginModule(const std::string& pluginPath);
+    obj is Plugin isValidPlugin(const std::any& obj);
+
+private:
+    PluginManagerConfig pluginManagerConfig_;
+};
 
 
 } // namespace elizaos

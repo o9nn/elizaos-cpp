@@ -14,7 +14,6 @@ namespace elizaos {
 
 
 
-void parseArguments(); {
 
 void getTokenForProvider(ModelProviderName provider, Character character);
 

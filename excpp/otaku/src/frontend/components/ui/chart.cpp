@@ -22,14 +22,7 @@ void useChart() {
     }
 }
 
-void ChartContainer(auto {
-  id, auto className, auto children, auto config, ComponentProps<"div"> & {
-  config: ChartConfig;
-  children: ComponentProps<
-    typeof RechartsPrimitive.ResponsiveContainer
-  >["children"];
-} ...props
-}) {
+void ChartContainer(auto className, auto children, auto config) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto uniqueId = React.useId();
@@ -56,18 +49,7 @@ void ChartContainer(auto {
 
 }
 
-void ChartLegendContent(auto {
-  className, auto hideIcon = false, auto payload, auto verticalAlign = "bottom", auto nameKey, std::optional<ComponentProps<"div"> & {
-  payload: Array<{
-    value: string;
-    dataKey: string;
-    color: string;
-    [key: string]: unknown;
-  }>;
-  verticalAlign: "top" | "bottom";
-  hideIcon: boolean;
-  nameKey: string;
-}> }) {
+void ChartLegendContent(auto hideIcon, auto payload, auto verticalAlign, auto nameKey) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { config } = useChart();

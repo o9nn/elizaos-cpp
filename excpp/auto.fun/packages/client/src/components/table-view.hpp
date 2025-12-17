@@ -26,5 +26,6 @@ struct TableViewProps {
     SortOrderType sortOrder;
 };
 
+void TableView(auto sortBy, auto sortOrder, auto setSortBy, auto setSortOrder);
 
 } // namespace elizaos

@@ -54,7 +54,6 @@ class TypeScriptParser {
 public:
     std::any parse(const std::string& file);
      extractExports(const std::string& file);
-    void if(auto ast && ast.body);
     std::optional<ActionBounds> findActionBounds(const std::any& ast);
     std::string extractActionCode(const std::string& filePath, ActionBounds bounds);
     void handleParseError(Error error, std::optional<std::string> file);

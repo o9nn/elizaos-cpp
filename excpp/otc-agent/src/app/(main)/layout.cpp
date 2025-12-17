@@ -4,10 +4,7 @@
 
 namespace elizaos {
 
-void Layout(auto {
-  children, Readonly<{
-  children: React::ReactNode;
-}> }) {
+void Layout() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

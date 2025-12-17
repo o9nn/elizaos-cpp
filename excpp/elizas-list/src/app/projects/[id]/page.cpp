@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void ProjectPage(const std::any& { params }) {
+void ProjectPage() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [project, setProject] = useState<Project | nullptr>(nullptr);

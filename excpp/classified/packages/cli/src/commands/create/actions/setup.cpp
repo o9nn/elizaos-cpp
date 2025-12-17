@@ -11,7 +11,7 @@ std::future<void> createProjectDirectories(const std::string& targetDir) {
 
 }
 
-std::future<void> setupAIModelConfig(const std::string& aiModel, const std::string& envFilePath, auto isNonInteractive = false) {
+std::future<void> setupAIModelConfig(const std::string& aiModel, const std::string& envFilePath, auto isNonInteractive) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -176,7 +176,7 @@ bool hasValidApiKey(const std::string& content, const std::string& keyName) {
 
 }
 
-std::future<void> setupEmbeddingModelConfig(const std::string& embeddingModel, const std::string& envFilePath, auto isNonInteractive = false) {
+std::future<void> setupEmbeddingModelConfig(const std::string& embeddingModel, const std::string& envFilePath, auto isNonInteractive) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -278,7 +278,7 @@ std::future<void> setupEmbeddingModelConfig(const std::string& embeddingModel, c
 
 }
 
-std::optional<std::string> resolveModelToPlugin(const std::string& modelName) {
+std::string resolveModelToPlugin(const std::string& modelName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const std::unordered_map<std::string, std::string> modelToPlugin = {;
@@ -294,7 +294,7 @@ std::optional<std::string> resolveModelToPlugin(const std::string& modelName) {
 
 }
 
-std::future<void> installModelPlugin(const std::string& modelName, const std::string& targetDir, string = '' purpose) {
+std::future<void> installModelPlugin(const std::string& modelName, const std::string& targetDir, std::string purpose = "") {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto pluginName = resolveModelToPlugin(modelName);
@@ -306,7 +306,7 @@ std::future<void> installModelPlugin(const std::string& modelName, const std::st
 
 }
 
-std::future<void> setupProjectEnvironment(const std::string& targetDir, const std::string& database, const std::string& aiModel, std::optional<std::string> embeddingModel, auto isNonInteractive = false) {
+std::future<void> setupProjectEnvironment(const std::string& targetDir, const std::string& database, const std::string& aiModel, std::optional<std::string> embeddingModel, auto isNonInteractive) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Create project directories first

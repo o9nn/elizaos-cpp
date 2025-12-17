@@ -195,7 +195,7 @@ std::future<void> setupReminderDemo(IAgentRuntime runtime) {
 
 }
 
-std::future<void> monitorReminders(IAgentRuntime runtime, number = 60000 duration) {
+std::future<void> monitorReminders(IAgentRuntime runtime, double duration = 60000) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     std::cout << "\n👀 Monitoring reminders for " + std::to_string(duration / 1000) + " seconds..." << std::endl;

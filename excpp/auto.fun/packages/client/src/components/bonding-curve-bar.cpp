@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void BondingCurveBar(const std::any& { progress }) {
+void BondingCurveBar() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [width, setWidth] = useState<number>(0);

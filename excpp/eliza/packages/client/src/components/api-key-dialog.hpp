@@ -17,6 +17,6 @@ struct ApiKeyDialogProps {
     bool open;
 };
 
-void ApiKeyDialog(auto { open, auto onOpenChange, ApiKeyDialogProps onApiKeySaved });
+void ApiKeyDialog(auto onOpenChange);
 
 } // namespace elizaos

@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void PluginsPanel(auto {
-  characterValue, auto setCharacterValue, auto initialPlugins, PluginsPanelProps }) {
+void PluginsPanel(auto setCharacterValue, auto initialPlugins) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { data: plugins, error } = usePlugins();

@@ -26,6 +26,6 @@ struct WalletResult {
  * @param requirePrivateKey Whether to return a full keypair (true) or just public key (false)
  * @returns KeypairResult containing either keypair or public key
  */
-std::future<WalletResult> loadWallet(AgentRuntime runtime, boolean = true requirePrivateKey);
+std::future<WalletResult> loadWallet(AgentRuntime runtime, bool requirePrivateKey = true);
 
 } // namespace elizaos

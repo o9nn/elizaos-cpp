@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-double parsePositiveInteger(const std::variant<std::string, double>& value) {
+double parsePositiveInteger(const std::optional<double>& value) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (typeof value == "number" && Number.isInteger(value) && value > 0) {
@@ -20,7 +20,7 @@ double parsePositiveInteger(const std::variant<std::string, double>& value) {
 
 }
 
-std::future<ActionResult> respondWithError(HandlerCallback callback, const std::string& messageText, const std::string& errorCode, std::optional<Record<string> details, auto string | number | null>) {
+std::future<ActionResult> respondWithError(HandlerCallback callback, const std::string& messageText, const std::string& errorCode, std::optional<std::variant<Record<string, string, double, null>>> details) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (callback) {

@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void NotificationItem(auto {
-  notification, auto onMarkAsRead, auto onDelete, NotificationItemProps }) {
+void NotificationItem(auto onMarkAsRead, auto onDelete) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto formatTimestamp = [&](timestamp: string) {;

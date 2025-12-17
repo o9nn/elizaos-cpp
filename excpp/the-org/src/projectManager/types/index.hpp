@@ -16,22 +16,22 @@ namespace elizaos {
 
 
 // Define the days of the week for availability
-using WeekDay = std::variant<, 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'>;
+using WeekDay = std::variant<, std::string, std::string, std::string, std::string, std::string, std::string, std::string>;
 
 // Define employment status types
-using EmploymentStatus = std::variant<'FULL_TIME', 'PART_TIME', 'FREELANCE', 'NONE'>;
+using EmploymentStatus = std::variant<std::string, std::string, std::string, std::string>;
 
 // Define report types
-using ReportType = std::variant<'DAILY', 'WEEKLY', 'MONTHLY'>;
+using ReportType = std::variant<std::string, std::string, std::string>;
 
 // Define task status types
-using TaskStatus = std::variant<'NOT_STARTED', 'IN_PROGRESS', 'BLOCKED', 'COMPLETED'>;
+using TaskStatus = std::variant<std::string, std::string, std::string, std::string>;
 
 // Define task priority levels
-using TaskPriority = std::variant<'LOW', 'MEDIUM', 'HIGH', 'URGENT'>;
+using TaskPriority = std::variant<std::string, std::string, std::string, std::string>;
 
 // Define platform types for multi-platform support
-using PlatformType = std::variant<'DISCORD', 'TELEGRAM', 'SLACK', 'EMAIL'>;
+using PlatformType = std::variant<std::string, std::string, std::string, std::string>;
 
 /**
  * Interface for team member availability
@@ -111,7 +111,7 @@ struct Project {
     std::optional<std::string> targetEndDate;
     std::optional<std::string> actualEndDate;
     std::optional<std::string> client;
-    std::variant<'PLANNING', 'ACTIVE', 'ON_HOLD', 'COMPLETED', 'CANCELLED'> status;
+    std::string status;
     std::string createdAt;
     std::string updatedAt;
 };
@@ -172,11 +172,11 @@ struct Report {
     std::string summary;
     double completionPercentage;
     double tasksCompletedSinceLastReport;
-    std::variant<'ON_TRACK', 'AT_RISK', 'DELAYED'> onTrackStatus;
+    std::string onTrackStatus;
     std::vector<TeamMemberSummary> teamMemberSummaries;
     UUID milestoneId;
     std::string title;
-    std::variant<'NOT_STARTED', 'IN_PROGRESS', 'COMPLETED'> status;
+    std::string status;
     std::string dueDate;
     double completionPercentage;
 };
@@ -190,7 +190,7 @@ struct CheckInStatus {
     std::optional<std::string> lastCheckInDate;
     std::string nextCheckInDue;
     double remindersSent;
-    std::variant<'PENDING', 'COMPLETED', 'MISSED'> status;
+    std::string status;
 };
 
 

@@ -16,7 +16,7 @@ std::variant<std::string, double> getPercentageOfTotal(double value, double tota
 
 }
 
-void HoldersTable(const std::any& { token }) {
+void HoldersTable() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto query = useQuery({;

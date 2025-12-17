@@ -16,7 +16,7 @@ namespace elizaos {
 
 // Key for storing agent tab states in localStorage
 
-using TabValue = std::variant<'details', 'actions', 'logs', 'memories', std::string>;
+using TabValue = std::variant<std::string, std::string, std::string, std::string, std::string>;
 
 struct AgentTabStates {
 };

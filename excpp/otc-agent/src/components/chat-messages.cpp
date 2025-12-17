@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void ChatMessages(auto {
-  messages, auto citationsMap, auto followUpPromptsMap, auto onFollowUpClick, auto assistantAvatarUrl, auto assistantName, ChatMessagesProps }) {
+void ChatMessages(auto citationsMap, auto followUpPromptsMap, auto onFollowUpClick, auto assistantAvatarUrl, auto assistantName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto messagesEndRef = useRef<HTMLDivElement>(nullptr);

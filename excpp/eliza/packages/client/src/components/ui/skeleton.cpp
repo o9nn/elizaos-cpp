@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void Skeleton(auto { className, SkeletonProps ...props }) {
+void Skeleton() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

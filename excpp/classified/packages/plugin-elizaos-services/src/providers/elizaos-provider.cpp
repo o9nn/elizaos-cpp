@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-ElizaOSAPIError createElizaOSError(const std::string& message, double status, std::optional<std::string> code, std::optional<std::any> details, auto retryable = false) {
+ElizaOSAPIError createElizaOSError(const std::string& message, double status, std::optional<std::string> code, std::optional<std::any> details, auto retryable) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

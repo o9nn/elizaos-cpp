@@ -36,6 +36,6 @@ std::vector<OTCConsignment> filterValidConsignments(const std::vector<OTCConsign
 // --- Helper: Group consignments by tokenId ---
 std::vector<TokenGroup> groupConsignmentsByToken(const std::vector<OTCConsignment>& consignments);
 
-void DealsGrid(auto { filters, DealsGridProps searchQuery = "" });
+void DealsGrid(auto searchQuery);
 
 } // namespace elizaos

@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void ChatPriceChart(ChatPriceChartProps { data }) {
+void ChatPriceChart() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [activeChartType, setActiveChartType] = useState<ChartType>('price');

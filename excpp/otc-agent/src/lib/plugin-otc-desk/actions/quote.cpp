@@ -23,7 +23,7 @@ void parseNegotiationRequest(const std::string& text) {
 
 }
 
-std::future<std::optional<std::string>> extractTokenContext(const std::string& text) {
+std::future<std::string> extractTokenContext(const std::string& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto allTokens = TokenDB.getAllTokens();

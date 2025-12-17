@@ -38,7 +38,7 @@ namespace elizaos {
 
 class HeliusWebSocket {
 public:
-    HeliusWebSocket(const std::string& private apiKey, IAgentRuntime private runtime);
+    HeliusWebSocket();
     std::future<void> connect();
     std::variant<Promise<number, null>> subscribeToWallet(const std::string& walletAddress);
     std::future<bool> unsubscribeFromWallet(const std::string& walletAddress);

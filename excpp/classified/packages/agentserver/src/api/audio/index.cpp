@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-express::Router audioRouter(Map<UUID agents, auto IAgentRuntime>) {
+express::Router audioRouter(const std::unordered_map<UUID, IAgentRuntime>& agents) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto router = express.Router();

@@ -31,6 +31,5 @@ bool fallbackCopy(const std::string& text);
  *   - `copied`: Boolean indicating if text was recently copied (auto-resets after 2 seconds)
  *   - `copyToClipboard`: Async function that copies the provided text to clipboard
  */
-std::function<void()> useCopyToClipboard();
 
 } // namespace elizaos

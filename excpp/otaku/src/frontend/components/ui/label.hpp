@@ -13,5 +13,7 @@ namespace elizaos {
 
 
 
+void Label();
+
 
 } // namespace elizaos

@@ -157,7 +157,7 @@ IAgentRuntime createMockAgentRuntime(std::optional<std::optional<IAgentRuntime>>
 
 }
 
-DatabaseAdapter & any createMockDatabaseAdapter(std::optional<std::any> overrides) {
+DatabaseAdapter createMockDatabaseAdapter(std::optional<std::any> overrides) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto baseAdapter = {;

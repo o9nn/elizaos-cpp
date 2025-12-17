@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void TokenDetailModalContent(TokenDetailModalContentProps { token }) {
+void TokenDetailModalContent() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { hideModal } = useModal();

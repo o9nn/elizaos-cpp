@@ -18,5 +18,6 @@ struct Rating {
     double rating;
 };
 
+void ProjectRating();
 
 } // namespace elizaos

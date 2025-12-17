@@ -13,5 +13,7 @@ namespace elizaos {
 
 
 
+void Switch();
+
 
 } // namespace elizaos

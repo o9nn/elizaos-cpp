@@ -45,14 +45,14 @@ struct RunSingleConfig {
  * Configuration for batch instances source
  */
 struct BatchInstanceSourceConfig {
-    std::optional<std::variant<'file', 'swe_bench', 'huggingface'>> type;
+    std::optional<std::string> type;
     std::optional<std::string> path;
     std::optional<std::string> filter;
     std::optional<std::string> slice;
     std::optional<bool> shuffle;
     std::optional<DeploymentConfig> deployment;
-    std::optional<std::variant<'lite', 'verified', 'full', 'multimodal', 'multilingual'>> subset;
-    std::optional<std::variant<'dev', 'test'>> split;
+    std::optional<std::string> subset;
+    std::optional<std::string> split;
     std::optional<std::string> pathOverride;
     std::optional<bool> evaluate;
     std::optional<std::string> dataset_name;

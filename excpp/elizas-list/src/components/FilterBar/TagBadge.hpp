@@ -20,5 +20,5 @@ struct TagBadgeProps {
     std::optional<bool> showTrending;
 };
 
-
+void TagBadge(auto selected, auto onClick, auto showIcon, auto showTrending); 
 } // namespace elizaos

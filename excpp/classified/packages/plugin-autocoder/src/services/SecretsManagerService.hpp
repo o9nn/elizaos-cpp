@@ -20,8 +20,7 @@ class SecretsManagerService {
 public:
     SecretsManagerService(IAgentRuntime runtime);
     std::string capabilityDescription() const;
-    std::future<Service> start(IAgentRuntime runtime);
-    std::future<void> start();
+    static std::future<Service> start(IAgentRuntime runtime);
     std::future<void> stop();
     void loadSecretsFromRuntime();
     std::variant<Promise<string, null>> getSecret(const std::string& key);

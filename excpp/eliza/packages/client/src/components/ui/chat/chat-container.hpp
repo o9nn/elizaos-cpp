@@ -19,11 +19,11 @@ using ChatContainerContentProps = {
 
 using ChatContainerScrollAnchorProps = {
 
-void ChatContainerRoot(auto { children, auto className, ChatContainerRootProps ...props });
+void ChatContainerRoot(auto className);
 
-void ChatContainerContent(auto { children, auto className, ChatContainerContentProps ...props });
+void ChatContainerContent(auto className);
 
-void ChatContainerScrollAnchor(auto { className, ChatContainerScrollAnchorProps ...props });
+void ChatContainerScrollAnchor();
 
 
 } // namespace elizaos

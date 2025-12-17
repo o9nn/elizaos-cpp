@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::string parseSolanaAddress(unknown raw, auto name = "address") {
+std::string parseSolanaAddress(unknown raw, auto name) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -19,7 +19,7 @@ std::string parseSolanaAddress(unknown raw, auto name = "address") {
     }
 }
 
-Pagination parsePaginationQuery(Record<string query, auto string | undefined>, auto { defaultLimit = 50, auto maxLimit = 50, auto maxPage = 1000 } = {}) {
+Pagination parsePaginationQuery(const std::variant<Record<string, string, undefined>>& query, auto maxLimit, auto maxPage) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto rawLimit = parseInt(query.limit || "", 10);

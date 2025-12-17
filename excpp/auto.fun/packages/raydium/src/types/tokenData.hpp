@@ -95,7 +95,7 @@ struct TokenData {
     std::optional<double> holderCount;
     std::optional<std::string> txId;
     std::optional<MigrationData> migration;
-    std::optional<std::variant<WithdrawnAmountsData, ''>> withdrawnAmounts;
+    std::optional<std::variant<WithdrawnAmountsData, std::string>> withdrawnAmounts;
     std::optional<PoolInfoData> poolInfo;
     std::optional<std::string> lockLpTxId;
     std::optional<std::string> tokenSupply;

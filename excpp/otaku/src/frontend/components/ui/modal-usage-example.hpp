@@ -47,7 +47,7 @@ void ExampleCustomStyledModal();
  * 
  * OLD WAY (with createPortal):
  * ```tsx
- * void SendModal(auto { isOpen, auto onClose, auto tokens, SendModalProps userId });
+ * void SendModal(auto onClose, auto tokens);
  * 
  * // Usage:
  * const [isModalOpen, setIsModalOpen] = useState(false);

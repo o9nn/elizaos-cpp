@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void RootLayout(auto {
-  children, const std::any& }) {
+void RootLayout() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

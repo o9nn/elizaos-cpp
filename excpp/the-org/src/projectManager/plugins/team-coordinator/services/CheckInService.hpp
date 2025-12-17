@@ -45,17 +45,15 @@ struct ExtendedInteraction {
 
 class CheckInService {
 public:
-    CheckInService(IAgentRuntime protected runtime);
+    CheckInService();
     std::future<void> start();
     std::future<void> stop();
-    std::future<CheckInService> start(IAgentRuntime runtime);
     void initialize();
     std::future<DiscordService> ensureDiscordClient(IAgentRuntime runtime);
     void handleCheckInSubmission(ExtendedInteraction interaction);
     std::future<void> storeCheckInSchedule(const std::string& roomId, ExtendedCheckInSchedule schedule);
     void handleReportChannelSubmission(ExtendedInteraction interaction);
     std::future<void> storeReportChannelConfig(ReportChannelConfig config);
-    void catch(unknown error);
 };
 
       // Ensure the room exists before trying to access it

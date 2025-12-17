@@ -18,5 +18,6 @@ struct ProfileRepoNoticeProps {
     bool pageLoading;
 };
 
+void ProfileRepoNotice(auto pageLoading, auto onCreateRepo);
 
 } // namespace elizaos

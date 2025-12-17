@@ -24,5 +24,5 @@ struct InsightsResponse {
     std::any engagementHeatmap;
 };
 
-std::future<void> GET(Request request, const std::any& { params }); 
+std::future<void> GET(Request request); 
 } // namespace elizaos

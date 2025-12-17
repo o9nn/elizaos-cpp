@@ -25,10 +25,10 @@ struct ChatState {
     std::vector<ChatMessage> messages;
     std::string input;
     bool inputDisabled;
-    std::optional<std::string> roomId;
+    std::string roomId;
     bool isLoadingHistory;
     bool isAgentThinking;
-    std::optional<std::string> entityId;
+    std::string entityId;
     bool showConnectOverlay;
     std::optional<OTCQuote> currentQuote;
     bool showAcceptModal;

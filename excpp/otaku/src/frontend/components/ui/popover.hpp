@@ -13,5 +13,13 @@ namespace elizaos {
 
 
 
+void Popover();
+
+void PopoverTrigger();
+
+void PopoverContent(auto align, auto sideOffset);
+
+void PopoverAnchor();
+
 
 } // namespace elizaos

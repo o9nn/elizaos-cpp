@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include "base.hpp"
 #include "elizaos/core.hpp"
@@ -64,7 +63,7 @@ struct MessageMetadata {
     std::optional<UUID> serverId;
     std::optional<std::string> prompt;
     std::optional<std::string> source;
-    std::optional<std::variant<'low', 'normal', 'high'>> priority;
+    std::optional<std::string> priority;
     std::optional<std::vector<std::string>> tags;
     std::optional<std::string> serverName;
     std::optional<std::string> channelName;
@@ -133,7 +132,7 @@ struct MessageSubmitParams {
 
 struct MessageCompleteParams {
     UUID messageId;
-    std::variant<'completed', 'failed'> status;
+    std::string status;
     std::optional<std::string> error;
 };
 

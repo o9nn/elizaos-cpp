@@ -20,5 +20,7 @@ using FieldProps = {
 
 using BeforeAndAfterFieldsProps = {
 
+void BeforeAndAfterFields(auto afterProps, "Search messages from after the provided date" toolTipDescription, "Messages After" label, auto beforeProps, "Search messages from before the provided date" toolTipDescription, "Messages Before" label);
+
 
 } // namespace elizaos

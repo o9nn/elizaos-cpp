@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void MultiWalletProvider(auto {
-  children, const std::any& }) {
+void MultiWalletProvider() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     useRenderTracker("MultiWalletProvider");

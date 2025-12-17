@@ -24,6 +24,6 @@ namespace elizaos {
 
     // Optionally register the cloned plugin for development
 
-std::optional<std::string> extractPluginName(const std::string& text);
+std::string extractPluginName(const std::string& text);
 
 } // namespace elizaos

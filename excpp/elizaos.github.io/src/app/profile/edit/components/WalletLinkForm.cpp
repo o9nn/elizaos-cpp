@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void WalletLinkForm(auto {
-  wallets = [], auto onSubmit, auto isProcessing, WalletLinkFormProps }) {
+void WalletLinkForm(auto onSubmit, auto isProcessing) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

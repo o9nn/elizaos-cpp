@@ -4,7 +4,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 
 namespace elizaos {
@@ -16,7 +15,7 @@ namespace elizaos {
 
 struct WeatherConfig {
     std::string apiKey;
-    std::optional<std::variant<'metric', 'imperial'>> units;
+    std::optional<std::string> units;
     std::optional<std::string> baseUrl;
 };
 
@@ -26,7 +25,7 @@ struct WeatherData {
     double humidity;
     double windSpeed;
     std::string description;
-    std::variant<'metric', 'imperial'> units;
+    std::string units;
 };
 
 struct WeatherEvalResponse {

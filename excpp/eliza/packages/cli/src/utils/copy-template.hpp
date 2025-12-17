@@ -5,7 +5,6 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
-#include <variant>
 #include <vector>
 #include "elizaos/core.hpp"
 
@@ -30,7 +29,7 @@ namespace elizaos {
  * @param {string[]} [exclude=[]] - An array of file and directory names to exclude from the copy operation.
  * @returns {Promise<void>} A Promise that resolves when the copy operation is complete.
  */
-std::future<void> copyDir(const std::string& src, const std::string& dest, const std::vector<string[] =>& exclude);
+std::future<void> copyDir(const std::string& src, const std::string& dest, std::vector<std::string> exclude = {});
 
 /**
  * Map template types to actual package names
@@ -40,7 +39,7 @@ std::string getPackageName(const std::string& templateType);
 /**
  * Copy a project or plugin template to target directory
  */
-std::future<void> copyTemplate(const std::variant<'project', 'project-starter', 'project-tee-starter', 'plugin'>& templateType, const std::string& targetDir);
+std::future<void> copyTemplate(const std::string& templateType, const std::string& targetDir);
 
 /**
  * Replace hardcoded "plugin-starter" strings in source files with the actual plugin name

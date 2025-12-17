@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::string detectDomain(const std::string& text, string = "general" defaultDomain) {
+std::string detectDomain(const std::string& text, std::string defaultDomain = "general") {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto domains = {;

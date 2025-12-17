@@ -16,8 +16,8 @@ namespace elizaos {
 
 class Analytics {
 public:
-    void trackProjectView(const std::string& projectId, std::optional<std::string> userId);
-    void trackRelatedProjectClick(const std::string& sourceProjectId, const std::string& targetProjectId, std::optional<std::string> userId);
+    static void trackProjectView(const std::string& projectId, std::optional<std::string> userId);
+    static void trackRelatedProjectClick(const std::string& sourceProjectId, const std::string& targetProjectId, std::optional<std::string> userId);
 };
  
 } // namespace elizaos

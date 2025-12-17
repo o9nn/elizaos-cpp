@@ -16,5 +16,5 @@ namespace elizaos {
 struct MobileHeaderProps {
 };
 
-void MobileHeader(MobileHeaderProps { onHomeClick });
+void MobileHeader();
 } // namespace elizaos

@@ -15,7 +15,7 @@ namespace elizaos {
 
 
 
-using RunStatus = std::variant<'completed', 'timeout', 'error', 'started'>;
+using RunStatus = std::variant<std::string, std::string, std::string, std::string>;
 
 struct RunCounts {
     double actions;
@@ -36,7 +36,7 @@ struct RunSummary {
     std::optional<RunCounts> counts;
 };
 
-using RunEventType = std::variant<, 'RUN_STARTED', 'RUN_ENDED', 'ACTION_STARTED', 'ACTION_COMPLETED', 'MODEL_USED', 'EVALUATOR_COMPLETED', 'EMBEDDING_EVENT'>;
+using RunEventType = std::variant<, std::string, std::string, std::string, std::string, std::string, std::string, std::string>;
 
 struct RunEvent {
     RunEventType type;
@@ -50,7 +50,7 @@ struct RunDetail {
 
 struct ListRunsParams {
     std::optional<UUID> roomId;
-    std::optional<std::variant<RunStatus, 'all'>> status;
+    std::optional<std::variant<RunStatus, std::string>> status;
     std::optional<double> limit;
     std::optional<double> from;
     std::optional<double> to;

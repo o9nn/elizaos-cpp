@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void PartnerCard(auto { partner }) {
+void PartnerCard() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

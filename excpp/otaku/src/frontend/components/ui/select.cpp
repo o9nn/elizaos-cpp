@@ -4,38 +4,28 @@
 
 namespace elizaos {
 
-void Select(ComponentProps<typeof SelectPrimitive.Root> {
-  ...props
-}) {
+void Select() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return <SelectPrimitive.Root data-slot="select" {...props} />;
 
 }
 
-void SelectGroup(ComponentProps<typeof SelectPrimitive.Group> {
-  ...props
-}) {
+void SelectGroup() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return <SelectPrimitive.Group data-slot="select-group" {...props} />;
 
 }
 
-void SelectValue(ComponentProps<typeof SelectPrimitive.Value> {
-  ...props
-}) {
+void SelectValue() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return <SelectPrimitive.Value data-slot="select-value" {...props} />;
 
 }
 
-void SelectTrigger(auto {
-  className, auto size = 'default', auto children, std::optional<ComponentProps<typeof SelectPrimitive.Trigger> & {
-  size: 'sm' | 'default'
-}> ...props
-}) {
+void SelectTrigger(auto size, auto children) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -57,9 +47,7 @@ void SelectTrigger(auto {
 
 }
 
-void SelectContent(auto {
-  className, auto children, auto position = 'popper', ComponentProps<typeof SelectPrimitive.Content> ...props
-}) {
+void SelectContent(auto children, auto position) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -92,9 +80,7 @@ void SelectContent(auto {
 
 }
 
-void SelectLabel(auto {
-  className, ComponentProps<typeof SelectPrimitive.Label> ...props
-}) {
+void SelectLabel() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -107,9 +93,7 @@ void SelectLabel(auto {
 
 }
 
-void SelectItem(auto {
-  className, auto children, ComponentProps<typeof SelectPrimitive.Item> ...props
-}) {
+void SelectItem(auto children) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -132,9 +116,7 @@ void SelectItem(auto {
 
 }
 
-void SelectSeparator(auto {
-  className, ComponentProps<typeof SelectPrimitive.Separator> ...props
-}) {
+void SelectSeparator() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -147,9 +129,7 @@ void SelectSeparator(auto {
 
 }
 
-void SelectScrollUpButton(auto {
-  className, ComponentProps<typeof SelectPrimitive.ScrollUpButton> ...props
-}) {
+void SelectScrollUpButton() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -167,9 +147,7 @@ void SelectScrollUpButton(auto {
 
 }
 
-void SelectScrollDownButton(auto {
-  className, ComponentProps<typeof SelectPrimitive.ScrollDownButton> ...props
-}) {
+void SelectScrollDownButton() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

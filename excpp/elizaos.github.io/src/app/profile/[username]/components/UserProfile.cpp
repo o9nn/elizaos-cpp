@@ -4,8 +4,7 @@
 
 namespace elizaos {
 
-void UserProfile(auto {
-  username, auto monthlySummaries, auto weeklySummaries, auto roleTags, auto skillTags, auto focusAreaTags, auto totalXp, auto totalLevel, auto stats, auto dailyActivity, auto linkedWallets, UserProfileProps }) {
+void UserProfile(auto monthlySummaries, auto weeklySummaries, auto roleTags, auto skillTags, auto focusAreaTags, auto totalXp, auto totalLevel, auto stats, auto dailyActivity, auto linkedWallets) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

@@ -26,7 +26,7 @@ struct Token {
     std::string balanceFormatted;
     std::optional<std::optional<double>> usdValue;
     std::optional<std::optional<double>> usdPrice;
-    std::optional<std::optional<std::string>> contractAddress;
+    std::optional<std::string> contractAddress;
     std::string chain;
     double decimals;
     std::optional<std::string> icon;
@@ -38,6 +38,6 @@ struct SwapModalContentProps {
     std::string userId;
 };
 
-void SwapModalContent(auto { tokens, auto userId, SwapModalContentProps onSuccess });
+void SwapModalContent(auto userId);
 
 } // namespace elizaos
