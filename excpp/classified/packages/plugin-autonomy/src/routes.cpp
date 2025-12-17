@@ -1,9 +1,10 @@
 #include "routes.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+// No function implementations found to convert
+// Original TypeScript may contain only interfaces/types
 
 } // namespace elizaos

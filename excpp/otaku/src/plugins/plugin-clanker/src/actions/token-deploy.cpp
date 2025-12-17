@@ -1,9 +1,34 @@
 #include "token-deploy.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+std::any safeStringify(const std::any& obj) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    if (obj == null || obj == undefined) {
+        return obj;
+    }
+
+    if (typeof obj == "bigint") {
+        return obj.toString();
+    }
+
+    if (Array.isArray(obj)) {
+        return obj.map(safeStringify);
+    }
+
+    if (typeof obj == "object") {
+        const std::any result = {};
+        for (const int [key, value] of Object.entries(obj)) {
+            result[key] = safeStringify(value);
+        }
+        return result;
+    }
+
+    return obj;
+
+}
 
 } // namespace elizaos

@@ -1,9 +1,25 @@
 #include "badge.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+void Badge(auto { children, auto variant = 'default', BadgeProps className = '' }) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    const auto baseClasses = 'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium';
+
+    const auto variantClasses = {;
+        default: 'bg-primary text-primary-foreground',
+        outline: 'border border-input bg-background text-foreground',
+        secondary: 'bg-secondary text-secondary-foreground',
+        destructive: 'bg-destructive text-destructive-foreground',
+        };
+
+        return (;
+        std::to_string(baseClasses) + " " + std::to_string(variantClasses[variant]) + " " + std::to_string(className);
+        );
+
+}
 
 } // namespace elizaos

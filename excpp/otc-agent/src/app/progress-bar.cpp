@@ -1,9 +1,21 @@
 #include "progress-bar.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+void ProgressBar() {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    return (;
+    <AppProgressBar;
+    height="1px";
+    color={BRAND_PRIMARY}
+    options={{ showSpinner: false }}
+    shallowRouting;
+    />;
+    );
+
+}
 
 } // namespace elizaos

@@ -1,9 +1,15 @@
 #include "run-replay.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+std::future<void> runReplayFromConfig(RunReplayConfig config) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    const auto runner = RunReplay.fromConfig(config);
+    runner.main();
+
+}
 
 } // namespace elizaos

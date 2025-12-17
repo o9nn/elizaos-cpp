@@ -1,9 +1,19 @@
 #include "jinja-warnings.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+void warnProbablyWrongJinjaSyntax(const std::optional<std::string>& template) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    if (!template) {
+        return;
+    }
+
+    // Check for common Jinja syntax errors
+    const auto patterns = [;
+    { pattern: /\{\{[^}]*\{[^}]*\}\}/, message: 'Nested braces detected in template'
+}
 
 } // namespace elizaos

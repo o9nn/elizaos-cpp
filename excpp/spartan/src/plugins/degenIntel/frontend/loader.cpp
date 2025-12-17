@@ -1,9 +1,18 @@
 #include "loader.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+void Loader() {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    return (;
+    <div className="py-12 w-full flex flex-col items-center gap-2 animate-pulse select-none">;
+    <span className="text-sm">Loading</span>;
+    </div>;
+    );
+
+}
 
 } // namespace elizaos

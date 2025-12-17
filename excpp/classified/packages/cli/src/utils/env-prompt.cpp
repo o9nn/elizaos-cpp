@@ -1,9 +1,34 @@
 #include "env-prompt.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+std::future<std::string> getEnvFilePath() {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    const auto service = getEnvFileService();
+    return service.getFilePath();
+
+}
+
+std::future<std::unordered_map<std::string, std::string>> readEnvFile() {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    const auto service = getEnvFileService();
+    return service.read();
+
+}
+
+std::future<void> writeEnvFile(Record<string envVars, auto string>) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    const auto service = getEnvFileService();
+    service.write(envVars, {
+        preserveComments: false,
+        updateProcessEnv: true,
+        });
+
+}
 
 } // namespace elizaos

@@ -1,9 +1,42 @@
 #include "rateLimiter.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+void createRateLimiter(RedisCacheService redisCache) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    return rateLimiter({;
+        windowMs: WINDOW_SEC * 1000,
+        limit: 250,
+        standardHeaders: "draft-7",
+        keyGenerator: (c: Context) =>
+        c.req.header("x-forwarded-for") ||;
+        c.req.header("cf-connecting-ip") ||;
+        "unknown",
+        store: new (class {
+            async increment(key: string) {
+                const auto full = "rl:" + std::to_string(key);
+                const auto [[, count]] = (redisCache.redisPool.useClient((client) =>;
+                client.multi().incr(full).expire(full, WINDOW_SEC).exec();
+                ))<[Error | nullptr, number]>;
+                return {
+                    totalHits: count,
+                    resetTime: new Date(Date.now() + WINDOW_SEC * 1000),
+                    };
+                }
+                async decrement(key: string) {
+                    const auto full = "rl:" + std::to_string(key);
+                    redisCache.redisPool.useClient((client) => client.decr(full));
+                }
+                async resetKey(key: string) {
+                    const auto full = "rl:" + std::to_string(key);
+                    redisCache.del(full);
+                }
+                })(),
+                });
+
+}
 
 } // namespace elizaos

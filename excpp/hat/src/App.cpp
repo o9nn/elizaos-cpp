@@ -1,9 +1,18 @@
 #include "App.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+void App() {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    return (;
+    <div className="App">;
+    <PhotoEditor/>;
+    </div>;
+    );
+
+}
 
 } // namespace elizaos

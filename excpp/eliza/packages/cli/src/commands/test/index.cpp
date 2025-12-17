@@ -1,9 +1,14 @@
 #include "index.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+void registerCommand(Command cli) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    return cli.addCommand(test);
+
+}
 
 } // namespace elizaos

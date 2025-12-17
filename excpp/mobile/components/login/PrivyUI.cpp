@@ -1,9 +1,38 @@
 #include "PrivyUI.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+void PrivyUI() {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+    try {
+
+        const auto [error, setError] = useState("");
+
+        const auto { login } = useLogin();
+        return (;
+        <View>;
+        <Button;
+        title="Login with Privy UIs";
+        onPress={() => {
+            login({ loginMethods: ["email"] })
+            .then((session) => {
+                std::cout << "User logged in" << session.user << std::endl;
+                });
+                .catch((err) => {
+                    setError(JSON.stringify(err.error));
+                    });
+                }}
+                />;
+            {error && <Text style={{ color = "red" }}>Error = {error}</Text>}
+            </View>;
+            );
+
+    } catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+        throw;
+    }
+}
 
 } // namespace elizaos

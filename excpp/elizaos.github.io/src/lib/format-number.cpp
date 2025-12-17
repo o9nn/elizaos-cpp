@@ -1,9 +1,18 @@
 #include "format-number.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+std::string formatCompactNumber(double number, auto maximumFractionDigits = 1) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    const auto formatter = Intl.NumberFormat("en", {;
+        notation: "compact",
+        maximumFractionDigits,
+        });
+        return formatter.format(number);
+
+}
 
 } // namespace elizaos

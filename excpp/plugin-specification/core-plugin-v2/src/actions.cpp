@@ -1,9 +1,21 @@
 #include "actions.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+std::string formatActionNames(const std::vector<Action>& actions) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    return coreFormatActionNames(actions);
+
+}
+
+std::string formatActions(const std::vector<Action>& actions) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    return coreFormatActions(actions);
+
+}
 
 } // namespace elizaos

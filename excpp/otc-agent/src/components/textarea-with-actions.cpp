@@ -1,9 +1,115 @@
 #include "textarea-with-actions.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+void ChatForm(auto { input, auto onInputChange, auto onSubmit, auto isLoading, auto placeholder }, auto ref) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    const auto handleKeyDown = [&](e: React.KeyboardEvent<HTMLTextAreaElement>) {;
+        if (e.key == "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            // Prevent submit while loading/disabled to avoid race conditions
+            if (!isLoading && input.trim().length > 0) {
+                onSubmit(e);
+            }
+        }
+        };
+
+        return (;
+        <form;
+    onSubmit={onSubmit}
+    className="flex flex-col items-center justify-between h-full w-full";
+    >;
+    <div className="relative flex-1 w-full">;
+    <textarea;
+    ref={ref}
+    autoFocus;
+    aria-label="Prompt";
+    value={input}
+    onChange={onInputChange}
+    data-testid="chat-input";
+    placeholder={placeholder || "Ask a follow up..."}
+    className={clsx([;
+    "absolute inset-0 w-full h-full",
+    "appearance-none",
+    "placeholder:text-zinc-500 dark:placeholder:text-zinc-400",
+    "resize-none",
+    "outline-none",
+    "scrollbar scrollbar-thumb-zinc-700 scrollbar-thumb-rounded-full scrollbar-w-[4px]",
+    "text-base/6 sm:text-sm/6",
+    "border-none",
+    "px-4 py-3",
+    "scrollbar-thin scrollbar-thumb-rounded-md",
+    "overflow-y-auto",
+    "bg-transparent",
+    ])}
+    disabled={isLoading}
+    onKeyDown={handleKeyDown}
+    />;
+    </div>;
+    <div className="flex w-full items-center justify-between px-2 pb-2.5">;
+    <div />;
+    <Button;
+    type="submit";
+    color={(input ? "blue" : "dark") as "blue" | "dark"}
+    disabled={!input || isLoading}
+    aria-label="Submit";
+    data-testid="send-button";
+    className="size-8";
+    >;
+    {isLoading ? (;
+    <Loader2 className="!h-3 !w-3 !shrink-0 animate-spin" />;
+    ) : (
+    <ArrowUpIcon className="!h-3 !w-3 !shrink-0" />;
+    )}
+    </Button>;
+    </div>;
+    </form>;
+    );
+
+}
+
+void TextareaWithActions(auto { input, auto onInputChange, auto onSubmit, auto isLoading, auto placeholder }, auto ref) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    return (;
+    <div className="flex flex-col w-full h-[100px]">;
+    <span;
+    data-slot="control";
+    className={clsx([;
+    "relative block w-full h-full",
+    "dark:before:hidden",
+    "before:has-[[data-disabled]]:bg-zinc-950/5 before:has-[[data-disabled]]:shadow-none",
+    ])}
+    >;
+    <div;
+    className={clsx([;
+    "relative block size-full appearance-none overflow-hidden rounded-lg",
+    "text-base/6 text-zinc-950 placeholder:text-zinc-500 sm:text-sm/6 dark:text-white dark:placeholder:text-zinc-400",
+    "bg-white dark:bg-zinc-950",
+    "outline-none",
+    "data-[invalid]:border-red-500 data-[invalid]:data-[hover]:border-red-500 data-[invalid]:dark:border-red-600 data-[invalid]:data-[hover]:dark:border-red-600",
+    "disabled:border-zinc-950/20 disabled:dark:border-white/15 disabled:dark:bg-white/[2.5%] dark:data-[hover]:disabled:border-white/15",
+    "ring-offset-background",
+    "border border-zinc-950/10 dark:border-white/10",
+    "relative",
+    ])}
+    >;
+    <ChatForm;
+    ref={ref}
+    input={input}
+    onInputChange={onInputChange}
+    onSubmit={onSubmit}
+    isLoading={isLoading}
+    placeholder={placeholder}
+    />;
+    </div>;
+    </span>;
+    </div>;
+    );
+
+}
 
 } // namespace elizaos

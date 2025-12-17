@@ -1,9 +1,21 @@
 #include "email.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+std::future<void> sendProjectNotification(const std::string& to, const std::any& project) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    const auto html = render(ProjectNotification({ project }));
+
+    transporter.sendMail({
+        from: '"ELIZAS LIST" <notifications@elizaslist.dev>',
+        to,
+        "New Project: " + std::to_string(project.name)
+        html,
+        });
+
+}
 
 } // namespace elizaos

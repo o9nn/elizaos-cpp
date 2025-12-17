@@ -1,9 +1,56 @@
 #include "popover.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+void Popover(ComponentProps<typeof PopoverPrimitive.Root> {
+  ...props
+}) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    return <PopoverPrimitive.Root data-slot="popover" {...props} />;
+
+}
+
+void PopoverTrigger(ComponentProps<typeof PopoverPrimitive.Trigger> {
+  ...props
+}) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    return <PopoverPrimitive.Trigger data-slot="popover-trigger" {...props} />;
+
+}
+
+void PopoverContent(auto {
+  className, auto align = "center", auto sideOffset = 4, ComponentProps<typeof PopoverPrimitive.Content> ...props
+}) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    return (;
+    <PopoverPrimitive.Portal>;
+    <PopoverPrimitive.Content;
+    data-slot="popover-content";
+    align={align}
+    sideOffset={sideOffset}
+    className={cn(;
+    "bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 w-72 origin-(--radix-popover-content-transform-origin) rounded-md border p-4 shadow-md outline-hidden",
+    className;
+    )}
+    {...props}
+    />;
+    </PopoverPrimitive.Portal>;
+    );
+
+}
+
+void PopoverAnchor(ComponentProps<typeof PopoverPrimitive.Anchor> {
+  ...props
+}) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    return <PopoverPrimitive.Anchor data-slot="popover-anchor" {...props} />;
+
+}
 
 } // namespace elizaos

@@ -1,9 +1,16 @@
 #include "resolve-import.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+std::future<void> resolveImport(const std::string& importPath, Pick<ConfigLoaderSuccessResult config, auto 'absoluteBaseUrl' | 'paths'>) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    return createMatchPath(config.absoluteBaseUrl, config.paths)(importPath, std::nullopt, () => true, [;
+    '.ts',
+    ]);
+
+}
 
 } // namespace elizaos

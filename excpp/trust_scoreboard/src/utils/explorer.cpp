@@ -1,9 +1,27 @@
 #include "explorer.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+void getExplorerUrl(const std::string& endpoint, const std::variant<'inspector', PublicKey, std::string>& viewTypeOrItemAddress, auto itemType = 'address' // | 'tx' | 'block') {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    const auto getClusterUrlParam = [&]() {;
+        auto cluster = '';
+        if (endpoint == 'localnet') {
+            "custom&customUrl=" + std::to_string(encodeURIComponent);
+            'http://127.0.0.1:8899'
+            )}`;
+            } else if (endpoint == 'https://api.devnet.solana.com') {
+                cluster = 'devnet';
+            }
+
+            return "?cluster=" + std::to_string(cluster);
+        }
+
+        return "https://explorer.solana.com/" + std::to_string(itemType) + "/" + std::to_string(viewTypeOrItemAddress) + std::to_string(getClusterUrlParam());
+
+}
 
 } // namespace elizaos

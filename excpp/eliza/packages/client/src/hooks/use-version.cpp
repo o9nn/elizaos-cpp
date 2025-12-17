@@ -1,9 +1,71 @@
 #include "use-version.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+void useVersion() {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+    try {
+
+        const auto { toast } = useToast();
+
+        async function getLatestRelease(repo: string) {
+            const auto apiUrl = "https://api.github.com/repos/" + std::to_string(repo) + "/releases/latest";
+
+            try {
+                const auto response = fetch(apiUrl, {;
+                    headers: {
+                        Accept: 'application/vnd.github.v3+json',
+                        'User-Agent': 'fetch-latest-release',
+                        },
+                        });
+
+                        if (!response.ok) {
+                            throw new Error(
+                            "Failed to fetch latest release: " + std::to_string(response.status) + " " + std::to_string(response.statusText)
+                            );
+                        }
+
+                        const auto data = response.json();
+                        const auto latestVersion = data.tag_name;
+                        return latestVersion;
+                    } catch {}
+                }
+
+                const auto compareVersion = useCallback(async () => {;
+                    try {
+                        const auto latestVersion = getLatestRelease('elizaos/eliza');
+                        const auto thisVersion = info.version;
+                        if (latestVersion && thisVersion) {
+                            if (semver.gt(latestVersion.replace('v', ''), thisVersion.replace('v', ''))) {
+                                toast({
+                                    variant: 'default',
+                                    "New version " + std::to_string(latestVersion) + " is available."
+                                    description: 'Visit GitHub for more information.',
+                                    action: (
+                                    <NavLink to="https://github.com/elizaos/eliza/releases" target="_blank">
+                                    <ToastAction altText="Update">Update</ToastAction>;
+                                    </NavLink>;
+                                    ),
+                                    });
+                                }
+                            }
+                            } catch (e) {
+                                "Unable to retrieve latest version from GitHub: " + std::to_string(e)
+                            }
+                            }, [toast]);
+
+                            useEffect(() => {
+                                compareVersion();
+                                }, [compareVersion]);
+
+                                return nullptr;
+
+    } catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+        throw;
+    }
+}
 
 } // namespace elizaos

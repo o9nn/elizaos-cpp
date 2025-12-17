@@ -1,9 +1,33 @@
 #include "section-card.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+void SectionCard(auto {
+  title, Icon icon, auto children, auto className, auto contentClassName, auto headerClassName = "py-4", auto noPadding = false, SectionCardProps }) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    return (;
+    <Card className={className}>;
+    <CardHeader className={headerClassName}>;
+    <CardTitle className="text-sm font-medium">;
+    {Icon && (;
+    <span className="flex items-center gap-2">;
+    <Icon className="h-4 w-4" /> {title}
+    </span>;
+    )}
+    {!Icon && title}
+    </CardTitle>;
+    </CardHeader>;
+    <CardContent;
+    className={cn(noPadding ? "px-0 py-0" : "", contentClassName)}
+    >;
+    {children}
+    </CardContent>;
+    </Card>;
+    );
+
+}
 
 } // namespace elizaos

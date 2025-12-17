@@ -1,9 +1,15 @@
 #include "migrateToken.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+void asBN(const std::variant<BN, std::string>& x) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    //   // Redis stored hex strings, so we parse as hex
+    //   return typeof x === "string" ? new BN(x, "hex") : x;
+    //
+}
 
 } // namespace elizaos

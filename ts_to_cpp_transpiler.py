@@ -7,11 +7,15 @@ TypeScript implementations into approximate C++ equivalents. The goal is to
 rapidly generate approximate .cpp and .hpp files that maintain relative paths
 of the original TypeScript file structure.
 
+Version 3.0 - Function Body Conversion
+- Converts function implementations to C++
+- Handles statements, expressions, and control flow
+- Automatic error handling with try-catch
+- Pattern recognition for common TypeScript idioms
+
 This is an EXPERIMENTAL method for evaluating rapid transpiling effectiveness.
 The generated code will likely need manual fixes and is intended for comparison
 against a 2-step TS -> Z++ -> C++ approach.
-
-Version 2.1 - Performance improvements and bug fixes
 
 Usage:
     python3 ts_to_cpp_transpiler.py [--input-dir DIR] [--output-dir DIR] [--verbose] [--parallel]
@@ -1582,7 +1586,7 @@ class TypeScriptToCppTranspiler:
 def main():
     """Main entry point"""
     parser = argparse.ArgumentParser(
-        description='Experimental TypeScript to C++ Transpiler (v2.1)',
+        description='Experimental TypeScript to C++ Transpiler (v3.0)',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
@@ -1597,6 +1601,13 @@ Examples:
   
   # Use parallel processing for faster conversion
   python3 ts_to_cpp_transpiler.py --parallel --max-workers 8
+
+Version 3.0 Features:
+  - Function body conversion (not just declarations)
+  - Statement-by-statement translation
+  - Expression conversion (null→nullptr, etc.)
+  - Automatic error handling with try-catch
+  - Pattern recognition for common TypeScript idioms
         """
     )
     

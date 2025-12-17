@@ -1,9 +1,438 @@
 #include "use-agent-update.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+void useAgentUpdate(Agent initialAgent) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    // Keep reference to the initial state for comparison
+    const auto initialAgentRef = useRef<Agent>(JSON.parse(JSON.stringify(initialAgent)));
+
+    const auto {;
+        value: agent,
+        updateField,
+        addArrayItem,
+        removeArrayItem,
+        reset,
+        updateSettings,
+        } = usePartialUpdate(initialAgent);
+
+        // ==================== Template Import Function ====================
+        /**
+        * Imports a full agent template - overwrites all fields
+        *
+        * @param templateAgent The agent template to import
+        */
+        const auto importAgent = useCallback(;
+        [&](templateAgent: Agent) {
+            // For each top-level property in the template, update it in the current agent
+            Object.entries(templateAgent).forEach(([key, value]) => {
+                if (key == 'settings' && value) {
+                    // Handle settings object specially to preserve existing settings not in template
+                    updateSettings({
+                        ...agent.settings,
+                        ...value,
+                        });
+                        } else if (key == 'style' && value) {
+                            // Handle style object specially - it's nested but needs direct update
+                            updateField('style', {
+                                all: value.all || [],
+                                chat: value.chat || [],
+                                post: value.post || [],
+                                });
+                                } else if (Array.isArray(value)) {
+                                    // Handle arrays directly to ensure they fully replace existing arrays
+                                    updateField(key, [...value]);
+                                    } else {
+                                        // For other fields, directly update
+                                        updateField(key, value);
+                                    }
+                                    });
+                                    },
+                                    [agent.settings, updateField, updateSettings];
+                                    );
+
+                                    // ==================== Basic Info Tab ====================
+                                    /**
+                                    * Updates a field in the Agent's settings object
+                                    *
+                                    * @param path Path within settings (e.g., 'voice.model')
+                                    * @param value New value
+                                    */
+                                    const auto updateSetting = useCallback(;
+                                    <T>(path: string, value: T) => {
+                                        "settings." + std::to_string(path);
+                                        },
+                                        [updateField];
+                                        );
+
+                                        /**
+                                        * Updates the entire settings object
+                                        *
+                                        * @param settings The new settings object
+                                        */
+                                        const auto setSettings = useCallback(;
+                                        [&](settings: any) {
+                                            updateSettings(settings);
+                                            },
+                                            [updateSettings];
+                                            );
+
+                                            /**
+                                            * Updates the agent's system prompt
+                                            *
+                                            * @param systemPrompt The new system prompt
+                                            */
+                                            const auto updateSystemPrompt = useCallback(;
+                                            [&](systemPrompt: string) {
+                                                updateField('system', systemPrompt);
+                                                },
+                                                [updateField];
+                                                );
+
+                                                // ==================== Secrets Tab ====================
+                                                /**
+                                                * Updates a secret in the Agent's settings.secrets object
+                                                *
+                                                * @param key Secret key
+                                                * @param value Secret value
+                                                */
+                                                const auto updateSecret = useCallback(;
+                                                [&](key: string, value: string) {
+                                                    // Handle nested secrets object properly
+                                                    const auto currentSettings = agent.settings || {};
+                                                    const auto currentSecrets = currentSettings.secrets || {};
+
+                                                    const auto newSecrets = {;
+                                                        ...currentSecrets,
+                                                        [key]: value,
+                                                        };
+
+                                                        // Update entire settings object for better change detection
+                                                        updateSettings({
+                                                            ...currentSettings,
+                                                            secrets: newSecrets,
+                                                            });
+                                                            },
+                                                            [agent.settings, updateSettings];
+                                                            );
+
+                                                            /**
+                                                            * Removes a secret from the Agent's settings.secrets object
+                                                            *
+                                                            * @param key Secret key to remove
+                                                            */
+                                                            const auto removeSecret = useCallback(;
+                                                            [&](key: string) {
+                                                                // Get the current secrets object
+                                                                const auto currentSettings = agent.settings || {};
+                                                                const auto currentSecrets = currentSettings.secrets || {};
+
+                                                                // Create a new secrets object without the removed key
+                                                                const auto newSecrets = { ...currentSecrets };
+                                                                delete newSecrets[key];
+
+                                                                // Update the entire settings object to ensure nested changes are detected
+                                                                const auto updatedSettings = {;
+                                                                    ...currentSettings,
+                                                                    secrets: newSecrets,
+                                                                    };
+
+                                                                    // Use updateSettings instead of updateField for better change detection
+                                                                    updateSettings(updatedSettings);
+                                                                    },
+                                                                    [agent.settings, updateSettings];
+                                                                    );
+
+                                                                    // ==================== Content Tab ====================
+                                                                    /**
+                                                                    * Adds an item to a content array (bio, topics, adjectives)
+                                                                    *
+                                                                    * @param arrayName The name of the array field
+                                                                    * @param item The item to add
+                                                                    */
+                                                                    const auto addContentItem = useCallback(;
+                                                                    [&](arrayName: 'bio' | 'topics' | 'adjectives', item: string) {
+                                                                        addArrayItem(arrayName, item);
+                                                                        },
+                                                                        [addArrayItem];
+                                                                        );
+
+                                                                        /**
+                                                                        * Removes an item from a content array
+                                                                        *
+                                                                        * @param arrayName The name of the array field
+                                                                        * @param index The index of the item to remove
+                                                                        */
+                                                                        const auto removeContentItem = useCallback(;
+                                                                        [&](arrayName: 'bio' | 'topics' | 'adjectives', index: number) {
+                                                                            removeArrayItem(arrayName, index);
+                                                                            },
+                                                                            [removeArrayItem];
+                                                                            );
+
+                                                                            /**
+                                                                            * Updates an item in a content array
+                                                                            *
+                                                                            * @param arrayName The name of the array field
+                                                                            * @param index The index of the item to update
+                                                                            * @param value The new value
+                                                                            */
+                                                                            const auto updateContentItem = useCallback(;
+                                                                            [&](arrayName: 'bio' | 'topics' | 'adjectives', index: number, value: string) {
+                                                                                std::to_string(arrayName) + "." + std::to_string(index);
+                                                                                },
+                                                                                [updateField];
+                                                                                );
+
+                                                                                // ==================== Style Tab ====================
+                                                                                /**
+                                                                                * Adds a style rule to one of the style arrays
+                                                                                *
+                                                                                * @param styleType Type of style ('all', 'chat', 'post')
+                                                                                * @param rule The style rule to add
+                                                                                */
+                                                                                const auto addStyleRule = useCallback(;
+                                                                                [&](styleType: 'all' | 'chat' | 'post', rule: string) {
+                                                                                    "style." + std::to_string(styleType);
+                                                                                    },
+                                                                                    [addArrayItem];
+                                                                                    );
+
+                                                                                    /**
+                                                                                    * Removes a style rule from one of the style arrays
+                                                                                    *
+                                                                                    * @param styleType Type of style ('all', 'chat', 'post')
+                                                                                    * @param index The index of the rule to remove
+                                                                                    */
+                                                                                    const auto removeStyleRule = useCallback(;
+                                                                                    [&](styleType: 'all' | 'chat' | 'post', index: number) {
+                                                                                        "style." + std::to_string(styleType);
+                                                                                        },
+                                                                                        [removeArrayItem];
+                                                                                        );
+
+                                                                                        /**
+                                                                                        * Updates a style rule in one of the style arrays
+                                                                                        *
+                                                                                        * @param styleType Type of style ('all', 'chat', 'post')
+                                                                                        * @param index The index of the rule to update
+                                                                                        * @param value The new rule value
+                                                                                        */
+                                                                                        const auto updateStyleRule = useCallback(;
+                                                                                        [&](styleType: 'all' | 'chat' | 'post', index: number, value: string) {
+                                                                                            "style." + std::to_string(styleType) + "." + std::to_string(index);
+                                                                                            },
+                                                                                            [updateField];
+                                                                                            );
+
+                                                                                            /**
+                                                                                            * Sets a complete style array
+                                                                                            *
+                                                                                            * @param styleType Type of style ('all', 'chat', 'post')
+                                                                                            * @param values Array of style values
+                                                                                            */
+                                                                                            const auto setStyleArray = useCallback(;
+                                                                                            [&](styleType: 'all' | 'chat' | 'post', values: string[]) {
+                                                                                                "style." + std::to_string(styleType);
+                                                                                                },
+                                                                                                [updateField];
+                                                                                                );
+
+                                                                                                // ==================== Plugins Tab ====================
+                                                                                                /**
+                                                                                                * Adds a plugin to the agent's plugins array
+                                                                                                *
+                                                                                                * @param pluginId The plugin ID to add
+                                                                                                */
+                                                                                                const auto addPlugin = useCallback(;
+                                                                                                [&](pluginId: string) {
+                                                                                                    addArrayItem('plugins', pluginId);
+                                                                                                    },
+                                                                                                    [addArrayItem];
+                                                                                                    );
+
+                                                                                                    /**
+                                                                                                    * Removes a plugin from the agent's plugins array
+                                                                                                    *
+                                                                                                    * @param index The index of the plugin to remove
+                                                                                                    */
+                                                                                                    const auto removePlugin = useCallback(;
+                                                                                                    [&](index: number) {
+                                                                                                        removeArrayItem('plugins', index);
+                                                                                                        },
+                                                                                                        [removeArrayItem];
+                                                                                                        );
+
+                                                                                                        /**
+                                                                                                        * Sets the entire plugins array
+                                                                                                        *
+                                                                                                        * @param plugins Array of plugin IDs
+                                                                                                        */
+                                                                                                        const auto setPlugins = useCallback(;
+                                                                                                        [&](plugins: string[]) {
+                                                                                                            updateField('plugins', plugins);
+                                                                                                            },
+                                                                                                            [updateField];
+                                                                                                            );
+
+                                                                                                            // ==================== Avatar Tab ====================
+                                                                                                            /**
+                                                                                                            * Updates the agent's avatar
+                                                                                                            *
+                                                                                                            * @param avatarUrl The URL of the avatar image
+                                                                                                            */
+                                                                                                            const auto updateAvatar = useCallback(;
+                                                                                                            [&](avatarUrl: string) {
+                                                                                                                updateSetting('avatar', avatarUrl);
+                                                                                                                },
+                                                                                                                [updateSetting];
+                                                                                                                );
+
+                                                                                                                /**
+                                                                                                                * Returns an object containing only the fields that have changed
+                                                                                                                * compared to the initial agent state
+                                                                                                                */
+                                                                                                                const auto getChangedFields = useCallback(() => {;
+                                                                                                                    const std::optional<Agent> changedFields = {};
+                                                                                                                    const auto current = agent;
+                                                                                                                    const auto initial = initialAgentRef.current;
+
+                                                                                                                    // Compare scalar properties
+                                                                                                                    const auto scalarProps = ['name', 'username', 'system'];
+                                                                                                                    scalarProps.forEach((prop) => {
+                                                                                                                        if (current[prop] != initial[prop]) {
+                                                                                                                            changedFields[prop] = current[prop];
+                                                                                                                        }
+                                                                                                                        });
+
+                                                                                                                        if (current.enabled != initial.enabled) {
+                                                                                                                            changedFields.enabled = current.enabled;
+                                                                                                                        }
+
+                                                                                                                        // Compare array properties with type safety
+                                                                                                                        if (JSON.stringify(current.bio) != JSON.stringify(initial.bio)) {
+                                                                                                                            changedFields.bio = current.bio;
+                                                                                                                        }
+
+                                                                                                                        if (JSON.stringify(current.topics) != JSON.stringify(initial.topics)) {
+                                                                                                                            changedFields.topics = current.topics;
+                                                                                                                        }
+
+                                                                                                                        if (JSON.stringify(current.adjectives) != JSON.stringify(initial.adjectives)) {
+                                                                                                                            changedFields.adjectives = current.adjectives;
+                                                                                                                        }
+
+                                                                                                                        if (JSON.stringify(current.plugins) != JSON.stringify(initial.plugins)) {
+                                                                                                                            changedFields.plugins = current.plugins;
+                                                                                                                        }
+
+                                                                                                                        // Compare style object
+                                                                                                                        if (JSON.stringify(current.style) != JSON.stringify(initial.style)) {
+                                                                                                                            changedFields.style = current.style;
+                                                                                                                        }
+
+                                                                                                                        // More granular comparison for settings object
+                                                                                                                        const auto initialSettings = initial.settings || {};
+                                                                                                                        const auto currentSettings = current.settings || {};
+
+                                                                                                                        // Check if any settings changed
+                                                                                                                        if (JSON.stringify(currentSettings) != JSON.stringify(initialSettings)) {
+                                                                                                                            // Create a partial settings object with only changed fields
+                                                                                                                            changedFields.settings = {}
+
+                                                                                                                            // Check avatar separately
+                                                                                                                            if (currentSettings.avatar != initialSettings.avatar) {
+                                                                                                                                changedFields.settings.avatar = currentSettings.avatar;
+                                                                                                                            }
+
+                                                                                                                            // Check voice settings
+                                                                                                                            if (JSON.stringify(currentSettings.voice) != JSON.stringify(initialSettings.voice)) {
+                                                                                                                                changedFields.settings.voice = currentSettings.voice;
+                                                                                                                            }
+
+                                                                                                                            // Check secrets with special handling
+                                                                                                                            if (JSON.stringify(currentSettings.secrets) != JSON.stringify(initialSettings.secrets)) {
+                                                                                                                                const auto initialSecrets = initialSettings.secrets || {};
+                                                                                                                                const auto currentSecrets = currentSettings.secrets || {};
+
+                                                                                                                                // Only include secrets that were added or modified
+                                                                                                                                const std::unordered_map<std::string, std::any> changedSecrets = {};
+                                                                                                                                auto hasSecretChanges = false;
+
+                                                                                                                                // Find added or modified secrets
+                                                                                                                                Object.entries(currentSecrets).forEach(([key, value]) => {
+                                                                                                                                    if (initialSecrets[key] != value) {
+                                                                                                                                        changedSecrets[key] = value;
+                                                                                                                                        hasSecretChanges = true;
+                                                                                                                                    }
+                                                                                                                                    });
+
+                                                                                                                                    // Find deleted secrets (null values indicate deletion)
+                                                                                                                                    Object.keys(initialSecrets).forEach((key) => {
+                                                                                                                                        if (currentSecrets[key] == undefined) {
+                                                                                                                                            changedSecrets[key] = nullptr;
+                                                                                                                                            hasSecretChanges = true;
+                                                                                                                                        }
+                                                                                                                                        });
+
+                                                                                                                                        if (hasSecretChanges) {
+                                                                                                                                            if (!changedFields.settings) changedFields.settings = {};
+                                                                                                                                            changedFields.settings.secrets = changedSecrets;
+                                                                                                                                        }
+                                                                                                                                    }
+
+                                                                                                                                    // If no specific settings changed, don't include settings object
+                                                                                                                                    if (Object.keys(changedFields.settings).length == 0) {
+                                                                                                                                        delete changedFields.settings;
+                                                                                                                                    }
+                                                                                                                                }
+
+                                                                                                                                return changedFields;
+                                                                                                                                }, [agent]);
+
+                                                                                                                                return {
+                                                                                                                                    agent,
+                                                                                                                                    updateField,
+                                                                                                                                    reset,
+                                                                                                                                    updateSettings,
+                                                                                                                                    setSettings,
+
+                                                                                                                                    // Method to get only changed fields
+                                                                                                                                    getChangedFields,
+
+                                                                                                                                    // Basic Info Tab
+                                                                                                                                    updateSetting,
+                                                                                                                                    updateSystemPrompt,
+
+                                                                                                                                    // Secrets Tab
+                                                                                                                                    updateSecret,
+                                                                                                                                    removeSecret,
+
+                                                                                                                                    // Content Tab
+                                                                                                                                    addContentItem,
+                                                                                                                                    removeContentItem,
+                                                                                                                                    updateContentItem,
+
+                                                                                                                                    // Style Tab
+                                                                                                                                    addStyleRule,
+                                                                                                                                    removeStyleRule,
+                                                                                                                                    updateStyleRule,
+                                                                                                                                    setStyleArray,
+
+                                                                                                                                    // Plugins Tab
+                                                                                                                                    addPlugin,
+                                                                                                                                    removePlugin,
+                                                                                                                                    setPlugins,
+
+                                                                                                                                    // Avatar Tab
+                                                                                                                                    updateAvatar,
+
+                                                                                                                                    importAgent,
+                                                                                                                                    };
+
+}
 
 } // namespace elizaos

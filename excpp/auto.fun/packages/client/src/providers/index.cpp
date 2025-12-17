@@ -1,9 +1,22 @@
 #include "index.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+void Providers(PropsWithChildren { children }) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    return (;
+    <Fragment>;
+    <TosProvider />;
+    <MainentenaceProvider />;
+    <Wallet>;
+    <SolPriceProvider>{children}</SolPriceProvider>;
+    </Wallet>;
+    </Fragment>;
+    );
+
+}
 
 } // namespace elizaos

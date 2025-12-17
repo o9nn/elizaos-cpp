@@ -1,9 +1,23 @@
 #include "commands.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+std::unordered_set<std::string> extractKeys(const std::string& formatString) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    const auto keys = new Set<string>();
+    // Match both {value} and {{value}} patterns
+    const auto regex = /\{?\{(\w+)\}?\}/g;
+    auto match;
+
+    while ((match = regex.exec(formatString)) != null) {
+        keys.add(match[1]);
+    }
+
+    return keys;
+
+}
 
 } // namespace elizaos

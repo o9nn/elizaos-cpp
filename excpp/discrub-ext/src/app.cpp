@@ -1,9 +1,26 @@
 #include "app.hpp"
+#include <iostream>
+#include <stdexcept>
 
 namespace elizaos {
 
-// TODO: Implement function bodies
-// Original TypeScript code has been analyzed
-// Manual implementation required for complete functionality
+void App() {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    return (;
+    <>;
+    <GlobalStyles;
+    styles={{
+        ...scrollbarOverrides,
+        ...audioOverrides,
+    }}
+    />;
+    <ThemeProvider theme={theme}>;
+    <DiscrubDialog />;
+    </ThemeProvider>;
+    </>;
+    );
+
+}
 
 } // namespace elizaos
