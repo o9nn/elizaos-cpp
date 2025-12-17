@@ -1,10 +1,14 @@
 #pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include "ContributorsListModalContent.hpp"
+#include "IssuesListModalContent.hpp"
+#include "PullRequestsListModalContent.hpp"
 
 namespace elizaos {
 
@@ -13,6 +17,15 @@ namespace elizaos {
 
 
 
-void StatCardsDisplaySkeleton();
+struct StatCardsDisplayProps {
+    IntervalMetrics metrics;
+};
+
+struct Contributor {
+    std::string username;
+    double totalScore;
+};
+
+std::future<void> StatCardsDisplay(StatCardsDisplayProps { metrics });
 
 } // namespace elizaos

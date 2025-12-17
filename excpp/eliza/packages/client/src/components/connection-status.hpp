@@ -5,10 +5,7 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
-#include ".context/AuthContext.hpp"
-#include ".context/ConnectionContext.hpp"
-#include "ui/sidebar.hpp"
-#include "ui/tooltip.hpp"
+#include "connection-status.hpp"
 
 namespace elizaos {
 
@@ -17,8 +14,22 @@ namespace elizaos {
 
 
 
-struct ConnectionStatusProps {
-};
+// Mock the context modules before importing the component
 
+    // Component should render without errors
+
+    // Component should render
+
+    // Should render successfully with mocked context
+
+    // Component should render successfully
+
+    // Should render with mock contexts
+
+    // Component should render without errors
+
+    // Should render successfully
+
+    // Basic smoke test - component renders
 
 } // namespace elizaos
