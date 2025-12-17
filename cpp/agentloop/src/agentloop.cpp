@@ -160,10 +160,17 @@ void AgentLoop::inputHandlingLoop() {
     std::cout << "  SPACE = step when paused" << std::endl;
     std::cout << "  q + ENTER = quit loop" << std::endl;
     
-    char input;
+    // [tensor contraction: int → char] Use int to handle EOF properly
+    int input;
     while (inputHandlingEnabled_ && !stopRequested_) {
         input = std::cin.get();
         
+        // Handle EOF (stream error/closure)
+        if (input == EOF) {
+            break;
+        }
+        
+        // Safe comparison: int with char literals (implicit promotion to int)
         if (input == ' ' && isPaused()) {
             std::cout << "Manual step triggered..." << std::endl;
             step();
