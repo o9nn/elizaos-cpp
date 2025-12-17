@@ -1,11 +1,12 @@
-#include "types.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "types.hpp"
 
 namespace elizaos {
 
@@ -14,18 +15,18 @@ namespace elizaos {
 
 
 
-using GitHubUser = z.infer<typeof GitHubUserSchema>;
+using GitHubUser = z::infer<typeof GitHubUserSchema>;
 
-using GitHubRepoOwner = z.infer<typeof GitHubRepoOwnerSchema>;
+using GitHubRepoOwner = z::infer<typeof GitHubRepoOwnerSchema>;
 
-using GitHubRepo = z.infer<typeof GitHubRepoSchema>;
+using GitHubRepo = z::infer<typeof GitHubRepoSchema>;
 
-using GitHubFileContent = z.infer<typeof GitHubFileContentSchema>;
+using GitHubFileContent = z::infer<typeof GitHubFileContentSchema>;
 
-using UpdateFileResponse = z.infer<typeof UpdateFileResponseSchema>;
+using UpdateFileResponse = z::infer<typeof UpdateFileResponseSchema>;
 
 struct BatchFileContentResult {
-    string | null content;
+    std::optional<std::string> content;
     bool repoExists;
     bool fileExists;
 };
@@ -60,62 +61,47 @@ struct TokenBucket {
 // Define interfaces for the GraphQL response
 struct GitHubPageInfo {
     bool hasNextPage;
-    string | null endCursor;
+    std::optional<std::string> endCursor;
 };
 
-class RateLimitExceededError extends Error {
-  constructor(
-    message: string,
-    public resetAt: Date,
-  ) {
-    super(message);
-    this.name = "RateLimitExceededError";
-  }
+class RateLimitExceededError {
+public:
+    RateLimitExceededError(const std::string& message, Date public resetAt);
+};
 
-class SecondaryRateLimitError extends Error {
-  constructor(
-    message: string,
-    public waitTime: number,
-  ) {
-    super(message);
-    this.name = "SecondaryRateLimitError";
-  }
+class SecondaryRateLimitError {
+public:
+    SecondaryRateLimitError(const std::string& message, double public waitTime);
+};
 
 /**
  * Enhanced GitHub API client with robust rate limiting and retry handling
  */
 class GitHubClient {
-  private logger: Logger;
-  private token: string;
-  private rateLimitInfo: RateLimitInfo | null = null;
-  private readonly retryConfig: RetryConfig = {
-    maxRetries: 5,
-    minTimeout: 1000,
-    maxTimeout: 120000,
-    factor: 2,
-  };
-
-  // Token bucket for points-based rate limiting (900 points per minute)
-
-  // Token bucket for concurrent requests (max 100, but we'll be conservative with 50)
-
-    // Set up axios defaults
-
-      // Wait for enough tokens to be available
-
-    // Handle points-based rate limiting
-
-    // Handle concurrent requests rate limiting
-
-      using PRSearchResult = z.infer<typeof RawPullRequestSchema>;
-
-      using IssueSearchResult = z.infer<typeof RawIssueSchema>;
-
-      using CommitSearchResult = z.infer<typeof RawCommitSchema>;
-
-    using GraphQLBatchResponse = {
-
-                // For 404s, don't retry - just return null
+public:
+    GitHubClient(const std::string& token, std::optional<Logger> logger);
+    std::future<void> wait(double ms);
+    RateLimitInfo parseRateLimitHeaders(RawAxiosResponseHeaders headers);
+    std::future<void> checkRateLimit();
+    void refillTokenBucket(TokenBucket bucket);
+    std::future<void> consumeTokens(TokenBucket bucket, double tokens);
+    std::future<void> checkSecondaryRateLimits(number = 1 cost);
+    void if(auto data.errors.length > 0);
+    void catch(auto error);
+    void if(auto error instanceof RateLimitExceededError);
+    void if(auto error instanceof SecondaryRateLimitError);
+    void while(auto hasNextPage);
+    void getAuthenticatedUser();
+    void getRepo(const std::string& owner, const std::string& repoName);
+    void createRepo(const std::string& repoName, const std::string& description, boolean = true autoInit);
+    sha);
+    void fetchPullRequests(RepositoryConfig repository, FetchOptions = {} options);
+    void fetchIssues(RepositoryConfig repository, FetchOptions = {} options);
+    void fetchCommits(RepositoryConfig repository, FetchOptions = {} options);
+    void catch(auto error);
+    void if(auto error instanceof RateLimitExceededError);
+    void if(auto error instanceof SecondaryRateLimitError);
+    void fetchFileContent(const std::string& owner, const std::string& repo, const std::string& path);
 
 
 } // namespace elizaos

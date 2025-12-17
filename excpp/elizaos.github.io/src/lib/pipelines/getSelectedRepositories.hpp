@@ -1,12 +1,13 @@
-#include ".typeHelpers.hpp"
-#include "types.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".typeHelpers.hpp"
+#include "types.hpp"
 
 namespace elizaos {
 
@@ -19,7 +20,6 @@ namespace elizaos {
  * Common pipeline step to fetch and filter repositories based on context
  */
     // Filter repositories
-      await registerRepository(repo.owner, repo.name);
     // Fetch all repositories
 
  * Register or update a repository in the database

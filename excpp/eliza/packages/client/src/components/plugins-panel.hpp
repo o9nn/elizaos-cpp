@@ -1,12 +1,12 @@
-#include ".config/voice-models.hpp"
-#include "ui/button.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".config/voice-models.hpp"
+#include "ui/button.hpp"
 
 namespace elizaos {
 
@@ -17,11 +17,6 @@ namespace elizaos {
 
 struct PluginsPanelProps {
     Agent characterValue;
-    { setCharacterValue;
-    std::optional<(pluginId: string) => void> addPlugin;
-    std::optional<(index: number) => void> removePlugin;
-    std::optional<(plugins: string[]) => void> setPlugins;
-    std::optional<<T>(path: string, value: T) => void> updateField;
     std::optional<std::vector<std::string>> initialPlugins;
 };
 

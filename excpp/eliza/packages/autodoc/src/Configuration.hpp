@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -19,9 +19,8 @@ namespace elizaos {
  */
 
 struct ConfigurationData {
-    { rootDirectory;
-    string; // Full path from filesystem root absolute;
-    string; // Path relative to repository root relative;
+    std::string absolute;
+    std::string relative;
     std::vector<std::string> excludedDirectories;
     Repository repository;
     std::string commitMessage;

@@ -1,11 +1,11 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -43,8 +43,6 @@ namespace elizaos {
     // Check if any responses had providers associated with them
 
     // Only generate response using LLM if no suitable response was found
-
-    await callback(responseContent);
 
 
 } // namespace elizaos

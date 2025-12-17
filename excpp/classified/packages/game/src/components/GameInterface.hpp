@@ -1,3 +1,11 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <variant>
+#include <vector>
 #include ".hooks/useTauriChat.hpp"
 #include ".services/TauriService.hpp"
 #include ".utils/SecurityUtils.hpp"
@@ -8,13 +16,6 @@
 #include "OllamaModelSelector.hpp"
 #include "ProviderSelector.hpp"
 #include "SecurityWarning.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -25,26 +26,13 @@ namespace elizaos {
 
 // Extend Window interface for test compatibility
   struct Window {
-    std::optional<{> elizaClient;
-    { socket;
     bool connected;
-    (event: string, callback: Function) => void on;
-    (event: string, data: unknown) => void emit;
-    () => void disconnect;
-    () => void connect;
-    std::optional<std::unordered_map<std::string, std::vector<std::function>>> _listeners;
-    () => boolean isConnected;
-    std::optional<(roomId: string) => void> joinRoom;
-    std::optional<(message: Record<string, unknown>) => void> sendMessage;
 };
 
-}
-
 struct OutputLine {
-    'user' | 'agent' | 'system' | 'error' type;
+    std::variant<'user', 'agent', 'system', 'error'> type;
     std::string content;
     Date timestamp;
-    std::optional<std::unordered_map<std::string, unknown>> metadata;
 };
 
 struct PluginToggleState {
@@ -60,7 +48,6 @@ struct PluginToggleState {
 struct SecurityWarningState {
     bool isVisible;
     std::string capability;
-    () => void onConfirm;
 };
 
 // Track individual warning acknowledgments and feature usage
@@ -98,8 +85,6 @@ struct ProgressionStatus {
 
     // Check if capability is unlocked
 
-      await onToggle(capability);
-
 struct Goal {
     std::string id;
     std::string name;
@@ -111,7 +96,7 @@ struct Goal {
 struct Todo {
     std::string id;
     std::string name;
-    'daily' | 'one-off' | 'aspirational' type;
+    std::variant<'daily', 'one-off', 'aspirational'> type;
     bool isCompleted;
     std::optional<double> priority;
 };
@@ -196,7 +181,6 @@ struct Todo {
     // Set canvas size based on stream type
 
       // Get image data as JPEG
-            await sendFrameToTauri(uint8Array, type);
 
     // Capture frames at 10 FPS
 
@@ -205,8 +189,6 @@ struct Todo {
   // Process audio stream
 
       // Convert float32 to int16
-
-      await sendAudioToTauri(uint8Array);
 
     // Store processor for cleanup
 
@@ -219,7 +201,6 @@ struct Todo {
               // Mark warning as acknowledged
 
     // For non-dangerous capabilities or disabling, proceed directly
-    await performCapabilityToggle(capability);
 
   // Actual API toggle implementation (extracted for reuse)
 
@@ -302,12 +283,10 @@ struct Todo {
         // Show test message
 
       // Refresh the file list
-      await fetchKnowledgeFiles();
 
     // Validate file upload
 
       // Refresh the file list
-      await fetchKnowledgeFiles();
 
     // Reset the input
 
@@ -319,15 +298,10 @@ struct Todo {
 
   // Initial state fetching for capabilities
       // Fetch autonomy status
-      await fetchAutonomyStatus();
       // Fetch vision settings
-      await fetchVisionSettings();
       // Fetch shell settings
-      await fetchShellSettings();
       // Fetch browser settings
-      await fetchBrowserSettings();
       // Fetch progression status
-      await fetchProgressionStatus();
 
   // Periodic data refresh - simplified to avoid state conflicts
       // Don't auto-refresh capability states to avoid conflicts with user interactions
@@ -350,14 +324,10 @@ struct Todo {
 
     // Validate and sanitize user input
 
-      await sendMessage(sanitizedInput);
       // User message handled by TauriService immediately, server response via useEffect
 
                       // Clear model selection when provider changes
                         // Clear model selection when provider changes
-
-                        await invoke('stop_agent_screen_capture');
-                        await invoke('start_agent_screen_capture');
 
                           // Start capturing frames
 

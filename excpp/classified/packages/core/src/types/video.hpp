@@ -1,11 +1,12 @@
-#include "service.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "service.hpp"
 
 namespace elizaos {
 
@@ -41,7 +42,7 @@ struct VideoFormat {
 
 struct VideoDownloadOptions {
     std::optional<std::string> format;
-    std::optional<'best' | 'worst' | 'bestvideo' | 'bestaudio' | string> quality;
+    std::optional<std::variant<'best', 'worst', 'bestvideo', 'bestaudio', std::string>> quality;
     std::optional<std::string> outputPath;
     std::optional<bool> audioOnly;
     std::optional<bool> videoOnly;
@@ -65,45 +66,5 @@ struct VideoProcessingOptions {
  * Interface for video processing and download services
  */
 
-  /**
-   * Get video information without downloading
-   * @param url - Video URL
-   * @returns Promise resolving to video information
-   */
-
-  /**
-   * Download a video from URL
-   * @param url - Video URL
-   * @param options - Download options
-   * @returns Promise resolving to downloaded file path
-   */
-
-  /**
-   * Extract audio from video
-   * @param videoPath - Path to video file or video URL
-   * @param outputPath - Optional output path for audio file
-   * @returns Promise resolving to audio file path
-   */
-
-  /**
-   * Generate thumbnail from video
-   * @param videoPath - Path to video file or video URL
-   * @param timestamp - Timestamp in seconds to capture thumbnail
-   * @returns Promise resolving to thumbnail image path
-   */
-
-  /**
-   * Convert video to different format
-   * @param videoPath - Path to input video file
-   * @param outputPath - Path for output video file
-   * @param options - Processing options
-   * @returns Promise resolving to converted video path
-   */
-
-  /**
-   * Get available formats for a video URL
-   * @param url - Video URL
-   * @returns Promise resolving to available formats
-   */
 
 } // namespace elizaos

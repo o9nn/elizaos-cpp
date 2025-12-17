@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -21,6 +22,7 @@ std::future<void> getLatestAvailableDate();
  * @param intervalType - Interval type (day, week, month)
  * @returns TimeInterval object or null if invalid
  */
+std::optional<TimeInterval> parseIntervalDate(const std::string& dateStr, IntervalType intervalType);
 
 /**
  * Get metrics for repositories for a specific interval
@@ -52,6 +54,5 @@ using DailyMetrics = Awaited<ReturnType<typeof getDailyMetrics>>;
  * @param intervalType - The type of interval (day, week, month).
  * @returns The markdown content as a string, or null if the file is not found or an error occurs.
  */
-std::future<string | null> getIntervalSummaryContent(const std::string& dateStr, IntervalType intervalType);
 
 } // namespace elizaos

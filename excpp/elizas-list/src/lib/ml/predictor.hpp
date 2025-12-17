@@ -1,10 +1,11 @@
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -12,10 +13,9 @@ namespace elizaos {
 // Manual refinement required for production use
 
 class MLPredictor {
-  async loadModel() {
-    // Simplified model loading
-    return true;
-  }
-
-    // Simple scoring based on features
+public:
+    void loadModel();
+    void predictEngagement(const std::any& features);
+};
+ 
 } // namespace elizaos

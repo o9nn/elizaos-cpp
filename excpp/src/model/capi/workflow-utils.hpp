@@ -1,11 +1,13 @@
-#include "sessions-client.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "sessions-client.hpp"
 
 namespace elizaos {
 
@@ -49,68 +51,17 @@ struct WorkflowContext {
  * Main utility class for defensive workflow operations
  */
 class WorkflowUtils {
-  private config: WorkflowConfig;
-  private context: WorkflowContext;
-  private sessionsClient: SessionsClient;
-
-  constructor(config: WorkflowConfig = {}) {
-    this.config = {
-      enableSessionLogging: true,
-      failOnSessionLogError: false,
-      retryCount: 3,
-      timeoutMs: 10000,
-      ...config
-    };
-
-    this.context = this.extractWorkflowContext();
-    this.sessionsClient = new SessionsClient(
-      this.config.sessionLogsEndpoint,
-      {
-        retries: this.config.retryCount || 3,
-        timeout: this.config.timeoutMs || 10000,
-        failOnError: this.config.failOnSessionLogError || false
-      }
-    );
-  }
-
-  /**
-   * Extract workflow context from environment variables
-   */
-
-  /**
-   * Safely upload session logs without failing the workflow
-   */
-
-  /**
-   * Check if the session logging service is available
-   */
-
-  /**
-   * Set GitHub Action output safely
-   */
-      // GitHub Actions output format
-
-  /**
-   * Set GitHub Action environment variable safely
-   */
-
-  /**
-   * Log warning with GitHub Actions annotation
-   */
-
-  /**
-   * Log error with GitHub Actions annotation
-   */
-
-  /**
-   * Exit gracefully with proper session log cleanup
-   */
-
-  /**
-   * Wrap a function with defensive error handling
-   */
-
-        // Wait before retry
+public:
+    WorkflowUtils(WorkflowConfig = {} config);
+    WorkflowContext extractWorkflowContext();
+    std::future<bool> uploadSessionLogs(const std::vector<std::any>& logs, std::optional<std::string> sessionId, std::optional<Record<string> metadata, auto any>);
+    std::future<bool> checkSessionLogHealth();
+    void setOutput(const std::string& name, const std::string& value);
+    void setEnvVar(const std::string& name, const std::string& value);
+    void logWarning(const std::string& message, std::optional<std::string> file, std::optional<double> line);
+    void logError(const std::string& message, std::optional<std::string> file, std::optional<double> line);
+    std::future<void> exitGracefully(number = 0 exitCode, std::optional<std::vector<std::any>> finalLogs, std::optional<std::string> reason);
+    void for(auto let attempt = 1; attempt <= opts.retryCount; attempt++);
 
 /**
  * Factory function to create a WorkflowUtils instance with environment-based configuration

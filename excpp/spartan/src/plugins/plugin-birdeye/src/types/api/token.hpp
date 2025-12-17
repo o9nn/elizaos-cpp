@@ -1,10 +1,12 @@
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -17,17 +19,15 @@ struct TokenTradesParams {
     std::string address;
     std::optional<double> limit;
     std::optional<double> offset;
-    std::optional<"buy" | "sell" | "all"> type;
+    std::optional<std::variant<"buy", "sell", "all">> type;
 };
 
 struct TokenTradesResponse {
     bool success;
-    { data;
-    Array<{ items;
     std::optional<std::string> signature;
     std::optional<double> blockNumber;
     std::optional<double> unixTime;
-    std::optional<"buy" | "sell"> type;
+    std::optional<std::variant<"buy", "sell">> type;
     std::optional<std::string> tokenAddress;
     std::optional<double> tokenAmount;
     std::optional<double> tokenAmountUI;
@@ -44,8 +44,8 @@ struct TokenTradesResponse {
 };
 
 struct TokenListParams {
-    std::optional<"mc" | "v24hUSD" | "v24hChangePercent"> sort_by;
-    std::optional<"asc" | "desc"> sort_type;
+    std::optional<std::variant<"mc", "v24hUSD", "v24hChangePercent">> sort_by;
+    std::optional<std::variant<"asc", "desc">> sort_type;
     std::optional<double> offset;
     std::optional<double> limit;
     std::optional<double> min_liquidity;
@@ -54,8 +54,6 @@ struct TokenListParams {
 // Token List Types
 struct TokenListResponse {
     bool success;
-    { data;
-    Array<{ tokens;
     std::optional<std::string> address;
     std::optional<std::string> symbol;
     std::optional<std::string> name;
@@ -74,7 +72,6 @@ struct TokenSecurityParams {
 
 struct TokenSecurityResponse {
     bool success;
-    { data;
     std::optional<std::string> address;
     std::optional<double> totalSupply;
     std::optional<bool> mintable;
@@ -82,7 +79,6 @@ struct TokenSecurityResponse {
     std::optional<std::string> proxy;
     std::optional<std::string> ownerAddress;
     std::optional<std::string> creatorAddress;
-    std::optional<{> securityChecks;
     std::optional<bool> honeypot;
     std::optional<bool> trading_cooldown;
     std::optional<bool> transfer_pausable;
@@ -111,17 +107,15 @@ struct TokenOverviewParams {
 
 struct TokenOverviewResponse {
     bool success;
-    { data;
     std::optional<std::string> address;
     std::optional<double> decimals;
     std::optional<std::string> symbol;
     std::optional<std::string> name;
-    std::optional<{> extensions;
     std::optional<std::string> coingeckoId;
     std::optional<std::string> serumV3Usdc;
     std::optional<std::string> serumV3Usdt;
     std::optional<std::string> website;
-    std::optional<string | null> telegram;
+    std::optional<std::optional<std::string>> telegram;
     std::optional<std::string> twitter;
     std::optional<std::string> description;
     std::optional<std::string> discord;
@@ -325,7 +319,6 @@ struct TokenCreationInfoParams {
 
 struct TokenCreationInfoResponse {
     bool success;
-    { data;
     std::optional<std::string> txHash;
     std::optional<double> slot;
     std::optional<std::string> tokenAddress;
@@ -336,8 +329,8 @@ struct TokenCreationInfoResponse {
 };
 
 struct TokenTrendingParams {
-    std::optional<"rank" | "volume24hUSD" | "liquidity"> sort_by;
-    std::optional<"asc" | "desc"> sort_type;
+    std::optional<std::variant<"rank", "volume24hUSD", "liquidity">> sort_by;
+    std::optional<std::variant<"asc", "desc">> sort_type;
     std::optional<double> offset;
     std::optional<double> limit;
 };
@@ -345,10 +338,8 @@ struct TokenTrendingParams {
 // Token Trending Types
 struct TokenTrendingResponse {
     bool success;
-    { data;
     std::optional<double> updateUnixTime;
     std::optional<std::string> updateTime;
-    Array<{ tokens;
     std::optional<std::string> address;
     std::optional<std::string> symbol;
     std::optional<std::string> name;
@@ -366,7 +357,7 @@ struct TokenListV2Params {
     std::optional<double> offset;
     std::optional<double> limit;
     std::optional<std::string> sortBy;
-    std::optional<"asc" | "desc"> sortOrder;
+    std::optional<std::variant<"asc", "desc">> sortOrder;
 };
 
 // this endpoint is for enterprise only and the response is not documented
@@ -381,12 +372,10 @@ struct TokenMetadataMultiParams {
 
 struct TokenMetadataMultiResponse {
     bool success;
-    { data;
     std::optional<std::string> address;
     std::optional<std::string> symbol;
     std::optional<std::string> name;
     std::optional<double> decimals;
-    std::optional<{> extensions;
     std::optional<std::string> coingecko_id;
     std::optional<std::string> website;
     std::optional<std::string> twitter;
@@ -401,7 +390,6 @@ struct TokenTradeDataMultiParams {
 
 struct TokenTradeDataMultiResponse {
     bool success;
-    { data;
 };
 
 // Token Metadata Single Types
@@ -411,12 +399,10 @@ struct TokenMetadataSingleParams {
 
 struct TokenMetadataSingleResponse {
     bool success;
-    { data;
     std::optional<std::string> address;
     std::optional<std::string> symbol;
     std::optional<std::string> name;
     std::optional<double> decimals;
-    std::optional<{> extensions;
     std::optional<std::string> coingecko_id;
     std::optional<std::string> website;
     std::optional<std::string> twitter;
@@ -432,7 +418,6 @@ struct TokenMarketDataParams {
 
 struct TokenMarketDataResponse {
     bool success;
-    { data;
     std::optional<std::string> address;
     std::optional<double> liquidity;
     std::optional<double> price;
@@ -455,7 +440,6 @@ struct TokenTradeDataSingleResponse {
 // Token Market Stats Types
 struct TokenMarketStatsResponse {
     bool success;
-    { data;
     std::string address;
     double liquidity;
     double price;
@@ -474,8 +458,6 @@ struct TokenHoldersParams {
 
 struct TokenHoldersResponse {
     bool success;
-    { data;
-    Array<{ items;
     std::optional<std::string> amount;
     std::optional<double> decimals;
     std::optional<std::string> mint;
@@ -488,8 +470,8 @@ struct TokenHoldersResponse {
 struct MintBurnParams {
     std::string address;
     "block_time" sort_by;
-    "asc" | "desc" sort_type;
-    "mint" | "burn" | "all" type;
+    std::variant<"asc", "desc"> sort_type;
+    std::variant<"mint", "burn", "all"> type;
     std::optional<double> after_time;
     std::optional<double> before_time;
     std::optional<double> offset;
@@ -498,12 +480,10 @@ struct MintBurnParams {
 
 struct MintBurnResponse {
     bool success;
-    { data;
-    Array<{ items;
     std::optional<std::string> amount;
     std::optional<std::string> block_human_time;
     std::optional<double> block_time;
-    std::optional<"mint" | "burn"> common_type;
+    std::optional<std::variant<"mint", "burn">> common_type;
     std::optional<double> decimals;
     std::optional<std::string> mint;
     std::optional<std::string> program_id;
@@ -522,15 +502,13 @@ struct NewListingParams {
 
 struct NewListingResponse {
     bool success;
-    { data;
-    Array<{ items;
     std::string address;
     std::string symbol;
     std::string name;
     double decimals;
     std::string source;
     std::string liquidityAddedAt;
-    string | null logoURI;
+    std::optional<std::string> logoURI;
     double liquidity;
 };
 
@@ -538,16 +516,14 @@ struct NewListingResponse {
 struct TopTradersParams {
     std::string address;
     std::optional<TimeInterval> time_frame;
-    std::optional<"asc" | "desc"> sort_type;
-    std::optional<"volume" | "trade"> sort_by;
+    std::optional<std::variant<"asc", "desc">> sort_type;
+    std::optional<std::variant<"volume", "trade">> sort_by;
     std::optional<double> offset;
     std::optional<double> limit;
 };
 
 struct TopTradersResponse {
     bool success;
-    { data;
-    Array<{ items;
     std::string trader;
     double volume24h;
     double trades24h;
@@ -559,23 +535,19 @@ struct TopTradersResponse {
 struct AllMarketsParams {
     std::string address;
     TimeInterval time_frame;
-    "asc" | "desc" sort_type;
-    "volume24h" | "liquidity" sort_by;
+    std::variant<"asc", "desc"> sort_type;
+    std::variant<"volume24h", "liquidity"> sort_by;
     std::optional<double> offset;
     std::optional<double> limit;
 };
 
 struct AllMarketsResponse {
     bool success;
-    { data;
-    Array<{ items;
     std::string address;
-    { base;
     std::string address;
     double decimals;
     std::string symbol;
     std::optional<std::string> icon;
-    { quote;
     std::string address;
     double decimals;
     std::string symbol;
@@ -583,7 +555,7 @@ struct AllMarketsResponse {
     std::string createdAt;
     double liquidity;
     std::string name;
-    number | null price;
+    std::optional<double> price;
     std::string source;
     double trade24h;
     double trade24hChangePercent;
@@ -596,8 +568,6 @@ struct AllMarketsResponse {
 // Token Volume By Owner Types
 struct TokenVolumeByOwnerResponse {
     bool success;
-    { data;
-    Array<{ items;
     std::string tokenAddress;
     std::string owner;
     std::vector<std::string> tags;

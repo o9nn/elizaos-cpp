@@ -1,15 +1,15 @@
-#include "....utils/entity.hpp"
-#include "...plugin-cdp/services/cdp.service.hpp"
-#include ".services.hpp"
-#include ".types.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "....utils/entity.hpp"
+#include "...plugin-cdp/services/cdp.service.hpp"
+#include ".services.hpp"
+#include ".types.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -27,9 +27,7 @@ using MarketInfoInput = {
 
 using MarketInfoActionResult = ActionResult & { input: MarketInfoInput };
 
-/* =========================
  * Action: GET_MORPHO_MARKET_INFO
- * ========================= */
 
       // Read parameters from state
 

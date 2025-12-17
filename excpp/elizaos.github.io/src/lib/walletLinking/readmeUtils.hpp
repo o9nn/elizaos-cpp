@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -13,8 +13,8 @@ namespace elizaos {
 
 
 
-using LinkedWallet = z.infer<typeof LinkedWalletSchema>;
-using WalletLinkingData = z.infer<typeof WalletLinkingDataSchema>;
+using LinkedWallet = z::infer<typeof LinkedWalletSchema>;
+using WalletLinkingData = z::infer<typeof WalletLinkingDataSchema>;
 
 /**
  * Parses wallet linking data from a given README content string.
@@ -22,6 +22,7 @@ using WalletLinkingData = z.infer<typeof WalletLinkingDataSchema>;
  * @param readmeContent The string content of the README file.
  * @returns The parsed and validated wallet linking data, or null if no valid data found.
  */
+std::optional<WalletLinkingData> parseWalletLinkingDataFromReadme(const std::string& readmeContent);
 
 /**
  * Generates an updated README content string with the provided wallet linking data.
@@ -49,6 +50,6 @@ std::string generateReadmeWalletSection(const std::vector<LinkedWallet>& wallets
  * @param chain The chain to look for (case insensitive)
  * @returns The wallet address or empty string if not found
  */
-std::string getWalletAddressForChain(WalletLinkingData | null data, const std::string& chain);
+std::string getWalletAddressForChain(const std::optional<WalletLinkingData>& data, const std::string& chain);
 
 } // namespace elizaos

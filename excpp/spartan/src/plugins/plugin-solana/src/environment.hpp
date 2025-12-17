@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -38,7 +39,7 @@ namespace elizaos {
 /**
  * Type definition for the configuration of a Solana environment.
  */
-using SolanaConfig = z.infer<typeof solanaEnvSchema>;
+using SolanaConfig = z::infer<typeof solanaEnvSchema>;
 
 /**
  * Validates the Solana configuration by retrieving settings from the runtime or environment variables,

@@ -1,10 +1,12 @@
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -23,17 +25,17 @@ struct ActionExample {
 /**
  * Callback function type for handlers
  */
-using HandlerCallback = (response: Content, files?: any) => Promise<Memory[]>;
+using HandlerCallback = std::function<std::future<std::vector<Memory>>(Content, std::any)>;
 
 /**
  * Handler function type for processing messages
  */
-using Handler = (
+using Handler = std::function<std::future<unknown>(IAgentRuntime, Memory, State, std::any, HandlerCallback, std::vector<Memory>)>;
 
 /**
  * Validator function type for actions/evaluators
  */
-using Validator = (
+using Validator = std::function<std::future<bool>(IAgentRuntime, Memory, State)>;
 
 /**
  * Represents an action the agent can perform
@@ -70,8 +72,6 @@ struct Evaluator {
 };
 
 struct ProviderResult {
-    std::optional<{> values;
-    std::optional<{> data;
     std::optional<std::string> text;
 };
 
@@ -84,7 +84,6 @@ struct Provider {
     std::optional<bool> dynamic;
     std::optional<double> position;
     std::optional<bool> private;
-    (runtime: IAgentRuntime, message: Memory, state: State) => Promise<ProviderResult> get;
 };
 
 

@@ -1,10 +1,12 @@
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -13,5 +15,5 @@ namespace elizaos {
 
 
 
-std::future<void> GET(Request request, { params: { id: string } } { params }); 
+std::future<void> GET(Request request, const std::any& { params }); 
 } // namespace elizaos

@@ -1,13 +1,14 @@
-#include ".constants.hpp"
-#include ".keypairUtils.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".constants.hpp"
+#include ".keypairUtils.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -47,7 +48,6 @@ std::future<unknown> swapToken(Connection connection, PublicKey walletPublicKey,
  * @param {string} tokenSymbol - The token symbol to retrieve the address for.
  * @returns {Promise<string|null>} The token address if found, null otherwise.
  */
-std::future<string | null> getTokenFromWallet(IAgentRuntime runtime, const std::string& tokenSymbol);
 
 /**
  * Respond with a JSON markdown block containing only the extracted values. Use null for any values that cannot be determined.
@@ -87,7 +87,6 @@ std::future<string | null> getTokenFromWallet(IAgentRuntime runtime, const std::
  * @property {string[]} similes - Alternative names for the action.
  * @property {Function} validate - Asynchronous function to validate if Solana service is available.
  * @property {string} description - Description of the action.
- * @property {Function} handler - Asynchronous function to handle the token swap process.
  * @property {ActionExample[][]} examples - Examples demonstrating how to use the action.
  */
 

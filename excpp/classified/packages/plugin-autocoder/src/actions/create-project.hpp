@@ -1,12 +1,12 @@
-#include "elizaos/core.hpp"
-#include "elizaos/plugin-forms.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
+#include "elizaos/plugin-forms.hpp"
 
 namespace elizaos {
 
@@ -18,6 +18,7 @@ namespace elizaos {
 /**
  * Extract project name from user message
  */
+std::optional<std::string> extractProjectName(const std::string& text);
 
 /**
  * Extract project type from user message

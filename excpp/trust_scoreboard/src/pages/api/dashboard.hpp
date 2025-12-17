@@ -1,10 +1,12 @@
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -44,7 +46,6 @@ struct DashboardResponse {
     std::vector<Partner> partners;
     std::vector<std::any> holdings;
     std::vector<std::any> prices;
-    std::unordered_map<std::string, double> trustScores;
     std::optional<std::vector<TokenHolding>> userHoldings;
 };
 

@@ -1,13 +1,15 @@
-#include ".lib/base-client.hpp"
-#include ".types/memory.hpp"
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".lib/base-client.hpp"
+#include ".types/memory.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -16,80 +18,27 @@ namespace elizaos {
 
 
 
-class MemoryService extends BaseApiClient {
-  /**
-   * Get agent memories
-   */
-  async getAgentMemories(agentId: UUID, params?: MemoryParams): Promise<{ memories: Memory[] }> {
-    return this.get<{ memories: Memory[] }>(`/api/memory/${agentId}/memories`, { params });
-  }
+class MemoryService {
+public:
+    Promise< getAgentMemories(UUID agentId, std::optional<MemoryParams> params);
+    Promise< getRoomMemories(UUID agentId, UUID roomId, std::optional<MemoryParams> params);
+    std::future<Memory> updateMemory(UUID agentId, UUID memoryId, MemoryUpdateParams params);
+    Promise< clearAgentMemories(UUID agentId);
+    Promise< clearRoomMemories(UUID agentId, UUID roomId);
+    Promise< listAgentRooms(UUID agentId);
+    std::future<Room> getRoom(UUID agentId, UUID roomId);
+    std::future<Room> createRoom(UUID agentId, RoomCreateParams params);
+    Promise< createWorldFromServer(UUID serverId, WorldCreateParams params);
+    Promise< deleteWorld(UUID serverId);
+    Promise< clearWorldMemories(UUID serverId);
+    Promise< deleteMemory(UUID agentId, UUID memoryId);
+    Promise< getAgentInternalMemories(UUID agentId, UUID agentPerspectiveRoomId, std::optional<bool> includeEmbedding);
+    Promise< deleteAgentInternalMemory(UUID agentId, UUID memoryId);
+    Promise< deleteAllAgentInternalMemories(UUID agentId, UUID agentPerspectiveRoomId);
+    std::future<std::any> updateAgentInternalMemory(UUID agentId, UUID memoryId, const std::any& memoryData);
+    Promise< deleteGroupMemory(UUID serverId, UUID memoryId);
+    Promise< clearGroupChat(UUID serverId);
+};
 
-  /**
-   * Get room-specific memories
-   */
-
-  /**
-   * Update a memory
-   */
-
-  /**
-   * Clear all agent memories
-   */
-
-  /**
-   * Clear room memories
-   */
-
-  /**
-   * List agent's rooms
-   */
-
-  /**
-   * Get room details
-   */
-
-  /**
-   * Create a room
-   */
-
-  /**
-   * Create world from server
-   */
-
-  /**
-   * Delete a world
-   */
-
-  /**
-   * Clear world memories
-   */
-
-  /**
-   * Delete a specific memory
-   */
-
-  /**
-   * Get agent internal memories
-   */
-
-  /**
-   * Delete agent internal memory
-   */
-
-  /**
-   * Delete all agent internal memories
-   */
-
-  /**
-   * Update agent internal memory
-   */
-
-  /**
-   * Delete group memory (implemented via messaging channel message deletion)
-   */
-
-  /**
-   * Clear group chat (implemented via messaging channel history clearing)
-   */
 
 } // namespace elizaos

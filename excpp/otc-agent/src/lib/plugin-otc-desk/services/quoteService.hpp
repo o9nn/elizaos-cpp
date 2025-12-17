@@ -1,12 +1,15 @@
-#include "..entityId.hpp"
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "..entityId.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -16,61 +19,31 @@ namespace elizaos {
 // Quote Service - quote management for Eliza OTC Desk
 // Single source of truth registered with runtime.getService("QuoteService")
 
-class QuoteService extends Service {
-  static serviceType = "QuoteService" as any;
-  static serviceName = "QuoteService";
-
-  get serviceType(): string {
-    return "QuoteService";
-  }
-
-    // Cleanup if needed
-
-    // Also index by beneficiary for faster lookups
-
-    // Generate deterministic quote ID from entityId
-    // Use a hash of entityId + current day to allow one quote per wallet per day
-
-    // Token metadata (optional but recommended)
-
-    // Check if quote already exists
-
-      // Token metadata
-
-    // Fetch all quotes in parallel for better performance
-
-    // First try the beneficiary index (fast path)
-
-      // Fetch indexed quotes in parallel
-
-    // Fallback: search all quotes in parallel (slower but complete)
-
-    // Fetch entity quotes in parallel
-
-    // Search for unindexed quotes (in parallel)
-
-      // Find quotes with matching entityId that weren't indexed
-
-      // Fix the index in batch if we found any
-
-    // Fetch all quotes in parallel
-
-    // Remove from old entity's quote list
-
-    // Remove from old beneficiary's index
-
-    // Add to new entity's quote list
-
-    // Add to new beneficiary's index
-
-  // Helper: Get latest active quote by wallet address
-    // Return the most recent ACTIVE quote only
-
-  // Helper: Expire all active quotes for a user (called before creating new one)
-
-    // Expire all quotes in parallel for better performance
+class QuoteService {
+public:
+    QuoteService(IAgentRuntime runtime);
+    std::string serviceType() const;
+    std::future<void> initialize();
+    std::future<void> stop();
+    std::future<QuoteService> start(IAgentRuntime runtime);
+    std::future<void> addToIndex(const std::string& quoteId, const std::string& entityId, std::optional<std::string> beneficiary);
+    std::string generateQuoteId(const std::string& entityId);
+    std::string generateQuoteSignature(const std::any& data);
+    std::future<std::vector<QuoteMemory>> getActiveQuotes();
+    std::future<QuoteMemory> getQuoteByBeneficiary(const std::string& beneficiary);
+    std::future<std::vector<QuoteMemory>> getUserQuoteHistory(const std::string& entityId, double limit);
+    std::future<QuoteMemory> getQuoteByQuoteId(const std::string& quoteId);
+    std::variant<Promise<QuoteMemory, null>> getQuoteByOfferId(const std::string& offerId);
+    std::future<QuoteMemory> updateQuoteStatus(const std::string& quoteId, QuoteStatus status, const std::any& data);
+    std::future<QuoteMemory> updateQuoteExecution(const std::string& quoteId, std::optional<std::any> data);
+    std::future<QuoteMemory> setQuoteBeneficiary(const std::string& quoteId, const std::string& beneficiary);
+    bool verifyQuoteSignature(QuoteMemory quote);
+    std::variant<Promise<QuoteMemory, undefined>> getQuoteByWallet(const std::string& walletAddress);
+    std::future<void> expireUserQuotes(const std::string& walletAddress);
+};
 
 // Helper to get service from runtime
+std::optional<QuoteService> getQuoteService(IAgentRuntime runtime);
 
 
 } // namespace elizaos

@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -19,7 +19,7 @@ namespace elizaos {
 
 // GitHub Raw Data Schemas
 
-using GithubUser = z.infer<typeof GithubUserSchema>;
+using GithubUser = z::infer<typeof GithubUserSchema>;
 
 struct DateRange {
     std::optional<std::string> startDate;

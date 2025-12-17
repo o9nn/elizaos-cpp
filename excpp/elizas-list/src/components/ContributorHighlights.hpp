@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -21,10 +22,8 @@ struct Contributor {
     std::string github;
     std::optional<std::string> twitter;
     std::optional<std::string> website;
-    { contributions;
-    'code' | 'design' | 'docs' | 'bug' | 'feature' type;
+    std::variant<'code', 'design', 'docs', 'bug', 'feature'> type;
     double count;
-    { highlights;
     std::string title;
     std::string description;
     std::string date;

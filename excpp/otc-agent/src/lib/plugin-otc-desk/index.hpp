@@ -1,3 +1,11 @@
+#pragma once
+#include <functional>
+#include <future>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include "actions/quote.hpp"
 #include "elizaos/core.hpp"
 #include "providers/ai16z.hpp"
@@ -9,13 +17,6 @@
 #include "providers/token.hpp"
 #include "services/quoteService.hpp"
 #include "services/userSessionStorage.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -31,12 +32,11 @@ struct EntitySourceMetadata {
 };
 
 // Helper function to safely get entity metadata for a source
-EntitySourceMetadata getEntitySourceMetadata(Entity | null entity, const std::string& source);
+EntitySourceMetadata getEntitySourceMetadata(const std::optional<Entity>& entity, const std::string& source);
 
 // Interface for websocket service with sendMessage capability
 struct WebSocketServiceWithSendMessage {
     std::string type;
-    std::unordered_map<std::string, unknown> payload;
 };
 
 /**
@@ -44,6 +44,7 @@ struct WebSocketServiceWithSendMessage {
  * @param text The input string potentially containing the <response> tag.
  * @returns The extracted text content, or null if the tag is not found or empty.
  */
+std::optional<std::string> extractResponseText(const std::string& text);
 
 /**
  * Represents media data containing a buffer of data and the media type.
@@ -54,7 +55,6 @@ struct WebSocketServiceWithSendMessage {
 using MediaData = {
 
 // Helper functions for response ID tracking in serverless environment
-std::future<string | null> getLatestResponseId(IAgentRuntime runtime, const std::string& roomId);
 
 std::future<void> setLatestResponseId(IAgentRuntime runtime, const std::string& roomId, const std::string& responseId);
 
@@ -81,7 +81,6 @@ std::future<void> clearLatestResponseId(IAgentRuntime runtime, const std::string
   // Generate a new response ID
 
   // Set this as the latest response ID for this room (using runtime cache for serverless)
-  await setLatestResponseId(runtime, message.roomId, responseId);
 
   // Generate a unique run ID for tracking this message handler execution
 
@@ -98,7 +97,6 @@ std::future<void> clearLatestResponseId(IAgentRuntime runtime, const std::string
     // Check if this is still the latest response ID for this room
 
     // Clean up the response ID
-    await clearLatestResponseId(runtime, message.roomId);
 
     // Parse actions from response - support both XML tags and function-call syntax
 
@@ -178,10 +176,6 @@ std::future<void> clearLatestResponseId(IAgentRuntime runtime, const std::string
       // Send the control message through the WebSocket service
 
       // Message sent tracking
-
-      await handleServerSync(payload);
-
-      await handleServerSync(payload);
 
       // Check for required fields
 

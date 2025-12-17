@@ -1,11 +1,14 @@
-#include "sentry/instrument.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "sentry/instrument.hpp"
 
 namespace elizaos {
 
@@ -15,14 +18,14 @@ namespace elizaos {
 
 
 // Local utility function to avoid circular dependency
-bool parseBooleanFromText(string | undefined | null value);
+bool parseBooleanFromText(const std::optional<std::string>& value);
 
 /**
  * Interface representing a log entry.
  */
 struct LogEntry {
     std::optional<double> time;
-    std::optional<string | number> level;
+    std::optional<std::variant<std::string, double>> level;
     std::optional<std::string> msg;
     std::optional<std::string> message;
     std::optional<std::string> agentName;
@@ -31,39 +34,11 @@ struct LogEntry {
 
 // Custom in-memory logger class that maintains recent logs
 class InMemoryLogger {
-  private logs: LogEntry[] = [];
-  private maxLogs = 1000;
-
-  addLog(entry: LogEntry) {
-    // Add timestamp if not present
-    if (!entry.time) {
-      entry.time = Date.now();
-    }
-
-    // Filter out service registration logs unless in debug mode
-    const isDebugMode = (process?.env?.LOG_LEVEL || '').toLowerCase() === 'debug';
-
-    if (!isDebugMode && entry.agentName && entry.agentId) {
-      const msg = entry.msg || entry.message || '';
-      if (
-        typeof msg === 'string' &&
-        (msg.includes('registered successfully') ||
-          msg.includes('Registering') ||
-          msg.includes('Success:') ||
-          msg.includes('linked to') ||
-          msg.includes('Started'))
-      ) {
-        return; // Skip service registration logs
-      }
-    }
-
-    this.logs.push(entry);
-
-    // Maintain buffer size
-    if (this.logs.length > this.maxLogs) {
-      this.logs.shift();
-    }
-  }
+public:
+    void addLog(LogEntry entry);
+    std::vector<LogEntry> recentLogs();
+    void clear();
+};
 
 // Create global in-memory logger instance
 
@@ -80,48 +55,31 @@ void captureLogEntry(const std::string& level, const std::vector<std::any>& args
 
 // Create the main logger instance with custom methods
 class ElizaLogger {
-  private context: any;
+public:
+    ElizaLogger(std::optional<std::any> config);
+    void log(const std::vector<std::any>& ...args);
+    void progress(const std::vector<std::any>& ...args);
+    void success(const std::vector<std::any>& ...args);
+    void fatal(const std::vector<std::any>& ...args);
+    void error(const std::vector<std::any>& ...args);
+    void warn(const std::vector<std::any>& ...args);
+    void info(const std::vector<std::any>& ...args);
+    void debug(const std::vector<std::any>& ...args);
+    void trace(const std::vector<std::any>& ...args);
+    void verbose(const std::vector<std::any>& ...args);
+    std::vector<std::any> formatArgs(const std::vector<std::any>& args);
+    bool isLevelEnabled(const std::string& level);
+    ElizaLogger child(const std::any& bindings);
+    void clear();
+    void level() const;
+    void level(const std::string& newLevel);
+    void levels() const;
+    std::future<void> flush();
+    void flushSync();
 
-  constructor(config?: any) {
-    this.context = config?.context || {};
-
-    // Bind all standard methods
-    this.fatal = this.fatal.bind(this);
-    this.error = this.error.bind(this);
-    this.warn = this.warn.bind(this);
-    this.info = this.info.bind(this);
-    this.debug = this.debug.bind(this);
-    this.trace = this.trace.bind(this);
-    this.verbose = this.verbose.bind(this);
-  }
-
-  // Custom level methods
-
-  // Standard adze methods
-
-  // Helper method to format arguments
-
-    // Handle Error objects
-
-    // Handle object as first argument (context)
-      // Combine with message
-
-    // Add context if available
-
-  // Check if level is enabled
-
-  // Pino compatibility methods
-
-  // Add clear method for compatibility
-
-  // Pino compatibility properties
-
-    // Note: In adze, we can't change level dynamically per instance
-    // This is here for compatibility only
-
-  // Add pino-compatible flush methods
-
-    // No-op for compatibility
+private:
+    std::any context_;
+};
 
 // Add symbol for accessing in-memory logger (for compatibility with logging router)
 

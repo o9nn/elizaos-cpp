@@ -1,3 +1,11 @@
+#pragma once
+#include <any>
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include ".hyperfy/src/core/extras/createEmoteFactory.js.hpp"
 #include ".hyperfy/src/core/extras/createNode.js.hpp"
 #include ".hyperfy/src/core/extras/glbToNodes.js.hpp"
@@ -6,13 +14,6 @@
 #include ".managers/puppeteer-manager.js.hpp"
 #include ".utils.js.hpp"
 #include "avatar.js.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -42,47 +43,22 @@ namespace elizaos {
   // globalThis.fetch = fetch;
 // --- End Mocks ---
 
-class AgentLoader extends System {
-  promises: Map<any, any>;
-  results: Map<any, any>;
-  gltfLoader: GLTFLoader;
-  dummyScene: any;
-  constructor(world) {
-    super(world);
-    this.promises = new Map();
-    this.results = new Map();
-    this.gltfLoader = new GLTFLoader();
+class AgentLoader {
+public:
+    AgentLoader(auto world);
+    void preload(auto type, auto url);
+    void execPreload();
+    void has(auto type, auto url);
+    void get(auto type, auto url);
+    void load(auto type, auto url);
+    void parseGLB(const std::string& type, const std::string& key, const std::string& url);
 
-    // --- Dummy Scene for Hooks ---
-    // Create one dummy object to act as the scene target for all avatar loads
-    this.dummyScene = new THREE.Object3D();
-    this.dummyScene.name = "AgentLoaderDummyScene";
-    // -----------------------------
-
-    // --- Attempt to register VRM plugin ---
-    // try {
-    //     this.gltfLoader.register(parser => new VRMLoaderPlugin(parser, {
-    //         autoUpdateHumanBones: false
-    //     }));
-    //     console.log("[AgentLoader] VRMLoaderPlugin registered.");
-    // } catch (vrmError) {
-    //     console.error("[AgentLoader] Warning: Failed to register VRMLoaderPlugin. VRM-specific features might be unavailable.", vrmError);
-    // }
-    // ---------------------------------------
-  }
-
-  // --- Dummy Preload Methods ---
-    // No-op for agent
-    // No-op for agent
-    // ClientNetwork calls this after snapshot, so it must exist.
-  // ---------------------------
-
-  // --- Basic Cache Handling ---
-  // ... (has, get methods remain the same) ...
-  // ---------------------------
-
-        // TEMP WORKAROUND: Only load scripts that do not create video, UI, or image elements.
-        // TODO: Replace this with a proper script validation system.
+private:
+    std::unordered_map<std::any, std::any> promises_;
+    std::unordered_map<std::any, std::any> results_;
+    GLTFLoader gltfLoader_;
+    std::any dummyScene_;
+};
 
 
 } // namespace elizaos

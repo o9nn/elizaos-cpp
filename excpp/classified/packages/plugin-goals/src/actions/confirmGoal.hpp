@@ -1,11 +1,13 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -18,13 +20,12 @@ namespace elizaos {
 struct PendingGoalData {
     std::string name;
     std::optional<std::string> description;
-    'daily' | 'one-off' | 'aspirational' taskType;
-    std::optional<1 | 2 | 3 | 4> priority;
+    std::variant<'daily', 'one-off', 'aspirational'> taskType;
+    std::optional<std::variant<1, 2, 3, 4>> priority;
     std::optional<bool> urgent;
     std::optional<std::string> dueDate;
-    std::optional<'daily' | 'weekly' | 'monthly'> recurring;
+    std::optional<std::variant<'daily', 'weekly', 'monthly'>> recurring;
     std::optional<std::vector<std::string>> tags;
-    std::optional<std::unordered_map<std::string, std::any>> metadata;
 };
 
 // Interface for confirmation response
@@ -41,7 +42,7 @@ struct ConfirmationResponse {
 /**
  * Extracts confirmation intent from the user's message
  */
-std::future<ConfirmationResponse> extractConfirmationIntent(IAgentRuntime runtime, Memory message, PendingGoalData | null pendingTask, State state);
+std::future<ConfirmationResponse> extractConfirmationIntent(IAgentRuntime runtime, Memory message, const std::optional<PendingGoalData>& pendingTask, State state);
 
 /**
  * The CONFIRM_GOAL action handles the confirmation step of goal creation

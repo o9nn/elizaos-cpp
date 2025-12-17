@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -25,7 +25,6 @@ struct DependencyLink {
 };
 
 struct DependencyGraphProps {
-    { dependencies;
     std::vector<DependencyNode> nodes;
     std::vector<DependencyLink> links;
 };

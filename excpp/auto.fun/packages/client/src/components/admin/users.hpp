@@ -1,10 +1,11 @@
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -17,7 +18,7 @@ namespace elizaos {
 struct User {
     std::string id;
     std::string address;
-    string | null name;
+    std::optional<std::string> name;
     std::string createdAt;
     std::optional<std::string> lastActive;
     double points;
@@ -54,6 +55,6 @@ struct Transaction {
 
 void AdminUsersList();
 
-void AdminUserDetails({ address: string } { address });
+void AdminUserDetails(const std::any& { address });
 
 } // namespace elizaos

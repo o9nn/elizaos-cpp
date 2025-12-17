@@ -1,13 +1,14 @@
-#include ".lib/base-client.hpp"
-#include ".types/entities.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".lib/base-client.hpp"
+#include ".types/entities.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -16,29 +17,13 @@ namespace elizaos {
 
 
 
-class EntitiesService extends BaseApiClient {
-  /**
-   * Get entity by ID
-   */
-  async getEntity(entityId: UUID): Promise<Entity> {
-    const response = await this.get<{ entity: Entity }>(`/api/entities/${entityId}`);
-    return response.entity;
-  }
-
-  /**
-   * Create a new entity
-   */
-
-  /**
-   * Update an existing entity
-   */
-
-  /**
-   * Delete an entity
-   * TODO: Uncomment when deleteEntity endpoint is fully implemented
-   */
-  /*
-  */
+class EntitiesService {
+public:
+    std::future<Entity> getEntity(UUID entityId);
+    std::future<Entity> createEntity(EntityCreateParams params);
+    std::future<Entity> updateEntity(UUID entityId, EntityUpdateParams params);
+    Promise< deleteEntity(UUID entityId);
+};
 
 
 } // namespace elizaos

@@ -1,11 +1,11 @@
-#include ".features/user/use-user-slice.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".features/user/use-user-slice.hpp"
 
 namespace elizaos {
 

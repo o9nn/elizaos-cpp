@@ -1,3 +1,11 @@
+#pragma once
+#include <any>
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include "....utils/entity.hpp"
 #include "...plugin-cdp/services/cdp.service.hpp"
 #include "...plugin-cdp/types.hpp"
@@ -5,13 +13,6 @@
 #include ".types.hpp"
 #include ".utils/token-resolver.hpp"
 #include "elizaos/core.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -90,7 +91,7 @@ namespace elizaos {
       // Try to capture input params even in failure
         // If we can't get params, just use empty object
 
-std::string formatBridgeResponse(RelayStatus | undefined status, ResolvedBridgeRequest request, const std::string& requestId, const std::vector<std::vector<{ txHash: string; chainId: number }>>& collectedTxHashes, std::optional<std::string> tokenSymbol);
+std::string formatBridgeResponse(RelayStatus status, ResolvedBridgeRequest request, const std::string& requestId, const std::vector<std::vector<std::any>>& collectedTxHashes, std::optional<std::string> tokenSymbol);
 
 std::string getChainName(double chainId);
 

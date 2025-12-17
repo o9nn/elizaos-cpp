@@ -1,11 +1,11 @@
-#include "vite.config.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "vite.config.hpp"
 
 namespace elizaos {
 

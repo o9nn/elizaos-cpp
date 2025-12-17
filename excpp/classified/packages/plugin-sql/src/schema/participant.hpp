@@ -1,13 +1,13 @@
-#include "agent.hpp"
-#include "entity.hpp"
-#include "room.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "agent.hpp"
+#include "entity.hpp"
+#include "room.hpp"
 
 namespace elizaos {
 
@@ -20,8 +20,8 @@ namespace elizaos {
     // Index for finding participants in a room
     // Index for finding all rooms a participant is in
 
-using Participant = typeof participantTable.$inferSelect;
-using NewParticipant = typeof participantTable.$inferInsert;
+using Participant = typeof participantTable::$inferSelect;
+using NewParticipant = typeof participantTable::$inferInsert;
 
 
 } // namespace elizaos

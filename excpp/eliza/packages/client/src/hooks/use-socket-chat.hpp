@@ -1,11 +1,12 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -15,17 +16,12 @@ namespace elizaos {
 
 
 struct UseSocketChatProps {
-    UUID | undefined channelId;
+    UUID channelId;
     std::string currentUserId;
-    UUID; // agentId for DM, channelId for GROUP contextId;
-    ChannelType.DM | ChannelType.GROUP chatType;
+    UUID contextId;
+    std::variant<ChannelType::DM, ChannelType::GROUP> chatType;
     std::vector<Agent> allAgents;
     std::vector<UiMessage> messages;
-    (message: UiMessage) => void onAddMessage;
-    (messageId: string, updates: Partial<UiMessage>) => void onUpdateMessage;
-    (messageId: string) => void onDeleteMessage;
-    () => void onClearMessages;
-    (disabled: boolean) => void onInputDisabledChange;
 };
 
 

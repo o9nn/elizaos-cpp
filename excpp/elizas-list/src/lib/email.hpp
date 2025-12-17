@@ -1,10 +1,12 @@
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -13,5 +15,5 @@ namespace elizaos {
 
 
 
-
+std::future<void> sendProjectNotification(const std::string& to, const std::any& project); 
 } // namespace elizaos

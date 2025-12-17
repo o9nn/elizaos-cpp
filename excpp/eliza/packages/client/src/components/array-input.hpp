@@ -1,14 +1,14 @@
-#include "ui/badge.hpp"
-#include "ui/button.hpp"
-#include "ui/input.hpp"
-#include "ui/label.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "ui/badge.hpp"
+#include "ui/button.hpp"
+#include "ui/input.hpp"
+#include "ui/label.hpp"
 
 namespace elizaos {
 

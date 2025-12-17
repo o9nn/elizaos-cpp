@@ -1,11 +1,11 @@
-#include "NameInput.module.css.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "NameInput.module.css.hpp"
 
 namespace elizaos {
 
@@ -16,7 +16,6 @@ namespace elizaos {
 
 struct NameInputProps {
     std::string value;
-    (value: string) => void onChange;
 };
 
 

@@ -1,11 +1,12 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -15,40 +16,23 @@ namespace elizaos {
 
 
 // Define the minimal database type we need
-using DrizzleDatabase = {
+using DrizzleDatabase = std::function<void()>;
 
 /**
  * ServerMigrationService handles database migrations for server-specific tables
  * This is separate from plugin migrations to maintain clean separation of concerns
  */
 class ServerMigrationService {
-  constructor(private db: DrizzleDatabase) {}
-
-  /**
-   * Runs all server-specific migrations
-   */
-
-      // Create messageServers table
-
-      // Create channels table
-
-      // Create messages table
-
-      // Create channel_participants table
-
-      // Create server_agents table
-
-      // Use CREATE TABLE IF NOT EXISTS to avoid errors
-
-      // Create index on server_id for better query performance
-
-      // Create indexes for better query performance
-
-      // Create indexes for better query performance
-
-      // Add foreign key constraint to agents table separately
-      // This assumes the agents table exists (created by plugin-sql)
-        // First check if the constraint already exists
+public:
+    ServerMigrationService(DrizzleDatabase private db);
+    std::future<void> runMigrations();
+    std::future<void> createMessageServersTable();
+    std::future<void> createChannelsTable();
+    std::future<void> createMessagesTable();
+    std::future<void> createChannelParticipantsTable();
+    std::future<void> createServerAgentsTable();
+    std::future<bool> tableExists(const std::string& tableName);
+};
 
 
 } // namespace elizaos

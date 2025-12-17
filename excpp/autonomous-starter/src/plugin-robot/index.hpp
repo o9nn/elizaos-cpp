@@ -1,14 +1,14 @@
-#include "action.ts.hpp"
-#include "elizaos/core.hpp"
-#include "provider.ts.hpp"
-#include "service.ts.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "action.ts.hpp"
+#include "elizaos/core.hpp"
+#include "provider.ts.hpp"
+#include "service.ts.hpp"
 
 namespace elizaos {
 

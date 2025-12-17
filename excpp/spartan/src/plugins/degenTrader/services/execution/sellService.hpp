@@ -1,3 +1,12 @@
+#pragma once
+#include <any>
+#include <functional>
+#include <future>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include "..types.hpp"
 #include "..utils/bignumber.hpp"
 #include "..utils/wallet.hpp"
@@ -9,13 +18,6 @@
 #include ".validation/TokenValidationService.hpp"
 #include ".walletService.hpp"
 #include "elizaos/core.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -24,17 +26,17 @@ namespace elizaos {
 
 
 
-class SellService extends BaseTradeService {
-  private pendingSells: { [tokenAddress: string]: BN } = {};
-
-        // Add validation for slippage with warning and enforce stricter limits
-        /*
-
-        */
-
-        // why are we getting this after the trade execution?
-        // for the price? shouldn't we already have it?
-        //console.log('sell marketData', marketData)
+class SellService {
+public:
+    SellService(IAgentRuntime runtime, WalletService walletService, DataService dataService, AnalyticsService analyticsService, TradeMemoryService tradeMemoryService);
+    std::future<void> initialize();
+    std::future<void> stop();
+    std::future<void> handleSellSignal(const std::any& params);
+    std::future<void> updateExpectedOutAmount(std::optional<SellSignalMessage & { expectedOutAmount: string }> signal);
+    void if(auto !signal);
+    void if(auto !tokenBalance);
+    void if(auto result.success);
+    void catch(auto error);
 
 
 } // namespace elizaos

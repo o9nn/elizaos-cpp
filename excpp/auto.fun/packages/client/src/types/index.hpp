@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -25,10 +26,10 @@ struct IPagination {
 struct ISwap {
     double amountIn;
     double amountOut;
-    0 | 1 direction;
+    std::variant<0, 1> direction;
     std::string id;
     double price;
-    string | Date timestamp;
+    std::variant<std::string, Date> timestamp;
     std::string tokenMint;
     std::string txId;
     std::string type;
@@ -41,28 +42,20 @@ struct ITokenHolder {
     std::string address;
     double amount;
     double percentage;
-    string | Date lastUpdated;
+    std::variant<std::string, Date> lastUpdated;
 };
 
 using ChartTable = {
 
-using IToken = z.infer<typeof TokenSchema>;
+using IToken = z::infer<typeof TokenSchema>;
 
 using ConfigAccount = {
 
 // Type definitions for global objects
 
   struct Window {
-    std::optional<{> solana;
     std::optional<bool> isPhantom;
-    std::optional<(> signMessage;
-    Uint8Array message;
-    std::string encoding;
-    () => Promise<{ publicKey: string }> connect;
-    std::optional<() => Promise<void>> disconnect;
     std::optional<PublicKey> publicKey;
-    std::optional<(event: string, callback: () => void) => void> on;
-    std::optional<(event: string, callback: () => void) => void> off;
 };
 
 

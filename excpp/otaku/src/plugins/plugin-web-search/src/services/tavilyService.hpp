@@ -1,11 +1,12 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -16,16 +17,15 @@ namespace elizaos {
 
 using TavilyClient = ReturnType<typeof tavily>;
 
-class TavilyService extends Service implements ITavilyService {
-    static serviceType = "TAVILY" as const;
-
-    private tavilyClient!: TavilyClient;
-
-    constructor(runtime: IAgentRuntime) {
-        super(runtime);
-    }
-
-        // No persistent connections to close for Tavily client
+class TavilyService {
+public:
+    TavilyService(IAgentRuntime runtime);
+    std::future<TavilyService> start(IAgentRuntime runtime);
+    std::future<void> initialize(IAgentRuntime runtime);
+    std::string capabilityDescription() const;
+    std::future<void> stop();
+    std::future<SearchResponse> search(const std::string& query, std::optional<SearchOptions> options);
+};
 
 
 } // namespace elizaos

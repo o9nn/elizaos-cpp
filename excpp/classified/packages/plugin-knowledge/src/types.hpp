@@ -1,11 +1,12 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -36,7 +37,7 @@ namespace elizaos {
 
   // Contextual Knowledge settings
 
-using ModelConfig = z.infer<typeof ModelConfigSchema>;
+using ModelConfig = z::infer<typeof ModelConfigSchema>;
 
 /**
  * Interface for provider rate limits
@@ -52,11 +53,10 @@ struct ProviderRateLimits {
  * Options for text generation overrides
  */
 struct TextGenerationOptions {
-    std::optional<'anthropic' | 'openai' | 'openrouter' | 'google' | 'ollama'> provider;
+    std::optional<std::variant<'anthropic', 'openai', 'openrouter', 'google', 'ollama'>> provider;
     std::optional<std::string> modelName;
     std::optional<double> maxTokens;
     std::optional<std::string> cacheDocument;
-    std::optional<{> cacheOptions;
     'ephemeral' type;
     std::optional<bool> autoCacheContextualRetrieval;
 };
@@ -73,7 +73,6 @@ struct AddKnowledgeOptions {
     std::string contentType;
     std::string originalFilename;
     std::string content;
-    std::optional<std::unordered_map<std::string, unknown>> metadata;
 };
 
 // Extend the core service types with knowledge service
@@ -88,8 +87,8 @@ struct AddKnowledgeOptions {
 struct KnowledgeConfig {
     bool CTX_KNOWLEDGE_ENABLED;
     bool LOAD_DOCS_ON_STARTUP;
-    std::optional<string | number> MAX_INPUT_TOKENS;
-    std::optional<string | number> MAX_OUTPUT_TOKENS;
+    std::optional<std::variant<std::string, double>> MAX_INPUT_TOKENS;
+    std::optional<std::variant<std::string, double>> MAX_OUTPUT_TOKENS;
     std::optional<std::string> EMBEDDING_PROVIDER;
     std::optional<std::string> TEXT_PROVIDER;
     std::optional<std::string> TEXT_EMBEDDING_MODEL;
@@ -98,7 +97,7 @@ struct KnowledgeConfig {
 struct LoadResult {
     double successful;
     double failed;
-    std::optional<std::vector<{ filename: string; error: string }>> errors;
+};
 
 
 } // namespace elizaos

@@ -1,13 +1,15 @@
-#include ".bun-exec.js.hpp"
-#include "constants.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include ".bun-exec.js.hpp"
+#include "constants.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -20,20 +22,17 @@ namespace elizaos {
 
 struct RegistrySettings {
     std::string defaultRegistry;
-    std::optional<{> publishConfig;
     std::string registry;
     std::optional<std::string> username;
     std::optional<bool> useNpm;
-    std::optional<'node' | 'browser' | 'universal'> platform;
+    std::optional<std::variant<'node', 'browser', 'universal'>> platform;
 };
 
 struct DataDirStatus {
     bool exists;
-    { env;
     bool exists;
     std::vector<std::string> missingKeys;
     bool hasAllKeys;
-    { settings;
     bool exists;
     std::vector<std::string> missingKeys;
     bool hasAllKeys;
@@ -45,11 +44,11 @@ std::future<RegistrySettings> getRegistrySettings();
 
 std::future<void> saveRegistrySettings(RegistrySettings settings);
 
-std::future<string | undefined> getEnvVar(const std::string& key);
+std::future<std::string> getEnvVar(const std::string& key);
 
 std::future<void> setEnvVar(const std::string& key, const std::string& value);
 
-std::future<string | undefined> getGitHubToken();
+std::future<std::string> getGitHubToken();
 
 std::future<void> setGitHubToken(const std::string& token);
 
@@ -109,7 +108,6 @@ std::vector<std::string> normalizePluginName(const std::string& pluginName);
  * @returns {Promise<string | null>} The repository URL for the plugin, or null if not found.
  * @throws {Error} If an error occurs while retrieving the repository URL.
  */
-std::future<string | null> getPluginRepository(const std::string& pluginName);
 
 /**
  * Check if a GitHub repository has a specific branch
@@ -124,10 +122,6 @@ std::future<string | null> getPluginRepository(const std::string& pluginName);
 std::future<bool> repoHasBranch(const std::string& repoUrl, const std::string& branchName);
 
 std::future<std::string> getBestBranch(const std::string& repoUrl);
-
-std::future<PluginMetadata | null> getPluginMetadata(const std::string& pluginName);
-
-std::future<string | null> getPluginVersion(const std::string& pluginName, std::optional<std::string> version);
 
 /**
  * Attempts to get package details from the registry
@@ -144,7 +138,6 @@ std::future<string | null> getPluginVersion(const std::string& pluginName, std::
 /**
  * Gets the best matching version of a plugin based on runtime version
  */
-std::future<string | null> getBestPluginVersion(const std::string& packageName, const std::string& runtimeVersion);
 
 std::future<DataDirStatus> checkDataDir();
 

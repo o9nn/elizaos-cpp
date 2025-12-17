@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -12,13 +12,6 @@ namespace elizaos {
 // Manual refinement required for production use
 
 enum HasType {
-  EMBED = "embed",
-  FILE = "file",
-  IMAGE = "image",
-  LINK = "link",
-  SOUND = "sound",
-  STICKER = "sticker",
-  VIDEO = "video",
 }
 
 } // namespace elizaos

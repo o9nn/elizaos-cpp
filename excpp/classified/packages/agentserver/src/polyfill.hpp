@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -16,6 +16,9 @@ namespace elizaos {
 // CRITICAL: Patch http module for ws compatibility - MUST be done before any ws imports
 
 // Mock window object for browser dependencies (only minimal ones needed)
+    void open();
+    void send();
+    void setRequestHeader();
 
 // Mock additional DOM APIs that plugins might need
 

@@ -1,11 +1,12 @@
-#include "providers/posthog.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "providers/posthog.hpp"
 
 namespace elizaos {
 
@@ -14,5 +15,5 @@ namespace elizaos {
 
 
 
-void Providers({ children: React.ReactNode } { children }); 
+void Providers(const std::any& { children }); 
 } // namespace elizaos

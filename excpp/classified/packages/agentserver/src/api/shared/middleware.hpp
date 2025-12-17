@@ -1,13 +1,13 @@
-#include "elizaos/core.hpp"
-#include "response-utils.hpp"
-#include "validation.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
+#include "response-utils.hpp"
+#include "validation.hpp"
 
 namespace elizaos {
 

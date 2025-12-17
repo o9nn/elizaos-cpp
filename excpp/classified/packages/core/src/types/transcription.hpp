@@ -1,11 +1,12 @@
-#include "service.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "service.hpp"
 
 namespace elizaos {
 
@@ -19,8 +20,7 @@ struct TranscriptionOptions {
     std::optional<std::string> model;
     std::optional<double> temperature;
     std::optional<std::string> prompt;
-    std::optional<'json' | 'text' | 'srt' | 'vtt' | 'verbose_json'> response_format;
-    std::optional<std::vector<('word' | 'segment')>> timestamp_granularities;
+    std::optional<std::variant<'json', 'text', 'srt', 'vtt', 'verbose_json'>> response_format;
     std::optional<bool> word_timestamps;
     std::optional<bool> segment_timestamps;
 };
@@ -66,27 +66,13 @@ struct TextToSpeechOptions {
     std::optional<std::string> voice;
     std::optional<std::string> model;
     std::optional<double> speed;
-    std::optional<'mp3' | 'wav' | 'flac' | 'aac'> format;
-    std::optional<'mp3' | 'opus' | 'aac' | 'flac'> response_format;
+    std::optional<std::variant<'mp3', 'wav', 'flac', 'aac'>> format;
+    std::optional<std::variant<'mp3', 'opus', 'aac', 'flac'>> response_format;
 };
 
 /**
  * Interface for audio transcription and speech services
  */
-
-  /**
-   * Transcribe audio file to text
-   * @param audioPath - Path to audio file or audio buffer
-   * @param options - Transcription options
-   * @returns Promise resolving to transcription result
-   */
-
-  /**
-   * Transcribe video file to text (extracts audio first)
-   * @param videoPath - Path to video file or video buffer
-   * @param options - Transcription options
-   * @returns Promise resolving to transcription result
-   */
 
   /**
    * Real-time speech to text from audio stream
@@ -112,10 +98,5 @@ struct TextToSpeechOptions {
    * @returns Promise resolving to array of available voices
    */
 
-  /**
-   * Detect language of audio file
-   * @param audioPath - Path to audio file or audio buffer
-   * @returns Promise resolving to detected language code
-   */
 
 } // namespace elizaos

@@ -1,13 +1,13 @@
-#include "loader.hpp"
-#include "ui/badge.hpp"
-#include "ui/table.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "loader.hpp"
+#include "ui/badge.hpp"
+#include "ui/table.hpp"
 
 namespace elizaos {
 

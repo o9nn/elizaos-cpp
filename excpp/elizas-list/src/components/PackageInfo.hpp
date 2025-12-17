@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -15,7 +16,7 @@ namespace elizaos {
 
 struct PackageInfoProps {
     std::string name;
-    'npm' | 'pypi' type;
+    std::variant<'npm', 'pypi'> type;
 };
 
 void PackageInfo(auto { name, PackageInfoProps type }); 

@@ -1,10 +1,12 @@
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -22,7 +24,7 @@ struct ServerHealthOptions {
     std::optional<double> pollInterval;
     std::optional<double> requestTimeout;
     std::optional<std::string> host;
-    std::optional<'http' | 'https'> protocol;
+    std::optional<std::variant<'http', 'https'>> protocol;
 };
 
 /**

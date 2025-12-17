@@ -1,12 +1,12 @@
-#include "alert-dialog.hpp"
-#include "button.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "alert-dialog.hpp"
+#include "button.hpp"
 
 namespace elizaos {
 

@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -12,6 +12,8 @@ namespace elizaos {
 // Manual refinement required for production use
 
 
+
+std::optional<std::string> tryLoadFile(const std::string& filePath);
 
 bool isAllStrings(const std::vector<unknown>& arr);
 

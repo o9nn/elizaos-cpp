@@ -1,12 +1,12 @@
-#include "AvatarImage.hpp"
-#include "LeaderboardPartners.module.css.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "AvatarImage.hpp"
+#include "LeaderboardPartners.module.css.hpp"
 
 namespace elizaos {
 

@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -13,12 +13,12 @@ namespace elizaos {
 
 
   class AgentServer {
-    constructor(runtime?: IAgentRuntime);
-    startAgent: (character: Character) => Promise<IAgentRuntime>;
-    stopAgent: (runtime: IAgentRuntime) => Promise<void>;
-    registerAgent: (runtime: IAgentRuntime) => void;
-    unregisterAgent: (agentId: string) => void;
-    initialize: (options: { dataDir?: string; postgresUrl?: string }) => Promise<void>;
+public:
+
+private:
+    typeof loadCharacterTryPath loadCharacterTryPath_;
+    typeof jsonToCharacter jsonToCharacter_;
+};
 
 
 } // namespace elizaos

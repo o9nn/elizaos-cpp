@@ -1,3 +1,10 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include "actions/getCategoriesList.action.hpp"
 #include "actions/getCategoriesWithMarketData.action.hpp"
 #include "actions/getHistoricalPrice.action.hpp"
@@ -7,13 +14,6 @@
 #include "actions/getTrendingSearch.action.hpp"
 #include "actions/getTrendingTokens.action.hpp"
 #include "services/coingecko.service.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 

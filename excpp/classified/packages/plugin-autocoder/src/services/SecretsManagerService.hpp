@@ -1,11 +1,13 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -14,20 +16,22 @@ namespace elizaos {
 
 
 
-class SecretsManagerService extends Service {
-  static serviceName: string = 'secrets-manager';
-  static serviceType: ServiceTypeName = ServiceType.UNKNOWN;
-  protected runtime: IAgentRuntime;
-  private secrets: Map<string, string> = new Map();
+class SecretsManagerService {
+public:
+    SecretsManagerService(IAgentRuntime runtime);
+    std::string capabilityDescription() const;
+    std::future<Service> start(IAgentRuntime runtime);
+    std::future<void> start();
+    std::future<void> stop();
+    void loadSecretsFromRuntime();
+    std::variant<Promise<string, null>> getSecret(const std::string& key);
+    std::future<void> setSecret(const std::string& key, const std::string& value);
+    std::future<bool> hasSecret(const std::string& key);
+    std::future<std::vector<std::string>> listSecretKeys();
 
-  constructor(runtime: IAgentRuntime) {
-    super();
-    this.runtime = runtime;
-  }
-
-    // Load existing secrets from runtime settings
-
-    // Load common API keys from runtime settings
+private:
+    IAgentRuntime runtime_;
+};
 
 
 } // namespace elizaos

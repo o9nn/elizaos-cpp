@@ -1,12 +1,12 @@
-#include "button.hpp"
-#include "token-deals-section.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "button.hpp"
+#include "token-deals-section.hpp"
 
 namespace elizaos {
 
@@ -16,7 +16,6 @@ namespace elizaos {
 
 
 struct DealsGridProps {
-    { filters;
     std::vector<std::string> chains;
     double minMarketCap;
     double maxMarketCap;
@@ -26,8 +25,8 @@ struct DealsGridProps {
 
 struct TokenGroup {
     std::string tokenId;
-    Token | null token;
-    TokenMarketData | null marketData;
+    std::optional<Token> token;
+    std::optional<TokenMarketData> marketData;
     std::vector<OTCConsignment> consignments;
 };
 

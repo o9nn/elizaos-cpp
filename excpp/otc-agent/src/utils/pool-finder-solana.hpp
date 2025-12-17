@@ -1,11 +1,13 @@
-#include "retry-cache.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "retry-cache.hpp"
 
 namespace elizaos {
 
@@ -25,16 +27,16 @@ bool isRateLimitError(unknown error);
 std::future<void> delay(double ms);
 
 struct SolanaPoolInfo {
-    "Raydium" | "Meteora" | "Orca" | "PumpSwap" protocol;
+    std::variant<"Raydium", "Meteora", "Orca", "PumpSwap"> protocol;
     std::string address;
     std::string tokenA;
     std::string tokenB;
     double liquidity;
     double tvlUsd;
     std::optional<double> priceUsd;
-    "SOL" | "USDC" baseToken;
-    std::optional<string; // SOL vault account (lamports)> solVault;
-    std::optional<string; // Token vault account (SPL tokens)> tokenVault;
+    std::variant<"SOL", "USDC"> baseToken;
+    std::optional<std::string> solVault;
+    std::optional<std::string> tokenVault;
 };
 
 // PumpSwap AMM Program (same for mainnet/devnet)
@@ -42,8 +44,6 @@ struct SolanaPoolInfo {
 // Mainnet Mints
 
 // Devnet Mints
-
-std::future<SolanaPoolInfo | null> findBestSolanaPool(const std::string& tokenMint, "mainnet" | "devnet" = "mainnet" cluster, std::optional<Connection> rpcConnection);
 
 // std::future<std::vector<SolanaPoolInfo>> findMeteoraPools(Connection //   connection, PublicKey
 // //   mint);

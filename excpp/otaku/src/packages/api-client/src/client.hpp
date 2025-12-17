@@ -1,3 +1,11 @@
+#pragma once
+#include <any>
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include "services/agents.hpp"
 #include "services/audio.hpp"
 #include "services/auth.hpp"
@@ -13,13 +21,6 @@
 #include "services/sessions.hpp"
 #include "services/system.hpp"
 #include "types/base.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -29,73 +30,15 @@ namespace elizaos {
 
 
 class ElizaClient {
-  public readonly agents: AgentsService;
-  public readonly messaging: MessagingService;
-  public readonly memory: MemoryService;
-  public readonly audio: AudioService;
-  public readonly media: MediaService;
-  public readonly server: ServerService;
-  public readonly system: SystemService;
-  public readonly sessions: SessionsService;
-  public readonly runs: RunsService;
-  public readonly entities: EntitiesService;
-  public readonly cdp: CdpService;
-  public readonly auth: AuthService;
-  public readonly jobs: JobsService;
-  public readonly gamification: GamificationService;
+public:
+    ElizaClient(ApiClientConfig config);
+    void setAuthToken(const std::string& token);
+    void clearAuthToken();
+    ElizaClient create(ApiClientConfig config);
 
-  private services: any[];
+private:
+    std::vector<std::any> services_;
+};
 
-  constructor(config: ApiClientConfig) {
-    // Initialize all services with the same config
-    this.agents = new AgentsService(config);
-    this.messaging = new MessagingService(config);
-    this.memory = new MemoryService(config);
-    this.audio = new AudioService(config);
-    this.media = new MediaService(config);
-    this.server = new ServerService(config);
-    this.system = new SystemService(config);
-    this.sessions = new SessionsService(config);
-    this.runs = new RunsService(config);
-    this.entities = new EntitiesService(config);
-    this.cdp = new CdpService(config);
-    this.auth = new AuthService(config);
-    this.jobs = new JobsService(config);
-    this.gamification = new GamificationService(config);
-    
-    // Keep track of all services for bulk operations
-    this.services = [
-      this.agents,
-      this.messaging,
-      this.memory,
-      this.audio,
-      this.media,
-      this.server,
-      this.system,
-      this.sessions,
-      this.runs,
-      this.entities,
-      this.cdp,
-      this.auth,
-      this.jobs,
-      this.gamification,
-    ];
-  }
-
-  /**
-   * Set authentication token for all API requests
-   * Call this after successful login to authenticate all subsequent requests
-   * 
-   * @param token JWT authentication token
-   */
-
-  /**
-   * Clear authentication token from all services
-   * Call this on logout or when token expires
-   */
-
-  /**
-   * Create a new ElizaClient instance
-   */
 
 } // namespace elizaos

@@ -1,13 +1,13 @@
-#include ".ml/anomaly-detection.hpp"
-#include "logger.hpp"
-#include "metrics.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".ml/anomaly-detection.hpp"
+#include "logger.hpp"
+#include "metrics.hpp"
 
 namespace elizaos {
 
@@ -17,26 +17,16 @@ namespace elizaos {
 
 
 class RealTimeMonitor {
-  private redis: Redis;
-  private anomalyDetector: AnomalyDetector;
-  private readonly alertThresholds: Record<string, number>;
+public:
+    RealTimeMonitor();
+    void startMonitoring();
+    void monitorMetrics();
+    void handleAnomalies(const std::vector<AnomalyResult>& anomalies);
+    void triggerAlerts(const std::vector<AnomalyResult>& anomalies);
 
-  constructor() {
-    this.redis = new Redis(process.env.REDIS_URL);
-    this.anomalyDetector = new AnomalyDetector();
-    this.alertThresholds = {
-      errorRate: 0.05,
-      latency: 1000,
-      userEngagement: 0.4
-    };
-  }
-
-    // Set up real-time monitoring streams
-
-    // Group anomalies by severity
-
-    // Store anomaly data for analysis
-
-    // Implement alert logic (e.g., Slack, email, PagerDuty)
-
+private:
+    Redis redis_;
+    AnomalyDetector anomalyDetector_;
+};
+ 
 } // namespace elizaos

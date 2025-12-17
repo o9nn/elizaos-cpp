@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -22,7 +22,6 @@ struct ModelInfo {
 
 struct OllamaRecommendations {
     bool success;
-    { system_info;
     double total_memory_gb;
     double total_memory_mb;
     double recommended_memory_mb;
@@ -35,7 +34,6 @@ struct OllamaRecommendations {
 
 struct OllamaModelSelectorProps {
     std::string value;
-    (model: string) => void onChange;
 };
 
         // If no value set, use the default model

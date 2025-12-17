@@ -1,10 +1,12 @@
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -16,26 +18,20 @@ namespace elizaos {
  * Information describing the target of a message.
  */
 struct TargetInfo {
-    string; // Platform identifier (e.g., 'discord', 'telegram', 'websocket-api') source;
-    std::optional<UUID; // Target room ID (platform-specific or runtime-specific)> roomId;
-    std::optional<string; // Platform-specific channel/chat ID> channelId;
-    std::optional<string; // Platform-specific server/guild ID> serverId;
-    std::optional<UUID; // Target user ID (for DMs)> entityId;
-    std::optional<string; // Platform-specific thread ID (e.g., Telegram topics)> threadId;
+    std::string source;
+    std::optional<UUID> roomId;
+    std::optional<std::string> channelId;
+    std::optional<std::string> serverId;
+    std::optional<UUID> entityId;
+    std::optional<std::string> threadId;
 };
 
 /**
  * Function signature for handlers responsible for sending messages to specific platforms.
  */
-using SendHandlerFunction = (
+using SendHandlerFunction = std::function<std::future<void>(IAgentRuntime, TargetInfo, Content)>;
 
 enum SOCKET_MESSAGE_TYPE {
-  ROOM_JOINING = 1,
-  SEND_MESSAGE = 2,
-  MESSAGE = 3,
-  ACK = 4,
-  THINKING = 5,
-  CONTROL = 6,
 }
 
 /**
@@ -44,8 +40,7 @@ enum SOCKET_MESSAGE_TYPE {
  */
 struct ControlMessage {
     'control' type;
-    { payload;
-    'disable_input' | 'enable_input' action;
+    std::variant<'disable_input', 'enable_input'> action;
     std::optional<std::string> target;
     UUID roomId;
 };

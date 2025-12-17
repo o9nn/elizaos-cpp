@@ -1,11 +1,11 @@
-#include ".utils/log.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".utils/log.hpp"
 
 namespace elizaos {
 
@@ -31,6 +31,6 @@ void convertTrajToActionDemo(const std::string& trajPath, const std::string& out
 /**
  * Main function for traj-to-demo conversion
  */
-void trajToDemo(const std::string& trajPath, string = './demos' outputDir, string = '' suffix, boolean = false overwrite, boolean = false includeUser);
+void trajToDemo(const std::string& trajPath, string = '::/demos' outputDir, string = '' suffix, boolean = false overwrite, boolean = false includeUser);
 
 } // namespace elizaos

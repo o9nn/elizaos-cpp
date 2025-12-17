@@ -1,11 +1,12 @@
-#include "agent-memory-edit-overlay.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "agent-memory-edit-overlay.hpp"
 
 namespace elizaos {
 
@@ -17,11 +18,10 @@ namespace elizaos {
 // Number of items to load per batch
 
 struct MemoryContent {
-    std::optional<boolean | string> thought;
+    std::optional<std::variant<bool, std::string>> thought;
     std::optional<std::string> channelType;
     std::optional<std::string> source;
     std::optional<std::string> text;
-    std::optional<{> metadata;
     std::optional<std::string> fileType;
     std::optional<std::string> title;
     std::optional<std::string> filename;
@@ -30,17 +30,12 @@ struct MemoryContent {
 };
 
 enum MemoryType {
-  all = 'all',
-  currentChat = 'currentChat',
-  messagesReceived = 'messagesReceived',
-  messagesSent = 'messagesSent',
-  facts = 'facts',
 }
 
 struct AgentMemoryViewerProps {
     UUID agentId;
     std::string agentName;
-    std::optional<UUID; // Renamed from roomId to channelId for clarity> channelId;
+    std::optional<UUID> channelId;
 };
 
 void AgentMemoryViewer(auto { agentId, auto agentName, AgentMemoryViewerProps channelId });

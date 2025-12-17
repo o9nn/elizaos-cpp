@@ -1,11 +1,11 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -25,6 +25,10 @@ namespace elizaos {
  * @type {string}
  */
 
+std::optional<std::string> getFirstAvailableField(Record<string obj, auto any>, const std::vector<std::string>& fields);
+
+std::optional<Content> extractReplyContent(Memory response, const std::vector<std::string>& replyFieldKeys);
+
 /**
  * Represents an action that allows the agent to reply to the current conversation with a generated message.
  *
@@ -39,9 +43,7 @@ namespace elizaos {
  * @property {ActionExample[][]} examples - An array of example scenarios for the action.
  */
 
-        await callback(reply);
-
     // Only generate response using LLM if no suitable response was found
 
-    await callback(responseContent);
+
 } // namespace elizaos

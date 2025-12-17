@@ -1,12 +1,12 @@
-#include ".services/pluginRegistryService.js.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".services/pluginRegistryService.js.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -28,6 +28,7 @@ namespace elizaos {
 /**
  * Extract search query from user message using improved patterns
  */
+std::optional<std::string> extractSearchQuery(const std::string& text);
 
 /**
  * Helper action to get plugin details

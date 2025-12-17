@@ -1,14 +1,15 @@
-#include ".classes/emoji.hpp"
-#include ".common-components/tooltip/tooltip.hpp"
-#include ".utils.hpp"
-#include "server-emoji.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include ".classes/emoji.hpp"
+#include ".common-components/tooltip/tooltip.hpp"
+#include ".utils.hpp"
+#include "server-emoji.hpp"
 
 namespace elizaos {
 

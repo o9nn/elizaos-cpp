@@ -1,11 +1,12 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -22,38 +23,8 @@ namespace elizaos {
  */
 Uint8Array decodeBase58(const std::string& str);
 
-    // Create a consistent room ID for the twitter feed
-    //this.feedRoomId = createUniqueUuid(runtime, 'twitter-feed');
+    void processMessage();
+    std::future<bool> syncChats();
 
-    // is this message new or old
-    // have we seen it before
-    /*
-
-    // Check if we already have this tweet
-    */
-    /*
-
-          // name: name,
-          // userName: userName,
-
-    */
-
-        /*
-        */
-        // POST https://api.auto.fun/api/chat/HN8GGgzBFvuePPL3DGPg7uuq2dVgLApnNcW4pxY9a11o/1k
-        // {message: "Hello world", media: null}
-
-    // First refresh wallet data
-
-    // Replace the cache lookup with direct wallet balance check
-
-    // context/value
-    /*
-    */
-    //console.log('tokenAccounts', tokenAccounts.value)
-
-    // success: true, messages: [{
-    //   timestamp, displayName (null), profileImage (null), address
-    // }]
 
 } // namespace elizaos

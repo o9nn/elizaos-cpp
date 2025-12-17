@@ -1,16 +1,17 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <variant>
+#include <vector>
 #include "....utils/entity.hpp"
 #include "...plugin-cdp/services/cdp.service.hpp"
 #include "...plugin-cdp/types.hpp"
 #include ".services/relay.service.hpp"
 #include ".utils/token-resolver.hpp"
 #include "elizaos/core.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -28,7 +29,7 @@ struct QuoteParams {
     std::optional<std::string> toCurrency;
     std::string amount;
     std::optional<std::string> recipient;
-    std::optional<"EXACT_INPUT" | "EXACT_OUTPUT"> tradeType;
+    std::optional<std::variant<"EXACT_INPUT", "EXACT_OUTPUT">> tradeType;
 };
 
 /**

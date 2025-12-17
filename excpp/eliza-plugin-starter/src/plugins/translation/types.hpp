@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -14,7 +14,6 @@ namespace elizaos {
 
 
 struct TranslationConfig {
-    { provider;
     std::string apiKey;
     std::optional<std::string> baseUrl;
     std::optional<std::string> model;
@@ -50,7 +49,6 @@ struct TranslationServiceResponse {
     bool success;
     std::optional<std::string> translation;
     std::optional<std::string> error;
-    std::optional<{> metadata;
     std::string model;
     double confidence;
     double tokensUsed;

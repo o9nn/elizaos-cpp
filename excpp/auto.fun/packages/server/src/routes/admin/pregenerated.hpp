@@ -1,13 +1,13 @@
-#include "..db.hpp"
-#include "..generation.hpp"
-#include "..util.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "..db.hpp"
+#include "..generation.hpp"
+#include "..util.hpp"
 
 namespace elizaos {
 
@@ -30,7 +30,6 @@ namespace elizaos {
     // Trigger the generation function (can run in background)
     // Consider adding a count parameter if needed
     // Assuming checkAndReplenishTokens handles generation logic appropriately
-          await checkAndReplenishTokens(); // Use existing function for consistency
 
 // --- PUT /api/admin/pregenerated/:id - Edit a Token ---
 

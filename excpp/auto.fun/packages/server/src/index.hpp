@@ -1,3 +1,10 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include "allowedOrigins.hpp"
 #include "auth/auth.hpp"
 #include "cron.hpp"
@@ -20,13 +27,6 @@
 #include "routes/webhooks.hpp"
 #include "util.hpp"
 #include "websocket-manager.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -41,7 +41,7 @@ namespace elizaos {
  // Import the new router
 
 struct AppVariables {
-    std::optional<{ publicKey: string } | null> user;
+};
 
 // Setup Solana connection
 
@@ -56,9 +56,7 @@ struct AppVariables {
 
 // Mount this route directly on the main app, outside /api if desired
 
-  // Run tasks asynchronously (fire and forget). Do NOT await here.
   // The lock mechanism inside runCronTasks will prevent overlaps.
-  await runCronTasks();
 
   // Return immediately to the cron runner
 

@@ -1,11 +1,12 @@
-#include ".monitoring/logger.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".monitoring/logger.hpp"
 
 namespace elizaos {
 
@@ -15,28 +16,14 @@ namespace elizaos {
 
 
 class TimeSeriesDecomposer {
-  private readonly stl: STL;
-  private readonly wavelet: WaveletTransform;
-
-  constructor() {
-    this.stl = new STL({
-      periodicity: 24 * 7, // Weekly seasonality
-      robustness: true,
-      numberOfInnerLoops: 2,
-      numberOfOuterLoops: 1,
-      seasonalDegree: 1,
-      trendDegree: 1,
-      lowpassDegree: 1
-    });
-    
-    this.wavelet = new WaveletTransform('db4'); // Daubechies 4 wavelet
-  }
-
-      // Multiple decomposition methods for ensemble analysis
-
-      // Combine results and analyze components
-
-    // Multiple changepoint detection methods
-
-
+public:
+    TimeSeriesDecomposer();
+    std::future<DecompositionResult> decompose(const std::vector<double>& timeSeries, DecompositionConfig config);
+    std::future<STLResult> performSTLDecomposition(const std::vector<double>& timeSeries, DecompositionConfig config);
+    std::future<WaveletResult> performWaveletDecomposition(const std::vector<double>& timeSeries, DecompositionConfig config);
+    std::future<EMDResult> performEMD(const std::vector<double>& timeSeries);
+    std::future<std::vector<Changepoint>> detectChangepoints(const std::vector<double>& timeSeries, DecompositionComponents components);
+    std::future<ComponentForecasts> generateComponentForecasts(DecompositionComponents components, DecompositionConfig config);
+};
+ 
 } // namespace elizaos

@@ -1,10 +1,11 @@
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -15,8 +16,8 @@ namespace elizaos {
 
 struct ModalState {
     bool isVisible;
-    ReactNode | null content;
-    string | null id;
+    std::optional<ReactNode> content;
+    std::optional<std::string> id;
     std::optional<ModalOptions> options;
 };
 
@@ -28,12 +29,10 @@ struct ModalOptions {
 };
 
 struct ModalContextType {
-    (content: ReactNode, id?: string, options?: ModalOptions) => void showModal;
-    (id?: string) => void hideModal;
     bool isVisible;
 };
 
-void ModalProvider({ children: ReactNode } { children });
+void ModalProvider(const std::any& { children });
 
 // Custom hook to use the modal
 void useModal();

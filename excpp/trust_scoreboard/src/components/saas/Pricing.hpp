@@ -1,12 +1,12 @@
-#include "GetStarted.hpp"
-#include "Pricing.module.css.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "GetStarted.hpp"
+#include "Pricing.module.css.hpp"
 
 namespace elizaos {
 

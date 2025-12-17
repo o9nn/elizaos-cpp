@@ -1,12 +1,13 @@
-#include "....data/users.hpp"
-#include "styles.module.css.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "....data/users.hpp"
+#include "styles.module.css.hpp"
 
 namespace elizaos {
 
@@ -15,11 +16,11 @@ namespace elizaos {
 
 
 
-void TagIcon(auto { label, { label: string; color: string } color });
+void TagIcon(auto { label, const std::any& color });
 
 std::string getShortLabel(const std::string& label);
 
-void ShowcaseCardTag({ tags: TagType[] } { tags });
+void ShowcaseCardTag(const std::any& { tags });
 
 
 } // namespace elizaos

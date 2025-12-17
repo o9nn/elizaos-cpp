@@ -1,10 +1,11 @@
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -17,15 +18,12 @@ namespace elizaos {
  */
 
 struct AuthenticationPanelProps {
-    std::optional<any; // IAgentRuntime type> runtime;
-    std::optional<(status: AuthStatus) => void> onAuthChange;
+    std::optional<std::any> runtime;
 };
 
 struct ProviderCardProps {
     std::string provider;
     ApiKeyValidationResult result;
-    (provider: string) => void onTest;
-    (provider: string, key: string) => void onValidate;
     bool testing;
 };
 
@@ -42,27 +40,22 @@ struct ProviderCardProps {
 
       // In real implementation, use AuthenticationService
       // const authService = new AuthenticationService(runtime);
-      // const status = await authService.getAuthStatus();
 
       // For now, use mock data
 
       // In real implementation:
       // const authService = new AuthenticationService(runtime);
-      // const result = await authService.testApiFunctionality(provider);
 
       // Mock implementation
 
       // Refresh status after test
-      await loadAuthStatus();
 
       // In real implementation:
       // const authService = new AuthenticationService(runtime);
-      // const result = await authService.validateApiKey(provider, apiKey);
 
       // Mock implementation
 
       // Refresh status after validation
-      await loadAuthStatus();
 
 
 } // namespace elizaos

@@ -1,14 +1,15 @@
-#include "agent-action-viewer.hpp"
-#include "agent-log-viewer.hpp"
-#include "agent-memory-viewer.hpp"
-#include "ui/skeleton.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "agent-action-viewer.hpp"
+#include "agent-log-viewer.hpp"
+#include "agent-memory-viewer.hpp"
+#include "ui/skeleton.hpp"
 
 namespace elizaos {
 

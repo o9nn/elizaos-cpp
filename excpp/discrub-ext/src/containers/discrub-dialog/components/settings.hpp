@@ -1,13 +1,13 @@
-#include "...enum/discrub-setting.hpp"
-#include "...features/app/app-types.hpp"
-#include "config.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "...enum/discrub-setting.hpp"
+#include "...features/app/app-types.hpp"
+#include "config.hpp"
 
 namespace elizaos {
 

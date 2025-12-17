@@ -1,11 +1,11 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -26,8 +26,6 @@ namespace elizaos {
 //       _runtime: IAgentRuntime,
 //       _message: Memory,
 //       _state: State | undefined
-//     ): Promise<ProviderResult> => {
-//       return {
 //         text: 'I am a provider',
 //         values: {},
 //         data: {},

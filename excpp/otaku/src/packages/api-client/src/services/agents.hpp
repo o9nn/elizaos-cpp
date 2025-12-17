@@ -1,13 +1,14 @@
-#include ".lib/base-client.hpp"
-#include ".types/agents.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".lib/base-client.hpp"
+#include ".types/agents.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -16,65 +17,30 @@ namespace elizaos {
 
 
 
-class AgentsService extends BaseApiClient {
-  /**
-   * List all agents with minimal details
-   */
-  async listAgents(): Promise<{ agents: Agent[] }> {
-    return this.get<{ agents: Agent[] }>('/api/agents');
-  }
+class AgentsService {
+public:
+    Promise< listAgents();
+    std::future<Agent> getAgent(UUID agentId);
+    std::future<Agent> createAgent(AgentCreateParams params);
+    std::future<Agent> updateAgent(UUID agentId, AgentUpdateParams params);
+    Promise< deleteAgent(UUID agentId);
+    Promise< startAgent(UUID agentId);
+    Promise< stopAgent(UUID agentId);
+    Promise< getWorlds();
+    Promise< addAgentToWorld(UUID agentId, UUID worldId);
+    std::future<AgentWorldSettings> updateAgentWorldSettings(UUID agentId, UUID worldId, Record<string settings, auto any>);
+    Promise< getAgentPanels(UUID agentId);
+    std::future<std::vector<AgentLog>> getAgentLogs(UUID agentId, std::optional<AgentLogsParams> params);
+    Promise< deleteAgentLog(UUID agentId, UUID logId);
+    Promise< getAgentsForServer(UUID serverId);
+    Promise< addAgentToServer(UUID serverId, UUID agentId);
+    Promise< removeAgentFromServer(UUID serverId, UUID agentId);
+    Promise< getServersForAgent(UUID agentId);
 
-  /**
-   * Get specific agent details
-   */
-
-  /**
-   * Create a new agent
-   */
-
-  /**
-   * Update an existing agent
-   */
-
-  /**
-   * Delete an agent
-   */
-
-  /**
-   * Start an existing agent
-   */
-
-  /**
-   * Stop a running agent
-   */
-
-  /**
-   * Get all available worlds
-   */
-
-  /**
-   * Add agent to a world
-   */
-
-  /**
-   * Update agent's world settings
-   */
-
-  /**
-   * Get agent's plugin panels
-   */
-
-  /**
-   * Get agent logs
-   */
-
-  /**
-   * Delete a specific log entry
-   */
-
-  /**
-   * Get agents associated with a server
-   */
+private:
+    bool success_;
+    bool success_;
+};
 
 
 } // namespace elizaos

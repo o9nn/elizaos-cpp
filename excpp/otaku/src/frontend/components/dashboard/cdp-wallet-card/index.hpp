@@ -1,3 +1,11 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <variant>
+#include <vector>
 #include "...constants/chains.hpp"
 #include "...contexts/ModalContext.hpp"
 #include "...lib/elizaClient.hpp"
@@ -10,13 +18,6 @@
 #include "SendModal.hpp"
 #include "SwapModal.hpp"
 #include "TokenDetailModal.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -30,12 +31,12 @@ struct Token {
     std::string name;
     std::string balance;
     std::string balanceFormatted;
-    number | null usdValue;
-    number | null usdPrice;
-    string | null contractAddress;
+    std::optional<double> usdValue;
+    std::optional<double> usdPrice;
+    std::optional<std::string> contractAddress;
     std::string chain;
     double decimals;
-    std::optional<string; // Token icon URL from CoinGecko> icon;
+    std::optional<std::string> icon;
 };
 
 struct NFT {
@@ -47,10 +48,9 @@ struct NFT {
     std::string image;
     std::string contractName;
     std::string tokenType;
-    std::optional<string; // For ERC1155> balance;
-    std::optional<Array<{> attributes;
+    std::optional<std::string> balance;
     std::string trait_type;
-    string | number value;
+    std::variant<std::string, double> value;
 };
 
 struct Transaction {
@@ -64,23 +64,18 @@ struct Transaction {
     double timestamp;
     std::string blockNum;
     std::string explorerUrl;
-    'sent' | 'received' direction;
-    std::optional<string | null> icon;
-    std::optional<string | null> contractAddress;
+    std::variant<'sent', 'received'> direction;
+    std::optional<std::optional<std::string>> icon;
+    std::optional<std::optional<std::string>> contractAddress;
 };
 
 struct CDPWalletCardProps {
     std::string userId;
     std::optional<std::string> walletAddress;
-    std::optional<(balance: number) => void> onBalanceChange;
-    std::optional<() => void; // Optional callback to close parent container (Sheet/Sidebar)> onActionClick;
 };
 
 // Expose refresh methods via ref
 struct CDPWalletCardRef {
-    () => Promise<void> refreshTokens;
-    () => Promise<void> refreshNFTs;
-    () => Promise<void> refreshAll;
 };
 
   // Format address for display (shortened)
@@ -97,8 +92,6 @@ struct CDPWalletCardRef {
       // If chain not found, put it at the end
 
   // Expose refresh methods via ref
-      await syncTokens();
-      await syncNfts();
 
   // Calculate total USD value whenever tokens change
 
@@ -159,10 +152,6 @@ struct CDPWalletCardRef {
   // Load data based on active tab
 
   // Refresh all data using sync APIs with concurrent chain-by-chain updates
-    
-        await syncTokens();
-        await syncNfts();
-        await fetchHistory();
 
   // Format date
 

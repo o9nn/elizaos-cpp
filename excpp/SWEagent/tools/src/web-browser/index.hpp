@@ -1,10 +1,12 @@
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -18,36 +20,31 @@ namespace elizaos {
  */
 
 class BrowserManager {
-  private browser?: Browser;
-  private page?: Page;
-  private screenshotDir = '/tmp/browser-screenshots';
-  private isHeadless = process.env.WEB_BROWSER_HEADLESS !== '0';
-
-  constructor() {
-    // Ensure screenshot directory exists
-    if (!fs.existsSync(this.screenshotDir)) {
-      fs.mkdirSync(this.screenshotDir, { recursive: true });
-    }
-  }
-
-    // Handle local files
-
-    // Convert to base64 for markdown display
-
-    // Set up console listener
+public:
+    BrowserManager();
+    std::future<void> init();
+    std::future<void> openSite(const std::string& url);
+    std::future<void> closeSite();
+    std::future<void> screenshot(std::optional<std::string> filename);
+    std::future<void> click(double x, double y, const std::variant<'left', 'right' = 'left'>& button);
+    std::future<void> type(const std::string& text);
+    std::future<void> scroll(double deltaX, double deltaY);
+    std::future<void> executeScript(const std::string& script);
+    std::future<void> getConsoleOutput();
+};
 
 // Web server for browser control (simplified)
 class BrowserServer {
-  private app: express.Application;
-  private browserManager: BrowserManager;
-  private port: number;
+public:
+    BrowserServer(number = 8009 port);
+    void setupRoutes();
+    void start();
 
-  constructor(port: number = 8009) {
-    this.port = port;
-    this.app = express();
-    this.browserManager = new BrowserManager();
-    this.setupRoutes();
-  }
+private:
+    express::Application app_;
+    BrowserManager browserManager_;
+    double port_;
+};
 
 // CLI if run directly
 

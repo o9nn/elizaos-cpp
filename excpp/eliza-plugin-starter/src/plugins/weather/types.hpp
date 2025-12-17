@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -14,9 +15,8 @@ namespace elizaos {
 
 
 struct WeatherConfig {
-    { provider;
     std::string apiKey;
-    std::optional<'metric' | 'imperial'> units;
+    std::optional<std::variant<'metric', 'imperial'>> units;
     std::optional<std::string> baseUrl;
 };
 
@@ -26,7 +26,7 @@ struct WeatherData {
     double humidity;
     double windSpeed;
     std::string description;
-    'metric' | 'imperial' units;
+    std::variant<'metric', 'imperial'> units;
 };
 
 struct WeatherEvalResponse {

@@ -1,10 +1,12 @@
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -17,13 +19,13 @@ namespace elizaos {
 struct RequestError {
     std::string message;
     std::optional<std::string> code;
-    std::optional<{> response;
     double status;
 };
 
 // Helper function to get content type from file extension
+std::optional<std::string> getContentTypeFromExtension(const std::string& filename);
 
-std::future<void> GET(NextRequest request, { params: Promise<{ fileId: string }> } context);
+std::future<void> GET(NextRequest request, const std::any& context);
 
 // Handle CORS preflight requests
 std::future<void> OPTIONS();

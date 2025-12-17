@@ -1,11 +1,12 @@
-#include ".types.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include ".types.hpp"
 
 namespace elizaos {
 
@@ -30,7 +31,7 @@ unknown shortenStrings(unknown data, number = 30 maxLength);
 /**
  * Save predictions from agent run result
  */
-void savePredictions(string | path.ParsedPath trajDir, const std::string& instanceId, AgentRunResult result);
+void savePredictions(const std::variant<std::string, path::ParsedPath>& trajDir, const std::string& instanceId, AgentRunResult result);
 
 /**
  * Check if a patch is promising (not empty/trivial)

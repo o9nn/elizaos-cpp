@@ -1,10 +1,12 @@
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -22,7 +24,6 @@ struct PriceCache {
 /**
  * Get cached price from runtime storage
  */
-std::future<PriceCache | null> getCachedPrice(const std::string& key);
 
 /**
  * Set cached price in runtime storage
@@ -42,6 +43,6 @@ std::future<double> getSolPriceUsd();
 /**
  * Format token amount with proper display (K, M, B suffixes)
  */
-std::string formatTokenAmount(string | number amount);
+std::string formatTokenAmount(const std::variant<std::string, double>& amount);
 
 } // namespace elizaos

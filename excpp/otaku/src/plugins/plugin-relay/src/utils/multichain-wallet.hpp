@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -22,42 +23,19 @@ namespace elizaos {
  * Dynamically creates wallet clients for each chain as needed
  */
 class MultiChainWallet {
-  private account: Account;
-  private currentChainId: number;
-  private walletClients: Map<number, WalletClient> = new Map();
-  private defaultRpcUrl?: string;
+public:
+    MultiChainWallet(Account account, std::optional<std::string> defaultRpcUrl, number = base::id initialChainId);
+    WalletClient getWalletClient(double chainId);
+    std::future<double> getChainId();
+    std::future<void> switchChain(double chainId);
+    std::future<std::string> address();
+    WalletClient getCurrentWalletClient();
+    Account getAccount();
 
-  constructor(account: Account, defaultRpcUrl?: string, initialChainId: number = base.id) {
-    this.account = account;
-    this.currentChainId = initialChainId;
-    this.defaultRpcUrl = defaultRpcUrl;
-  }
-
-  /**
-   * Get or create a wallet client for the specified chain
-   */
-
-      // Use chain-specific RPC URL, not the default one
-
-  /**
-   * Get the current chain ID
-   */
-
-  /**
-   * Switch to a different chain
-   */
-
-  /**
-   * Get the wallet address
-   */
-
-  /**
-   * Get the current wallet client for the active chain
-   */
-
-  /**
-   * Get the underlying account
-   */
+private:
+    Account account_;
+    double currentChainId_;
+};
 
 /**
  * Create a Relay-compatible wallet adapter from an account

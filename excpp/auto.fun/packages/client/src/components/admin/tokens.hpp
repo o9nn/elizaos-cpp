@@ -1,13 +1,15 @@
-#include ".bonding-curve-bar.hpp"
-#include ".button.hpp"
-#include ".ui/table.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include ".bonding-curve-bar.hpp"
+#include ".button.hpp"
+#include ".ui/table.hpp"
 
 namespace elizaos {
 
@@ -38,6 +40,6 @@ struct SocialLinks {
     std::string farcaster;
 };
 
-void AdminTokenDetails({ address: string } { address });
+void AdminTokenDetails(const std::any& { address });
 
 } // namespace elizaos

@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -16,7 +16,6 @@ namespace elizaos {
  */
 struct AgentStartPayload {
     std::optional<std::string> characterPath;
-    std::optional<std::unordered_map<std::string, unknown>> characterJson;
 };
 
 

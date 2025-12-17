@@ -1,14 +1,14 @@
-#include "...components/before-and-after-fields.hpp"
-#include "...components/prefilter-user.hpp"
-#include "has-type.hpp"
-#include "message-contains.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "...components/before-and-after-fields.hpp"
+#include "...components/prefilter-user.hpp"
+#include "has-type.hpp"
+#include "message-contains.hpp"
 
 namespace elizaos {
 

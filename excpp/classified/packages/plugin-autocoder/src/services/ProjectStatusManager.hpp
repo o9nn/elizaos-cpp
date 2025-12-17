@@ -1,11 +1,13 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -20,106 +22,37 @@ namespace elizaos {
  * Typed EventEmitter for project status events
  */
 struct ProjectStatusEvents {
-    (data: ProjectStatusUpdate) => void update;
-    (data: ProjectStatusUpdate) => void complete;
-    (data: ProjectStatusUpdate) => void error;
 };
 
 /**
  * Extended EventEmitter with typed events
  */
-class TypedEventEmitter extends EventEmitter {
-  on<U extends keyof ProjectStatusEvents>(event: U, listener: ProjectStatusEvents[U]): this {
-    return super.on(event as string, listener);
-  }
+class TypedEventEmitter {
+public:
+};
 
 /**
  * Service to manage and broadcast project status updates
  */
-class ProjectStatusManager extends Service {
-  static serviceName: string = 'project-status-manager';
-  static serviceType: ServiceTypeName = 'project-status' as ServiceTypeName;
-
-  get capabilityDescription(): string {
-    return 'Manages project status updates and real-time notifications for code generation projects';
-  }
-
-  /**
-   * Static factory method required by Service base class
-   */
-
-    // Listen for runtime events if available
-      // We'll emit our own events
-
-  /**
-   * Create a new project and start tracking it
-   */
-
-  /**
-   * Update project status
-   */
-
-    // Merge updates
-
-    // Calculate progress based on status if not provided
-          // Keep current progress
-
-    // If completed or failed, move to history
-
-  /**
-   * Update project step (for detailed progress tracking)
-   */
-
-  /**
-   * Update file generation status
-   */
-
-    // Update progress based on file completion
-
-  /**
-   * Update validation results
-   */
-
-  /**
-   * Get current project status
-   */
-
-  /**
-   * Get all active projects
-   */
-
-  /**
-   * Get project history
-   */
-
-  /**
-   * Subscribe to project updates
-   */
-
-  /**
-   * Unsubscribe from project updates
-   */
-
-  /**
-   * Move project to history
-   */
-
-    // Keep only last 100 entries
-
-    // Remove from active projects after a delay
-
-  /**
-   * Broadcast project update
-   */
-    // Emit to local listeners
-
-    // Emit to runtime if available
-
-    // If the runtime has WebSocket support, emit through that
-
-  /**
-   * Get status summary for all projects
-   */
+class ProjectStatusManager {
+public:
+    ProjectStatusManager(IAgentRuntime protected runtime);
+    std::string capabilityDescription() const;
+    std::future<Service> start(IAgentRuntime runtime);
+    std::future<void> start();
+    std::future<void> stop();
+    std::string createProject(const std::string& name, ProjectType type);
+    void updateStatus(const std::string& projectId, const std::optional<ProjectStatusUpdate>& updates);
+    void updateStep(const std::string& projectId, const std::string& step, std::optional<std::string> message);
+    void updateFileStatus(const std::string& projectId, const std::string& filePath, const std::variant<'pending', 'generating', 'complete', 'error'>& status);
+    void updateValidation(const std::string& projectId, const std::variant<'lint', 'typeCheck', 'tests', 'build'>& type, bool passed, std::optional<std::vector<std::string>> errors);
+    ProjectStatusUpdate getProject(const std::string& projectId);
+    std::vector<ProjectStatusUpdate> getActiveProjects();
+    std::vector<ProjectHistory> getHistory(number = 50 limit);
+    void moveToHistory(ProjectStatusUpdate project);
+    void broadcastUpdate(ProjectStatusUpdate project);
+     getStatusSummary();
+};
 
 
 } // namespace elizaos

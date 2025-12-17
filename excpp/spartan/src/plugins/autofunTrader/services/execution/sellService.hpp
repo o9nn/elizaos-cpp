@@ -1,3 +1,12 @@
+#pragma once
+#include <functional>
+#include <future>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <variant>
+#include <vector>
 #include "..idl/autofun.json.hpp"
 #include "..types.hpp"
 #include "..types/autofun.hpp"
@@ -11,13 +20,6 @@
 #include ".validation/TokenValidationService.hpp"
 #include ".walletService.hpp"
 #include "elizaos/core.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -30,10 +32,10 @@ namespace elizaos {
 struct ISellSignalOutput {
     std::string recommended_sell;
     std::string recommend_sell_address;
-    std::optional<string; // Or reason_for_selling, adjust based on actual LLM output> reason;
-    std::optional<string; // Alternative for reason> reason_for_selling;
-    string | number sell_amount;
-    std::optional<number | string> slippage;
+    std::optional<std::string> reason;
+    std::optional<std::string> reason_for_selling;
+    std::variant<std::string, double> sell_amount;
+    std::optional<std::variant<double, std::string>> slippage;
 };
 
 // Move TradeExecutionResult to the top level and it
@@ -70,60 +72,18 @@ double calculateAmountOutSell(double reserveLamport, double amount, double _toke
 
   // Apply the fee instruction to the transaction
 
-class SellService extends BaseTradeService {
-  private pendingSells: { [tokenAddress: string]: BN } = {};
-
-  // https://github.com/elizaOS/auto.fun/blob/7b9c4e6a38ff93c882a87198388e5381a3d40a7a/packages/client/src/utils/swapUtils.ts#L37
-  // https://github.com/elizaOS/auto.fun/blob/7b9c4e6a38ff93c882a87198388e5381a3d40a7a/packages/client/src/hooks/use-swap.ts#L3
-    // Replace the cache lookup with direct wallet balance check
-    //console.log('walletData', walletData)
-    //console.log('tokenData', tokenData)
-
-    // autofun program autoUmixaMaYKFjexMpQuBpNYntgbkzCo2b1ZqUaAZ5
-
-    // t.id for the ca
-
-    // inject into prompt
-
-    // get balance from plugin-solana
-
-    // Get sell recommendation from model
-
-    // Validate token address format
-
-    // Await the getWallet() call
-
-    //console.log('token', token)
-
-    /*
-
-    */
-
-    //.times(10 ** tokenBalance.decimals)
-
-      /*
-      */
-      /*
-      */
-
-    // for anchor
-
-    // Use the imported IDL for typing, cast to any to bypass potential strict type mismatch
-
-    // is this right?
-
-    // Get fresh blockhash with processed commitment for speed
-
-    // Send transaction
-
-        // Add validation for slippage with warning and enforce stricter limits
-        /*
-
-        */
-
-        // why are we getting this after the trade execution?
-        // for the price? shouldn't we already have it?
-        //console.log('sell marketData', marketData)
+class SellService {
+public:
+    SellService(IAgentRuntime runtime, WalletService walletService, DataService dataService, AnalyticsService analyticsService, TradeMemoryService tradeMemoryService);
+    std::future<void> initialize();
+    std::future<void> stop();
+    std::future<TradeExecutionResult> generateSignal();
+    std::future<void> updateExpectedOutAmount(std::optional<SellSignalMessage & { expectedOutAmount: string; slippage: number }> signal);
+    void autofunSell(auto signal, auto slippageBps);
+    void if(auto !signal);
+    void if(auto !tokenBalance);
+    void if(auto result.success);
+    void catch(auto error);
 
 
 } // namespace elizaos

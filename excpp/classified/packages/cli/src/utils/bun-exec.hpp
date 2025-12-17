@@ -1,11 +1,13 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -24,45 +26,32 @@ std::unordered_map<std::string, std::string> ensureBunInPath(Record<string env, 
 struct ExecResult {
     std::string stdout;
     std::string stderr;
-    number | null exitCode;
+    std::optional<double> exitCode;
     bool success;
 };
 
 struct BunExecOptions {
     std::optional<std::string> cwd;
-    std::optional<std::unordered_map<std::string, std::string>> env;
-    std::optional<'pipe' | 'inherit' | 'ignore'> stdio;
-    std::optional<'pipe' | 'inherit'> stdout;
-    std::optional<'pipe' | 'inherit'> stderr;
-    std::optional<number; // Add timeout support> timeout;
-    std::optional<AbortSignal; // Add signal support for cancellation> signal;
+    std::optional<std::variant<'pipe', 'inherit', 'ignore'>> stdio;
+    std::optional<std::variant<'pipe', 'inherit'>> stdout;
+    std::optional<std::variant<'pipe', 'inherit'>> stderr;
+    std::optional<double> timeout;
+    std::optional<AbortSignal> signal;
 };
 
 // Define proper error types for better error handling
-class ProcessExecutionError extends Error {
-  constructor(
-    message: string,
-    public readonly exitCode: number | null,
-    public readonly stderr: string,
-    public readonly command: string
-  ) {
-    super(message);
-    this.name = 'ProcessExecutionError';
-  }
+class ProcessExecutionError {
+public:
+    ProcessExecutionError(const std::string& message, const std::optional<double>& public readonly exitCode, const std::string& public readonly stderr, const std::string& public readonly command);
+};
 
-class ProcessTimeoutError extends Error {
-  constructor(
-    message: string,
-    public readonly command: string,
-    public readonly timeout: number
-  ) {
-    super(message);
-    this.name = 'ProcessTimeoutError';
-  }
+class ProcessTimeoutError {
+public:
+    ProcessTimeoutError(const std::string& message, const std::string& public readonly command, double public readonly timeout);
+};
 
 /**
  * Properly escape shell arguments to prevent command injection
- * Uses JSON.stringify for robust escaping of special characters
  *
  * @param arg - The argument to escape
  * @returns The escaped argument
@@ -79,7 +68,7 @@ std::string escapeShellArg(const std::string& arg);
 /**
  * Helper to read a stream into a string
  */
-std::future<std::string> readStreamSafe(ReadableStream | number | null | undefined stream, const std::string& streamName);
+std::future<std::string> readStreamSafe(const std::variant<ReadableStream, double>& stream, const std::string& streamName);
 
 /**
  * Execute a command using Bun's shell functionality with enhanced security and error handling
@@ -96,20 +85,15 @@ std::future<std::string> readStreamSafe(ReadableStream | number | null | undefin
  * @example
  * ```typescript
  * // Simple command execution
- * const result = await bunExec('echo', ['hello world']);
- * console.log(result.stdout); // "hello world"
  *
  * // With timeout
  * try {
- *   await bunExec('long-running-command', [], { timeout: 5000 });
  * } catch (error) {
  *   if (error instanceof ProcessTimeoutError) {
- *     console.log('Command timed out');
  *   }
  * }
  *
  * // With custom environment
- * await bunExec('npm', ['install'], {
  *   cwd: '/path/to/project',
  *   env: { NODE_ENV: 'production' }
  * });
@@ -126,16 +110,12 @@ std::future<ExecResult> bunExec(const std::string& command, const std::vector<st
  * @param options - Execution options
  * @returns Promise resolving to object with stdout property
  *
- * @throws {ProcessExecutionError} When the command fails (exitCode !== 0)
  *
  * @example
  * ```typescript
  * // Get command output
- * const { stdout } = await bunExecSimple('git', ['rev-parse', 'HEAD']);
- * console.log('Current commit:', stdout);
  *
  * // Ignore errors
- * const result = await bunExecSimple('which', ['optional-tool'], { stdio: 'ignore' });
  * ```
  */
 
@@ -151,10 +131,8 @@ std::future<ExecResult> bunExec(const std::string& command, const std::vector<st
  * @example
  * ```typescript
  * // Run interactive command
- * await bunExecInherit('npm', ['install']);
  *
  * // Run command that needs terminal colors
- * await bunExecInherit('npm', ['run', 'test']);
  * ```
  */
 std::future<ExecResult> bunExecInherit(const std::string& command, const std::vector<string[] =>& args, BunExecOptions = {} options);
@@ -169,15 +147,10 @@ std::future<ExecResult> bunExecInherit(const std::string& command, const std::ve
  * @example
  * ```typescript
  * // Check if git is installed
- * if (await commandExists('git')) {
- *   console.log('Git is available');
  * } else {
- *   console.log('Git is not installed');
  * }
  *
  * // Check for optional tools
- * const hasDocker = await commandExists('docker');
- * const hasNode = await commandExists('node');
  * ```
  */
 std::future<bool> commandExists(const std::string& command);

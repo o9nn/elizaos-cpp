@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -20,14 +21,16 @@ namespace elizaos {
 
 struct ScreenObject {
     std::string label;
-    { x: number; y: number; width: number; height: number } bbox;
+    double y;
+    double width;
+};
 
 struct ScreenActionStep {
-    "move" | "click" | "type" action;
+    std::variant<"move", "click", "type"> action;
     std::optional<double> x;
     std::optional<double> y;
     std::optional<std::string> text;
-    std::optional<"left" | "right" | "middle"> button;
+    std::optional<std::variant<"left", "right", "middle">> button;
 };
 
 struct ScreenDescription {
@@ -48,7 +51,7 @@ struct ScreenContext {
 };
 
 struct ChangeDetectionConfig {
-    number; // Percentage of pixels that must change to trigger AI processing threshold;
+    double threshold;
     bool enabled;
 };
 

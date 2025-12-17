@@ -1,11 +1,12 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -15,53 +16,26 @@ namespace elizaos {
 
 
 class OCRService {
-  private worker: Tesseract.Worker | null = null;
-  private initialized = false;
-  private initPromise: Promise<void> | null = null;
-
-  async initialize(): Promise<void> {
-    if (this.initialized) {
-      return;
-    }
-
-    // Prevent multiple initializations
-    if (this.initPromise) {
-      return this.initPromise;
-    }
-
-    this.initPromise = this._initialize();
-    return this.initPromise;
-  }
-
-    // Create worker
-
-    // Preprocess image for better OCR
-
-    // Perform OCR
-
-    // Convert Tesseract result to our format
-
-    // Basic preprocessing to improve OCR accuracy
-
-    // Convert Tesseract blocks to our format
-
-          // Add words if available
-
-    // Group blocks by vertical position
-
-    // Check if rows form a table structure
-
-      // Simple heuristic: if we have multiple aligned rows, it might be a table
-
-        // Update bounding box
-
-    // Look for label-value pairs
-
-      // Check if blocks are on same line and close together
-
-    // Look for bullet points or numbered lists
-
-      // Calculate bounding box for entire list
+public:
+    std::future<void> initialize();
+    std::future<void> _initialize();
+    std::future<OCRResult> extractText(Buffer imageBuffer);
+    std::future<OCRResult> extractFromTile(ScreenTile tile);
+    std::future<OCRResult> extractFromImage(Buffer imageBuffer);
+    std::future<Buffer> preprocessImage(Buffer imageBuffer);
+    OCRResult convertTesseractResult(Tesseract::RecognizeResult result);
+    Promise< extractStructuredData(Buffer imageBuffer);
+    Array< detectTables(OCRResult ocrResult);
+    void for(auto const block of ocrResult.blocks);
+    void if(auto sortedRows.length >= 2);
+    Array< detectForms(OCRResult ocrResult);
+    void for(auto let i = 0; i < ocrResult.blocks.length - 1; i++);
+    Array< detectLists(OCRResult ocrResult);
+    void for(auto const block of ocrResult.blocks);
+    void if(auto listItems.length > 0);
+    bool isInitialized();
+    std::future<void> dispose();
+};
 
 
 } // namespace elizaos

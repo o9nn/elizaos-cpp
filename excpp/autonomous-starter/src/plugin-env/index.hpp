@@ -1,14 +1,14 @@
-#include "actions/generateEnvVar.hpp"
-#include "actions/setEnvVar.hpp"
-#include "providers/envStatus.hpp"
-#include "service.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "actions/generateEnvVar.hpp"
+#include "actions/setEnvVar.hpp"
+#include "providers/envStatus.hpp"
+#include "service.hpp"
 
 namespace elizaos {
 

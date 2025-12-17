@@ -1,12 +1,13 @@
-#include "...classes/user.hpp"
-#include "...types/message-call-object.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "...classes/user.hpp"
+#include "...types/message-call-object.hpp"
 
 namespace elizaos {
 

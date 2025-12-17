@@ -1,14 +1,14 @@
-#include ".init.hpp"
-#include "elizaos/core.hpp"
-#include "plugins.hpp"
-#include "plugins/team-coordinator/services/TeamUpdateTrackerService.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".init.hpp"
+#include "elizaos/core.hpp"
+#include "plugins.hpp"
+#include "plugins/team-coordinator/services/TeamUpdateTrackerService.hpp"
 
 namespace elizaos {
 
@@ -242,7 +242,6 @@ namespace elizaos {
     // ],
 
 /**
- * Configuration object for onboarding process.
  * Contains settings for list of projects, team members, and contact info.
  *
  * @typedef {Object} OnboardingConfig
@@ -282,7 +281,6 @@ namespace elizaos {
 
 // 
     // First initialize the character with config
-    await initCharacter({ runtime, config: config });
 
     // Then register all plugins with the character
     // This ensures plugins are registered after character initialization

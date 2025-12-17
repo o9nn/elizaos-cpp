@@ -1,11 +1,13 @@
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -14,39 +16,21 @@ namespace elizaos {
 
 
 
-class TradeStrategyService extends Service {
-  private isRunning = false;
-
-  static serviceType = 'TRADER_STRATEGY';
-  capabilityDescription = 'The agent is able to use trade strategies';
-
-  // config (key/string)
-
-  constructor(public runtime: IAgentRuntime) {
-    super(runtime); // sets this.runtime
-    this.strategyRegistry = {};
-  }
-
-  /*
-  */
-    // add to registry
-
-  // why is there here, why even bother stopping here
-  /*
-    // register for token price changes on this chain
-  */
-
-  /**
-   * Start the scenario service with the given runtime.
-   * @param {IAgentRuntime} runtime - The agent runtime
-   * @returns {Promise<ScenarioService>} - The started scenario service
-   */
-  /**
-   * Stops the Scenario service associated with the given runtime.
-   *
-   * @param {IAgentRuntime} runtime The runtime to stop the service for.
-   * @throws {Error} When the Scenario service is not found.
-   */
+class TradeStrategyService {
+public:
+    TradeStrategyService(IAgentRuntime public runtime);
+    void register_strategy(const std::any& strategy);
+    void listActiveStrategies();
+    void interested(auto chain, auto token, auto callback);
+    void open_position(auto stratHndl, auto pos);
+    void update_position(auto stratHndl, auto posHndl, auto pos);
+    void close_position(auto stratHndl, auto posHndl, auto closeInfo);
+    void start(IAgentRuntime runtime);
+    void stop(IAgentRuntime runtime);
+    std::future<void> start();
+    std::future<void> stop();
+    bool isServiceRunning();
+};
 
 
 } // namespace elizaos

@@ -1,11 +1,13 @@
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -28,13 +30,10 @@ namespace elizaos {
 
   // Register runtime events
     // TODO: Save settings config to runtime
-    await initializeAllSystems(runtime, [params.server], config);
 
   // when booting up into a server we're in, fire a connected event
-    await initializeAllSystems(runtime, [params.server], config);
 
   // Register runtime events
-      await initializeOnboarding(runtime, params.world, config);
 
 /**
  * Initializes all systems for the given servers with the provided runtime, servers, and onboarding configuration.

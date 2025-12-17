@@ -1,10 +1,11 @@
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -35,10 +36,10 @@ namespace elizaos {
 // Define TokenRecommendation schema
 
 // Types derived from schemas
-using TokenPerformance = z.infer<typeof tokenPerformanceSchema>;
-using RecommenderMetrics = z.infer<typeof recommenderMetricsSchema>;
-using Position = z.infer<typeof positionSchema>;
-using TokenRecommendation = z.infer<typeof tokenRecommendationSchema>;
+using TokenPerformance = z::infer<typeof tokenPerformanceSchema>;
+using RecommenderMetrics = z::infer<typeof recommenderMetricsSchema>;
+using Position = z::infer<typeof positionSchema>;
+using TokenRecommendation = z::infer<typeof tokenRecommendationSchema>;
 
 /**
  * Transform functions to convert database objects to schema-validated objects
@@ -53,7 +54,7 @@ Position transformPosition(const std::any& dbPos);
 /**
  * Type definition for MessageRecommendation based on the schema recommendationSchema
  */
-using MessageRecommendation = z.infer<typeof recommendationSchema>;
+using MessageRecommendation = z::infer<typeof recommendationSchema>;
 
 /**
  * Schema for extracting trading recommendations from conversational text, capturing the key components of who made the recommendation, what asset was discussed, what action was recommended, and how strongly it was recommended

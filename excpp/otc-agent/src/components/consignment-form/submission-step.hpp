@@ -1,11 +1,12 @@
-#include ".button.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include ".button.hpp"
 
 namespace elizaos {
 
@@ -17,7 +18,7 @@ namespace elizaos {
 struct StepState {
     std::string id;
     std::string label;
-    "pending" | "processing" | "complete" | "error" status;
+    std::variant<"pending", "processing", "complete", "error"> status;
     std::optional<std::string> statusMessage;
     std::optional<std::string> errorMessage;
     std::optional<std::string> txHash;
@@ -25,7 +26,6 @@ struct StepState {
 };
 
 struct SubmissionStepProps {
-    { formData;
     std::string tokenId;
     std::string amount;
     bool isNegotiable;
@@ -43,17 +43,12 @@ struct SubmissionStepProps {
     double maxTimeToExecuteSeconds;
     std::string consignerAddress;
     std::string chain;
-    "evm" | "solana" | null activeFamily;
+    std::variant<"evm", "solana"> activeFamily;
     double selectedTokenDecimals;
     std::string selectedTokenSymbol;
     std::optional<std::string> selectedTokenName;
     std::optional<std::string> selectedTokenAddress;
-    std::optional<string | null> selectedTokenLogoUrl;
-    () => Promise<string> onApproveToken;
-    ( onCreateConsignment;
-    std::optional<(txHash: string) => void> onTxSubmitted;
-    (txHash: string) => string getBlockExplorerUrl;
-    () => void onBack;
+    std::optional<std::optional<std::string>> selectedTokenLogoUrl;
 };
 
 

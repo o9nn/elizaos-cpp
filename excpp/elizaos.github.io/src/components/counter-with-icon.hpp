@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -16,7 +17,7 @@ namespace elizaos {
 struct CounterWithIconProps {
     LucideIcon icon;
     std::string label;
-    number | string value;
+    std::variant<double, std::string> value;
     std::optional<std::string> iconClassName;
     std::optional<std::string> className;
 };

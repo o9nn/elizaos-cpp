@@ -1,15 +1,17 @@
-#include ".types.hpp"
-#include "elizaos/core.hpp"
-#include "execution/buyService.hpp"
-#include "execution/sellService.hpp"
-#include "execution/tradeExecutionService.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".types.hpp"
+#include "elizaos/core.hpp"
+#include "execution/buyService.hpp"
+#include "execution/sellService.hpp"
+#include "execution/tradeExecutionService.hpp"
 
 namespace elizaos {
 
@@ -18,29 +20,15 @@ namespace elizaos {
 
 
 
-class TaskService extends TradeExecutionService {
-  private scheduledTasks: NodeJS.Timeout[] = [];
-
-  constructor(
-    protected override runtime: IAgentRuntime,
-    private buyService: BuyService,
-    private sellService: SellService
-  ) {
-    // Get protected services from buyService via public methods
-    super(
-      runtime,
-      buyService.getWalletService(),
-      buyService.getDataService(),
-      buyService.getAnalyticsService()
-    );
-  }
-
-    // Clear all scheduled tasks
-
-      // Fetch expected receive amount (USDC) for this sell
-        // Get a quote for the expected amount we'll receive in USDC
-
-      // Calculate slippage using parent class method
+class TaskService {
+public:
+    TaskService(IAgentRuntime protected override runtime, BuyService private buyService, SellService private sellService);
+    std::future<void> registerTasks();
+    std::future<void> stop();
+    void registerSellTasks();
+    void createSellTask(SellSignalMessage signal);
+    void executeSellTask(const std::any& options);
+};
 
 
 } // namespace elizaos

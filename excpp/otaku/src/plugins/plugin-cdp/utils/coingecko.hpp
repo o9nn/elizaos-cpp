@@ -1,11 +1,12 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -50,8 +51,7 @@ struct TokenMetadata {
 struct CoinGeckoTokenResponse {
     std::optional<std::string> symbol;
     std::optional<std::string> name;
-    std::optional<std::unordered_map<std::string, std::string>> platforms;
-    std::optional<std::unordered_map<std::string, { decimal_place?: number }>> detail_platforms;
+};
 
 struct CoinGeckoSearchCoin {
     std::string id;
@@ -64,7 +64,6 @@ struct CoinGeckoSearchResponse {
 };
 
 struct CoinGeckoCoinDetailResponse {
-    std::optional<std::unordered_map<std::string, std::string>> platforms;
 };
 
 /**
@@ -108,7 +107,6 @@ bool isCacheValid(const std::string& key);
  * @param network - Network name (e.g., "base", "ethereum")
  * @returns Token metadata or null if not found
  */
-std::future<TokenMetadata | null> getTokenMetadata(const std::string& address, const std::string& network);
 
 /**
  * Resolve token symbol to address for a given network
@@ -118,7 +116,6 @@ std::future<TokenMetadata | null> getTokenMetadata(const std::string& address, c
  * @param network - Network name
  * @returns Token address or null if not found
  */
-std::future<string | null> resolveTokenSymbol(const std::string& symbol, const std::string& network);
 
 /**
  * Resolve token to address

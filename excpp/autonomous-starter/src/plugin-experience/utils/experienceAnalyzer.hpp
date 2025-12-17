@@ -1,11 +1,12 @@
-#include ".types.js.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".types.js.hpp"
 
 namespace elizaos {
 
@@ -35,6 +36,10 @@ struct FailurePattern {
     std::vector<std::string> relatedIds;
     std::vector<std::string> insights;
 };
+
+std::optional<FailurePattern> detectFailurePattern(const std::optional<Experience>& partial, const std::vector<Experience>& experiences);
+
+std::future<std::vector> detectPatterns(const std::vector<Experience>& experiences);>
 
   // Group experiences by action
 

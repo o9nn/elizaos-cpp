@@ -1,13 +1,13 @@
-#include "..components/eliza/CreateSection.hpp"
-#include "..components/eliza/PreviewCard.hpp"
-#include "index.module.css.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "..components/eliza/CreateSection.hpp"
+#include "..components/eliza/PreviewCard.hpp"
+#include "index.module.css.hpp"
 
 namespace elizaos {
 

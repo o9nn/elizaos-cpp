@@ -1,11 +1,11 @@
-#include ".services/TauriService.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".services/TauriService.hpp"
 
 namespace elizaos {
 
@@ -16,9 +16,8 @@ namespace elizaos {
 
 struct UseTauriChatReturn {
     bool isConnected;
-    (content: string) => Promise<void> sendMessage;
     std::vector<TauriMessage> messages;
-    string | null error;
+    std::optional<std::string> error;
     bool isLoading;
 };
 

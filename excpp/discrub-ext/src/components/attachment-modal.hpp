@@ -1,16 +1,16 @@
-#include ".app/guards.hpp"
-#include ".classes/attachment.hpp"
-#include ".common-components/tooltip/tooltip.hpp"
-#include ".features/app/app-types.hpp"
-#include ".utils.hpp"
-#include "modal-debug-message.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".app/guards.hpp"
+#include ".classes/attachment.hpp"
+#include ".common-components/tooltip/tooltip.hpp"
+#include ".features/app/app-types.hpp"
+#include ".utils.hpp"
+#include "modal-debug-message.hpp"
 
 namespace elizaos {
 

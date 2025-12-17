@@ -1,13 +1,13 @@
-#include ".providers/quote.hpp"
-#include ".services/priceFeed.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".providers/quote.hpp"
+#include ".services/priceFeed.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -35,14 +35,9 @@ void parseNegotiationRequest(const std::string& text); {
 
   // Payment currency
 
-std::future<string | null> extractTokenContext(const std::string& text);
-
-std::future<OTCConsignment | null> findSuitableConsignment(const std::string& tokenId, const std::string& tokenAmount, double discountBps, double lockupDays);
-
 // Worst possible deal defaults (lowest discount, longest lockup)
 
     // Check for quote cancellation
-        await deleteUserQuote(entityId);
 
     // Parse the request(s)
 

@@ -1,10 +1,11 @@
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -18,61 +19,22 @@ namespace elizaos {
  * Uses x402-axios to automatically handle 402 Payment Required responses
  */
 class X402PaymentClient {
-  private axiosInstance: AxiosInstance;
-  private config: GatewayConfig;
-  private logger: Console;
-  private walletAddress?: string;
+public:
+    X402PaymentClient(GatewayConfig config, Console = console logger);
+    AxiosInstance createServerClient(const std::string& serverId, std::optional<std::string> serverWallet);
+    this::axiosInstance;
 
-  constructor(config: GatewayConfig, logger: Console = console) {
-    this.config = config;
-    this.logger = logger;
+    try createServerClient(auto config.serverId, auto config.serverWallet);
+    void catch(const std::any& error);
+    void catch(const std::any& error);
+    std::string getWalletAddress();
+    bool isEnabled();
 
-    // Create base axios instance
-    this.axiosInstance = axios.create({
-      timeout: 30000,
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
+private:
+    AxiosInstance axiosInstance_;
+    GatewayConfig config_;
+    Console logger_;
+};
 
-    // If outbound wallet is configured, wrap with payment interceptor
-    if (config.payment?.outboundWallet) {
-      try {
-        const account = privateKeyToAccount(config.payment.outboundWallet as `0x${string}`);
-        this.walletAddress = account.address;
-        this.axiosInstance = withPaymentInterceptor(this.axiosInstance, account);
-        this.logger.info(`X402 payment client initialized with wallet: ${this.walletAddress}`);
-      } catch (error) {
-        this.logger.error(`Failed to initialize x402 payment client: ${error}`);
-        throw error;
-      }
-    }
-  }
-
-  /**
-   * Create a payment-enabled HTTP client for a specific server
-   * Supports server-specific wallet override
-   */
-    // If server has its own wallet, create a new client
-
-    // Otherwise, use the global payment client
-
-  /**
-   * Make an HTTP request with automatic x402 payment handling
-   */
-
-  /**
-   * Forward a request with payment headers (passthrough mode)
-   * Inbound payment headers are forwarded to downstream API
-   */
-    // Merge inbound payment headers with request headers
-
-  /**
-   * Get wallet address being used for payments
-   */
-
-  /**
-   * Check if payment client is enabled
-   */
 
 } // namespace elizaos

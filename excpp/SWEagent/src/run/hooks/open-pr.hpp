@@ -1,15 +1,17 @@
-#include "..environment/swe-env.hpp"
-#include "..types.hpp"
-#include "..utils/github.hpp"
-#include "..utils/log.hpp"
-#include "types.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "..environment/swe-env.hpp"
+#include "..types.hpp"
+#include "..utils/github.hpp"
+#include "..utils/log.hpp"
+#include "types.hpp"
 
 namespace elizaos {
 
@@ -48,6 +50,8 @@ struct GitHubIssue {
     bool locked;
 };
 
+std::future<void> openPR(std::optional<std::any> params);
+
 /**
  * This hook opens a PR if the issue is solved and the user has enabled the option
  */
@@ -55,21 +59,12 @@ struct ProblemStatementWithGithubUrl {
     std::string githubUrl;
 };
 
-class OpenPRHook extends AbstractRunHook {
-  private config: OpenPRConfig;
-  private env?: SWEEnv;
-  private token: string = '';
-  private problemStatement?: ProblemStatementWithGithubUrl;
-
-  constructor(config: OpenPRConfig = { skipIfCommitsReferenceIssue: true }) {
-    super();
-    this.config = config;
-  }
-
-        // Map trajectory to local TrajectoryStep type
-      // Don't propagate the error - handle it gracefully
-
-      // Continue anyway - we can't check for existing commits but that shouldn't stop PR creation
+class OpenPRHook {
+public:
+    OpenPRHook(OpenPRConfig = { skipIfCommitsReferenceIssue: true } config);
+    void onInit(const std::any& run);
+    std::future<void> onInstanceCompleted(const std::any& params);
+    std::future<bool> shouldOpenPR(AgentRunResult result);
 
 
 } // namespace elizaos

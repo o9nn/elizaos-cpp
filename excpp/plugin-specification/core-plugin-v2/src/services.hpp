@@ -1,12 +1,12 @@
-#include "elizaos/core.hpp"
-#include "types.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
+#include "types.hpp"
 
 namespace elizaos {
 
@@ -21,7 +21,6 @@ namespace elizaos {
  */
 class ServiceBuilder<TService extends Service = Service> extends coreServiceBuilder {
   constructor(serviceType: ServiceTypeName | string) {
-    super(serviceType)
     //this.serviceType = serviceType;
     this.description = '';
   }

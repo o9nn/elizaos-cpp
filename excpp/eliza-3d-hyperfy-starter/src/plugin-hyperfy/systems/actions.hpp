@@ -1,11 +1,12 @@
-#include ".hyperfy/src/core/systems/System.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".hyperfy/src/core/systems/System.hpp"
 
 namespace elizaos {
 
@@ -14,16 +15,27 @@ namespace elizaos {
 
 
 
-class AgentActions extends System {
-  private nodes: ActionNode[] = []
-  private currentNode: ActionNode | null = null;
-  constructor(world: any) {
-    super(world);
-    this.nodes = [];
-  }
+class AgentActions {
+public:
+    AgentActions(const std::any& world);
+    void register(ActionNode node);
+    void unregister(ActionNode node);
+    std::vector<ActionNode> getNearby(std::optional<double> maxDistance);
+    void performAction(std::optional<std::string> entityID);
+    void releaseAction();
+    void init();
+    void start();
+    void preTick();
+    void preFixedUpdate();
+    void fixedUpdate();
+    void postFixedUpdate();
+    void preUpdate();
+    void update();
+    void postUpdate();
+    void lateUpdate();
+    void postLateUpdate();
+    void commit();
+    void postTick();
+};
 
-      // If no distance provided, return all unfinished nodes
-
-  // Framework stubs
-  // init() {}
 } // namespace elizaos

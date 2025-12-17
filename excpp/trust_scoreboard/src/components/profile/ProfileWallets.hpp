@@ -1,11 +1,11 @@
-#include "ProfileWallets.module.css.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "ProfileWallets.module.css.hpp"
 
 namespace elizaos {
 
@@ -17,9 +17,6 @@ namespace elizaos {
 struct WalletDisplayProps {
     std::optional<double> truncateLength;
 };
-
-        await disconnect();
-        await connect();
 
 
 } // namespace elizaos

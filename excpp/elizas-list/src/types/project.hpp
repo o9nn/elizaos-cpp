@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -18,17 +18,14 @@ struct Project {
     std::string projectUrl;
     std::string github;
     std::string image;
-    { author;
     std::string name;
     std::string github;
     std::optional<std::string> twitter;
-    { donation;
     std::string transactionHash;
     std::string amount;
     std::string date;
     std::vector<std::string> tags;
     std::string addedOn;
-    std::optional<{> metrics;
     double stars;
     double forks;
 };
@@ -37,8 +34,7 @@ struct Collection {
     std::string id;
     std::string name;
     std::string description;
-    string[]; // Project IDs projects;
-    { curator;
+    std::vector<std::string> projects;
     std::string name;
     std::string github;
     bool featured;

@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -20,21 +21,9 @@ namespace elizaos {
 // Export service type constant
 
 enum ExperienceType {
-  SUCCESS = "success", // Agent accomplished something
-  FAILURE = "failure", // Agent failed at something
-  DISCOVERY = "discovery", // Agent discovered new information
-  CORRECTION = "correction", // Agent corrected a mistake
-  LEARNING = "learning", // Agent learned something new
-  HYPOTHESIS = "hypothesis", // Agent formed a hypothesis
-  VALIDATION = "validation", // Agent validated a hypothesis
-  WARNING = "warning", // Agent encountered a warning/limitation
 }
 
 enum OutcomeType {
-  POSITIVE = "positive",
-  NEGATIVE = "negative",
-  NEUTRAL = "neutral",
-  MIXED = "mixed",
 }
 
 struct Experience {
@@ -42,34 +31,33 @@ struct Experience {
     UUID agentId;
     ExperienceType type;
     OutcomeType outcome;
-    string; // What was happening context;
-    string; // What the agent tried to do action;
-    string; // What actually happened result;
-    string; // What was learned learning;
-    string[]; // Tags for categorization tags;
-    string; // Domain of experience (e.g., 'shell', 'coding', 'system') domain;
-    std::optional<UUID[]; // Links to related experiences> relatedExperiences;
-    std::optional<UUID; // If this experience updates/replaces another> supersedes;
-    number; // 0-1, how confident the agent is in this learning confidence;
-    number; // 0-1, how important this experience is importance;
+    std::string context;
+    std::string action;
+    std::string result;
+    std::string learning;
+    std::vector<std::string> tags;
+    std::string domain;
+    std::optional<std::vector<UUID>> relatedExperiences;
+    std::optional<UUID> supersedes;
+    double confidence;
+    double importance;
     double createdAt;
     double updatedAt;
     std::optional<double> lastAccessedAt;
     double accessCount;
-    std::optional<string; // What the agent previously believed> previousBelief;
-    std::optional<string; // The corrected understanding> correctedBelief;
-    std::optional<number[]; // For semantic search> embedding;
-    std::optional<UUID[]; // Related memory IDs> memoryIds;
+    std::optional<std::string> previousBelief;
+    std::optional<std::string> correctedBelief;
+    std::optional<std::vector<double>> embedding;
+    std::optional<std::vector<UUID>> memoryIds;
 };
 
 struct ExperienceQuery {
-    std::optional<std::vector<ExperienceType | ExperienceType>> type;
-    std::optional<std::vector<OutcomeType | OutcomeType>> outcome;
-    std::optional<std::vector<string | string>> domain;
+    std::optional<std::variant<ExperienceType, std::vector<ExperienceType>>> type;
+    std::optional<std::variant<OutcomeType, std::vector<OutcomeType>>> outcome;
+    std::optional<std::variant<std::string, std::vector<std::string>>> domain;
     std::optional<std::vector<std::string>> tags;
     std::optional<double> minImportance;
     std::optional<double> minConfidence;
-    std::optional<{> timeRange;
     std::optional<double> start;
     std::optional<double> end;
     std::optional<double> limit;
@@ -77,18 +65,17 @@ struct ExperienceQuery {
 };
 
 struct ExperienceAnalysis {
-    std::optional<string; // Detected pattern> pattern;
-    std::optional<number; // How often this occurs> frequency;
-    std::optional<number; // How reliable this knowledge is> reliability;
-    std::optional<string[]; // Alternative approaches discovered> alternatives;
-    std::optional<string[]; // Recommendations based on experience> recommendations;
+    std::optional<std::string> pattern;
+    std::optional<double> frequency;
+    std::optional<double> reliability;
+    std::optional<std::vector<std::string>> alternatives;
+    std::optional<std::vector<std::string>> recommendations;
 };
 
 struct ExperienceEvent {
     UUID experienceId;
-    "created" | "accessed" | "updated" | "superseded" eventType;
+    std::variant<"created", "accessed", "updated", "superseded"> eventType;
     double timestamp;
-    std::optional<std::unordered_map<std::string, std::any>> metadata;
 };
 
 

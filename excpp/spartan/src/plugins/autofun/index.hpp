@@ -1,12 +1,12 @@
-#include "elizaos/core.hpp"
-#include "providers/autofun.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
+#include "providers/autofun.hpp"
 
 namespace elizaos {
 
@@ -28,10 +28,8 @@ namespace elizaos {
         // FIXME: maybe a max retry?
 
     /*
-    await registerTasks(runtime);
 
     //const res = autofunProvider.get(runtime, {}, {})
-    //console.log('autofunProvider', res)
 
     // check for cmc key, if have then register provider
 

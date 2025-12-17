@@ -1,11 +1,11 @@
-#include "notification-item.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "notification-item.hpp"
 
 namespace elizaos {
 
@@ -19,8 +19,7 @@ struct MobileNotificationsProps {
 };
 
 struct SwipeableWrapperProps {
-    React.ReactNode children;
-    () => void onDelete;
+    ReactNode children;
 };
 
 void SwipeableWrapper(auto { children, SwipeableWrapperProps onDelete });

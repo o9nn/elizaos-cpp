@@ -1,12 +1,12 @@
-#include "elizaos/adapter-postgres.hpp"
-#include "elizaos/adapter-sqlite.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/adapter-postgres.hpp"
+#include "elizaos/adapter-sqlite.hpp"
 
 namespace elizaos {
 

@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -14,8 +14,7 @@ namespace elizaos {
 
 
 struct ProjectModalProps {
-    Project | null project;
-    () => void onClose;
+    std::optional<Project> project;
 };
 
 void ProjectModal(auto { project, ProjectModalProps onClose }); 

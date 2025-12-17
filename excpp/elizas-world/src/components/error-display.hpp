@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -14,7 +15,7 @@ namespace elizaos {
 
 
 struct ErrorDisplayProps {
-    Error | unknown error;
+    std::variant<Error, unknown> error;
 };
 
 void ErrorDisplay(ErrorDisplayProps { error }); 

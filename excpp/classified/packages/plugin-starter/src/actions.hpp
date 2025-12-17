@@ -1,11 +1,11 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -36,7 +36,6 @@ namespace elizaos {
 //       _runtime: IAgentRuntime,
 //       _message: Memory,
 //       _state: State | undefined
-//     ): Promise<boolean> => {
 //       // Always valid
 //       return true;
 //     },
@@ -48,7 +47,6 @@ namespace elizaos {
 //       _options: any,
 //       callback?: HandlerCallback,
 //       _responses?: Memory[]
-//     ): Promise<ActionResult> => {
 //       try {
 //         logger.info('Handling HELLO_WORLD action');
 
@@ -61,11 +59,9 @@ namespace elizaos {
 
 //         // Call back with the hello world message if callback is provided
 //         if (callback) {
-//           await callback(responseContent);
 //         }
 
 //         // Return ActionResult
-//         return {
 //           text: 'hello world!',
 //           success: true,
 //           data: {
@@ -75,7 +71,6 @@ namespace elizaos {
 //         };
 //       } catch (error) {
 //         logger.error('Error in HELLO_WORLD action:', error);
-//         return {
 //           success: false,
 //           error: error instanceof Error ? error : new Error(String(error)),
 //         };

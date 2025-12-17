@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -16,38 +16,15 @@ namespace elizaos {
 // Socket message types (must match server's SOCKET_MESSAGE_TYPE enum)
 
 class SocketManager {
-  private socket: Socket | null = null;
-  private userId: string | null = null;
-  private activeChannels: Set<string> = new Set();
-
-  connect(userId: string) {
-    if (this.socket?.connected) {
-      console.log('Socket already connected');
-      return this.socket;
-    }
-    
-    this.userId = userId;
-    this.socket = io(window.location.origin + '/', {
-      autoConnect: true,
-      reconnection: true,
-      reconnectionDelay: 1000,
-      reconnectionAttempts: 5,
-    });
-
-    this.socket.on('connect', () => {
-      console.log(' Connected to Eliza server');
-    });
-
-    this.socket.on('disconnect', (reason) => {
-      console.log(' Disconnected from Eliza server:', reason);
-    });
-
-    this.socket.on('connect_error', (error) => {
-      console.error('Connection error:', error);
-    });
-
-    return this.socket;
-  }
+public:
+    void connect(const std::string& userId);
+    void joinChannel(const std::string& channelId, const std::string& serverId, std::optional<Record<string> metadata, auto any>);
+    void leaveChannel(const std::string& channelId);
+    void sendMessage(const std::string& channelId, const std::string& message, const std::string& serverId, std::optional<Record<string> metadata, auto any>);
+    void if(auto !this.socket);
+    void disconnect();
+    bool isConnected();
+};
 
 
 } // namespace elizaos

@@ -1,11 +1,12 @@
-#include "logger.js.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "logger.js.hpp"
 
 namespace elizaos {
 
@@ -15,31 +16,16 @@ namespace elizaos {
 
 
 class PlaywrightInstaller {
-  private logger: Logger;
-  private isInstalling = false;
-  private installPromise: Promise<void> | null = null;
+public:
+    PlaywrightInstaller(Logger logger);
+    bool isPlaywrightInstalled();
+    std::future<void> installPlaywright();
+    std::future<void> ensurePlaywrightInstalled();
+    bool isReady();
 
-  constructor(logger: Logger) {
-    this.logger = logger;
-  }
+private:
+    Logger logger_;
+};
 
-  /**
-   * Check if Playwright browsers are installed
-   */
-      // Check if chromium executable exists
-
-      // Check for chromium directory
-
-  /**
-   * Install Playwright browsers
-   */
-
-  /**
-   * Ensure Playwright is installed, installing if necessary
-   */
-
-  /**
-   * Check if Playwright is ready (installed or being installed)
-   */
 
 } // namespace elizaos

@@ -1,3 +1,10 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include "...classes/channel.hpp"
 #include "...common-components/date-time-picker/date-time-picker.hpp"
 #include "...common-components/multi-value-select/multi-value-select.hpp"
@@ -9,13 +16,6 @@
 #include "...enum/message-type.hpp"
 #include "...features/message/message-types.hpp"
 #include "...utils.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 

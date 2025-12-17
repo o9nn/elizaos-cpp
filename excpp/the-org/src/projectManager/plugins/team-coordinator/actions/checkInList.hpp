@@ -1,11 +1,11 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -19,8 +19,6 @@ std::string formatSchedule(CheckInSchedule schedule);
       // Fetch all check-in schedules
 
       // Format the schedules into a readable message
-
-      await callback(content, []);
 
 
 } // namespace elizaos

@@ -1,11 +1,12 @@
-#include "welcome-screen-channel-object.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "welcome-screen-channel-object.hpp"
 
 namespace elizaos {
 

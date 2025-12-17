@@ -1,11 +1,12 @@
-#include ".icons/layout.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include ".icons/layout.hpp"
 
 namespace elizaos {
 
@@ -30,23 +31,23 @@ void useSidebar();
   // We add a state so that we can do data-state="expanded" or "collapsed".
   // This makes it easier to style the sidebar with Tailwind classes.
 
-void SidebarRail(auto { className, React.ComponentProps<"button"> ...props });
+void SidebarRail(auto { className, ComponentProps<"button"> ...props });
 
-void SidebarInset(auto { className, React.ComponentProps<"main"> ...props });
+void SidebarInset(auto { className, ComponentProps<"main"> ...props });
 
-void SidebarHeader(auto { className, React.ComponentProps<"div"> ...props });
+void SidebarHeader(auto { className, ComponentProps<"div"> ...props });
 
-void SidebarFooter(auto { className, React.ComponentProps<"div"> ...props });
+void SidebarFooter(auto { className, ComponentProps<"div"> ...props });
 
-void SidebarContent(auto { className, React.ComponentProps<"div"> ...props });
+void SidebarContent(auto { className, ComponentProps<"div"> ...props });
 
-void SidebarGroup(auto { className, React.ComponentProps<"div"> ...props });
+void SidebarGroup(auto { className, ComponentProps<"div"> ...props });
 
-void SidebarMenu(auto { className, React.ComponentProps<"ul"> ...props });
+void SidebarMenu(auto { className, ComponentProps<"ul"> ...props });
 
-void SidebarMenuItem(auto { className, React.ComponentProps<"li"> ...props });
+void SidebarMenuItem(auto { className, ComponentProps<"li"> ...props });
 
-void SidebarMenuSub(auto { className, React.ComponentProps<"ul"> ...props });
+void SidebarMenuSub(auto { className, ComponentProps<"ul"> ...props });
 
 
 } // namespace elizaos

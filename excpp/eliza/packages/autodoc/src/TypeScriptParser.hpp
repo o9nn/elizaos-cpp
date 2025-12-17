@@ -1,11 +1,12 @@
-#include "types.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "types.hpp"
 
 namespace elizaos {
 
@@ -50,74 +51,14 @@ namespace elizaos {
  * @returns {string} The extracted code of the action.
  */
 class TypeScriptParser {
-  /**
-   * Parses the content of a file using the given file path.
-   *
-   * @param {string} file - The file path containing the content to be parsed.
-   * @returns {any} The abstract syntax tree (AST) representation of the parsed content.
-   */
-  public parse(file: string): any {
-    try {
-      const content = fs.readFileSync(file, 'utf-8');
+public:
+    std::any parse(const std::string& file);
+     extractExports(const std::string& file);
+    void if(auto ast && ast.body);
+    std::optional<ActionBounds> findActionBounds(const std::any& ast);
+    std::string extractActionCode(const std::string& filePath, ActionBounds bounds);
+    void handleParseError(Error error, std::optional<std::string> file);
+};
 
-      // Determine if this is a TSX file based on file extension or JSX syntax
-      const isTsxFile =
-        file.endsWith('.tsx') ||
-        (content.includes('<') && content.includes('>') && content.includes('React'));
-
-      const parserOptions: ParserOptions = {
-        sourceType: 'module',
-        ecmaVersion: 'latest',
-        ecmaFeatures: {
-          jsx: true,
-          globalReturn: false,
-        },
-        range: true,
-        loc: true,
-        tokens: true,
-        comment: true,
-        errorOnUnknownASTType: false,
-        errorOnTypeScriptSyntacticAndSemanticIssues: false,
-        // Add project configuration for better TypeScript support
-        project: undefined, // Don't use project-based parsing to avoid config issues
-        extraFileExtensions: ['.tsx'],
-      };
-
-      const ast = parse(content, parserOptions);
-      if (!ast || typeof ast !== 'object') {
-        console.warn(`Warning: Invalid AST generated for file ${file}`);
-        return null;
-      }
-      return ast;
-    } catch (error) {
-      if (error instanceof Error) {
-        this.handleParseError(error, file);
-      } else {
-        console.error('Unknown error:', error);
-      }
-      return null;
-    }
-  }
-
-    //const content = fs.readFileSync(file, 'utf-8');
-
-      // Traverse the AST to find declarations
-
-    // write ast to json file
-    // fs.writeFileSync("ast.json", JSON.stringify(ast, null, 2));
-
-      // Look for Action type annotation
-
-      // Look for ActionExample type annotation to find the end
-
-      // Backup: Look for action name property
-
-      // Recursively search in child nodes
-
-    // If we found a valid end line but no start line, use the action name line as fallback
-
-    // Extract lines from start to end (inclusive)
-
-    // Don't log full stack trace for parsing errors to reduce noise
 
 } // namespace elizaos

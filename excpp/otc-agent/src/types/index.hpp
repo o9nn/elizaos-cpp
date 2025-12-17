@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -20,31 +21,27 @@ namespace elizaos {
 
 // Re-from plugin types
 
-//==============================================================================
 // CHAIN TYPES
-//==============================================================================
 
 using EVMChain = std::variant<"base", "bsc">;
 
-//==============================================================================
 // OTC CONTRACT TYPES
-//==============================================================================
 
 /**
  * OTC Offer structure (matches Solidity contract)
  */
 struct Offer {
     bigint consignmentId;
-    string; // bytes32 hex string tokenId;
+    std::string tokenId;
     Address beneficiary;
     bigint tokenAmount;
     bigint discountBps;
     bigint createdAt;
     bigint unlockTime;
-    bigint; // 8 decimals priceUsdPerToken;
+    bigint priceUsdPerToken;
     bigint maxPriceDeviation;
-    bigint; // 8 decimals ethUsdPrice;
-    number; // 0 = ETH, 1 = USDC currency;
+    bigint ethUsdPrice;
+    double currency;
     bool approved;
     bool paid;
     bool fulfilled;
@@ -105,9 +102,7 @@ struct QuoteAccepted {
     std::string txHash;
 };
 
-//==============================================================================
 // DATABASE TYPES
-//==============================================================================
 
 /**
  * Token in database
@@ -165,7 +160,7 @@ struct OTCConsignment {
     std::optional<std::vector<std::string>> allowedBuyers;
     double maxPriceVolatilityBps;
     double maxTimeToExecuteSeconds;
-    "active" | "paused" | "depleted" | "withdrawn" status;
+    std::variant<"active", "paused", "depleted", "withdrawn"> status;
     std::optional<std::string> contractConsignmentId;
     Chain chain;
     double createdAt;
@@ -187,12 +182,10 @@ struct ConsignmentDeal {
     double lockupDays;
     double executedAt;
     std::optional<std::string> offerId;
-    "pending" | "executed" | "failed" status;
+    std::variant<"pending", "executed", "failed"> status;
 };
 
-//==============================================================================
 // USER SESSION TYPES
-//==============================================================================
 
 /**
  * User session memory
@@ -201,17 +194,14 @@ struct UserSessionMemory {
     std::string id;
     std::string entityId;
     std::string walletAddress;
-    "evm" | "solana" chainFamily;
+    std::variant<"evm", "solana"> chainFamily;
     std::optional<std::string> preferredChain;
     double lastActiveAt;
-    std::optional<std::unordered_map<std::string, unknown>> sessionData;
     double createdAt;
     double updatedAt;
 };
 
-//==============================================================================
 // UTILITY TYPES
-//==============================================================================
 
 /**
  * Token with balance information
@@ -221,7 +211,8 @@ struct UserSessionMemory {
  * Consignment creation result
  */
 struct ConsignmentCreationResult {
-    `0x${string}` txHash;
+    bigint consignmentId;
+};
 
 
 } // namespace elizaos

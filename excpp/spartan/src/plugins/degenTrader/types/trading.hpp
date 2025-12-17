@@ -1,11 +1,12 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -23,21 +24,16 @@ struct TokenSignal {
     double liquidity;
     double score;
     std::vector<std::string> reasons;
-    std::optional<{> technicalSignals;
     double rsi;
-    { macd;
     double value;
     double signal;
     double histogram;
-    { volumeProfile;
-    'increasing' | 'decreasing' | 'stable' trend;
+    std::variant<'increasing', 'decreasing', 'stable'> trend;
     bool unusualActivity;
     double volatility;
-    std::optional<{> socialMetrics;
     double mentionCount;
     double sentiment;
     double influencerMentions;
-    std::optional<{> cmcMetrics;
     double rank;
     double priceChange24h;
     double volumeChange24h;
@@ -51,16 +47,13 @@ struct RiskLimits {
 };
 
 struct TradingConfig {
-    { intervals;
     double priceCheck;
     double walletSync;
     double performanceMonitor;
-    { thresholds;
     double minLiquidity;
     double minVolume;
     double minScore;
     RiskLimits riskLimits;
-    { slippageSettings;
     double baseSlippage;
     double maxSlippage;
     double liquidityMultiplier;
@@ -69,7 +62,9 @@ struct TradingConfig {
 
 struct PortfolioStatus {
     double totalValue;
-    { [tokenAddress: string]: { amount: number; value: number } } positions;
+    double solBalance;
+    double drawdown;
+};
 
 struct SellSignalMessage {
     UUID positionId;

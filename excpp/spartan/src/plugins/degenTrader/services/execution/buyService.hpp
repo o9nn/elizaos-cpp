@@ -1,3 +1,12 @@
+#pragma once
+#include <any>
+#include <functional>
+#include <future>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include "..types.hpp"
 #include ".analyticsService.hpp"
 #include ".base/BaseTradeService.hpp"
@@ -7,13 +16,6 @@
 #include ".validation/TokenValidationService.hpp"
 #include ".walletService.hpp"
 #include "elizaos/core.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -22,39 +24,25 @@ namespace elizaos {
 
 
 
-class BuyService extends BaseTradeService {
-  private validationService: TokenValidationService;
-  private calculationService: TradeCalculationService;
-  private tradeMemoryService: TradeMemoryService;
+class BuyService {
+public:
+    BuyService(IAgentRuntime runtime, WalletService walletService, DataService dataService, AnalyticsService analyticsService, TradeMemoryService tradeMemoryService);
+    std::future<void> initialize();
+    std::future<void> stop();
+    std::future<void> handleBuySignal(const std::any& params);
+    std::future<void> updateExpectedOutAmount(BuySignalMessage signal);
+    Promise< executeBuy(BuySignalMessage signal);
+    void if(auto !signal);
+    void if(auto !validation.isValid);
+    void if(auto buyAmount <= 0);
+    void if(auto result.success);
+    void catch(auto error);
 
-  constructor(
-    runtime: IAgentRuntime,
-    walletService: WalletService,
-    dataService: DataService,
-    analyticsService: AnalyticsService,
-    tradeMemoryService: TradeMemoryService
-  ) {
-    super(runtime, walletService, dataService, analyticsService);
-    this.validationService = new TokenValidationService(
-      runtime,
-      walletService,
-      dataService,
-      analyticsService
-    );
-    this.calculationService = new TradeCalculationService(
-      runtime,
-      walletService,
-      dataService,
-      analyticsService
-    );
-    this.tradeMemoryService = tradeMemoryService;
-  }
-
-    // Cleanup if needed
-
-      //console.log('buy marketData', marketData)
-      /*
-      */
+private:
+    TokenValidationService validationService_;
+    TradeCalculationService calculationService_;
+    TradeMemoryService tradeMemoryService_;
+};
 
 
 } // namespace elizaos

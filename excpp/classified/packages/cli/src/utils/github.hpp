@@ -1,13 +1,14 @@
-#include "bun-exec.js.hpp"
-#include "elizaos/core.hpp"
-#include "user-environment.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "bun-exec.js.hpp"
+#include "elizaos/core.hpp"
+#include "user-environment.hpp"
 
 namespace elizaos {
 
@@ -25,7 +26,6 @@ struct GitHubRepoResponse {
 };
 
 struct GitHubBranchResponse {
-    { object;
     std::string sha;
 };
 
@@ -51,7 +51,6 @@ std::future<bool> forkExists(const std::string& token, const std::string& repo, 
 /**
  * Fork a repository
  */
-std::future<string | null> forkRepository(const std::string& token, const std::string& owner, const std::string& repo);
 
 /**
  * Check if a branch exists in a repository
@@ -66,7 +65,6 @@ std::future<bool> createBranch(const std::string& token, const std::string& owne
 /**
  * Get content of a file from a repository
  */
-std::future<string | null> getFileContent(const std::string& token, const std::string& owner, const std::string& repo, const std::string& path, auto branch = 'main');
 
 /**
  * Create or update a file in a repository
@@ -76,12 +74,10 @@ std::future<bool> updateFile(const std::string& token, const std::string& owner,
 /**
  * Create a pull request
  */
-std::future<string | null> createPullRequest(const std::string& token, const std::string& owner, const std::string& repo, const std::string& title, const std::string& body, const std::string& head, auto base = 'main');
 
 /**
  * Get authenticated user information
  */
-std::future<GitHubUserResponse | null> getAuthenticatedUser(const std::string& token);
 
 /**
  * Retrieves GitHub credentials from the environment, registry, or user prompt.
@@ -95,12 +91,9 @@ std::future<GitHubUserResponse | null> getAuthenticatedUser(const std::string& t
 
     // Validate the token
 
-  // If not in process.env, try to load from .env file
-
   // If we have a token, validate it and try to get username if missing
       // If we don't have a username, try to get it from GitHub
         // Save the username to env
-        await saveGitHubCredentials(username, token);
 
   // No valid credentials found, prompt the user
 
@@ -109,7 +102,6 @@ std::future<GitHubUserResponse | null> getAuthenticatedUser(const std::string& t
   // Validate token
 
   // Save credentials
-  await saveGitHubCredentials(promptedUsername, promptedToken);
 
 /**
  * Saves the provided GitHub username and token to the `.env` file in the user's `.eliza` directory.

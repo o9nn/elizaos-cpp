@@ -1,3 +1,12 @@
+#pragma once
+#include <any>
+#include <functional>
+#include <future>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include "db.hpp"
 #include "prompts/create-token.hpp"
 #include "prompts/enhance-prompt.hpp"
@@ -6,13 +15,6 @@
 #include "types.hpp"
 #include "uploader.hpp"
 #include "util.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -25,9 +27,6 @@ namespace elizaos {
 
 // Enum for media types
 enum MediaType {
-  IMAGE = "image",
-  VIDEO = "video",
-  AUDIO = "audio",
 }
 
 // Configure rate limits per media type
@@ -111,6 +110,7 @@ enum MediaType {
     // You may want to change this to false in production
 
 // Function definition moved earlier
+std::future<std::string> generateLyrics(std::optional<std::any> tokenMetadata, std::optional<std::string> stylePrompt);
 
 std::future<std::string> generateStylePrompt(const std::string& userPrompt);
 
@@ -118,6 +118,7 @@ std::future<std::string> generateStylePrompt(const std::string& userPrompt);
 std::string formatLyricsForDiffrhythm(const std::string& lyrics);
 
 // Helper to generate media using fal.ai or Cloudflare Workers
+std::future<void> generateMedia(std::optional<std::any> data);
 
 // Media generation validation schema
   // Video specific options
@@ -155,6 +156,7 @@ std::future<void> generatePreGeneratedTokens();
 std::future<void> checkAndReplenishTokens(std::optional<double> threshold);
 
 // Helper function to generate an enhanced prompt using the token metadata
+std::future<std::string> generateEnhancedPrompt(const std::string& userPrompt, std::optional<std::any> tokenMetadata, MediaType = MediaType::IMAGE mediaType);
 
 // Function to generate additional images for a token
 std::future<void> generateAdditionalTokenImages(const std::string& tokenMint, const std::string& description);

@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -23,6 +24,6 @@ namespace elizaos {
  * @returns A BigNumber object representing the input value.
  */
 
-BigNumber toBN(string | number | BigNumber value);
+BigNumber toBN(const std::variant<std::string, double, BigNumber>& value);
 
 } // namespace elizaos

@@ -1,14 +1,14 @@
-#include "..components/trust/RecomendationsList.hpp"
-#include "..components/trust/ScoreCard.hpp"
-#include "..components/trust/TrustScoreChart.hpp"
-#include "index.module.css.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "..components/trust/RecomendationsList.hpp"
+#include "..components/trust/ScoreCard.hpp"
+#include "..components/trust/TrustScoreChart.hpp"
+#include "index.module.css.hpp"
 
 namespace elizaos {
 

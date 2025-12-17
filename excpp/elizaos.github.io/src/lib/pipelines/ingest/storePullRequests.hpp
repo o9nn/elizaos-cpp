@@ -1,13 +1,13 @@
-#include ".types.hpp"
-#include "context.hpp"
-#include "mutations.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".types.hpp"
+#include "context.hpp"
+#include "mutations.hpp"
 
 namespace elizaos {
 
@@ -36,15 +36,12 @@ namespace elizaos {
         // Commit authors
 
       // Ensure all users exist in a single batch operation
-      await ensureUsersExist(userData, context.config.botUsers);
 
       // Process all labels first
-      await ensureLabelsExist(allLabels);
 
       // Batch insert PRs
 
         // Store PR-Label relationships
-          await storePRLabels(pr.id, labelIds);
 
       // Batch insert PR files
 

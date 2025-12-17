@@ -1,12 +1,12 @@
-#include "...classes/channel.hpp"
-#include "...common-components/tooltip/tooltip.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "...classes/channel.hpp"
+#include "...common-components/tooltip/tooltip.hpp"
 
 namespace elizaos {
 

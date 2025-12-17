@@ -1,14 +1,14 @@
-#include ".data/tags.hpp"
-#include "matching-logic.hpp"
-#include "preprocessContent.hpp"
-#include "types.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".data/tags.hpp"
+#include "matching-logic.hpp"
+#include "preprocessContent.hpp"
+#include "types.hpp"
 
 namespace elizaos {
 
@@ -51,7 +51,7 @@ double getMatcherCacheSize(); /**
  * Type alias for a function that tests content against a specific pattern.
  */
 
-using MatcherFunction = (content: MatchContent) => boolean;
+using MatcherFunction = std::function<bool(MatchContent)>;
 /**
  * Creates a matcher function for a given TagPattern configuration.
  * This function encapsulates the specific matching logic (string, regex, glob),

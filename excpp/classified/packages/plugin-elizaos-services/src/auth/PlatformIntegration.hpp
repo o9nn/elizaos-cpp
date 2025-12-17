@@ -1,12 +1,14 @@
-#include "AuthenticationService.js.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "AuthenticationService.js.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -20,16 +22,16 @@ namespace elizaos {
 
 struct PlatformAuthConfig {
     std::string platformId;
-    'cli' | 'gui' | 'agent' clientType;
-    'test' | 'production' | 'auto' distributionMode;
+    std::variant<'cli', 'gui', 'agent'> clientType;
+    std::variant<'test', 'production', 'auto'> distributionMode;
     bool allowTestKeys;
 };
 
 struct ClientSession {
     std::string sessionId;
-    'cli' | 'gui' | 'agent' clientType;
+    std::variant<'cli', 'gui', 'agent'> clientType;
     std::string platformId;
-    AuthStatus | null authStatus;
+    std::optional<AuthStatus> authStatus;
     Date lastActivity;
     std::vector<std::string> validatedKeys;
 };
@@ -37,14 +39,14 @@ struct ClientSession {
 struct KeyDistributionRequest {
     std::string sessionId;
     std::string provider;
-    'test' | 'production' keyType;
+    std::variant<'test', 'production'> keyType;
     std::vector<std::string> clientCapabilities;
 };
 
 struct KeyDistributionResponse {
     bool success;
     std::optional<std::string> apiKey;
-    'test' | 'production' keyType;
+    std::variant<'test', 'production'> keyType;
     std::vector<std::string> capabilities;
     std::optional<Date> expiresAt;
     std::optional<std::string> error;
@@ -55,112 +57,54 @@ struct KeyDistributionResponse {
  * Manages authentication across different client modalities
  */
 class PlatformIntegrationService {
-  private runtime: IAgentRuntime;
-  private authService: AuthenticationService;
-  private activeSessions = new Map<string, ClientSession>();
-  private keyDistributionLog: Array<{
-    timestamp: Date;
-    sessionId: string;
-    provider: string;
-    keyType: string;
-    success: boolean;
-  }> = [];
+public:
+    PlatformIntegrationService(IAgentRuntime runtime, PlatformAuthConfig config);
+    std::future<ClientSession> registerSession(const std::string& sessionId, const std::variant<'cli', 'gui', 'agent'>& clientType, const std::string& platformId);
+    std::future<KeyDistributionResponse> distributeKey(KeyDistributionRequest request);
+    Promise< validateDistributedKey(const std::string& sessionId, const std::string& provider, const std::string& apiKey);
+    void if(auto !session);
+    void if(auto result.isValid);
+    void catch(auto error);
+    Promise< invalidateSession(const std::string& sessionId);
+    void if(auto !session);
+    Promise< getSessionStatus(const std::string& sessionId);
+    void if(auto !session);
+    void catch(auto error);
+     getAnalytics();
+    double cleanupExpiredSessions();
+    std::future<KeyDistributionResponse> distributeTestKey(const std::string& provider, const std::string& clientType);
+    std::future<KeyDistributionResponse> distributeProductionKey(const std::string& provider, ClientSession session);
 
-  /**
-   * Register a new client session
-   */
-
-    // Perform initial auth check
-
-  /**
-   * Distribute API key to client
-   */
-
-    // Update session activity
-
-        // Distribute test key
-        // Distribute production key
-
-      // Log distribution
-
-      // Add to session's validated keys
-
-  /**
-   * Validate distributed key
-   */
-
-        // Update session auth status
-
-  /**
-   * Invalidate session and revoke access
-   */
-
-    // Remove from active sessions
-
-    // Clear any cached auth data
-
-  /**
-   * Get session status and auth information
-   */
-
-    // Refresh auth status if needed
-
-  /**
-   * Get platform analytics and monitoring data
-   */
-
-  /**
-   * Cleanup expired sessions
-   */
-
-      // Sessions expire after 24 hours of inactivity
-
-  /**
-   * Distribute test key for development/testing
-   */
-
-    // Get capabilities for test key
-
-  /**
-   * Distribute production key (requires proper configuration)
-   */
-
-    // Validate the production key
+private:
+    IAgentRuntime runtime_;
+    AuthenticationService authService_;
+    Date timestamp_;
+    std::string sessionId_;
+    std::string provider_;
+    std::string keyType_;
+    bool success_;
+};
 
 /**
  * Platform Integration Factory
  */
 class PlatformIntegrationFactory {
-  static createForCLI(runtime: IAgentRuntime): PlatformIntegrationService {
-    return new PlatformIntegrationService(runtime, {
-      platformId: 'elizaos-cli',
-      clientType: 'cli',
-      distributionMode: 'auto',
-      allowTestKeys: true,
-    });
-  }
+public:
+    PlatformIntegrationService createForCLI(IAgentRuntime runtime);
+    PlatformIntegrationService createForGUI(IAgentRuntime runtime);
+    PlatformIntegrationService createForAgent(IAgentRuntime runtime);
+};
 
 /**
  * Utility functions for platform integration
  */
 class PlatformAuthUtils {
-  /**
-   * Generate secure session ID
-   */
-  static generateSessionId(): string {
-    return `session_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
-  }
+public:
+    std::string generateSessionId();
+    bool isValidSessionId(const std::string& sessionId);
+    std::vector<std::string> getClientCapabilities(const std::variant<'cli', 'gui', 'agent'>& clientType);
+    bool isProviderCompatible(const std::vector<std::string>& providerCapabilities, const std::vector<std::string>& clientCapabilities);
+};
 
-  /**
-   * Validate session ID format
-   */
-
-  /**
-   * Get client capabilities based on type
-   */
-
-  /**
-   * Check if provider supports client capabilities
-   */
 
 } // namespace elizaos

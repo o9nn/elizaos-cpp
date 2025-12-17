@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -15,7 +15,7 @@ namespace elizaos {
 
 struct TokenDealsSectionProps {
     Token token;
-    TokenMarketData | null marketData;
+    std::optional<TokenMarketData> marketData;
     std::vector<OTCConsignment> consignments;
 };
 

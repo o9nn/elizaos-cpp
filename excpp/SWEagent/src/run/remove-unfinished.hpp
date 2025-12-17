@@ -1,12 +1,13 @@
-#include ".utils/files.hpp"
-#include ".utils/log.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".utils/files.hpp"
+#include ".utils/log.hpp"
 
 namespace elizaos {
 
@@ -18,8 +19,7 @@ namespace elizaos {
  */
 
 struct TrajectoryFile {
-    std::optional<{> info;
-    std::optional<string | null> submission;
+    std::optional<std::optional<std::string>> submission;
 };
 
 /**

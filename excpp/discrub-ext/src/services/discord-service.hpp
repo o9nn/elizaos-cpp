@@ -1,3 +1,11 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <variant>
+#include <vector>
 #include ".classes/attachment.hpp"
 #include ".classes/channel.hpp"
 #include ".classes/embed.hpp"
@@ -16,13 +24,6 @@
 #include ".types/guild-member-object.hpp"
 #include ".types/overwrite-object.hpp"
 #include ".utils.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -40,25 +41,15 @@ using MessageModify = {
 using SearchMessageResult = std::vector<{
 
 class DiscordService {
-  searchDelaySecs = 0;
-  deleteDelaySecs = 0;
-  DISCORD_API_URL = "https://discord.com/api/v10";
-  DISCORD_USERS_ENDPOINT = `${this.DISCORD_API_URL}/users`;
-
-      await wait(delay);
-
-    return func();
-
-      await wait(delay);
-
-    return func();
-
-          // Request was successful
-            // Successful request has data
-            // Successful request does not have data
-          // Request must be re-attempted after x seconds
-          await wait(json.retry_after);
-          // Request failed for unknown reason
+public:
+    DiscordService(std::optional<AppSettings> settings);
+    void if(auto this.searchDelaySecs > 0);
+    void if(auto this.deleteDelaySecs > 0);
+    void while(auto !requestComplete);
+    void catch(auto e);
+    std::function<void()> URLSearchParams(const std::variant<preFilterUserId, , "null">& {
+         this::generateSnowflake(searchAfterDate> min_id);
+};
 
 
 } // namespace elizaos

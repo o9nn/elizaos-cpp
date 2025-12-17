@@ -1,10 +1,12 @@
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -17,7 +19,7 @@ namespace elizaos {
  */
 
 // Type for parsed YAML data
-using YamlData = std::variant<std::string, double, bool, nullptr, std::vector<YamlData>, { [key: string]: YamlData }>;
+using YamlData = std::variant<std::string, double, bool, nullptr, std::vector<YamlData>, std::any>;
 
 /**
  * Parse a simple YAML string

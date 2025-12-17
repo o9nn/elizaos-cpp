@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -14,9 +14,9 @@ namespace elizaos {
 
 
 struct SolPriceContextType {
-    number | undefined solPrice;
+    double solPrice;
     bool isLoading;
-    Error | null error;
+    std::optional<Error> error;
 };
 
 

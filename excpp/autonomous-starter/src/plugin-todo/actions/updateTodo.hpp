@@ -1,11 +1,13 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -25,10 +27,10 @@ struct TaskSelection {
 struct TaskUpdate {
     std::optional<std::string> name;
     std::optional<std::string> description;
-    std::optional<1 | 2 | 3 | 4> priority;
+    std::optional<std::variant<1, 2, 3, 4>> priority;
     std::optional<bool> urgent;
-    std::optional<string | null> dueDate;
-    std::optional<"daily" | "weekly" | "monthly"> recurring;
+    std::optional<std::optional<std::string>> dueDate;
+    std::optional<std::variant<"daily", "weekly", "monthly">> recurring;
 };
 
 /**
@@ -47,7 +49,6 @@ std::future<TaskSelection> extractTaskSelection(IAgentRuntime runtime, Memory me
 /**
  * Extracts what updates the user wants to make to the task
  */
-std::future<TaskUpdate | null> extractTaskUpdate(IAgentRuntime runtime, Memory message, Task task);
 
 /**
  * Applies updates to a task

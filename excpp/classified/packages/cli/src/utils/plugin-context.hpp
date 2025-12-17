@@ -1,14 +1,15 @@
-#include "build-project.hpp"
-#include "directory-detection.hpp"
-#include "elizaos/core.hpp"
-#include "registry.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "build-project.hpp"
+#include "directory-detection.hpp"
+#include "elizaos/core.hpp"
+#include "registry.hpp"
 
 namespace elizaos {
 
@@ -20,7 +21,6 @@ namespace elizaos {
 struct PackageInfo {
     std::string name;
     std::optional<std::string> main;
-    std::optional<std::unordered_map<std::string, std::string>> scripts;
 };
 
 struct PluginContext {

@@ -1,13 +1,13 @@
-#include ".ml/predictor.hpp"
-#include ".monitoring/logger.hpp"
-#include "segmentation.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".ml/predictor.hpp"
+#include ".monitoring/logger.hpp"
+#include "segmentation.hpp"
 
 namespace elizaos {
 
@@ -17,13 +17,15 @@ namespace elizaos {
 
 
 class PredictiveAnalytics {
-  private mlPredictor: MLPredictor;
+public:
+    PredictiveAnalytics();
+    void initialize();
+    Promise< predictProjectSuccess(const std::string& projectId);
+    void catch(auto error);
+    Promise< predictUserEngagement(const std::string& userId);
 
-  constructor() {
-    this.mlPredictor = new MLPredictor();
-    this.initialize();
-  }
-
-    // Implementation for user engagement prediction
-    
+private:
+    MLPredictor mlPredictor_;
+};
+ 
 } // namespace elizaos

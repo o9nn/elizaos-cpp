@@ -1,14 +1,15 @@
-#include "bonding-curve-bar.hpp"
-#include "copy-button.hpp"
-#include "skeleton-image.hpp"
-#include "verified.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "bonding-curve-bar.hpp"
+#include "copy-button.hpp"
+#include "skeleton-image.hpp"
+#include "verified.hpp"
 
 namespace elizaos {
 
@@ -21,10 +22,8 @@ using SortOrderType = std::variant<"asc", "desc">;
 
 struct TableViewProps {
     std::vector<IToken> data;
-    keyof IToken | null sortBy;
+    std::optional<keyof IToken> sortBy;
     SortOrderType sortOrder;
-    (sortBy: keyof IToken | null) => void setSortBy;
-    (sortOrder: SortOrderType) => void setSortOrder;
 };
 
 

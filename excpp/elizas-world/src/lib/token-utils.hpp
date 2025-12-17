@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -31,17 +32,9 @@ std::future<void> fetchTokenAnalysis(const std::string& address);
 std::future<void> getTokenData(Connection connection);
 
 struct SolSnifferResponse {
-    Array<{ data;
     std::string address;
-    std::optional<{> tokenData;
     double score;
-    { indicatorData;
-    { count: number; details: string } high;
-    { count: number; details: string } moderate;
-    { count: number; details: string } low;
-    { count: number; details: string } specific;
     std::string deployTime;
-    { auditRisk;
     bool mintDisabled;
     bool freezeDisabled;
     bool lpBurned;
@@ -49,5 +42,5 @@ struct SolSnifferResponse {
     std::optional<std::string> error;
 };
 
-std::future<std::unordered_map<std::string, double>> fetchTokenScores(const std::vector<std::string>& tokenAddresses);
+
 } // namespace elizaos

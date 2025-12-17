@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -14,16 +15,13 @@ namespace elizaos {
 struct SystemEnvironment {
     std::string nodeVersion;
     std::string platform;
-    'development' | 'production' | 'test' environment;
-    { features;
+    std::variant<'development', 'production', 'test'> environment;
     bool authentication;
     bool tee;
     std::vector<std::string> plugins;
-    std::unordered_map<std::string, std::any> configuration;
 };
 
 struct LocalEnvironmentUpdateParams {
-    std::unordered_map<std::string, std::string> variables;
     std::optional<bool> merge;
 };
 

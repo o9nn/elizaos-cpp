@@ -1,13 +1,14 @@
-#include "general.hpp"
-#include "project-overview.hpp"
-#include "types.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "general.hpp"
+#include "project-overview.hpp"
+#include "types.hpp"
 
 namespace elizaos {
 
@@ -40,7 +41,7 @@ std::unordered_map<std::string, std::string> exportAllRulesToCursor();
 /**
  * Get configuration for a specific language
  */
-void getLanguageConfig('python' | 'typescript' language);
+void getLanguageConfig(const std::variant<'python', 'typescript'>& language);
 
 /**
  * Check if a file should have rules applied based on globs

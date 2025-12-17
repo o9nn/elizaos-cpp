@@ -1,13 +1,15 @@
-#include ".types.hpp"
-#include "elizaos/core.hpp"
-#include "queries.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".types.hpp"
+#include "elizaos/core.hpp"
+#include "queries.hpp"
 
 namespace elizaos {
 
@@ -22,132 +24,91 @@ namespace elizaos {
 
 // Chain ID mapping for supported networks
 
-class MorphoService extends Service {
-  static serviceType = "morpho";
-  capabilityDescription = "";
+class MorphoService {
+public:
+    MorphoService(IAgentRuntime runtime);
+    double getChainId(SupportedNetwork = 'base' chain);
+    std::future<void> initialize(IAgentRuntime runtime);
+    std::future<MorphoService> start(IAgentRuntime runtime);
+    std::future<void> stop();
+    Promise<`0x$ supply(std::optional<std::any> params, const std::any& clients);
+    ", assetsBase::toString());
 
-  private gql = new GqlClient(MORPHO_GQL);
+      const hashes: `0x$ log(auto "Assets to supply (base units);
+    void for(auto let i = 0; i < requests.length; i++);
+    void catch(const std::any& err);
+    Promise<`0x$ supplyCollateral(std::optional<std::any> params, const std::any& clients);
+    ", assetsBase::toString());
 
-  constructor(runtime: IAgentRuntime) {
-    super(runtime);
-  }
+      const hashes: `0x$ log(auto "Assets to supply (base units);
+    void for(auto let i = 0; i < requests.length; i++);
+    void catch(const std::any& err);
+    Promise<`0x$ borrow(std::optional<std::any> params, const std::any& clients);
+    ", assetsBase::toString());
 
-  // ----------------------------
-  // Market Operations
-  // ----------------------------
+      const hashes: `0x$ log(auto "Assets to borrow (base units);
+    void for(auto let i = 0; i < requests.length; i++);
+    void catch(const std::any& err);
+    Promise<`0x$ repay(std::optional<std::any> params, const std::any& clients);
+    ", assetsBase.toString());
 
-  /**
-   * Supply assets to a Morpho market to earn yield
-   */
+      const hashes: `0x$ log(auto "Assets to repay (base units);
+    void for(auto let i = 0; i < requests.length; i++);
+    void catch(const std::any& err);
+    Promise<`0x$ withdraw(std::optional<std::any> params, const std::any& clients);
+    ", assetsBase.toString());
 
-  /**
-   * Supply collateral to a Morpho market
-   */
+      const hashes: `0x$ log(auto "Assets to withdraw (base units);
+    void for(auto let i = 0; i < requests.length; i++);
+    void catch(const std::any& err);
+    Promise<`0x$ withdrawCollateral(std::optional<std::any> params, const std::any& clients);
+    ", assetsBase::toString());
 
-  /**
-   * Borrow assets from a Morpho market
-   */
+      const hashes: `0x$ log(auto "Assets to withdraw (base units);
+    void for(auto let i = 0; i < requests.length; i++);
+    void catch(const std::any& err);
+    Promise< buildSupplyTx(const std::any& params, PublicClient pc);
+    void if(auto currentAllowance < assetsBase);
+    Promise< buildSupplyCollateralTx(const std::any& params, PublicClient pc);
+    void if(auto currentAllowance < assetsBase);
+    Promise< buildBorrowTx(const std::any& params, PublicClient pc);
+    Promise< buildRepayTx(std::optional<std::any> params, PublicClient pc);
+    void if(auto params.fullRepayment);
+    void if(auto params.shares);
+    void if(auto params.assets);
+    Promise< buildWithdrawTx(std::optional<std::any> params, PublicClient pc);
+    void if(auto params.assets);
+    void if(auto params.shares);
+    Promise< buildWithdrawCollateralTx(const std::any& params, PublicClient pc);
+    std::future<std::string> getMarketId(const std::string& input, SupportedNetwork chain);
+    std::future<std::string> resolveMarketIdFromPair(const std::string& pair, SupportedNetwork chain);
+    std::future<std::vector<std::any>> fetchMarketsFromApi(double chainId);
+    std::future<std::vector<std::any>> fetchVaultsFromApi(double chainId);
+    std::future<std::vector<std::string>> fetchPositionsFromApi(`0x${string}` address, double chainId);
+    MarketSummary mapMarketSummary(const std::any& m);
+    MorphoVaultData mapVault(const std::any& v);
+    void mapVaultAllocations(MorphoVaultData out, const std::any& v);
+    std::future<MarketSummary> getMarketSummary(const std::string& market, SupportedNetwork chain);
+    std::future<MarketSummary> fetchMarketSummaryById(const std::string& uniqueKey, SupportedNetwork chain);
+    void if(auto !response.ok);
+    void catch(auto error);
+    std::future<UserPosition> buildUserPosition(`0x${string}` address, const std::string& marketId, SupportedNetwork chain, PublicClient pc);
+    void for(auto let i = 0; i < requests.length; i++);
+    void catch(const std::any& err);
 
-  /**
-   * Repay borrowed assets to a Morpho market
-   */
-
-  /**
-   * Withdraw supplied assets from a Morpho market
-   */
-
-  /**
-   * Withdraw collateral from a Morpho market
-   */
-
-  // ----------------------------
-  // Transaction builders for market operations
-  // ----------------------------
-
-    // Get loan asset decimals for the market
-
-    // Check allowance and approve if needed
-
-      // Add raw supply request WITHOUT simulation (approval needs to execute first)
-      // Only simulate when no approval needed
-
-    // Get collateral asset decimals
-
-    // Check allowance and approve if needed
-
-      // Add raw supplyCollateral request WITHOUT simulation
-      // Only simulate when no approval needed
-
-    // Get loan asset decimals
-
-      // Get user's current borrow shares for full repayment
-
-        // Get the expected assets needed for these shares
-
-        // Approve the expected assets amount
-
-        // Repay using shares (recommended for full repayment)
-      // Repay specific shares
-
-      // Approve and repay
-      // Repay specific assets
-
-      // Check allowance and approve if needed
-
-        // Add raw repay request WITHOUT simulation (approval needs to execute first)
-
-        // Only simulate when no approval needed
-
-    // Get collateral asset decimals
-
-  // ----------------------------
-  // Helper methods (original functionality needs to be added here)
-  // ----------------------------
-
-  // ----------------------------
-  // Mapping helpers
-  // ----------------------------
-
-  // ----------------------------
-  // Resolvers
-  // ----------------------------
-
-  // ----------------------------
-  // Public API
-  // ----------------------------
-
-    // Single market path: on-chain LIF + summary
-
-    // All markets path: single GraphQL call + inline filters
-
-    // Single vault
-
-    // All vaults
-
-  // ----------------------------
-  // Pricing & positions
-  // ----------------------------
-
-    // Calculate supply information (lending position)
-
-    // For simplicity, assume withdrawable = supplied (in practice, market liquidity may limit this)
-
-    // Calculate earned interest (simplified - would need historical data for accurate calculation)
-
-        // Supply (lending) amounts
-
-    // Try to use your GraphQL decimals first (you often have them), otherwise read ERC20.decimals
-      // Fallback to 18, but on Base USDC is 6 — best effort only
-
-    // pc provided by caller (CDP)
-
-        /* some vaults may not implement preview */
+    void for(auto let i = 0; i < requests.length; i++);
+    void catch(const std::any& err);
+    void if(auto needsApproval);
 
 // ----------------------------
 // GraphQL Client
 // ----------------------------
 class GqlClient {
-  constructor(private url: string) {}
+public:
+    GqlClient(const std::string& private url);
+    void if(auto !res.ok);
+    void if(auto json.errors.length);
+};
 
 // --- Minimal ABIs ---
 

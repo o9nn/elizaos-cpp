@@ -1,16 +1,16 @@
-#include "screen-vision.hpp"
-#include "vision-autonomy.hpp"
-#include "vision-basic.hpp"
-#include "vision-capture-log.hpp"
-#include "vision-runtime.hpp"
-#include "vision-worker-tests.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "screen-vision.hpp"
+#include "vision-autonomy.hpp"
+#include "vision-basic.hpp"
+#include "vision-capture-log.hpp"
+#include "vision-runtime.hpp"
+#include "vision-worker-tests.hpp"
 
 namespace elizaos {
 

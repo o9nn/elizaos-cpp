@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -16,18 +16,6 @@ namespace elizaos {
  */
 
 enum GamificationEventType {
-  ACCOUNT_CREATION = 'ACCOUNT_CREATION',
-  DAILY_LOGIN_STREAK = 'DAILY_LOGIN_STREAK',
-  MEANINGFUL_CHAT = 'MEANINGFUL_CHAT',
-  SWAP_COMPLETED = 'SWAP_COMPLETED',
-  BRIDGE_COMPLETED = 'BRIDGE_COMPLETED',
-  TRANSFER_COMPLETED = 'TRANSFER_COMPLETED',
-  DAILY_QUEST = 'DAILY_QUEST',
-  REFERRAL_SIGNUP = 'REFERRAL_SIGNUP',
-  REFERRAL_ACTIVATION = 'REFERRAL_ACTIVATION',
-  REFERRED_WELCOME = 'REFERRED_WELCOME',
-  FIRST_CHAIN_BONUS = 'FIRST_CHAIN_BONUS',
-  AGENT_ACTION = 'AGENT_ACTION',
 }
 
 /**

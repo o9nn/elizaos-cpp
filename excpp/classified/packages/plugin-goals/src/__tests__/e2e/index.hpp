@@ -1,12 +1,12 @@
-#include "goals-plugin-comprehensive.hpp"
-#include "goals-plugin.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "goals-plugin-comprehensive.hpp"
+#include "goals-plugin.hpp"
 
 namespace elizaos {
 

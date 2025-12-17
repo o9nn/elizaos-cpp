@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -21,50 +22,41 @@ namespace elizaos {
 struct BaseMessage {
     std::string id;
     std::string content;
-    Date | string timestamp;
-    std::unordered_map<std::string, unknown> metadata;
+    std::variant<Date, std::string> timestamp;
 };
 
 struct TauriWindow {
-    std::optional<{> __TAURI_INTERNALS__;
-    (command: string, args?: Record<string, unknown>) => Promise<unknown> invoke;
-    (event: string, callback: (event: TauriEvent) => void) => Promise<() => void> listen;
 };
 
 // WebSocket message types
 struct WebSocketMessage {
     std::string type;
-    std::optional<std::unordered_map<std::string, unknown>> data;
-    std::optional<{> message;
     std::optional<std::string> id;
     std::optional<std::string> content;
     std::optional<std::string> text;
     std::optional<std::string> userId;
     std::optional<std::string> author;
     std::optional<std::string> name;
-    std::optional<string | Date> timestamp;
-    std::optional<std::unordered_map<std::string, unknown>> metadata;
+    std::optional<std::variant<std::string, Date>> timestamp;
 };
 
 // Configuration types
 struct ConfigurationValue {
     std::string key;
-    string | number | boolean value;
-    'string' | 'number' | 'boolean' | 'url' | 'api_key' type;
+    std::variant<std::string, double, bool> value;
+    std::variant<'string', 'number', 'boolean', 'url', 'api_key'> type;
 };
 
 struct ValidationResult {
     bool valid;
     std::optional<std::string> error;
-    std::optional<string | number | boolean> sanitizedValue;
+    std::optional<std::variant<std::string, double, bool>> sanitizedValue;
 };
 
 // Agent and Runtime types
 struct AgentConfiguration {
     std::string name;
-    std::unordered_map<std::string, ConfigurationValue> settings;
     std::vector<std::string> plugins;
-    std::unordered_map<std::string, bool> capabilities;
 };
 
 struct RuntimeSettings {
@@ -74,18 +66,15 @@ struct RuntimeSettings {
 
 // Log entry types
 struct LogEntry {
-    string | Date timestamp;
-    'debug' | 'info' | 'warn' | 'error' level;
+    std::variant<std::string, Date> timestamp;
+    std::variant<'debug', 'info', 'warn', 'error'> level;
     std::string message;
     std::optional<std::string> source;
-    std::optional<std::unordered_map<std::string, unknown>> metadata;
 };
 
 // HTTP Request/Response types
 struct HttpRequestOptions {
-    std::optional<'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'> method;
-    std::optional<std::unordered_map<std::string, std::string>> headers;
-    std::optional<string | FormData | Record<string, unknown>> body;
+    std::optional<std::variant<'GET', 'POST', 'PUT', 'DELETE', 'PATCH'>> method;
     std::optional<double> timeout;
 };
 
@@ -93,7 +82,7 @@ struct HttpRequestOptions {
 struct ModelProvider {
     std::string name;
     std::string displayName;
-    'available' | 'not_configured' | 'error' status;
+    std::variant<'available', 'not_configured', 'error'> status;
     std::string message;
     std::optional<std::vector<std::string>> models;
 };
@@ -108,15 +97,13 @@ struct ModelInfo {
 // Memory and Knowledge types - Extended from @elizaos/core
 struct MemoryEntry {
     std::string id;
-    'knowledge' | 'conversation' | 'goal' | 'user' | 'relationship' type;
-    string | Record<string, unknown> content;
-    Date | string createdAt;
-    std::optional<Date | string> updatedAt;
+    std::variant<'knowledge', 'conversation', 'goal', 'user', 'relationship'> type;
+    std::variant<Date, std::string> createdAt;
+    std::optional<std::variant<Date, std::string>> updatedAt;
     std::optional<double> importance;
     std::optional<std::string> entityId;
     std::optional<std::string> agentId;
     std::optional<std::string> userId;
-    std::unordered_map<std::string, unknown> metadata;
 };
 
 // Re-unified knowledge types from core
@@ -127,8 +114,7 @@ struct Goal {
     std::string name;
     std::string description;
     bool isCompleted;
-    string | Date createdAt;
-    std::optional<std::unordered_map<std::string, unknown>> metadata;
+    std::variant<std::string, Date> createdAt;
 };
 
 struct Todo {
@@ -136,31 +122,28 @@ struct Todo {
     std::string name;
     std::optional<std::string> title;
     std::optional<std::string> description;
-    'daily' | 'one-off' | 'aspirational' type;
+    std::variant<'daily', 'one-off', 'aspirational'> type;
     bool isCompleted;
     std::optional<double> priority;
-    string | Date createdAt;
-    std::optional<string | Date> dueDate;
-    std::optional<std::unordered_map<std::string, unknown>> metadata;
+    std::variant<std::string, Date> createdAt;
+    std::optional<std::variant<std::string, Date>> dueDate;
 };
 
 // Capability and Status types
 struct CapabilityStatus {
     bool enabled;
-    'active' | 'inactive' | 'error' status;
+    std::variant<'active', 'inactive', 'error'> status;
     std::optional<std::string> error;
-    std::optional<string | Date> lastUsed;
-    std::unordered_map<std::string, unknown> metadata;
+    std::optional<std::variant<std::string, Date>> lastUsed;
 };
 
 struct AgentStatus {
     std::string name;
-    'online' | 'offline' | 'thinking' status;
+    std::variant<'online', 'offline', 'thinking'> status;
     std::optional<std::string> lastThought;
     std::optional<std::string> lastAction;
     std::optional<std::string> currentGoal;
     std::optional<double> uptime;
-    std::unordered_map<std::string, unknown> metadata;
 };
 
 // File and Upload types
@@ -168,7 +151,7 @@ struct FileUpload {
     std::string name;
     std::string type;
     double size;
-    string | ArrayBuffer content;
+    std::variant<std::string, ArrayBuffer> content;
     std::optional<double> lastModified;
 };
 
@@ -178,8 +161,8 @@ using KnowledgeFile = KnowledgeItem;
 // Backup types
 struct BackupInfo {
     std::string id;
-    string | Date timestamp;
-    'manual' | 'automatic' | 'shutdown' backup_type;
+    std::variant<std::string, Date> timestamp;
+    std::variant<'manual', 'automatic', 'shutdown'> backup_type;
     double size_bytes;
     std::vector<BackupComponent> components;
     BackupMetadata metadata;
@@ -208,7 +191,7 @@ struct RestoreOptions {
 // Container and System types
 struct ContainerInfo {
     std::string name;
-    'running' | 'stopped' | 'error' status;
+    std::variant<'running', 'stopped', 'error'> status;
     std::optional<double> uptime;
     std::vector<LogEntry> logs;
 };
@@ -217,21 +200,19 @@ struct SystemInfo {
     std::string platform;
     std::string arch;
     std::string version;
-    { memory;
     double total;
     double available;
     double used;
 };
 
 // Event callback types
-using UnsubscribeFunction = () => void;
+using UnsubscribeFunction = std::function<void()>;
 
 // API Response types for Tauri
 
 struct HealthCheckResponse {
-    'healthy' | 'unhealthy' status;
+    std::variant<'healthy', 'unhealthy'> status;
     bool database;
-    std::unordered_map<std::string, bool> services;
 };
 
 struct ValidationResponse {
@@ -241,7 +222,6 @@ struct ValidationResponse {
 
 struct TestConfigurationResponse {
     bool success;
-    std::unordered_map<std::string, unknown> results;
 };
 
 struct AutonomyStatusResponse {
@@ -268,7 +248,6 @@ struct DatabaseStatsResponse {
 };
 
 struct PluginRoutesResponse {
-    Array<{ routes;
     std::string name;
     std::string path;
     std::optional<std::string> display_name;
@@ -281,22 +260,20 @@ struct TabContentResponse {
 struct OllamaModelStatus {
     bool models_ready;
     std::vector<std::string> missing_models;
-    string | null downloading;
-    number | null progress;
+    std::optional<std::string> downloading;
+    std::optional<double> progress;
 };
 
 // Additional response types for TauriService
 struct TauriMemoryResponse {
     bool success;
-    std::optional<{> data;
     std::optional<std::vector<MemoryEntry>> memories;
     std::optional<std::vector<Goal>> goals;
     std::optional<std::vector<Todo>> todos;
     std::optional<std::vector<KnowledgeFile>> files;
-    std::optional<std::vector<std::unordered_map<std::string, unknown>>> plugins;
     std::optional<std::vector<LogEntry>> logs;
     std::optional<std::vector<std::string>> tables;
-    std::optional<std::vector<{ name: string; path: string; display_name?: string }>> routes;
+    std::string path;
     std::optional<std::string> content;
     std::optional<std::vector<MemoryEntry>> memories;
 };
@@ -308,7 +285,6 @@ struct TauriStringResponse {
 
 struct TauriSettingsResponse {
     bool success;
-    std::optional<std::unordered_map<std::string, unknown>> data;
 };
 
 

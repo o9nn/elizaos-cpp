@@ -1,10 +1,11 @@
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -17,13 +18,19 @@ namespace elizaos {
  */
 
 class EnvRegistry {
-  private data: Record<string, any> = {};
+public:
+    EnvRegistry();
+    void load();
+    void save();
+    std::any get(const std::string& key);
+    void set(const std::string& key, const std::any& value);
+    bool has(const std::string& key);
+    void delete(const std::string& key);
+    void clear();
 
-        // If parsing fails, start with empty data
-
-        // Ignore save errors
-
-    // Reload from file to get latest data
+private:
+    std::string envFile_;
+};
 
 
 } // namespace elizaos

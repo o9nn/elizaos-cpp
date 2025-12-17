@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -21,7 +22,6 @@ namespace elizaos {
 // Create a lazy loader for anything that's not just a type
 
 /**
- * Safely gets discord.js exports, handling potential dynamic import issues
  */
 std::future<void> getDiscordJs();
 

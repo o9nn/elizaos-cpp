@@ -1,11 +1,13 @@
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -24,10 +26,6 @@ struct ProviderConfig {
     std::string name;
     std::string baseURL;
     std::vector<ModelTypeName> supportedModels;
-    { models;
-    (apiKey: string) => Record<string, string> headers;
-    std::optional<(payload: any) => any> transformRequest;
-    std::optional<(response: any) => any> transformResponse;
 };
 
 /**
@@ -40,10 +38,12 @@ struct ProviderConfig {
 /**
  * Get provider configuration based on available API keys
  */
+std::optional<ProviderConfig> getAvailableProvider(IAgentRuntime runtime, ModelTypeName modelType);
 
 /**
  * Get API key for a specific provider
  */
+std::optional<std::string> getProviderApiKey(IAgentRuntime runtime, const std::string& providerName);
 
 /**
  * Make API request to provider with proper error handling

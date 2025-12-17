@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -20,9 +21,6 @@ struct TokenAmount {
 };
 
 struct ParsedTokenAccount {
-    { data;
-    { parsed;
-    { info;
     std::string mint;
     TokenAmount tokenAmount;
 };
@@ -34,7 +32,8 @@ struct Social {
 
 struct TokenInfo {
     std::optional<std::string> imageUrl;
-    std::optional<std::vector<{ url: string }>> websites;
+    std::optional<std::vector<Social>> socials;
+};
 
 struct BaseToken {
     std::string address;
@@ -95,8 +94,6 @@ struct TokenAnalysis {
 std::future<DexScreenerResponse> fetchDexScreenerData(const std::vector<std::string>& tokenAddresses);
 
 std::future<void> getTokenBalances(Connection connection, PublicKey walletPubkey);
-
-std::future<TokenAnalysis | null> fetchTokenAnalysis(const std::string& address);
 
 std::future<void> main();
 

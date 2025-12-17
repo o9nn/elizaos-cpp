@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -12,11 +13,6 @@ namespace elizaos {
 // Manual refinement required for production use
 
 enum TokenStatus {
-  Active = "active",
-  Migrating = "migrating",
-  Migrated = "migrated",
-  Locked = "locked",
-  Finalized = "finalized",
 }
 
 struct Pagination {
@@ -26,22 +22,12 @@ struct Pagination {
 };
 
 enum SortBy {
-  CreatedAt = "createdAt",
-  MarketCapUSD = "marketCapUSD",
-  Volume24h = "volume24h",
-  HolderCount = "holderCount",
-  CurveProgress = "curveProgress",
-  Featured = "featured",
-  Verified = "verified",
 }
 
 enum FilterBy {
-  Verified = "verified",
 }
 
 enum SortOrder {
-  Asc = "asc",
-  Desc = "desc",
 }
 
 struct RawTokenQuery {
@@ -59,7 +45,7 @@ struct TokenQueryParams {
     double page;
     double limit;
     std::optional<TokenStatus> status;
-    std::optional<0 | 1> hideImported;
+    std::optional<std::variant<0, 1>> hideImported;
     std::optional<std::string> creator;
     std::optional<std::string> search;
     SortBy sortBy;

@@ -1,12 +1,12 @@
-#include ".types/plugins.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".types/plugins.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -15,6 +15,5 @@ namespace elizaos {
 
 
 
-std::future<CachedRegistry | null> fetchPluginRegistry();
 
 } // namespace elizaos

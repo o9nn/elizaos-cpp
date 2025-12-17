@@ -1,16 +1,16 @@
-#include ".hooks/use-query-hooks.hpp"
-#include "elizaos/core.hpp"
-#include "stop-agent-button.hpp"
-#include "ui/button.hpp"
-#include "ui/card.hpp"
-#include "ui/tooltip.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".hooks/use-query-hooks.hpp"
+#include "elizaos/core.hpp"
+#include "stop-agent-button.hpp"
+#include "ui/button.hpp"
+#include "ui/card.hpp"
+#include "ui/tooltip.hpp"
 
 namespace elizaos {
 
@@ -21,7 +21,6 @@ namespace elizaos {
 
 struct ProfileOverlayProps {
     bool isOpen;
-    () => void onClose;
     UUID agentId;
 };
 

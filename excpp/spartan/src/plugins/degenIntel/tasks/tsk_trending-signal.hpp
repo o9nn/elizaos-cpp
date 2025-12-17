@@ -1,11 +1,12 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -49,26 +50,8 @@ struct IBuySignalOutput {
     std::string buy_amount;
 };
 
-    // Get all sentiments (TwitterParser fillTimeframe)
-    //console.log('sentimentsData', sentimentsData);
-
-    // Get all trending tokens
-
-    //console.log('rolePrompt', rolePrompt)
-    //console.log('context', finalPrompt)
-
-    // Retry if missing required fields
-    // recommended_buy, recommend_buy_address, reason, buy_amount
-      // could use OBJECT_LARGE but this expects a string return type rn
-      // not sure where OBJECT_LARGE does it's parsing...
-
-    // Fetch the recommended buys current marketcap
-
-    // Add more detailed error logging
-
-      // was realMc but it's not there
-
-      // Continue without marketcap data rather than failing completely
+    std::future<bool> generateSignal();
+    void getBalance();
 
 
 } // namespace elizaos

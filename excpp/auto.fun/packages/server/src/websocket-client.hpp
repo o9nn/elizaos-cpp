@@ -1,11 +1,13 @@
-#include "redis.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "redis.hpp"
 
 namespace elizaos {
 
@@ -15,24 +17,16 @@ namespace elizaos {
 
 
 class WebSocketClient {
-  // No longer needs Durable Object reference
-  // private webSocketDO: DurableObjectNamespace | null = null;
-
-  constructor(/*  - Remove if Env is not used */) {
-    // Initialization logic removed - we use the imported singleton manager
-    // this.webSocketDO = (env as any).WEBSOCKET_DO || null;
-  }
-
-  // Send a message to a specific room (token or global)
-
-  // Send a message to a specific client by ID
-
-  // Helper that returns an object with direct emit method for chaining
+public:
+    WebSocketClient(auto /*  - Remove if Env is not used */);
+    std::future<void> emit(const std::string& room, const std::string& event, const std::any& data);
+    std::future<void> emitToClient(const std::string& clientId, const std::string& event, const std::any& data);
+    void to(const std::string& room);
+};
 
 // Helper function to get websocket client instance
 // Since WebSocketClient now just wraps the singleton manager,
 // we might not even need this class/function anymore.
-// Code using getWebSocketClient() could potentially just import webSocketManager directly.
 // However, keeping it maintains the existing interface.
 
 WebSocketClient getWebSocketClient();

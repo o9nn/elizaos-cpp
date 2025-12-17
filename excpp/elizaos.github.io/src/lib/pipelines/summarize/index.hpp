@@ -1,15 +1,15 @@
-#include ".getSelectedRepositories.hpp"
-#include ".types.hpp"
-#include "context.hpp"
-#include "generateContributorSummary.hpp"
-#include "generateProjectSummary.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".getSelectedRepositories.hpp"
+#include ".types.hpp"
+#include "context.hpp"
+#include "generateContributorSummary.hpp"
+#include "generateProjectSummary.hpp"
 
 namespace elizaos {
 

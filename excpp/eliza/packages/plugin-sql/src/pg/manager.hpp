@@ -1,11 +1,12 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -15,18 +16,18 @@ namespace elizaos {
 
 
 class PostgresConnectionManager {
-  private pool: Pool;
-  private db: NodePgDatabase;
+public:
+    PostgresConnectionManager(const std::string& connectionString);
+    NodePgDatabase getDatabase();
+    Pool getConnection();
+    std::future<PoolClient> getClient();
+    std::future<bool> testConnection();
+    std::future<void> close();
 
-  constructor(connectionString: string) {
-    this.pool = new Pool({ connectionString });
-    this.db = drizzle(this.pool as any);
-  }
+private:
+    Pool pool_;
+    NodePgDatabase db_;
+};
 
-  /**
-   * Closes the connection pool.
-   * @returns {Promise<void>}
-   * @memberof PostgresConnectionManager
-   */
 
 } // namespace elizaos

@@ -1,11 +1,13 @@
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -18,21 +20,13 @@ namespace elizaos {
  * Validation service for Groq plugin
  * Provides runtime validation for API key availability
  */
-class GroqValidationService extends Service {
-  static override serviceType: ServiceTypeName = 'groq-validation' as ServiceTypeName;
-  static serviceName = 'groq-validation';
-
-  override capabilityDescription = 'Validates Groq plugin configuration and API availability';
-
-  constructor(runtime: IAgentRuntime) {
-    super(runtime);
-  }
-
-    // No cleanup needed
-
-  /**
-   * Check if Groq is properly configured and available
-   */
+class GroqValidationService {
+public:
+    GroqValidationService(IAgentRuntime runtime);
+    std::future<GroqValidationService> start(IAgentRuntime runtime);
+    std::future<void> stop();
+    std::future<bool> isValid();
+};
 
 /**
  * Retrieves the Groq API base URL, using runtime settings or environment variables if available.
@@ -95,6 +89,7 @@ std::any getTracer(IAgentRuntime runtime);
 /**
  * Generate text using Groq API with retry handling for rate limits
  */
+std::future<void> generateGroqText(ReturnType<typeof createGroq> groq, const std::string& model, std::optional<std::any> params);
 
 /**
  * Generate object using Groq API with consistent error handling
@@ -109,12 +104,8 @@ std::future<void> generateGroqObject(ReturnType<typeof createGroq> groq, const s
 
         // Create a FormData instance
 
-        //console.error('groq audio', error)
     // you can include elevenlabs before this plugin to prefer elevenlabs voice
-    // The model playai-tts requires terms acceptance. Please have the org admin accept the terms at https://console.groq.com/playground?model=playai-tts"
               //...(instructions && { instructions }),
-
-          //const speechStream = await fetchTextToSpeech(runtime, text);
 
         // Return empty object instead of crashing
 

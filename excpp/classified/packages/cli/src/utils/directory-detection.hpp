@@ -1,11 +1,11 @@
-#include "user-environment.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "user-environment.hpp"
 
 namespace elizaos {
 
@@ -26,9 +26,9 @@ struct PackageJson {
     std::optional<std::string> name;
     std::optional<std::vector<std::string>> keywords;
     std::optional<std::string> main;
-    std::optional<std::unordered_map<std::string, std::string>> dependencies;
-    std::optional<std::unordered_map<std::string, std::string>> devDependencies;
-    std::optional<string[] | { packages?: string[] }> workspaces;
+    std::optional<std::string> packageType;
+    std::optional<std::string> pluginType;
+};
 
 /**
  * Detects the type of directory and provides comprehensive information about it

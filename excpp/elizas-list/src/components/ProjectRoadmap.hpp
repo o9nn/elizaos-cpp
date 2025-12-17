@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -17,9 +18,8 @@ struct RoadmapItem {
     std::string id;
     std::string title;
     std::string description;
-    'planned' | 'in-progress' | 'completed' status;
+    std::variant<'planned', 'in-progress', 'completed'> status;
     std::string date;
-    std::optional<{> assignee;
     std::string name;
     std::string avatar;
 };

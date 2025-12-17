@@ -1,11 +1,13 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -18,7 +20,6 @@ struct DiscordComponentInteraction {
     std::string customId;
     double componentType;
     std::optional<std::vector<std::string>> values;
-    std::optional<std::unordered_map<std::string, std::vector<std::string>>> selections;
 };
 
 struct ReportChannelConfig {
@@ -26,7 +27,7 @@ struct ReportChannelConfig {
     std::optional<std::string> serverName;
     std::string channelId;
     std::string createdAt;
-    std::optional<string; // Add source field> source;
+    std::optional<std::string> source;
 };
 
 struct CheckInSchedule {
@@ -35,7 +36,7 @@ struct CheckInSchedule {
     std::optional<std::string> teamMemberUserName;
     std::string checkInType;
     std::string channelId;
-    'DAILY' | 'WEEKLY' | 'BI-WEEKLY' | 'MONTHLY' | 'WEEKDAYS' frequency;
+    std::variant<'DAILY', 'WEEKLY', 'BI-WEEKLY', 'MONTHLY', 'WEEKDAYS'> frequency;
     std::string checkInTime;
     std::string source;
     std::string createdAt;
@@ -51,12 +52,9 @@ struct CheckInSchedule {
  * @returns {Promise<{ isValid: boolean; error?: string }>}
  */
     // logger.info(`Validating Discord config for server ${serverId}`);
-    // const worldSettings = await getWorldSettings(runtime, serverId);
 
     // // Check required fields
     // for (const field of REQUIRED_DISCORD_FIELDS) {
-    //   if (!worldSettings[field] || worldSettings[field].value === null) {
-    //     return {
     //       isValid: false,
     //       error: `Missing required Discord configuration: ${field}`,
     //     };
@@ -77,7 +75,6 @@ std::future<DiscordService> ensureDiscordClient(IAgentRuntime runtime);
       // // Define valid admin roles (case-insensitive)
       // const adminRoles = ['admin', 'owner', 'moderator', 'administrator'];
       // const isAdminUser =
-      //   userRole && adminRoles.some((role) => userRole.toLowerCase() === role.toLowerCase());
 
       // if (!isAdminUser) {
       //   logger.info(
@@ -89,7 +86,6 @@ std::future<DiscordService> ensureDiscordClient(IAgentRuntime runtime);
       // }
 
       // // Validate Discord configuration
-      // const validation = await validateDiscordConfig(runtime, serverId);
       // if (!validation.isValid) {
       //   logger.error(`Discord validation failed: ${validation.error}`);
       //   return false;

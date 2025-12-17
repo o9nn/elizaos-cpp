@@ -1,10 +1,11 @@
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -16,6 +17,6 @@ namespace elizaos {
  * https://docs.expo.dev/guides/color-schemes/
  */
 
-void useThemeColor(std::optional<{ light: string; dark: string }> props, keyof typeof Colors.light & keyof typeof Colors.dark colorName);
+void useThemeColor(std::optional<std::any> props, keyof typeof Colors.light & keyof typeof Colors.dark colorName);
 
 } // namespace elizaos

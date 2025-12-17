@@ -1,11 +1,11 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -42,7 +42,6 @@ namespace elizaos {
     */
 
     // wallet history
-    //console.log('intel:provider - trades', trades)
     /*
     */
 
@@ -50,14 +49,9 @@ namespace elizaos {
     /*
 */
 
-    //console.log('intel:provider - birdeye token data', tokens)
-
     // header
     /*
     */
-    //promptInjection += '\n' + JSON.stringify(trades) + '\n'
-
-    //console.log('intel:provider - cmc token text', latestTxt)
 
     // Combine all text sections
 

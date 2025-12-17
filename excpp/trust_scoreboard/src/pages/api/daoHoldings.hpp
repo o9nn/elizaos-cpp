@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -18,16 +18,12 @@ struct TokenInfo {
     std::string symbol;
     double balance;
     double decimals;
-    std::optional<{> price_info;
     double total_price;
 };
 
 struct HeliusResponse {
-    { result;
-    { items;
     TokenInfo token_info;
     std::optional<double> amount;
-    { nativeBalance;
     double total_price;
 };
 

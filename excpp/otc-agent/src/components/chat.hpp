@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -16,7 +17,7 @@ namespace elizaos {
 struct ChatProps {
     std::optional<std::string> roomId;
     std::optional<Token> token;
-    std::optional<TokenMarketData | null> marketData;
+    std::optional<std::optional<TokenMarketData>> marketData;
 };
 
 // --- Consolidated Chat State ---
@@ -24,12 +25,12 @@ struct ChatState {
     std::vector<ChatMessage> messages;
     std::string input;
     bool inputDisabled;
-    string | null roomId;
+    std::optional<std::string> roomId;
     bool isLoadingHistory;
     bool isAgentThinking;
-    string | null entityId;
+    std::optional<std::string> entityId;
     bool showConnectOverlay;
-    OTCQuote | null currentQuote;
+    std::optional<OTCQuote> currentQuote;
     bool showAcceptModal;
     bool isOfferGlowing;
     bool showClearChatModal;
@@ -44,10 +45,12 @@ struct RawRoomMessage {
     std::optional<std::string> id;
     std::optional<std::string> entityId;
     std::optional<std::string> agentId;
-    std::optional<number | string> createdAt;
-    std::optional<string | { text?: string }> content;
+    std::optional<std::variant<double, std::string>> createdAt;
+    std::optional<std::string> text;
+};
 
 // --- Helper: Parse room message into ChatMessage format ---
+std::optional<ChatMessage> parseRoomMessage(RawRoomMessage msg, const std::string& roomId);
 
   // --- Consolidated State ---
 
@@ -100,7 +103,6 @@ struct RawRoomMessage {
       // Ensure user is connected and room exists before sending
 
       // Pass activeRoomId explicitly in case it was just created (state not yet updated)
-      await sendMessage(trimmed, activeRoomId);
 
       // Refocus the textarea after sending
 

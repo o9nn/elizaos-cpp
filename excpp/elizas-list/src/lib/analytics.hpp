@@ -1,11 +1,11 @@
-#include "prisma.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "prisma.hpp"
 
 namespace elizaos {
 
@@ -15,16 +15,9 @@ namespace elizaos {
 
 
 class Analytics {
-  static async trackProjectView(projectId: string, userId?: string) {
-    await prisma.projectView.create({
-      data: {
-        projectId,
-        userId,
-        timestamp: new Date(),
-        userAgent: headers().get('user-agent') || 'unknown',
-        ipAddress: headers().get('x-forwarded-for') || 'unknown'
-      }
-    });
-  }
-
+public:
+    void trackProjectView(const std::string& projectId, std::optional<std::string> userId);
+    void trackRelatedProjectClick(const std::string& sourceProjectId, const std::string& targetProjectId, std::optional<std::string> userId);
+};
+ 
 } // namespace elizaos

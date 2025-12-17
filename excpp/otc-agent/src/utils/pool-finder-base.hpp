@@ -1,11 +1,12 @@
-#include "retry-cache.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "retry-cache.hpp"
 
 namespace elizaos {
 
@@ -20,7 +21,7 @@ namespace elizaos {
  * This wrapper allows us to use dynamic ABIs while maintaining type safety on return values.
  */
   // Cast is necessary for dynamic ABIs - viem's generics require compile-time inference
-  using ReadContractParams = Parameters<typeof client.readContract>[0];
+  using ReadContractParams = Parameters<typeof client::readContract>[0];
 
 // Cache TTL for pool info (30 seconds)
 
@@ -42,13 +43,13 @@ struct PoolInfo {
     std::string address;
     std::string token0;
     std::string token1;
-    std::optional<number; // Only for Uniswap V3 / Pancake V3> fee;
-    std::optional<number; // Only for Aerodrome Slipstream> tickSpacing;
-    std::optional<boolean; // Only for Aerodrome V2> stable;
+    std::optional<double> fee;
+    std::optional<double> tickSpacing;
+    std::optional<bool> stable;
     bigint liquidity;
     double tvlUsd;
-    std::optional<number; // Estimated price in USD> priceUsd;
-    "USDC" | "WETH" baseToken;
+    std::optional<double> priceUsd;
+    std::variant<"USDC", "WETH"> baseToken;
 };
 
 /**
@@ -57,7 +58,6 @@ struct PoolInfo {
  * @param chainId The chain ID to search on (default: Base Mainnet 8453)
  * @returns Array of pool information sorted by TVL
  */
-std::future<PoolInfo | null> findBestPool(const std::string& tokenAddress, number = 8453 chainId);
 
 /**
  * Find Uniswap V3 pools with retry and caching

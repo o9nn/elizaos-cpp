@@ -1,14 +1,14 @@
-#include ".auth/auth.hpp"
-#include ".db.hpp"
-#include ".points.hpp"
-#include ".util.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".auth/auth.hpp"
+#include ".db.hpp"
+#include ".points.hpp"
+#include ".util.hpp"
 
 namespace elizaos {
 

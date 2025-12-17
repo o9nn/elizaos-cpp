@@ -1,3 +1,10 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include "actions/checkInCreate.hpp"
 #include "actions/checkInFormatAction.hpp"
 #include "actions/checkInList.hpp"
@@ -10,13 +17,6 @@
 #include "services/CheckInService.hpp"
 #include "services/updateTracker.hpp"
 #include "tasks.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -36,13 +36,11 @@ namespace elizaos {
 
       // Register and start the CheckIn service
       // logger.info('Registering CheckInService...');
-      // await runtime.registerService(CheckInService);
 
       // Delay task registration to ensure adapter is ready
       
       // Use a retry mechanism to register tasks when adapter is ready
             // Check if getTasks method is available
-              await registerTasks(runtime);
           
           // Wait before next retry
 

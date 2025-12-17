@@ -1,11 +1,12 @@
-#include "constants.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "constants.hpp"
 
 namespace elizaos {
 
@@ -22,7 +23,6 @@ namespace elizaos {
 struct GamificationEventInput {
     UUID userId;
     GamificationEventType actionType;
-    std::optional<std::unordered_map<std::string, unknown>> metadata;
     std::optional<UUID> sourceEventId;
     std::optional<double> volumeUsd;
     std::optional<std::string> chain;
@@ -36,7 +36,7 @@ struct PointBalance {
     double allTimePoints;
     double weeklyPoints;
     double streakDays;
-    Date | null lastLoginDate;
+    std::optional<Date> lastLoginDate;
     double level;
     std::string levelName;
     Date updatedAt;
@@ -52,11 +52,10 @@ struct UserSummary {
     double streakDays;
     double level;
     std::string levelName;
-    std::optional<{> nextMilestone;
     double level;
     std::string levelName;
     double pointsNeeded;
-    Date | null lastLoginDate;
+    std::optional<Date> lastLoginDate;
     std::optional<double> swapsCompleted;
 };
 
@@ -79,8 +78,8 @@ struct LeaderboardEntry {
 struct ReferralCode {
     UUID userId;
     std::string code;
-    UUID | null referrerId;
-    'active' | 'inactive' status;
+    std::optional<UUID> referrerId;
+    std::variant<'active', 'inactive'> status;
     Date createdAt;
 };
 
@@ -99,8 +98,8 @@ struct ReferralStats {
 struct Campaign {
     std::string id;
     std::string name;
-    GamificationEventType | null; // null = all actions actionType;
-    number; // e.g., 1.25 for +25% bonus multiplier;
+    std::optional<GamificationEventType> actionType;
+    double multiplier;
     Date startAt;
     Date endAt;
     bool active;

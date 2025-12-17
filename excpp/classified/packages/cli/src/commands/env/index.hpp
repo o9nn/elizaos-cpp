@@ -1,15 +1,15 @@
-#include "actions/edit.hpp"
-#include "actions/interactive.hpp"
-#include "actions/list.hpp"
-#include "actions/reset.hpp"
-#include "types.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "actions/edit.hpp"
+#include "actions/interactive.hpp"
+#include "actions/list.hpp"
+#include "actions/reset.hpp"
+#include "types.hpp"
 
 namespace elizaos {
 
@@ -21,16 +21,12 @@ namespace elizaos {
 // Create command for managing environment variables
 
 // List subcommand
-      await handleListCommand(options);
 
 // Edit local subcommand
-      await editEnvVars(options);
 
 // Reset subcommand
-      await resetEnv(options);
 
 // Interactive mode
-      await showMainMenu(options);
 
 // Default command (show help if no subcommand provided)
   // Show available subcommands

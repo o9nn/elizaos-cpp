@@ -1,14 +1,15 @@
-#include "..types.hpp"
-#include "..utils/log.hpp"
-#include ".merge-predictions.hpp"
-#include "types.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "..types.hpp"
+#include "..utils/log.hpp"
+#include ".merge-predictions.hpp"
+#include "types.hpp"
 
 namespace elizaos {
 
@@ -23,26 +24,25 @@ namespace elizaos {
 /**
  * SweBench evaluation hook
  */
-class SweBenchEvaluate extends AbstractRunHook {
-  private static readonly SUBSET_MAP: Record<string, string> = {
-    lite: 'swe-bench_lite',
-    verified: 'swe-bench_verified',
-    multimodal: 'swe-bench_multimodal',
-  };
+class SweBenchEvaluate {
+public:
+    SweBenchEvaluate(std::optional<std::any> params);
+    std::string runId() const;
+    std::vector<std::string> getSbCall(const std::string& predsPath, boolean = false submitOnly);
+    void checkRunningCalls();
+    void onInstanceCompleted(const std::any& _params);
+    void moveSbCliReport();
+    void onEnd();
 
-    // We need to add a suffix to the run_id to avoid collisions when you reuse the name of your run
-
-  /**
-   * Warn if one of the running calls failed
-   */
-
-    // Use a simple lock mechanism
-
-  /**
-   * Move report from `sb-cli-reports` to `results.json`
-   */
-
-      // Remove temporary predictions if they exist
+private:
+    std::string outputDir_;
+    std::string subset_;
+    std::string split_;
+    double continuousSubmissionEvery_;
+    double lastEvaluationTime_;
+    double evaluationInterval_;
+    std::string timeSuffix_;
+};
 
 
 } // namespace elizaos

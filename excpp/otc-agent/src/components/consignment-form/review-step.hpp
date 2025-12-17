@@ -1,12 +1,13 @@
-#include ".button.hpp"
-#include ".multiwallet.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include ".button.hpp"
+#include ".multiwallet.hpp"
 
 namespace elizaos {
 
@@ -16,7 +17,6 @@ namespace elizaos {
 
 
 struct ReviewStepProps {
-    { formData;
     std::string tokenId;
     std::string amount;
     bool isNegotiable;
@@ -32,11 +32,8 @@ struct ReviewStepProps {
     bool isPrivate;
     double maxPriceVolatilityBps;
     double maxTimeToExecuteSeconds;
-    () => void onBack;
-    () => void onNext;
-    std::optional<"evm" | "solana" | null> requiredChain;
+    std::optional<std::variant<"evm", "solana">> requiredChain;
     std::optional<bool> isConnectedToRequiredChain;
-    std::optional<() => void> onConnect;
     std::optional<bool> privyReady;
     std::optional<std::string> selectedTokenSymbol;
     std::optional<double> selectedTokenDecimals;

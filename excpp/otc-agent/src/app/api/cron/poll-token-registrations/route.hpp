@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -19,6 +20,7 @@ namespace elizaos {
 // Current implementation checks last 1000 blocks each run (safe for 2-min intervals)
 
 // Try to load from environment (set via Vercel KV or external service if needed)
+std::optional<bigint> getLastBaseBlock();
 
 /**
  * Poll for new token registrations (Base)

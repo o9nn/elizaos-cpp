@@ -1,12 +1,13 @@
-#include "chat.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "chat.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -18,22 +19,16 @@ namespace elizaos {
 struct ChatMessageListComponentProps {
     std::vector<UiMessage> messages;
     bool isLoadingMessages;
-    ChannelType.GROUP | ChannelType.DM chatType;
+    std::variant<ChannelType::GROUP, ChannelType::DM> chatType;
     std::string currentClientEntityId;
     std::optional<Agent> targetAgentData;
     std::vector<std::optional<Agent>> allAgents;
-    string | null animatedMessageId;
-    React.RefObject<HTMLDivElement | null> scrollRef;
-    std::optional<React.RefObject<HTMLDivElement | null>; // Optional content ref for StickToBottom> contentRef;
+    std::optional<std::string> animatedMessageId;
+    std::optional<std::shared_ptr<HTMLDivElement>> scrollRef;
+    std::optional<std::optional<std::shared_ptr<HTMLDivElement>>> contentRef;
     bool isAtBottom;
-    () => void scrollToBottom;
-    () => void disableAutoScroll;
-    UUID | undefined finalChannelId;
-    std::optional<(agentId: UUID) => Partial<Agent> | undefined> getAgentInMessage;
-    std::optional<std::unordered_map<UUID, string | null>> agentAvatarMap;
-    (messageId: string) => void onDeleteMessage;
-    (messageText: string) => void onRetryMessage;
-    std::optional<UUID | null> selectedGroupAgentId;
+    UUID finalChannelId;
+    std::optional<std::optional<UUID>> selectedGroupAgentId;
 };
 
   // Filter messages based on selected agent in group chat

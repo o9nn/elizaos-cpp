@@ -1,3 +1,10 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include "actions/getChainTvlHistory.action.hpp"
 #include "actions/getProtocolSlug.action.hpp"
 #include "actions/getProtocolTvl.action.hpp"
@@ -5,13 +12,6 @@
 #include "actions/getYieldHistory.action.hpp"
 #include "actions/getYieldRates.action.hpp"
 #include "services/defillama.service.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 

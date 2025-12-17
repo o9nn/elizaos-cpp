@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -32,7 +33,7 @@ struct SceneDescription {
     std::vector<PersonInfo> people;
     bool sceneChanged;
     double changePercentage;
-    std::optional<string; // Latest audio transcription> audioTranscription;
+    std::optional<std::string> audioTranscription;
 };
 
 struct DetectedObject {
@@ -44,13 +45,11 @@ struct DetectedObject {
 
 struct PersonInfo {
     std::string id;
-    'sitting' | 'standing' | 'lying' | 'unknown' pose;
-    'camera' | 'away' | 'left' | 'right' | 'unknown' facing;
+    std::variant<'sitting', 'standing', 'lying', 'unknown'> pose;
+    std::variant<'camera', 'away', 'left', 'right', 'unknown'> facing;
     double confidence;
     BoundingBox boundingBox;
-    std::optional<Array<{> keypoints;
     std::string part;
-    { x: number; y: number } position;
     double score;
 };
 
@@ -66,15 +65,11 @@ struct VisionFrame {
     double width;
     double height;
     Buffer data;
-    'rgb' | 'rgba' | 'jpeg' | 'png' format;
+    std::variant<'rgb', 'rgba', 'jpeg', 'png'> format;
 };
 
 // Vision modes
 enum VisionMode {
-  OFF = 'OFF',
-  CAMERA = 'CAMERA',
-  SCREEN = 'SCREEN',
-  BOTH = 'BOTH',
 }
 
 // Screen capture types
@@ -109,11 +104,9 @@ struct TileAnalysis {
 
 struct Florence2Result {
     std::optional<std::string> caption;
-    std::optional<Array<{> objects;
     std::string label;
     BoundingBox bbox;
     double confidence;
-    std::optional<Array<{> regions;
     std::string description;
     BoundingBox bbox;
     std::optional<std::vector<std::string>> tags;
@@ -121,11 +114,9 @@ struct Florence2Result {
 
 struct OCRResult {
     std::string text;
-    Array<{ blocks;
     std::string text;
     BoundingBox bbox;
     double confidence;
-    std::optional<Array<{> words;
     std::string text;
     BoundingBox bbox;
     double confidence;
@@ -133,20 +124,6 @@ struct OCRResult {
 };
 
 // Enhanced scene description with screen data
-interface EnhancedSceneDescription extends SceneDescription {
-  screenCapture?: ScreenCapture;
-  screenAnalysis?: {
-    fullScreenOCR?: string;
-    activeTile?: TileAnalysis;
-    gridSummary?: string;
-    focusedApp?: string;
-    uiElements?: Array<{
-      type: string;
-      text: string;
-      position: BoundingBox;
-    }>;
-  };
-}
 
 // Update VisionConfig
 struct VisionConfig {
@@ -160,20 +137,18 @@ struct VisionConfig {
     std::optional<double> tfChangeThreshold;
     std::optional<double> vlmChangeThreshold;
     std::optional<VisionMode> visionMode;
-    std::optional<number; // ms between screen captures> screenCaptureInterval;
-    std::optional<number; // Size of tiles (e.g., 256 for 256x256)> tileSize;
-    std::optional<'sequential' | 'priority' | 'random'> tileProcessingOrder;
+    std::optional<double> screenCaptureInterval;
+    std::optional<double> tileSize;
+    std::optional<std::variant<'sequential', 'priority', 'random'>> tileProcessingOrder;
     std::optional<bool> ocrEnabled;
     std::optional<bool> florence2Enabled;
-    std::optional<{> screenRegion;
     double x;
     double y;
     double width;
     double height;
-    std::optional<number; // Specific display to capture> displayIndex;
-    std::optional<boolean; // Cycle through all displays> captureAllDisplays;
-    std::optional<number; // Target FPS for screen capture> targetScreenFPS;
-    std::optional<Array<{> textRegions;
+    std::optional<double> displayIndex;
+    std::optional<bool> captureAllDisplays;
+    std::optional<double> targetScreenFPS;
     double x;
     double y;
     double width;
@@ -183,7 +158,7 @@ struct VisionConfig {
 // Entity tracking types
 struct TrackedEntity {
     std::string id;
-    'person' | 'object' | 'pet' entityType;
+    std::variant<'person', 'object', 'pet'> entityType;
     double firstSeen;
     double lastSeen;
     BoundingBox lastPosition;
@@ -197,10 +172,8 @@ struct EntityAppearance {
     double timestamp;
     BoundingBox boundingBox;
     double confidence;
-    std::optional<number[]; // Face embedding for person recognition> embedding;
-    std::optional<Array<{> keypoints;
+    std::optional<std::vector<double>> embedding;
     std::string part;
-    { x: number; y: number } position;
     double score;
 };
 
@@ -213,24 +186,21 @@ struct EntityAttributes {
     std::optional<std::vector<std::string>> accessories;
     std::optional<std::string> objectType;
     std::optional<std::string> color;
-    std::optional<'small' | 'medium' | 'large'> size;
+    std::optional<std::variant<'small', 'medium', 'large'>> size;
     std::optional<std::string> description;
     std::optional<std::vector<std::string>> tags;
 };
 
 struct FaceLibrary {
-    std::unordered_map<std::string, FaceProfile> faces;
-    std::unordered_map<std::string, std::vector<std::vector<double>>> embeddings;
 };
 
 struct FaceProfile {
     std::string id;
     std::optional<std::string> name;
-    number[][]; // Multiple embeddings for better recognition embeddings;
+    std::vector<std::vector<double>> embeddings;
     double firstSeen;
     double lastSeen;
     double seenCount;
-    std::optional<{> attributes;
     std::optional<std::string> age;
     std::optional<std::string> gender;
     std::optional<std::string> emotion;
@@ -238,10 +208,8 @@ struct FaceProfile {
 
 struct WorldState {
     std::string worldId;
-    std::unordered_map<std::string, TrackedEntity> entities;
     double lastUpdate;
-    string[]; // Currently visible activeEntities;
-    Array<{ recentlyLeft;
+    std::vector<std::string> activeEntities;
     std::string entityId;
     double leftAt;
     BoundingBox lastPosition;

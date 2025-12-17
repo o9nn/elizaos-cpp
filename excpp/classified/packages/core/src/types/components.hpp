@@ -1,10 +1,13 @@
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -23,17 +26,17 @@ struct ActionExample {
 /**
  * Callback function type for handlers
  */
-using HandlerCallback = (response: Content, files?: any) => Promise<Memory[]>;
+using HandlerCallback = std::function<std::future<std::vector<Memory>>(Content, std::any)>;
 
 /**
  * Handler function type for processing messages
  */
-using Handler = std::variant<(
+using Handler = std::variant<std::function<Promise<ActionResult(IAgentRuntime, Memory, State, std::any, HandlerCallback, std::vector<Memory>)>, void, undefined>>;
 
 /**
  * Validator function type for actions/evaluators
  */
-using Validator = (
+using Validator = std::function<std::future<bool>(IAgentRuntime, Memory, State)>;
 
 /**
  * Represents an action the agent can perform
@@ -70,8 +73,6 @@ struct Evaluator {
 };
 
 struct ProviderResult {
-    std::optional<{> values;
-    std::optional<{> data;
     std::optional<std::string> text;
 };
 
@@ -84,7 +85,6 @@ struct Provider {
     std::optional<bool> dynamic;
     std::optional<double> position;
     std::optional<bool> private;
-    (runtime: IAgentRuntime, message: Memory, state: State) => Promise<ProviderResult> get;
 };
 
 /**
@@ -93,10 +93,8 @@ struct Provider {
  */
 struct ActionResult {
     std::optional<std::string> text;
-    std::optional<std::unordered_map<std::string, std::any>> values;
-    std::optional<std::unordered_map<std::string, std::any>> data;
     bool success;
-    std::optional<string | Error> error;
+    std::optional<std::variant<std::string, Error>> error;
 };
 
 /**
@@ -105,7 +103,6 @@ struct ActionResult {
  */
 struct ActionContext {
     std::vector<ActionResult> previousResults;
-    std::optional<(actionName: string) => ActionResult | undefined> getPreviousResult;
 };
 
 /**

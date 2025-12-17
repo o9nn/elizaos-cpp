@@ -1,11 +1,13 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -19,41 +21,19 @@ namespace elizaos {
 std::future<void> initializeCanvas();
 
 class FaceRecognition {
-  private initialized = false;
-  private faceLibrary: FaceLibrary = {
-    faces: new Map(),
-    embeddings: new Map(),
-  };
-
-  // Thresholds
-
-      // Initialize canvas first
-      await initializeCanvas();
-
-      // Load face-api.js models
-
-    // Validate input parameters
-
-    // Validate that the buffer size matches expected dimensions
-
-    // Create canvas from image data
-
-    // Detect faces with full analysis
-
-    // Compare with all known faces
-
-    // Check if this face already exists
-
-      // Update existing profile
-
-      // Add new embedding for better recognition
-        // Keep up to 10 embeddings per person
-
-      // Update attributes if provided
-
-      // Create new profile
-
-  // Persistence methods
+public:
+    std::future<void> initialize();
+    Array< detectFaces(Buffer imageData, double width, double height);
+    void if(auto !this.initialized);
+    Promise< recognizeFace(Float32Array descriptor);
+    void for(auto const [profileId, auto embeddings] of this.faceLibrary.embeddings);
+    std::future<std::string> addOrUpdateFace(Float32Array descriptor, std::optional<std::optional<FaceProfile>> attributes);
+    FaceProfile getFaceProfile(const std::string& profileId);
+    std::vector<FaceProfile> getAllProfiles();
+    double euclideanDistance(const std::variant<Float32Array, std::vector<double>>& a, const std::vector<double>& b);
+    std::future<void> saveFaceLibrary(const std::string& path);
+    std::future<void> loadFaceLibrary(const std::string& path);
+};
 
 
 } // namespace elizaos

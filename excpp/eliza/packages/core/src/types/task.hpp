@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -19,9 +19,8 @@ namespace elizaos {
  */
 struct TaskWorker {
     std::string name;
-    ( execute;
-    IAgentRuntime runtime;
-    { [key: string]: unknown } options;
+    Task task;
+};
 
 /**
  * Defines metadata associated with a `Task`.

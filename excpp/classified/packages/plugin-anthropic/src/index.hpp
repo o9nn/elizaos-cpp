@@ -1,12 +1,13 @@
-#include "elizaos/core.hpp"
-#include "utils.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
+#include "utils.hpp"
 
 namespace elizaos {
 
@@ -19,21 +20,13 @@ namespace elizaos {
  * Validation service for Anthropic plugin
  * Provides runtime validation for API key availability
  */
-class AnthropicValidationService extends Service {
-  static override serviceType: ServiceTypeName = 'anthropic-validation' as ServiceTypeName;
-  static serviceName = 'anthropic-validation';
-
-  override capabilityDescription = 'Validates Anthropic plugin configuration and API availability';
-
-  constructor(runtime: IAgentRuntime) {
-    super(runtime);
-  }
-
-    // No cleanup needed
-
-  /**
-   * Check if Anthropic is properly configured and available
-   */
+class AnthropicValidationService {
+public:
+    AnthropicValidationService(IAgentRuntime runtime);
+    std::future<AnthropicValidationService> start(IAgentRuntime runtime);
+    std::future<void> stop();
+    std::future<bool> isValid();
+};
 
 /**
  * Retrieves a configuration setting from the runtime, falling back to environment variables or a default value if not found.
@@ -42,6 +35,7 @@ class AnthropicValidationService extends Service {
  * @param defaultValue - The value to return if the setting is not found in the runtime or environment.
  * @returns The resolved setting value, or {@link defaultValue} if not found.
  */
+std::string getSetting(IAgentRuntime runtime, const std::string& key, std::optional<std::string> defaultValue);
 
 /**
  * Helper function to get the API key for Anthropic
@@ -49,6 +43,7 @@ class AnthropicValidationService extends Service {
  * @param runtime The runtime context
  * @returns The configured API key
  */
+std::string getApiKey(IAgentRuntime runtime);
 
 /**
  * Helper function to get the experimental telemetry setting

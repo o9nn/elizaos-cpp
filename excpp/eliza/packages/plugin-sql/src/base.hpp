@@ -1,13 +1,13 @@
-#include "elizaos/core.hpp"
-#include "schema/embedding.hpp"
-#include "schema/index.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
+#include "schema/embedding.hpp"
+#include "schema/index.hpp"
 
 namespace elizaos {
 
@@ -16,7 +16,6 @@ namespace elizaos {
 
 
 
-// Define the metadata type inline since we can't import it
 /**
  * Represents metadata information about memory.
  * @typedef {Object} MemoryMetadata

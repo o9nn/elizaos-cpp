@@ -1,14 +1,14 @@
-#include "bun-exec.hpp"
-#include "directory-detection.hpp"
-#include "elizaos/core.hpp"
-#include "spinner-utils.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "bun-exec.hpp"
+#include "directory-detection.hpp"
+#include "elizaos/core.hpp"
+#include "spinner-utils.hpp"
 
 namespace elizaos {
 

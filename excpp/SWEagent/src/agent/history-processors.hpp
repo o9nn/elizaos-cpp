@@ -1,11 +1,12 @@
-#include ".types.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".types.hpp"
 
 namespace elizaos {
 
@@ -23,7 +24,6 @@ namespace elizaos {
  */
 struct AbstractHistoryProcessor {
     std::optional<std::string> type;
-    std::optional<(history: History) => History> process;
 };
 
 /**
@@ -44,111 +44,91 @@ void addCacheControlToEntry(HistoryItem entry);
  * Default history processor that returns history unchanged
  */
 class DefaultHistoryProcessor {
-  type: 'default' = 'default';
-
-  process(history: History): History {
-    return history;
-  }
+public:
+    History process(History history);
+};
 
 /**
  * Elide all but the last n observations
  */
 class LastNObservations {
-  type: 'last_n_observations' = 'last_n_observations';
-  n: number;
+public:
+    LastNObservations(std::optional<std::any> config);
+    History process(History history);
 
-  constructor(config: { n?: number }) {
-    this.n = config.n || 5;
-  }
-
-    // Find instance template index (usually second entry)
-
-    // Collect all observation indices (excluding instance template)
-
-    // Determine which observations to keep (last N + 1 for instance template allowance)
-      // Keep n+1 observations (the +1 accounts for preserving space for instance template)
-
-    // Build result, eliding observations not in toKeep
-
-        // Elide this observation
+private:
+    double n_;
+};
 
 /**
  * Tag tool call observations for better formatting
  */
 class TagToolCallObservations {
-  type: 'tag_tool_call_observations' = 'tag_tool_call_observations';
-  private tags: Set<string>;
-  private functionNames: Set<string>;
+public:
+    TagToolCallObservations(std::optional<std::any> config);
+    History process(History history);
+    bool shouldTag(const std::string& action);
 
-  constructor(config?: { tags?: Set<string>; functionNames?: Set<string> }) {
-    this.tags = config?.tags || new Set();
-    this.functionNames = config?.functionNames || new Set();
-  }
-
-        // Add tags to entries with matching actions
-          // Preserve existing tags and add new ones
+private:
+    std::unordered_set<std::string> tags_;
+    std::unordered_set<std::string> functionNames_;
+};
 
 /**
  * Apply closed window processing to history
  */
 class ClosedWindowHistoryProcessor {
-  type: 'closed_window' = 'closed_window';
-  windowSize: number;
+public:
+    ClosedWindowHistoryProcessor(std::optional<std::any> config);
+    History process(History history);
 
-  constructor(config?: { windowSize?: number }) {
-    this.windowSize = config?.windowSize || 10;
-  }
-
-    // Keep first message and last windowSize messages
-
-    // Add ellipsis message
+private:
+    double windowSize_;
+};
 
 /**
  * Process history with cache control for Anthropic models
  */
 class CacheControlHistoryProcessor {
-  type: 'cache_control' = 'cache_control';
-  cacheLastN: number;
+public:
+    CacheControlHistoryProcessor(std::optional<std::any> config);
+    History process(History history);
 
-  constructor(config: { cacheLastN?: number }) {
-    this.cacheLastN = config.cacheLastN || 5;
-  }
-
-    // Add cache control to last N messages
+private:
+    double cacheLastN_;
+};
 
 /**
  * Remove content matching regex patterns
  */
 class RemoveRegex {
-  type: 'remove_regex' = 'remove_regex';
-  patterns: RegExp[];
+public:
+    RemoveRegex(std::optional<std::any> config);
+    History process(History history);
 
-  constructor(config: { patterns?: string[] }) {
-    this.patterns = (config.patterns || []).map((p: string) => new RegExp(p, 'g'));
-  }
-
-      // Apply all regex patterns
-
-        // Preserve images if any
+private:
+    std::vector<RegExp> patterns_;
+};
 
 /**
  * Parse images in history content
  */
 class ImageParsingHistoryProcessor {
-  type: 'image_parsing' = 'image_parsing';
-  pattern: RegExp;
-  allowedMimeTypes: Set<string>;
+public:
+    ImageParsingHistoryProcessor(std::optional<std::any> config);
+    History process(History history);
+    Array< parseImageContent(const std::string& content);
+    void if(auto text);
 
-  constructor(config?: { allowedMimeTypes?: string[] }) {
-    // Pattern to match base64 images
-    this.pattern = /(!?\[([^\]]*)\])\(data:(image\/[^;]+);base64,([^)]+)\)/g;
-    this.allowedMimeTypes = new Set(config?.allowedMimeTypes || ['image/png', 'image/jpeg', 'image/gif', 'image/webp']);
-  }
+private:
+    RegExp pattern_;
+    std::unordered_set<std::string> allowedMimeTypes_;
+};
 
 /**
  * Create a history processor from configuration
  */
-AbstractHistoryProcessor createHistoryProcessor({ type: string; [key: string]: unknown } config);
+AbstractHistoryProcessor createHistoryProcessor(const std::any& config);
 
 /**
  * Chain multiple history processors

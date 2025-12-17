@@ -1,15 +1,15 @@
-#include "actions/swap.hpp"
-#include "actions/transfer.hpp"
-#include "constants.hpp"
-#include "providers/wallet.hpp"
-#include "service.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "actions/swap.hpp"
+#include "actions/transfer.hpp"
+#include "constants.hpp"
+#include "providers/wallet.hpp"
+#include "service.hpp"
 
 namespace elizaos {
 

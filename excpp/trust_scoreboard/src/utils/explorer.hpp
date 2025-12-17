@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -13,5 +14,5 @@ namespace elizaos {
 
 
 
-void getExplorerUrl(const std::string& endpoint, 'inspector' | PublicKey | string viewTypeOrItemAddress, auto itemType = 'address' // | 'tx' | 'block');
+void getExplorerUrl(const std::string& endpoint, const std::variant<'inspector', PublicKey, std::string>& viewTypeOrItemAddress, auto itemType = 'address' // | 'tx' | 'block');
 } // namespace elizaos

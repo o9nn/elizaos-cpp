@@ -1,12 +1,14 @@
-#include ".monitoring/logger.hpp"
-#include ".monitoring/metrics.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include ".monitoring/logger.hpp"
+#include ".monitoring/metrics.hpp"
 
 namespace elizaos {
 
@@ -23,39 +25,13 @@ struct UserSession {
 };
 
 class EnhancedAnalytics {
-  static async trackProjectView(
-    projectId: string,
-    session: UserSession,
-    referrer?: string
-  ) {
-    try {
-      const [view, sessionData] = await Promise.all([
-        prisma.projectView.create({
-          data: {
-            projectId,
-            userId: session.userId,
-            sessionId: session.sessionId,
-            userAgent: session.userAgent,
-            ipAddress: session.ipAddress,
-            referrer,
-            timestamp: new Date()
-          }
-        }),
-        this.updateSessionData(session)
-      ]);
-
-      await MetricsService.recordProjectView(projectId, session.userId);
-      logger.info('Project view tracked', { projectId, sessionId: session.sessionId });
-
-      return view;
-    } catch (error) {
-      logger.error('Error tracking project view', { error, projectId });
-      throw error;
-    }
-  }
-
-    // Complex trend analysis using time series data
-
-    // Calculate moving averages and growth rates
-
+public:
+    void trackProjectView(const std::string& projectId, UserSession session, std::optional<std::string> referrer);
+    void trackUserBehavior(const std::variant<'click', 'scroll', 'hover'>& type, Record<string data, auto any>, UserSession session);
+    void getProjectInsights(const std::string& projectId);
+    void getViewStats(const std::string& projectId);
+    void getTrendAnalysis(const std::string& projectId);
+    void calculateTrends(const std::vector<std::any>& timeSeriesData);
+};
+ 
 } // namespace elizaos

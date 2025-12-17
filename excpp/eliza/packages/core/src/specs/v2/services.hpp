@@ -1,13 +1,13 @@
-#include "..services.hpp"
-#include "..types.hpp"
-#include "types.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "..services.hpp"
+#include "..types.hpp"
+#include "types.hpp"
 
 namespace elizaos {
 

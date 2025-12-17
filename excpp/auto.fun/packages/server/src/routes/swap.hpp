@@ -1,14 +1,14 @@
-#include ".chart.hpp"
-#include ".db.hpp"
-#include ".redis.hpp"
-#include ".util.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".chart.hpp"
+#include ".db.hpp"
+#include ".redis.hpp"
+#include ".util.hpp"
 
 namespace elizaos {
 

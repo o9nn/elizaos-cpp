@@ -1,11 +1,12 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -15,55 +16,19 @@ namespace elizaos {
 
 
 class StagehandProcessManager {
-  private process: ChildProcess | null = null;
-  private isRunning = false;
-  private serverPort: number;
-  private binaryPath: string | null = null;
+public:
+    StagehandProcessManager(number = 3456 serverPort);
+     getBinaryName();
+    std::optional<std::string> findBinary();
+    std::future<void> start();
+    std::future<void> waitForServer();
+    std::future<void> stop();
+    bool isServerRunning();
+    std::string getServerUrl();
 
-  constructor(serverPort: number = 3456) {
-    this.serverPort = serverPort;
-    this.binaryPath = this.findBinary();
-  }
-
-    // Try architecture-specific binary first, then fall back to platform-only
-
-    // Get the directory where this module is located
-
-    // Check if we're in a Docker container
-
-    // Possible locations for the binary
-      // Docker/container paths first
-
-      // For local dev, prioritize JS version to avoid signing issues on macOS
-
-      // When running from plugin directory - arch-specific first
-      // When packaged with agentserver
-      // When in node_modules
-      // Development fallback - run via node
-      // Docker fallback - if binary not found, try JS file
-
-    // If no binary found, check if we can run from source
-
-        // Pass through relevant environment variables
-        // Pass through display for headful mode in container
-
-      // Determine if we're running a binary, JS file, or TS file
-
-        // Run the binary directly
-        // Run TypeScript via tsx (development mode)
-        // Run via node (JS file)
-
-        // Check if server is ready
-
-      // Wait for server to be ready
-
-        // Try to establish WebSocket connection for health check
-
-        // Server not ready yet, continue waiting
-
-      // Try graceful shutdown first
-
-      // Force kill after timeout
+private:
+    double serverPort_;
+};
 
 
 } // namespace elizaos

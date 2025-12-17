@@ -1,12 +1,12 @@
-#include "elizaos/core.hpp"
-#include "providers/recentMessages.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
+#include "providers/recentMessages.hpp"
 
 namespace elizaos {
 
@@ -20,6 +20,7 @@ namespace elizaos {
  * @param text The input string potentially containing the <response> tag.
  * @returns The extracted text content, or null if the tag is not found or empty.
  */
+std::optional<std::string> extractResponseText(const std::string& text);
 
 /**
  * Represents media data containing a buffer of data and the media type.
@@ -131,10 +132,6 @@ std::string sanitizeJson(const std::string& rawJson);
 
       // Message sent tracking
 
-      await handleServerSync(payload);
-
-      await handleServerSync(payload);
-
         // Update entity to inactive
 
 // Get the current file's directory
@@ -169,14 +166,11 @@ std::vector<std::string> loadDocumentation(const std::string& directoryPath);
  * @param {Evaluator[]} [param.evaluators] - Optional array of evaluators to register.
  */
 
-    await initCharacter({ runtime });
-
       // get absolute path of workspaceRoot
 
       // check if any part of the path includes eliza/packages
 
                 // TODO: addKnowledge method not available in current IAgentRuntime interface
-                // await runtime.addKnowledge(
                 //   knowledgeItem,
                 //   defaultKnowledgeOptions,
                 // );

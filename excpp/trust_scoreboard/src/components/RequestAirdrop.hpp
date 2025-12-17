@@ -1,12 +1,12 @@
-#include ".stores/useUserSOLBalanceStore.hpp"
-#include ".utils/notifications.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".stores/useUserSOLBalanceStore.hpp"
+#include ".utils/notifications.hpp"
 
 namespace elizaos {
 

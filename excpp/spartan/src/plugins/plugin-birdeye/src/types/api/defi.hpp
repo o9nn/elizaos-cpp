@@ -1,10 +1,12 @@
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -15,7 +17,6 @@ namespace elizaos {
 // Network Types
 struct DefiNetworksResponse {
     bool success;
-    { data;
     std::vector<std::string> chains;
 };
 
@@ -28,7 +29,6 @@ struct DefiPriceParams {
 
 struct DefiPriceResponse {
     bool success;
-    { data;
     double value;
     std::optional<double> updateUnixTime;
     std::optional<std::string> updateHumanTime;
@@ -44,7 +44,6 @@ struct DefiMultiPriceParams {
 
 struct DefiMultiPriceResponse {
     bool success;
-    { data;
     std::optional<double> value;
     std::optional<double> updateUnixTime;
     std::optional<std::string> updateHumanTime;
@@ -61,7 +60,7 @@ struct DefiMultiPriceParamsPOST {
 // History Price Types
 struct DefiHistoryPriceParams {
     std::string address;
-    "token" | "pair" address_type;
+    std::variant<"token", "pair"> address_type;
     TimeInterval type;
     std::optional<double> time_from;
     std::optional<double> time_to;
@@ -69,8 +68,6 @@ struct DefiHistoryPriceParams {
 
 struct DefiHistoryPriceResponse {
     bool success;
-    { data;
-    Array<{ items;
     std::optional<double> unixTime;
     std::optional<double> value;
 };
@@ -83,7 +80,6 @@ struct HistoricalPriceUnixParams {
 
 struct HistoricalPriceUnixResponse {
     bool success;
-    { data;
     std::optional<double> value;
     std::optional<double> updateUnixTime;
     std::optional<std::string> priceChange24h;
@@ -99,8 +95,6 @@ struct OHLCVParams {
 
 struct OHLCVResponse {
     bool success;
-    { data;
-    Array<{ items;
     std::optional<double> unixTime;
     std::optional<std::string> address;
     std::optional<TimeInterval> type;
@@ -119,7 +113,6 @@ struct PriceVolumeParams {
 
 struct PriceVolumeResponse {
     bool success;
-    { data;
     std::optional<double> price;
     std::optional<double> updateUnixTime;
     std::optional<std::string> updateHumanTime;
@@ -136,7 +129,6 @@ struct MultiPriceVolumeParams {
 
 struct MultiPriceVolumeResponse {
     bool success;
-    { data;
     std::optional<double> price;
     std::optional<double> updateUnixTime;
     std::optional<std::string> updateHumanTime;
@@ -156,7 +148,6 @@ struct BaseQuoteParams {
 
 struct BaseQuoteResponse {
     bool success;
-    { data;
     std::optional<double> unixTime;
     std::optional<double> vBase;
     std::optional<double> vQuote;
@@ -171,8 +162,8 @@ struct DefiTradesTokenParams {
     std::string address;
     std::optional<double> limit;
     std::optional<double> offset;
-    std::optional<"swap" | "add" | "remove" | "all"> tx_type;
-    std::optional<"asc" | "desc"> sort_type;
+    std::optional<std::variant<"swap", "add", "remove", "all">> tx_type;
+    std::optional<std::variant<"asc", "desc">> sort_type;
     std::optional<double> before_time;
     std::optional<double> after_time;
 };
@@ -183,32 +174,30 @@ struct DefiTradesTokenInfo {
     std::string address;
     double amount;
     double uiAmount;
-    number | null price;
-    number | null nearestPrice;
+    std::optional<double> price;
+    std::optional<double> nearestPrice;
     double changeAmount;
     double uiChangeAmount;
-    std::optional<any | null> feeInfo;
+    std::optional<std::optional<std::any>> feeInfo;
 };
 
 struct DefiTradesTokenResponse {
     bool success;
-    { data;
-    Array<{ items;
     std::optional<DefiTradesTokenInfo> quote;
     std::optional<DefiTradesTokenInfo> base;
-    std::optional<number | null> basePrice;
-    std::optional<number | null> quotePrice;
+    std::optional<std::optional<double>> basePrice;
+    std::optional<std::optional<double>> quotePrice;
     std::optional<std::string> txHash;
     std::optional<std::string> source;
     std::optional<double> blockUnixTime;
     std::optional<std::string> txType;
     std::optional<std::string> owner;
     std::optional<std::string> side;
-    std::optional<string | null> alias;
+    std::optional<std::optional<std::string>> alias;
     std::optional<double> pricePair;
     std::optional<DefiTradesTokenInfo> from;
     std::optional<DefiTradesTokenInfo> to;
-    std::optional<number | null> tokenPrice;
+    std::optional<std::optional<double>> tokenPrice;
     std::optional<std::string> poolId;
     std::optional<bool> hasNext;
 };

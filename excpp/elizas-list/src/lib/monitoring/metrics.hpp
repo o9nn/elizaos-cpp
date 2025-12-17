@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -12,7 +12,10 @@ namespace elizaos {
 // Manual refinement required for production use
 
 class MetricsService {
-  private static metrics: Record<string, number> = {};
-
-
+public:
+    void recordApiLatency(const std::string& path, double latency);
+    void recordProjectView(const std::string& projectId, std::optional<std::string> userId);
+    void getMetrics();
+};
+ 
 } // namespace elizaos

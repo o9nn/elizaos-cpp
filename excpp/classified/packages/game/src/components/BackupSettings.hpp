@@ -1,11 +1,12 @@
-#include ".services/TauriService.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include ".services/TauriService.hpp"
 
 namespace elizaos {
 
@@ -17,13 +18,11 @@ namespace elizaos {
 struct Backup {
     std::string id;
     std::string timestamp;
-    'manual' | 'automatic' | 'shutdown' backup_type;
+    std::variant<'manual', 'automatic', 'shutdown'> backup_type;
     double size_bytes;
-    Array<{ components;
     std::string name;
     std::string component_type;
     double size_bytes;
-    { metadata;
     std::string agent_name;
     std::string eliza_version;
     std::optional<std::string> notes;
@@ -43,12 +42,6 @@ struct RestoreOptions {
     bool restore_logs;
     bool force;
 };
-
-      await fetchBackups();
-
-          await fetchBackups();
-
-        await fetchBackups();
 
 
 } // namespace elizaos

@@ -1,13 +1,13 @@
-#include ".service.hpp"
-#include ".systems/actions.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".service.hpp"
+#include ".systems/actions.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -15,8 +15,6 @@ namespace elizaos {
 // Manual refinement required for production use
 
 
-
-        await callback({ text: "Error: Cannot unuse item. Required systems are unavailable." });
 
   
 } // namespace elizaos

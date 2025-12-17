@@ -1,12 +1,14 @@
-#include ".types.hpp"
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".types.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -16,25 +18,14 @@ namespace elizaos {
 
 
 class TransactionMonitor {
-  private pendingTransactions: Map<string, TransactionStatus> = new Map();
-  private listeners: Map<string, ((status: TransactionStatus) => void)[]> =
-    new Map();
+public:
+    void addTransaction(const std::string& hash);
+    void updateTransaction(const std::string& hash, const std::optional<TransactionStatus>& status);
+    TransactionStatus getTransaction(const std::string& hash);
+    std::future<TransactionStatus> waitForTransaction(const std::string& hash, const std::any& provider, number = 1 confirmations);
+};
 
-  addTransaction(hash: string): void {
-    this.pendingTransactions.set(hash, {
-      hash,
-      status: "pending",
-      confirmations: 0,
-    });
-  }
-
-    // Notify listeners
-
-    // Remove if completed
-
-          // Check again in 5 seconds
-
-bigint estimateGasWithBuffer(bigint estimatedGas, number = 1.2 buffer);
+bigint estimateGasWithBuffer(bigint estimatedGas, number = 1::2 buffer);
 
 
 } // namespace elizaos

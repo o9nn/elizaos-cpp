@@ -1,12 +1,14 @@
-#include "..settings.hpp"
-#include "..types.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "..settings.hpp"
+#include "..types.hpp"
 
 namespace elizaos {
 
@@ -76,12 +78,10 @@ std::future<bool> updateWorldSettings(IAgentRuntime runtime, const std::string& 
 /**
  * Gets settings state from world metadata
  */
-std::future<WorldSettings | null> getWorldSettings(IAgentRuntime runtime, const std::string& serverId);
 
 /**
  * Initializes settings configuration for a server
  */
-std::future<WorldSettings | null> initializeOnboarding(IAgentRuntime runtime, World world, OnboardingConfig config);
 
 /**
  * Encrypts sensitive data in a Character object

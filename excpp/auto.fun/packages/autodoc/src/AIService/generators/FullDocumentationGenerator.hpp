@@ -1,15 +1,17 @@
-#include "..TypeScriptParser.js.hpp"
-#include "..utils/prompts.js.hpp"
-#include ".AIService.js.hpp"
-#include ".utils/CodeFormatter.js.hpp"
-#include ".utils/DocumentOrganizer.js.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "..TypeScriptParser.js.hpp"
+#include "..utils/prompts.js.hpp"
+#include ".AIService.js.hpp"
+#include ".utils/CodeFormatter.js.hpp"
+#include ".utils/DocumentOrganizer.js.hpp"
 
 namespace elizaos {
 
@@ -57,74 +59,29 @@ struct Troubleshooting {
  */
 
 class FullDocumentationGenerator {
-  private typeScriptParser: TypeScriptParser;
-  private codeFormatter: CodeFormatter;
-  private documentOrganizer: DocumentOrganizer;
-  private aiService: AIService;
-
-  /**
-   * Constructor for initializing the ChatOpenAI instance.
-   *
-   * @param {Configuration} configuration - The configuration instance to be used
-   * @throws {Error} If OPENAI_API_KEY environment variable is not set
-   */
-  /**
-   * Constructor for initializing a new Instance.
-   *
-   * @param {Configuration} configuration - The configuration for the instance.
-   */
-  constructor(private configuration: Configuration) {
-    this.typeScriptParser = new TypeScriptParser();
-    this.codeFormatter = new CodeFormatter();
-    this.documentOrganizer = new DocumentOrganizer();
-    this.aiService = new AIService(configuration);
-  }
-
-    // Generate overview, FAQ, and troubleshooting together
-
-    // Format the FAQ and troubleshooting sections
-
-    // Remove markdown code block syntax if present
-
-                   // other configuration...
-                       // other plugins...
-
-    // write fileGroups to a json file
-
-    // Generate documentation for each file without individual intros
-
-  /**
-   * Generates troubleshooting guide based on documentation and common patterns
-   */
-  // toDo - integrate w/ @Jin's discord scraper to pull solutions for known issues
-
-    // Add TypeScript code block for the file path to indicate it's a TypeScript module
-
-  /**
-   * Generates TODO section documentation from found TODO comments
-   */
-  // toDo - integrate w/ @Jin's discord scraper to auto create GH issues/bounties
-
-    // Remove leading ./ if present
-
-    // Ensure the path has .ts extension
-
-    // Join with the absolute path and src directory
-
-  ///////////////////////////////
-  /// Eliza Specific Constructs//
-  ///////////////////////////////
-
-      // Remove ./ prefix and ensure path includes src directory and .ts extension
-
-        // Use PROMPT_TEMPLATES.actionDoc
-
-      // Remove ./ prefix and ensure path includes src directory and .ts extension
-
-        // Create a provider object with relevant information
-          // Extract provider properties
-
-      // Remove ./ prefix and ensure path includes src directory and .ts extension
+public:
+    FullDocumentationGenerator(Configuration private configuration);
+    std::future<PluginDocumentation> generatePluginDocumentation(auto {
+    existingDocs, auto packageJson, auto todoItems, auto envUsages, const std::any& });
+    std::string formatOverviewSection(const std::any& overview);
+    std::string formatFAQSection(const std::vector<FAQ>& faq);
+    std::string formatTroubleshootingSection(Troubleshooting troubleshooting);
+    std::future<std::string> generateOverview(OrganizedDocs docs, const std::any& packageJson);
+    std::string cleanJSONResponse(const std::string& response);
+    std::future<std::string> generateInstallation(const std::any& packageJson);
+    std::future<std::string> generateBasicInstallPrompt(const std::any& packageJson);
+    std::future<std::string> generateConfiguration(const std::vector<EnvUsage>& envUsages);
+    std::future<std::string> generateUsage(OrganizedDocs docs, const std::any& _packageJson);
+    std::future<std::string> generateApiReference(OrganizedDocs docs);
+    std::future<std::string> generateTroubleshooting(OrganizedDocs docs, const std::any& packageJson);
+    std::future<std::string> generateFileUsageDoc(FileDocsGroup fileGroup);
+    std::future<std::string> generateFileApiDoc(FileDocsGroup fileGroup);
+    std::future<std::string> generateProviderDoc(const std::any& provider);
+    std::future<TodoSection> generateTodoSection(const std::vector<TodoItem>& todoItems);
+    std::string resolveTypeScriptFilePath(const std::string& file);
+    std::future<std::string> generateActionsDocumentation(const std::vector<std::string>& actionsFiles);
+    std::future<std::string> generateProvidersDocumentation(const std::vector<std::string>& providersFiles);
+    std::future<std::string> generateEvaluatorsDocumentation(const std::vector<std::string>& evaluatorsFiles);
 
 
 } // namespace elizaos

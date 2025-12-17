@@ -1,13 +1,13 @@
-#include "directory-detection.hpp"
-#include "elizaos/core.hpp"
-#include "run-bun.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "directory-detection.hpp"
+#include "elizaos/core.hpp"
+#include "run-bun.hpp"
 
 namespace elizaos {
 
@@ -36,12 +36,9 @@ namespace elizaos {
     // Read package.json (we already validated it exists)
       // Package has a build script, use bun to run it
 
-        await runBunCommand(['run', 'build'], cwd);
-
     // If we get here, no build script was found
 
     // For TypeScript projects, try tsc with bunx
-        await execa('bunx', ['tsc', '--build'], { cwd, stdio: 'inherit' });
 
     // If all else fails, throw an error
 

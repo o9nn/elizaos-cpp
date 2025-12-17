@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -17,8 +17,8 @@ namespace elizaos {
  */
 
 struct ModelPricing {
-    number; // Cost per 1000 input tokens in USD inputCostPer1k;
-    number; // Cost per 1000 output tokens in USD outputCostPer1k;
+    double inputCostPer1k;
+    double outputCostPer1k;
     std::optional<double> maxInputTokens;
     std::optional<double> maxOutputTokens;
     std::string provider;

@@ -1,11 +1,12 @@
-#include ".ui/bullet.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include ".ui/bullet.hpp"
 
 namespace elizaos {
 

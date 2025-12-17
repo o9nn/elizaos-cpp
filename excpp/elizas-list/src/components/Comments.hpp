@@ -1,10 +1,11 @@
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -17,11 +18,10 @@ struct Comment {
     std::string id;
     std::string content;
     std::string createdAt;
-    { user;
     std::string name;
     std::string image;
 };
 
-void Comments({ projectId: string } { projectId });
+void Comments(const std::any& { projectId });
 
 } // namespace elizaos

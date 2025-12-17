@@ -1,3 +1,11 @@
+#pragma once
+#include <any>
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include "elizaos/core.hpp"
 #include "pg/adapter.hpp"
 #include "pg/manager.hpp"
@@ -5,13 +13,6 @@
 #include "pglite/manager.hpp"
 #include "schema.hpp"
 #include "utils.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -24,7 +25,6 @@ namespace elizaos {
  * Global Singleton Instances (Package-scoped)
  *
  * These instances are stored globally within the package scope to ensure a single shared instance across multiple adapters within this package.
- * This approach prevents multiple instantiations due to module caching or multiple imports within the same process.
  *
  * IMPORTANT:
  * - Do NOT directly modify these instances outside their intended initialization logic.
@@ -47,6 +47,7 @@ struct GlobalSingletons {
  * @param {UUID} agentId - The unique identifier for the agent.
  * @returns {IDatabaseAdapter} The created database adapter.
  */
+IDatabaseAdapter createDatabaseAdapter(std::optional<std::any> config, UUID agentId);
 
 /**
  * SQL plugin for database adapter using Drizzle ORM with dynamic plugin schema migrations

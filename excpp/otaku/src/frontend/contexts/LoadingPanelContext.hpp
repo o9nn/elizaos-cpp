@@ -1,10 +1,12 @@
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -15,21 +17,17 @@ namespace elizaos {
 
 struct LoadingPanelState {
     bool isVisible;
-    'loading' | 'success' | 'error' type;
+    std::variant<'loading', 'success', 'error'> type;
     std::string title;
-    std::vector<string | string> messages;
-    string | null; // Track which component is showing the panel id;
+    std::variant<std::string, std::vector<std::string>> messages;
+    std::optional<std::string> id;
 };
 
 struct LoadingPanelContextType {
-    (title: string, messages: string | string[], id?: string) => void showLoading;
-    (title: string, messages: string | string[], id?: string, autoClose?: boolean) => void showSuccess;
-    (title: string, messages: string | string[], id?: string) => void showError;
-    (id?: string) => void hide;
     bool isVisible;
 };
 
-void LoadingPanelProvider({ children: ReactNode } { children });
+void LoadingPanelProvider(const std::any& { children });
 
 // Custom hook to use the loading panel
 void useLoadingPanel();

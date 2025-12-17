@@ -1,10 +1,12 @@
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -167,7 +169,6 @@ struct TokenPerformance {
     std::optional<std::string> name;
     std::optional<std::string> symbol;
     std::optional<double> decimals;
-    std::optional<std::unordered_map<std::string, std::any>> metadata;
     std::optional<double> price;
     std::optional<double> price24hChange;
     std::optional<double> volume;
@@ -204,11 +205,6 @@ struct TokenPerformance {
  * @property {string} VERY_HIGH - Very high level of conviction.
  */
 enum Conviction {
-  NONE = 'NONE',
-  LOW = 'LOW',
-  MEDIUM = 'MEDIUM',
-  HIGH = 'HIGH',
-  VERY_HIGH = 'VERY_HIGH',
 }
 
 /**
@@ -216,12 +212,6 @@ enum Conviction {
  * IMPORTANT: Must match the enum in config.ts
  */
 enum RecommendationType {
-  BUY = 'BUY',
-  DONT_BUY = 'DONT_BUY',
-  SELL = 'SELL',
-  DONT_SELL = 'DONT_SELL',
-  NONE = 'NONE',
-  HOLD = 'HOLD',
 }
 
 using TokenRecommendation = {
@@ -233,7 +223,7 @@ struct Position {
     std::string chain;
     std::string walletAddress;
     std::string balance;
-    'OPEN' | 'CLOSED' status;
+    std::variant<'OPEN', 'CLOSED'> status;
     Date createdAt;
     std::optional<Date> closedAt;
     bool isSimulation;
@@ -250,10 +240,6 @@ using PositionWithBalance = Position & {
  * IMPORTANT: Must match the enum in config.ts
  */
 enum TransactionType {
-  BUY = 'BUY',
-  SELL = 'SELL',
-  TRANSFER_IN = 'transfer_in',
-  TRANSFER_OUT = 'transfer_out',
 }
 
 /**
@@ -297,8 +283,8 @@ using TokenMarketData = {
 struct MessageRecommendation {
     std::string tokenMentioned;
     bool isTicker;
-    'positive' | 'negative' | 'neutral' sentiment;
-    'NONE' | 'LOW' | 'MEDIUM' | 'HIGH' conviction;
+    std::variant<'positive', 'negative', 'neutral'> sentiment;
+    std::variant<'NONE', 'LOW', 'MEDIUM', 'HIGH'> conviction;
     std::string quote;
 };
 
@@ -317,7 +303,7 @@ using DexScreenerPair = {
 
 using DexScreenerData = {
 
-using Prices = {
+using Prices = std::any;
 
 using CalculatedBuyAmounts = {
 
@@ -346,7 +332,7 @@ struct BuySignalMessage {
 struct Trade {
     std::string id;
     std::string positionId;
-    TransactionType.BUY | TransactionType.SELL type;
+    std::variant<TransactionType::BUY, TransactionType::SELL> type;
     bigint amount;
     bigint price;
     Date timestamp;
@@ -409,51 +395,46 @@ using PositionPerformance = Pretty<
 
 // ServiceType Enum to identify the service within the runtime
 enum ServiceType {
-  COMMUNITY_INVESTOR = 'community-investor',
 }
 
 // Supported cryptocurrency chains
 enum SupportedChain {
-  SOLANA = 'SOLANA',
-  ETHEREUM = 'ETHEREUM',
-  BASE = 'BASE',
-  UNKNOWN = 'UNKNOWN', // For cases where chain can't be determined
 }
 
 // Metrics calculated after observing a recommendation's market performance
 struct RecommendationMetric {
-    std::optional<number; // e.g., based on ATH after recommendation or price after X days for BUYs> potentialProfitPercent;
-    std::optional<number; // For SELL/criticism, based on price drop avoided> avoidedLossPercent;
-    std::optional<boolean; // Flagged based on heuristics> isScamOrRug;
-    number; // When this metric was last calculated evaluationTimestamp;
-    std::optional<string; // e.g., "Hit ATH 3 days later", "Rug pulled", "Low liquidity spike"> notes;
+    std::optional<double> potentialProfitPercent;
+    std::optional<double> avoidedLossPercent;
+    std::optional<bool> isScamOrRug;
+    double evaluationTimestamp;
+    std::optional<std::string> notes;
 };
 
 // Represents a single recommendation or criticism made by a user
 struct Recommendation {
-    UUID; // Unique ID for this recommendation instance id;
-    UUID; // Entity ID of the recommender userId;
-    UUID; // Original message ID that sparked this recommendation messageId;
-    number; // When the recommendation was made (from original message) timestamp;
-    std::optional<string; // e.g., "SOL", "BTC" (if identified as a ticker)> tokenTicker;
-    string; // e.g., "So11111111111111111111111111111111111111112" tokenAddress;
-    SupportedChain; // The blockchain the token is on chain;
-    'BUY' | 'SELL'; // 'SELL' for criticisms recommendationType;
-    'NONE' | 'LOW' | 'MEDIUM' | 'HIGH'; // Sender's conviction level conviction;
-    string; // The exact text snippet that is the recommendation/criticism rawMessageQuote;
-    std::optional<number; // Price of the token when the recommendation was made> priceAtRecommendation;
-    std::optional<RecommendationMetric; // Performance metrics, calculated later by a task> metrics;
-    std::optional<boolean; // Has the PROCESS_TRADE_DECISION task run for this?> processedForTradeDecision;
+    UUID id;
+    UUID userId;
+    UUID messageId;
+    double timestamp;
+    std::optional<std::string> tokenTicker;
+    std::string tokenAddress;
+    SupportedChain chain;
+    std::variant<'BUY', 'SELL'> recommendationType;
+    std::variant<'NONE', 'LOW', 'MEDIUM', 'HIGH'> conviction;
+    std::string rawMessageQuote;
+    std::optional<double> priceAtRecommendation;
+    std::optional<RecommendationMetric> metrics;
+    std::optional<bool> processedForTradeDecision;
 };
 
 // Data structure for the component stored on an Entity
 struct UserTrustProfile {
-    string; // Schema version, e.g., "1.0.0" version;
-    UUID; // Entity ID this profile belongs to userId;
-    number; // Weighted average score from -100 to 100 trustScore;
-    number; // When trustScore was last calculated lastTrustScoreCalculationTimestamp;
-    std::optional<number; // For the 12-hour cooldown for *acting* on this user's recs> lastTradeDecisionMadeTimestamp;
-    Recommendation[]; // Array of recommendations made by this user recommendations;
+    std::string version;
+    UUID userId;
+    double trustScore;
+    double lastTrustScoreCalculationTimestamp;
+    std::optional<double> lastTradeDecisionMadeTimestamp;
+    std::vector<Recommendation> recommendations;
 };
 
 // Type alias for the data field within the ElizaOS Component
@@ -472,27 +453,28 @@ struct TokenAPIData {
     std::optional<std::string> name;
     std::optional<std::string> symbol;
     std::optional<double> currentPrice;
-    std::optional<number; // All-Time High> ath;
-    std::optional<number; // All-Time Low> atl;
-    std::optional<number; // Price snapshot when the recommendation was made (if fetched at that time)> priceAtRecommendation;
-    std::optional<std::vector<{ timestamp: number; price: number }>> priceHistory;
+    std::optional<double> ath;
+    std::optional<double> atl;
+    std::optional<double> priceAtRecommendation;
+    std::optional<double> liquidity;
+    std::optional<double> marketCap;
+    std::optional<bool> isKnownScam;
+};
 
 // Data structure for frontend leaderboard entries
 struct LeaderboardEntry {
     UUID userId;
-    std::optional<string; // Display name for the user> username;
+    std::optional<std::string> username;
     double trustScore;
-    std::optional<number; // Calculated dynamically> rank;
-    Recommendation[]; // Full recommendation history for drill-down recommendations;
+    std::optional<double> rank;
+    std::vector<Recommendation> recommendations;
 };
 
 // Interface defining the methods our CommunityInvestorService will provide
 // This helps ensure the class implements all necessary functions.
 struct ICommunityInvestorService {
-    std::string ticker;
-    SupportedChain chain;
     std::vector<Memory> contextMessages;
-    Recommendation recommendation;
+    SupportedChain chain;
     TokenAPIData tokenData;
 };
 
@@ -500,10 +482,6 @@ struct ICommunityInvestorService {
 struct MessageReceivedHandlerParams {
     IAgentRuntime runtime;
     Memory message;
-    ( callback;
-    string | Record<string, any> response;
-    std::optional<std::unordered_map<std::string, std::any>> metadata;
-    std::optional<() => void> onComplete;
 };
 
 

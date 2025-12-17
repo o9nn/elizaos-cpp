@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -13,7 +13,6 @@ namespace elizaos {
 
 /**
  * A simple in-memory message bus for distributing messages from the server
- * to subscribed MessageBusService instances within the same process.
  *
  * For multi-process or multi-server deployments, this would need to be replaced
  * with a more robust solution like Redis Pub/Sub, Kafka, RabbitMQ, etc.
@@ -29,29 +28,14 @@ namespace elizaos {
  * registration. This is an intentional design choice to prevent memory leaks and
  * unintended multiple executions of the same handler.
  */
-class InternalMessageBus extends EventTarget {
-  private maxListeners: number = 50;
-  private handlers = new Map<string, Map<(data: unknown) => void, EventListener>>();
-
-  emit(event: string, data: unknown): boolean {
-    return this.dispatchEvent(new CustomEvent(event, { detail: data }));
-  }
-
-    // Check if handler is already registered
-
-    // If handler already exists, don't add it again
-
-    // Wrap the handler to extract data from CustomEvent
-
-    // Store mapping for removal later
-
-      // Clean up empty maps
-
-    // EventTarget doesn't have a built-in max listeners concept,
-    // but we keep this for API compatibility
-
-      // Remove all listeners for a specific event
-      // Remove all listeners for all events
+class InternalMessageBus {
+public:
+    bool emit(const std::string& event, unknown data);
+    void if(auto e instanceof CustomEvent);
+    void if(auto wrappedHandler);
+    void setMaxListeners(double n);
+    void removeAllListeners(std::optional<std::string> event);
+};
 
 // Increase the default max listeners if many agents might be running in one process
 

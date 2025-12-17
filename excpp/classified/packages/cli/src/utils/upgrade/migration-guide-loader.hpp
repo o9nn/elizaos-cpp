@@ -1,11 +1,13 @@
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -18,7 +20,7 @@ struct MigrationGuide {
     std::string name;
     std::string path;
     std::string content;
-    'basic' | 'advanced' | 'testing' | 'completion' category;
+    std::variant<'basic', 'advanced', 'testing', 'completion'> category;
     std::vector<std::string> keywords;
 };
 
@@ -29,62 +31,24 @@ struct GuideSearchResult {
 };
 
 class MigrationGuideLoader {
-  private guides: MigrationGuide[] = [];
-  private guidesDir: string;
+public:
+    MigrationGuideLoader(std::optional<std::string> projectRoot);
+    std::string findGuidesDirectory(std::optional<std::string> projectRoot);
+    void loadGuides();
+    void createEmbeddedGuides(const std::vector<std::any>& guideConfigs);
+    std::string getEmbeddedMigrationGuide();
+    std::string getEmbeddedTestingGuide();
+    std::string getEmbeddedCompletionGuide();
+    std::vector<GuideSearchResult> searchGuides(const std::string& query, number = 3 limit);
+    std::optional<MigrationGuide> getGuide(const std::string& name);
+    std::vector<MigrationGuide> getGuidesByCategory(MigrationGuide['category'] category);
+    std::vector<GuideSearchResult> getRelevantGuidesForIssue(const std::string& issue);
+    std::string generateMigrationContext();
+    std::string getAllGuidesContent();
 
-  constructor(projectRoot?: string) {
-    // Find guides directory with multiple fallback strategies
-    this.guidesDir = this.findGuidesDirectory(projectRoot);
-    this.loadGuides();
-  }
-
-    // Strategy 1: Use provided project root
-
-    // Strategy 2: Find project root from current working directory
-
-    // Strategy 3: Look for guides in the working directory (copied guides)
-
-    // Strategy 4: Look relative to CLI package
-
-    // Strategy 5: Return empty directory - will use embedded guidance
-
-    // If no guides directory found, create embedded guides
-
-    // Load guides from filesystem
-
-    // Create minimal embedded guides with essential migration information
-
-  /**
-   * Search for relevant guides based on keywords or content
-   */
-
-      // Check keyword matches
-
-      // Check content matches
-
-      // Boost certain guides for common issues
-
-  /**
-   * Get a specific guide by name
-   */
-
-  /**
-   * Get all guides of a specific category
-   */
-
-  /**
-   * Get guides that are most relevant for common migration issues
-   */
-
-  /**
-   * Generate a comprehensive migration context for Claude
-   */
-
-      // Include first 500 characters as preview
-
-  /**
-   * Get full content of all guides for RAG embedding
-   */
+private:
+    std::string guidesDir_;
+};
 
 /**
  * Helper function to create a guide loader instance

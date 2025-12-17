@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -22,12 +23,9 @@ struct ShareData {
 };
 
 struct NavigatorWithShare {
-    std::optional<(data?: ShareData) => boolean> canShare;
-    std::optional<(data?: ShareData) => Promise<void>> share;
 };
 
 struct DealCompletionProps {
-    { quote;
     std::string quoteId;
     std::string entityId;
     std::string beneficiary;
@@ -42,7 +40,7 @@ struct DealCompletionProps {
     std::optional<std::string> transactionHash;
     std::optional<std::string> offerId;
     std::optional<std::string> status;
-    std::optional<"evm" | "solana"> chain;
+    std::optional<std::variant<"evm", "solana">> chain;
 };
 
 void DealCompletion(DealCompletionProps { quote });

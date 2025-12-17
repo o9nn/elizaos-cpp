@@ -1,14 +1,15 @@
-#include "AgentPluginAuth.js.hpp"
-#include "AuthenticationService.js.hpp"
-#include "CLIAuthCommands.js.hpp"
-#include "PlatformIntegration.js.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "AgentPluginAuth.js.hpp"
+#include "AuthenticationService.js.hpp"
+#include "CLIAuthCommands.js.hpp"
+#include "PlatformIntegration.js.hpp"
 
 namespace elizaos {
 

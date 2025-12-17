@@ -1,11 +1,12 @@
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -36,12 +37,17 @@ struct TokenTradeData {
 
 struct DexScreenerPair {
     double priceUsd;
-    { h24: number } volume;
+    double marketCap;
+};
 
 struct ProcessedTokenData {
     TokenSecurityData security;
     TokenTradeData tradeData;
-    { pairs: DexScreenerPair[] } dexScreenerData;
+    std::string holderDistributionTrend;
+    std::vector<std::any> highValueHolders;
+    bool recentTrades;
+    double highSupplyHoldersCount;
+};
 
 // Market and Position Types
 using MarketData = {
@@ -117,8 +123,6 @@ struct PriceSignalMessage {
 };
 
 struct ITradeService {
-    { dataService;
-    (tokens: string[]) => Promise<any> getTokensMarketData;
 };
 
 

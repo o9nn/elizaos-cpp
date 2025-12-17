@@ -1,11 +1,12 @@
-#include "analytics.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "analytics.hpp"
 
 namespace elizaos {
 
@@ -15,21 +16,13 @@ namespace elizaos {
 
 
 class ProjectScorer {
-  static async calculateScore(currentProject: Project, candidateProject: Project): Promise<number> {
-    const scores = await Promise.all([
-      this.calculateTagScore(currentProject, candidateProject),
-      this.calculateMetricsScore(candidateProject),
-      this.calculateRecencyScore(candidateProject),
-      this.calculateUserBehaviorScore(currentProject.id, candidateProject.id),
-      this.calculateAuthorScore(currentProject, candidateProject),
-      this.calculateTechnologyStackScore(currentProject, candidateProject),
-      this.calculatePopularityTrendScore(candidateProject)
-    ]);
-
-    // Weighted average of all scores
-    const weights = [0.3, 0.15, 0.1, 0.15, 0.1, 0.1, 0.1];
-    return scores.reduce((acc, score, i) => acc + score * weights[i], 0);
-  }
-
-    // Calculate trend based on recent views and interactions
+public:
+    std::future<double> calculateScore(Project currentProject, Project candidateProject);
+    std::future<double> calculateTagScore(Project current, Project candidate);
+    double calculateMetricsScore(Project project);
+    double calculateRecencyScore(Project project);
+    std::future<double> calculateUserBehaviorScore(const std::string& currentId, const std::string& candidateId);
+    std::future<double> calculatePopularityTrendScore(Project project);
+};
+ 
 } // namespace elizaos

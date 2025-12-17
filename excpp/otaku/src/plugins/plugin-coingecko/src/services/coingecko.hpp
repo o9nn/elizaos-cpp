@@ -1,12 +1,15 @@
-#include ".utils.hpp"
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include ".utils.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -19,33 +22,33 @@ struct CoinGeckoTokenMetadata {
     std::string id;
     std::string symbol;
     std::string name;
-    std::optional<string | null> asset_platform_id;
-    std::optional<string | null> contract_address;
-    std::optional<std::unordered_map<std::string, std::string>> platforms;
-    std::optional<std::unordered_map<std::string, { decimal_place?: number; contract_address?: string }>> detail_platforms;
+    std::optional<std::optional<std::string>> asset_platform_id;
+    std::optional<std::optional<std::string>> contract_address;
+    std::optional<unknown> market_data;
+    std::optional<unknown> links;
+    std::optional<unknown> image;
+};
 
 struct MarketRow {
     std::string id;
-    std::optional<number | null> market_cap;
-    std::optional<number | null> total_volume;
-    std::optional<number | null> market_cap_rank;
+    std::optional<std::optional<double>> market_cap;
+    std::optional<std::optional<double>> total_volume;
+    std::optional<std::optional<double>> market_cap_rank;
 };
 
 struct TokenMetadataCandidate {
     std::string id;
     std::string coinId;
     double confidence;
-    number | null marketCap;
-    number | null totalVolume;
-    number | null marketCapRank;
-    std::optional<std::unordered_map<std::string, unknown>> metadata;
+    std::optional<double> marketCap;
+    std::optional<double> totalVolume;
+    std::optional<double> marketCapRank;
 };
 
 struct TokenMetadataResolution {
     std::string id;
     bool success;
     std::optional<std::string> resolvedCoinId;
-    std::optional<std::unordered_map<std::string, unknown>> data;
     std::optional<std::string> error;
     std::vector<TokenMetadataCandidate> candidates;
 };
@@ -55,127 +58,44 @@ struct TokenMetadataResolution {
  * These tokens can be used directly by symbol in price chart queries
  */
 
-class CoinGeckoService extends Service {
-  static serviceType = "COINGECKO_SERVICE" as const;
-  capabilityDescription = "Fetch token metadata from CoinGecko (free or Pro).";
+class CoinGeckoService {
+public:
+    CoinGeckoService(IAgentRuntime runtime);
+    std::future<CoinGeckoService> start(IAgentRuntime runtime);
+    std::future<void> initialize(IAgentRuntime runtime);
+    std::future<void> stop();
+    std::future<std::vector<TokenMetadataResolution>> getTokenMetadata(const std::variant<std::string, std::vector<std::string>>& ids);
+    std::variant<std::future<Record<string, unknown>, null>> fetchByContractAddress(const std::string& baseUrl, const std::string& address, const std::vector<std::string>& platforms);
+    std::future<TokenMetadataResolution> handleContractLookup(const std::string& baseUrl, const std::string& address, const std::vector<std::string>& platforms, const std::string& networkLabel);
+    std::future<void> loadCoinsIndex();
+    std::future<std::vector<TokenMetadataCandidate>> resolveCandidates(const std::string& input);
+    std::future<std::vector<TokenMetadataCandidate>> rankByMarkets(const std::vector<std::string>& ids);
+    std::future<std::vector<MarketRow>> fetchMarketRows(const std::vector<std::string>& ids);
+    std::future<std::vector<TokenMetadataCandidate>> enrichCandidateMetadata(const std::string& baseUrl, const std::vector<TokenMetadataCandidate>& candidates, number = 3 limit);
+    std::variant<Promise<CoinGeckoTokenMetadata, null>> fetchCoinDetail(const std::string& baseUrl, const std::string& coinId);
+    std::string extractCoinId(Record<string metadata, auto unknown>, const std::string& fallback);
+    std::future<std::any> getTrendingTokens(string = "base" network, number = 10 limit);
+    std::future<std::any> getNFTCollectionStats(const std::string& collectionIdentifier);
+    std::future<std::any> getTrendingSearch();
+    std::future<std::any> getTokenPriceChart(const std::string& tokenIdentifier, string = '24h' timeframe, string = 'base' chain);
+    std::string formatDateForTimeframe(double timestamp, const std::string& timeframe);
+    Promise< getHistoricalPrice(const std::string& tokenIdentifier, const std::string& date, string = 'base' chain);
+    void if(auto isContractAddress);
+    void if(auto !res.ok);
+    void if(auto !tokenName);
+    void if(auto !tokenSymbol);
+    void catch(auto err);
+    Promise<Array< getCategoriesList();
+    void if(auto !res.ok);
+    void catch(auto err);
+    Promise<Array< getCategoriesWithMarketData(const std::variant<'market_cap_desc', 'market_cap_asc', 'name_desc', 'name_asc', 'market_cap_change_24h_desc', 'market_cap_change_24h_asc' = 'market_cap_desc'>& order);
+    void if(auto order);
+    void if(auto !res.ok);
+    void catch(auto err);
 
-  private proApiKey: string | undefined;
-  private coinsCache: Array<{ id: string; symbol: string; name: string }> = [];
-
-    // Prefer runtime settings, fallback to env
-
-  /**
-   * Get token metadata for one or more identifiers (CoinGecko ids, symbols, names, or contract addresses).
-   * Uses Pro API when COINGECKO_API_KEY is set; otherwise public API.
-   * Never throws for per-id failures; returns an entry with error message instead.
-   */
-
-        // try next platform
-
-  /**
-   * Get trending tokens/pools from GeckoTerminal API for a specific network
-   * Note: GeckoTerminal API does not have a Pro tier, uses public API only.
-   */
-
-      // Create a map of tokens by their ID for quick lookup
-
-      // Parse and format the response - flatten pools with base token data
-
-  /**
-   * Get NFT collection statistics including floor price, volume, market cap, and owners
-   * Uses Pro API when COINGECKO_API_KEY is set; otherwise public API.
-   */
-
-    // If it's a contract address, try to look it up first
-    // For now, we'll assume the user provides the collection ID directly
-    // In the future, we could add a lookup by contract address
-
-      // Format the response
-
-        // Floor price data
-        
-        // Market cap
-        
-        // Volume
-        
-        // Collection stats
-        
-        // Links
-        
-        // Additional metadata
-        
-        // Raw data for reference
-
-  /**
-   * Get trending searches from CoinGecko including coins, NFTs, and categories
-   * Uses Pro API when COINGECKO_API_KEY is set; otherwise public API.
-   */
-
-      // Format trending coins
-
-      // Format trending NFTs
-
-      // Format trending categories
-
-  /**
-   * Get token price chart data for visualization
-   * Similar to what TokenDetailModal.tsx does
-   */
-
-    // Map timeframes to days
-
-    // Check if it's a contract address (0x...)
-
-      // ERC20 token - use contract address
-      
-      // Try to get token symbol from a separate call
-      // Try to resolve as native token or coin ID
-
-    // Add interval for long ranges
-
-      // Filter data based on timeframe
-        // Last hour - get last 60 data points
-
-      // Format price data points
-
-      // Format market cap data points
-
-      // Get current price from last data point if not already set
-
-      // Get current market cap
-
-  /**
-   * Helper method to format dates based on timeframe
-   */
-
-  /**
-   * Get historical price data for a token at a specific date
-   * Resolves token identifier (symbol or address) to coin_id, then fetches historical data
-   */
-
-    // Validate date format (should be dd-mm-yyyy)
-
-    // Check if it's a contract address (0x...)
-
-      // Resolve contract address to coin_id
-
-      // Try to resolve as native token or symbol
-
-    // Fetch historical data
-
-      // Extract market data
-
-      // Use token name from historical response if not already set
-
-  /**
-   * Get list of all coin categories (ID map)
-   * Uses Pro API when COINGECKO_API_KEY is set; otherwise public API.
-   */
-
-  /**
-   * Get list of all coin categories with market data
-   * Uses Pro API when COINGECKO_API_KEY is set; otherwise public API.
-   */
+private:
+    std::string proApiKey_;
+};
 
 bool isEvmAddress(const std::string& s);
 

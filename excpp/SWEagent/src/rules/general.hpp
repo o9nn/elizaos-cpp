@@ -1,11 +1,12 @@
-#include "types.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "types.hpp"
 
 namespace elizaos {
 
@@ -47,6 +48,6 @@ void validateAgainstRules(const std::string& code, CodingGuidelines guidelines);
 /**
  * Get applicable rules for a file
  */
-std::vector<CodingRule> getApplicableRules(const std::string& filePath, std::optional<'python' | 'typescript'> language);
+std::vector<CodingRule> getApplicableRules(const std::string& filePath, std::optional<std::variant<'python', 'typescript'>> language);
 
 } // namespace elizaos

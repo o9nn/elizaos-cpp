@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -15,13 +16,11 @@ namespace elizaos {
 
 struct ConfirmationDialogProps {
     bool open;
-    (open: boolean) => void onOpenChange;
     std::string title;
     std::string description;
     std::optional<std::string> confirmText;
     std::optional<std::string> cancelText;
-    () => void onConfirm;
-    std::optional<'default' | 'destructive'> variant;
+    std::optional<std::variant<'default', 'destructive'>> variant;
 };
 
 

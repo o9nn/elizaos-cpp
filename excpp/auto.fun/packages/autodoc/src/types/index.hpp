@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -109,13 +109,7 @@ struct TodoItem {
     std::string comment;
     std::string code;
     std::string fullContext;
-    TSESTree.Node node;
-    { location;
-    { line: number; column: number } start;
-    { line: number; column: number } end;
-    { contextLocation;
-    { line: number; column: number } start;
-    { line: number; column: number } end;
+    TSESTree::Node node;
 };
 
 /**
@@ -144,13 +138,7 @@ struct EnvUsage {
     std::string code;
     std::string context;
     std::string fullContext;
-    TSESTree.Node node;
-    { location;
-    { line: number; column: number } start;
-    { line: number; column: number } end;
-    { contextLocation;
-    { line: number; column: number } start;
-    { line: number; column: number } end;
+    TSESTree::Node node;
 };
 
 /**

@@ -1,11 +1,12 @@
-#include ".monitoring/logger.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".monitoring/logger.hpp"
 
 namespace elizaos {
 
@@ -15,26 +16,16 @@ namespace elizaos {
 
 
 class CausalInference {
-  private dag: DAG;
-  
-  constructor() {
-    this.dag = new DAG();
-  }
+public:
+    CausalInference();
+    std::future<CausalAnalysisResult> analyzeCausalRelationships(Record<string data, auto any>[], const std::vector<std::string>& variables, const std::vector<std::string>& treatments, const std::vector<std::string>& outcomes);
+    std::future<void> buildDAG(Record<string data, auto any>[], const std::vector<std::string>& variables);
+    std::future<std::vector<CausalEffect>> estimateCausalEffects(Record<string data, auto any>[], const std::vector<std::string>& treatments, const std::vector<std::string>& outcomes);
+    Promise< doubleMLEstimation(Record<string data, auto any>[], const std::string& treatment, const std::string& outcome);
+    std::future<SensitivityAnalysis> performSensitivityAnalysis(Record<string data, auto any>[], const std::vector<CausalEffect>& effects);
 
-      // Build DAG from data
-
-      // Perform causal discovery
-
-      // Sensitivity analysis
-
-    // PC algorithm for causal discovery
-
-        // Double ML estimation
-
-        // Instrumental variables analysis
-
-    // R script for Double ML
-
-    // Implement various sensitivity analyses
-
+private:
+    DAG dag_;
+};
+ 
 } // namespace elizaos

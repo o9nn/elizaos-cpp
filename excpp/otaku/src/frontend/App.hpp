@@ -1,3 +1,10 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include "components/auth/SignInModal.hpp"
 #include "components/chat/chat-interface.hpp"
 #include "components/dashboard/account/page.hpp"
@@ -14,13 +21,6 @@
 #include "hooks/useCDPWallet.hpp"
 #include "lib/elizaClient.hpp"
 #include "lib/socketManager.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 

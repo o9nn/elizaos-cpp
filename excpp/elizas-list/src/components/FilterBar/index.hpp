@@ -1,11 +1,11 @@
-#include "TagBadge.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "TagBadge.hpp"
 
 namespace elizaos {
 
@@ -16,7 +16,6 @@ namespace elizaos {
 
 struct FilterBarProps {
     std::vector<std::string> selectedTags;
-    (tag: string) => void onTagSelect;
     std::vector<Project> projects;
 };
 

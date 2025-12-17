@@ -1,16 +1,17 @@
-#include ".hyperfy/src/core/extras/appTools.js.hpp"
-#include ".hyperfy/src/core/utils-client.js.hpp"
-#include ".hyperfy/src/core/utils.js.hpp"
-#include ".service.hpp"
-#include ".utils.js.hpp"
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".hyperfy/src/core/extras/appTools.js.hpp"
+#include ".hyperfy/src/core/utils-client.js.hpp"
+#include ".hyperfy/src/core/utils.js.hpp"
+#include ".service.hpp"
+#include ".utils.js.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -20,13 +21,22 @@ namespace elizaos {
 
 
 class BuildManager {
-  private runtime: IAgentRuntime;
-  
-  constructor(runtime: IAgentRuntime) {
-    this.runtime = runtime;
-  }
+public:
+    BuildManager(IAgentRuntime runtime);
+    void translate(auto entityId, [number position, auto number, auto number]);
+    void rotate(auto entityId, [number quaternion, auto number, auto number, auto number]);
+    void scale(auto entityId, [number scale, auto number, auto number]);
+    void duplicate(auto entityId);
+    void delete(auto entityId);
+    void importEntity(const std::string& url, std::optional<std::any> position, std::optional<std::any> quaternion);
+    void addApp(auto file, auto transform);
+    void addModel(auto file, auto transform);
+    void entityUpdate(auto entity);
+    void getService();
 
-      // if unique, we also duplicate the blueprint
+private:
+    IAgentRuntime runtime_;
+};
 
 
 } // namespace elizaos

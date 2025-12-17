@@ -1,16 +1,16 @@
-#include "actions/cli-update.hpp"
-#include "actions/dependency-update.hpp"
-#include "elizaos/core.hpp"
-#include "types.hpp"
-#include "utils/directory-utils.hpp"
-#include "utils/version-utils.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "actions/cli-update.hpp"
+#include "actions/dependency-update.hpp"
+#include "elizaos/core.hpp"
+#include "types.hpp"
+#include "utils/directory-utils.hpp"
+#include "utils/version-utils.hpp"
 
 namespace elizaos {
 
@@ -20,7 +20,6 @@ namespace elizaos {
 
 
 // Main update command
-      await displayBanner(true); // Skip update check during update command
       // Early directory detection for better flow control
 
       // Determine what to update based on flags and context
@@ -29,8 +28,6 @@ namespace elizaos {
 
       // Handle package updates
         // If explicitly requested to update packages but not in a valid directory
-
-        await updateDependencies(cwd, isPlugin, updateOptions);
 
 // Re-for backward compatibility
 * from './actions/cli-update';

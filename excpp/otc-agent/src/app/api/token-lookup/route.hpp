@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -20,9 +21,9 @@ struct TokenInfo {
     std::string symbol;
     std::string name;
     double decimals;
-    string | null logoUrl;
+    std::optional<std::string> logoUrl;
     std::string chain;
-    number | null priceUsd;
+    std::optional<double> priceUsd;
 };
 
 /**
@@ -38,12 +39,10 @@ bool isEvmAddress(const std::string& address);
 /**
  * Look up Solana token via Codex API
  */
-std::future<TokenInfo | null> lookupSolanaToken(const std::string& address, const std::string& codexKey);
 
 /**
  * Look up EVM token via Alchemy API
  */
-std::future<TokenInfo | null> lookupEvmToken(const std::string& address, const std::string& chain, const std::string& alchemyKey);
 
 /**
  * GET /api/token-lookup?address=0x...&chain=base

@@ -1,11 +1,12 @@
-#include ".stores/useNotificationStore.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".stores/useNotificationStore.hpp"
 
 namespace elizaos {
 
@@ -14,5 +15,6 @@ namespace elizaos {
 
 
 
+void notify(std::optional<std::any> newNotification);
 
 } // namespace elizaos

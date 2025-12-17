@@ -1,11 +1,12 @@
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -23,7 +24,7 @@ namespace elizaos {
  */
 struct IAttachment {
     std::string url;
-    std::optional<string; // Make contentType optional> contentType;
+    std::optional<std::string> contentType;
     std::string title;
 };
 
@@ -39,27 +40,25 @@ struct AgentPanel {
 
 // Represents a server/guild in the central messaging system for the client
 struct MessageServer {
-    UUID; // Global serverId id;
+    UUID id;
     std::string name;
     std::string sourceType;
     std::optional<std::string> sourceId;
-    std::optional<std::unordered_map<std::string, std::any>> metadata;
-    string; // ISO Date string from server, or Date object createdAt;
-    string; // ISO Date string from server, or Date object updatedAt;
+    std::string createdAt;
+    std::string updatedAt;
 };
 
 // Represents a channel within a MessageServer for the client
 struct MessageChannel {
-    UUID; // Global channelId id;
+    UUID id;
     UUID messageServerId;
     std::string name;
-    CoreChannelType; // Using the enum from @elizaos/core type;
+    CoreChannelType type;
     std::optional<std::string> sourceType;
     std::optional<std::string> sourceId;
     std::optional<std::string> topic;
-    std::optional<std::unordered_map<std::string, std::any>> metadata;
-    string; // ISO Date string from server, or Date object createdAt;
-    string; // ISO Date string from server, or Date object updatedAt;
+    std::string createdAt;
+    std::string updatedAt;
 };
 
 // Represents a message from the central system for client display
@@ -67,23 +66,22 @@ struct MessageChannel {
 struct ServerMessage {
     UUID id;
     UUID channelId;
-    std::optional<UUID; // Optional: May be added during client-side processing or be in metadata> serverId;
+    std::optional<UUID> serverId;
     UUID authorId;
-    std::optional<string; // Optional: May be in metadata or fetched separately> authorDisplayName;
+    std::optional<std::string> authorDisplayName;
     std::string content;
-    number; // Expecting timestamp MS for UI sorting/display createdAt;
+    double createdAt;
     std::optional<std::any> rawMessage;
     std::optional<UUID> inReplyToRootMessageId;
     std::optional<std::string> sourceType;
     std::optional<std::string> sourceId;
-    std::optional<{> metadata;
     std::optional<std::string> agentName;
     std::optional<std::string> thought;
     std::optional<std::vector<std::string>> actions;
     std::optional<std::vector<std::any>> attachments;
-    std::optional<string; // If API puts it here> authorDisplayName;
-    std::optional<UUID; // If API puts it here> serverId;
-    std::optional<string; // Add prompt field to store the LLM prompt> prompt;
+    std::optional<std::string> authorDisplayName;
+    std::optional<UUID> serverId;
+    std::optional<std::string> prompt;
 };
 
 

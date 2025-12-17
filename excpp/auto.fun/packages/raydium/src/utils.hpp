@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -14,9 +14,6 @@ namespace elizaos {
 
 
 /// USDC
-
-  // const afterBal = await connection.getBalance(recvWallet);
-  // console.log("afterBal: ", parseFloat(afterBal.toString()) / fixedPoint);
 
     // Derive the associated token addresses
 

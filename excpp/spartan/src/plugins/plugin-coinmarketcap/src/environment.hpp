@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -13,7 +14,7 @@ namespace elizaos {
 
 
 
-using CoinMarketCapConfig = z.infer<typeof coinmarketcapEnvSchema>;
+using CoinMarketCapConfig = z::infer<typeof coinmarketcapEnvSchema>;
 
 std::future<CoinMarketCapConfig> validateCoinMarketCapConfig(IAgentRuntime runtime);
 

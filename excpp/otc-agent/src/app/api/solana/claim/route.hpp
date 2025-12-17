@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -16,8 +17,6 @@ namespace elizaos {
 // Wallet interface for Anchor (matches @coral-xyz/anchor's Wallet type)
 struct AnchorWallet {
     PublicKey publicKey;
-    T tx;
-    std::vector<T> txs;
 };
 
 std::future<void> POST(NextRequest request);

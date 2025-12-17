@@ -1,11 +1,12 @@
-#include "chain-selector.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "chain-selector.hpp"
 
 namespace elizaos {
 
@@ -18,13 +19,11 @@ struct FiltersState {
     std::vector<Chain> chains;
     double minMarketCap;
     double maxMarketCap;
-    std::vector<("negotiable" | "fixed")> negotiableTypes;
     std::string searchQuery;
 };
 
 struct DealFiltersProps {
     FiltersState filters;
-    (filters: FiltersState) => void onFiltersChange;
 };
 
 using DealType = std::variant<"all", "negotiable", "fixed">;

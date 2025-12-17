@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -30,11 +31,9 @@ std::future<Connection> getConnection();
 
 std::future<Keypair> getWallet();
 
-std::future<anchor.Program> getProgram(Connection connection, Keypair wallet);
+std::future<anchor::Program> getProgram(Connection connection, Keypair wallet);
 
-// =============================================================================
 // COMMANDS
-// =============================================================================
 
 std::future<void> createTreasury(const std::string& tokenMintStr);
 
@@ -44,9 +43,7 @@ std::future<void> setPrice(const std::string& tokenMintStr, double priceUsd);
 
 std::future<void> showStatus();
 
-// =============================================================================
 // MAIN
-// =============================================================================
 
 void printUsage();
 

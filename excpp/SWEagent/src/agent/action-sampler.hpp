@@ -1,3 +1,13 @@
+#pragma once
+#include <any>
+#include <functional>
+#include <future>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <variant>
+#include <vector>
 #include ".types.hpp"
 #include ".utils/log.hpp"
 #include "agents.hpp"
@@ -5,13 +15,6 @@
 #include "problem-statement.hpp"
 #include "types.hpp"
 #include "utils/template.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -30,16 +33,11 @@ struct ActionSamplerOutput {
     ModelOutput completion;
     History messages;
     Trajectory trajectoryItems;
-    std::unordered_map<std::string, unknown> extraInfo;
 };
 
 /**
  * Abstract base class for action samplers
  */
-
-  /**
-   * Get action from the sampler
-   */
 
 /**
  * Configuration for AskColleagues sampler
@@ -53,21 +51,16 @@ struct AskColleaguesConfig {
  * AskColleagues action sampler
  * Queries multiple model instances and synthesizes their responses
  */
-class AskColleagues extends AbstractActionSampler {
-  private config: AskColleaguesConfig;
+class AskColleagues {
+public:
+    AskColleagues(AskColleaguesConfig config, AbstractModel model, ToolHandler tools);
+    AskColleagues fromConfig(AskColleaguesConfig config, AbstractModel model, ToolHandler tools);
+    std::string getColleagueDiscussion(const std::vector<ModelOutput>& completions);
+    std::future<ActionSamplerOutput> getAction(ProblemStatement _problemStatement, Trajectory _trajectory, History history);
 
-  constructor(config: AskColleaguesConfig, model: AbstractModel, tools: ToolHandler) {
-    super(model, tools);
-    this.config = config;
-  }
-
-    // Query model multiple times
-
-    // Get colleague discussion
-
-    // Create new messages with discussion
-
-    // Get final completion
+private:
+    AskColleaguesConfig config_;
+};
 
 /**
  * Configuration for BinaryTrajectoryComparison sampler
@@ -86,21 +79,21 @@ struct BinaryTrajectoryComparisonConfig {
  * BinaryTrajectoryComparison action sampler
  * Compares pairs of proposed actions and selects the best one
  */
-class BinaryTrajectoryComparison extends AbstractActionSampler {
-  private config: BinaryTrajectoryComparisonConfig;
+class BinaryTrajectoryComparison {
+public:
+    BinaryTrajectoryComparison(BinaryTrajectoryComparisonConfig config, AbstractModel model, ToolHandler tools);
+    BinaryTrajectoryComparison fromConfig(BinaryTrajectoryComparisonConfig config, AbstractModel model, ToolHandler tools);
+    std::string formatTrajectory(Trajectory trajectory);
+    History formatMessages(std::optional<std::any> params);
+    std::vector<ModelOutput> filterDuplicates(const std::vector<ModelOutput>& completions);
+    std::vector<ModelOutput> filterParseableCompletions(const std::vector<ModelOutput>& completions);
+    bool containsEdits(const std::vector<ModelOutput>& completions);
+    std::future<std::vector<ModelOutput>> getCompletions(History history);
+    std::variant<0, 1> interpret(const std::string& response);
+    std::future<ActionSamplerOutput> getAction(ProblemStatement _problemStatement, Trajectory _trajectory, History history);
 
-  constructor(config: BinaryTrajectoryComparisonConfig, model: AbstractModel, tools: ToolHandler) {
-    super(model, tools);
-    this.config = config;
-  }
-
-      // Add cache control to messages
-
-    struct ComparisonLogEntry {
-    [number, number] comparisonBetween;
-    History messages;
-    std::string response;
-    double idx;
+private:
+    BinaryTrajectoryComparisonConfig config_;
 };
 
 /**

@@ -1,13 +1,14 @@
-#include ".constants.hpp"
-#include ".utils.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".constants.hpp"
+#include ".utils.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -17,16 +18,12 @@ namespace elizaos {
 
 
 // hack for data to fix data issues
-    //console.log('message', message)
 
     // ok we need to change a state on this author
 
     // get room and it's components?
     // doesn't have components
-    //console.log('roomDetails', roomDetails)
-    //console.log('roomEntity', roomEntity)
 
-    //console.log('agentEntity', agentEntity)
       // initialize
 
     // using the service to get this/components might be good way

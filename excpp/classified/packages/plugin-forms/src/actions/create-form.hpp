@@ -1,12 +1,12 @@
-#include ".services/forms-service.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".services/forms-service.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -32,5 +32,6 @@ namespace elizaos {
 /**
  * Extract form type from user message
  */
+std::optional<std::string> extractFormType(const std::string& text);
 
 } // namespace elizaos

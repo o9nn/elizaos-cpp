@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -30,6 +30,5 @@ struct AudioProcessingResult {
     std::string mimeType;
 };
 
-std::future<Buffer | AudioProcessingResult> convertToAudioBuffer(const std::any& speechResponse, std::optional<bool> detectMimeType);
 
 } // namespace elizaos

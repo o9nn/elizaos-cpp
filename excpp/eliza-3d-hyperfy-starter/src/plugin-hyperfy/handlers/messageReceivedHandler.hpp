@@ -1,12 +1,12 @@
-#include ".templates.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".templates.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -61,14 +61,12 @@ namespace elizaos {
           // Construct a minimal content object indicating ignore, include a generic thought
 
           // Call the callback directly with the ignore content
-          await callback(ignoreContent);
 
           // Also save this ignore action/thought to memory
 
           // Clean up the response ID since we handled it
 
           // Optionally, evaluate the decision to ignore (if relevant evaluators exist)
-          // await runtime.evaluate(message, state, shouldRespond, callback, []);
 
         // Emit run ended event on successful completion
         // Emit run ended event with error

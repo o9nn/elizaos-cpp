@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -19,22 +20,19 @@ struct RuntimeSettings {
 
 struct Setting {
     std::string name;
-    string; // Used in chat context when discussing the setting description;
-    string; // Used during settings to guide users usageDescription;
-    string | boolean | null value;
+    std::string description;
+    std::string usageDescription;
+    std::variant<std::string, bool> value;
     bool required;
-    std::optional<boolean; // If true, shown in public channels> public;
-    std::optional<boolean; // If true, value is masked and only shown during settings> secret;
-    std::optional<(value: any) => boolean> validation;
+    std::optional<bool> public;
+    std::optional<bool> secret;
     std::optional<std::vector<std::string>> dependsOn;
-    std::optional<(value: any) => string> onSetAction;
-    std::optional<(settings: { [key: string]: Setting }) => boolean> visibleIf;
+};
 
 struct WorldSettings {
 };
 
 struct OnboardingConfig {
-    { settings;
 };
 
 

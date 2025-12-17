@@ -1,12 +1,13 @@
-#include "elizaos/core.hpp"
-#include "types.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
+#include "types.hpp"
 
 namespace elizaos {
 
@@ -15,30 +16,18 @@ namespace elizaos {
 
 
 
-class CommunityManagerService extends Service {
-  static serviceType = ServiceType.COMMUNITY_MANAGER;
-  capabilityDescription = 'community manager';
-
-  private handleDiscordUserJoined = this.onDiscordUserJoined.bind(this);
-  private handleTelegramUserJoined = this.onTelegramUserJoined.bind(this);
-
-  constructor(protected runtime: IAgentRuntime) {
-    super(runtime);
-
-    this.addEventListener(runtime);
-  }
-
-      // Try to get channel by ID
-
-      // Try to match by name if not found by ID
-
-    // Fallback: pick any text-based channel
-
-    std::string extractString(unknown value);
-
-        //Replace any plain member ID with a proper Discord mention format, but skip ones already formatted
-
-        // Create memory of the initial message
+class CommunityManagerService {
+public:
+    CommunityManagerService(IAgentRuntime protected runtime);
+    std::future<CommunityManagerService> start(IAgentRuntime runtime);
+    std::future<void> stop(IAgentRuntime runtime);
+    std::future<void> stop();
+    std::future<std::optional<std::string>> getDiscordGreetChannelId(World world, auto guild);
+    void getGreetingMessage(IAgentRuntime runtime, const std::string& userName, std::optional<std::string> greetingMessage);
+    void onDiscordUserJoined(auto params);
+    void onTelegramUserJoined(auto params);
+    void addEventListener(IAgentRuntime runtime);
+};
 
 
 } // namespace elizaos

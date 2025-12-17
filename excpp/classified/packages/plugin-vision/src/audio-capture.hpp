@@ -1,11 +1,13 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -16,68 +18,30 @@ namespace elizaos {
 
 struct AudioConfig {
     bool enabled;
-    number; // milliseconds transcriptionInterval;
+    double transcriptionInterval;
     std::optional<std::string> device;
     std::optional<double> sampleRate;
     std::optional<double> channels;
 };
 
 class AudioCaptureService {
-  private runtime: IAgentRuntime;
-  private config: AudioConfig;
-  private isRecording = false;
-  private recordingInterval: NodeJS.Timeout | null = null;
-  private currentRecordingPath: string | null = null;
+public:
+    AudioCaptureService(IAgentRuntime runtime, AudioConfig config);
+    std::future<void> initialize();
+    Promise< checkAudioTools();
+    void catch(auto _error);
+    void startTranscriptionLoop();
+    std::variant<Promise<string, null>> recordAndTranscribe();
+    std::future<void> recordAudio(const std::string& outputPath, double duration);
+    std::future<void> createAudioMemory(const std::string& transcription);
+    std::future<std::vector<std::string>> listAudioDevices();
+    bool isActive();
+    std::future<void> stop();
 
-  constructor(runtime: IAgentRuntime, config: AudioConfig) {
-    this.runtime = runtime;
-    this.config = {
-      sampleRate: 16000,
-      channels: 1,
-      ...config,
-    };
-  }
-
-      // Check for audio recording tools
-
-      // Start recording loop if interval is set
-
-        // macOS: Use sox
-        await execAsync('which sox');
-        // Linux: Use arecord (ALSA)
-        await execAsync('which arecord');
-        // Windows: Use ffmpeg
-        await execAsync('where ffmpeg');
-      // Tool not found
-
-    // Start continuous recording with periodic transcription
-
-      // Record audio for the specified duration
-
-      // Transcribe using runtime model
-
-      // Clean up audio file
-
-        // Create a memory of what was heard
-
-        // macOS: Use sox
-        // Linux: Use arecord
-        // Windows: Use ffmpeg with DirectShow
-
-      // Store in agent's context
-      // Note: createMemory requires runtime implementation specific to the database adapter
-      // For now, we'll just log it
-
-        // macOS: List audio devices using system_profiler
-
-        // Linux: List ALSA devices
-
-        // Windows: List audio devices using ffmpeg
-
-          // ffmpeg returns non-zero exit code when listing devices
-          // but we can still parse the output
-
-    // Wait for any ongoing recording to complete
+private:
+    IAgentRuntime runtime_;
+    AudioConfig config_;
+};
 
 
 } // namespace elizaos

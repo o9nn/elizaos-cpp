@@ -1,11 +1,13 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -28,7 +30,7 @@ namespace elizaos {
  */
 struct SettingUpdate {
     std::string key;
-    string | boolean value;
+    std::variant<std::string, bool> value;
 };
 
 // Template for success responses when settings are updated
@@ -121,7 +123,6 @@ struct SettingUpdate {
  * @param {string} serverId - The ID of the server.
  * @returns {Promise<WorldSettings | null>} The settings of the world, or null if not found.
  */
-std::future<WorldSettings | null> getWorldSettings(IAgentRuntime runtime, const std::string& serverId);
 
 /**
  * Updates settings state in world metadata
@@ -193,11 +194,8 @@ std::future<void> generateErrorResponse(IAgentRuntime runtime, State state, Hand
       // Check if there's an active settings state in world metadata
 
       // Find the server where this user is the owner
-        await generateErrorResponse(runtime, state, callback);
 
       // Get settings state from world metadata
-
-        await generateErrorResponse(runtime, state, callback);
 
       // Extract setting values from message
 
@@ -206,9 +204,6 @@ std::future<void> generateErrorResponse(IAgentRuntime runtime, State state, Hand
       // Generate appropriate response
 
         // Get updated settings state
-          await generateErrorResponse(runtime, state, callback);
 
-        await generateFailureResponse(runtime, worldSettings, state, callback);
-      await generateErrorResponse(runtime, state, callback);
 
 } // namespace elizaos

@@ -1,16 +1,18 @@
+#pragma once
+#include <any>
+#include <functional>
+#include <future>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include "cache.hpp"
 #include "db.hpp"
 #include "mcap.hpp"
 #include "solana.hpp"
 #include "tokenSupplyHelpers.hpp"
 #include "tokenSupplyHelpers/customWallet.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -103,6 +105,8 @@ std::future<void> getTxIdAndCreatorFromTokenAddress(const std::string& tokenAddr
       // Check if we got ProgramFailedToComplete but program actually succeeded
         // Get transaction logs to verify actual execution
 
+std::vector<std::string> splitIntoLines(std::optional<std::string> text);
+
 /**
  * Gets the maximum values needed for featured sorting
  *
@@ -129,7 +133,7 @@ void getFeaturedScoreExpression(double maxVolume, double maxHolders);
  * @param maxHolders Maximum holder count for normalization
  * @returns Calculated weighted score
  */
-double calculateFeaturedScore(std::optional<{ volume24h: number | null; holderCount: number | null }> token, double maxVolume, double maxHolders);
+double calculateFeaturedScore(std::optional<std::any> token, double maxVolume, double maxHolders);
 
 /**
  * Applies a weighted sort for the "featured" tokens

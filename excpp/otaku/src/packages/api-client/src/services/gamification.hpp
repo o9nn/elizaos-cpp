@@ -1,12 +1,14 @@
-#include ".lib/base-client.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include ".lib/base-client.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -26,7 +28,7 @@ struct LeaderboardEntry {
 };
 
 struct LeaderboardResponse {
-    'weekly' | 'all_time' scope;
+    std::variant<'weekly', 'all_time'> scope;
     std::vector<LeaderboardEntry> entries;
     double userRank;
     double limit;
@@ -39,11 +41,10 @@ struct UserSummary {
     double streakDays;
     double level;
     std::string levelName;
-    std::optional<{> nextMilestone;
     double level;
     std::string levelName;
     double pointsNeeded;
-    string | null lastLoginDate;
+    std::optional<std::string> lastLoginDate;
     std::optional<double> swapsCompleted;
 };
 
@@ -59,46 +60,12 @@ struct ReferralCodeResponse {
     std::string referralLink;
 };
 
-class GamificationService extends BaseApiClient {
-  /**
-   * Get leaderboard data
-   * @param agentId Agent ID to route the request to
-   * @param scope Leaderboard scope ('weekly' or 'all_time')
-   * @param limit Number of entries to return (default: 50)
-   * @param userId Optional user ID to get user's rank
-   */
-  async getLeaderboard(
-    agentId: UUID,
-    scope: 'weekly' | 'all_time' = 'weekly',
-    limit: number = 50,
-    userId?: UUID
-  ): Promise<LeaderboardResponse> {
-    const params: Record<string, string> = {
-      scope,
-      limit: limit.toString(),
-    };
-    
-    if (userId) {
-      params.userId = userId;
-    }
-
-    return this.get<LeaderboardResponse>(
-      `/api/agents/${agentId}/plugins/gamification/leaderboard`,
-      { params }
-    );
-  }
-
-  /**
-   * Get user summary with points, level, streak, and swap count
-   * @param agentId Agent ID to route the request to
-   * @param userId User ID to get summary for
-   */
-
-  /**
-   * Get or create referral code for user
-   * @param agentId Agent ID to route the request to
-   * @param userId User ID to get referral code for
-   */
+class GamificationService {
+public:
+    std::future<LeaderboardResponse> getLeaderboard(UUID agentId, const std::variant<'weekly', 'all_time' = 'weekly'>& scope, number = 50 limit, std::optional<UUID> userId);
+    std::future<UserSummary> getUserSummary(UUID agentId, UUID userId);
+    std::future<ReferralCodeResponse> getReferralCode(UUID agentId, UUID userId);
+};
 
 
 } // namespace elizaos

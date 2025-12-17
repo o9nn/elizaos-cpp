@@ -1,3 +1,10 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include "layout/root.hpp"
 #include "pages.hpp"
 #include "pages/admin.hpp"
@@ -12,13 +19,6 @@
 #include "pages/terms-of-service.hpp"
 #include "pages/testing.hpp"
 #include "pages/token.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 

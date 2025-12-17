@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -20,16 +20,12 @@ struct TokenAmount {
 };
 
 struct ParsedTokenAccount {
-    { data;
-    { parsed;
-    { info;
     std::string mint;
     TokenAmount tokenAmount;
 };
 
 struct TokenBalance {
     std::string mint;
-    { tokenAmount;
     double uiAmount;
     double decimals;
     std::string amount;
@@ -42,7 +38,9 @@ struct Social {
 
 struct TokenInfo {
     std::optional<std::string> imageUrl;
-    std::optional<std::vector<{ label: string; url: string }>> websites;
+    std::string type;
+    std::string url;
+};
 
 struct BaseToken {
     std::string address;
@@ -68,9 +66,7 @@ struct TokenPair {
     std::optional<double> fdv;
     std::optional<double> marketCap;
     std::optional<TokenInfo> info;
-    std::optional<{> volume;
     double h24;
-    std::optional<{> txns;
     double h24;
     double pairCreatedAt;
     std::optional<double> score;
@@ -83,21 +79,16 @@ struct TokenHolding {
     double usdValue;
     double percentageOwned;
     double firstReceived;
-    { marketData;
-    { baseToken;
     std::string address;
     std::string name;
     std::string symbol;
     std::string priceUsd;
-    { priceChange;
     double m5;
     double h1;
     double h6;
     double h24;
     std::optional<double> fdv;
-    std::optional<{> volume;
     double h24;
-    std::optional<{> txns;
     double h24;
     std::optional<TokenInfo> info;
     double pairCreatedAt;
@@ -106,7 +97,6 @@ struct TokenHolding {
 
 struct TokenData {
     std::vector<TokenHolding> holdings;
-    { summary;
     double totalValue;
     double totalHoldings;
     double significantPositions;
@@ -132,40 +122,20 @@ struct TokenAnalysis {
 };
 
 struct DexScreenerResponse {
-    Array<{ pairs;
-    { baseToken;
     std::string address;
     std::string name;
     std::string symbol;
     std::string priceUsd;
-    { priceChange;
     double m5;
     double h1;
     double h6;
     double h24;
     std::optional<double> fdv;
-    std::optional<{> volume;
     double h24;
-    std::optional<{> txns;
     double h24;
     std::optional<TokenInfo> info;
     double pairCreatedAt;
 };
 
-type {
-    TokenAmount,
-    ParsedTokenAccount,
-    TokenBalance,
-    Social,
-    TokenInfo,
-    BaseToken,
-    Liquidity,
-    TokenPair,
-    TokenHolding,
-    TokenData,
-    TimeSeriesPoint,
-    TokenAnalysis,
-    DexScreenerResponse,
-    AlchemyTokenBalance
-};
+
 } // namespace elizaos

@@ -1,3 +1,11 @@
+#pragma once
+#include <functional>
+#include <future>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include "actions/cancelTodo.hpp"
 #include "actions/completeTodo.hpp"
 #include "actions/createTodo.hpp"
@@ -6,13 +14,6 @@
 #include "elizaos/core.hpp"
 #include "providers/todos.hpp"
 #include "reminderService.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -30,38 +31,14 @@ namespace elizaos {
 /**
  * The TodoService class manages the todo functionality for the agent.
  */
-class TodoService extends Service {
-  static serviceType = "TODO" as ServiceTypeName;
-  capabilityDescription =
-    "The agent can manage to-do lists with daily recurring and one-off tasks";
-
-  constructor(protected runtime: IAgentRuntime) {
-    super(runtime);
-  }
-
-  /**
-   * Starts the TodoService with the given runtime.
-   * @param {IAgentRuntime} runtime - The runtime for the TodoService.
-   * @returns {Promise<TodoService>} A promise that resolves with the TodoService instance.
-   */
-
-  /**
-   * Stops the TodoService in the given agent runtime.
-   * @param {IAgentRuntime} runtime - The agent runtime containing the service.
-   * @returns {Promise<void>} A promise that resolves once the service has been stopped.
-   */
-
-  /**
-   * Stops the TodoService.
-   * @returns {Promise<void>} A promise that resolves once the service has been stopped.
-   */
-    // No specific cleanup needed for this service
-
-  /**
-   * Initializes the TodoService with the given configuration.
-   * @param {Record<string, string>} config - The configuration for the TodoService.
-   * @returns {Promise<void>} A promise that resolves once the service has been initialized.
-   */
+class TodoService {
+public:
+    TodoService(IAgentRuntime protected runtime);
+    std::future<TodoService> start(IAgentRuntime runtime);
+    std::future<void> stop(IAgentRuntime runtime);
+    std::future<void> stop();
+    std::future<void> init(Record<string config, auto string>);
+};
 
 /**
  * The TodoPlugin provides task management functionality with daily recurring and one-off tasks,

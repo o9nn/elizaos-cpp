@@ -1,13 +1,14 @@
-#include "db.hpp"
-#include "tokenSupplyHelpers/customWallet.hpp"
-#include "websocket-client.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "db.hpp"
+#include "tokenSupplyHelpers/customWallet.hpp"
+#include "websocket-client.hpp"
 
 namespace elizaos {
 

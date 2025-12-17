@@ -1,11 +1,14 @@
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -14,13 +17,19 @@ namespace elizaos {
 
 
 
-class DummyLpService extends ILpService {
-  public getDexName(): string {
-    return 'dummy';
-  }
-
-    // This is a mock. In a real scenario, you'd look up position details based on the identifier.
-    // The identifier could be the pool ID for a simple AMM or a position NFT mint for a CLMM.
+class DummyLpService {
+public:
+    std::string getDexName();
+    std::future<DummyLpService> start(IAgentRuntime runtime);
+    std::future<void> stop(IAgentRuntime runtime);
+    std::future<void> start(IAgentRuntime runtime);
+    std::future<void> stop();
+    std::future<std::vector<PoolInfo>> getPools(std::optional<std::string> tokenAMint, std::optional<std::string> tokenBMint);
+    Promise<TransactionResult & addLiquidity(std::optional<std::any> params);
+    Promise<TransactionResult & removeLiquidity(const std::any& params);
+    std::variant<Promise<LpPositionDetails, null>> getLpPositionDetails(const std::string& userAccountPublicKey, const std::string& poolOrPositionIdentifier);
+    std::future<std::unordered_map<std::string, std::optional<PoolInfo>>> getMarketDataForPools(const std::vector<std::string>& poolIds);
+};
 
 
 } // namespace elizaos

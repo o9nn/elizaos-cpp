@@ -1,11 +1,11 @@
-#include "global.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "global.hpp"
 
 namespace elizaos {
 
@@ -26,6 +26,6 @@ struct ParsedHoldersQuery {
     double offset;
 };
 
-ParsedHoldersQuery parseHoldersQuery(string | undefined mintParam, RawHoldersQuery query);
+ParsedHoldersQuery parseHoldersQuery(const std::string& mintParam, RawHoldersQuery query);
 
 } // namespace elizaos

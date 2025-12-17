@@ -1,11 +1,13 @@
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -29,12 +31,12 @@ struct CharacterSnapshot {
     UUID id;
     UUID agentId;
     double versionNumber;
-    any; // Will be the full Character object characterData;
+    std::any characterData;
     Date createdAt;
 };
 
 struct ModificationOperation {
-    "add" | "modify" | "delete" type;
+    std::variant<"add", "modify", "delete"> type;
     std::string path;
     std::optional<std::any> value;
     std::optional<std::string> dataType;

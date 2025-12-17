@@ -1,3 +1,10 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include "__tests__/e2e/index.hpp"
 #include "actions/create-project.hpp"
 #include "actions/generate-code.hpp"
@@ -7,13 +14,6 @@
 #include "services/ProjectPlanningService.hpp"
 #include "services/ProjectStatusManager.hpp"
 #include "services/SecretsManagerService.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 

@@ -1,12 +1,14 @@
-#include "elizaos/core-plugin-v2.hpp"
-#include "state.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core-plugin-v2.hpp"
+#include "state.hpp"
 
 namespace elizaos {
 
@@ -20,7 +22,7 @@ namespace elizaos {
  * A template can be either a string or a function that takes state and returns a string
  * This aligns with V2's TemplateType
  */
-using TemplateType = std::variant<std::string, ((options: { state: State }) => string)>;
+using TemplateType = std::variant<std::string, std::function<string)(std::any)>>;
 
 /**
  * Generic template values interface for typed access to state.values
@@ -34,6 +36,7 @@ struct TemplateValues {
  * @param template The v1 template (string or function)
  * @returns A function that processes the template with the given state
  */
+std::function<std::string(State)> createTemplateFunction(TemplateType template);
 
 /**
  * Process a template with the given state

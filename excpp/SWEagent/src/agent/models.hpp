@@ -1,16 +1,19 @@
+#pragma once
+#include <any>
+#include <functional>
+#include <future>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <variant>
+#include <vector>
 #include ".exceptions.hpp"
 #include ".types.hpp"
 #include ".utils/log.hpp"
 #include "agents.hpp"
 #include "types.hpp"
 #include "utils/model-pricing.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -26,25 +29,25 @@ namespace elizaos {
  * Retry configuration
  */
 
-using RetryConfig = z.infer<typeof RetryConfigSchema>;
+using RetryConfig = z::infer<typeof RetryConfigSchema>;
 
 /**
  * Generic API model configuration
  */
 
-using GenericAPIModelConfig = z.infer<typeof GenericAPIModelConfigSchema>;
+using GenericAPIModelConfig = z::infer<typeof GenericAPIModelConfigSchema>;
 
 /**
  * Human model configuration
  */
 
-using HumanModelConfig = z.infer<typeof HumanModelConfigSchema>;
+using HumanModelConfig = z::infer<typeof HumanModelConfigSchema>;
 
 /**
  * Replay model configuration
  */
 
-using ReplayModelConfig = z.infer<typeof ReplayModelConfigSchema>;
+using ReplayModelConfig = z::infer<typeof ReplayModelConfigSchema>;
 
 /**
  * Instant empty submit model configuration
@@ -71,222 +74,109 @@ using ModelConfig = std::variant<, GenericAPIModelConfig, HumanModelConfig, Repl
  * Global statistics tracking
  */
 class GlobalStats {
-  totalCost: number = 0;
-  lastQueryTimestamp: number = 0;
-
-  addCost(cost: number): void {
-    this.totalCost += cost;
-  }
+public:
+    void addCost(double cost);
+    void updateTimestamp();
+};
 
 /**
  * Instance-specific statistics
  */
 class InstanceStats {
-  instanceCost: number = 0;
-  tokensSent: number = 0;
-  tokensReceived: number = 0;
-  apiCalls: number = 0;
-
-  add(other: InstanceStats): InstanceStats {
-    const result = new InstanceStats();
-    result.instanceCost = this.instanceCost + other.instanceCost;
-    result.tokensSent = this.tokensSent + other.tokensSent;
-    result.tokensReceived = this.tokensReceived + other.tokensReceived;
-    result.apiCalls = this.apiCalls + other.apiCalls;
-    return result;
-  }
+public:
+    InstanceStats add(InstanceStats other);
+    InstanceStats subtract(InstanceStats other);
+};
 
 /**
  * Abstract base class for all models
  */
+    void resetStats();
+    InstanceStats getStats();
+
+    void checkCostLimits();
 
 /**
  * Human model for interactive input
  */
-class HumanModel extends AbstractModel {
-  protected historyPath?: string;
-  protected catchEof: boolean;
+class HumanModel {
+public:
+    HumanModel(HumanModelConfig config, ToolConfig tools);
+    void loadReadlineHistory();
+    void updateStats();
+    std::variant<Promise<ModelOutput, ModelOutput[]>> query(History _history, const std::variant<std::string, number = '> '>& actionPrompt, std::optional<double> n);
+    void handleRaiseCommands(const std::string& action);
 
-  constructor(config: HumanModelConfig, tools: ToolConfig) {
-    super(config, tools);
-    this.historyPath = process.env.HISTFILE || path.join(process.env.HOME || '.', '.swe_agent_history');
-    this.catchEof = config.catchEof !== false; // Default to true
-    this.loadReadlineHistory();
-  }
-
-    // In Node.js, readline history handling is different
-    // We'd need to implement custom history management
-
-    // Create readline interface
-
-      // Handle EOF (Ctrl+D)
-          // Re-raise EOFError when catchEof is disabled
-
-        // Check if answer is null (EOF)
-
-        // Handle special commands
-
-    // Add other raise commands as needed
+private:
+    bool catchEof_;
+};
 
 /**
  * LiteLLM model for API-based models
  */
-class LiteLLMModel extends AbstractModel {
-  private apiKeys: string[];
-  private currentKeyIndex: number = 0;
+class LiteLLMModel {
+public:
+    LiteLLMModel(GenericAPIModelConfig config, ToolConfig tools);
+    std::vector<std::string> getApiKeys();
+    std::optional<std::string> chooseApiKey();
+    std::future<void> sleep();
+    std::variant<Promise<ModelOutput, ModelOutput[]>> query(History history, std::optional<double> temperature, number = 1 n);
+    std::future<std::vector<ModelOutput>> singleQuery(const std::vector<HistoryItem>& messages, std::optional<double> n, std::optional<double> temperature);
+    void updateStatsFromResponse(APIResponse response);
+    double calculateCost(double inputTokens, double outputTokens);
+    std::vector<HistoryItem> historyToMessages(History history);
+    std::string getRole(HistoryItem historyItem);
 
-  constructor(config: GenericAPIModelConfig, tools: ToolConfig) {
-    super(config as ModelConfig, tools);
-    this.apiKeys = this.getApiKeys();
-  }
-
-      // Try to get from environment
-
-      // It's an environment variable
-
-      // Use thread-based selection
-
-    // Round-robin selection
-
-    struct RequestData {
-    std::string model;
-    std::optional<std::vector<HistoryItem>> messages;
-    double temperature;
-    number | null top_p;
-    double n;
-    std::vector<std::string> stop;
-    std::optional<double> max_tokens;
-    std::optional<std::string> system;
-    std::optional<std::vector<{ role: string; parts: Array<{ text: string }> }>> contents;
-
-    // Determine API endpoint and headers based on provider
-
-      // Convert messages format for Anthropic
-
-      // Convert messages format for Google
-      // OpenAI and compatible APIs
-
-      // Convert API response to ModelOutput format
-
-    // Calculate cost (this would need proper model pricing data)
-
-    return calculateCost(config.name, inputTokens, outputTokens);
+private:
+    std::vector<std::string> apiKeys_;
+};
 
 /**
  * Human model with thought prompting
  */
-class HumanThoughtModel extends HumanModel {
-  async query(
-    _history: History,
-    actionPrompt: string | number = '> ',
-    n?: number,
-  ): Promise<ModelOutput | ModelOutput[]> {
-    // First get the thought
-    const thoughtPrompt = 'What is your thought? > ';
-    const thoughtRl = readline.createInterface({
-      input: process.stdin,
-      output: process.stdout,
-      prompt: thoughtPrompt,
-    });
-
-    const thought = await new Promise<string>((resolve) => {
-      thoughtRl.question(thoughtPrompt, (answer) => {
-        thoughtRl.close();
-        resolve(answer);
-      });
-    });
-
-    // Then get the action
-    const actionRl = readline.createInterface({
-      input: process.stdin,
-      output: process.stdout,
-      prompt: typeof actionPrompt === 'string' ? actionPrompt : '> ',
-    });
-
-    const action = await new Promise<string>((resolve) => {
-      actionRl.question('What is your action? > ', (answer) => {
-        actionRl.close();
-
-        if (!this.catchEof && answer === '') {
-          throw new EOFError();
-        }
-
-        resolve(answer);
-      });
-    });
-
-    this.updateStats();
-
-    // Handle special commands
-    if (action.startsWith('RAISE_')) {
-      this.handleRaiseCommands(action);
-    }
-
-    const result: ModelOutput = {
-      message: `${thought}\n\`\`\`\n${action}\n\`\`\``,
-    };
-
-    return n ? [result] : result;
-  }
+class HumanThoughtModel {
+public:
+    std::variant<Promise<ModelOutput, ModelOutput[]>> query(History _history, const std::variant<std::string, number = '> '>& actionPrompt, std::optional<double> n);
+};
 
 /**
  * Replay model for replaying trajectories
  */
-class ReplayModel extends AbstractModel {
-  private replays: Array<Array<string | ModelOutput>>;
-  private replayIdx: number = 0;
-  private actionIdx: number = 0;
-  private usesFunctionCalling: boolean;
-  private submitCommand: string;
+class ReplayModel {
+public:
+    ReplayModel(ReplayModelConfig config, ToolConfig tools);
+    void nextReplay();
+    std::future<ModelOutput> query(History _history);
 
-  constructor(config: ReplayModelConfig, tools: ToolConfig) {
-    super(config, tools);
-
-    if (!config.replayPath || !fs.existsSync(config.replayPath)) {
-      throw new Error(`Replay file ${config.replayPath} not found`);
-    }
-
-    const content = fs.readFileSync(config.replayPath, 'utf-8');
-    this.replays = content
-      .split('\n')
-      .filter((line) => line.trim())
-      .map((line) => {
-        const parsed = JSON.parse(line);
-        return Object.values(parsed)[0] as Array<string | ModelOutput>;
-      });
-
-    this.usesFunctionCalling = tools.useFunctionCalling;
-    this.submitCommand = tools.submitCommand || 'submit';
-  }
+private:
+    std::variant<Array<Array<string, ModelOutput>>> replays_;
+    bool usesFunctionCalling_;
+    std::string submitCommand_;
+};
 
 /**
  * Instant empty submit model for testing
  */
-class InstantEmptySubmitModel extends AbstractModel {
-  private actionIdx: number = 0;
-  private delay: number;
+class InstantEmptySubmitModel {
+public:
+    InstantEmptySubmitModel(std::optional<std::any> config, ToolConfig tools);
+    std::future<ModelOutput> query(History _history);
 
-  constructor(config: { name: 'instant_empty_submit'; delay?: number }, tools: ToolConfig) {
-    super(config, tools);
-    this.delay = config.delay || 0;
-  }
-
-    // Add random delay if configured
+private:
+    double delay_;
+};
 
 /**
  * Predetermined test model for testing
  */
-class PredeterminedTestModel extends AbstractModel {
-  private responses: Array<string | ModelOutput>;
-  private responseIdx: number = 0;
+class PredeterminedTestModel {
+public:
+    PredeterminedTestModel(const std::variant<Array<string, ModelOutput>>& responses, std::optional<ToolConfig> tools);
+    std::future<ModelOutput> query(History _history);
 
-  constructor(responses: Array<string | ModelOutput>, tools?: ToolConfig) {
-    super({ name: 'test' } as ModelConfig, tools || ({} as ToolConfig));
-    this.responses = responses;
-  }
-
-    // Handle special test commands
-        // Create a RuntimeError-like error that the agent will recognize
+private:
+    std::variant<Array<string, ModelOutput>> responses_;
+};
 
 // Export types for testing
 

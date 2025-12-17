@@ -1,11 +1,12 @@
-#include ".repo.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include ".repo.hpp"
 
 namespace elizaos {
 
@@ -20,62 +21,32 @@ namespace elizaos {
 // Environment interface for hooks
 struct EnvironmentInstance {
     std::optional<unknown> deployment;
-    std::optional<Repo | null> repo;
+    std::optional<std::optional<Repo>> repo;
 };
 
 /**
  * Abstract environment hook interface
  */
-  /**
-   * Called when the environment is initialized
-   */
-    // Default implementation - do nothing
-
-  /**
-   * Called when repository copying starts
-   */
-    // Default implementation - do nothing
-
-  /**
-   * Called when deployment starts
-   */
-    // Default implementation - do nothing
-
-  /**
-   * Called when environment installation starts
-   */
-    // Default implementation - do nothing
-
-  /**
-   * Called when the environment is closing
-   */
-    // Default implementation - do nothing
-
-  /**
-   * Called when the environment startup is complete
-   */
-    // Default implementation - do nothing
+    void onInit(EnvironmentInstance _env);
+    void onCopyRepoStarted(const std::variant<Repo, RepoConfig>& _repo);
+    void onStartDeployment();
+    void onInstallEnvStarted();
+    void onClose();
+    void onEnvironmentStartup();
 
 /**
  * Combined environment hooks - allows multiple hooks to be registered
  */
-class CombinedEnvHooks extends EnvHook {
-  private hooks: EnvHook[] = [];
+class CombinedEnvHooks {
+public:
+    void addHook(EnvHook hook);
+    void onInit(EnvironmentInstance env);
+    void onCopyRepoStarted(const std::variant<Repo, RepoConfig>& repo);
+    void onStartDeployment();
+    void onInstallEnvStarted();
+    void onClose();
+    void onEnvironmentStartup();
+};
 
-  addHook(hook: EnvHook): void {
-    this.hooks.push(hook);
-  }
-
-        // Continue with other hooks
-
-        // Continue with other hooks
-
-        // Continue with other hooks
-
-        // Continue with other hooks
-
-        // Continue with other hooks
-
-        // Continue with other hooks
 
 } // namespace elizaos

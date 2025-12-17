@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -53,7 +53,6 @@ struct PackageUpdate {
  */
 struct UpdateCheckResult {
     bool hasUpdates;
-    std::unordered_map<std::string, PackageUpdate> updates;
 };
 
 /**
@@ -73,7 +72,6 @@ struct CliEnvironment {
 struct UpdateContext {
     std::string cwd;
     bool isPlugin;
-    import('@/src/utils/directory-detection').DirectoryInfo directoryInfo;
     CliEnvironment environment;
 };
 

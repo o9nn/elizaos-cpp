@@ -1,11 +1,11 @@
-#include "memory.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "memory.hpp"
 
 namespace elizaos {
 
@@ -21,8 +21,6 @@ namespace elizaos {
  * This enum is used to manage access and retrieval of knowledge items, often in conjunction with `AgentRuntime.addKnowledge` or `AgentRuntime.getKnowledge` scopes.
  */
 enum KnowledgeScope {
-  SHARED = 'shared',
-  PRIVATE = 'private',
 }
 
 /**
@@ -32,7 +30,6 @@ enum KnowledgeScope {
  * Used internally by caching strategies, potentially within `IDatabaseAdapter` cache methods or runtime caching layers.
  */
 enum CacheKeyPrefix {
-  KNOWLEDGE = 'knowledge',
 }
 
 /**
@@ -90,7 +87,6 @@ struct IKnowledgeService {
     UUID roomId;
     UUID entityId;
     std::optional<UUID> agentId;
-    std::optional<std::unordered_map<std::string, unknown>> metadata;
     UUID clientDocumentId;
     UUID storedDocumentMemoryId;
     double fragmentCount;

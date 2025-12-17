@@ -1,16 +1,16 @@
-#include ".generateTimeIntervals.hpp"
-#include ".types.hpp"
-#include "context.hpp"
-#include "mutations.hpp"
-#include "storeIssues.hpp"
-#include "storePullRequests.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".generateTimeIntervals.hpp"
+#include ".types.hpp"
+#include "context.hpp"
+#include "mutations.hpp"
+#include "storeIssues.hpp"
+#include "storePullRequests.hpp"
 
 namespace elizaos {
 
@@ -32,7 +32,6 @@ namespace elizaos {
       // Process PRs and issues in parallel
 
       // Update repository last fetched timestamp
-      await updateRepositoryLastFetched(repoId, ingestionTimestamp);
 
 
 } // namespace elizaos

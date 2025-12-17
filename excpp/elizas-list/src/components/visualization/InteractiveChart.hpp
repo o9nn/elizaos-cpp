@@ -1,10 +1,12 @@
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -15,11 +17,10 @@ namespace elizaos {
 
 struct ChartProps {
     std::vector<std::any> data;
-    'network' | 'timeline' | 'heatmap' | 'force' type;
+    std::variant<'network', 'timeline', 'heatmap', 'force'> type;
     double width;
     double height;
     std::optional<ChartOptions> options;
-    std::optional<(node: any) => void> onNodeClick;
 };
 
   // Additional rendering functions for other chart types...

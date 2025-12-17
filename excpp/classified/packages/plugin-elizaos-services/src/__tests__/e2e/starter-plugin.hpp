@@ -1,11 +1,11 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -16,7 +16,6 @@ namespace elizaos {
 
 /**
  * E2E (End-to-End) Test Suite for ElizaOS Plugins
- * ================================================
  *
  * This file contains end-to-end tests that run within a real ElizaOS runtime environment.
  * Unlike unit tests that test individual components in isolation, e2e tests validate
@@ -45,9 +44,7 @@ namespace elizaos {
  * ```typescript
  * {
  *   name: 'my_new_test',
- *   fn: async (runtime) => {
  *     // Your test logic here
- *     if (someCondition !== expected) {
  *       throw new Error('Test failed: reason');
  *     }
  *   }
@@ -78,9 +75,7 @@ namespace elizaos {
 struct TestSuite {
     std::string name;
     std::optional<std::string> description;
-    Array<{ tests;
     std::string name;
-    (runtime: any) => Promise<any> fn;
 };
 
 // Define minimal interfaces for the types we need
@@ -89,15 +84,12 @@ using UUID = `${string}-${string}-${string}-${string}-${string}`;
 struct Memory {
     UUID entityId;
     UUID roomId;
-    { content;
     std::string text;
     std::string source;
     std::optional<std::vector<std::string>> actions;
 };
 
 struct State {
-    std::unordered_map<std::string, std::any> values;
-    std::unordered_map<std::string, std::any> data;
     std::string text;
 };
 
@@ -197,13 +189,11 @@ struct State {
      * ```typescript
      * {
      *   name: 'your_test_name',
-     *   fn: async (runtime) => {
      *     // Setup: Create any test data needed
      *
      *     // Action: Perform the operation you want to test
      *
      *     // Assert: Check the results
-     *     if (result !== expected) {
      *       throw new Error(`Expected ${expected} but got ${result}`);
      *     }
      *   }

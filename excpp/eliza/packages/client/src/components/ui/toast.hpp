@@ -1,11 +1,11 @@
-#include "toast.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "toast.hpp"
 
 namespace elizaos {
 

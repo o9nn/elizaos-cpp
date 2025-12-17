@@ -1,11 +1,13 @@
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -49,6 +51,7 @@ std::future<void> detokenizeText(ModelTypeName model, const std::vector<double>&
 /**
  * Generate text using Groq API
  */
+std::future<void> generateGroqText(ReturnType<typeof createGroq> groq, const std::string& model, std::optional<std::any> params);
 
 /**
  * Generate object using Groq API

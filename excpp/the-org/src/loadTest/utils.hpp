@@ -1,12 +1,13 @@
-#include "elizaos/core.hpp"
-#include "types.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
+#include "types.hpp"
 
 namespace elizaos {
 
@@ -19,17 +20,14 @@ namespace elizaos {
  * Threshold configurations for breaking point detection
  */
 enum ThresholdLevel {
-  LOW = 'LOW',
-  MEDIUM = 'MEDIUM',
-  HIGH = 'HIGH',
 }
 
 struct ThresholdConfig {
-    number; // in ms responseTimeThreshold;
-    number; // as a percentage (0-100) errorRateThreshold;
-    number; // as a percentage (0-100) successRateThreshold;
-    number; // in MB memoryThreshold;
-    number; // as a fraction (0-1) cpuThreshold;
+    double responseTimeThreshold;
+    double errorRateThreshold;
+    double successRateThreshold;
+    double memoryThreshold;
+    double cpuThreshold;
 };
 
 /**

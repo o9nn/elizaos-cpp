@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -28,15 +29,13 @@ namespace elizaos {
 };
 
   enum SupportedModels {
-    PoseNet = 'PoseNet',
-    MoveNet = 'MoveNet',
-    BlazePose = 'BlazePose',
   }
 
   struct PosenetModelConfig {
-    std::optional<'MobileNetV1' | 'ResNet50'> architecture;
+    std::optional<std::variant<'MobileNetV1', 'ResNet50'>> architecture;
     std::optional<double> outputStride;
-    std::optional<{ width: number; height: number }> inputResolution;
+    std::optional<double> multiplier;
+};
 
 
 } // namespace elizaos

@@ -1,11 +1,11 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -40,14 +40,11 @@ struct EnsDataResponse {
     std::optional<std::string> header;
     std::optional<std::string> pgp;
     std::optional<std::string> expiry;
-    std::optional<{> farcaster;
     std::optional<double> fid;
     std::optional<std::string> username;
     std::optional<std::string> display_name;
     std::optional<std::string> bio;
     std::optional<std::string> profile_url;
-    std::optional<std::unordered_map<std::string, std::string>> wallets;
-    std::optional<std::unordered_map<std::string, std::string>> records;
     std::optional<bool> error;
     std::optional<double> status;
     std::optional<std::string> message;

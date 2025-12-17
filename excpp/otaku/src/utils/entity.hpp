@@ -1,11 +1,13 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -16,7 +18,6 @@ namespace elizaos {
 
 struct EntityWalletResult {
     std::string walletAddress;
-    std::optional<std::unordered_map<std::string, std::any>> metadata;
 };
 
 struct EntityWalletError {

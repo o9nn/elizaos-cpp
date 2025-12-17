@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -26,7 +26,7 @@ struct ChatSession {
 };
 
 struct ChatSessionsProps {
-    string | null userId;
+    std::optional<std::string> userId;
     std::optional<std::string> currentSessionId;
     std::optional<bool> showSwitcher;
 };

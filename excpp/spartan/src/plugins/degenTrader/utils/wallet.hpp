@@ -1,12 +1,14 @@
-#include "elizaos/core.hpp"
-#include "utils.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
+#include "utils.hpp"
 
 namespace elizaos {
 
@@ -107,7 +109,6 @@ std::future<void> getWalletBalances(IAgentRuntime runtime);
 /**
  * Gets balance of a specific token
  */
-std::future<TokenBalance | null> getTokenBalance(IAgentRuntime runtime, const std::string& tokenMint);
 
 /**
  * Checks if wallet has any balance of a specific token

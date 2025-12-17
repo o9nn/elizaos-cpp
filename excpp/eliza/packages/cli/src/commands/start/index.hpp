@@ -1,15 +1,15 @@
-#include "actions/server-start.hpp"
-#include "elizaos/core.hpp"
-#include "elizaos/server.hpp"
-#include "types.hpp"
-#include "utils/config-utils.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "actions/server-start.hpp"
+#include "elizaos/core.hpp"
+#include "elizaos/server.hpp"
+#include "types.hpp"
+#include "utils/config-utils.hpp"
 
 namespace elizaos {
 
@@ -18,9 +18,7 @@ namespace elizaos {
 
 
 
-    await displayBanner();
       // Load env config first before any character loading
-      await loadEnvConfig();
 
         // Validate and load characters from provided paths
 
@@ -30,8 +28,6 @@ namespace elizaos {
           // except those explicitly detected as non-ElizaOS (covers projects, plugins, monorepos, etc.)
 
               // Log loaded agent names
-
-      await startAgents({ ...options, characters, projectAgents });
 
 // Re-for backward compatibility
 * from './actions/agent-start';

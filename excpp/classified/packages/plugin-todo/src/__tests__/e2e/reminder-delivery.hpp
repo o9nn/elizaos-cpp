@@ -1,12 +1,12 @@
-#include "..scripts/demo-reminders.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "..scripts/demo-reminders.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -17,7 +17,6 @@ namespace elizaos {
 
 // Type for the MESSAGE_DELIVERY service from rolodex plugin
 struct MessageDeliveryService {
-    std::optional<(message: unknown) => Promise<void>> sendMessage;
 };
 
         // Check if rolodex is available
@@ -26,10 +25,7 @@ struct MessageDeliveryService {
 
         // Monitor for 30 seconds to see reminders being sent
 
-        await monitorReminders(runtime, 30000);
-
         // Clean up
-        await cleanupDemo(runtime, testUserId);
 
         // Create test data
 

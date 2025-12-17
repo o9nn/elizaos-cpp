@@ -1,11 +1,12 @@
-#include ".types/role-tags.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".types/role-tags.hpp"
 
 namespace elizaos {
 
@@ -15,46 +16,20 @@ namespace elizaos {
 // https://discord.com/developers/docs/topics/permissions#role-object
 
 class Role {
-  id: Snowflake;
-  name: string;
-  color: number;
-  hoist: boolean;
-  icon?: string | Maybe;
-  unicode_emoji?: string | Maybe;
-  position: number;
-  permissions: string;
-  managed: boolean;
-  mentionable: boolean;
-  tags?: RoleTags;
-  flags: number;
+public:
+    Role(std::optional<std::any> opts);
 
-  constructor(opts: {
-    id: Snowflake;
-    name: string;
-    color: number;
-    hoist: boolean;
-    icon?: string | Maybe;
-    unicode_emoji?: string | Maybe;
-    position: number;
-    permissions: string;
-    managed: boolean;
-    mentionable: boolean;
-    tags?: RoleTags;
-    flags: number;
-  }) {
-    this.id = opts.id;
-    this.name = opts.name;
-    this.color = opts.color;
-    this.hoist = opts.hoist;
-    this.icon = opts.icon;
-    this.unicode_emoji = opts.unicode_emoji;
-    this.position = opts.position;
-    this.permissions = opts.permissions;
-    this.managed = opts.managed;
-    this.mentionable = opts.mentionable;
-    this.tags = opts.tags;
-    this.flags = opts.flags;
-  }
+private:
+    Snowflake id_;
+    std::string name_;
+    double color_;
+    bool hoist_;
+    double position_;
+    std::string permissions_;
+    bool managed_;
+    bool mentionable_;
+    double flags_;
+};
 
 
 } // namespace elizaos

@@ -1,11 +1,11 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -36,10 +36,8 @@ namespace elizaos {
     // Find all responses with REFLECT action and text
 
     // If we found any existing responses, use them and skip LLM
-        await callback(responseContent);
 
     // Only generate response using LLM if no suitable response was found
 
-    await callback(memory.content);
 
 } // namespace elizaos

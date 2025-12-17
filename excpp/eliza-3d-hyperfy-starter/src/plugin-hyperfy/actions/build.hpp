@@ -1,13 +1,13 @@
-#include ".service.hpp"
-#include ".systems/controls.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".service.hpp"
+#include ".systems/controls.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -17,12 +17,6 @@ namespace elizaos {
 
 
   enum EditOperationType {
-    DUPLICATE = 'duplicate',
-    TRANSLATE = 'translate',
-    ROTATE = 'rotate',
-    SCALE = 'scale',
-    DELETE = 'delete',
-    IMPORT = 'import'
   }
 
   

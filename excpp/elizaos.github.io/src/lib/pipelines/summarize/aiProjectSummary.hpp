@@ -1,14 +1,15 @@
-#include ".codeAreaHelpers.hpp"
-#include ".export/queries.hpp"
-#include "callAIService.hpp"
-#include "config.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".codeAreaHelpers.hpp"
+#include ".export/queries.hpp"
+#include "callAIService.hpp"
+#include "config.hpp"
 
 namespace elizaos {
 
@@ -65,8 +66,6 @@ struct ProjectMetricsForSummary {
     std::vector<CompletedItem> completedItems;
 };
 
-std::future<string | null> generateProjectSummary(RepositoryMetrics metrics, AISummaryConfig config, { startDate: string } dateInfo, IntervalType intervalType);
-
 /**
  * Calculate appropriate max tokens based on prompt length and interval type
  * Returns a value using a basic scaling approach
@@ -76,6 +75,6 @@ double calculateMaxTokens(const std::string& prompt, IntervalType intervalType, 
 /**
  * Format project metrics into a structured prompt for analysis based on interval type
  */
-std::string formatAnalysisPrompt(RepositoryMetrics metrics, { startDate: string } dateInfo, IntervalType intervalType, AISummaryConfig config);
+std::string formatAnalysisPrompt(RepositoryMetrics metrics, const std::any& dateInfo, IntervalType intervalType, AISummaryConfig config);
 
 } // namespace elizaos

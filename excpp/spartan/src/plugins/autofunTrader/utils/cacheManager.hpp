@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -13,20 +14,10 @@ namespace elizaos {
 
 
 class CacheManager {
-  private cache: Map<string, CacheEntry<any>> = new Map();
-  private defaultTTL = 60000; // 60 seconds default TTL
-
-  async get<T>(key: string): Promise<T | null> {
-    const entry = this.cache.get(key);
-    if (!entry) return null;
-
-    if (Date.now() > entry.expiry) {
-      this.cache.delete(key);
-      return null;
-    }
-
-    return entry.value as T;
-  }
+public:
+    std::future<void> delete(const std::string& key);
+    std::future<void> clear();
+};
 
 
 } // namespace elizaos

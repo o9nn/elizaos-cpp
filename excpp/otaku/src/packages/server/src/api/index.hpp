@@ -1,3 +1,10 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include ".middleware.hpp"
 #include ".socketio.hpp"
 #include "agents.hpp"
@@ -12,13 +19,6 @@
 #include "runtime.hpp"
 #include "system.hpp"
 #include "tee.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -39,7 +39,7 @@ namespace elizaos {
 // Global reference to SocketIO router for log streaming
 // let socketIORouter: SocketIORouter | null = null; // This can be removed if router is managed within setupSocketIO scope correctly
 
-SocketIOServer setupSocketIO(http.Server server, ElizaOS elizaOS, AgentServer serverInstance);
+SocketIOServer setupSocketIO(http::Server server, ElizaOS elizaOS, AgentServer serverInstance);
 
 // Setup log streaming integration with the logger
 void setupLogStreaming(SocketIOServer io, SocketIORouter router);

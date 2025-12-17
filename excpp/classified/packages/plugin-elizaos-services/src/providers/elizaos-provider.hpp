@@ -1,11 +1,14 @@
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -28,22 +31,17 @@ ElizaOSAPIError createElizaOSError(const std::string& message, double status, st
 
 struct ElizaOSAPIResponse {
     std::string id;
-    'chat.completion' | 'chat.completion.chunk' object;
+    std::variant<'chat::completion', 'chat.completion.chunk'> object;
     double created;
     std::string model;
-    Array<{ choices;
     double index;
-    { message;
-    'system' | 'user' | 'assistant' | 'tool' role;
-    string | null content;
-    std::optional<Array<{> tool_calls;
+    std::variant<'system', 'user', 'assistant', 'tool'> role;
+    std::optional<std::string> content;
     std::string id;
     'function' type;
-    { function;
     std::string name;
     std::string arguments;
-    'stop' | 'length' | 'tool_calls' | 'content_filter' | null finish_reason;
-    std::optional<{> usage;
+    std::variant<'stop', 'length', 'tool_calls', 'content_filter'> finish_reason;
     double prompt_tokens;
     double completion_tokens;
     double total_tokens;
@@ -55,18 +53,14 @@ struct ElizaOSAPIResponse {
 
 struct ElizaOSChatCompletionRequest {
     std::string model;
-    Array<{ messages;
-    'system' | 'user' | 'assistant' | 'tool' role;
-    'text' | 'image_url' type;
+    std::variant<'system', 'user', 'assistant', 'tool'> role;
+    std::variant<'text', 'image_url'> type;
     std::optional<std::string> text;
-    std::optional<{> image_url;
     std::string url;
-    std::optional<'low' | 'high' | 'auto'> detail;
+    std::optional<std::variant<'low', 'high', 'auto'>> detail;
     std::optional<std::string> name;
-    std::optional<Array<{> tool_calls;
     std::string id;
     'function' type;
-    { function;
     std::string name;
     std::string arguments;
     std::optional<std::string> tool_call_id;
@@ -75,16 +69,12 @@ struct ElizaOSChatCompletionRequest {
     std::optional<double> top_p;
     std::optional<double> frequency_penalty;
     std::optional<double> presence_penalty;
-    std::optional<std::vector<string | string>> stop;
+    std::optional<std::variant<std::string, std::vector<std::string>>> stop;
     std::optional<bool> stream;
-    std::optional<Array<{> tools;
     'function' type;
-    { function;
     std::string name;
     std::string description;
-    std::unordered_map<std::string, std::any> parameters;
     'function' type;
-    { name: string } function;
     std::optional<std::string> user;
 };
 
@@ -96,7 +86,7 @@ std::string getAPIUrl(IAgentRuntime runtime);
 /**
  * Get ElizaOS API key from runtime settings
  */
-string | undefined getAPIKey(IAgentRuntime runtime);
+std::string getAPIKey(IAgentRuntime runtime);
 
 /**
  * Makes a chat completion request to the ElizaOS API service
@@ -108,7 +98,6 @@ string | undefined getAPIKey(IAgentRuntime runtime);
  *
  * @example
  * ```typescript
- * const response = await makeElizaOSRequest(runtime, {
  *   model: 'gpt-4o-mini',
  *   messages: [{ role: 'user', content: 'Hello' }]
  * });
@@ -134,9 +123,7 @@ std::string getModelForType(ModelTypeName modelType);
  *
  * @example
  * ```typescript
- * const isAvailable = await checkElizaOSAPI(runtime);
  * if (isAvailable) {
- *   console.log('ElizaOS API is ready');
  * }
  * ```
  */

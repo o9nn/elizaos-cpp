@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -14,6 +14,8 @@ namespace elizaos {
 
 
 // Helper to get OTC address from deployments or env - cached at module level
+
+Address getOtcAddress();
 
 // Configuration for contract reading with dynamic ABIs
 struct ReadContractConfig {
@@ -26,7 +28,11 @@ struct ReadContractConfig {
 // Log type for transaction receipts with topics
 struct TransactionLog {
     Address address;
-    `0x${string}` data;
+    bigint blockNumber;
+    double logIndex;
+    double transactionIndex;
+    bool removed;
+};
 
 // Type-safe wrapper for readContract that handles wagmi client and dynamic ABIs
 // The client type is inferred, we only need to specify the return type

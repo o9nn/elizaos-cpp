@@ -1,3 +1,11 @@
+#pragma once
+#include <functional>
+#include <future>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include ".cron.hpp"
 #include ".db.hpp"
 #include ".redis.hpp"
@@ -5,13 +13,6 @@
 #include ".tokenSupplyHelpers/customWallet.hpp"
 #include ".util.hpp"
 #include ".websocket-client.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -26,10 +27,9 @@ struct LockResult {
 
 struct MigrationStepResult {
     std::string txId;
-    std::optional<std::unordered_map<std::string, std::any>> extraData;
 };
 
-using MigrationStepFn = (
+using MigrationStepFn = std::function<std::future<MigrationStepResult>(TokenData, auto)>;
 
 struct MigrationStep {
     std::string name;
@@ -37,8 +37,6 @@ struct MigrationStep {
     MigrationStepFn fn;
     std::optional<std::string> eventName;
 };
-
-std::future<TokenData | null> getToken(const std::string& mint);
 
 std::future<MigrationStepResult> executeMigrationStep(TokenData token, MigrationStep step, MigrationStep nextStep, number = 3 retryCount, number = 2000 delay);
 

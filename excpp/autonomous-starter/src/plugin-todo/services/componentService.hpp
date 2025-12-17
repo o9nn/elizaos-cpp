@@ -1,12 +1,15 @@
-#include "dbCompatibility.hpp"
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "dbCompatibility.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -19,36 +22,14 @@ namespace elizaos {
  * Component service that provides database-compatible component operations
  */
 class ComponentService {
-  constructor(private runtime: IAgentRuntime) {}
-
-  /**
-   * Get a component with database-compatible data parsing
-   */
-
-  /**
-   * Create a component with database-compatible data
-   */
-      // Pass params directly to runtime - it handles database-specific formatting internally
-
-  /**
-   * Update a component with database-compatible data
-   */
-      // Pass params directly to runtime - it handles database-specific formatting internally
-
-  /**
-   * Normalize a component from the database
-   */
-    // Parse the data field
-
-    // Normalize any boolean fields in data
-
-    // Normalize UUIDs to ensure consistent format
-
-  /**
-   * Recursively normalize boolean values in an object
-   */
-
-          // Likely a boolean stored as 0/1
+public:
+    ComponentService(IAgentRuntime private runtime);
+    std::variant<Promise<Component, null>> getComponent(UUID entityId, const std::string& componentType);
+    std::future<bool> createComponent(const std::any& params);
+    std::future<bool> updateComponent(const std::any& params);
+    Component normalizeComponent(Component component);
+    void normalizeBooleans(const std::any& obj);
+};
 
 /**
  * Create a component service instance for the runtime

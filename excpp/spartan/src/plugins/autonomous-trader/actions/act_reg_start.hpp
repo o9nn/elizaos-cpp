@@ -1,13 +1,14 @@
-#include ".constants.hpp"
-#include ".utils.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".constants.hpp"
+#include ".utils.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -25,16 +26,12 @@ void extractEmails(auto text);
 std::future<void> sendVerifyEmail(auto address, auto regCode);
 
 // handle no EMAIL_TYPE to EMAIL_TYPE transition
-    //console.log('USER_REGISTRATION validate')
 /*
 */
-    //console.log('sve:validate message', message)
 
     // if not a discord/telegram message, we can ignore it
 
     // using the service to get this/components might be good way
-    //console.log('reg:validate entity', entity)
-    //console.log('message', message)
 
     // ok we need to change a state on this author
 

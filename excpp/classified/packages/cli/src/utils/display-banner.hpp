@@ -1,12 +1,13 @@
-#include "bun-exec.hpp"
-#include "user-environment.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "bun-exec.hpp"
+#include "user-environment.hpp"
 
 namespace elizaos {
 
@@ -31,7 +32,6 @@ void isUtf8Locale();
 // Cache for version check to avoid multiple network calls in same session
 
 // --- Utility: Get latest CLI version with caching ---
-std::future<string | null> getLatestCliVersion(const std::string& currentVersion);
 
 // --- Utility: Display compact, professional update notification ---
 void showUpdateNotification(const std::string& currentVersion, const std::string& latestVersion);

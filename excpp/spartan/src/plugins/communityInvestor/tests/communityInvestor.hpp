@@ -1,14 +1,14 @@
-#include ".events.hpp"
-#include ".service.hpp"
-#include ".types.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".events.hpp"
+#include ".service.hpp"
+#include ".types.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -28,15 +28,6 @@ using Message = MessagePayload['message'];
 // Helper to create a message for E2E tests
 
 // Helper to simulate message processing via the event handler
-  await messageHandler(payload);
-
-          /* world setup */ const allWorlds = await originalGetWorlds.call(runtime);
-
-        await messageHandler({ runtime, message, callback, onComplete, source: 'discord' });
-
-        await simulateMessageProcessing(runtime, message);
-
-        await messageHandler({ runtime, message, callback, onComplete, source: 'discord' });
 
   // TODO: Add more E2E TestCases:
   // - User with existing profile makes another recommendation (profile update, score averaging)

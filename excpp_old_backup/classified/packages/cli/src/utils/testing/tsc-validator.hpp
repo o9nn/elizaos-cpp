@@ -1,0 +1,26 @@
+#include ".bun-exec.js.hpp"
+#include "elizaos/core.hpp"
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
+#pragma once
+
+namespace elizaos {
+
+// NOTE: This is auto-generated approximate C++ code
+// Manual refinement required for production use
+
+
+
+struct TypeCheckResult {
+    bool success;
+    std::vector<std::string> errors;
+    std::vector<std::string> warnings;
+};
+
+std::future<TypeCheckResult> runTypeCheck(const std::string& projectPath, boolean = true strict);
+
+} // namespace elizaos

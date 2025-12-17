@@ -1,0 +1,99 @@
+#include "elizaos/core.hpp"
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
+#pragma once
+
+namespace elizaos {
+
+// NOTE: This is auto-generated approximate C++ code
+// Manual refinement required for production use
+
+// I want to create an action that lets anyone create or update a component for an entity.
+// Components represent different sources of data about an entity (telegram, twitter, etc)
+// Sources can be registered by plugins or inferred from room context and available components
+// The action should first check if the component exists for the entity, and if not, create it.
+// We want to use an LLM (runtime.useModel) to generate the component data.
+// We should include the prior component data if it exists, and have the LLM output an update to the component.
+// sourceEntityId represents who is making the update, entityId is who they are talking about
+
+/**
+ * Component Template for Task: Extract Source and Update Component Data
+ *
+ * @type {string}
+ */
+
+    // Component-specific fields
+    // e.g. username, username, displayName, etc.
+
+/**
+ * Action for updating contact details for a user entity.
+ *
+ * @name UPDATE_ENTITY
+ * @description Add or edit contact details for a user entity (like twitter, discord, email address, etc.)
+ *
+ * @param {IAgentRuntime} _runtime - The runtime environment.
+ * @param {Memory} _message - The message data.
+ * @param {State} _state - The current state.
+ * @returns {Promise<boolean>} Returns a promise indicating if validation was successful.
+ *
+ * @param {IAgentRuntime} runtime - The runtime environment.
+ * @param {Memory} message - The message data.
+ * @param {State} state - The current state.
+ * @param {any} _options - Additional options.
+ * @param {HandlerCallback} callback - The callback function.
+ * @param {Memory[]} responses - Array of responses.
+ * @returns {Promise<void>} Promise that resolves after handling the update entity action.
+ *
+ * @example
+ * [
+ *    [
+ *      {
+ *        name: "{{name1}}",
+ *        content: {
+ *          text: "Please update my telegram username to @dev_guru",
+ *        },
+ *      },
+ *      {
+ *        name: "{{name2}}",
+ *        content: {
+ *          text: "I've updated your telegram information.",
+ *          actions: ["UPDATE_ENTITY"],
+ *        },
+ *      },
+ *    ],
+ *    ...
+ * ]
+ */
+
+    // Check if we have any registered sources or existing components that could be updated
+
+    // Get all components for the current room's world to understand available sources
+    // Components might represent existing contact details on different platforms for entities in this world.
+
+    // Get source types from world components
+
+    // TODO: Consider also checking runtime.getRegisteredSources() if that becomes available,
+    // to allow updating even if no component of that type yet exists in the world.
+    // For now, it's valid if there are any component types already present in the world context.
+
+      // Handle initial responses
+        await callback(response.content);
+
+      // First, find the entity being referenced
+
+      // Get existing component if it exists - we'll get this after the LLM identifies the source
+
+      // Generate component data using the combined template
+
+      // Parse the generated data
+
+      // Now that we know the component type, get the existing component if it exists
+
+      // Create or update the component
+
+
+} // namespace elizaos

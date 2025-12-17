@@ -1,11 +1,12 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -14,17 +15,21 @@ namespace elizaos {
 
 
 
-class LoadTestService extends Service {
-  static serviceType = 'load-test';
-  capabilityDescription = 'Provides load testing capabilities for agent scaling tests';
+class LoadTestService {
+public:
+    LoadTestService(IAgentRuntime runtime);
+    std::future<void> stop();
+    void startTest(const std::string& testId);
+    void recordMessage(const std::string& testId);
+    void recordError(const std::string& testId);
+    void getTestMetrics(const std::string& testId);
+    void endTest(const std::string& testId);
 
-  private activeTests: Map<
-    string,
-    {
-      startTime: number;
-      messageCount: number;
-      errors: number;
-    }
+private:
+    double startTime_;
+    double messageCount_;
+    double errors_;
+};
 
 
 } // namespace elizaos

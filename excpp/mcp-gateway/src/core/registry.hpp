@@ -1,11 +1,12 @@
-#include ".types/index.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".types/index.hpp"
 
 namespace elizaos {
 
@@ -15,20 +16,26 @@ namespace elizaos {
 
 
 class GatewayRegistry {
-  private tools = new Map<string, AggregatedTool>();
-  private resources = new Map<string, AggregatedResource>();
-  private prompts = new Map<string, AggregatedPrompt>();
-  private config: GatewayConfig;
-  private logger: Console;
+public:
+    GatewayRegistry(GatewayConfig config, Console = console logger);
+    std::future<void> refresh(Map<string connections, auto ServerConnection>);
+    std::future<void> collectTools(const std::string& serverId, ServerConnection connection);
+    std::future<void> collectResources(const std::string& serverId, ServerConnection connection);
+    std::future<void> collectPrompts(const std::string& serverId, ServerConnection connection);
+    std::string getNameWithNamespace(const std::string& name, std::optional<std::string> namespace);
+    std::string getUriWithNamespace(const std::string& uri, std::optional<std::string> namespace);
+    std::vector<AggregatedTool> getTools();
+    std::vector<AggregatedResource> getResources();
+    std::vector<AggregatedPrompt> getPrompts();
+    AggregatedTool findTool(const std::string& name);
+    AggregatedResource findResource(const std::string& uri);
+    AggregatedPrompt findPrompt(const std::string& name);
+     getStats();
 
-  constructor(config: GatewayConfig, logger: Console = console) {
-    this.config = config;
-    this.logger = logger;
-  }
-
-  /**
-   * Refresh the registry by collecting capabilities from all connected servers
-   */
+private:
+    GatewayConfig config_;
+    Console logger_;
+};
 
 
 } // namespace elizaos

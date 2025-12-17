@@ -1,11 +1,11 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -79,13 +79,11 @@ namespace elizaos {
     // const agentId = runtime.agentId;
 
     // // Get all components for the current room to understand available sources
-    // const roomComponents = await runtime.getComponents(message.roomId, worldId, agentId);
 
     // // Get source types from room components
     // const availableSources = new Set(roomComponents.map(c => c.type));
 
       // Handle initial responses
-        await callback(response.content);
 
       // First, find the entity being referenced
 

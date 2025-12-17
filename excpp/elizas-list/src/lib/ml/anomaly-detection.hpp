@@ -1,11 +1,12 @@
-#include ".monitoring/logger.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".monitoring/logger.hpp"
 
 namespace elizaos {
 
@@ -15,20 +16,20 @@ namespace elizaos {
 
 
 class AnomalyDetector {
-  private autoencoder: tf.LayersModel;
-  private isolationForest: IsolationForest;
-  private dbscan: DBSCAN;
-  private readonly threshold: number = 0.95;
+public:
+    AnomalyDetector();
+    void initialize();
+    void buildAutoencoder();
+    std::future<std::vector<AnomalyResult>> detectAnomalies(const std::vector<std::vector<double>>& data);
+    std::future<std::vector<double>> detectWithAutoencoder(const std::vector<std::vector<double>>& data);
+    std::future<std::vector<double>> detectWithIsolationForest(const std::vector<std::vector<double>>& data);
+    std::vector<double> detectWithDBSCAN(const std::vector<std::vector<double>>& data);
+    std::vector<AnomalyResult> ensembleResults(const std::vector<std::vector<double>>& results);
 
-  constructor() {
-    this.isolationForest = new IsolationForest({
-      numberOfTrees: 100,
-      maxSamples: 256,
-      contamination: 0.1
-    });
-
-    this.dbscan = new DBSCAN();
-  }
-
-
+private:
+    tf::LayersModel autoencoder_;
+    IsolationForest isolationForest_;
+    DBSCAN dbscan_;
+};
+ 
 } // namespace elizaos

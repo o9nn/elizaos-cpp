@@ -1,11 +1,11 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -68,7 +68,6 @@ namespace elizaos {
       // Create formatted text with headers
 
       // If there are no messages at all, and no current message to process, return a specific message.
-      // The check for dialogueMessages.length === 0 ensures we only show this if there's truly nothing.
 
       // Preload all necessary entities for both types of interactions
 

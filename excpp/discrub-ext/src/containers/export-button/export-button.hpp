@@ -1,3 +1,10 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include "..classes/channel.hpp"
 #include "..enum/export-type.hpp"
 #include "..enum/media-type.hpp"
@@ -13,13 +20,6 @@
 #include "components/default-content.hpp"
 #include "components/export-messages.hpp"
 #include "components/export-modal.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 

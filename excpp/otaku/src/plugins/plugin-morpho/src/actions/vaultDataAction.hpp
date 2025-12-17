@@ -1,14 +1,14 @@
-#include "....utils/entity.hpp"
-#include "...plugin-cdp/services/cdp.service.hpp"
-#include ".services.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "....utils/entity.hpp"
+#include "...plugin-cdp/services/cdp.service.hpp"
+#include ".services.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -26,9 +26,7 @@ using VaultInfoInput = {
 
 using VaultInfoActionResult = ActionResult & { input: VaultInfoInput };
 
-/* =========================
  * Action: GET_MORPHO_VAULT_INFO
- * ========================= */
 
       // Read parameters from state
 

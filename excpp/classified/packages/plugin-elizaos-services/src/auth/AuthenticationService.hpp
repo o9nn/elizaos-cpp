@@ -1,11 +1,13 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -20,20 +22,17 @@ namespace elizaos {
 struct ApiKeyValidationResult {
     bool isValid;
     std::string provider;
-    'production' | 'test' | 'invalid' keyType;
+    std::variant<'production', 'test', 'invalid'> keyType;
     std::vector<std::string> capabilities;
     std::optional<std::string> errorMessage;
-    std::optional<{> rateLimits;
     double remaining;
     Date resetTime;
-    std::optional<{> usage;
     double tokensUsed;
     double costEstimate;
 };
 
 struct AuthStatus {
-    'healthy' | 'degraded' | 'failed' overall;
-    { providers;
+    std::variant<'healthy', 'degraded', 'failed'> overall;
     Date lastChecked;
     std::vector<std::string> capabilities;
 };
@@ -47,101 +46,35 @@ struct AuthStatus {
  * Authentication Service for comprehensive API key management
  */
 class AuthenticationService {
-  private runtime: IAgentRuntime;
-  private lastAuthStatus: AuthStatus | null = null;
-  private validationCache = new Map<
-    string,
-    { result: ApiKeyValidationResult; timestamp: number }
+public:
+    AuthenticationService(IAgentRuntime runtime);
+    std::future<ApiKeyValidationResult> validateApiKey(const std::string& provider, const std::string& apiKey);
+    std::future<AuthStatus> getAuthStatus();
+    Promise< testApiFunctionality(const std::string& provider);
+    void if(auto !apiKey);
+    void catch(auto error);
+    Promise< validateAllProviders();
+    std::optional<std::string> getApiKey(const std::string& provider);
+    bool isTestKey(const std::string& apiKey);
+    std::vector<std::string> getTestKeyCapabilities(const std::string& provider);
+    std::future<ApiKeyValidationResult> performRealKeyValidation(const std::string& provider, const std::string& apiKey);
+    std::future<ApiKeyValidationResult> validateOpenAIKey(const std::string& apiKey);
+    std::future<ApiKeyValidationResult> validateGroqKey(const std::string& apiKey);
+    std::future<ApiKeyValidationResult> validateAnthropicKey(const std::string& apiKey);
+    Promise< performApiTest(const std::string& provider, const std::string& apiKey);
+    void switch(auto provider);
+    Promise< testOpenAI(const std::string& apiKey);
+    void if(auto !response.ok);
+    Promise< testGroq(const std::string& apiKey);
+    void if(auto !response.ok);
+    Promise< testAnthropic(const std::string& apiKey);
+    void if(auto !response.ok);
+    void clearCache();
+    std::optional<AuthStatus> getCachedAuthStatus();
 
-  /**
-   * Validate API key for a specific provider
-   */
-    // Check cache first
+private:
+    IAgentRuntime runtime_;
+};
 
-    // Skip validation for test keys
-
-    // Perform real validation
-
-  /**
-   * Get comprehensive authentication status for all providers
-   */
-
-    // Check all configured providers
-
-    // Determine overall status
-
-  /**
-   * Test API functionality with "hello world!" prompt
-   */
-
-      // Use test key if available
-
-      // For test keys, return mock response
-
-      // Test real API
-
-  /**
-   * Validate all configured providers and return detailed report
-   */
-
-  /**
-   * Get the appropriate API key for a provider
-   */
-
-    // Check for test key first
-
-    // Return configured key or fall back to test key
-
-  /**
-   * Check if an API key is a test key
-   */
-
-  /**
-   * Get capabilities for test keys
-   */
-
-  /**
-   * Perform real API key validation
-   */
-    // Implementation depends on provider
-
-  /**
-   * Validate OpenAI API key
-   */
-
-  /**
-   * Validate Groq API key
-   */
-
-  /**
-   * Validate Anthropic API key
-   */
-    // Anthropic doesn't have a simple models endpoint, so we'll try a minimal request
-
-        // 400 is expected for minimal request
-
-  /**
-   * Perform API functionality test
-   */
-
-  /**
-   * Test OpenAI API functionality
-   */
-
-  /**
-   * Test Groq API functionality
-   */
-
-  /**
-   * Test Anthropic API functionality
-   */
-
-  /**
-   * Clear validation cache
-   */
-
-  /**
-   * Get cached auth status (if available)
-   */
 
 } // namespace elizaos

@@ -1,12 +1,13 @@
-#include ".types/reaction-count-details-object.hpp"
-#include "emoji.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".types/reaction-count-details-object.hpp"
+#include "emoji.hpp"
 
 namespace elizaos {
 
@@ -16,27 +17,17 @@ namespace elizaos {
 // https://discord.com/developers/docs/resources/channel#reaction-object
 
 class Reaction {
-  count: number;
-  count_details: ReactionCountDetailsObject;
-  me: boolean;
-  me_burst: boolean;
-  emoji: Emoji;
-  burst_colors: string[];
+public:
+    Reaction(const std::any& opts);
 
-  constructor(opts: {
-    count: number;
-    count_details: ReactionCountDetailsObject;
-    me: boolean;
-    me_burst: boolean;
-    emoji: Emoji;
-    burst_colors: string[];
-  }) {
-    this.count = opts.count;
-    this.count_details = opts.count_details;
-    this.me = opts.me;
-    this.me_burst = opts.me_burst;
-    this.emoji = opts.emoji;
-    this.burst_colors = opts.burst_colors;
-  }
+private:
+    double count_;
+    ReactionCountDetailsObject count_details_;
+    bool me_;
+    bool me_burst_;
+    Emoji emoji_;
+    std::vector<std::string> burst_colors_;
+};
+
 
 } // namespace elizaos

@@ -1,12 +1,12 @@
-#include "agent-card.hpp"
-#include "agent-chat.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "agent-card.hpp"
+#include "agent-chat.hpp"
 
 namespace elizaos {
 

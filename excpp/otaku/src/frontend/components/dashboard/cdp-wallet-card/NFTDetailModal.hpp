@@ -1,14 +1,15 @@
-#include "...contexts/LoadingPanelContext.hpp"
-#include "...contexts/ModalContext.hpp"
-#include "...lib/elizaClient.hpp"
-#include "..ui/button.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "...contexts/LoadingPanelContext.hpp"
+#include "...contexts/ModalContext.hpp"
+#include "...lib/elizaClient.hpp"
+#include "..ui/button.hpp"
 
 namespace elizaos {
 
@@ -25,18 +26,16 @@ struct NFT {
     std::string image;
     std::string contractAddress;
     std::string contractName;
-    string; // ERC721, ERC1155 tokenType;
+    std::string tokenType;
     std::string chain;
     std::optional<std::string> balance;
-    std::optional<Array<{> attributes;
     std::string trait_type;
-    string | number value;
+    std::variant<std::string, double> value;
 };
 
 struct NFTDetailModalContentProps {
     NFT nft;
     std::string userId;
-    std::optional<() => void> onSuccess;
 };
 
 void NFTDetailModalContent(auto { nft, auto userId, NFTDetailModalContentProps onSuccess });

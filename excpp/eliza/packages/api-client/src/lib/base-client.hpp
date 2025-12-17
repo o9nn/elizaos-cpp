@@ -1,11 +1,11 @@
-#include ".types/base.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".types/base.hpp"
 
 namespace elizaos {
 
@@ -14,34 +14,19 @@ namespace elizaos {
 
 
 
-class ApiError extends Error {
-  constructor(
-    public code: string,
-    message: string,
-    public details?: string,
-    public status?: number
-  ) {
-    super(message);
-    this.name = 'ApiError';
-  }
+class ApiError {
+public:
+    ApiError(const std::string& public code, const std::string& message, std::optional<std::string> public details, std::optional<double> public status);
+};
 
-  /**
-   * Creates a safe response for no-content scenarios (204 responses)
-   * Returns a sensible default based on common API patterns
-   */
-    // For most delete/update operations, return a success indicator
-    // This handles the common case of { success: boolean } return types
-
-    // Handle empty baseUrl for relative URLs
-      // Fallback for non-browser environments
-
-    // Add query parameters
-
-      // Remove Content-Type header if body is FormData
+    void if(auto this.baseUrl);
+    void if(auto options.params);
+    void if(auto options.body instanceof FormData);
 
       // Handle empty responses (204 No Content)
-        // For 204 No Content, create a synthetic success response
-          // If JSON parsing fails, treat as success for 2xx responses
+    void catch(auto error);
+    void if(auto !response.ok || !data.success);
+    void catch(auto error);
 
 
 } // namespace elizaos

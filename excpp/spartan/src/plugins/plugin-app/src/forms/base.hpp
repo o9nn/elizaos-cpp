@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -13,9 +13,10 @@ namespace elizaos {
 
 
 class form {
-  fields
-  constructor() {
-    this.fields = []
-  }
+public:
+    form();
+    void addField(auto type, auto name, auto value, auto label, auto validation, auto options);
+};
+
 
 } // namespace elizaos

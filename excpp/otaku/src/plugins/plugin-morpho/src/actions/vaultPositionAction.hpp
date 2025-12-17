@@ -1,14 +1,15 @@
-#include "....utils/entity.hpp"
-#include "...plugin-cdp/services/cdp.service.hpp"
-#include ".services.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "....utils/entity.hpp"
+#include "...plugin-cdp/services/cdp.service.hpp"
+#include ".services.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -27,13 +28,11 @@ using VaultPositionsInput = {
 using VaultPositionsActionResult = ActionResult & { input: VaultPositionsInput };
 
 // Helper functions to format vault position data
-std::string normalizeUnitsFromApi(string | number raw, double decimals);
+std::string normalizeUnitsFromApi(const std::variant<std::string, double>& raw, double decimals);
 
 void formatVaultPositionData(const std::vector<UserVaultPosition>& vaults);
 
-/* =========================
  * Action: GET_MORPHO_VAULT_POSITIONS
- * ========================= */
 
       // Read parameters from state
 

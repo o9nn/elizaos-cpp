@@ -1,11 +1,12 @@
-#include "commands.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "commands.hpp"
 
 namespace elizaos {
 
@@ -21,31 +22,24 @@ namespace elizaos {
  * Bundle configuration
  */
 struct BundleConfig {
-    std::unordered_map<std::string, std::any> tools;
-    std::optional<string | null> stateCommand;
+    std::optional<std::optional<std::string>> stateCommand;
 };
 
 /**
  * Tool bundle
  */
 class Bundle {
-  path: string;
-  hiddenTools: string[];
-  private _config?: BundleConfig;
+public:
+    Bundle(std::optional<std::any> config);
+    void validateTools();
+    std::optional<std::string> stateCommand() const;
+    BundleConfig config() const;
+    std::vector<Command> commands() const;
 
-  constructor(config: { path: string; hiddenTools?: string[] }) {
-    this.path = config.path;
-    this.hiddenTools = config.hiddenTools || [];
-    this.validateTools();
-  }
-
-    // Validate that the bundle path exists
-
-    // Load and validate config
-
-    // Validate tools
-
-      // Convert tool config to Command
+private:
+    std::string path_;
+    std::vector<std::string> hiddenTools_;
+};
 
 
 } // namespace elizaos

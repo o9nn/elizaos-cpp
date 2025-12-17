@@ -1,14 +1,14 @@
-#include "...utils/entity.hpp"
-#include ".services/cdp.service.hpp"
-#include ".types.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "...utils/entity.hpp"
+#include ".services/cdp.service.hpp"
+#include ".types.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -21,7 +21,10 @@ namespace elizaos {
 
 struct TransferParams {
     CdpNetwork network;
-    `0x${string}` to;
+    std::string token;
+    std::optional<std::string> amount;
+    std::optional<double> percentage;
+};
 
   // Parameter schema for tool calling
   

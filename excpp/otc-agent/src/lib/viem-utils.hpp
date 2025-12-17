@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -37,7 +38,6 @@ struct ReadContractParams {
  *
  * @example
  * ```ts
- * const result = await safeReadContract<bigint>(client, {
  *   address: contractAddress,
  *   abi: artifact.abi as Abi,
  *   functionName: "balanceOf",

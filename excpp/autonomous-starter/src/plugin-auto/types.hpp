@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -19,7 +19,6 @@ namespace elizaos {
 // Export service type constant
 
 enum EventType {
-  AUTO_MESSAGE_RECEIVED = "auto_message_received",
 }
 
 } // namespace elizaos

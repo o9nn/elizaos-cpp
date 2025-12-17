@@ -1,16 +1,17 @@
+#pragma once
+#include <functional>
+#include <future>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include "..service.hpp"
 #include ".test-utils.hpp"
 #include "shell-advanced.hpp"
 #include "shell-basic.hpp"
 #include "shell-security.hpp"
 #include "shell-stateful.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 

@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -16,13 +16,12 @@ struct TokenMetadata {
     std::string symbol;
     std::string description;
     double initialSol;
-    { links;
     std::string twitter;
     std::string telegram;
     std::string farcaster;
     std::string website;
     std::string discord;
-    string | null imageBase64;
+    std::optional<std::string> imageBase64;
     std::string tokenMint;
     double decimals;
     double supply;

@@ -1,12 +1,13 @@
-#include ".types.hpp"
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".types.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -15,23 +16,14 @@ namespace elizaos {
 
 
 
-class ClankerError extends Error {
-  code: ErrorCode;
-  details?: any;
-  suggestions?: string[];
+class ClankerError {
+public:
+    ClankerError(ErrorCode code, const std::string& message, std::optional<std::any> details, std::optional<std::vector<std::string>> suggestions);
+    ErrorResponse toResponse();
 
-  constructor(
-    code: ErrorCode,
-    message: string,
-    details?: any,
-    suggestions?: string[],
-  ) {
-    super(message);
-    this.name = "ClankerError";
-    this.code = code;
-    this.details = details;
-    this.suggestions = suggestions;
-  }
+private:
+    ErrorCode code_;
+};
 
 ErrorResponse handleError(unknown error);
 

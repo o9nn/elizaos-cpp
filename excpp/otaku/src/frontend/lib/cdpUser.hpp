@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -48,7 +48,15 @@ struct CdpUserInfo {
     std::optional<std::string> phoneNumber;
 };
 
-CdpUserInfo resolveCdpUserInfo(CdpUser | undefined user, std::optional<CdpUserInfoOptions> options);
+std::string extractEmailFromCdpUser(CdpUser user, bool isSignedIn);
+
+std::string extractUsernameFromCdpUser(CdpUser user, std::optional<std::string> emailForFallback);
+
+std::string extractPhoneFromCdpUser(CdpUser user);
+
+std::string generateEmailFromPhone(const std::string& phone);
+
+CdpUserInfo resolveCdpUserInfo(CdpUser user, std::optional<CdpUserInfoOptions> options);
 
 
 } // namespace elizaos

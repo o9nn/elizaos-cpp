@@ -1,11 +1,12 @@
-#include ".src/interactive-test.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".src/interactive-test.hpp"
 
 namespace elizaos {
 

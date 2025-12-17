@@ -1,12 +1,13 @@
-#include ".components/icons.hpp"
-#include ".types/form.type.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include ".components/icons.hpp"
+#include ".types/form.type.hpp"
 
 namespace elizaos {
 
@@ -22,9 +23,6 @@ namespace elizaos {
 
 // Tab types
 enum FormTab {
-  AUTO = "auto",
-  MANUAL = "manual",
-  IMPORT = "import",
 }
 
 // LocalStorage key for tab state
@@ -44,7 +42,6 @@ struct GenerateImageResponse {
 
 struct PreGeneratedTokenResponse {
     bool success;
-    { token;
     std::string id;
     std::string name;
     std::string ticker;
@@ -57,7 +54,6 @@ struct PreGeneratedTokenResponse {
 
 struct GenerateMetadataResponse {
     bool success;
-    { metadata;
     std::string name;
     std::string symbol;
     std::string description;

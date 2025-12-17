@@ -1,12 +1,12 @@
-#include "elizaos/core.hpp"
-#include "handlers/messageReceivedHandler.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
+#include "handlers/messageReceivedHandler.hpp"
 
 namespace elizaos {
 
@@ -16,8 +16,6 @@ namespace elizaos {
 
 
 enum hyperfyEventType {
-  MESSAGE_RECEIVED = 'HYPERFY_MESSAGE_RECEIVED',
-  VOICE_MESSAGE_RECEIVED = 'HYPERFY_VOICE_MESSAGE_RECEIVED'
 }
 
 

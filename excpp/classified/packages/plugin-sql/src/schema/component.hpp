@@ -1,14 +1,14 @@
-#include "agent.hpp"
-#include "entity.hpp"
-#include "room.hpp"
-#include "world.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "agent.hpp"
+#include "entity.hpp"
+#include "room.hpp"
+#include "world.hpp"
 
 namespace elizaos {
 

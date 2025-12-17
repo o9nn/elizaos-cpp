@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -14,8 +15,7 @@ namespace elizaos {
 
 
 struct MediaShowcaseProps {
-    { media;
-    'video' | 'gif' type;
+    std::variant<'video', 'gif'> type;
     std::string url;
     std::optional<std::string> thumbnail;
     std::string title;

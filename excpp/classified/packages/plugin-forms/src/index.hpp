@@ -1,3 +1,10 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include "actions/cancel-form.hpp"
 #include "actions/create-form.hpp"
 #include "actions/update-form.hpp"
@@ -5,13 +12,6 @@
 #include "schema.hpp"
 #include "services/forms-service.hpp"
 #include "tests.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 

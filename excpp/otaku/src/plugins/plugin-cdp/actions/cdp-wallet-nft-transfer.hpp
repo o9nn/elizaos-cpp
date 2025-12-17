@@ -1,14 +1,14 @@
-#include "...utils/entity.hpp"
-#include ".services/cdp.service.hpp"
-#include ".types.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "...utils/entity.hpp"
+#include ".services/cdp.service.hpp"
+#include ".types.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -19,7 +19,9 @@ namespace elizaos {
 
 struct NftTransferParams {
     CdpNetwork network;
-    `0x${string}` to;
+    std::string contractAddress;
+    std::string tokenId;
+};
 
   // Parameter schema for tool calling
   

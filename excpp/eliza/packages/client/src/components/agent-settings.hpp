@@ -1,14 +1,14 @@
-#include "avatar-panel.hpp"
-#include "elizaos/core.hpp"
-#include "plugins-panel.hpp"
-#include "secret-panel.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "avatar-panel.hpp"
+#include "elizaos/core.hpp"
+#include "plugins-panel.hpp"
+#include "secret-panel.hpp"
 
 namespace elizaos {
 
@@ -20,8 +20,6 @@ namespace elizaos {
   // Use our enhanced agent update hook for more intelligent handling of JSONb fields
 
   // Use agent management hook for stop functionality
-
-      await stopAgent(agent);
 
     // Define the actual save logic
         // Get secrets from state (or ref as fallback)
@@ -48,7 +46,6 @@ namespace elizaos {
         // Show confirmation dialog for missing secrets
 
     // If validation passes or no secret panel, proceed with save
-    await performSave();
 
       // Set deleting state
 

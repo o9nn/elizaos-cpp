@@ -1,12 +1,12 @@
-#include ".button.hpp"
-#include "message-loading.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".button.hpp"
+#include "message-loading.hpp"
 
 namespace elizaos {
 
@@ -29,7 +29,7 @@ struct ChatBubbleAvatarProps {
 // ChatBubbleTimestamp
 
 // ChatBubbleAction
-using ChatBubbleActionProps = React.ComponentProps<typeof Button> & {
+using ChatBubbleActionProps = ComponentProps<typeof Button> & {
 
 
 } // namespace elizaos

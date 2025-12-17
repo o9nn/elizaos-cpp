@@ -1,16 +1,17 @@
+#pragma once
+#include <functional>
+#include <future>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include "components/ModernDashboard.hpp"
 #include "components/ModernLayout.hpp"
 #include "components/TokenDetail.hpp"
 #include "components/WalletDetail.hpp"
 #include "routes/api.hpp"
 #include "scripts/prefetch.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 

@@ -1,10 +1,12 @@
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -18,7 +20,7 @@ struct SwapParams {
     std::string toToken;
     double amount;
     double slippage;
-    std::optional<'ExactIn' | 'ExactOut'> swapMode;
+    std::optional<std::variant<'ExactIn', 'ExactOut'>> swapMode;
 };
 
   // Create transaction

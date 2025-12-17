@@ -1,10 +1,11 @@
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -33,31 +34,19 @@ struct SpinnerTask {
 };
 
 class RunBatchProgressManager {
-  private spinnerTasks: Map<string, SpinnerTask> = new Map();
-  // private lock: boolean = false;  // Currently unused
-  private instancesByExitStatus: Map<string | null, string[]> = new Map();
-  // private mainProgressBar: any;  // Currently unused
-  // private taskProgressBar: any;  // Currently unused
-  // private mainTaskId: any;  // Currently unused
-  private yamlReportPath?: string;
-  // private numInstances: number;  // Currently unused
-
-  constructor(_numInstances: number, yamlReportPath?: string) {
-    // this.numInstances = numInstances;  // Currently unused
-    this.yamlReportPath = yamlReportPath;
-
-    // Note: In a real implementation, we'd integrate with a progress library
-    // like ora or cli-progress. For now, we'll use console logging
-  }
-
-    // Update the exit status table display
-    // In a real implementation, this would update a terminal UI
-
-    // Update instance status in the progress display
-
-    // Mark instance as started
-
-    // Mark instance as completed
+public:
+    RunBatchProgressManager(double _numInstances, std::optional<std::string> yamlReportPath);
+    double nCompleted() const;
+    void updateExitStatusTable();
+    std::string shortenStr(const std::string& s, double maxLen, boolean = false shortenLeft);
+    void updateInstanceStatus(const std::string& instanceId, const std::string& message);
+    void onInstanceStart(const std::string& instanceId);
+    void onInstanceEnd(const std::string& instanceId, const std::optional<std::string>& exitStatus);
+    void onUncaughtException(const std::string& instanceId, Error exception);
+    void printReport();
+    std::unordered_map<std::string, std::any> getOverviewData();
+    void saveOverviewDataYaml(const std::string& filePath);
+};
 
 
 } // namespace elizaos

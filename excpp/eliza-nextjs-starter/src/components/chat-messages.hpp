@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -15,9 +15,6 @@ namespace elizaos {
 
 struct ChatMessagesProps {
     std::vector<ChatMessageType> messages;
-    std::unordered_map<double, std::vector<Citation>> citationsMap;
-    std::unordered_map<double, std::vector<std::string>> followUpPromptsMap;
-    (prompt: string) => void onFollowUpClick;
 };
 
 

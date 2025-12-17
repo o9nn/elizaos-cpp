@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -58,6 +58,7 @@ std::string formatDirPath(const std::string& basePath, const std::string& fullPa
 std::string formatFilesAndSize(double files, double size);
 
 // Helper to get latest migration number from data branch journal
+double getLatestMigrationNumber(const std::string& worktreeDir, ReturnType<typeof createLogger> logger);
 
 // Helper to delete files in a directory while preserving .gitkeep files
 double deleteDataFiles(const std::string& directory, ReturnType<typeof createLogger> logger);
@@ -120,7 +121,6 @@ double deleteDataFiles(const std::string& directory, ReturnType<typeof createLog
       // Step 7: Copy database file and apply final migrations
 
       // Final cleanup
-        await execPromise(`git worktree remove ${options.worktreeDir} --force`);
 
 
 } // namespace elizaos

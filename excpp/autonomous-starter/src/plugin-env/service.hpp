@@ -1,12 +1,14 @@
-#include "elizaos/core.hpp"
-#include "generation.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
+#include "generation.hpp"
 
 namespace elizaos {
 
@@ -19,88 +21,23 @@ namespace elizaos {
  * Environment Manager Service for handling environment variable configuration
  * Follows the same pattern as TaskService and other services in the codebase
  */
-class EnvManagerService extends Service {
-  static serviceType = "ENV_MANAGER";
-  capabilityDescription =
-    "The agent can manage environment variables for plugins, including auto-generation and validation";
+class EnvManagerService {
+public:
+    std::future<EnvManagerService> start(IAgentRuntime runtime);
+    std::future<void> initialize();
+    std::future<void> scanPluginRequirements();
+    std::future<void> scanCharacterSecrets(Record<string secrets, auto any>, EnvVarMetadata envVars);
+    std::future<void> scanLoadedPlugins(EnvVarMetadata envVars);
+    EnvVarConfig["type"] inferVariableType(const std::string& varName);
+    std::variant<std::future<Record<string, EnvVarConfig>, null>> getEnvVarsForPlugin(const std::string& pluginName);
+    std::variant<Promise<EnvVarMetadata, null>> getAllEnvVars();
+    std::future<bool> updateEnvVar(const std::string& pluginName, const std::string& varName, const std::optional<EnvVarConfig>& updates);
+    std::future<bool> hasMissingEnvVars();
+    Array< getMissingEnvVars();
+    Array< getGeneratableEnvVars();
+    std::future<void> stop();
+    std::future<void> stop(IAgentRuntime runtime);
+};
 
-  /**
-   * Start the EnvManagerService with the given runtime
-   */
-  static async start(runtime: IAgentRuntime): Promise<EnvManagerService> {
-    const service = new EnvManagerService(runtime);
-    await service.initialize();
-    return service;
-  }
-
-  /**
-   * Initialize the service and scan for required environment variables
-   */
-
-  /**
-   * Scan all loaded plugins for required environment variables
-   */
-
-      // Initialize metadata if it doesn't exist
-
-      // Scan character plugins for environment variable requirements
-
-      // Scan loaded plugins for additional requirements
-
-      // Save updated metadata
-
-  /**
-   * Scan character secrets configuration
-   */
-
-  /**
-   * Scan loaded plugins for environment variable requirements
-   */
-
-              // Ensure all fields from EnvVarConfig are initialized
-
-  /**
-   * Infer the type of an environment variable from its name
-   */
-
-  /**
-   * Get environment variables for a specific plugin
-   */
-
-  /**
-   * Get all environment variables
-   */
-
-  /**
-   * Update an environment variable
-   */
-
-      // Initialize metadata if needed
-
-      // Update the environment variable
-
-      // Save to world
-
-      // Update runtime environment if value was set
-
-  /**
-   * Check if there are missing environment variables
-   */
-
-  /**
-   * Get missing environment variables
-   */
-
-  /**
-   * Get generatable environment variables
-   */
-
-  /**
-   * Stop the service
-   */
-
-  /**
-   * Static method to stop the service
-   */
 
 } // namespace elizaos

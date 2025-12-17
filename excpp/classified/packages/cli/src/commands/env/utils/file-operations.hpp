@@ -1,11 +1,12 @@
-#include ".types.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".types.hpp"
 
 namespace elizaos {
 
@@ -24,7 +25,6 @@ std::future<std::string> getGlobalEnvPath();
  * Get the path to the local .env file in the current directory
  * @returns The path to the local .env file or null if not found
  */
-std::future<string | null> getLocalEnvPath();
 
 /**
  * Parse an .env file and return the key-value pairs

@@ -1,12 +1,13 @@
-#include ".types.hpp"
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".types.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -16,7 +17,6 @@ namespace elizaos {
 
 
 // FIXME: change runtime to just pass the dataService in
-std::future<'bullish' | 'neutral' | 'bearish'> assessMarketCondition(IAgentRuntime runtime);
 
 double calculateVolatility(const std::vector<double>& priceHistory);
 

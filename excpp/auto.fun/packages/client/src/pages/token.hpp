@@ -1,10 +1,11 @@
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -30,7 +31,7 @@ namespace elizaos {
 // `;
 
 // Add a custom component for middle ellipsis
-void MiddleEllipsis(std::optional<{ text: string; suffix: string }> { text });
+void MiddleEllipsis(std::optional<std::any> { text });
 
 // Helper to safely get tabs object from localStorage
 

@@ -1,10 +1,11 @@
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -24,7 +25,7 @@ namespace elizaos {
 };
 
   struct FaceLandmarks68 {
-    std::vector<{ x: number; y: number }> positions;
+};
 
   struct FaceExpressions {
     double neutral;
@@ -45,7 +46,8 @@ namespace elizaos {
   using FullFaceDescription = WithFaceDetection<{}> &
 
   class SsdMobilenetv1Options {
-    constructor(options: { minConfidence?: number; maxResults?: number });
+public:
+};
 
   void detectAllFaces(const std::any& input, std::optional<std::any> options);;
 

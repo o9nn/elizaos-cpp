@@ -1,11 +1,12 @@
-#include "global.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "global.hpp"
 
 namespace elizaos {
 
@@ -14,7 +15,9 @@ namespace elizaos {
 
 
 
-using UpdateTokenBody = z.infer<typeof updateTokenBodySchema>;
+using UpdateTokenBody = z::infer<typeof updateTokenBodySchema>;
+
+void parseUpdateTokenRequest(const std::any& raw); {
 
 
 } // namespace elizaos

@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -17,7 +17,6 @@ struct CausalGraphProps {
     DAG dag;
     double width;
     double height;
-    std::optional<(node: string) => void> onNodeClick;
     std::optional<std::vector<std::string>> highlightPaths;
 };
 

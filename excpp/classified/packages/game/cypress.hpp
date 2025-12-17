@@ -1,11 +1,11 @@
-#include "cypress/support/tasks.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "cypress/support/tasks.hpp"
 
 namespace elizaos {
 
@@ -19,8 +19,6 @@ namespace elizaos {
       // Add all tasks from tasks.ts
 
       // Additional inline tasks
-
-            await execAsync(checkCommand);
 
           return existsSync(filePath);
 

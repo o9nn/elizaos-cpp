@@ -1,12 +1,12 @@
-#include ".leaderboard/AvatarImage.hpp"
-#include ".nav-element/PageSwitcher.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".leaderboard/AvatarImage.hpp"
+#include ".nav-element/PageSwitcher.hpp"
 
 namespace elizaos {
 
@@ -14,9 +14,6 @@ namespace elizaos {
 // Manual refinement required for production use
 
 
-
-  // console.log("trades", trades)
-  // console.log("groupedTrades", groupedTrades)
 
   // Mock data - replace with actual data fetching
   // const trades: Trade[] = [

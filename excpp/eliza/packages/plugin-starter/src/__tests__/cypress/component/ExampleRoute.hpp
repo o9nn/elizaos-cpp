@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -26,11 +26,11 @@ struct TimeResponse {
 // Define ELIZA config interface
 struct ElizaConfig {
     std::string agentId;
-    std::optional<string; // Make optional to fix type error> apiBase;
+    std::optional<std::string> apiBase;
 };
 
   struct Window {
-    ElizaConfig | undefined ELIZA_CONFIG;
+    ElizaConfig ELIZA_CONFIG;
 };
 
   // Component definitions inside describe block to have access to cy

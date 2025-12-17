@@ -1,11 +1,13 @@
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -14,31 +16,28 @@ namespace elizaos {
 
 
 
-class JupiterService extends Service {
-  private isRunning = false;
-  private connection: Connection | null = null;
-  private registry: Record<number, any> = {};
-
-  // Configuration constants
-
-  // return Jupiter Provider handle
-    // add to registry
-
-  // Get token price in terms of quote token
-
-  // Get best swap route
-
-      return Number(quoteResult.priceImpactPct);
-
-      // Fetch token pair information from Jupiter API
-
-      // Fetch historical price data from Jupiter API
-
-      // Common tokens to check for arbitrage
-
-      // Find potential arbitrage paths
-
-      // Sort by expected return (highest first)
-
+class JupiterService {
+public:
+    JupiterService(IAgentRuntime public runtime);
+    void registerProvider(const std::any& provider);
+    Promise< getQuote(auto {
+    inputMint, auto outputMint, auto amount, auto slippageBps, auto platformFeeBps = 200, std::optional<std::any> });
+    void if(auto !this.swapApi);
+    void if(auto !quoteResponseData);
+    void catch(auto error);
+    std::future<bool> confirmTransaction(Connection connection, const std::string& signature);
+    std::future<double> getTokenPrice(const std::string& tokenMint, const std::string& quoteMint, number = 6 inputDecimals);
+    void catch(auto error);
+    void if(auto !response.ok);
+    void catch(auto error);
+    void if(auto !response.ok);
+    void catch(auto error);
+    void for(auto const token1 of commonTokens);
+    void catch(auto error);
+    void start(IAgentRuntime runtime);
+    void stop(IAgentRuntime runtime);
+    std::future<void> start();
+    std::future<void> stop();
+    bool isServiceRunning();
 
 } // namespace elizaos

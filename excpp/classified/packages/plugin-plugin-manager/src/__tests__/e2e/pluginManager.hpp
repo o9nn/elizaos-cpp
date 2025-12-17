@@ -1,12 +1,12 @@
-#include "..services/pluginManagerService.ts.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "..services/pluginManagerService.ts.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -17,16 +17,22 @@ namespace elizaos {
 
 // Mock database adapter since we don't need a real DB for plugin tests
 class MockDatabaseAdapter {
-  async getMemories() {
-    return [];
-  }
+public:
+    void getMemories();
+    void searchMemories();
+    void createMemory();
+    void getMemoriesByRoomIds();
+    void getGoals();
+    void getConversation();
+    void createConversation();
+    void saveMemory();
+};
 
     // Create a temporary directory for testing
 
     // Create a mock runtime with minimal required properties
 
       // Core methods
-          await handler(params);
 
     // Initialize plugin manager
 
@@ -82,10 +88,13 @@ class MockDatabaseAdapter {
 
       // Execute the action
 
-      class TestService extends Service {
-        static get serviceType() {
-          return 'TEST_SERVICE' as ServiceTypeName;
-        }
+      class TestService {
+public:
+    void serviceType() const;
+    void start(IAgentRuntime runtime);
+    void stop();
+    void getData();
+};
 
       // Verify service is started
 

@@ -1,11 +1,12 @@
-#include "use-toast.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "use-toast.hpp"
 
 namespace elizaos {
 
@@ -43,7 +44,7 @@ using AgentLog = {
  */
 
 struct NetworkInformation {
-    'slow-2g' | '2g' | '3g' | '4g' | 'unknown' effectiveType;
+    std::variant<'slow-2g', '2g', '3g', '4g', 'unknown'> effectiveType;
     bool saveData;
 };
 
@@ -79,7 +80,7 @@ void useAgents(auto options = {});
  * @param {Object} options - Additional options to configure the query.
  * @returns {QueryResult} The result of the query containing agent data.
  */
-void useAgent(UUID | undefined | null agentId, auto options = {});
+void useAgent(const std::optional<UUID>& agentId, auto options = {});
 
 // Hook for starting an agent with optimistic updates
 /**
@@ -121,8 +122,6 @@ using UiMessage = Content & {
     // Initial fetch when channelId changes or becomes available
     // eslint-disable-next-line react-hooks/exhaustive-deps
 
-      await fetchMessages(oldestMessageTimestamp - 1); // -1 to avoid fetching the same last message
-
   // Add method to manually add/update messages from external sources (e.g., WebSocket)
       // Check if message already exists
 
@@ -141,7 +140,7 @@ using UiMessage = Content & {
   // this simpler useState + manual fetch approach is retained from the original structure of useMessages.
   // For full React Query benefits, `useInfiniteQuery` would be the way to go.
 
-void useGroupChannelMessages(UUID | null channelId, std::optional<UUID> initialServerId);
+void useGroupChannelMessages(const std::optional<UUID>& channelId, std::optional<UUID> initialServerId);
 
 // Hook for fetching agent actions
 /**
@@ -202,14 +201,13 @@ void useClearGroupChat();
  */
 using AgentPanel = {
 
-void useAgentPanels(UUID | undefined | null agentId, auto options = {});
+void useAgentPanels(const std::optional<UUID>& agentId, auto options = {});
 
 /**
  * Custom hook that combines useAgents with individual useAgent calls for detailed data
  * @returns {AgentsWithDetailsResult} Combined query results with both list and detailed data
  */
 struct AgentsWithDetailsResult {
-    { data;
     std::vector<Agent> agents;
     bool isLoading;
     bool isError;
@@ -226,11 +224,11 @@ struct AgentsWithDetailsResult {
 AgentsWithDetailsResult useAgentsWithDetails();
 
 // --- Hooks for Admin/Debug (Agent-Perspective Data) ---
-void useAgentInternalActions(UUID | null agentId, std::optional<UUID | null> agentPerspectiveRoomId);
+void useAgentInternalActions(const std::optional<UUID>& agentId, std::optional<std::optional<UUID>> agentPerspectiveRoomId);
 
 void useDeleteAgentInternalLog();
 
-void useAgentInternalMemories(UUID | null agentId, UUID | null agentPerspectiveRoomId, string = 'messages' tableName, auto includeEmbedding = false);
+void useAgentInternalMemories(const std::optional<UUID>& agentId, const std::optional<UUID>& agentPerspectiveRoomId, string = 'messages' tableName, auto includeEmbedding = false);
 
 void useDeleteAgentInternalMemory();
 
@@ -241,11 +239,11 @@ void useUpdateAgentInternalMemory();
 // --- Hooks for Servers and Channels (GUI Navigation) ---
 void useServers(auto options = {});
 
-void useChannels(UUID | undefined serverId, auto options = {});
+void useChannels(UUID serverId, auto options = {});
 
-void useChannelDetails(UUID | undefined channelId, auto options = {});
+void useChannelDetails(UUID channelId, auto options = {});
 
-void useChannelParticipants(UUID | undefined channelId, auto options = {});
+void useChannelParticipants(UUID channelId, auto options = {});
 
 void useDeleteChannelMessage();
 

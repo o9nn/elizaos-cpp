@@ -1,10 +1,12 @@
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -42,80 +44,17 @@ struct PackageDownloads {
 };
 
 class NpmDownloadStatsGenerator {
-  private readonly NPM_REGISTRY_URL = "https://registry.npmjs.org";
-  private readonly NPM_DOWNLOADS_URL = "https://api.npmjs.org/downloads";
-
-  private readonly OUTPUT_DIR = "./assets";
-  private readonly OUTPUT_FILE = "elizaos-npm-download-stats.xlsx";
-
-  async main(): Promise<void> {
-    console.log(chalk.blue("🚀 Starting npm download statistics generation for @elizaos"));
-    
-    try {
-      // Ensure output directory exists
-      await fs.ensureDir(this.OUTPUT_DIR);
-
-      // Get all packages from @elizaos organization
-      const spinner = ora("Fetching packages from @elizaos organization...").start();
-      const packages = await this.fetchOrganizationPackages();
-      spinner.succeed(`Found ${packages.length} packages in @elizaos organization`);
-
-      if (packages.length === 0) {
-        console.log(chalk.yellow("⚠️ No packages found in @elizaos organization"));
-        return;
-      }
-
-      // Get download statistics for all packages
-      const downloadSpinner = ora("Fetching download statistics...").start();
-      const packageDownloads = await this.fetchPackageDownloads(packages);
-      const versionDownloads = await this.fetchVersionDownloads(packages);
-      downloadSpinner.succeed("Download statistics fetched successfully");
-
-      // Generate Excel report
-      const excelSpinner = ora("Generating Excel report...").start();
-      await this.generateExcelReport(packages, packageDownloads, versionDownloads);
-      excelSpinner.succeed(`Excel report generated: ${path.join(this.OUTPUT_DIR, this.OUTPUT_FILE)}`);
-
-      console.log(chalk.green("✅ npm download statistics generation completed successfully!"));
-      
-      // Print summary
-      this.printSummary(packages, packageDownloads);
-
-    } catch (error) {
-      console.error(chalk.red("❌ Error generating npm download statistics:"), error);
-      process.exit(1);
-    }
-  }
-
-      // Search for packages in both @elizaos and @elizaos-plugins scopes
-
-            // Get detailed package information
-
-        // Add small delay between searches
-
-    // Remove duplicates and sort
-
-        // Get download stats for different periods
-
-        // Add small delay to avoid rate limiting
-        // Add package with zero downloads if API fails
-
-        // Get total downloads for the package (we can't get per-version stats from npm API)
-        
-        // For each version, we'll estimate based on recency and total downloads
-        // Note: npm API doesn't provide per-version download stats
-
-        // Package not found or no download stats
-
-    // Create Package Overview sheet
-
-    // Create Package Downloads sheet
-
-    // Create Version Downloads sheet (sample of recent versions)
-
-    // Create Summary sheet
-
-    // Write the Excel file
+public:
+    std::future<void> main();
+    std::future<std::vector<PackageInfo>> fetchOrganizationPackages();
+    std::future<std::vector<PackageDownloads>> fetchPackageDownloads(const std::vector<PackageInfo>& packages);
+    std::future<std::vector<VersionDownloads>> fetchVersionDownloads(const std::vector<PackageInfo>& packages);
+    Promise< getDownloadStats(const std::string& packageName, const std::string& period);
+    void catch(const std::any& error);
+    std::future<void> generateExcelReport(const std::vector<PackageInfo>& packages, const std::vector<PackageDownloads>& packageDownloads, const std::vector<VersionDownloads>& versionDownloads);
+    void printSummary(const std::vector<PackageInfo>& packages, const std::vector<PackageDownloads>& packageDownloads);
+    std::future<void> delay(double ms);
+};
 
 std::future<void> main();
 

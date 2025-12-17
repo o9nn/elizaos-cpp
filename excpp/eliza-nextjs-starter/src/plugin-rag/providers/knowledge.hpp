@@ -1,11 +1,11 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -26,7 +26,6 @@ namespace elizaos {
  * @returns {Object} An object containing the retrieved knowledge data, values, and text.
  */
     // TODO: getKnowledge method not available in current IAgentRuntime interface
-    // const knowledgeData = await runtime.getKnowledge(message);
 
 
 } // namespace elizaos

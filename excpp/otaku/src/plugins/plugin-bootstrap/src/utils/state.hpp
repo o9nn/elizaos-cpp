@@ -1,10 +1,12 @@
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -34,7 +36,7 @@ std::future<State> refreshStateAfterAction(IAgentRuntime runtime, Memory message
  * @param error - Optional error message
  * @returns Updated state
  */
-State updateActionPlanStep(State state, double stepIndex, 'completed' | 'failed' | 'pending' status, std::optional<Record<string> result, auto unknown>, std::optional<std::string> error);
+State updateActionPlanStep(State state, double stepIndex, const std::variant<'completed', 'failed', 'pending'>& status, std::optional<Record<string> result, auto unknown>, std::optional<std::string> error);
 
 /**
  * Initializes or updates working memory in state

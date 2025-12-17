@@ -1,11 +1,12 @@
-#include ".utils/repository.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include ".utils/repository.hpp"
 
 namespace elizaos {
 
@@ -42,12 +43,12 @@ struct GitHubRelease {
 };
 
 struct DownloadLink {
-    'macOS' | 'Windows' | 'Linux' platform;
-    std::optional<'x64' | 'arm64' | 'universal'> architecture;
+    std::variant<'macOS', 'Windows', 'Linux'> platform;
+    std::optional<std::variant<'x64', 'arm64', 'universal'>> architecture;
     std::string filename;
     std::string size;
     std::string downloadUrl;
-    'installer' | 'portable' | 'dmg' | 'appimage' | 'deb' type;
+    std::variant<'installer', 'portable', 'dmg', 'appimage', 'deb'> type;
 };
 
       // macOS

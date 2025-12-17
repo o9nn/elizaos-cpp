@@ -1,11 +1,11 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -18,11 +18,6 @@ namespace elizaos {
  * Job status enumeration
  */
 enum JobStatus {
-    PENDING = 'pending',
-    PROCESSING = 'processing',
-    COMPLETED = 'completed',
-    FAILED = 'failed',
-    TIMEOUT = 'timeout',
 }
 
 /**
@@ -36,7 +31,6 @@ struct CreateJobRequest {
     std::optional<UUID> agentId;
     UUID userId;
     std::string content;
-    std::optional<std::unordered_map<std::string, unknown>> metadata;
     std::optional<double> timeoutMs;
 };
 
@@ -54,12 +48,10 @@ struct CreateJobResponse {
  * Job result structure
  */
 struct JobResult {
-    { message;
     UUID id;
     std::string content;
     UUID authorId;
     double createdAt;
-    std::optional<std::unordered_map<std::string, unknown>> metadata;
     double processingTimeMs;
 };
 
@@ -76,7 +68,6 @@ struct JobDetailsResponse {
     double expiresAt;
     std::optional<JobResult> result;
     std::optional<std::string> error;
-    std::optional<std::unordered_map<std::string, unknown>> metadata;
 };
 
 /**
@@ -86,7 +77,6 @@ struct PollOptions {
     std::optional<double> interval;
     std::optional<double> maxAttempts;
     std::optional<double> timeout;
-    std::optional<(status: JobDetailsResponse, attempt: number) => void> onProgress;
 };
 
 /**
@@ -96,13 +86,11 @@ struct JobHealthResponse {
     bool healthy;
     double timestamp;
     double totalJobs;
-    { statusCounts;
     double pending;
     double processing;
     double completed;
     double failed;
     double timeout;
-    { metrics;
     double averageProcessingTimeMs;
     double successRate;
     double failureRate;

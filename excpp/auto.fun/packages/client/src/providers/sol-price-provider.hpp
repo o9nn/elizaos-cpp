@@ -1,11 +1,12 @@
-#include "use-sol-price-context.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "use-sol-price-context.hpp"
 
 namespace elizaos {
 
@@ -14,6 +15,6 @@ namespace elizaos {
 
 
 
-void SolPriceProvider({ children: ReactNode } { children });
+void SolPriceProvider(const std::any& { children });
 
 } // namespace elizaos

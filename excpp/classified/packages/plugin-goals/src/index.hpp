@@ -1,3 +1,10 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include "__tests__/e2e.hpp"
 #include "actions/cancelGoal.hpp"
 #include "actions/completeGoal.hpp"
@@ -9,13 +16,6 @@
 #include "providers/goals.hpp"
 #include "schema.hpp"
 #include "services/goalService.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -57,5 +57,6 @@ namespace elizaos {
 // Export service types for use in other plugins/tests
 
 // Helper function to get the Goals service (handles case sensitivity)
+std::optional<GoalService> getGoalsService(IAgentRuntime runtime);
 
 } // namespace elizaos

@@ -1,12 +1,15 @@
-#include ".types.hpp"
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include ".types.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -17,98 +20,52 @@ namespace elizaos {
 
 // Validation schema for character modifications
 
-using CharacterModification = z.infer<typeof CharacterModificationSchema>;
+using CharacterModification = z::infer<typeof CharacterModificationSchema>;
 
 /**
  * Service for safely managing character file modifications
  * Handles backup, validation, and atomic updates of character files
  */
-class CharacterFileManager extends Service {
-  static serviceType = PersonalityServiceType.CHARACTER_MANAGEMENT;
+class CharacterFileManager {
+public:
+    CharacterFileManager(IAgentRuntime runtime);
+    std::future<CharacterFileManager> start(IAgentRuntime runtime);
+    std::future<void> initialize();
+    std::future<void> detectCharacterFile();
+    void setupValidationRules();
+    std::variant<Promise<string, null>> createBackup();
+    std::future<void> cleanupOldBackups();
+     validateModification(const std::any& modification);
+    void catch(auto error);
+    void if(auto modification.bio && modification.bio.length > 20);
+    void if(auto modification.topics && modification.topics.length > 50);
+    Promise< applyModification(CharacterModification modification);
+    void if(auto !validation.valid);
+    void if(auto modification.name);
+    void if(auto modification.system);
+    void if(auto modification.bio);
+    void if(auto modification.topics);
+    void if(auto modification.messageExamples);
+    void if(auto modification.style);
+    void if(auto modification.settings);
+    void if(auto this.characterFilePath);
+    void catch(auto error);
+    std::future<std::vector<std::any>> getModificationHistory(auto limit = 10);
+    Promise<Array< getAvailableBackups();
+    void for(auto const file of files);
+    Promise< restoreFromBackup(const std::string& backupPath);
+    void if(auto this.characterFilePath);
+    void catch(auto error);
+    Promise< restoreFromHistory(double entryIndex);
+    void if(auto entryIndex < 0 || entryIndex >= history.length);
+    void if(auto !entry.filePath);
+    void if(auto !backup);
+    std::future<void> stop();
 
-  capabilityDescription = 'Manages safe character file modifications with backup and validation';
-
-  protected runtime: IAgentRuntime;
-  private characterFilePath: string | null = null;
-  private backupDir: string;
-  private maxBackups = 10;
-  private validationRules: Map<string, (value: any) => boolean> = new Map();
-
-  constructor(runtime: IAgentRuntime) {
-    super(runtime);
-    this.runtime = runtime;
-    this.backupDir = path.join(process.cwd(), '.eliza', 'character-backups');
-    this.setupValidationRules();
-  }
-
-    // Ensure backup directory exists
-
-    // Try to detect the character file path
-
-    // Look for character file in common locations
-      // Current working directory
-
-      // Agent directory
-
-      // Characters directory
-
-      // Relative paths
-
-          // Continue searching
-
-    // Name validation - ensure safe and reasonable names
-
-    // System prompt validation - ensure safe and reasonable content
-
-    // Bio validation - ensure reasonable length and content
-
-    // Topics validation
-
-      // Clean up old backups
-
-      // Keep only the most recent backups
-
-      // Schema validation
-
-    // Additional validation rules
-
-    // Safety checks
-
-    // Validate modification
-
-      // Create backup first
-
-      // Get current character
-
-      // Apply modifications using merge logic (additive, not replacement)
-
-      // Handle name modification - direct replacement
-
-      // Handle system prompt modification - this is a direct replacement, not additive
-
-        // Add new bio elements, avoiding duplicates
-
-      // Update runtime character
-
-      // Write to file if available
-
-      // Log the modification - need roomId for memory creation
-
-        // Extract timestamp from filename (format: character-YYYYMMDD-HHMMSS.json)
-
-      // Validate backup file exists and is readable
-
-      // Read and validate backup content
-
-      // Create a backup of the current state before restoration
-
-      // Update runtime character
-
-      // If we have a character file path, update the file
-
-      // Log the restoration
-
-    // Find the corresponding backup file
+private:
+    IAgentRuntime runtime_;
+    std::string backupDir_;
+};
 
 
 } // namespace elizaos

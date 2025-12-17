@@ -1,12 +1,15 @@
-#include "..runtime.hpp"
-#include "..types.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "..runtime.hpp"
+#include "..types.hpp"
 
 namespace elizaos {
 
@@ -17,10 +20,11 @@ namespace elizaos {
 // Import types with the 'type' keyword
 
 class Semaphore {
-  private _semphonre;
-  constructor(count: number) {
-    this._semphonre = new coreSemaphore(count);
-  }
+public:
+    Semaphore(double count);
+    std::future<void> acquire();
+    void release();
+};
 
 /**
  * Represents the runtime environment for an agent.
@@ -35,126 +39,91 @@ class Semaphore {
  * @property {Provider[]} providers - The list of providers for external services.
  * @property {Plugin[]} plugins - The list of plugins to extend functionality.
  */
-class AgentRuntime implements IAgentRuntime {
-  private _runtime;
-
-  get services(): Map<ServiceTypeName, Service> {
-    return this._runtime.services as any;
-  }
-
-    // If _runtime.events is already a Map, just cast it
-
-    // If it's an object that needs to be converted to a Map
-
-    // Convert object to Map if needed
-
-  /**
-   * Registers a plugin with the runtime and initializes its components
-   * @param plugin The plugin to register
-   */
-    // Wrap the plugin to ensure it receives the v2 runtime instance
-            // Pass the v2 runtime instance (this) instead of the core runtime
-
-  /**
-   * Get the number of messages that are kept in the conversation buffer.
-   * @returns The number of recent messages to be kept in memory.
-   */
-
-  /**
-   * Register a provider for the agent to use.
-   * @param provider The provider to register.
-   */
-    // Wrap the provider to ensure it receives the v2 runtime instance
-        // Pass the v2 runtime instance (this) instead of the core runtime
-
-  /**
-   * Register an action for the agent to perform.
-   * @param action The action to register.
-   */
-    // Wrap the action to ensure its handler receives the v2 runtime instance
-        // Pass the v2 runtime instance (this) instead of the core runtime
-
-  /**
-   * Register an evaluator to assess and guide the agent's responses.
-   * @param evaluator The evaluator to register.
-   */
-
-  /**
-   * Process the actions of a message.
-   * @param message The message to process.
-   * @param responses The array of response memories to process actions from.
-   * @param state Optional state object for the action processing.
-   * @param callback Optional callback handler for action results.
-   */
-
-  /**
-   * Evaluate the message and state using the registered evaluators.
-   * @param message The message to evaluate.
-   * @param state The state of the agent.
-   * @param didRespond Whether the agent responded to the message.~
-   * @param callback The handler callback
-   * @returns The results of the evaluation.
-   */
-
-  /**
-   * Ensures a participant is added to a room, checking that the entity exists first
-   */
-
-  /**
-   * Ensure the existence of a world.
-   */
-
-  /**
-   * Ensure the existence of a room between the agent and a user. If no room exists, a new room is created and the user
-   * and agent are added as participants. The room ID is returned.
-   * @param entityId - The user ID to create a room with.
-   * @returns The room ID of the room between the agent and the user.
-   * @throws An error if the room cannot be created.
-   */
-
-  /**
-   * Composes the agent's state by gathering data from enabled providers.
-   * @param message - The message to use as context for state composition
-   * @param includeList - Optional list of provider names to include, filtering out all others
-   * @param onlyInclude - Whether to only include the specified providers
-   * @param skipCache - Whether to skip the cache
-   * @returns A State object containing provider data, values, and text
-   */
-
-    // Wrap the handler to ensure it receives the v2 runtime instance
-      // Pass the v2 runtime instance (this) instead of the core runtime
-      return handler(this, params);
-
-  /**
-   * Use a model with strongly typed parameters and return values based on model type
-   * @template T - The model type to use
-   * @template R - The expected return type, defaults to the type defined in ModelResultMap[T]
-   * @param {T} modelType - The type of model to use
-   * @param {ModelParamsMap[T] | any} params - The parameters for the model, typed based on model type
-   * @returns {Promise<R>} - The model result, typed based on the provided generic type parameter
-   */
-
-  /**
-   * Get a task worker by name
-   */
-
-  // Implement database adapter methods
-
-  // Event emitter methods
-
-  /**
-   * Register a message send handler for a specific source
-   * @param source - The source identifier (e.g., 'discord', 'telegram')
-   * @param handler - The handler function to send messages
-   */
-
-  /**
-   * Send a message to a specific target
-   * @param target - The target information including source and channel/user ID
-   * @param content - The message content to send
-   */
-
-  // Run tracking methods
+class AgentRuntime {
+public:
+    std::unordered_map<ServiceTypeName, Service> services() const;
+    std::function<void()> events() const;
+    std::vector<Route> routes() const;
+    UUID agentId() const;
+    Character character() const;
+    std::vector<Provider> providers() const;
+    std::vector<Action> actions() const;
+    std::vector<Evaluator> evaluators() const;
+    std::vector<Plugin> plugins() const;
+    IDatabaseAdapter adapter() const;
+    std::future<void> registerPlugin(Plugin plugin);
+    std::unordered_map<ServiceTypeName, Service> getAllServices();
+    void stop();
+    void initialize();
+    std::future<std::any> getConnection();
+    void setSetting(const std::string& key, const std::variant<std::string, bool, std::any>& value, auto secret = false);
+    std::variant<std::string, bool, std::any> getSetting(const std::string& key);
+    void getConversationLength();
+    void registerDatabaseAdapter(IDatabaseAdapter adapter);
+    void registerProvider(Provider provider);
+    void registerAction(Action action);
+    void registerEvaluator(Evaluator evaluator);
+    std::future<void> processActions(Memory message, const std::vector<Memory>& responses, std::optional<State> state, std::optional<HandlerCallback> callback);
+    void evaluate(Memory message, State state, std::optional<bool> didRespond, std::optional<HandlerCallback> callback, std::optional<std::vector<Memory>> responses);
+    void ensureConnection(auto {
+    entityId, auto roomId, auto userName, auto name, auto source, auto type, auto channelId, auto serverId, auto worldId, auto userId, std::optional<std::any> });
+    void ensureParticipantInRoom(UUID entityId, UUID roomId);
+    std::future<bool> removeParticipant(UUID entityId, UUID roomId);
+    std::future<bool> addParticipant(UUID entityId, UUID roomId);
+    std::future<bool> addParticipantsRoom(const std::vector<UUID>& entityIds, UUID roomId);
+    void ensureWorldExists(auto { id, auto name, auto serverId, auto metadata, World agentId });
+    void ensureRoomExists(auto { id, auto name, auto source, auto type, auto channelId, auto serverId, auto worldId, Room metadata });
+    std::future<State> composeState(Memory message, const std::variant<std::vector<std::string>, null = null>& includeList, auto onlyInclude = false, auto skipCache = false);
+    std::future<void> registerService(typeof Service service);
+    void emitEvent(const std::variant<std::string, std::vector<std::string>>& event, const std::any& params);
+    void ensureEmbeddingDimension();
+    void registerTaskWorker(TaskWorker taskHandler);
+    TaskWorker getTaskWorker(const std::string& name);
+    std::any db() const;
+    std::future<void> init();
+    std::future<void> close();
+    std::future<bool> createAgent(const std::optional<Agent>& agent);
+    std::future<bool> updateAgent(UUID agentId, const std::optional<Agent>& agent);
+    std::future<bool> deleteAgent(UUID agentId);
+    std::future<Agent> ensureAgentExists(const std::optional<Agent>& agent);
+    std::future<bool> createEntity(Entity entity);
+    std::future<bool> createEntities(const std::vector<Entity>& entities);
+    std::future<void> updateEntity(Entity entity);
+    std::future<bool> createComponent(Component component);
+    std::future<void> updateComponent(Component component);
+    std::future<void> deleteComponent(UUID componentId);
+    std::future<Memory> addEmbeddingToMemory(Memory memory);
+    std::future<void> clearAllAgentMemories();
+    std::future<void> log(const std::any& params);
+    std::future<UUID> createMemory(Memory memory, const std::string& tableName, std::optional<bool> unique);
+    std::future<bool> updateMemory(std::optional<std::optional<Memory>> memory);
+    std::future<void> deleteMemory(UUID memoryId);
+    std::future<void> deleteManyMemories(const std::vector<UUID>& memoryIds);
+    std::future<void> deleteAllMemories(UUID roomId, const std::string& tableName);
+    std::future<double> countMemories(UUID roomId, std::optional<bool> unique, std::optional<std::string> tableName);
+    std::future<void> deleteLog(UUID logId);
+    std::future<UUID> createWorld(World world);
+    std::future<void> removeWorld(UUID worldId);
+    std::future<void> updateWorld(World world);
+    std::future<UUID> createRoom(auto { id, auto name, auto source, auto type, auto channelId, auto serverId, Room worldId });
+    std::future<void> deleteRoom(UUID roomId);
+    std::future<void> deleteRoomsByWorldId(UUID worldId);
+    std::future<void> updateRoom(Room room);
+    std::future<void> setParticipantUserState(UUID roomId, UUID entityId, const std::variant<'FOLLOWED', 'MUTED'>& state);
+    std::future<bool> createRelationship(std::optional<std::any> params);
+    std::future<void> updateRelationship(Relationship relationship);
+    std::future<bool> deleteCache(const std::string& key);
+    std::future<UUID> createTask(Task task);
+    std::future<void> updateTask(UUID id, const std::optional<Task>& task);
+    std::future<void> deleteTask(UUID id);
+    void emit(const std::string& event, const std::any& data);
+    std::future<void> sendControlMessage(std::optional<std::any> params);
+    void registerSendHandler(const std::string& source, SendHandlerFunction handler);
+    std::future<void> sendMessageToTarget(TargetInfo target, Content content);
+    UUID createRunId();
+    UUID startRun();
+    void endRun();
+    UUID getCurrentRunId();
 
 
 } // namespace elizaos

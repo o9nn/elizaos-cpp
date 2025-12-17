@@ -1,10 +1,12 @@
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -22,13 +24,6 @@ namespace elizaos {
 // Export service type constant
 
 enum PluginStatus {
-  BUILDING = "building",
-  READY = "ready",
-  LOADED = "loaded",
-  ERROR = "error",
-  UNLOADED = "unloaded",
-  NEEDS_CONFIGURATION = "needs_configuration",
-  CONFIGURATION_IN_PROGRESS = "configuration_in_progress",
 }
 
 // Configuration-related types
@@ -38,7 +33,6 @@ struct PluginEnvironmentVariable {
     bool sensitive;
     bool required;
     std::optional<std::string> defaultValue;
-    std::optional<{> validation;
     std::optional<std::string> pattern;
     std::optional<double> minLength;
     std::optional<double> maxLength;
@@ -55,9 +49,8 @@ struct PluginConfigurationRequest {
 struct ConfigurationDialog {
     std::string id;
     std::string pluginName;
-    "pending" | "in_progress" | "completed" | "cancelled" status;
+    std::variant<"pending", "in_progress", "completed", "cancelled"> status;
     PluginConfigurationRequest request;
-    std::unordered_map<std::string, std::string> responses;
     std::optional<std::string> currentVariable;
     Date startedAt;
     std::optional<Date> completedAt;
@@ -77,14 +70,12 @@ struct PluginState {
     std::optional<double> loadedAt;
     std::optional<double> unloadedAt;
     std::optional<std::string> version;
-    std::optional<std::unordered_map<std::string, std::string>> dependencies;
-    std::optional<"unconfigured" | "partial" | "complete"> configurationStatus;
+    std::optional<std::variant<"unconfigured", "partial", "complete">> configurationStatus;
     std::optional<std::vector<PluginEnvironmentVariable>> requiredConfiguration;
     std::optional<std::vector<std::string>> configurationErrors;
 };
 
 struct PluginRegistry {
-    std::unordered_map<std::string, PluginState> plugins;
 };
 
 struct CreatePluginParams {

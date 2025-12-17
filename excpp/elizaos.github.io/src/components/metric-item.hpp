@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -15,7 +16,7 @@ namespace elizaos {
 
 struct MetricItemProps {
     LucideIcon icon;
-    string | number value;
+    std::variant<std::string, double> value;
     std::string label;
     std::optional<std::string> valueClassName;
     std::optional<std::string> iconClassName;

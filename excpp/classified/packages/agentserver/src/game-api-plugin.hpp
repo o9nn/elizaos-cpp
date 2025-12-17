@@ -1,3 +1,12 @@
+#pragma once
+#include <functional>
+#include <future>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <variant>
+#include <vector>
 #include "elizaos/core.hpp"
 #include "elizaos/plugin-autonomy.hpp"
 #include "elizaos/plugin-goals.hpp"
@@ -5,13 +14,6 @@
 #include "elizaos/plugin-knowledge.hpp"
 #include "elizaos/plugin-todo.hpp"
 #include "elizaos/plugin-vision.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -22,17 +24,9 @@ namespace elizaos {
 
 // Define common request/response interfaces
 struct GameApiRequest {
-    std::optional<std::unordered_map<std::string, unknown>> body;
-    std::optional<std::unordered_map<std::string, unknown>> params;
-    std::optional<std::unordered_map<std::string, unknown>> query;
 };
 
 struct GameApiResponse {
-    (data: unknown) => void json;
-    (code: number) => GameApiResponse status;
-    (data: unknown) => void send;
-    (code: number, url: string) => void redirect;
-    (name: string, value: string) => GameApiResponse setHeader;
 };
 
 // Media stream buffer interface
@@ -44,18 +38,14 @@ struct MediaStreamBuffer {
 
 // Validation result interfaces
 struct ValidationResults {
-    'healthy' | 'degraded' | 'unhealthy' overall;
-    std::unordered_map<std::string, ValidationConfig> providers;
-    std::unordered_map<std::string, EnvironmentValue> environment;
-    std::unordered_map<std::string, ServiceConfig> services;
+    std::variant<'healthy', 'degraded', 'unhealthy'> overall;
     double timestamp;
 };
 
 struct ValidationConfig {
-    'healthy' | 'unhealthy' | 'not_loaded' | 'degraded' status;
-    std::optional<'missing' | 'present'> apiKey;
-    std::optional<{> connectionTest;
-    std::optional<'failed' | 'success'> status;
+    std::variant<'healthy', 'unhealthy', 'not_loaded', 'degraded'> status;
+    std::optional<std::variant<'missing', 'present'>> apiKey;
+    std::optional<std::variant<'failed', 'success'>> status;
     std::optional<std::string> message;
     std::optional<bool> modelAvailable;
     std::optional<std::string> model;
@@ -66,11 +56,10 @@ struct EnvironmentValue {
 };
 
 struct ServiceConfig {
-    'loaded' | 'not_loaded' status;
+    std::variant<'loaded', 'not_loaded'> status;
 };
 
 struct AgentServerInstance {
-    std::optional<(data: Record<string, unknown>) => void> broadcastToWebSocketClients;
 };
 
 // Global media buffers that vision plugin can access
@@ -99,7 +88,6 @@ std::vector<std::string> generateConfigRecommendations(ValidationResults validat
 std::future<void> createInitialTodosAndGoals(IAgentRuntime runtime);
 
 // Game API Routes following ElizaOS patterns
-  // ===== Game-Specific Endpoints =====
 
   // Health check (custom game-specific health)
       // Health check should always return success for the server itself
@@ -169,7 +157,6 @@ std::future<void> createInitialTodosAndGoals(IAgentRuntime runtime);
       // Give it a moment to ensure operations complete
 
       // Create initial todos and goals again
-      await createInitialTodosAndGoals(runtime);
 
       // Try express-fileupload format first
       // Try alternative file handling (check if uploaded via different parser)
@@ -191,7 +178,6 @@ std::future<void> createInitialTodosAndGoals(IAgentRuntime runtime);
       // Add current environment configurations
 
       // Handle environment variables specially
-        // Update process.env for the current runtime
 
         // Update specific plugin configuration
 
@@ -281,22 +267,16 @@ std::future<void> createInitialTodosAndGoals(IAgentRuntime runtime);
 
           // Check if we already have goals
               // Create initial goals and todos
-              await createInitialTodosAndGoals(runtime);
 
   // Initialize goals and todos manually
 
         // Check if services are available first - use correct service names
-
-        await createInitialTodosAndGoals(runtime);
 
   // Configuration Validation API
 
       // Check MODEL_PROVIDER environment variable
 
       // Validate OpenAI configuration
-      // if (modelProvider === 'openai' || modelProvider === 'all') {
-      //   const openaiKey = process.env.OPENAI_API_KEY;
-      //   const openaiModel = process.env.LANGUAGE_MODEL || 'gpt-4o-mini';
 
       //   validationResults.providers.openai = {
       //     apiKey: openaiKey ? 'present' : 'missing',
@@ -309,7 +289,6 @@ std::future<void> createInitialTodosAndGoals(IAgentRuntime runtime);
 
       //   // Test OpenAI connection if key is present
       //   if (openaiKey) {
-      //     const testResponse = await fetch('https://api.openai.com/v1/models', {
       //       method: 'GET',
       //       headers: {
       //         Authorization: `Bearer ${openaiKey}`,
@@ -318,8 +297,6 @@ std::future<void> createInitialTodosAndGoals(IAgentRuntime runtime);
       //     });
 
       //     if (testResponse.ok) {
-      //       const models = await testResponse.json();
-      //       const hasModel = models.data?.some((m: any) => m.id === openaiModel);
       //       validationResults.providers.openai.connectionTest = {
       //         status: 'success',
       //         modelAvailable: hasModel,
@@ -342,9 +319,6 @@ std::future<void> createInitialTodosAndGoals(IAgentRuntime runtime);
       // }
 
       // Validate Anthropic configuration
-      // if (modelProvider === 'anthropic' || modelProvider === 'all') {
-      //   const anthropicKey = process.env.ANTHROPIC_API_KEY;
-      //   const anthropicModel = process.env.LANGUAGE_MODEL || 'claude-3-haiku-20240307';
 
       //   validationResults.providers.anthropic = {
       //     apiKey: anthropicKey ? 'present' : 'missing',
@@ -358,21 +332,18 @@ std::future<void> createInitialTodosAndGoals(IAgentRuntime runtime);
       //   // Test Anthropic connection if key is present
       //   if (anthropicKey) {
       //     // Anthropic doesn't have a simple models endpoint, so we'll test with a minimal request
-      //     const testResponse = await fetch('https://api.anthropic.com/v1/messages', {
       //       method: 'POST',
       //       headers: {
       //         Authorization: `Bearer ${anthropicKey}`,
       //         'Content-Type': 'application/json',
       //         'anthropic-version': '2023-06-01',
       //       },
-      //       body: JSON.stringify({
       //         model: anthropicModel,
       //         max_tokens: 1,
       //         messages: [{ role: 'user', content: 'test' }],
       //       }),
       //     });
 
-      //     if (testResponse.ok || testResponse.status === 400) {
       //       // 400 is expected for this minimal test request
       //       validationResults.providers.anthropic.connectionTest = {
       //         status: 'success',
@@ -420,17 +391,11 @@ std::future<void> createInitialTodosAndGoals(IAgentRuntime runtime);
 
       // Calculate overall test status
 
-  // ===== Provider Management Endpoints =====
-
   // Get available LLM providers and their status
 
   // Set selected provider
 
-        await setSelectedProvider(runtime, provider);
-
   // Set provider preferences
-
-        await setProviderPreferences(runtime, preferences);
 
   // Media stream endpoint for receiving video/audio data
 
@@ -446,9 +411,6 @@ std::future<void> createInitialTodosAndGoals(IAgentRuntime runtime);
 
   // Virtual screen control endpoints
         // Get server instance from request if available
-        await startAgentScreenCapture(runtime, server);
-
-        await stopAgentScreenCapture();
 
       // Convert Uint8Array to base64 for proper transmission
 
@@ -492,6 +454,7 @@ std::future<void> createInitialTodosAndGoals(IAgentRuntime runtime);
           return ingestHandler(req, res, runtime);
 
 // Export functions for vision plugin to access media buffers
+MediaStreamBuffer getMediaBuffer(const std::string& agentId);
 
 void clearMediaBuffer(const std::string& agentId);
 
@@ -512,10 +475,8 @@ void clearMediaBuffer(const std::string& agentId);
 
     // Schedule initial todos/goals creation after a delay to ensure everything is ready
         // Check if agent exists and has no goals yet
-              await createInitialTodosAndGoals(runtime);
 
     // Auto-start screen capture for VNC streaming after a delay
-        await startAgentScreenCapture(runtime, agentServerInstance);
         // Not fatal - can be started manually later
 
 

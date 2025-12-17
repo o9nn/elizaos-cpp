@@ -1,13 +1,13 @@
-#include ".components/leaderboard/LeaderboardHoldings.hpp"
-#include ".components/leaderboard/LeaderboardPartners.hpp"
-#include ".components/leaderboard/LeaderboardTotals.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".components/leaderboard/LeaderboardHoldings.hpp"
+#include ".components/leaderboard/LeaderboardPartners.hpp"
+#include ".components/leaderboard/LeaderboardTotals.hpp"
 
 namespace elizaos {
 

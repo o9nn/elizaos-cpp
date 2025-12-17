@@ -1,12 +1,12 @@
-#include ".hooks/useGithubReleases.hpp"
-#include ".utils/repository.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".hooks/useGithubReleases.hpp"
+#include ".utils/repository.hpp"
 
 namespace elizaos {
 

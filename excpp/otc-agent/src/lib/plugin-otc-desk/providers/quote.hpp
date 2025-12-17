@@ -1,14 +1,15 @@
-#include "..agent-runtime.hpp"
-#include "..entityId.hpp"
-#include ".services/priceFeed.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "..agent-runtime.hpp"
+#include "..entityId.hpp"
+#include ".services/priceFeed.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -21,7 +22,7 @@ namespace elizaos {
 
     // Use QuoteService for consistent quote lookup
 
-std::future<QuoteMemory | undefined> getUserQuote(const std::string& walletAddress);
+std::future<QuoteMemory> getUserQuote(const std::string& walletAddress);
 
     // Token metadata (optional)
 

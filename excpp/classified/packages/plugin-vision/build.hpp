@@ -1,11 +1,12 @@
-#include "build.config.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "build.config.hpp"
 
 namespace elizaos {
 

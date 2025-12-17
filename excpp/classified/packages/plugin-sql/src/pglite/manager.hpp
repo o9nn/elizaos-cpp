@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -28,11 +28,7 @@ class PGliteClientManager implements IDatabaseClientManager<PGlite> {
    */
   constructor(options: PGliteOptions) {
     this.client = new PGlite({
-      ...options,
       extensions: {
-        vector,
-        fuzzystrmatch,
-      },
     });
     this.setupShutdownHandlers();
   }

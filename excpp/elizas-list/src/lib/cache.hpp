@@ -1,10 +1,11 @@
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -16,14 +17,9 @@ namespace elizaos {
 // Initialize Redis client
 
 class CacheManager {
-  static async get(key: string) {
-    try {
-      const cached = await redis.get(key);
-      return cached ? JSON.parse(cached) : null;
-    } catch (error) {
-      console.error('Cache get error:', error);
-      return null;
-    }
-  }
-
+public:
+    void get(const std::string& key);
+    void set(const std::string& key, const std::any& data, number = 300 ttl);
+};
+ 
 } // namespace elizaos

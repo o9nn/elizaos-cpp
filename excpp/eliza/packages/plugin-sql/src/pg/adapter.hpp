@@ -1,13 +1,16 @@
-#include ".base.hpp"
-#include ".schema/embedding.hpp"
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include ".base.hpp"
+#include ".schema/embedding.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -20,55 +23,34 @@ namespace elizaos {
  * Adapter class for interacting with a PostgreSQL database.
  * Extends BaseDrizzleAdapter.
  */
-class PgDatabaseAdapter extends BaseDrizzleAdapter {
-  protected embeddingDimension: EmbeddingDimensionColumn = DIMENSION_MAP[384];
-  private manager: PostgresConnectionManager;
+class PgDatabaseAdapter {
+public:
+    PgDatabaseAdapter(UUID agentId, PostgresConnectionManager manager, std::optional<std::any> _schema);
+    std::future<void> runMigrations();
+    std::future<void> init();
+    std::future<bool> isReady();
+    std::future<void> close();
+    void getConnection();
+    std::future<bool> createAgent(Agent agent);
+    std::variant<Promise<Agent, null>> getAgent(UUID agentId);
+    std::future<bool> updateAgent(UUID agentId, const std::optional<Agent>& agent);
+    std::future<bool> deleteAgent(UUID agentId);
+    std::future<bool> createEntities(const std::vector<Entity>& entities);
+    std::future<std::vector<Entity>> getEntityByIds(const std::vector<UUID>& entityIds);
+    std::future<void> updateEntity(Entity entity);
+    std::future<UUID> createMemory(Memory memory, const std::string& tableName);
+    std::variant<Promise<Memory, null>> getMemoryById(UUID memoryId);
+    std::future<std::vector<std::any>> searchMemories(const std::any& params);
+    std::future<bool> updateMemory(const std::optional<Memory>& memory);
+    std::future<void> deleteMemory(UUID memoryId);
+    std::future<bool> createComponent(Component component);
+    std::variant<Promise<Component, null>> getComponent(UUID entityId, const std::string& type, std::optional<UUID> worldId, std::optional<UUID> sourceEntityId);
+    std::future<void> updateComponent(Component component);
+    std::future<void> deleteComponent(UUID componentId);
 
-  constructor(agentId: UUID, manager: PostgresConnectionManager, _schema?: any) {
-    super(agentId);
-    this.manager = manager;
-    this.db = manager.getDatabase();
-  }
-
-  /**
-   * Runs database migrations. For PostgreSQL, migrations should be handled
-   * externally or during deployment, so this is a no-op.
-   * @returns {Promise<void>}
-   */
-    // Migrations are handled by the migration service, not the adapter
-
-  /**
-   * Executes the provided operation with a database connection.
-   *
-   * @template T
-   * @param {() => Promise<T>} operation - The operation to be executed with the database connection.
-   * @returns {Promise<T>} A promise that resolves with the result of the operation.
-   */
-        // Cast to any to avoid type conflicts between different pg versions
-
-  /**
-   * Asynchronously initializes the PgDatabaseAdapter by running migrations using the manager.
-   * Logs a success message if initialization is successful, otherwise logs an error message.
-   *
-   * @returns {Promise<void>} A promise that resolves when initialization is complete.
-   */
-
-  /**
-   * Checks if the database connection is ready and active.
-   * @returns {Promise<boolean>} A Promise that resolves to true if the connection is healthy.
-   */
-
-  /**
-   * Asynchronously closes the manager associated with this instance.
-   *
-   * @returns A Promise that resolves once the manager is closed.
-   */
-
-  /**
-   * Asynchronously retrieves the connection from the manager.
-   *
-   * @returns {Promise<Pool>} A Promise that resolves with the connection.
-   */
+private:
+    PostgresConnectionManager manager_;
+};
 
 
 } // namespace elizaos

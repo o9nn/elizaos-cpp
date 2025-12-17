@@ -1,11 +1,12 @@
-#include ".types/shared.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include ".types/shared.hpp"
 
 namespace elizaos {
 
@@ -21,7 +22,7 @@ struct ModelDownloadProgress {
     double percentage;
     double speed_mbps;
     double eta_seconds;
-    'Downloading' | 'Completed' | 'Failed' | 'AlreadyExists' status;
+    std::variant<'Downloading', 'Completed', 'Failed', 'AlreadyExists'> status;
 };
 
 struct StartupStatus {
@@ -33,14 +34,13 @@ struct StartupStatus {
 };
 
 struct UserConfig {
-    'OpenAI' | 'Anthropic' | 'Ollama' ai_provider;
+    std::variant<'OpenAI', 'Anthropic', 'Ollama'> ai_provider;
     std::optional<std::string> api_key;
     std::optional<bool> use_local_ollama;
     std::optional<bool> postgres_enabled;
 };
 
 struct StartupFlowProps {
-    () => void onComplete;
 };
 
 

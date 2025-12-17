@@ -1,15 +1,15 @@
-#include "..app/hooks.hpp"
-#include "..app/store.hpp"
-#include "..classes/channel.hpp"
-#include "..classes/message.hpp"
-#include "thread-slice.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "..app/hooks.hpp"
+#include "..app/store.hpp"
+#include "..classes/channel.hpp"
+#include "..classes/message.hpp"
+#include "thread-slice.hpp"
 
 namespace elizaos {
 

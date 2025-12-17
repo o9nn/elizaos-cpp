@@ -1,11 +1,11 @@
-#include "elizaos/api-client.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/api-client.hpp"
 
 namespace elizaos {
 
@@ -14,7 +14,7 @@ namespace elizaos {
 
 
 
-void updateApiKey(string | null newKey);
+void updateApiKey(const std::optional<std::string>& newKey);
 
 
 } // namespace elizaos

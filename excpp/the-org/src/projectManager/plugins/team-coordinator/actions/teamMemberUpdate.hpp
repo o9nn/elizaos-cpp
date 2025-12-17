@@ -1,11 +1,12 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -28,8 +29,6 @@ std::future<bool> postUpdateToDiscordChannel(IAgentRuntime runtime, TeamMemberUp
 
 std::future<bool> storeTeamMemberUpdate(IAgentRuntime runtime, TeamMemberUpdate update);
 
-std::future<TeamMemberUpdate | null> parseTeamMemberUpdate(IAgentRuntime runtime, Memory message);
-
       // Parse the update from the message
 
         // Store the update in memory
@@ -37,8 +36,6 @@ std::future<TeamMemberUpdate | null> parseTeamMemberUpdate(IAgentRuntime runtime
         // Post update to configured Discord channel
 
         // Send confirmation
-
-        await callback(content, []);
 
         // Handle other errors
 

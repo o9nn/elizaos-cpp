@@ -1,11 +1,11 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -39,14 +39,10 @@ namespace elizaos {
     // Sui
     // no common abbreviations
 
-class BirdeyeApiError extends Error {
-    constructor(
-        public status: number,
-        message: string
-    ) {
-        super(message);
-        this.name = "BirdeyeApiError";
-    }
+class BirdeyeApiError {
+public:
+    BirdeyeApiError(double public status, const std::string& message);
+};
 
 // Time-related types and constants
 

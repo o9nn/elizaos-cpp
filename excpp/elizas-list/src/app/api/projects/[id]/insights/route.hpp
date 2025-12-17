@@ -1,10 +1,12 @@
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -14,17 +16,13 @@ namespace elizaos {
 
 
 struct InsightsResponse {
-    { insights;
     std::any views;
     std::any interactions;
-    { trends;
     std::vector<std::any> timeSeriesData;
     std::any abTestResults;
-    std::unordered_map<std::string, std::string> realtimeStats;
-    { visualizations;
     std::any timeSeriesChart;
     std::any engagementHeatmap;
 };
 
-std::future<void> GET(Request request, { params: { id: string } } { params }); 
+std::future<void> GET(Request request, const std::any& { params }); 
 } // namespace elizaos

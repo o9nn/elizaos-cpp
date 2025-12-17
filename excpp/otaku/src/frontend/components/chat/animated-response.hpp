@@ -1,11 +1,11 @@
-#include "response.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "response.hpp"
 
 namespace elizaos {
 
@@ -20,7 +20,6 @@ struct AnimatedResponseProps {
     std::optional<bool> shouldAnimate;
     std::optional<std::string> messageId;
     std::optional<double> maxDurationMs;
-    std::optional<() => void> onTextUpdate;
 };
 
       // Notify parent that text was updated so it can handle scrolling

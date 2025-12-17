@@ -1,3 +1,10 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include ".memory/agents.hpp"
 #include ".memory/rooms.hpp"
 #include "capabilities.hpp"
@@ -12,13 +19,6 @@
 #include "settings.hpp"
 #include "todos.hpp"
 #include "worlds.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 

@@ -1,16 +1,16 @@
-#include "actions.hpp"
-#include "elizaos/core.hpp"
-#include "provider.hpp"
-#include "routes.hpp"
-#include "service.hpp"
-#include "tests.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "actions.hpp"
+#include "elizaos/core.hpp"
+#include "provider.hpp"
+#include "routes.hpp"
+#include "service.hpp"
+#include "tests.hpp"
 
 namespace elizaos {
 

@@ -1,11 +1,13 @@
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -37,7 +39,7 @@ namespace elizaos {
 /**
  * Ensures a Twitter client exists for the given server and agent
  */
-std::future<void> ensureTwitterClient(IAgentRuntime runtime, const std::string& serverId, { [key: string]: string | boolean | number | null } worldSettings);
+std::future<void> ensureTwitterClient(IAgentRuntime runtime, const std::string& serverId, const std::any& worldSettings);
 
       // only handle in a group scenario for now
 

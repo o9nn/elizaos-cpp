@@ -1,3 +1,10 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include "agents.hpp"
 #include "audio.hpp"
 #include "elizaos/core.hpp"
@@ -8,13 +15,6 @@
 #include "shared/middleware.hpp"
 #include "system.hpp"
 #include "tee.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 

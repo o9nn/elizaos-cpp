@@ -1,13 +1,14 @@
-#include "ContributorsListModalContent.hpp"
-#include "IssuesListModalContent.hpp"
-#include "PullRequestsListModalContent.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "ContributorsListModalContent.hpp"
+#include "IssuesListModalContent.hpp"
+#include "PullRequestsListModalContent.hpp"
 
 namespace elizaos {
 

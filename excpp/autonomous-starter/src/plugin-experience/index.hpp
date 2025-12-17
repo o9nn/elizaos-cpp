@@ -1,15 +1,15 @@
-#include "elizaos/core.hpp"
-#include "evaluators/experienceEvaluator.hpp"
-#include "providers/experienceRAG.hpp"
-#include "providers/recentExperiences.hpp"
-#include "service.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
+#include "evaluators/experienceEvaluator.hpp"
+#include "providers/experienceRAG.hpp"
+#include "providers/recentExperiences.hpp"
+#include "service.hpp"
 
 namespace elizaos {
 

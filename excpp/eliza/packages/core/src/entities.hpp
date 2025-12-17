@@ -1,14 +1,15 @@
-#include "index.hpp"
-#include "logger.hpp"
-#include "types.hpp"
-#include "utils.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "index.hpp"
+#include "logger.hpp"
+#include "types.hpp"
+#include "utils.hpp"
 
 namespace elizaos {
 
@@ -28,7 +29,6 @@ namespace elizaos {
  * Contains placeholders for message sender, agent, entities in the room, and recent messages.
  * Provides instructions for analyzing the context and resolving entity references.
  *
- * @return {string} entityResolutionTemplate - The template for resolving entity names with detailed instructions.
  */
 
 /**
@@ -62,7 +62,6 @@ namespace elizaos {
  * @param {State} state - The current state of the system.
  * @returns {Promise<Entity | null>} A promise that resolves to the found entity or null if not found.
  */
-std::future<Entity | null> findEntityByName(IAgentRuntime runtime, Memory message, State state);
 
 /**
  * Function to create a unique UUID based on the runtime and base user ID.
@@ -103,6 +102,6 @@ std::future<Entity | null> findEntityByName(IAgentRuntime runtime, Memory messag
  * @param {Entity[]} options.entities - The list of entities to format.
  * @returns {string} A formatted string representing the entities.
  */
-void formatEntities({ entities: Entity[] } { entities });
+void formatEntities(const std::any& { entities });
 
 } // namespace elizaos

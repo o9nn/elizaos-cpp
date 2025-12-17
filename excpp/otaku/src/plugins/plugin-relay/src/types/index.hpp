@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -25,23 +26,23 @@ using RelayCurrency = (typeof RelayCurrencies)[number];
 
 // Quote request schema - Updated for Relay SDK 2.x
 
-using QuoteRequest = z.infer<typeof QuoteRequestSchema>;
+using QuoteRequest = z::infer<typeof QuoteRequestSchema>;
 
 // Note: Using SDK's Execute type as the quote response instead of custom RelayQuote
 
 // Bridge request schema - LLM provides chain names, not IDs
 // Note: user address is derived from EVM_PRIVATE_KEY, not from LLM
 
-using BridgeRequest = z.infer<typeof BridgeRequestSchema>;
+using BridgeRequest = z::infer<typeof BridgeRequestSchema>;
 
 // Internal bridge request with resolved chain IDs
 struct ResolvedBridgeRequest {
     std::string user;
     double originChainId;
     double destinationChainId;
-    string;  // Contract address on origin chain currency;
-    std::optional<string;  // Contract address on destination chain> toCurrency;
-    string; // in wei amount;
+    std::string currency;
+    std::optional<std::string> toCurrency;
+    std::string amount;
     std::optional<std::string> recipient;
     std::optional<bool> useExactInput;
     std::optional<bool> useExternalLiquidity;
@@ -50,29 +51,25 @@ struct ResolvedBridgeRequest {
 
 // Execute call request schema
 
-using ExecuteCallRequest = z.infer<typeof ExecuteCallRequestSchema>;
+using ExecuteCallRequest = z::infer<typeof ExecuteCallRequestSchema>;
 
 // Status request schema
 
-using StatusRequest = z.infer<typeof StatusRequestSchema>;
+using StatusRequest = z::infer<typeof StatusRequestSchema>;
 
 // Transaction status
 struct RelayStatus {
     std::string id;
-    "pending" | "success" | "failed" status;
+    std::variant<"pending", "success", "failed"> status;
     std::string user;
     std::string recipient;
     std::string createdAt;
     std::string updatedAt;
-    { data;
-    { fees;
     std::optional<std::string> gas;
     std::optional<std::string> relayer;
-    Array<{ inTxs;
     std::string hash;
     double chainId;
     double timestamp;
-    Array<{ outTxs;
     std::string hash;
     double chainId;
     double timestamp;
@@ -82,8 +79,6 @@ struct RelayStatus {
 // The SDK's Execute type has a 'request' field which is an AxiosRequestConfig
 // For our purposes, we need to check the actual result structure
 struct RelayExecuteResult {
-    std::optional<{> data;
-    std::optional<{> request;
     std::string id;
     std::optional<std::string> requestId;
 };
@@ -102,7 +97,6 @@ struct RelayChain {
 
 // Currency information
 struct RelayCurrencyInfo {
-    { currency;
     std::string contract;
     double decimals;
     std::string name;

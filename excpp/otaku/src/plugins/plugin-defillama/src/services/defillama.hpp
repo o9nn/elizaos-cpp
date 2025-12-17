@@ -1,11 +1,14 @@
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -36,65 +39,28 @@ using ProtocolSummary = {
 
 using ProtocolLookupResult = {
 
-class DefiLlamaService extends Service {
-  static serviceType = "defillama_protocols" as const;
-  capabilityDescription = "Look up DeFiLlama protocols by name/symbol and yield opportunities (TTL-cached)";
-
-  // Protocol TVL cache
-  private cache: DefiLlamaProtocol[] = [];
-  private cacheTimestampMs: number = 0;
-  private ttlMs: number = 300000; // 5 minutes
-  private protocolIndex: Map<string, DefiLlamaProtocol> = new Map();
-
-  // Protocol history cache
-  private protocolHistoryCache: Map<string, { timestamp: number; data: ProtocolTvlHistory }> = new Map();
-
-  // Chain history cache
-
-  // Yields cache
-
-    // Initialize protocols TTL
-
-    // Initialize yields TTL
-
-    // Load both caches in parallel
-
-  /**
-   * Search for multiple protocol candidates matching a query (0-5 matches)
-   * Returns protocols sorted by relevance and TVL
-   */
-
-      // Exact matches get highest priority
-      // Starts with query
-      // Contains query
-
-        // Boost score by TVL (protocols with higher TVL ranked higher among same match type)
-
-    // Sort by score descending
-
-    // Take top N results
-
-  /**
-   * Search for yield opportunities by protocol, token, and/or chain
-   */
-
-    // Filter by protocol (fuzzy match)
-
-    // Filter by token symbol (exact match, case-insensitive)
-
-    // Filter by chain (case-insensitive)
-
-    // Filter by minimum APY
-
-    // Filter stablecoins only
-
-    // Sort by APY descending (highest yields first)
-
-    // Apply limit (default to top 10)
-
-  /**
-   * Get historical yield chart data for a specific pool
-   */
+class DefiLlamaService {
+public:
+    DefiLlamaService(IAgentRuntime runtime);
+    std::future<DefiLlamaService> start(IAgentRuntime runtime);
+    std::future<void> initialize(IAgentRuntime runtime);
+    std::future<void> stop();
+    std::future<std::future<std::vector<ProtocolLookupResult>>> getProtocolsByNames(const std::vector<std::string>& names);
+    std::future<std::vector<ProtocolSummary>> searchProtocolCandidates(const std::string& query, number = 5 maxResults);
+    std::future<std::vector<YieldPool>> searchYields(std::optional<std::any> params);
+    std::future<std::vector<YieldChartPoint>> getPoolChart(const std::string& poolId);
+    std::future<ProtocolTvlHistory> getProtocolTvlHistory(const std::string& slug);
+    std::future<std::vector<ChainTvlPoint>> getChainTvlHistory(const std::string& chain, std::optional<ChainTvlHistoryOptions> options);
+    std::future<void> ensureFresh();
+    std::future<void> ensureYieldsFresh();
+    void for(auto let attempt = 1; attempt <= maxAttempts; attempt++);
+    std::future<void> loadIndex();
+    std::future<void> loadYieldsPools();
+    void setProtocolHistoryCache(const std::string& key, ProtocolTvlHistory data, double now);
+    void setChainHistoryCache(const std::string& key, const std::vector<ChainTvlPoint>& data, double now);
+    void evictExpiredHistoryCaches(double now);
+    void rebuildProtocolIndex();
+};
 
 using RawProtocolHistoryPoint = {
 
@@ -104,9 +70,13 @@ using RawProtocolHistory = {
 
 using RawChainTvlPoint = {
 
+std::optional<YieldPool> shapeYieldPool(RawYieldPool raw);
+
+std::optional<double> normalizeNullableNumber(const std::variant<double, std::string>& value);
+
 ProtocolSummary shapeProtocol(DefiLlamaProtocol p);
 
-std::unordered_map<std::string, double> shapeChainTvlsRecord(ChainTvlsRawRecord | undefined value);
+std::unordered_map<std::string, double> shapeChainTvlsRecord(ChainTvlsRawRecord value);
 
 ProtocolTvlHistory shapeProtocolHistory(RawProtocolHistory raw, const std::string& fallbackSlug);
 

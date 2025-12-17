@@ -1,10 +1,11 @@
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -30,7 +31,7 @@ struct TimeResponse {
 /**
  * Time display component that fetches from backend
  */
-void TimeDisplay({ apiBase: string } { apiBase });
+void TimeDisplay(const std::any& { apiBase });
 
 /**
  * Main Example route component
@@ -40,7 +41,7 @@ void ExampleRoute();
 /**
  * Example provider component
  */
-void ExampleProvider(auto { agentId, { agentId: UUID; apiBase: string } apiBase });
+void ExampleProvider(auto { agentId, const std::any& apiBase });
 
 // Initialize the application - no router needed for iframe
 
@@ -48,10 +49,10 @@ void ExampleProvider(auto { agentId, { agentId: UUID; apiBase: string } apiBase 
 struct AgentPanel {
     std::string name;
     std::string path;
-    React.ComponentType<any> component;
+    ComponentType<any> component;
     std::optional<std::string> icon;
     std::optional<bool> public;
-    std::optional<string; // Optional short label for mobile> shortLabel;
+    std::optional<std::string> shortLabel;
 };
 
 struct PanelProps {

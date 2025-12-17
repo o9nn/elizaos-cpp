@@ -1,11 +1,12 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -15,7 +16,6 @@ namespace elizaos {
 
 
 enum ServiceTypes {
-  DEGEN_TRADING = 'DEGEN_TRADING',
 }
 
 struct TokenSignal {
@@ -27,21 +27,16 @@ struct TokenSignal {
     double liquidity;
     double score;
     std::vector<std::string> reasons;
-    std::optional<{> technicalSignals;
     double rsi;
-    { macd;
     double value;
     double signal;
     double histogram;
-    { volumeProfile;
-    'increasing' | 'decreasing' | 'stable' trend;
+    std::variant<'increasing', 'decreasing', 'stable'> trend;
     bool unusualActivity;
     double volatility;
-    std::optional<{> socialMetrics;
     double mentionCount;
     double sentiment;
     double influencerMentions;
-    std::optional<{> cmcMetrics;
     double rank;
     double priceChange24h;
     double volumeChange24h;
@@ -76,7 +71,9 @@ struct PriceSignalMessage {
 
 struct PortfolioStatus {
     double totalValue;
-    { [tokenAddress: string]: { amount: number; value: number } } positions;
+    double solBalance;
+    double drawdown;
+};
 
 struct TradePerformanceData {
     std::string token_address;

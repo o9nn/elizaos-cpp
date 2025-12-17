@@ -1,10 +1,11 @@
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -14,14 +15,14 @@ namespace elizaos {
 struct ChatMessage {
     std::string id;
     std::string name;
-    string | null | undefined text;
+    std::optional<std::string> text;
     std::string senderId;
     std::string roomId;
     double createdAt;
     std::string source;
     std::optional<bool> isLoading;
     std::optional<std::string> thought;
-    std::optional<any[]; // Consider defining a more specific type if the structure is known> actions;
+    std::optional<std::vector<std::any>> actions;
 };
 
 

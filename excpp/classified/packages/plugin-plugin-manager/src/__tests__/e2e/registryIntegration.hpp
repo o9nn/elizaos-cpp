@@ -1,13 +1,13 @@
-#include "..actions/clonePluginAction.hpp"
-#include "..actions/searchPluginAction.hpp"
-#include "..services/pluginRegistryService.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "..actions/clonePluginAction.hpp"
+#include "..actions/searchPluginAction.hpp"
+#include "..services/pluginRegistryService.hpp"
 
 namespace elizaos {
 

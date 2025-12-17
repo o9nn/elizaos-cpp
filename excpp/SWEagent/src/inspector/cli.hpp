@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -21,14 +22,23 @@ struct TrajectoryStep {
     std::optional<std::string> action;
     std::optional<std::string> response;
     std::optional<std::string> observation;
-    std::optional<std::vector<{ role: string; content: string }>> messages;
+};
 
 struct Trajectory {
-    std::optional<std::vector<{ role: string; content: string }>> history;
+    std::vector<TrajectoryStep> trajectory;
+    std::optional<std::string> exitStatus;
+    std::optional<std::string> submission;
+    std::optional<double> instanceCost;
+    std::optional<double> instanceInputTokens;
+    std::optional<double> instanceOutputTokens;
+    std::optional<double> instanceCallCount;
+    std::optional<std::string> environment;
+};
 
 /**
  * Load and parse a trajectory file
  */
+std::optional<Trajectory> loadTrajectory(const std::string& filePath);
 
 /**
  * Format a trajectory step for display
@@ -49,7 +59,6 @@ std::future<void> interactiveMode(Trajectory trajectory);
  * Main CLI program
  */
 
-      await interactiveMode(trajectory);
       // Display all steps
 
     // Sort files

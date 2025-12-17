@@ -1,15 +1,15 @@
-#include "..app/store.hpp"
-#include "..classes/channel.hpp"
-#include "..services/discord-service.hpp"
-#include ".message/message-slice.hpp"
-#include "dm-types.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "..app/store.hpp"
+#include "..classes/channel.hpp"
+#include "..services/discord-service.hpp"
+#include ".message/message-slice.hpp"
+#include "dm-types.hpp"
 
 namespace elizaos {
 

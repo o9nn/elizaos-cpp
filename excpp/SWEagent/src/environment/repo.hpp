@@ -1,14 +1,16 @@
-#include ".utils/github.hpp"
-#include ".utils/log.hpp"
-#include "deployment.hpp"
-#include "runtime.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include ".utils/github.hpp"
+#include ".utils/log.hpp"
+#include "deployment.hpp"
+#include "runtime.hpp"
 
 namespace elizaos {
 
@@ -37,90 +39,68 @@ std::vector<std::string> getGitResetCommands(const std::string& baseCommit);
  * Pre-existing repository configuration
  */
 
-using PreExistingRepoConfig = z.infer<typeof PreExistingRepoConfigSchema>;
+using PreExistingRepoConfig = z::infer<typeof PreExistingRepoConfigSchema>;
 
-class PreExistingRepo implements Repo {
-  repoName: string;
-  baseCommit: string;
-  reset: boolean;
+class PreExistingRepo {
+public:
+    PreExistingRepo(PreExistingRepoConfig config);
+    std::future<void> copy(AbstractDeployment _deployment);
+    std::vector<std::string> getResetCommands();
 
-  constructor(config: PreExistingRepoConfig) {
-    this.repoName = config.repoName;
-    this.baseCommit = config.baseCommit;
-    this.reset = config.reset;
-  }
-
-    return getGitResetCommands(this.baseCommit);
+private:
+    std::string repoName_;
+    std::string baseCommit_;
+    bool reset_;
+};
 
 /**
  * Local repository configuration
  */
 
-using LocalRepoConfig = z.infer<typeof LocalRepoConfigSchema>;
+using LocalRepoConfig = z::infer<typeof LocalRepoConfigSchema>;
 
-class LocalRepo implements Repo {
-  path: string;
-  baseCommit: string;
-  repoName: string;
+class LocalRepo {
+public:
+    LocalRepo(LocalRepoConfig config);
+    void checkValidRepo();
+    std::future<void> copy(AbstractDeployment deployment);
+    std::vector<std::string> getResetCommands();
 
-  constructor(config: LocalRepoConfig) {
-    this.path = config.path;
-    this.baseCommit = config.baseCommit;
-    this.repoName = path.basename(this.path).replace(' ', '-').replace("'", ''); // Match Python sanitization
-  }
-
-    // Check if repo is dirty (has uncommitted changes)
-    // Note: This is a simplified check - Python uses GitPython for this
-
-    // Upload repository to deployment
-
-    // Change permissions
-
-    return getGitResetCommands(this.baseCommit);
+private:
+    std::string path_;
+    std::string baseCommit_;
+    std::string repoName_;
+};
 
 /**
  * GitHub repository configuration
  */
 
-using GithubRepoConfig = z.infer<typeof GithubRepoConfigSchema>;
+using GithubRepoConfig = z::infer<typeof GithubRepoConfigSchema>;
 
-class GithubRepo implements Repo {
-  githubUrl: string;
-  baseCommit: string;
-  cloneTimeout: number;
-  repoName: string;
-  constructor(config: GithubRepoConfig) {
-    // Handle short form github URLs (org/repo)
-    if (config.githubUrl.split('/').length === 2 && !config.githubUrl.includes('://')) {
-      this.githubUrl = `https://github.com/${config.githubUrl}`;
-    } else {
-      this.githubUrl = config.githubUrl;
-    }
+class GithubRepo {
+public:
+    GithubRepo(GithubRepoConfig config);
+    std::string getUrlWithToken(const std::string& token);
+    std::future<void> copy(AbstractDeployment deployment);
+    std::vector<std::string> getResetCommands();
 
-    this.baseCommit = config.baseCommit;
-    this.cloneTimeout = config.cloneTimeout;
-
-    const parsed = parseGhRepoUrl(this.githubUrl);
-    this.repoName = `${parsed.owner}__${parsed.repo}`;
-  }
-
-    // Check if @ already in URL
-
-    // Insert token into URL for authentication
-
-    // Execute git commands directly in the deployment (matches Python implementation)
-
-    return getGitResetCommands(this.baseCommit);
+private:
+    std::string githubUrl_;
+    std::string baseCommit_;
+    double cloneTimeout_;
+    std::string repoName_;
+};
 
 /**
  * Union type for all repo configurations
  */
 
-using RepoConfig = z.infer<typeof RepoConfigSchema>;
+using RepoConfig = z::infer<typeof RepoConfigSchema>;
 
 /**
  * Factory function to create repo from simplified input
  */
-Repo repoFromSimplifiedInput(const std::string& input, string = 'HEAD' baseCommit, 'local' | 'github' | 'preexisting' | 'auto' = 'auto' type);
+Repo repoFromSimplifiedInput(const std::string& input, string = 'HEAD' baseCommit, const std::variant<'local', 'github', 'preexisting', 'auto' = 'auto'>& type);
 
 } // namespace elizaos

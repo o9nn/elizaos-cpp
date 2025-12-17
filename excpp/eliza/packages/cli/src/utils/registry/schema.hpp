@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -32,6 +33,6 @@ PluginType getPluginType(const std::string& name);
 /**
  * Type definition for the Registry type which is inferred from the registrySchema
  */
-using Registry = z.infer<typeof registrySchema>;
+using Registry = z::infer<typeof registrySchema>;
 
 } // namespace elizaos

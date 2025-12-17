@@ -1,11 +1,12 @@
-#include "ui/knowledge-tab.tsx.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "ui/knowledge-tab.tsx.hpp"
 
 namespace elizaos {
 
@@ -33,7 +34,7 @@ void KnowledgeRoute();
 /**
  * Knowledge provider component
  */
-void KnowledgeProvider({ agentId: UUID } { agentId });
+void KnowledgeProvider(const std::any& { agentId });
 
 // Initialize the application - no router needed for iframe
 
@@ -41,10 +42,10 @@ void KnowledgeProvider({ agentId: UUID } { agentId });
 struct AgentPanel {
     std::string name;
     std::string path;
-    React.ComponentType<any> component;
+    ComponentType<any> component;
     std::optional<std::string> icon;
     std::optional<bool> public;
-    std::optional<string; // Optional short label for mobile> shortLabel;
+    std::optional<std::string> shortLabel;
 };
 
 struct KnowledgePanelProps {

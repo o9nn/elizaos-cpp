@@ -1,10 +1,12 @@
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -22,16 +24,14 @@ namespace elizaos {
 // Backend Memory type from ElizaOS
 struct BackendMemory {
     std::string id;
-    string; // UUID of sender (user or agent) entityId;
-    string; // UUID of the agent this memory belongs to agentId;
-    string; // UUID of the room roomId;
-    { content;
+    std::string entityId;
+    std::string agentId;
+    std::string roomId;
     std::optional<std::string> text;
     std::optional<std::string> source;
     std::optional<std::string> thought;
     std::optional<std::vector<std::string>> actions;
     std::optional<std::vector<std::any>> attachments;
-    std::optional<{> metadata;
     std::optional<std::string> entityName;
     double createdAt;
     std::optional<std::string> worldId;
@@ -43,19 +43,17 @@ struct Agent {
     std::string id;
     std::string name;
     std::optional<std::string> bio;
-    std::optional<std::unordered_map<std::string, std::any>> settings;
-    std::optional<"active" | "inactive"> status;
+    std::optional<std::variant<"active", "inactive">> status;
 };
 
 // Room information
 struct Room {
     std::string id;
     std::string name;
-    "dm" | "group" | "channel" type;
+    std::variant<"dm", "group", "channel"> type;
     std::string agentId;
     std::optional<std::string> worldId;
     std::optional<std::string> serverId;
-    std::optional<std::unordered_map<std::string, std::any>> metadata;
 };
 
 // Channel information
@@ -79,7 +77,6 @@ struct MessageSubmission {
     std::optional<std::string> senderName;
     std::optional<std::string> source;
     std::optional<std::vector<std::any>> attachments;
-    std::optional<std::unordered_map<std::string, std::any>> metadata;
 };
 
 /**
@@ -90,8 +87,6 @@ struct MessageSubmission {
 
     // Check content type before parsing
 
-// ====== AGENT MANAGEMENT ======
-
 /**
  * Get all available agents
  */
@@ -100,13 +95,9 @@ struct MessageSubmission {
  * Get specific agent details
  */
 
-// ====== MEMORY MANAGEMENT ======
-
 /**
  * Fetches memories for a given agent (latest API)
  */
-
-      await fetcher(url);
 
     return transformMemoriesToChatMessages(memories);
 
@@ -114,16 +105,12 @@ struct MessageSubmission {
  * Fetches memories for a specific room (latest API)
  */
 
-      await fetcher(url);
-
     return transformMemoriesToChatMessages(memories);
 
 /**
  * Transform backend memories to frontend chat messages
  */
 std::vector<ChatMessage> transformMemoriesToChatMessages(const std::vector<BackendMemory>& memories);
-
-// ====== MESSAGING SYSTEM ======
 
 /**
  * Submit a message via the messaging system
@@ -142,8 +129,6 @@ std::vector<ChatMessage> transformMemoriesToChatMessages(const std::vector<Backe
  * Send message to channel
  */
 
-// ====== ROOM MANAGEMENT ======
-
 /**
  * Get agent rooms
  */
@@ -151,8 +136,6 @@ std::vector<ChatMessage> transformMemoriesToChatMessages(const std::vector<Backe
 /**
  * Create a new room
  */
-
-// ====== SERVER HEALTH ======
 
 /**
  * Ping server for health check
@@ -163,13 +146,10 @@ std::vector<ChatMessage> transformMemoriesToChatMessages(const std::vector<Backe
  * Get server status
  */
 
-// ====== DM CHANNEL MANAGEMENT ======
-
 struct DMChannel {
     std::string id;
     std::string name;
     "DM" type;
-    { metadata;
     std::string user1;
     std::string user2;
     std::string forAgent;

@@ -1,12 +1,13 @@
-#include ".services/taskService.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include ".services/taskService.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -19,11 +20,11 @@ namespace elizaos {
 struct TodoTaskInput {
     std::string name;
     std::optional<std::string> description;
-    "daily" | "one-off" | "aspirational" taskType;
-    std::optional<1 | 2 | 3 | 4; // 1=highest, 4=lowest priority> priority;
+    std::variant<"daily", "one-off", "aspirational"> taskType;
+    std::optional<std::variant<1, 2, 3, 4>> priority;
     std::optional<bool> urgent;
-    std::optional<string; // ISO date string for one-off tasks> dueDate;
-    std::optional<"daily" | "weekly" | "monthly"; // For recurring tasks> recurring;
+    std::optional<std::string> dueDate;
+    std::optional<std::variant<"daily", "weekly", "monthly">> recurring;
 };
 
 // Interface for choice options
@@ -41,7 +42,6 @@ struct ChoiceOption {
 /**
  * Extracts todo information from the user's message.
  */
-std::future<TodoTaskInput | null> extractTodoInfo(IAgentRuntime runtime, Memory message, State state);
 
 /**
  * The CREATE_TODO action allows the agent to create a new todo item.

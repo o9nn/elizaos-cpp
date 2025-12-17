@@ -1,13 +1,14 @@
-#include ".components/token-table.hpp"
-#include ".utils/env.hpp"
-#include ".utils/profileUtils.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include ".components/token-table.hpp"
+#include ".utils/env.hpp"
+#include ".utils/profileUtils.hpp"
 
 namespace elizaos {
 
@@ -17,21 +18,15 @@ namespace elizaos {
 
 
 struct EditableProfileHeaderProps {
-    UserProfileData | null user;
+    std::optional<UserProfileData> user;
     bool isCurrentUser;
     bool isEditingName;
-    (value: boolean) => void setIsEditingName;
     std::string editingDisplayName;
-    (value: string) => void setEditingDisplayName;
     std::string editingProfilePictureUrl;
-    () => void onSaveName;
-    () => void onCancelNameEdit;
-    () => void onUploadClick;
-    () => void onGenerateClick;
     bool isUploading;
     bool isGenerating;
     bool isSaving;
-    string | null editError;
+    std::optional<std::string> editError;
 };
 
 using Tab = std::variant<"held", "created">;

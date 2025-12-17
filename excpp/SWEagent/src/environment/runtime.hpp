@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -22,7 +23,7 @@ namespace elizaos {
 struct BashAction {
     std::string command;
     std::optional<double> timeout;
-    std::optional<'silent' | 'ignore'> check;
+    std::optional<std::variant<'silent', 'ignore'>> check;
 };
 
 /**
@@ -55,7 +56,6 @@ struct Command {
     std::string command;
     std::optional<bool> shell;
     std::optional<bool> check;
-    std::optional<std::unordered_map<std::string, std::string>> env;
     std::optional<std::string> cwd;
     std::optional<double> timeout;
 };
@@ -104,5 +104,6 @@ struct UploadRequest {
 /**
  * Abstract runtime interface
  */
+
 
 } // namespace elizaos

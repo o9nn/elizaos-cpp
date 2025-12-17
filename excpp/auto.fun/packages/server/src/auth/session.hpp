@@ -1,11 +1,12 @@
-#include ".redis.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".redis.hpp"
 
 namespace elizaos {
 
@@ -21,8 +22,6 @@ struct SessionData {
 };
 
 std::future<std::string> createSession(SessionData data);
-
-std::future<SessionData | null> getSession(const std::string& sid);
 
 std::future<void> destroySession(const std::string& sid);
 

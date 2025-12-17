@@ -1,15 +1,16 @@
-#include ".db.hpp"
-#include ".generation.hpp"
-#include ".uploader.hpp"
-#include ".util.hpp"
-#include "files.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".db.hpp"
+#include ".generation.hpp"
+#include ".uploader.hpp"
+#include ".util.hpp"
+#include "files.hpp"
 
 namespace elizaos {
 
@@ -67,7 +68,6 @@ std::future<User> ensureUserProfile(const std::string& address);
 // Example: app.use('/profile', authMiddleware);
 
         // Ensure profile exists before attempting update
-        await ensureUserProfile(userPublicKey);
 
         // Validate Display Name (Allow clearing by setting to null or empty string)
                  // Allow clearing the display name - set to null in DB
@@ -80,8 +80,6 @@ std::future<User> ensureUserProfile(const std::string& address);
 // --- End PUT /users/profile ---
 
 // --- POST /users/profile/picture - Upload Profile Picture ---
-
-        await ensureUserProfile(userPublicKey);
 
 // --- POST /users/profile/picture/generate --- Implement Logic --- 
 

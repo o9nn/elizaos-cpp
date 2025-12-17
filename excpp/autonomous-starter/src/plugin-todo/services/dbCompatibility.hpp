@@ -1,11 +1,13 @@
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -18,83 +20,21 @@ namespace elizaos {
  * Database compatibility service to handle differences between SQLite and PostgreSQL
  */
 class DatabaseCompatibilityService {
-  private databaseType: "sqlite" | "postgres" | "unknown" = "unknown";
-
-  constructor() {
-    this.detectDatabaseType();
-  }
-
-  /**
-   * Detect the current database type from environment or connection
-   */
-    // Check common environment variables
-    
-      // Default to sqlite for local development
-
-  /**
-   * Convert UUID for database storage
-   */
-      // PostgreSQL can handle UUID type directly
-    // SQLite stores as TEXT
-
-  /**
-   * Convert boolean for database storage
-   */
-      // SQLite stores booleans as 0/1
-    // PostgreSQL has native boolean
-
-  /**
-   * Parse boolean from database
-   */
-      // SQLite returns 0/1
-    // PostgreSQL returns native boolean
-
-  /**
-   * Format date for database storage
-   */
-    
-      // SQLite prefers ISO string format
-    // PostgreSQL can handle both but prefers ISO format
-
-  /**
-   * Parse date from database
-   */
-    
-        // SQLite might store as Unix timestamp
-
-  /**
-   * Format JSON for database storage
-   */
-      // SQLite stores JSON as TEXT
-    // PostgreSQL JSONB can accept objects directly
-
-  /**
-   * Parse JSON from database
-   */
-    
-    // PostgreSQL returns parsed object
-
-  /**
-   * Format array for database storage (for tags)
-   */
-      // SQLite stores arrays as JSON
-    // PostgreSQL can use native arrays or JSONB
-
-  /**
-   * Parse array from database
-   */
-    
-    // PostgreSQL returns native array
-
-  /**
-   * Build case-insensitive search condition
-   */
-      // PostgreSQL needs ILIKE for case-insensitive
-    // SQLite LIKE is case-insensitive by default
-
-  /**
-   * Get current database type
-   */
+public:
+    DatabaseCompatibilityService();
+    void detectDatabaseType();
+    std::variant<std::string, std::any> formatUuid(const std::string& uuid);
+    std::variant<bool, double> formatBoolean(bool value);
+    bool parseBoolean(const std::any& value);
+    std::string formatDate(const std::variant<Date, std::string>& date);
+    std::optional<Date> parseDate(const std::any& value);
+    std::variant<std::string, std::any> formatJson(const std::any& obj);
+    std::any parseJson(const std::any& value);
+    std::variant<std::string, std::vector<std::string>> formatArray(const std::vector<std::string>& arr);
+    std::vector<std::string> parseArray(const std::any& value);
+    std::string buildCaseInsensitiveSearch(const std::string& column, const std::string& value);
+    std::variant<"sqlite", "postgres", "unknown"> getDatabaseType();
+};
 
 // Export singleton instance
 } // namespace elizaos

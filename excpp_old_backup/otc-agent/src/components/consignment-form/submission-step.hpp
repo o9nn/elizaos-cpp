@@ -1,0 +1,60 @@
+#include ".button.hpp"
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
+#pragma once
+
+namespace elizaos {
+
+// NOTE: This is auto-generated approximate C++ code
+// Manual refinement required for production use
+
+
+
+struct StepState {
+    std::string id;
+    std::string label;
+    "pending" | "processing" | "complete" | "error" status;
+    std::optional<std::string> statusMessage;
+    std::optional<std::string> errorMessage;
+    std::optional<std::string> txHash;
+    std::optional<bool> canRetry;
+};
+
+struct SubmissionStepProps {
+    { formData;
+    std::string tokenId;
+    std::string amount;
+    bool isNegotiable;
+    double fixedDiscountBps;
+    double fixedLockupDays;
+    double minDiscountBps;
+    double maxDiscountBps;
+    double minLockupDays;
+    double maxLockupDays;
+    std::string minDealAmount;
+    std::string maxDealAmount;
+    bool isFractionalized;
+    bool isPrivate;
+    double maxPriceVolatilityBps;
+    double maxTimeToExecuteSeconds;
+    std::string consignerAddress;
+    std::string chain;
+    "evm" | "solana" | null activeFamily;
+    double selectedTokenDecimals;
+    std::string selectedTokenSymbol;
+    std::optional<std::string> selectedTokenName;
+    std::optional<std::string> selectedTokenAddress;
+    std::optional<string | null> selectedTokenLogoUrl;
+    () => Promise<string> onApproveToken;
+    ( onCreateConsignment;
+    std::optional<(txHash: string) => void> onTxSubmitted;
+    (txHash: string) => string getBlockExplorerUrl;
+    () => void onBack;
+};
+
+
+} // namespace elizaos

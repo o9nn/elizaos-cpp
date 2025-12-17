@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -16,19 +16,16 @@ namespace elizaos {
 struct GitHubUser {
     double id;
     std::string login;
-    string | null name;
+    std::optional<std::string> name;
     std::string avatar_url;
     std::string html_url;
 };
 
 struct AuthContextType {
-    GitHubUser | null user;
-    string | null token;
+    std::optional<GitHubUser> user;
+    std::optional<std::string> token;
     bool isLoading;
-    string | null error;
-    () => void signin;
-    () => void signout;
-    (code: string, state: string) => Promise<void> handleAuthCallback;
+    std::optional<std::string> error;
 };
 
 struct AuthProviderProps {

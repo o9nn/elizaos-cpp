@@ -1,15 +1,15 @@
-#include "userManagement/LinkAccounts.hpp"
-#include "userManagement/UnlinkAccounts.hpp"
-#include "userManagement/Wallets.hpp"
-#include "walletActions/EVMWalletActions.hpp"
-#include "walletActions/SolanaWalletActions.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "userManagement/LinkAccounts.hpp"
+#include "userManagement/UnlinkAccounts.hpp"
+#include "userManagement/Wallets.hpp"
+#include "walletActions/EVMWalletActions.hpp"
+#include "walletActions/SolanaWalletActions.hpp"
 
 namespace elizaos {
 

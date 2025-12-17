@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -23,7 +24,6 @@ struct ModelOutput {
     std::optional<std::string> content;
     std::optional<std::vector<ToolCall>> toolCalls;
     std::optional<std::vector<ThinkingBlock>> thinkingBlocks;
-    std::optional<{> usage;
     double promptTokens;
     double completionTokens;
     double totalTokens;
@@ -35,7 +35,6 @@ struct ModelOutput {
 struct ToolCall {
     std::string id;
     'function' type;
-    { function;
     std::string name;
     std::string arguments;
 };
@@ -83,12 +82,9 @@ struct StatsData {
  * API response structure
  */
 struct APIResponse {
-    std::optional<Array<{> choices;
-    std::optional<{> message;
     std::string content;
     std::string role;
     double index;
-    std::optional<{> usage;
     std::optional<double> prompt_tokens;
     std::optional<double> completion_tokens;
     std::optional<double> total_tokens;
@@ -98,10 +94,5 @@ struct APIResponse {
  * History message content type
  */
 using MessageContent = std::variant<, std::string, Array<{
-      type: 'text', 'image_url'>;
-      text?: string;
-      image_url?: { url: string };
-      cacheControl?: { type: string };
-    }>;
 
 } // namespace elizaos

@@ -1,12 +1,13 @@
-#include "agent-start.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "agent-start.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 

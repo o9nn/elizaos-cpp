@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -14,8 +15,7 @@ namespace elizaos {
 
 
 struct SortControlsProps {
-    (value: 'date' | 'name') => void onSort;
-    'date' | 'name' currentSort;
+    std::variant<'date', 'name'> currentSort;
 };
 
 void SortControls(auto { onSort, SortControlsProps currentSort }); 

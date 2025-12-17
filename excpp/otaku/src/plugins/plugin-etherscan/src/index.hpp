@@ -1,12 +1,12 @@
-#include "actions/checkTransactionConfirmation.action.hpp"
-#include "services/etherscan.service.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "actions/checkTransactionConfirmation.action.hpp"
+#include "services/etherscan.service.hpp"
 
 namespace elizaos {
 

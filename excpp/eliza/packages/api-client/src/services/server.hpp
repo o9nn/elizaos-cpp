@@ -1,12 +1,13 @@
-#include ".lib/base-client.hpp"
-#include ".types/server.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".lib/base-client.hpp"
+#include ".types/server.hpp"
 
 namespace elizaos {
 
@@ -15,40 +16,17 @@ namespace elizaos {
 
 
 
-class ServerService extends BaseApiClient {
-  /**
-   * Health check
-   */
-  async checkHealth(): Promise<ServerHealth> {
-    return this.get<ServerHealth>('/api/server/health');
-  }
+class ServerService {
+public:
+    std::future<ServerHealth> checkHealth();
+    Promise< ping();
+    Promise< hello();
+    std::future<ServerStatus> getStatus();
+    Promise< stopServer();
+    std::future<ServerDebugInfo> getDebugInfo();
+    Promise< submitLogs(const std::vector<LogSubmitParams>& logs);
+    Promise< clearLogs();
+};
 
-  /**
-   * Simple ping
-   */
-
-  /**
-   * Hello endpoint
-   */
-
-  /**
-   * Get server status
-   */
-
-  /**
-   * Stop the server
-   */
-
-  /**
-   * Get runtime debug info
-   */
-
-  /**
-   * Submit logs
-   */
-
-  /**
-   * Clear logs
-   */
 
 } // namespace elizaos

@@ -1,3 +1,10 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include "...classes/guild.hpp"
 #include "...classes/message.hpp"
 #include "...components/author-avatar.hpp"
@@ -5,13 +12,6 @@
 #include "...utils.hpp"
 #include "author-name.hpp"
 #include "message-content.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 

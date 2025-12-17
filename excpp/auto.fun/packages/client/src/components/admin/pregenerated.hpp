@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -20,9 +20,9 @@ struct PreGeneratedToken {
     std::string ticker;
     std::string description;
     std::string prompt;
-    string | null image;
+    std::optional<std::string> image;
     std::string createdAt;
-    number; // 0 or 1 used;
+    double used;
 };
 
 // Interface for pagination response

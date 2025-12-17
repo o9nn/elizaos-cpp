@@ -1,3 +1,11 @@
+#pragma once
+#include <functional>
+#include <future>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include "actions/getLeaderboard.hpp"
 #include "actions/getPointsSummary.hpp"
 #include "actions/getReferralCode.hpp"
@@ -9,13 +17,6 @@
 #include "services/GamificationService.hpp"
 #include "services/LeaderboardService.hpp"
 #include "services/ReferralService.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 

@@ -1,13 +1,13 @@
-#include "..app/store.hpp"
-#include "..services/discord-service.hpp"
-#include "relationship-types.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "..app/store.hpp"
+#include "..services/discord-service.hpp"
+#include "relationship-types.hpp"
 
 namespace elizaos {
 
@@ -17,8 +17,6 @@ namespace elizaos {
 
 
     //   const { friends } = getState().relationship;
-
-        //   dispatch(setFriends(friends.filter((f) => f.user.id !== userId)));
 
 
 } // namespace elizaos

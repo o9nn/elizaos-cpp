@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -15,13 +15,9 @@ namespace elizaos {
 
 struct MissingSecretsDialogProps {
     bool open;
-    (open: boolean) => void onOpenChange;
-    Array<{ missingSecrets;
     std::string name;
     std::optional<std::string> plugin;
     std::optional<std::string> description;
-    () => void onConfirm;
-    () => void onCancel;
 };
 
 

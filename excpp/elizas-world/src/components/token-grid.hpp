@@ -1,10 +1,12 @@
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -37,5 +39,5 @@ using SocialFilter = std::variant<'ALL', 'HAS_TWITTER', 'NO_TWITTER'>;
 
 std::string truncateAddress(const std::string& address);
 
-void TokenGrid({ holdings: TokenHolding[] } { holdings }); 
+void TokenGrid(const std::any& { holdings }); 
 } // namespace elizaos

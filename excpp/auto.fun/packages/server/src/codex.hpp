@@ -1,11 +1,12 @@
-#include "util.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "util.hpp"
 
 namespace elizaos {
 
@@ -19,7 +20,6 @@ struct CodexTokenEvent {
     std::string token1SwapValueUsd;
     std::string token1PoolValueUsd;
     double timestamp;
-    { data;
     std::optional<std::string> amount0;
     std::optional<std::string> amount1;
 };
@@ -64,12 +64,12 @@ using CodexBarResolution = std::variant<, "1", "5", "15", "30", "60", "240", "72
  * Response structure for Codex getBars API
  */
 struct CodexBarsResponse {
-    number[]; // Open prices o;
-    number[]; // High prices h;
-    number[]; // Low prices l;
-    number[]; // Close prices c;
-    number[]; // Volume v;
-    string[]; // Volume as string volume;
+    std::vector<double> o;
+    std::vector<double> h;
+    std::vector<double> l;
+    std::vector<double> c;
+    std::vector<double> v;
+    std::vector<std::string> volume;
 };
 
 /**

@@ -1,11 +1,11 @@
-#include "types.ts.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "types.ts.hpp"
 
 namespace elizaos {
 
@@ -14,14 +14,10 @@ namespace elizaos {
 
 
 
-class ApiError extends Error {
-  constructor(
-    message: string,
-    public statusCode?: number,
-  ) {
-    super(message);
-    this.name = "ApiError";
-  }
+class ApiError {
+public:
+    ApiError(const std::string& message, std::optional<double> public statusCode);
+};
 
       // Remove old requests
 

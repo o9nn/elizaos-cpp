@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -13,6 +13,14 @@ namespace elizaos {
 
 
 
-void SummaryContentSkeleton(std::optional<{ className: string }> { className });
+// Custom remark plugin to remove the first H1
+
+// Custom H2 component to apply primary color
+
+struct SummaryContentProps {
+    std::optional<std::string> summaryContent;
+    std::optional<std::string> className;
+};
+
 
 } // namespace elizaos

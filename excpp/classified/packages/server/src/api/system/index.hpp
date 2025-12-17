@@ -1,12 +1,12 @@
-#include "environment.hpp"
-#include "version.js.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "environment.hpp"
+#include "version.js.hpp"
 
 namespace elizaos {
 

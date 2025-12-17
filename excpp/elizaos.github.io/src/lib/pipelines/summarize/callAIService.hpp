@@ -1,11 +1,13 @@
-#include "config.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "config.hpp"
 
 namespace elizaos {
 
@@ -18,5 +20,6 @@ namespace elizaos {
  * Call AI service to generate a summary
  */
 
+std::future<std::string> callAIService(const std::string& prompt, AISummaryConfig config, std::optional<std::any> options);
 
 } // namespace elizaos

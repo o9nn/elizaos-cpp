@@ -1,10 +1,12 @@
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -19,6 +21,7 @@ namespace elizaos {
 /**
  * Convert path relative to repository root
  */
+std::variant<std::string, path::ParsedPath> convertPathRelativeToRepoRoot(const std::variant<std::string, path::ParsedPath>& inputPath, std::optional<std::string> root);
 
 /**
  * Check if a value could be a path
@@ -37,7 +40,7 @@ unknown stripAbspathFromDict(unknown value, std::optional<std::string> root);
 /**
  * Convert paths array to absolute paths
  */
-std::vector<path.ParsedPath> convertPathsToAbspath(const std::vector<string | path.ParsedPath>& paths);
+std::vector<path::ParsedPath> convertPathsToAbspath(const std::variant<Array<string, path::ParsedPath>>& paths);
 
 /**
  * Load environment variables from .env file
@@ -47,7 +50,7 @@ void loadEnvironmentVariables(std::optional<std::string> envPath);
 /**
  * Parse config file content
  */
-std::any parseConfigFile(const std::string& content, 'yaml' | 'json' format);
+std::any parseConfigFile(const std::string& content, const std::variant<'yaml', 'json'>& format);
 
 /**
  * Merge two config objects deeply

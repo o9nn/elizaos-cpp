@@ -1,14 +1,14 @@
-#include ".classes/guild.hpp"
-#include ".classes/user.hpp"
-#include "install-params-object.hpp"
-#include "team-object.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".classes/guild.hpp"
+#include ".classes/user.hpp"
+#include "install-params-object.hpp"
+#include "team-object.hpp"
 
 namespace elizaos {
 

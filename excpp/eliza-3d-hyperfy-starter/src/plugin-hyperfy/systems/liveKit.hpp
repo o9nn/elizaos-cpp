@@ -1,11 +1,14 @@
-#include ".hyperfy/src/core/systems/System.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include ".hyperfy/src/core/systems/System.hpp"
 
 namespace elizaos {
 
@@ -19,19 +22,28 @@ struct LiveKitInitOptions {
     std::string token;
 };
 
-class AgentLiveKit extends System {
-  private room: Room | null = null;
-  private audioSource: AudioSource | null = null;
-  private localTrack: LocalAudioTrack | null = null;
-
-  constructor(world: any) {
-    super(world);
-  }
-
-    await dispose();
-
-  // Framework stubs
-  // init() {}
-
+class AgentLiveKit {
+public:
+    AgentLiveKit(const std::any& world);
+    std::future<void> deserialize(LiveKitInitOptions opts);
+    std::future<void> stop();
+    void setupRoomEvents();
+    void init();
+    void preTick();
+    void preFixedUpdate();
+    void fixedUpdate();
+    void postFixedUpdate();
+    void preUpdate();
+    void update();
+    void postUpdate();
+    void lateUpdate();
+    void postLateUpdate();
+    void commit();
+    void postTick();
+    void start();
+    std::future<void> publishAudioStream(Buffer audioBuffer);
+    std::future<Int16Array> convertToPcm(Buffer buffer, auto sampleRate = 48000);
+    std::variant<'mp3', 'wav', 'pcm'> detectAudioFormat(Buffer buffer);
+};
 
 } // namespace elizaos

@@ -1,11 +1,11 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -30,7 +30,6 @@ namespace elizaos {
 // For "Create Group", users will use the button in the "Groups" section header.
 
 struct AppSidebarProps {
-    () => void refreshHomePage;
 };
 
 /**

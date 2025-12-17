@@ -1,12 +1,14 @@
-#include ".types.hpp"
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".types.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -22,7 +24,7 @@ struct WalletToken {
     std::string balanceFormatted;
     double usdValue;
     double usdPrice;
-    string | null contractAddress;
+    std::optional<std::string> contractAddress;
     std::string chain;
     double decimals;
 };
@@ -46,86 +48,30 @@ struct WalletInfo {
     double totalUsdValue;
 };
 
-class CdpService extends Service {
-  static serviceType = "CDP_SERVICE";
-  capabilityDescription = "Provides authenticated access to Coinbase CDP via Transaction Manager";
-
-  private transactionManager: CdpTransactionManager;
-
-  constructor(runtime: IAgentRuntime) {
-    super(runtime);
-    this.transactionManager = CdpTransactionManager.getInstance();
-  }
-
-  /**
-   * Get or create wallet for account
-   * Delegates to transaction manager
-   */
-
-  /**
-   * Get Viem wallet and public clients for a CDP account on a specific network
-   * Delegates to transaction manager
-   */
-
-  /**
-   * Get comprehensive wallet information from cache if available and not expired
-   * Falls back to fetching fresh data if cache miss or expired
-   * Delegates to transaction manager (uses manager's 5-minute cache)
-   * @param accountName User's account identifier
-   * @param chain Optional specific chain to fetch (if not provided, fetches all chains)
-   */
-
-    // Use manager's cache (5-minute TTL)
-    // Pass address if available to avoid CDP account lookup
-
-  /**
-   * Fetch fresh wallet information, bypassing cache
-   * Use this when you need the most up-to-date wallet state
-   * Delegates to transaction manager with forceSync=true
-   * @param accountName User's account identifier
-   * @param chain Optional specific chain to fetch (if not provided, fetches all chains)
-   * @param address Optional wallet address to avoid CDP account lookup
-   */
-
-    // Force sync - bypass manager's cache
-    // Pass address if available to avoid CDP account lookup
-
-  /**
-   * Transfer tokens from CDP wallet
-   * Delegates to transaction manager
-   */
-
-  /**
-   * Execute token swap with automatic fallback to multiple swap providers
-   * Delegates to transaction manager
-   * 
-   * Fallback chain (handled by manager):
-   * 1. CDP SDK (for supported networks) with Permit2 approval handling
+class CdpService {
+public:
+    CdpService(IAgentRuntime runtime);
+    std::future<CdpService> start(IAgentRuntime runtime);
+    std::future<void> stop();
+    Promise< getOrCreateWallet(const std::string& accountName);
+    Promise< getViemClientsForAccount(std::optional<std::any> options);
+    std::future<WalletInfo> getWalletInfoCached(const std::string& accountName, std::optional<std::string> chain, std::optional<std::string> address);
+    std::future<WalletInfo> fetchWalletInfo(const std::string& accountName, std::optional<std::string> chain, std::optional<std::string> address);
+    Promise< transfer(const std::any& params);
+    * 1. CDP SDK (for supported networks) with Permit2 approval handling
    * 2. 0x API v2 (if configured)
    * 3. Uniswap V3 (direct protocol interaction)
    * 
    * Reference: https://docs.cdp.coinbase.com/trade-api/quickstart#3-execute-a-swap
    */
+  async swap(params: chain(auto handled by manager);
+    Promise< getSwapPrice(const std::any& params);
+    Promise< transferNft(const std::any& params);
+    std::future<bigint> getOnChainBalance(std::optional<std::any> params);
 
-  /**
-   * Get swap price estimate
-   * Delegates to transaction manager
-   */
-
-  /**
-   * Transfer NFT from CDP wallet
-   * Delegates to transaction manager
-   */
-
-  /**
-   * Get actual on-chain token balance for a specific token
-   * This fetches the real-time balance directly from the blockchain
-   * Use this for 100% swaps to ensure we use the exact on-chain balance
-   * @param accountName User's account identifier
-   * @param network Network to check balance on
-   * @param tokenAddress Token contract address (or native token address)
-   * @param walletAddress Optional wallet address to avoid CDP account lookup
-   */
+private:
+    CdpTransactionManager transactionManager_;
+};
 
 
 } // namespace elizaos

@@ -1,3 +1,12 @@
+#pragma once
+#include <any>
+#include <functional>
+#include <future>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include "elizaos/core.hpp"
 #include "hyperfy/src/core/createNodeClientWorld.js.hpp"
 #include "managers//emote-manager.js.hpp"
@@ -13,13 +22,6 @@
 #include "systems/liveKit.js.hpp"
 #include "systems/loader.hpp"
 #include "utils.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -28,93 +30,44 @@ namespace elizaos {
 
 
 
-class HyperfyService extends Service {
-  static serviceType = 'hyperfy'
-  capabilityDescription = 'Manages connection and interaction with a Hyperfy world.'
+class HyperfyService {
+public:
+    HyperfyService(IAgentRuntime protected runtime);
+    std::optional<UUID> currentWorldId();
+    std::optional<std::any> getWorld();
+    std::future<HyperfyService> start(IAgentRuntime runtime);
+    std::future<void> stop(IAgentRuntime runtime);
+    std::future<void> connect(std::optional<std::any> config);
+    void subscribeToHyperfyEvents();
+    Promise< uploadCharacterAssets();
+      !this.world.assetsUrl);
+    void catch(const std::any& uploadError);
+    void catch(const std::any& error);
+    void startAppearancePolling();
+    void stopAppearancePolling();
+    bool isConnected();
+    std::optional<std::any> getEntityById(const std::string& entityId);
+    std::optional<std::string> getEntityName(const std::string& entityId);
+    std::future<void> handleDisconnect();
+    std::future<void> disconnect();
+    std::future<void> changeName(const std::string& newName);
+    std::future<void> stop();
+    void startChatSubscription();
+    void getEmoteManager();
+    void getBehaviorManager();
+    void getMessageManager();
+    void getVoiceManager();
+    void getPuppeteerManager();
+    void getBuildManager();
 
-  private world: any | null = null
-  private controls: AgentControls | null = null
-  private isConnectedState: boolean = false
-  private wsUrl: string | null = null
-  private _currentWorldId: UUID | null = null
-  private processedMsgIds: Set<string> = new Set()
-
-  private playerNamesMap: Map<string, string> = new Map()
-  private appearanceIntervalId: NodeJS.Timeout | null = null
-  private appearanceSet: boolean = false
-  private nameSet: boolean = false
-
-  private connectionTime: number | null = null
-  private behaviorManager: BehaviorManager;
-  private emoteManager: EmoteManager;
-  private messageManager: MessageManager;
-  private voiceManager: VoiceManager;
-  private puppeteerManager: PuppeteerManager;
-  private buildManager: BuildManager;
-
-  public get currentWorldId(): UUID | null {
-    return this._currentWorldId
-  }
-
-      // Temporarily comment out AgentLoader to test for updateTransform error
-
-      // HACK: Overwriting `chat.add` to prevent crashes caused by the original implementation.
-      // This ensures safe handling of chat messages and avoids unexpected errors from undefined fields.
-
-        // emit chat event
-        // maybe broadcast
-
-  /**
-   * Uploads the character's avatar model and associated emote animations,
-   * sets the avatar URL locally, updates emote hash mappings,
-   * and notifies the server of the new avatar.
-   * 
-   * This function handles all assets required for character expression and animation.
-   */
-
-      // Apply avatar locally
-
-      // Upload emotes
-
-      // Notify server
-
-    // Check if both are already set
-
-        // Stop polling if both tasks are complete
-
-        // Condition checks player/ID/network readiness for name, adds assetsUrl for avatar
-
-             // --- Set Name (if not already done) ---
-
-             // --- Set Avatar (if not already done AND assets URL ready) ---
-
-             // Update waiting log
-
-  /**
-   * Checks if the service is currently connected to a Hyperfy world.
-   */
-
-  /**
-   * Changes the agent's display name.
-   */
-
-          // 2. Update local state immediately
-          // Update the name map
-
-          // --- Use agentPlayer.modify for local update --- >
-
-    // Pre-populate processed IDs with existing messages
-
-      // Wait for player entity (ensures world/chat exist too)
-
-      // Step 1: Identify new messages and update processed set
-        // Check timestamp FIRST - only consider messages newer than connection time
-            // console.debug(`[Chat Sub] Ignoring historical/old message ID ${msg?.id} (ts: ${messageTimestamp})`);
-            // Ensure historical messages are marked processed if encountered *before* connectionTime was set (edge case)
-
-        // Check if we've already processed this message ID (secondary check for duplicates)
-
-      // Step 2: Process only the newly found messages
+private:
+    BehaviorManager behaviorManager_;
+    EmoteManager emoteManager_;
+    MessageManager messageManager_;
+    VoiceManager voiceManager_;
+    PuppeteerManager puppeteerManager_;
+    BuildManager buildManager_;
+};
 
 
 } // namespace elizaos

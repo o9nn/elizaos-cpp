@@ -1,12 +1,12 @@
-#include ".classes/user.hpp"
-#include "guild-member-object.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".classes/user.hpp"
+#include "guild-member-object.hpp"
 
 namespace elizaos {
 

@@ -1,11 +1,12 @@
-#include ".utils/log.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".utils/log.hpp"
 
 namespace elizaos {
 
@@ -19,7 +20,7 @@ namespace elizaos {
 /**
  * Calculate statistics from .traj files
  */
-std::future<std::string> quickStats(string = '.' directory);
+std::future<std::string> quickStats(string = '::' directory);
 
 /**
  * Recursively find all .traj files in a directory

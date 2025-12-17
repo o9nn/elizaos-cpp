@@ -1,12 +1,12 @@
-#include ".logger.hpp"
-#include "pipelineConfig.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".logger.hpp"
+#include "pipelineConfig.hpp"
 
 namespace elizaos {
 

@@ -1,10 +1,12 @@
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -17,7 +19,7 @@ namespace elizaos {
 
 // Configuration schema
 
-using ClankerConfig = z.infer<typeof ClankerConfigSchema>;
+using ClankerConfig = z::infer<typeof ClankerConfigSchema>;
 
 // Clanker SDK v4.0.0 Types
 struct ClankerTokenMetadata {
@@ -47,8 +49,8 @@ struct PoolConfig {
 
 struct StaticFeeConfig {
     "static" type;
-    number; // in bps clankerFee;
-    number; // in bps pairedFee;
+    double clankerFee;
+    double pairedFee;
 };
 
 struct DynamicFeeConfig {
@@ -60,8 +62,8 @@ using FeeConfig = std::variant<StaticFeeConfig, DynamicFeeConfig>;
 struct RewardRecipient {
     std::string recipient;
     std::string admin;
-    number; // basis points, sum must be 10000 (100%) bps;
-    "Both" | "Paired" | "Clanker" token;
+    double bps;
+    std::variant<"Both", "Paired", "Clanker"> token;
 };
 
 struct RewardsConfig {
@@ -69,9 +71,9 @@ struct RewardsConfig {
 };
 
 struct VaultConfig {
-    number; // up to 90% percentage;
-    number; // in seconds, min 7 days lockupDuration;
-    number; // in seconds, can be 0 vestingDuration;
+    double percentage;
+    double lockupDuration;
+    double vestingDuration;
 };
 
 struct PoolKey {
@@ -83,9 +85,9 @@ struct PoolKey {
 };
 
 struct DevBuyConfig {
-    number; // decimal amount of ETH to spend ethAmount;
-    std::optional<PoolKey; // required for non-WETH paired tokens> poolKey;
-    std::optional<number; // minimum amount out for WETH -> Paired swap> amountOutMin;
+    double ethAmount;
+    std::optional<PoolKey> poolKey;
+    std::optional<double> amountOutMin;
 };
 
 // Token deployment types for Clanker SDK v4.0.0
@@ -107,7 +109,7 @@ struct TokenDeployParams {
 struct DeployResult {
     std::string contractAddress;
     std::string transactionHash;
-    string; // String representation of wei (bigint converted to string for JSON serialization) deploymentCost;
+    std::string deploymentCost;
     std::optional<std::string> tokenId;
 };
 
@@ -149,7 +151,6 @@ struct RemoveLiquidityParams {
 struct LiquidityResult {
     bigint lpTokens;
     std::string transactionHash;
-    [bigint, bigint] actualAmounts;
     std::optional<std::string> lpTokenAddress;
 };
 
@@ -211,14 +212,6 @@ struct ErrorResponse {
 };
 
 enum ErrorCode {
-  VALIDATION_ERROR = "VALIDATION_ERROR",
-  NETWORK_ERROR = "NETWORK_ERROR",
-  PROTOCOL_ERROR = "PROTOCOL_ERROR",
-  SECURITY_ERROR = "SECURITY_ERROR",
-  INSUFFICIENT_BALANCE = "INSUFFICIENT_BALANCE",
-  SLIPPAGE_EXCEEDED = "SLIPPAGE_EXCEEDED",
-  TRANSACTION_FAILED = "TRANSACTION_FAILED",
-  UNAUTHORIZED = "UNAUTHORIZED",
 }
 
 // Action parameter schemas
@@ -226,7 +219,7 @@ enum ErrorCode {
 // Transaction monitoring
 struct TransactionStatus {
     std::string hash;
-    "pending" | "confirmed" | "failed" status;
+    std::variant<"pending", "confirmed", "failed"> status;
     double confirmations;
     std::optional<std::string> error;
 };

@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -18,13 +19,13 @@ struct DashboardStatProps {
     std::string value;
     std::optional<std::string> description;
     std::optional<std::string> tag;
-    React.ElementType icon;
-    std::optional<"positive" | "negative" | "neutral"> intent;
-    std::optional<"up" | "down"> direction;
+    ElementType icon;
+    std::optional<std::variant<"positive", "negative", "neutral">> intent;
+    std::optional<std::variant<"up", "down">> direction;
 };
 
 struct ArrowProps {
-    "up" | "down" direction;
+    std::variant<"up", "down"> direction;
     double index;
 };
 

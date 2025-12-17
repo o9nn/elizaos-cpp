@@ -1,11 +1,13 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -15,7 +17,7 @@ namespace elizaos {
 
 
 struct FirecrawlScrapeOptions {
-    std::optional<std::vector<'markdown' | 'html' | 'rawHtml' | 'screenshot' | 'links'>> formats;
+    std::optional<std::variant<Array<'markdown', 'html', 'rawHtml', 'screenshot', 'links'>>> formats;
     std::optional<bool> onlyMainContent;
     std::optional<std::vector<std::string>> includeTags;
     std::optional<std::vector<std::string>> excludeTags;
@@ -25,13 +27,11 @@ struct FirecrawlScrapeOptions {
 
 struct FirecrawlScrapeResponse {
     bool success;
-    std::optional<{> data;
     std::optional<std::string> markdown;
     std::optional<std::string> html;
     std::optional<std::string> rawHtml;
     std::optional<std::string> screenshot;
     std::optional<std::vector<std::string>> links;
-    std::optional<{> metadata;
     std::optional<std::string> title;
     std::optional<std::string> description;
     std::optional<std::string> language;
@@ -42,33 +42,13 @@ struct FirecrawlScrapeResponse {
     std::optional<std::string> error;
 };
 
-class FirecrawlService extends Service {
-    static serviceType = "FIRECRAWL" as const;
-    capabilityDescription = "Fetch and scrape webpage content using Firecrawl API";
-    
-    private apiKey: string;
-    private baseUrl: string = "https://api.firecrawl.dev/v1";
+class FirecrawlService {
+public:
+    std::future<FirecrawlService> start(IAgentRuntime runtime);
+    std::future<void> initialize(IAgentRuntime runtime);
+    std::future<FirecrawlScrapeResponse> scrape(const std::string& url, FirecrawlScrapeOptions = {} options);
+    bool isConfigured();
+    std::future<void> stop();
 
-    static async start(runtime: IAgentRuntime): Promise<FirecrawlService> {
-        const service = new FirecrawlService();
-        await service.initialize(runtime);
-        return service;
-    }
-
-    /**
-     * Scrape a URL using Firecrawl API
-     * @param url - The URL to scrape
-     * @param options - Optional scraping configuration
-     * @returns Promise with scraped content
-     */
-
-    /**
-     * Check if the service is properly configured
-     */
-
-    /**
-     * Stop the service (cleanup if needed)
-     */
-        // No cleanup needed for Firecrawl service
 
 } // namespace elizaos

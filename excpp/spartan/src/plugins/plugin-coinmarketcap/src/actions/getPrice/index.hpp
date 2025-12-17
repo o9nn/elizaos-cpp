@@ -1,16 +1,16 @@
-#include "..environment.hpp"
-#include "elizaos/core.hpp"
-#include "examples.hpp"
-#include "service.hpp"
-#include "template.hpp"
-#include "validation.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "..environment.hpp"
+#include "elizaos/core.hpp"
+#include "examples.hpp"
+#include "service.hpp"
+#include "template.hpp"
+#include "validation.hpp"
 
 namespace elizaos {
 
@@ -20,10 +20,8 @@ namespace elizaos {
 
 
     // eslint-disable-next-line
-        await validateCoinMarketCapConfig(runtime);
 
         // Initialize or update state
-            //currentState = await runtime.updateRecentMessageState(currentState);
 
             // Compose and generate price check content
 

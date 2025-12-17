@@ -1,11 +1,13 @@
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -15,119 +17,80 @@ namespace elizaos {
 
 
 // Base error class for all vision-related errors
-class VisionError extends Error {
-  public readonly code: string;
-  public readonly context?: Record<string, any>;
-  public readonly recoverable: boolean;
-
-  constructor(message: string, code: string, recoverable = false, context?: Record<string, any>) {
-    super(message);
-    this.name = 'VisionError';
-    this.code = code;
-    this.recoverable = recoverable;
-    this.context = context;
-
-    // Ensure proper prototype chain
-    Object.setPrototypeOf(this, VisionError.prototype);
-  }
+class VisionError {
+public:
+    VisionError(const std::string& message, const std::string& code, auto recoverable = false, std::optional<Record<string> context, auto any>);
+};
 
 // Specific error types
-class CameraError extends VisionError {
-  constructor(message: string, context?: Record<string, any>) {
-    super(message, 'CAMERA_ERROR', true, context);
-    this.name = 'CameraError';
-  }
+class CameraError {
+public:
+    CameraError(const std::string& message, std::optional<Record<string> context, auto any>);
+};
 
-class ScreenCaptureError extends VisionError {
-  constructor(message: string, context?: Record<string, any>) {
-    super(message, 'SCREEN_CAPTURE_ERROR', true, context);
-    this.name = 'ScreenCaptureError';
-  }
+class ScreenCaptureError {
+public:
+    ScreenCaptureError(const std::string& message, std::optional<Record<string> context, auto any>);
+};
 
-class ModelInitializationError extends VisionError {
-  constructor(message: string, modelName: string, context?: Record<string, any>) {
-    super(message, 'MODEL_INIT_ERROR', false, { ...context, modelName });
-    this.name = 'ModelInitializationError';
-  }
+class ModelInitializationError {
+public:
+    ModelInitializationError(const std::string& message, const std::string& modelName, std::optional<Record<string> context, auto any>);
+};
 
-class ProcessingError extends VisionError {
-  constructor(message: string, context?: Record<string, any>) {
-    super(message, 'PROCESSING_ERROR', true, context);
-    this.name = 'ProcessingError';
-  }
+class ProcessingError {
+public:
+    ProcessingError(const std::string& message, std::optional<Record<string> context, auto any>);
+};
 
-class ConfigurationError extends VisionError {
-  constructor(message: string, context?: Record<string, any>) {
-    super(message, 'CONFIG_ERROR', false, context);
-    this.name = 'ConfigurationError';
-  }
+class ConfigurationError {
+public:
+    ConfigurationError(const std::string& message, std::optional<Record<string> context, auto any>);
+};
 
-class APIError extends VisionError {
-  public readonly statusCode?: number;
-  public readonly endpoint?: string;
-
-  constructor(
-    message: string,
-    statusCode?: number,
-    endpoint?: string,
-    context?: Record<string, any>
-  ) {
-    super(message, 'API_ERROR', true, { ...context, statusCode, endpoint });
-    this.name = 'APIError';
-    this.statusCode = statusCode;
-    this.endpoint = endpoint;
-  }
+class APIError {
+public:
+    APIError(const std::string& message, std::optional<double> statusCode, std::optional<std::string> endpoint, std::optional<Record<string> context, auto any>);
+};
 
 // Error recovery strategies
 struct RecoveryStrategy {
 };
 
 class ErrorRecoveryManager {
-  private strategies: Map<string, RecoveryStrategy> = new Map();
-  private errorCounts: Map<string, number> = new Map();
-  private readonly maxRetries = 3;
-
-  constructor() {
-    this.registerDefaultStrategies();
-  }
-
-    // Camera recovery strategy
-        // Wait before retry
-
-    // API recovery strategy
-        // Don't retry on client errors (4xx)
-        // Exponential backoff
-
-    // Screen capture recovery
-        // Brief pause before retry
-
-    // Track error occurrences
-
-    // Check if we can recover
+public:
+    ErrorRecoveryManager();
+    void registerDefaultStrategies();
+    void registerStrategy(const std::string& errorCode, RecoveryStrategy strategy);
+    std::future<bool> handleError(VisionError error);
+    void resetErrorCount(const std::string& errorCode);
+    void resetAllCounts();
+};
 
 // Circuit breaker for external services
 class CircuitBreaker {
-  private failures = 0;
-  private lastFailureTime = 0;
-  private state: 'closed' | 'open' | 'half-open' = 'closed';
-
-  constructor(
-    private readonly threshold = 5,
-    private readonly timeout = 60000, // 1 minute
-    private readonly name: string
-  ) {}
+public:
+    private readonly name);
+    void catch(auto error);
+    void onSuccess();
+    void onFailure();
+    std::string getState();
+    void reset();
+};
 
 // Global error handler
 class VisionErrorHandler {
-  private static instance: VisionErrorHandler;
-  private recoveryManager: ErrorRecoveryManager;
-  private circuitBreakers: Map<string, CircuitBreaker> = new Map();
+public:
+    VisionErrorHandler();
+    VisionErrorHandler getInstance();
+    CircuitBreaker getCircuitBreaker(const std::string& name, auto threshold = 5, auto timeout = 60000);
+    std::future<bool> handle(const std::any& error);
+    void resetCircuitBreaker(const std::string& name);
+    void resetAllCircuitBreakers();
 
-  private constructor() {
-    this.recoveryManager = new ErrorRecoveryManager();
-  }
-
-    // Convert to VisionError if needed
+private:
+    ErrorRecoveryManager recoveryManager_;
+};
 
 
 } // namespace elizaos

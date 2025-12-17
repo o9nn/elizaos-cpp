@@ -1,14 +1,16 @@
-#include "..middleware.hpp"
-#include "..utils/media-transformer.hpp"
-#include "elizaos/core.hpp"
-#include "errors/SessionErrors.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "..middleware.hpp"
+#include "..utils/media-transformer.hpp"
+#include "elizaos/core.hpp"
+#include "errors/SessionErrors.hpp"
 
 namespace elizaos {
 
@@ -34,7 +36,7 @@ namespace elizaos {
  * @param max - Optional maximum value (inclusive)
  * @returns Parsed integer or fallback value
  */
-double safeParseInt(string | undefined value, double fallback, std::optional<double> min, std::optional<double> max);
+double safeParseInt(const std::string& value, double fallback, std::optional<double> min, std::optional<double> max);
 
 // Session configuration constants with safe parsing
 
@@ -119,7 +121,7 @@ void validateMetadata(unknown metadata);
 /**
  * Express async handler wrapper to catch errors
  */
-using AsyncRequestHandler = std::variant<(
+using AsyncRequestHandler = std::variant<std::function<std::future<void>(express::Request, express::Response, express::NextFunction)>, void>;
 
 /**
  * Creates a unified sessions router for simplified messaging

@@ -1,3 +1,10 @@
+#pragma once
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include "actions/clonePluginAction.hpp"
 #include "actions/installPluginFromRegistry.hpp"
 #include "actions/loadPlugin.hpp"
@@ -11,13 +18,6 @@
 #include "providers/registryPluginsProvider.hpp"
 #include "services/pluginConfigurationService.hpp"
 #include "services/pluginManagerService.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 

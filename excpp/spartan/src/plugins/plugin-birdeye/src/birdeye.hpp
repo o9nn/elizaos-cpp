@@ -1,13 +1,13 @@
-#include "constants.hpp"
-#include "elizaos/core.hpp"
-#include "utils.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "constants.hpp"
+#include "elizaos/core.hpp"
+#include "utils.hpp"
 
 namespace elizaos {
 
@@ -20,153 +20,67 @@ namespace elizaos {
 
 /*
 class BaseCachedProvider {
-    private cache: NodeCache;
+public:
+    BaseCachedProvider(ICacheManager private cacheManager, auto private cacheKey, std::optional<double> ttl);
+    void if(auto val);
+    void if(auto fsVal);
 
-    constructor(
-        private cacheManager: ICacheManager,
-        private cacheKey,
-        ttl?: number
-    ) {
-        this.runtime = runtime
-        this.cache = new NodeCache({ stdTTL: ttl || 300 });
-    }
+private:
+    NodeCache cache_;
+};
 
-        // get memory cache first
-
-            // set to memory cache
-
-        // Set in-memory cache
-
-        // Write to file-based cache
 */
 
 // extends BaseCachedProvider
 // really more like a service
 class BirdeyeProvider {
-    private symbolMap: Record<string, string>;
-    private maxRetries: number;
+public:
+    BirdeyeProvider(auto runtime, ICacheManager //cacheManager, std::optional<Record<string> symbolMap, auto string>, std::optional<double> maxRetries);
+    void while(auto attempts < this.maxRetries);
+    void fetchDefiSupportedNetworks();
+    void fetchDefiPrice(DefiPriceParams params, std::optional<{ headers: Record<string> options, auto string> } = {});
+    void fetchDefiPriceMultiple(DefiMultiPriceParams params, std::optional<{ headers: Record<string> options, auto string> } = {});
+    void fetchDefiPriceMultiple_POST(DefiMultiPriceParamsPOST params, std::optional<{ headers: Record<string> options, auto string> } = {});
+    void fetchDefiPriceHistorical(DefiHistoryPriceParams params, std::optional<{ headers: Record<string> options, auto string> } = {});
+    void fetchDefiPriceHistoricalByUnixTime(HistoricalPriceUnixParams params, std::optional<{ headers: Record<string> options, auto string> } = {});
+    void fetchDefiTradesToken(DefiTradesTokenParams params, std::optional<{ headers: Record<string> options, auto string> } = {});
+    void fetchDefiTradesPair(DefiTradesTokenParams params, std::optional<{ headers: Record<string> options, auto string> } = {});
+    void fetchDefiTradesTokenSeekByTime(DefiTradesTokenParams params, std::optional<{ headers: Record<string> options, auto string> } = {});
+    void fetchDefiTradesPairSeekByTime(DefiTradesTokenParams params, std::optional<{ headers: Record<string> options, auto string> } = {});
+    void fetchDefiOHLCV(OHLCVParams params, std::optional<{ headers: Record<string> options, auto string> } = {});
+    void fetchDefiOHLCVPair(OHLCVPairParams params, std::optional<{ headers: Record<string> options, auto string> } = {});
+    void fetchDefiOHLCVBaseQuote(BaseQuoteParams params, std::optional<{ headers: Record<string> options, auto string> } = {});
+    void fetchDefiPriceVolume(PriceVolumeParams params, std::optional<{ headers: Record<string> options, auto string> } = {});
+    void fetchDefiPriceVolumeMulti_POST(MultiPriceVolumeParams params, std::optional<{ headers: Record<string> options, auto string> } = {});
+    void fetchTokenList(TokenListParams params, std::optional<{ headers: Record<string> options, auto string> } = {});
+    void fetchTokenSecurityByAddress(TokenSecurityParams params, std::optional<{ headers: Record<string> options, auto string> } = {});
+    void fetchTokenOverview(TokenOverviewParams params, std::optional<{ headers: Record<string> options, auto string> } = {});
+    void fetchTokenCreationInfo(TokenCreationInfoParams params, std::optional<{ headers: Record<string> options, auto string> } = {});
+    void fetchTokenTrending(std::optional<TokenTrendingParams> params, std::optional<{ headers: Record<string> options, auto string> } = {});
+    void fetchTokenListV2_POST(FetchParams<Record<string params, auto never>>);
+    void fetchTokenNewListing(std::optional<NewListingParams> params, std::optional<{ headers: Record<string> options, auto string> } = {});
+    void fetchTokenTopTraders(TopTradersParams params, std::optional<{ headers: Record<string> options, auto string> } = {});
+    void fetchTokenAllMarketsList(AllMarketsParams params, std::optional<{ headers: Record<string> options, auto string> } = {});
+    void fetchTokenMetadataSingle(TokenMetadataSingleParams params, std::optional<{ headers: Record<string> options, auto string> } = {});
+    void fetchTokenMetadataMulti(TokenMetadataMultiParams params, std::optional<{ headers: Record<string> options, auto string> } = {});
+    void fetchTokenMarketData(TokenMarketDataParams params, std::optional<{ headers: Record<string> options, auto string> } = {});
+    void fetchTokenTradeDataSingle(TokenTradeDataSingleParams params, std::optional<{ headers: Record<string> options, auto string> } = {});
+    void fetchTokenTradeDataMultiple(TokenTradeDataMultiParams params, std::optional<{ headers: Record<string> options, auto string> } = {});
+    void fetchTokenHolders(TokenHoldersParams params, std::optional<{ headers: Record<string> options, auto string> } = {});
+    void fetchTokenMintBurn(MintBurnParams params, std::optional<{ headers: Record<string> options, auto string> } = {});
+    void fetchWalletSupportedNetworks(std::optional<{ headers: Record<string> options, auto string> } = {});
+    void fetchWalletPortfolio(WalletPortfolioParams params, std::optional<{ headers: Record<string> options, auto string> } = {});
+    void fetchWalletPortfolioMultichain(WalletPortfolioMultichainParams params, std::optional<{ headers: Record<string> options, auto string> } = {});
+    void fetchWalletTokenBalance(WalletTokenBalanceParams params, std::optional<{ headers: Record<string> options, auto string> } = {});
+    void fetchWalletTransactionHistory(WalletTransactionHistoryParams params, std::optional<{ headers: Record<string> options, auto string> } = {});
+    void fetchWalletTransactionHistoryMultichain(WalletTransactionHistoryMultichainParams params, std::optional<{ headers: Record<string> options, auto string> } = {});
+    void fetchWalletTransactionSimulate_POST(WalletSimulationParams params, std::optional<{ headers: Record<string> options, auto string> } = {});
+    void fetchTraderGainersLosers(GainersLosersParams params, std::optional<{ headers: Record<string> options, auto string> } = {});
+    void fetchTraderTransactionsSeek(TraderTransactionsSeekParams params, std::optional<{ headers: Record<string> options, auto string> } = {});
+    void fetchPairOverviewSingle(PairOverviewSingleParams params, std::optional<{ headers: Record<string> options, auto string> } = {});
+    void fetchMultiPairOverview(PairOverviewMultiParams params, std::optional<{ headers: Record<string> options, auto string> } = {});
+    void fetchPairOverviewMultiple(PairOverviewMultiParams params, std::optional<{ headers: Record<string> options, auto string> } = {});
+    void fetchSearchTokenMarketData(TokenMarketSearchParams params, std::optional<{ headers: Record<string> options, auto string> } = {});
 
-    constructor(
-        runtime,
-        //cacheManager: ICacheManager,
-        symbolMap?: Record<string, string>,
-        maxRetries?: number
-    ) {
-        // super(cacheManager, "birdeye/data")
-        this.runtime = runtime
-        this.symbolMap = symbolMap || DEFAULT_SUPPORTED_SYMBOLS;
-        this.maxRetries = maxRetries || DEFAULT_MAX_RETRIES;
-    }
-
-    /*
-     * COMMON FETCH FUNCTIONS
-     */
-
-        // allow the user to override the chain
-
-                // If the response already has data and success fields, return it
-                // Otherwise wrap the response in the expected format
-                    // failed after all
-                await waitFor(RETRY_DELAY_MS);
-
-    /*
-     * DEFI FETCH FUNCTIONS
-     */
-
-    // Get a list of all supported networks.
-
-    // Get price update of a token.
-
-    // Get price updates of multiple tokens in a single API call. Maximum 100 tokens
-
-    // Get price updates of multiple tokens in a single API call. Maximum 100 tokens
-
-    // Get historical price line chart of a token.
-
-    // Get historical price by unix timestamp
-
-    // Get list of trades of a certain token.
-
-    // Get list of trades of a certain pair or market.
-
-    // Get list of trades of a token with time bound option.
-
-    // Get list of trades of a certain pair or market with time bound option.
-
-    // Get OHLCV price of a token.
-
-    // Get OHLCV price of a pair.
-
-    // Get OHLCV price of a base-quote pair.
-
-    // Get price and volume of a token.
-
-    // Get price and volume updates of maximum 50 tokens
-
-    /*
-     * TOKEN FETCH FUNCTIONS
-     */
-
-    // Get token list of any supported chains.
-
-    // Get token security of any supported chains.
-
-    // Get overview of a token.
-
-    // Get creation info of token
-
-    // Retrieve a dynamic and up-to-date list of trending tokens based on specified sorting criteria.
-
-    // This endpoint facilitates the retrieval of a list of tokens on a specified blockchain network. This upgraded version is exclusive to business and enterprise packages. By simply including the header for the requested blockchain without any query parameters, business and enterprise users can get the full list of tokens on the specified blockchain in the URL returned in the response. This removes the need for the limit response of the previous version and reduces the workload of making multiple calls.
-
-    // Get newly listed tokens of any supported chains.
-
-    // Get top traders of given token.
-
-    // The API provides detailed information about the markets for a specific cryptocurrency token on a specified blockchain. Users can retrieve data for one or multiple markets related to a single token. This endpoint requires the specification of a token address and the blockchain to filter results. Additionally, it supports optional query parameters such as offset, limit, and required sorting by liquidity or sort type (ascending or descending) to refine the output.
-
-    // Get metadata of single token
-
-    // Get metadata of multiple tokens
-
-    // Get market data of single token
-
-    // Get trade data of single token
-
-    // Get trade data of multiple tokens
-
-    // Get top holder list of the given token
-
-    // Get mint/burn transaction list of the given token. Only support solana currently
-
-    /*
-     * WALLET FETCH FUNCTIONS
-     */
-
-    /**
-     * @deprecated This endpoint will be decommissioned on Feb 1st, 2025.
-     */
-
-    /**
-     * @deprecated This endpoint will be decommissioned on Feb 1st, 2025.
-     */
-
-    /*
-     * TRADER FETCH FUNCTIONS
-     */
-
-    // The API provides detailed information top gainers/losers
-
-    // Get list of trades of a trader with time bound option.
-
-    /*
-     * PAIR FETCH FUNCTIONS
-     */
-
-    // Get overview of multiple pairs
-
-    /*
-     * SEARCH FETCH FUNCTIONS
-     */
 
 } // namespace elizaos

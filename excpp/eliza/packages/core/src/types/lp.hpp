@@ -1,11 +1,11 @@
-#include "service.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "service.hpp"
 
 namespace elizaos {
 
@@ -36,11 +36,6 @@ using TransactionResult = {
  */
 
   /**
-   * Returns the name of the DEX this service interacts with.
-   * @returns The name of the DEX (e.g., "Orca", "Raydium").
-   */
-
-  /**
    * Fetches a list of available liquidity pools from the DEX.
    * @param tokenAMint - Optional: Filter pools by the mint address of the first token.
    * @param tokenBMint - Optional: Filter pools by the mint address of the second token.
@@ -52,24 +47,7 @@ using TransactionResult = {
    * @param params - The parameters for adding liquidity.
    * @returns A promise resolving to a transaction result, including the LP tokens received.
    */
+  abstract addLiquidity(params: getDexName();
 
-  /**
-   * Removes liquidity from a specified pool.
-   * @param params - The parameters for removing liquidity.
-   * @returns A promise resolving to a transaction result, including the tokens received.
-   */
-
-  /**
-   * Fetches the details of a specific LP position for a user.
-   * @param userAccountPublicKey - The user's wallet public key.
-   * @param poolOrPositionIdentifier - The identifier for the pool or a specific position (e.g., position NFT mint).
-   * @returns A promise resolving to the position details or null if not found.
-   */
-
-  /**
-   * Fetches the latest market data (e.g., APY, TVL) for a list of pools.
-   * @param poolIds - An array of pool IDs to fetch data for.
-   * @returns A promise resolving to a map of pool IDs to their partial market data.
-   */
 
 } // namespace elizaos

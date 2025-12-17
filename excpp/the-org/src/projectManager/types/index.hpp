@@ -1,11 +1,12 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -37,10 +38,9 @@ using PlatformType = std::variant<'DISCORD', 'TELEGRAM', 'SLACK', 'EMAIL'>;
  */
 struct Availability {
     std::vector<WeekDay> workDays;
-    { workHours;
-    string; // HH:MM format start;
-    string; // HH:MM format end;
-    string; // e.g., "America/Los_Angeles" timeZone;
+    std::string start;
+    std::string end;
+    std::string timeZone;
     double hoursPerWeek;
     EmploymentStatus employmentStatus;
 };
@@ -63,9 +63,9 @@ struct TeamMember {
     Availability availability;
     std::vector<PlatformContact> contacts;
     std::optional<std::vector<std::string>> skills;
-    std::optional<UUID[]; // Project IDs the team member is assigned to> projects;
-    string; // ISO date format dateAdded;
-    std::optional<string; // ISO date format> lastCheckIn;
+    std::optional<std::vector<UUID>> projects;
+    std::string dateAdded;
+    std::optional<std::string> lastCheckIn;
 };
 
 /**
@@ -76,13 +76,13 @@ struct Task {
     UUID projectId;
     std::string title;
     std::string description;
-    std::optional<UUID; // Team member ID> assignedTo;
+    std::optional<UUID> assignedTo;
     TaskStatus status;
     TaskPriority priority;
-    std::optional<string; // ISO date format> dueDate;
-    string; // ISO date format createdAt;
-    string; // ISO date format updatedAt;
-    std::optional<UUID[]; // IDs of tasks that this task depends on> dependencies;
+    std::optional<std::string> dueDate;
+    std::string createdAt;
+    std::string updatedAt;
+    std::optional<std::vector<UUID>> dependencies;
     std::optional<double> estimatedHours;
 };
 
@@ -94,8 +94,8 @@ struct Milestone {
     UUID projectId;
     std::string title;
     std::string description;
-    string; // ISO date format dueDate;
-    UUID[]; // Task IDs associated with this milestone tasks;
+    std::string dueDate;
+    std::vector<UUID> tasks;
     bool completed;
 };
 
@@ -106,14 +106,14 @@ struct Project {
     UUID id;
     std::string name;
     std::string description;
-    UUID[]; // Team member IDs teamMembers;
-    string; // ISO date format startDate;
-    std::optional<string; // ISO date format> targetEndDate;
-    std::optional<string; // ISO date format> actualEndDate;
+    std::vector<UUID> teamMembers;
+    std::string startDate;
+    std::optional<std::string> targetEndDate;
+    std::optional<std::string> actualEndDate;
     std::optional<std::string> client;
-    'PLANNING' | 'ACTIVE' | 'ON_HOLD' | 'COMPLETED' | 'CANCELLED' status;
-    string; // ISO date format createdAt;
-    string; // ISO date format updatedAt;
+    std::variant<'PLANNING', 'ACTIVE', 'ON_HOLD', 'COMPLETED', 'CANCELLED'> status;
+    std::string createdAt;
+    std::string updatedAt;
 };
 
 /**
@@ -123,11 +123,11 @@ struct DailyUpdate {
     UUID id;
     UUID teamMemberId;
     UUID projectId;
-    string; // ISO date format date;
-    string; // Paragraph summary of work done summary;
-    std::optional<UUID[]; // Task IDs completed> tasksCompleted;
-    std::optional<UUID[]; // Task IDs in progress> tasksInProgress;
-    std::optional<string[]; // Description of any blockers> blockers;
+    std::string date;
+    std::string summary;
+    std::optional<std::vector<UUID>> tasksCompleted;
+    std::optional<std::vector<UUID>> tasksInProgress;
+    std::optional<std::vector<std::string>> blockers;
     std::optional<double> hoursWorked;
 };
 
@@ -148,14 +148,13 @@ struct TeamMemberSummary {
  */
 struct ProjectProgress {
     UUID projectId;
-    string; // ISO date format date;
+    std::string date;
     double tasksCompleted;
     double tasksInProgress;
     double tasksBlocked;
     double tasksNotStarted;
     double totalTasks;
     double completionPercentage;
-    { teamMemberStats;
     UUID teamMemberId;
     double tasksCompleted;
     double tasksInProgress;
@@ -169,18 +168,16 @@ struct Report {
     UUID id;
     ReportType type;
     UUID projectId;
-    string; // ISO date format generatedAt;
+    std::string generatedAt;
     std::string summary;
-    { progressMetrics;
     double completionPercentage;
     double tasksCompletedSinceLastReport;
-    'ON_TRACK' | 'AT_RISK' | 'DELAYED' onTrackStatus;
+    std::variant<'ON_TRACK', 'AT_RISK', 'DELAYED'> onTrackStatus;
     std::vector<TeamMemberSummary> teamMemberSummaries;
-    std::optional<{> milestoneUpdates;
     UUID milestoneId;
     std::string title;
-    'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED' status;
-    string; // ISO date format dueDate;
+    std::variant<'NOT_STARTED', 'IN_PROGRESS', 'COMPLETED'> status;
+    std::string dueDate;
     double completionPercentage;
 };
 
@@ -190,10 +187,10 @@ struct Report {
 struct CheckInStatus {
     UUID teamMemberId;
     UUID projectId;
-    std::optional<string; // ISO date format> lastCheckInDate;
-    string; // ISO date format nextCheckInDue;
+    std::optional<std::string> lastCheckInDate;
+    std::string nextCheckInDue;
     double remindersSent;
-    'PENDING' | 'COMPLETED' | 'MISSED' status;
+    std::variant<'PENDING', 'COMPLETED', 'MISSED'> status;
 };
 
 

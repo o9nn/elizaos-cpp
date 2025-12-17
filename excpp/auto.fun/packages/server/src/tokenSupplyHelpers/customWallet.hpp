@@ -1,10 +1,11 @@
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -15,16 +16,19 @@ namespace elizaos {
 
 struct CustomWallet {
     PublicKey publicKey;
-    (tx: any) => Promise<any> signTransaction;
-    (txs: any[]) => Promise<any[]> signAllTransactions;
     Keypair payer;
 };
 
-class Wallet implements CustomWallet {
-  public payer: Keypair;
-  constructor(private keypair: Keypair) {
-    this.payer = keypair;
-  }
+class Wallet {
+public:
+    Wallet(Keypair private keypair);
+    void publicKey() const;
+    void signTransaction(const std::any& tx);
+    void signAllTransactions(const std::vector<std::any>& txs);
+
+private:
+    Keypair payer_;
+};
 
 
 } // namespace elizaos

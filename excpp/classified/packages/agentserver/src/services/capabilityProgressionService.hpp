@@ -1,11 +1,13 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -24,7 +26,7 @@ struct ProgressionLevel {
 };
 
 struct UnlockCondition {
-    'action_performed' | 'form_submitted' | 'capability_used' | 'agent_named' type;
+    std::variant<'action_performed', 'form_submitted', 'capability_used', 'agent_named'> type;
     std::optional<std::string> capability;
     std::optional<std::string> action;
     std::string description;
@@ -35,52 +37,39 @@ struct ProgressionState {
     std::vector<std::string> unlockedLevels;
     std::vector<std::string> completedActions;
     bool agentNamed;
-    Date | null lastUnlockTime;
+    std::optional<Date> lastUnlockTime;
 };
 
-class CapabilityProgressionService extends Service {
-  static serviceType = ServiceType.OTHER;
-  static serviceName = 'CAPABILITY_PROGRESSION';
-  capabilityDescription = 'Manages progressive capability unlocking and level progression';
+class CapabilityProgressionService {
+public:
+    CapabilityProgressionService(std::optional<IAgentRuntime> runtime);
+    std::future<CapabilityProgressionService> start(IAgentRuntime runtime);
+    std::vector<ProgressionLevel> initializeProgressionLevels();
+    std::future<void> unlockAllLevels();
+    std::future<void> checkProgressionConditions();
+    std::future<bool> areConditionsMet(const std::vector<UnlockCondition>& conditions);
+    std::future<bool> isConditionMet(UnlockCondition condition);
+    std::future<void> unlockLevel(ProgressionLevel level);
+    std::future<void> registerLevelCapabilities(ProgressionLevel level);
+    std::future<void> injectUnlockMessage(ProgressionLevel level);
+    std::future<void> recordAgentNamed(const std::string& name);
+    std::future<void> recordCapabilityUsed(const std::string& capability);
+    std::future<void> recordFormSubmitted(std::optional<Record<string> formData, auto unknown>);
+    std::future<void> recordActionPerformed(const std::string& actionName);
+    double getCurrentLevel();
+    std::vector<std::string> getUnlockedCapabilities();
+    ProgressionState getProgressionState();
+    std::vector<ProgressionLevel> getAvailableLevels();
+    bool isCapabilityUnlocked(const std::string& capability);
+    bool isUnlockedModeEnabled();
+    std::future<void> setProgressionMode(const std::variant<'progression', 'unlocked'>& mode);
+    void resetProgression();
+    std::future<void> stop();
 
-  static async start(runtime: IAgentRuntime): Promise<CapabilityProgressionService> {
-    const service = new CapabilityProgressionService(runtime);
-    return service;
-  }
+private:
+    ProgressionState progressionState_;
+    std::vector<ProgressionLevel> levels_;
+};
 
-    // Check if unlocked mode is enabled via settings
-
-    // If unlocked mode, unlock all levels immediately
-
-    // Register all capabilities immediately
-
-    // Skip progression checks in unlocked mode
-
-    // Register new plugins for this level
-
-    // Inject system message about the unlock
-
-    // Use the ProgressivePluginService to register capabilities
-
-      // Get the server instance from the global scope
-
-        // Create a system message and inject it into the message flow
-
-        // Broadcast the message through the WebSocket system
-
-  // Public methods for tracking actions
-
-  // Getters for current state
-
-      // Switching to unlocked mode - unlock everything
-      // Switching to progression mode - reset to initial state
-
-    // Update runtime setting
-
-    // Reset state
-
-    // Reset level states
-
-    // No cleanup needed for this service
 
 } // namespace elizaos

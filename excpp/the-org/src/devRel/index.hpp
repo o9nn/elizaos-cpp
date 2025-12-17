@@ -1,12 +1,12 @@
-#include ".init.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".init.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -63,7 +63,6 @@ std::vector<std::string> loadSourceCode(const std::string& packagesDir);
  */
 
     // Initialize the character
-    await initCharacter({ runtime, config });
 
 
 } // namespace elizaos

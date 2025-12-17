@@ -1,12 +1,13 @@
-#include ".commands/agent.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".commands/agent.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -16,7 +17,6 @@ namespace elizaos {
 
 
 /**
- * Handles the error by logging it and exiting the process.
  * If the error is a string, it logs the error message and exits.
  * If the error is an instance of Error, it logs the error message and exits.
  * If the error is not a string or an instance of Error,

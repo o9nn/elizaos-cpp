@@ -1,11 +1,12 @@
-#include ".types.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".types.hpp"
 
 namespace elizaos {
 
@@ -18,6 +19,6 @@ ValidationResult validateCharacterDiff(CharacterDiff diff);
 
 bool validateDataType(const std::any& value, const std::string& expectedType);
 
-bool validateModificationRate(const std::vector<{ timestamp: Date }>& recentModifications, number = 5 maxPerHour, number = 20 maxPerDay);
+bool validateModificationRate(const std::vector<std::any>& recentModifications, number = 5 maxPerHour, number = 20 maxPerDay);
 
 } // namespace elizaos

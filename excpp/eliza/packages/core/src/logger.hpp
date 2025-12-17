@@ -1,11 +1,12 @@
-#include "sentry/instrument.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "sentry/instrument.hpp"
 
 namespace elizaos {
 
@@ -15,7 +16,7 @@ namespace elizaos {
 
 
 // Local utility function to avoid circular dependency
-bool parseBooleanFromText(string | undefined | null value);
+bool parseBooleanFromText(const std::optional<std::string>& value);
 
 /**
  * Interface representing a log entry.
@@ -38,56 +39,16 @@ struct LogEntry {
  * Class representing an in-memory destination stream for logging.
  * Implements DestinationStream interface.
  */
-class InMemoryDestination implements DestinationStream {
-  private logs: LogEntry[] = [];
-  private maxLogs = 1000; // Keep last 1000 logs
-  private stream: DestinationStream | null;
+class InMemoryDestination {
+public:
+    InMemoryDestination(const std::optional<DestinationStream>& stream);
+    void write(const std::variant<std::string, LogEntry>& data);
+    std::vector<LogEntry> recentLogs();
+    void clear();
 
-  /**
-   * Constructor for creating a new instance of the class.
-   * @param {DestinationStream|null} stream - The stream to assign to the instance. Can be null.
-   */
-  constructor(stream: DestinationStream | null) {
-    this.stream = stream;
-  }
-
-  /**
-   * Writes a log entry to the memory buffer and forwards it to the pretty print stream if available.
-   *
-   * @param {string | LogEntry} data - The data to be written, which can be either a string or a LogEntry object.
-   * @returns {void}
-   */
-    // Parse the log entry if it's a string
-
-        // If it's not valid JSON, just pass it through
-
-    // Add timestamp if not present
-
-    // Filter out service registration logs unless in debug mode
-
-      // When diagnostic mode is on, add a marker to every log to see what's being processed
-
-      // Check if this is a service or agent log that we want to filter
-        // Filter only service/agent registration logs, not all agent logs
-          // This is a service registration/agent log, skip it
-
-    // Add to memory buffer
-
-    // Maintain buffer size
-
-    // Forward to pretty print stream if available
-
-  /**
-   * Retrieves the recent logs from the system.
-   *
-   * @returns {LogEntry[]} An array of LogEntry objects representing the recent logs.
-   */
-
-  /**
-   * Clears all logs from memory.
-   *
-   * @returns {void}
-   */
+private:
+    std::optional<DestinationStream> stream_;
+};
 
 // Set default log level to info to allow regular logs, but still filter service logs
 
@@ -96,14 +57,11 @@ class InMemoryDestination implements DestinationStream {
     // Add a custom prettifier for error messages
       // Replace "ERROR (TypeError):" pattern with just "ERROR:"
 
-  // dynamically import pretty to avoid importing it in the browser
-
 // Create options with appropriate level
 
             return formatError(arg);
 
 // allow runtime logger to inherent options set here
-    //opts.level = process.env.LOG_LEVEL || 'info'
 
 // Create basic logger initially
 // Add type for logger with clear method

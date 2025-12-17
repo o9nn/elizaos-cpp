@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -36,7 +36,6 @@ std::string calculateHash(unknown data);
 struct RetryOptions {
     std::optional<double> retries;
     std::optional<double> delay;
-    std::optional<(error: Error, attempt: number) => void> onRetry;
 };
 
 /**

@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -14,9 +14,8 @@ namespace elizaos {
 
 
 struct ProfileRepoNoticeProps {
-    string | undefined; // User login name for display userLogin;
-    boolean; // True if the page is initially loading data pageLoading;
-    () => void; // Function to call when the create button is clicked onCreateRepo;
+    std::string userLogin;
+    bool pageLoading;
 };
 
 

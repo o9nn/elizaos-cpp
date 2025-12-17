@@ -1,11 +1,12 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -18,12 +19,12 @@ namespace elizaos {
  * Interface for environment variable configuration
  */
 struct EnvVarConfig {
-    string; // Display name (e.g., "OpenAI API Key") name;
-    string; // Environment variable name (e.g., "OPENAI_API_KEY") key;
-    boolean; // Whether the variable is required required;
-    string; // Description of what it's for and how to get it description;
-    string; // URL where the user can get the API key url;
-    boolean; // Whether to mask the input (for sensitive data) secret;
+    std::string name;
+    std::string key;
+    bool required;
+    std::string description;
+    std::string url;
+    bool secret;
 };
 
 // Configuration for known environment variables by plugin name
@@ -53,19 +54,16 @@ std::future<void> writeEnvFile(Record<string envVars, auto string>);
 /**
  * Prompts the user to enter a value for a specific environment variable based on the provided configuration.
  *
- * If the variable is already set in {@link process.env} and non-empty, returns its value without prompting.
  * Displays the variable's description and an optional URL for guidance. Uses masked input for secrets.
  * For optional variables, allows skipping by pressing Enter. For the `PGLITE_DATA_DIR` variable, expands a leading tilde to the project directory.
  *
  * @param config - The configuration describing the environment variable to prompt for.
  * @returns The entered or existing value, or an empty string if an optional variable is skipped.
  */
-std::future<string | null> promptForEnvVar(EnvVarConfig config);
 
 /**
  * Prompts the user to enter missing or invalid environment variables required for a specified plugin.
  *
- * Displays integration messages for certain plugins, reads existing environment variables, and interactively requests input for any variables that are missing or set to placeholder values. Updates both the environment file and `process.env` with new values.
  *
  * @param pluginName - The name of the plugin to configure (e.g., 'openai', 'discord').
  * @returns A record containing the environment variables that were set during the prompt.

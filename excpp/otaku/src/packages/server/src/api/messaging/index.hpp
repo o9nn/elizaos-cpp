@@ -1,15 +1,15 @@
-#include "channels.hpp"
-#include "core.hpp"
-#include "jobs.hpp"
-#include "servers.hpp"
-#include "sessions.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "channels.hpp"
+#include "core.hpp"
+#include "jobs.hpp"
+#include "servers.hpp"
+#include "sessions.hpp"
 
 namespace elizaos {
 

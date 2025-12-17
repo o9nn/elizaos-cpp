@@ -1,13 +1,13 @@
-#include "..app/hooks.hpp"
-#include "..app/store.hpp"
-#include "relationship-slice.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "..app/hooks.hpp"
+#include "..app/store.hpp"
+#include "relationship-slice.hpp"
 
 namespace elizaos {
 

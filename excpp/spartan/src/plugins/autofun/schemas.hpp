@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -89,44 +89,44 @@ namespace elizaos {
 /**
  * Represents a token that corresponds to the inferred type of `TokenSchema`.
  */
-using Token = z.infer<typeof TokenSchema>;
+using Token = z::infer<typeof TokenSchema>;
 /**
  * Type definition for a TokenArray, inferred from TokenArraySchema.
  */
-using TokenArray = z.infer<typeof TokenArraySchema>;
+using TokenArray = z::infer<typeof TokenArraySchema>;
 /**
  * Type definition for a Token Request, based on the TokenRequestSchema.
  */
-using TokenRequest = z.infer<typeof TokenRequestSchema>;
+using TokenRequest = z::infer<typeof TokenRequestSchema>;
 /**
  * Represents a Tweet object derived from the TweetSchema type.
  */
 
-using Tweet = z.infer<typeof TweetSchema>;
+using Tweet = z::infer<typeof TweetSchema>;
 /**
  * Type definition for an array of tweets, inferred from the TweetArraySchema
  */
-using TweetArray = z.infer<typeof TweetArraySchema>;
+using TweetArray = z::infer<typeof TweetArraySchema>;
 /**
  * Represents the type of data that is inferred from the SentimentSchema.
  */
-using Sentiment = z.infer<typeof SentimentSchema>;
+using Sentiment = z::infer<typeof SentimentSchema>;
 /**
  * Type definition for an array of sentiments inferred from SentimentArraySchema.
  */
-using SentimentArray = z.infer<typeof SentimentArraySchema>;
+using SentimentArray = z::infer<typeof SentimentArraySchema>;
 /**
  * Type definition for a Wallet object which is inferred from WalletSchema.
  */
-using Wallet = z.infer<typeof WalletSchema>;
+using Wallet = z::infer<typeof WalletSchema>;
 /**
  * Represents the inferred type of the `BuySignalSchema`.
  */
-using BuySignal = z.infer<typeof BuySignalSchema>;
+using BuySignal = z::infer<typeof BuySignalSchema>;
 /**
  * Type definition for the inferred type of StatisticsSchema
  */
-using Statistics = z.infer<typeof StatisticsSchema>;
+using Statistics = z::infer<typeof StatisticsSchema>;
 
 
 } // namespace elizaos

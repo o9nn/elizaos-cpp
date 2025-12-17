@@ -1,10 +1,11 @@
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -15,9 +16,7 @@ namespace elizaos {
 
 // Extend the built-in session types
   struct Session {
-    { user;
     std::string id;
-    { connections;
     std::string name;
     std::string username;
     std::string image;

@@ -1,13 +1,13 @@
-#include "...constants/chains.hpp"
-#include "...contexts/ModalContext.hpp"
-#include "..ui/button.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "...constants/chains.hpp"
+#include "...contexts/ModalContext.hpp"
+#include "..ui/button.hpp"
 
 namespace elizaos {
 

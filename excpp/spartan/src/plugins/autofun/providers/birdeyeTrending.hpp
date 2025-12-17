@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -35,9 +35,7 @@ namespace elizaos {
  */
   //position: -1,
     // Get all sentiments
-    //console.log('intel:provider - birdeye data', tokens)
 
-    //console.log('intel:provider - birdeye token data', tokens)
     /*
 */
 
@@ -48,8 +46,6 @@ namespace elizaos {
       // optional fields
     /*
     */
-
-    //console.log('intel:provider - cmc token text', latestTxt)
 
     // Combine all text sections
 

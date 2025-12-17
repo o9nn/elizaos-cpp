@@ -1,13 +1,14 @@
-#include "bullet.hpp"
-#include "button.hpp"
-#include "card.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "bullet.hpp"
+#include "button.hpp"
+#include "card.hpp"
 
 namespace elizaos {
 
@@ -18,9 +19,8 @@ namespace elizaos {
 
 struct LoadingPanelProps {
     std::string title;
-    std::vector<string | string> messages;
-    std::optional<'loading' | 'success' | 'error'> type;
-    std::optional<() => void> onClose;
+    std::variant<std::string, std::vector<std::string>> messages;
+    std::optional<std::variant<'loading', 'success', 'error'>> type;
 };
 
 void LoadingPanel(auto { title, auto messages, auto type = 'loading', LoadingPanelProps onClose });

@@ -1,11 +1,12 @@
-#include ".core/payment-middleware.js.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".core/payment-middleware.js.hpp"
 
 namespace elizaos {
 
@@ -33,69 +34,30 @@ struct SSEServerOptions {
 struct Session {
     std::string id;
     ServerResponse response;
-    std::unordered_map<std::string, std::string> headers;
     double lastActivity;
 };
 
 class SSEServerTransport {
-  private httpServer: HTTPServer;
-  private sessions = new Map<string, Session>();
-  private options: Required<SSEServerOptions>;
-  private mcpServer?: Server;
-  private messageHandlers = new Map<string, (response: JSONRPCResponse) => void>();
-  private logger: Console;
+public:
+    SSEServerTransport(SSEServerOptions options, Console = console logger);
+    std::future<void> start();
+    std::future<void> close();
+    void setMCPServer(Server server);
+    void handleRequest(IncomingMessage req, ServerResponse res);
+    void handleSSE(IncomingMessage req, ServerResponse res);
+    std::future<void> handleMessage(IncomingMessage req, ServerResponse res);
+    std::future<bool> checkPaymentForToolCall(JSONRPCRequest message, Record<string headers, auto string>, ServerResponse res);
+    std::future<JSONRPCResponse> processMessage(JSONRPCRequest message, Record<string headers, auto string>);
+    void sendSSE(ServerResponse res, const std::string& event, unknown data);
+    std::unordered_map<std::string, std::string> extractHeaders(IncomingMessage req);
+    std::string generateSessionId();
+    void cleanupStaleSessions();
 
-  constructor(options: SSEServerOptions, logger: Console = console) {
-    this.logger = logger;
-    this.options = {
-      host: options.host || 'localhost',
-      ssePath: options.ssePath || '/sse',
-      messagePath: options.messagePath || '/message',
-      ...options
-    };
-
-    this.httpServer = new HTTPServer(this.handleRequest.bind(this));
-
-    // Clean up stale sessions every 60 seconds
-    setInterval(() => this.cleanupStaleSessions(), 60000);
-  }
-
-    // Close all active sessions
-
-    // Enable CORS
-
-    // Set SSE headers
-
-    // Store session
-
-    // Send session ID to client
-
-    // Handle client disconnect
-
-    // Keep-alive ping every 30 seconds
-
-    // Update headers with latest from this request
-
-        // Check if this is a tool call that requires payment
-
-        // Process the message through MCP server
-          
-          // Send response to client
-
-          // Also send via SSE for streaming
-
-    // Inject headers into request params for payment middleware
-
-    // For now, allow the request to proceed - payment will be checked by the gateway
-    // In the future, we could check here and return 402 immediately
-
-    // Inject headers into message for payment middleware access
-
-    // Handle the message through the MCP server's request handlers
-    // We need to route based on method
-
-      // Call the appropriate handler
-      // This is a simplified version - in production, you'd want to properly route all MCP methods
+private:
+    HTTPServer httpServer_;
+    Required<SSEServerOptions> options_;
+    Console logger_;
+};
 
 
 } // namespace elizaos

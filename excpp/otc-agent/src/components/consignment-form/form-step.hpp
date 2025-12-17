@@ -1,11 +1,11 @@
-#include ".button.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".button.hpp"
 
 namespace elizaos {
 
@@ -15,7 +15,6 @@ namespace elizaos {
 
 
 struct FormStepProps {
-    { formData;
     std::string amount;
     bool isNegotiable;
     double fixedDiscountBps;
@@ -30,9 +29,6 @@ struct FormStepProps {
     bool isPrivate;
     double maxPriceVolatilityBps;
     double maxTimeToExecuteSeconds;
-    (updates: Partial<FormStepProps["formData"]>) => void updateFormData;
-    () => void onNext;
-    () => void onBack;
     std::optional<std::string> selectedTokenBalance;
     std::optional<double> selectedTokenDecimals;
     std::optional<std::string> selectedTokenSymbol;

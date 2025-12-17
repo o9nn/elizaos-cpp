@@ -1,12 +1,15 @@
-#include "elizaos/core.hpp"
-#include "elizaos/plugin-forms.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
+#include "elizaos/plugin-forms.hpp"
 
 namespace elizaos {
 
@@ -19,17 +22,13 @@ struct ProjectPlan {
     std::string id;
     std::string name;
     std::string description;
-    'plugin' | 'agent' | 'workflow' | 'mcp' | 'full-stack' type;
-    std::optional<'planning' | 'generating' | 'testing' | 'completed' | 'failed'> status;
+    std::variant<'plugin', 'agent', 'workflow', 'mcp', 'full-stack'> type;
+    std::optional<std::variant<'planning', 'generating', 'testing', 'completed', 'failed'>> status;
     std::optional<std::string> formId;
-    std::optional<{> details;
     std::optional<std::string> projectName;
     std::optional<std::string> error;
-    std::optional<{> artifacts;
-    std::optional<Array<{> files;
     std::string path;
     std::string content;
-    { architecture;
     std::vector<ComponentSpec> components;
     std::vector<DependencySpec> dependencies;
     std::vector<IntegrationSpec> integrations;
@@ -44,7 +43,7 @@ struct ProjectPlan {
 
 struct ComponentSpec {
     std::string name;
-    'service' | 'action' | 'provider' | 'ui' | 'database' | 'api' type;
+    std::variant<'service', 'action', 'provider', 'ui', 'database', 'api'> type;
     std::string description;
     std::vector<std::string> responsibilities;
     std::vector<std::string> interfaces;
@@ -54,24 +53,23 @@ struct ComponentSpec {
 struct DependencySpec {
     std::string name;
     std::string version;
-    'runtime' | 'dev' | 'peer' type;
+    std::variant<'runtime', 'dev', 'peer'> type;
     std::string purpose;
 };
 
 struct IntegrationSpec {
     std::string service;
-    'api' | 'webhook' | 'database' | 'event' type;
+    std::variant<'api', 'webhook', 'database', 'event'> type;
     std::string purpose;
-    std::unordered_map<std::string, std::any> configuration;
 };
 
 struct RequirementSpec {
     std::string id;
-    'functional' | 'non-functional' | 'technical' type;
-    'must-have' | 'should-have' | 'nice-to-have' priority;
+    std::variant<'functional', 'non-functional', 'technical'> type;
+    std::variant<'must-have', 'should-have', 'nice-to-have'> priority;
     std::string description;
     std::vector<std::string> acceptanceCriteria;
-    'pending' | 'in-progress' | 'completed' status;
+    std::variant<'pending', 'in-progress', 'completed'> status;
 };
 
 struct Milestone {
@@ -80,15 +78,15 @@ struct Milestone {
     std::string description;
     std::vector<std::string> deliverables;
     std::optional<Date> dueDate;
-    'pending' | 'in-progress' | 'completed' status;
+    std::variant<'pending', 'in-progress', 'completed'> status;
     std::vector<std::string> dependencies;
 };
 
 struct Risk {
     std::string id;
     std::string description;
-    'low' | 'medium' | 'high' impact;
-    'low' | 'medium' | 'high' likelihood;
+    std::variant<'low', 'medium', 'high'> impact;
+    std::variant<'low', 'medium', 'high'> likelihood;
     std::string mitigation;
 };
 
@@ -101,108 +99,37 @@ struct TechStackSpec {
 };
 
 struct EffortEstimate {
-    number; // hours development;
+    double development;
     double testing;
     double documentation;
     double total;
-    'low' | 'medium' | 'high' confidence;
+    std::variant<'low', 'medium', 'high'> confidence;
 };
 
-class ProjectPlanningService extends Service {
-  static serviceName: string = 'project-planning';
-  static serviceType: ServiceTypeName = ServiceType.UNKNOWN;
+class ProjectPlanningService {
+public:
+    ProjectPlanningService(IAgentRuntime runtime);
+    std::future<Service> start(IAgentRuntime runtime);
+    std::string capabilityDescription() const;
+    std::future<void> start();
+    std::future<void> stop();
+    std::future<ProjectPlan> createProjectPlan(std::optional<std::any> request);
+    std::future<std::any> analyzeRequirements(const std::any& request);
+    std::future<std::any> generateArchitecture(const std::any& request, const std::any& analysis);
+    std::future<std::vector<RequirementSpec>> generateRequirements(const std::any& request, const std::any& analysis);
+    std::future<std::vector<std::string>> generateAcceptanceCriteria(const std::string& requirement);
+    std::future<std::vector<Milestone>> planMilestones(const std::any& request, const std::vector<RequirementSpec>& requirements);
+    std::future<std::vector<Risk>> identifyRisks(const std::any& request, const std::any& architecture);
+    std::future<TechStackSpec> selectTechStack(const std::any& request, const std::any& _architecture);
+    std::future<EffortEstimate> estimateEffort(const std::vector<RequirementSpec>& requirements, const std::any& architecture);
+    std::variant<Promise<ProjectPlan, undefined>> getProjectPlan(const std::string& planId);
+    std::variant<Promise<ProjectPlan, undefined>> updateProjectPlan(const std::string& planId, const std::optional<ProjectPlan>& updates);
+    std::future<std::vector<ProjectPlan>> listProjectPlans();
+    std::string extractJSON(const std::string& response);
 
-  protected runtime: IAgentRuntime;
-  private formsService?: FormsService;
-  private plans: Map<string, ProjectPlan> = new Map();
-
-  /**
-   * Static method to start the service
-   */
-  static async start(runtime: IAgentRuntime): Promise<Service> {
-    elizaLogger.info('Starting ProjectPlanningService...');
-    const service = new ProjectPlanningService(runtime);
-    await service.start();
-    return service;
-  }
-
-    // Get forms service for interactive planning
-
-  /**
-   * Create a comprehensive project plan
-   */
-
-    // Analyze project requirements
-
-    // Generate architecture
-
-    // Create detailed requirements
-
-    // Plan milestones
-
-    // Identify risks
-
-    // Determine tech stack
-
-    // Estimate effort
-
-  /**
-   * Analyze project requirements using AI
-   */
-
-  /**
-   * Generate system architecture
-   */
-
-  /**
-   * Generate detailed requirements
-   */
-
-    // Convert high-level requirements to detailed specs
-
-    // Add technical requirements from analysis
-
-  /**
-   * Generate acceptance criteria for a requirement
-   */
-
-  /**
-   * Plan project milestones
-   */
-
-  /**
-   * Identify project risks
-   */
-
-  /**
-   * Select appropriate tech stack
-   */
-
-  /**
-   * Estimate project effort
-   */
-
-    // Base estimates
-
-  /**
-   * Get project plan by ID
-   */
-
-  /**
-   * Update project plan
-   */
-
-  /**
-   * List all project plans
-   */
-
-  /**
-   * Extract JSON from LLM response
-   */
-
-    // Remove markdown code blocks
-
-    // Try to find JSON object or array
+private:
+    IAgentRuntime runtime_;
+};
 
 
 } // namespace elizaos

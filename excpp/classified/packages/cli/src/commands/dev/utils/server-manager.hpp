@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -17,7 +18,7 @@ namespace elizaos {
  * Server process state management
  */
 struct ServerState {
-    Subprocess | null process;
+    std::optional<Subprocess> process;
     bool isRunning;
 };
 
@@ -28,7 +29,6 @@ struct ServerState {
 /**
  * Check if a local CLI exists and return its path
  */
-std::future<string | null> getLocalCliPath();
 
 /**
  * Set up environment with proper module resolution paths
@@ -58,6 +58,7 @@ bool isServerRunning();
 /**
  * Get the current server process
  */
+std::optional<Subprocess> getServerProcess();
 
 /**
  * Server process manager implementation using functional patterns
@@ -105,6 +106,7 @@ bool isRunning();
 /**
  * Get the current server process
  */
+std::optional<Subprocess> getCurrentProcess();
 
 // Export functional interface for backwards compatibility
 

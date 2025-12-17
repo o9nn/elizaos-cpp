@@ -1,12 +1,13 @@
-#include "base.hpp"
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "base.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -24,7 +25,6 @@ struct Memory {
     std::optional<std::vector<double>> embedding;
     Date createdAt;
     Date updatedAt;
-    std::optional<std::unordered_map<std::string, std::any>> metadata;
 };
 
 struct Room {
@@ -34,18 +34,15 @@ struct Room {
     std::optional<std::string> type;
     Date createdAt;
     Date updatedAt;
-    std::optional<std::unordered_map<std::string, std::any>> metadata;
 };
 
 struct MemoryUpdateParams {
     std::optional<std::any> content;
-    std::optional<std::unordered_map<std::string, std::any>> metadata;
 };
 
 struct RoomCreateParams {
     std::string name;
     std::optional<std::string> type;
-    std::optional<std::unordered_map<std::string, std::any>> metadata;
 };
 
 struct WorldCreateParams {

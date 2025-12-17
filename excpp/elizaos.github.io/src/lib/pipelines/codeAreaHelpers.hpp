@@ -1,10 +1,12 @@
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -22,6 +24,7 @@ WorkItemType categorizeWorkItem(const std::string& text);
 /**
  * Utility to extract area from a file path
  */
+std::optional<std::string> extractAreaFromPath(const std::string& path);
 
 /**
  * Check if a file is a common root configuration file that should be ignored
@@ -33,6 +36,6 @@ using WorkItemType = std::variant<, "feature", "bugfix", "refactor", "docs", "te
 /**
  * Utility to build a map of focus areas from files
  */
-std::unordered_map<std::string, double> buildAreaMap(std::optional<std::vector<{ path: string; filename: string }>> files);
+std::unordered_map<std::string, double> buildAreaMap(std::optional<std::vector<std::any>> files);
 
 } // namespace elizaos

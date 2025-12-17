@@ -1,11 +1,11 @@
-#include "connection-status.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "connection-status.hpp"
 
 namespace elizaos {
 

@@ -1,11 +1,13 @@
-#include "elizaos/core.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -18,21 +20,13 @@ namespace elizaos {
  * Validation service for OpenAI plugin
  * Provides runtime validation for API key availability
  */
-class OpenAIValidationService extends Service {
-  static override serviceType: ServiceTypeName = 'openai-validation' as ServiceTypeName;
-  static serviceName = 'openai-validation';
-
-  override capabilityDescription = 'Validates OpenAI plugin configuration and API availability';
-
-  constructor(runtime: IAgentRuntime) {
-    super(runtime);
-  }
-
-    // No cleanup needed
-
-  /**
-   * Check if OpenAI is properly configured and available
-   */
+class OpenAIValidationService {
+public:
+    OpenAIValidationService(IAgentRuntime runtime);
+    std::future<OpenAIValidationService> start(IAgentRuntime runtime);
+    std::future<void> stop();
+    std::future<bool> isValid();
+};
 
 /**
  * Retrieves a configuration setting from the runtime, falling back to environment variables or a default value if not found.
@@ -41,6 +35,7 @@ class OpenAIValidationService extends Service {
  * @param defaultValue - The value to return if the setting is not found in the runtime or environment.
  * @returns The resolved setting value, or {@link defaultValue} if not found.
  */
+std::string getSetting(IAgentRuntime runtime, const std::string& key, std::optional<std::string> defaultValue);
 
 /**
  * Retrieves the OpenAI API base URL from runtime settings, environment variables, or defaults, using provider-aware resolution.
@@ -62,6 +57,7 @@ std::string getEmbeddingBaseURL(IAgentRuntime runtime);
  * @param runtime The runtime context
  * @returns The configured API key
  */
+std::string getApiKey(IAgentRuntime runtime);
 
 /**
  * Helper function to get the embedding API key for OpenAI, falling back to the general API key if not set.
@@ -69,6 +65,7 @@ std::string getEmbeddingBaseURL(IAgentRuntime runtime);
  * @param runtime The runtime context
  * @returns The configured API key
  */
+std::string getEmbeddingApiKey(IAgentRuntime runtime);
 
 /**
  * Helper function to get the small model name with fallbacks
@@ -162,7 +159,7 @@ std::future<void> fetchTextToSpeech(IAgentRuntime runtime, const std::string& te
 
         // Add timeout to prevent hanging
 
-        using OpenAIResponseType = {
+        using OpenAIResponseType = std::any;
 
         // Check if a custom prompt was provided (not the default prompt)
 

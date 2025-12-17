@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -37,7 +37,6 @@ namespace elizaos {
  */
     // If a callback and the agent's response content are available, call the callback
       // Pass the agent's original response content (thought, IGNORE action, etc.)
-      await callback(responses[0].content);
     // Still return true to indicate the action handler succeeded
 
 

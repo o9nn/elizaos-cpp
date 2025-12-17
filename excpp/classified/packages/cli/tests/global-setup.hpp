@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -21,6 +21,11 @@ namespace elizaos {
 // Mock problematic Node.js modules first
 
 // Alternative approach: Mock the entire server module to prevent multer loading
+    void initialize();
+    void startAgent();
+    void stopAgent();
+    void loadCharacterTryPath();
+    void jsonToCharacter();
 
 
 } // namespace elizaos

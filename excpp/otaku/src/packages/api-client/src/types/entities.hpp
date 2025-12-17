@@ -1,11 +1,11 @@
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -18,19 +18,16 @@ struct Entity {
     UUID id;
     UUID agentId;
     std::vector<std::string> names;
-    std::optional<std::unordered_map<std::string, std::any>> metadata;
 };
 
 struct EntityCreateParams {
     UUID id;
     UUID agentId;
     std::optional<std::vector<std::string>> names;
-    std::optional<std::unordered_map<std::string, std::any>> metadata;
 };
 
 struct EntityUpdateParams {
     std::optional<std::vector<std::string>> names;
-    std::optional<std::unordered_map<std::string, std::any>> metadata;
     std::optional<UUID> agentId;
 };
 

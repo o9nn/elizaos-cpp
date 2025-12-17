@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -20,7 +20,7 @@ namespace elizaos {
  * generating a new keypair and attestation each time.
  */
 struct TeeAgent {
-    string; // Primary key id;
+    std::string id;
     std::string agentId;
     std::string agentName;
     double createdAt;
@@ -35,13 +35,9 @@ struct TeeAgent {
  */
 enum TEEMode {
   /** TEE functionality is completely disabled. */
-  OFF = 'OFF',
   /** For local development, potentially using a TEE simulator. */
-  LOCAL = 'LOCAL', // For local development with simulator
   /** For Docker-based development environments, possibly with a TEE simulator. */
-  DOCKER = 'DOCKER', // For docker development with simulator
   /** For production deployments, using actual TEE hardware without a simulator. */
-  PRODUCTION = 'PRODUCTION', // For production without simulator
 }
 
 /**
@@ -73,7 +69,6 @@ struct DeriveKeyAttestationData {
 struct RemoteAttestationMessage {
     std::string agentId;
     double timestamp;
-    { message;
     std::string entityId;
     std::string roomId;
     std::string content;
@@ -85,7 +80,6 @@ struct RemoteAttestationMessage {
  */
 enum TeeType {
   /** Represents Intel Trusted Domain Extensions (TDX) running on DSTACK infrastructure. */
-  TDX_DSTACK = 'tdx_dstack',
 }
 
 /**

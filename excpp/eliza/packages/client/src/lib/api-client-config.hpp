@@ -1,11 +1,11 @@
-#include "elizaos/api-client.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "elizaos/api-client.hpp"
 
 namespace elizaos {
 
@@ -25,6 +25,6 @@ ElizaClient getElizaClient();
 // Function to reset the singleton (useful for API key changes)
 void resetElizaClient();
 
-void updateApiClientApiKey(string | null newApiKey);
+void updateApiClientApiKey(const std::optional<std::string>& newApiKey);
 
 } // namespace elizaos

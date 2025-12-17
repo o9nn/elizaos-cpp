@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -24,48 +24,29 @@ struct UniqueWallet {
 };
 
 class CSVService {
-  private csvPath: string;
-  private walletEntries: WalletEntry[] = [];
-  private uniqueWallets: UniqueWallet[] = [];
-  private isLoaded: boolean = false;
+public:
+    CSVService(string = "wallets::csv" csvFileName);
+    void loadWallets();
+    std::vector<WalletEntry> getAllWalletEntries();
+    std::vector<UniqueWallet> getUniqueWallets();
+    std::vector<std::string> getWalletAddresses();
+    Array< getWalletsForProcessing();
+    void if(auto !this.isLoaded);
+     getStats();
+    void if(auto !this.isLoaded);
+    std::optional<UniqueWallet> findWalletByAddress(const std::string& address);
+    std::optional<WalletEntry> findWalletById(const std::string& id);
+    std::vector<UniqueWallet> getWalletsWithMultipleIds();
+     validateCSVFile();
+    void if(auto lines.length < 2);
+    void for(auto const row of sampleRows);
+    void catch(auto error);
+    void reload();
+    std::string exportToJSON(std::optional<std::string> filePath);
 
-  constructor(csvFileName: string = "wallets.csv") {
-    this.csvPath = path.join(process.cwd(), "data", csvFileName);
-  }
-
-  // Load and parse CSV file
-
-      // Skip header line
-
-        // Add to entries
-
-        // Track unique wallets
-
-      // Create unique wallets array
-
-  // Get all wallet entries
-
-  // Get unique wallet addresses
-
-  // Get wallet addresses only (for processing)
-
-  // Get wallets for batch processing
-
-  // Get statistics
-
-  // Find wallet by address
-
-  // Find wallet by ID
-
-  // Get wallets with multiple IDs
-
-  // Validate CSV file exists and is readable
-
-      // Check first few data rows for basic format
-
-  // Reload CSV file (useful for development)
-
-  // Export processed data to JSON (for debugging)
+private:
+    std::string csvPath_;
+};
 
 // Export singleton instance
 

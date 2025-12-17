@@ -1,11 +1,13 @@
-#include "types.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "types.hpp"
 
 namespace elizaos {
 
@@ -55,7 +57,7 @@ RAGKnowledgeItem memoryToRagKnowledge(Memory memory);
 /**
  * Determines if a knowledge item should be shared based on V1 conventions
  */
-bool isSharedKnowledge(KnowledgeItem | RAGKnowledgeItem item);
+bool isSharedKnowledge(const std::variant<KnowledgeItem, RAGKnowledgeItem>& item);
 
 /**
  * Creates appropriate metadata for knowledge items based on V1 patterns
@@ -69,6 +71,7 @@ void createKnowledgeMetadata(std::optional<std::string> source, std::optional<bo
 /**
  * Converts knowledge search parameters from V1 to V2 format
  */
+void adaptKnowledgeSearchParams(std::optional<std::any> params);
 
 /**
  * Batch converts an array of KnowledgeItems to Memories

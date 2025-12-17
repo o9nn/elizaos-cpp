@@ -1,14 +1,14 @@
-#include ".agents/twitter/twitterAgent.hpp"
-#include ".db.hpp"
-#include ".logger.hpp"
-#include ".uploader.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".agents/twitter/twitterAgent.hpp"
+#include ".db.hpp"
+#include ".logger.hpp"
+#include ".uploader.hpp"
 
 namespace elizaos {
 
@@ -80,7 +80,6 @@ namespace elizaos {
       // Example: Start monitoring or perform initial setup
     */
 
-// ===== Placeholder for other Agent routes (Update, Delete) =====
 // GET /agents/:id - Fetch specific agent details
 // PUT /agents/:id - Update agent settings (e.g., status)
 // DELETE /agents/:id - Remove an agent link
@@ -92,8 +91,6 @@ namespace elizaos {
     // ... (Update DB) ...
     // ... (Perform actions based on update, e.g., stop/start monitoring - commented out) ...
     /*
-          // await twitterAgentInstance.stopMonitoring();
-          // await twitterAgentInstance.startMonitoring();
     */
 
 // Example DELETE route structure (needs logic for auth, validation, cleanup)
@@ -102,8 +99,6 @@ namespace elizaos {
     // ... (Perform cleanup actions - commented out) ...
      /*
         // Need full agent data to instantiate class
-          // await twitterAgentInstance.stopMonitoring(); // Ensure monitoring stops
-          // await twitterAgentInstance.cleanup(); // Perform any provider-specific cleanup
         // Decide whether to proceed with deletion despite cleanup error
     */
     // ... (Delete from DB) ...

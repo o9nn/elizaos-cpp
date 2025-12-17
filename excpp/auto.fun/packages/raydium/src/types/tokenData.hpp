@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -12,27 +13,21 @@ namespace elizaos {
 // Manual refinement required for production use
 
 struct MigrationData {
-    std::optional<{> withdraw;
     std::string status;
     std::string txId;
     std::string updatedAt;
-    std::optional<{> createPool;
     std::string status;
     std::string txId;
     std::string updatedAt;
-    std::optional<{> lockLP;
     std::string status;
     std::string txId;
     std::string updatedAt;
-    std::optional<{> sendNft;
     std::string status;
     std::string txId;
     std::string updatedAt;
-    std::optional<{> depositNft;
     std::string status;
     std::string txId;
     std::string updatedAt;
-    std::optional<{> finalize;
     std::string status;
     std::string txId;
     std::string updatedAt;
@@ -100,7 +95,7 @@ struct TokenData {
     std::optional<double> holderCount;
     std::optional<std::string> txId;
     std::optional<MigrationData> migration;
-    std::optional<WithdrawnAmountsData | ''> withdrawnAmounts;
+    std::optional<std::variant<WithdrawnAmountsData, ''>> withdrawnAmounts;
     std::optional<PoolInfoData> poolInfo;
     std::optional<std::string> lockLpTxId;
     std::optional<std::string> tokenSupply;

@@ -1,12 +1,12 @@
-#include ".services/pluginManagerService.ts.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".services/pluginManagerService.ts.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 

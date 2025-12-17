@@ -1,12 +1,13 @@
-#include ".types.hpp"
-#include "elizaos/core.hpp"
+#pragma once
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include ".types.hpp"
+#include "elizaos/core.hpp"
 
 namespace elizaos {
 
@@ -43,6 +44,5 @@ bool isMajorUpdate(const std::string& currentVersion, const std::string& targetV
 /**
  * Fetch latest package version from npm registry
  */
-std::future<string | null> fetchLatestVersion(const std::string& packageName);
 
 } // namespace elizaos

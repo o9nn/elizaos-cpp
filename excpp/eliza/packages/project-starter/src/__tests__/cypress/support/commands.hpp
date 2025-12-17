@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -20,11 +20,9 @@ namespace elizaos {
 // ***********************************************
 
 // Example custom command
-// Cypress.Commands.add('login', (email, password) => { ... })
 
 // Extend Window interface
   struct Window {
-    std::optional<{> ELIZA_CONFIG;
     std::string agentId;
     std::string apiBase;
 };

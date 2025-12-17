@@ -1,11 +1,11 @@
-#include "ChatImage.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "ChatImage.hpp"
 
 namespace elizaos {
 
@@ -29,17 +29,17 @@ using ChatTier = (typeof CHAT_TIERS)[number];
 // Chat Message Type (matches backend structure)
 struct ChatMessage {
     std::string id;
-    string; // User's public key author;
-    std::optional<string | null; // Optional: Author's display name> displayName;
-    std::optional<string | null; // Optional: Author's profile picture URL> profileImage;
+    std::string author;
+    std::optional<std::optional<std::string>> displayName;
+    std::optional<std::optional<std::string>> profileImage;
     std::string tokenMint;
     std::string message;
-    std::optional<string | null> parentId;
+    std::optional<std::optional<std::string>> parentId;
     ChatTier tier;
     std::optional<double> replyCount;
     std::string timestamp;
-    std::optional<boolean; // Flag for optimistically added messages> isOptimistic;
-    std::optional<string; // Added media field> media;
+    std::optional<bool> isOptimistic;
+    std::optional<std::string> media;
 };
 
 // API Response Types for Chat

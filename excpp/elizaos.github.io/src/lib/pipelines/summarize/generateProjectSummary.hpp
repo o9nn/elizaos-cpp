@@ -1,16 +1,17 @@
+#pragma once
+#include <functional>
+#include <future>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 #include ".export/queries.hpp"
 #include ".generateTimeIntervals.hpp"
 #include ".types.hpp"
 #include "aiProjectSummary.hpp"
 #include "context.hpp"
 #include "mutations.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -39,7 +40,6 @@ std::future<bool> checkExistingSummary(const std::string& repoId, const std::str
       // Store the summary in database
 
       // Export summary as markdown file if outputDir is configured
-      await writeToFile(outputPath, summary);
 
 /**
  * Pipeline for generating monthly project summaries

@@ -1,11 +1,12 @@
-#include "...classes/channel.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "...classes/channel.hpp"
 
 namespace elizaos {
 
@@ -14,7 +15,7 @@ namespace elizaos {
 
 
 
-using ThreadNameProps = { thread: Channel };
+using ThreadNameProps = std::any;
 
 
 } // namespace elizaos

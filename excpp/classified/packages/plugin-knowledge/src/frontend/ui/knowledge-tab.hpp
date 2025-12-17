@@ -1,16 +1,17 @@
-#include "badge.hpp"
-#include "button.hpp"
-#include "card.hpp"
-#include "elizaos/core.hpp"
-#include "input.hpp"
-#include "memory-graph.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "badge.hpp"
+#include "button.hpp"
+#include "card.hpp"
+#include "elizaos/core.hpp"
+#include "input.hpp"
+#include "memory-graph.hpp"
 
 namespace elizaos {
 
@@ -53,6 +54,6 @@ struct UploadResultItem {
 
 // Hook for deleting knowledge documents
 
-void KnowledgeTab({ agentId: UUID } { agentId });
+void KnowledgeTab(const std::any& { agentId });
 
 } // namespace elizaos

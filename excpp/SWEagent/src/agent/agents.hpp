@@ -1,3 +1,13 @@
+#pragma once
+#include <any>
+#include <functional>
+#include <future>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <variant>
+#include <vector>
 #include ".exceptions.hpp"
 #include ".types.hpp"
 #include ".utils/log.hpp"
@@ -10,13 +20,6 @@
 #include "types.hpp"
 #include "utils/template.hpp"
 #include "utils/yaml.hpp"
-#include <functional>
-#include <memory>
-#include <optional>
-#include <string>
-#include <unordered_map>
-#include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -29,8 +32,6 @@ namespace elizaos {
  */
 
 // Import error classes
-
-// Dynamic import for ShellAgent to avoid circular dependency
 
 // Special tokens
 
@@ -71,101 +72,44 @@ struct CommandBundle {
  */
 struct ToolConfig {
     std::vector<CommandBundle> commands;
-    std::optional<AbstractParseFunction | string> parseFunction;
+    std::optional<std::variant<AbstractParseFunction, std::string>> parseFunction;
     double executionTimeout;
     double maxConsecutiveExecutionTimeouts;
     double totalExecutionTimeout;
     std::string submitCommand;
     bool useFunctionCalling;
-    std::optional<{> filter;
     std::string blocklistErrorTemplate;
     std::vector<std::string> blocklist;
     std::vector<std::string> blocklistStandalone;
-    std::optional<std::unordered_map<std::string, std::string>> blockUnlessRegex;
     std::string formatErrorTemplate;
     std::optional<std::string> commandDocs;
-    std::optional<std::unordered_map<std::string, string | number | boolean>> envVariables;
 };
 
 /**
  * Tool handler for managing agent tools
  */
 class ToolHandler {
-  config: ToolConfig;
-  tools: CommandBundle[];
-  private parser: AbstractParseFunction;
-  private multilineCommands: Map<string, string> = new Map();
+public:
+    ToolHandler(ToolConfig config);
+    std::future<void> install(AgentEnvironment env);
+    std::future<std::unordered_map<std::string, std::string>> getState(AgentEnvironment env);
+    [string, string] parseActions(const std::variant<std::string, ModelOutput>& output);
+    bool shouldBlockAction(const std::string& action);
+    bool checkForSubmissionCmd(const std::string& observation);
+    std::string guardMultilineInput(const std::string& action);
 
-  constructor(config: ToolConfig) {
-    this.config = config;
-    this.tools = [];
-
-    // Initialize parser
-    if (typeof config.parseFunction === 'string') {
-      this.parser = getParser(config.parseFunction);
-    } else if (config.parseFunction) {
-      this.parser = config.parseFunction;
-    } else {
-      this.parser = new ThoughtActionParser();
-    }
-
-    // Initialize multiline commands from config
-    if (config.commands) {
-      for (const cmd of config.commands) {
-        if (cmd.endName) {
-          this.multilineCommands.set(cmd.name, cmd.endName);
-        }
-      }
-    }
-  }
-
-    // Install tools in the environment
-    // Set environment variables
-
-    // Install each bundle if they exist
-
-      // Process each tool bundle
-
-      // Return to original directory
-
-    // Get current state from environment
-
-    // Get working directory
-
-    // Get open files
-
-    // Get git status if available
-
-    // Parse thought and action from model output using configured parser
-    // Use strict mode to throw FormatError when parsing fails
-
-    // Check if action should be blocked
-
-    // Check blocklist
-
-    // Check standalone blocklist
-
-    // Check block unless regex
-
-    // Check if observation contains submission command
-    // Look for the special submission marker used by SWE-agent
-
-    // Guard multiline input commands with heredoc syntax
-    // This handles commands that can take multiline input
-
-      // Check if action starts with this command
-        // Check if it already has the heredoc syntax
-          // Add heredoc syntax
-            // It's a multiline command that needs guarding
+private:
+    ToolConfig config_;
+    std::vector<CommandBundle> tools_;
+    AbstractParseFunction parser_;
+};
 
 /**
  * Environment interface for agent operations
  */
 struct AgentEnvironment {
-    std::string command;
-    std::optional<number | Record<string, unknown>> timeout;
-    std::optional<std::unordered_map<std::string, unknown>> options;
-    std::optional<{ repoName: string }> repo;
+    std::optional<std::string> name;
+};
 
 /**
  * Logger interface
@@ -201,7 +145,7 @@ struct DefaultAgentConfig {
     ModelConfig model;
     double maxRequeries;
     std::optional<ActionSamplerConfig> actionSampler;
-    'default' | 'retry' | 'shell' type;
+    std::variant<'default', 'retry', 'shell'> type;
 };
 
 /**
@@ -232,119 +176,54 @@ using AgentConfig = std::variant<DefaultAgentConfig, RetryAgentConfig, ShellAgen
 /**
  * Abstract base class for agents
  */
+    AbstractAgent fromConfig(AgentConfig _config);
 
 /**
  * Default agent implementation
  */
-class DefaultAgent extends AbstractAgent {
-  name: string;
-  model: AbstractModel;
-  templates: TemplateConfig;
-  tools: ToolHandler;
-  historyProcessors: AbstractHistoryProcessor[];
-  maxRequeries: number;
-  logger: AgentLogger;
+class DefaultAgent {
+public:
+    DefaultAgent(std::optional<std::any> config);
+    DefaultAgent fromConfig(DefaultAgentConfig config);
+    void addHook(AbstractAgentHook hook);
+    History messages() const;
+    void appendHistory(HistoryItem & { agent: string; messageType: string } item);
+    std::future<void> setup(AgentEnvironment env, const std::variant<ProblemStatement, ProblemStatementConfig>& problemStatement, string = '::' outputDir);
+    std::unordered_map<std::string, unknown> getFormatDict(std::optional<Record<string> kwargs, auto unknown>);
+    void addSystemMessageToHistory();
+    void addDemonstrationsToHistory();
+    void addDemonstrationToHistory(const std::string& demonstrationPath);
+    void addInstanceTemplateToHistory(Record<string state, auto string>);
+    Trajectory getTrajectory();
 
-  env: AgentEnvironment | null = null;
-  problemStatement: ProblemStatement | ProblemStatementConfig | null = null;
-  trajPath: string | null = null;
-
-  history: History = [];
-  trajectory: Trajectory = [];
-  info: AgentInfo = {};
-
-    // Set parser based on model type
-
-      // Initialize action sampler if configured
-
-    // Deep copy config to avoid shared state between different instances
-
-    // Return processed history for this attempt
-
-    // Chain history processors
-
-    // Setup the agent for a new instance
-
-    // Get version from package.json
-
-    // Add system message, demonstrations, and instance template to history
-
-      // Add demonstrations to history step-by-step
-      // Add as single message
-
-    // Add instance template to history
-
-    // Get all data saved in .traj files
-
-    // Forward the model without handling errors
-
-      // Query model
-
-        // Parsing probably failed
-      // Create a new error with step attached
-
-    // Handle action execution
-
-      // Execute command in environment
-
-    // Check for special tokens in observation
-
-    // Check for submission in observation
-
-        // Handle different error types
-
-        // Errors that cause requery
-
-        // Special retry tokens
-
-        // Errors that cause exit
-
-        // Handle all cost limit errors (base class and derived classes)
-
-        // Handle runtime/environment errors
-
-        // Unknown errors
-
-    // Too many retries
-
-    // Try to extract patch from environment
-
-      // Try to use diff from last trajectory step
-
-    // Try to run submission command
-
-    // Run a single step of the agent
-
-    // Add to history
-
-    // Add observation to history
-
-    // Update info
-
-    // Run the agent on a problem instance
+    std::future<StepOutput> forward(History history);
+    std::future<StepOutput> handleAction(StepOutput step);
+    std::future<StepOutput> handleSubmission(StepOutput step, string = '' observation, boolean = false forceSubmission);
+    void addStepToTrajectory(StepOutput step);
+    std::future<StepOutput> forwardWithHandling(History history);
+    History getModelRequeryHistory(const std::string& errorTemplate, StepOutput step, Record<string kwargs, auto unknown>);
+    std::future<StepOutput> attemptAutosubmissionAfterError(StepOutput step);
+    std::future<StepOutput> step();
+    std::future<AgentRunResult> run(AgentEnvironment env, const std::variant<ProblemStatement, ProblemStatementConfig>& problemStatement, string = '::' outputDir);
 
 /**
  * Retry agent implementation
  */
-class RetryAgent extends AbstractAgent {
-  private config: RetryAgentConfig;
-  private hooks: AbstractAgentHook[] = [];
-  private iAttempt: number = 0;
-  private agent: DefaultAgent | null = null;
-  private attemptData: Array<{
-    trajectory: Trajectory;
-    history: History;
-    info: AgentInfo;
-    replayConfig: string | null;
-    environment: string;
-  }> = [];
+class RetryAgent {
+public:
+    RetryAgent(RetryAgentConfig config);
+    std::variant<double, null; onSubmit(data: unknown): void; retry(): boolean }, null = null; // RetryLoop instance
 
-    // Initialize retry loop based on config
-    // this.rloop = getRetryLoopFromConfig(this.config.retryLoop, this.problemStatement);
-
-    // Failsafe cost check
-
-        // Submit for review
+    RetryAgent fromConfig(RetryAgentConfig config);
+    void addHook(AbstractAgentHook hook);
+    void setup(AgentEnvironment env, const std::variant<ProblemStatement, ProblemStatementConfig>& problemStatement, string = '::' outputDir);
+    DefaultAgent setupAgent();
+    void nextAttempt();
+    std::future<StepOutput> step();
+    void finalizeAgentRun();
+    void if(auto choose && this.rloop);
+    void saveTrajectory(boolean = false choose);
+    std::future<AgentRunResult> run(AgentEnvironment env, const std::variant<ProblemStatement, ProblemStatementConfig>& problemStatement, string = '::' outputDir);
 
 /**
  * Factory function to get agent from configuration

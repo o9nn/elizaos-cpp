@@ -1,13 +1,13 @@
-#include "actions.hpp"
-#include "elizaos/core.hpp"
-#include "utils.hpp"
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "actions.hpp"
+#include "elizaos/core.hpp"
+#include "utils.hpp"
 
 namespace elizaos {
 
@@ -21,11 +21,7 @@ namespace elizaos {
  */
 std::string formatProjectType(const std::string& type);
 
-      // Set non-interactive mode if environment variable is set or if -y/--yes flag is present in process.argv
-
       // Validate and parse options
-
-        await displayBanner();
 
       // If no name provided, prompt for type first then name
 

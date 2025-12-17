@@ -1,10 +1,11 @@
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -12,6 +13,11 @@ namespace elizaos {
 // Manual refinement required for production use
 
   class Octokit {
-    constructor(options?: { auth?: string });
+public:
+    Promise< get(const std::any& params);
+    Promise< create(Record<string params, auto unknown>);
+    Promise< get(const std::any& params);
+};
+
 
 } // namespace elizaos

@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -19,7 +19,6 @@ struct ElevenLabsVoice {
     std::string voice_id;
     std::string name;
     std::string category;
-    std::optional<{> labels;
     std::optional<std::string> accent;
     std::optional<std::string> age;
     std::optional<std::string> description;

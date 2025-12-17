@@ -1,10 +1,12 @@
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -19,16 +21,15 @@ struct Log {
     std::optional<UUID> id;
     UUID entityId;
     std::optional<UUID> roomId;
-    { [key: string]: unknown } body;
+    std::string type;
+    Date createdAt;
+};
 
 /**
  * Interface for database operations
  */
 struct IDatabaseAdapter {
     std::any db;
-    UUID entityId;
-    std::string type;
-    std::optional<UUID> worldId;
     std::optional<UUID> sourceEntityId;
     std::optional<UUID> entityId;
     std::optional<UUID> agentId;
@@ -48,7 +49,35 @@ struct IDatabaseAdapter {
     std::string query_field_name;
     std::string query_field_sub_name;
     double query_match_count;
-    { [key: string]: unknown } body;
+    UUID entityId;
+    UUID roomId;
+    std::string type;
+    UUID entityId;
+    std::optional<UUID> roomId;
+    std::optional<std::string> type;
+    std::optional<double> count;
+    std::optional<double> offset;
+    std::vector<double> embedding;
+    std::optional<double> match_threshold;
+    std::optional<double> count;
+    std::optional<bool> unique;
+    std::string tableName;
+    std::optional<std::string> query;
+    std::optional<UUID> roomId;
+    std::optional<UUID> worldId;
+    std::optional<UUID> entityId;
+    std::variant<'FOLLOWED', 'MUTED'> state;
+    UUID sourceEntityId;
+    UUID targetEntityId;
+    std::optional<std::vector<std::string>> tags;
+    std::optional<Metadata> metadata;
+    UUID sourceEntityId;
+    UUID targetEntityId;
+    std::optional<std::vector<std::string>> tags;
+    UUID worldId;
+    std::optional<double> count;
+    std::optional<std::string> tableName;
+};
 
 /**
  * Result interface for embedding similarity searches
@@ -98,11 +127,11 @@ struct MultiRoomMemoryOptions {
  */
 struct UnifiedMemoryOptions {
     UUID roomId;
-    std::optional<number; // Unified naming (replacing 'count')> limit;
-    std::optional<UUID; // Common optional parameter> agentId;
-    std::optional<boolean; // Common flag for duplication control> unique;
-    std::optional<number; // Pagination start> start;
-    std::optional<number; // Pagination end> end;
+    std::optional<double> limit;
+    std::optional<UUID> agentId;
+    std::optional<bool> unique;
+    std::optional<double> start;
+    std::optional<double> end;
 };
 
 /**

@@ -1,11 +1,14 @@
-#include "constants.hpp"
+#pragma once
+#include <any>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
+#include "constants.hpp"
 
 namespace elizaos {
 
@@ -55,27 +58,16 @@ struct RetryOptions {
  * @param {string} message - The error message.
  * @param {Response} [response] - The response object associated with the error.
  */
-class RequestError extends Error {
-  /**
-   *  Constructor for creating a RequestError instance.
-   *
-   * @param {string} message - The error message for the RequestError instance.
-   * @param {Response} [response] - Optional response object associated with the error.
-   */
-  constructor(
-    message: string,
-    public response?: Response
-  ) {
-    super(message);
-    this.name = 'RequestError';
-  }
+class RequestError {
+public:
+    RequestError(const std::string& message, std::optional<Response> public response);
+};
 
 /**
  * Build a URL with optional query parameters.
  *
  * @param {string} url - The base URL.
  * @param {QueryParams} [params] - Optional query parameters to be appended to the URL.
- * @return {string} The URL with query parameters appended.
  */
 
 /**
@@ -83,64 +75,15 @@ class RequestError extends Error {
  * @namespace http
  */
 
-          await sleep(delay);
-
 /**
  * Class representing a client for interacting with the Jupiter API for swapping tokens.
  */
 
 class JupiterClient {
-  static baseUrl = 'https://api.jup.ag/swap/v1';
-  static xApiKey = process.env.JUPITER_API_KEY || '';
-
-  /**
-   * Fetches a quote for a given input and output mint, amount, and slippage.
-   * @param {string} inputMint The mint of the input token.
-   * @param {string} outputMint The mint of the output token.
-   * @param {string} amount The amount to be swapped.
-   * @param {number} [slippageBps=50] The slippage tolerance in basis points (default: 50).
-   * @returns {Promise<{inputMint: string, outputMint: string, inAmount: string, outAmount: string, routePlan: unknown[]} | {error: unknown}>} The quote object or an error object.
-   */
-  static async getQuote(inputMint: string, outputMint: string, amount: string, slippageBps = 50) {
-    const headers: Record<string, string> = {};
-    if (JupiterClient.xApiKey) {
-      headers['x-api-key'] = JupiterClient.xApiKey;
-    }
-
-    const quote = await http.get.json<
-      | {
-          inputMint: string;
-          outputMint: string;
-          inAmount: string;
-          outAmount: string;
-          routePlan: unknown[];
-        }
-      | { error: unknown }
-    >(
-      `${JupiterClient.baseUrl}/quote`,
-      {
-        inputMint,
-        outputMint,
-        amount,
-        slippageBps: slippageBps.toString(),
-      },
-      { headers }
-    );
-
-    if ('error' in quote) {
-      console.error('Quote error:', quote);
-      throw new Error(`Failed to get quote: ${quote?.error || 'Unknown error'}`);
-    }
-
-    return quote;
-  }
-
-  /**
-   * Perform a swap operation using the provided quote data and user's wallet public key.
-   * @param {any} quoteData - The data required for the swap operation.
-   * @param {string} walletPublicKey - The public key of the user's wallet.
-   * @returns {Promise<any>} The result of the swap operation.
-   */
+public:
+    void getQuote(const std::string& inputMint, const std::string& outputMint, const std::string& amount, auto slippageBps = 50);
+    void swap(const std::any& quoteData, const std::string& walletPublicKey);
+};
 
 /**
  * Options for Dexscreener.
@@ -154,90 +97,27 @@ using DexscreenerOptions = {
  */
 
 class DexscreenerClient {
-  /**
-   * Constructor for the class.
-   * @param {IAgentRuntime} runtime - The runtime passed as a parameter to the constructor.
-   */
-  constructor(private runtime: IAgentRuntime) {}
-
-  /**
-   * Create a new DexscreenerClient instance using the provided agent runtime.
-   *
-   * @param {IAgentRuntime} runtime - The agent runtime to use for creating the DexscreenerClient instance.
-   * @returns {DexscreenerClient} A new instance of DexscreenerClient.
-   */
-
-  /**
-   * Makes an asynchronous HTTP request to the DexScreener API.
-   *
-   * @template T - The type of data expected to be returned
-   * @param {string} path - The endpoint path for the API request
-   * @param {QueryParams} [params] - Optional query parameters for the request
-   * @param {DexscreenerOptions} [options] - Optional options for the request
-   * @returns {Promise<T>} - A promise that resolves with the data returned from the API
-   */
-
-  /**
-   * Asynchronously searches for DexScreener data based on the provided address.
-   *
-   * @param {string} address - The address to search for in DexScreener data.
-   * @param {DexscreenerOptions} [options] - Optional parameters for the request.
-   * @returns {Promise<DexScreenerData>} A promise that resolves with the DexScreener data.
-   */
-
-  /**
-   * Asynchronously searches for the pair with the highest liquidity based on the given address.
-   *
-   * @param {string} address The address to search for liquidity pairs from.
-   * @param {string} [chain] The chain ID to filter the liquidity pairs by.
-   * @param {DexscreenerOptions} [options] Additional options for searching.
-   * @returns {Promise<DexScreenerPair | null>} The pair with the highest liquidity, or null if no pairs were found.
-   */
-
-    // Sort pairs by both liquidity and market cap to get the highest one
+public:
+    DexscreenerClient(IAgentRuntime private runtime);
+    void createFromRuntime(IAgentRuntime runtime);
+    void if(auto options.expires);
+    void if(auto options.expires);
+    std::future<DexScreenerData> search(const std::string& address, std::optional<DexscreenerOptions> options);
+    std::variant<Promise<DexScreenerPair, null>> searchForHighestLiquidityPair(const std::string& address, std::optional<std::string> chain, std::optional<DexscreenerOptions> options);
+};
 
 /**
  * Represents a client for interacting with the Helius API.
  */
 class HeliusClient {
-  private runtime: IAgentRuntime;
+public:
+    HeliusClient(const std::string& private readonly apiKey, IAgentRuntime _runtime);
+    void createFromRuntime(IAgentRuntime runtime);
+    std::future<std::vector<HolderData>> fetchHolderList(const std::string& address, std::optional<std::any> options);
 
-  /**
-   * Constructor for initializing an instance of class.
-   *
-   * @param apiKey - The API key to be used for authentication.
-   * @param _runtime - The runtime environment for the agent.
-   */
-  constructor(
-    private readonly apiKey: string,
-    _runtime: IAgentRuntime
-  ) {}
-
-  /**
-   * Creates a new HeliusClient instance using the provided IAgentRuntime.
-   *
-   * @param {IAgentRuntime} runtime - The IAgentRuntime to use for creating the HeliusClient.
-   * @returns {HeliusClient} A new instance of HeliusClient.
-   * @throws {Error} Thrown if HELIUS_API_KEY is missing from the runtime settings.
-   */
-
-  /**
-   * Fetches the list of token holders for a given address asynchronously.
-   * If the option `expires` is provided and there is a cached version available, it returns the cached data.
-   * Otherwise, it fetches the data from the Helius API using the provided address.
-   *
-   * @param {string} address - The address for which to fetch the list of token holders.
-   * @param {Object} [options] - Optional parameters.
-   * @param {string | CacheOptions["expires"]} [options.expires] - The expiration date for caching the data.
-   *
-   * @returns {Promise<HolderData[]>} A promise that resolves to an array of HolderData objects representing the token holders.
-   */
-
-    //HELIOUS_API_KEY needs to be added
-
-        // NOTE: Current implementation limits to 2 pages (approx. 2000 holders)
-        // to prevent excessive API calls. For tokens with more holders,
-        // this list will be partial. Increase page > 2 limit if needed.
+private:
+    IAgentRuntime runtime_;
+};
 
 /**
  * Options for Coingecko API.
@@ -253,49 +133,15 @@ using CoingeckoOptions = {
  * @param { IAgentRuntime } runtime - The IAgentRuntime object for accessing runtime settings.
  */
 class CoingeckoClient {
-  /**
-   * Constructor for initializing a new instance of the class.
-   * @param apiKey The API key used for authentication.
-   * @param runtime The agent runtime implementation.
-   */
-  constructor(
-    private readonly apiKey: string,
-    private readonly runtime: IAgentRuntime
-  ) {}
-
-  /**
-   * Creates a new instance of CoingeckoClient using the apiKey retrieved from the provided runtime.
-   * @param {IAgentRuntime} runtime - The runtime object that contains the COINGECKO_API_KEY setting.
-   * @throws {Error} If COINGECKO_API_KEY setting is missing in the runtime object.
-   * @returns {CoingeckoClient} A new instance of CoingeckoClient initialized with the apiKey and runtime.
-   */
-
-  /**
-   * Makes an asynchronous HTTP request to the Coingecko API.
-   * @template T
-   * @param {string} path - The API endpoint to call.
-   * @param {QueryParams} [params] - Optional query parameters to include in the request.
-   * @param {CoingeckoOptions} [options] - Additional options for the request.
-   * @returns {Promise<T>} The response data from the API.
-   */
-
-  /**
-   * Fetches prices for specified cryptocurrencies from the Coingecko API.
-   *
-   * @param {CoingeckoOptions} [options] The options for the Coingecko API request.
-   * @returns {Promise<Prices>} A Promise that resolves to the prices of the specified cryptocurrencies.
-   */
-
-  /**
-   * Asynchronously fetches global data.
-   *
-   * @returns {Promise} The promise containing the global data.
-   */
-
-  /**
-   * Asynchronously fetches a list of coin categories.
-   * @returns {Promise} The Promise object representing the result of the fetch operation.
-   */
+public:
+    CoingeckoClient(const std::string& private readonly apiKey, IAgentRuntime private readonly runtime);
+    void createFromRuntime(IAgentRuntime runtime);
+    void if(auto options.expires);
+    void if(auto options.expires);
+    std::future<Prices> fetchPrices(std::optional<CoingeckoOptions> options);
+    void fetchGlobal();
+    void fetchCategories();
+};
 
 /**
  * Represents an item in a wallet token list with details such as address, name, symbol, decimals, balance, UI amount, chain ID, logo URI, price in USD, and value in USD.
@@ -345,119 +191,20 @@ using BirdeyeRequestOptions = {
  */
 
 class BirdeyeClient {
-  static readonly url = 'https://public-api.birdeye.so/';
-
-  /**
-   * Send a request to the Birdeye API using the provided API key, path, query parameters, and headers.
-   *
-   * @param {string} apiKey - The API key for authenticating the request.
-   * @param {string} path - The endpoint path to send the request to.
-   * @param {QueryParams} [params] - Optional query parameters to include in the request.
-   * @param {BirdeyeClientHeaders} [headers] - Optional additional headers to include in the request.
-   * @returns {Promise<T>} A Promise that resolves with the data received from the API request.
-   */
-  static async request<T = any>(
-    apiKey: string,
-    path: string,
-    params?: QueryParams,
-    headers?: BirdeyeClientHeaders
-  ): Promise<T> {
-    const res = await http.get.json<{ success: boolean; data?: T }>(
-      BirdeyeClient.url + path,
-      params,
-      {
-        headers: {
-          ...headers,
-          'X-API-KEY': apiKey,
-        },
-      }
-    );
-
-    if (!res.success || !res.data) {
-      console.error({ res });
-      throw new Error(`Birdeye request failed:${path}`);
-    }
-
-    return res.data;
-  }
-
-  /**
-   * Constructor for initializing a new instance.
-   *
-   * @param apiKey The API key to be used.
-   * @param runtime The agent runtime for handling communication with the runtime environment.
-   */
-
-  /**
-   * Create a new BirdeyeClient instance using the provided IAgentRuntime object.
-   *
-   * @param {IAgentRuntime} runtime - The IAgentRuntime object that provides access to runtime settings.
-   * @returns {BirdeyeClient} A new instance of BirdeyeClient initialized with the provided API key and runtime.
-   * @throws {Error} Thrown if the BIRDEYE_API_KEY setting is missing in the runtime object.
-   */
-
-  /**
-   * Performs a request to the specified path with given query parameters and options.
-   * @template T
-   * @param {string} path - The path to request.
-   * @param {QueryParams} params - The query parameters to include in the request.
-   * @param {BirdeyeRequestOptions} [options] - Optional request options.
-   * @param {boolean} [forceRefresh] - Flag to force refresh the cache.
-   * @returns {Promise<T>} The response data from the request.
-   */
-
-  /**
-   * Fetches the price for a given address.
-   *
-   * @param {string} address - The address for which to fetch the price.
-   * @param {BirdeyeRequestOptions} [options] - The options for the Birdeye request.
-   * @returns {Promise<number>} The price value fetched for the given address.
-   */
-
-  /**
-   * Fetches the latest prices for Bitcoin, Ethereum, and Solana in USD from the DeFi API.
-   * @returns {Promise<Prices>} The latest prices for Bitcoin, Ethereum, and Solana in USD.
-   */
-
-  /**
-   * Fetches token overview for a specific address.
-   *
-   * @param {string} address The address of the token for which overview is to be fetched.
-   * @param {BirdeyeRequestOptions} [options] Additional options for the Birdeye request.
-   * @param {boolean} [forceRefresh=false] Flag to force refresh the data.
-   * @returns {Promise<TokenOverview>} Promise that resolves to the token overview.
-   */
-
-  /**
-   * Fetches token security data from the API for a given address.
-   * @param {string} address - The address of the token for which to fetch security data.
-   * @param {BirdeyeRequestOptions} [options] - Optional request options.
-   * @returns {Promise<TokenSecurityData>} A promise that resolves with the token security data.
-   */
-
-  /**
-   * Fetches token trade data for a specific address.
-   * @param {string} address - The address of the token.
-   * @param {BirdeyeRequestOptions} [options] - Optional request options.
-   * @returns {Promise<TokenTradeData>} - A promise that resolves with the token trade data.
-   */
-
-  /**
-   * Fetches the wallet token list for a given address.
-   *
-   * @param {string} address - The address of the wallet to fetch the token list for.
-   * @param {BirdeyeRequestOptions} [options] - Additional options for the request.
-   * @returns {Promise<WalletTokenList>} The wallet token list for the specified address.
-   */
-
-  /**
-   * Asynchronously fetches the portfolio value for a given address.
-   *
-   * @param {string} address - The address for which to fetch the portfolio value.
-   * @param {BirdeyeRequestOptions} [options] - The optional request options.
-   * @returns {Promise<WalletPortfolio>} - A promise that resolves to the wallet portfolio object containing total USD, total SOL, and portfolio items.
-   * @throws {Error} - If an error occurs while fetching the portfolio value.
-   */
+public:
+    BirdeyeClient(const std::string& private readonly apiKey, IAgentRuntime private readonly runtime);
+    void if(auto !res.success || !res.data);
+    void createFromRuntime(IAgentRuntime runtime);
+    void if(auto options.expires && !forceRefresh);
+    void if(auto options.expires);
+    std::future<double> fetchPrice(const std::string& address, std::optional<BirdeyeRequestOptions> options);
+    std::future<Prices> fetchPrices();
+    std::future<TokenOverview> fetchTokenOverview(const std::string& address, std::optional<BirdeyeRequestOptions> options, auto forceRefresh = false);
+    std::future<TokenSecurityData> fetchTokenSecurity(const std::string& address, std::optional<BirdeyeRequestOptions> options);
+    std::future<TokenTradeData> fetchTokenTradeData(const std::string& address, std::optional<BirdeyeRequestOptions> options);
+    void fetchWalletTokenList(const std::string& address, std::optional<BirdeyeRequestOptions> options);
+    std::future<WalletPortfolio> fetchPortfolioValue(const std::string& address, std::optional<BirdeyeRequestOptions> options);
+};
 
 /**
  * Parses a time string to milliseconds.
@@ -472,6 +219,6 @@ void parseTimeToMs(const std::string& timeStr);
  * @param {string | number} expires - The expiration time to be parsed.
  * @returns {number} The expiration time in milliseconds.
  */
-void parseExpires(string | number expires);
+void parseExpires(const std::variant<std::string, double>& expires);
 
 } // namespace elizaos

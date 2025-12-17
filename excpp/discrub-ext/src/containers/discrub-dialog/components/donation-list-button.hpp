@@ -1,11 +1,12 @@
-#include "...services/github-service.hpp"
+#pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
+#include "...services/github-service.hpp"
 
 namespace elizaos {
 
@@ -14,7 +15,7 @@ namespace elizaos {
 
 
 
-void DonationListButton({ donation: Donation } { donation });
+void DonationListButton(const std::any& { donation });
 
 
 } // namespace elizaos

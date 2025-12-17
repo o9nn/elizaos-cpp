@@ -1,10 +1,10 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -40,8 +40,15 @@ namespace elizaos {
 // Mock window.matchMedia
 
 // Mock IntersectionObserver
+    void observe();
+    void disconnect();
+    void unobserve();
+    void takeRecords();
 
 // Mock ResizeObserver
+    void observe();
+    void disconnect();
+    void unobserve();
 
 // Mock scrollTo for window and elements
 

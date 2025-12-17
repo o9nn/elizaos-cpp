@@ -1,10 +1,11 @@
+#pragma once
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -131,7 +132,6 @@ struct Sentiment {
     std::string timeslot;
     bool processed;
     std::optional<std::string> text;
-    std::optional<Array<{> occuringTokens;
     std::string token;
     double sentiment;
     std::string reason;
