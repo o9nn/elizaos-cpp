@@ -116,21 +116,48 @@ class TypeScriptToCppTranspiler:
         """Convert TypeScript type to C++ type"""
         # Clean up the type string
         ts_type = ts_type.strip()
-        
+
+        # Handle TypeScript string literal types like 'default' | 'retry' | 'shell'
+        # Convert single quoted strings to std::string
+        if ts_type.startswith("'") and ts_type.endswith("'"):
+            return 'std::string'  # String literal type -> std::string
+
+        # Handle tuple types like [string, string]
+        if ts_type.startswith('[') and ts_type.endswith(']'):
+            inner = ts_type[1:-1]
+            if inner:
+                types = [self.convert_type(t.strip()) for t in self.split_generic_params(inner)]
+                return f'std::tuple<{", ".join(types)}>'
+            return 'std::tuple<>'
+
+        # Handle intersection types like Type1 & Type2 - take first type
+        if ' & ' in ts_type:
+            first_type = ts_type.split(' & ')[0].strip()
+            return self.convert_type(first_type)
+
         # Handle React-specific types FIRST (before union splitting)
         if ts_type.startswith('React.'):
             return self.convert_react_type(ts_type)
-        
+
         # Handle object literal types like { path: string; hiddenTools?: string[] }
         if ts_type.startswith('{') and ts_type.endswith('}'):
             return 'std::any'  # Simplified - could be a struct
-        
+
         # Handle union types like string | null
         if '|' in ts_type and not '=>' in ts_type:
-            types = [self.convert_type(t.strip()) for t in ts_type.split('|')]
+            raw_types = [t.strip() for t in ts_type.split('|')]
+
+            # Check if this is a string literal union like 'default' | 'retry' | 'shell'
+            # All parts are string literals (single quoted)
+            if all(t.startswith("'") and t.endswith("'") for t in raw_types):
+                return 'std::string'  # String literal union -> std::string
+
+            types = [self.convert_type(t) for t in raw_types]
             # Simplify null unions to optional
             if 'null' in ts_type.lower():
-                non_null_types = [t for t in types if t not in ['null', 'nullptr', 'std::nullopt']]
+                non_null_types = [t for t in types if t not in ['null', 'nullptr', 'std::nullopt', 'std::string']]
+                # Also check if the original was a string literal
+                non_null_raw = [t for t in raw_types if t.lower() not in ['null', 'undefined']]
                 if len(non_null_types) == 1:
                     base_type = non_null_types[0]
                     # Don't double-wrap optionals
@@ -141,7 +168,11 @@ class TypeScriptToCppTranspiler:
             types = [t for t in types if t not in ['nullptr', 'std::nullopt']]
             if len(types) == 1:
                 return types[0]
-            return f'std::variant<{", ".join(types)}>'
+            # Deduplicate types in variant
+            unique_types = list(dict.fromkeys(types))
+            if len(unique_types) == 1:
+                return unique_types[0]
+            return f'std::variant<{", ".join(unique_types)}>'
         
         # Handle function types like (value: string) => void
         if '=>' in ts_type:
@@ -312,18 +343,22 @@ class TypeScriptToCppTranspiler:
     def add_conditional_includes(self, includes: List[str], content: str) -> List[str]:
         """Add includes based on content analysis"""
         includes_set = set(includes)
-        
+
         # Check for std::any usage
         if 'std::any' in content:
             includes_set.add('#include <any>')
-        
+
         # Check for std::variant usage
         if 'std::variant' in content:
             includes_set.add('#include <variant>')
-        
+
         # Check for std::future usage
         if 'std::future' in content:
             includes_set.add('#include <future>')
+
+        # Check for std::tuple usage
+        if 'std::tuple' in content:
+            includes_set.add('#include <tuple>')
         
         # Sort includes properly: pragma once first, then system, then project
         result = []
@@ -408,28 +443,31 @@ class TypeScriptToCppTranspiler:
     def convert_class_body(self, name: str, body: str) -> str:
         """Convert TypeScript class body to C++ class with proper brace matching"""
         cpp_class = f'class {name} {{\npublic:\n'
-        
+
         # Extract constructor using brace matching
         constructor_pattern = r'constructor\s*\(([^)]*)\)\s*\{'
         constructor_match = re.search(constructor_pattern, body)
-        
+
         if constructor_match:
             params_str = constructor_match.group(1)
             # Convert constructor parameters
             cpp_params = self.convert_params(params_str)
             cpp_class += f'    {name}({cpp_params});\n'
-        
+
         # Extract method signatures using brace matching
-        method_pattern = r'(?:public|private|protected)?\s*(?:async\s+)?(?:get\s+)?(\w+)\s*\(([^)]*)\)\s*(?::\s*([^{]+))?\s*\{'
+        method_pattern = r'(?:public|private|protected)?\s*(?:static\s+)?(?:async\s+)?(?:get\s+)?(\w+)\s*\(([^)]*)\)\s*(?::\s*([^{]+))?\s*\{'
         pos = 0
         methods = []
-        
+        seen_methods = set()  # Track method names to avoid duplicates
+
         while pos < len(body):
             match = re.search(method_pattern, body[pos:])
             if not match:
                 break
-            
+
             method_name = match.group(1)
+
+            # Skip constructor - handled separately
             if method_name == 'constructor':
                 # Skip past constructor body
                 brace_start = pos + match.end() - 1
@@ -443,27 +481,70 @@ class TypeScriptToCppTranspiler:
                     i += 1
                 pos = i
                 continue
-            
+
+            # Skip invalid method names (keywords, etc.)
+            if method_name in ['if', 'else', 'for', 'while', 'switch', 'try', 'catch', 'finally', 'return', 'throw']:
+                pos = pos + match.end()
+                continue
+
+            # Skip if we've already processed this method
+            if method_name in seen_methods:
+                # Skip past this method body
+                brace_start = pos + match.end() - 1
+                brace_count = 1
+                i = brace_start + 1
+                while i < len(body) and brace_count > 0:
+                    if body[i] == '{':
+                        brace_count += 1
+                    elif body[i] == '}':
+                        brace_count -= 1
+                    i += 1
+                pos = i
+                continue
+
+            seen_methods.add(method_name)
             params_str = match.group(2)
             return_type = match.group(3).strip() if match.group(3) else 'void'
-            
+
             # Check if method is async or a getter
             prefix = body[max(0, pos + match.start() - 30):pos + match.start()]
             is_async = 'async' in prefix
+            is_static = 'static' in prefix or 'static ' in body[pos + match.start():pos + match.start() + 15]
             is_getter = 'get ' in body[pos + match.start():pos + match.start() + 10]
-            
+
             # Convert parameters
             cpp_params = self.convert_params(params_str)
-            
-            # Convert return type
+
+            # Convert return type - validate it doesn't contain TypeScript code
             cpp_return = self.convert_type(return_type)
+
+            # Skip methods with invalid return types (TypeScript code leaked through)
+            if any(invalid in cpp_return for invalid in ["'", "=>", "===", "!==", "null;", "void;", ": "]):
+                # Skip past method body
+                brace_start = pos + match.end() - 1
+                brace_count = 1
+                i = brace_start + 1
+                while i < len(body) and brace_count > 0:
+                    if body[i] == '{':
+                        brace_count += 1
+                    elif body[i] == '}':
+                        brace_count -= 1
+                    i += 1
+                pos = i
+                continue
+
             if is_async and cpp_return != 'void':
                 cpp_return = f'std::future<{cpp_return}>'
-            
-            # Getters should be const methods
+
+            # Build method signature
+            static_prefix = 'static ' if is_static else ''
             const_suffix = ' const' if is_getter and not cpp_params else ''
-            methods.append(f'    {cpp_return} {method_name}({cpp_params}){const_suffix};')
-            
+            method_sig = f'    {static_prefix}{cpp_return} {method_name}({cpp_params}){const_suffix};'
+
+            # Validate the generated signature doesn't contain TypeScript syntax
+            if not any(invalid in method_sig for invalid in ["=>", "===", "!==", " = '", '= "']):
+                methods.append(method_sig)
+
             # Skip past method body
             brace_start = pos + match.end() - 1
             brace_count = 1
@@ -475,16 +556,16 @@ class TypeScriptToCppTranspiler:
                     brace_count -= 1
                 i += 1
             pos = i
-        
+
         # Add methods to class
         if methods:
             for method in methods:
                 cpp_class += method + '\n'
-        
+
         # Extract member variables - only from class body, not from inside methods
         # We'll be more conservative and only extract clear property declarations at the class level
         properties = []
-        
+
         # Look for simple property declarations like "path: string;"
         # Split by methods/constructor to get only class-level declarations
         parts = re.split(r'(?:constructor|get|(?:async\s+)?[\w]+)\s*\([^)]*\)\s*\{', body)
@@ -496,19 +577,26 @@ class TypeScriptToCppTranspiler:
                 if prop_match:
                     prop_name = prop_match.group(1)
                     prop_type = prop_match.group(2).strip()
-                    
-                    # Skip if this looks like a method
-                    if '(' in prop_type:
+
+                    # Skip if this looks like a method or contains TS code
+                    if '(' in prop_type or '=>' in prop_type:
                         continue
-                    
+
+                    # Validate property name
+                    if not re.match(r'^[a-zA-Z_]\w*$', prop_name):
+                        continue
+
                     cpp_type = self.convert_type(prop_type)
-                    properties.append(f'    {cpp_type} {prop_name}_;')
-        
+
+                    # Validate converted type
+                    if cpp_type and not any(invalid in cpp_type for invalid in ["'", "=>", "===", "!=="]):
+                        properties.append(f'    {cpp_type} {prop_name}_;')
+
         if properties:
             cpp_class += '\nprivate:\n'
             for prop in properties:
                 cpp_class += prop + '\n'
-        
+
         cpp_class += '};\n'
         return cpp_class
     
@@ -704,13 +792,16 @@ class TypeScriptToCppTranspiler:
                 continue
         
         content = '\n'.join(filtered_lines)
-        
+
         # Clean up extra blank lines
         content = re.sub(r'\n\s*\n\s*\n+', '\n\n', content)
-        
+
+        # Final cleanup pass to remove any remaining TypeScript code
+        content = self._cleanup_typescript_leakage(content)
+
         # Add conditional includes based on content
         includes = self.add_conditional_includes(includes, content)
-        
+
         # Build header with proper include ordering
         header = '\n'.join(includes) + '\n\n'
         header += f'namespace {namespace} {{\n\n'
@@ -718,8 +809,111 @@ class TypeScriptToCppTranspiler:
         header += '// Manual refinement required for production use\n\n'
         header += content
         header += f'\n}} // namespace {namespace}\n'
-        
+
         return header
+
+    def _cleanup_typescript_leakage(self, content: str) -> str:
+        """Final cleanup pass to remove any TypeScript code that leaked through"""
+        lines = content.split('\n')
+        cleaned_lines = []
+
+        # Patterns that indicate TypeScript code
+        ts_code_patterns = [
+            r'\bthis\.\w+\s*&&',       # this.x && ...
+            r'\bthis\.\w+\s*\|\|',     # this.x || ...
+            r'\bif\s*\(\s*auto',       # if (auto ...
+            r"'\w+'\s+type;",          # 'type' type;
+            r'\bvoid\s+if\(',          # void if(
+            r'\bvoid\s+for\(',         # void for(
+            r'\bvoid\s+while\(',       # void while(
+            r'\bvoid\s+this\.',        # void this.
+            r'= null;$',               # = null; at end of line
+            r'\bboolean = false\b',    # boolean = false (TS default param)
+            r'\bstring = [\'"]',       # string = '...' (TS default param)
+            r'\bnumber = \d',          # number = 123 (TS default param)
+            r'\[\s*string\s*,',        # [string, ...] tuple type
+            r'Record<string',          # Record<string, ...> utility type
+            r'\bPartial<',             # Partial<...> utility type without conversion
+            r'\bRequired<',            # Required<...>
+            r'\bReadonly<',            # Readonly<...>
+            r'\bPick<',                # Pick<...>
+            r'\bOmit<',                # Omit<...>
+            r'\bExclude<',             # Exclude<...>
+            r'\bExtract<',             # Extract<...>
+            r'\bReturnType<',          # ReturnType<...>
+            r'\bParameters<',          # Parameters<...>
+            r'\bPromiseLike<',         # PromiseLike<...>
+            r': unknown\b',            # : unknown type
+            r': never\b',              # : never type
+            r'\bunknown\s+\w+;',       # unknown varName;
+            r'\bnever\s+\w+;',         # never varName;
+        ]
+
+        in_valid_block = False
+        brace_depth = 0
+
+        for line in lines:
+            stripped = line.strip()
+
+            # Track brace depth for struct/class blocks
+            brace_depth += line.count('{') - line.count('}')
+
+            # Skip empty lines - keep them for readability
+            if not stripped:
+                cleaned_lines.append(line)
+                continue
+
+            # Keep comments
+            if stripped.startswith('//') or stripped.startswith('/*') or stripped.startswith('*'):
+                cleaned_lines.append(line)
+                continue
+
+            # Check for TypeScript code patterns
+            is_ts_code = False
+            for pattern in ts_code_patterns:
+                if re.search(pattern, stripped):
+                    is_ts_code = True
+                    break
+
+            if is_ts_code:
+                continue
+
+            # Check for lines that are just closing braces - always keep
+            if stripped in ['{', '}', '};', 'public:', 'private:', 'protected:']:
+                cleaned_lines.append(line)
+                continue
+
+            # Valid C++ patterns to keep
+            valid_patterns = [
+                r'^struct\s+\w+',           # struct declaration
+                r'^class\s+\w+',            # class declaration
+                r'^using\s+\w+\s*=',        # type alias
+                r'^enum\s+(?:class\s+)?\w+', # enum declaration
+                r'^(?:const\s+)?std::\w+',  # std:: types
+                r'^(?:virtual\s+)?(?:static\s+)?(?:const\s+)?\w+(?:<[^>]+>)?\s+\w+\s*\([^)]*\)\s*(?:const\s*)?;$',  # method decl
+                r'^(?:virtual\s+)?(?:static\s+)?(?:const\s+)?\w+(?:<[^>]+>)?\s+\w+;$',  # member variable
+                r'^std::optional<',         # optional member
+                r'^template\s*<',           # template declaration
+                r'^\w+\s*\(',               # constructor/function start
+            ]
+
+            # Check if line matches valid C++ pattern
+            is_valid = False
+            for pattern in valid_patterns:
+                if re.match(pattern, stripped):
+                    is_valid = True
+                    break
+
+            # Also keep lines that are inside struct/class bodies
+            if brace_depth > 0 and stripped.endswith(';'):
+                # Member declaration - validate it
+                if re.match(r'^(?:std::|const\s+)?\w+(?:<[^>]+>)?\s+\w+_;?$', stripped):
+                    is_valid = True
+
+            if is_valid or stripped.endswith(';') and not any(re.search(p, stripped) for p in ts_code_patterns):
+                cleaned_lines.append(line)
+
+        return '\n'.join(cleaned_lines)
     
     def convert_statement(self, stmt: str, indent_level: int = 0) -> str:
         """Convert a single TypeScript statement to C++"""
@@ -1300,35 +1494,102 @@ class TypeScriptToCppTranspiler:
         """Convert TypeScript parameters to C++ parameters"""
         if not params.strip():
             return ''
-        
+
         cpp_params = []
-        param_list = params.split(',')
-        
+        # Use smart splitting to handle nested generics
+        param_list = self.split_generic_params(params)
+
         for param in param_list:
             param = param.strip()
             if not param:
                 continue
-            
+
+            # Handle default values like "outputDir: string = '::'"
+            default_value = None
+            if '=' in param:
+                # Split on '=' but be careful of '=>' in type definitions
+                eq_pos = param.find('=')
+                arrow_pos = param.find('=>')
+                if eq_pos != -1 and (arrow_pos == -1 or eq_pos < arrow_pos):
+                    # Make sure it's not part of =>
+                    if eq_pos > 0 and param[eq_pos - 1] != '>' and (eq_pos + 1 >= len(param) or param[eq_pos + 1] != '>'):
+                        param_part = param[:eq_pos].strip()
+                        default_part = param[eq_pos + 1:].strip()
+                        param = param_part
+                        default_value = self.convert_default_value(default_part)
+
             # Handle optional parameters
             is_optional = '?' in param
             param = param.replace('?', '')
-            
+
             if ':' in param:
+                # Handle intersection types in params (e.g., "item: HistoryItem & { agent: string }")
                 param_name, param_type = param.split(':', 1)
                 param_name = param_name.strip()
                 param_type = param_type.strip()
+
+                # Skip invalid parameter names that look like code
+                if not param_name or not re.match(r'^[a-zA-Z_]\w*$', param_name):
+                    continue
+
                 cpp_type = self.convert_type(param_type)
-                
-                if is_optional:
-                    cpp_params.append(f'std::optional<{cpp_type}> {param_name}')
+
+                # Skip if type conversion failed or produced invalid C++
+                if not cpp_type or any(invalid in cpp_type for invalid in ["'", "=>", "===", "!=="]):
+                    continue
+
+                if is_optional or default_value:
+                    if default_value:
+                        cpp_params.append(f'{cpp_type} {param_name} = {default_value}')
+                    else:
+                        cpp_params.append(f'std::optional<{cpp_type}> {param_name}')
                 elif cpp_type.startswith('std::'):
                     cpp_params.append(f'const {cpp_type}& {param_name}')
                 else:
                     cpp_params.append(f'{cpp_type} {param_name}')
             else:
-                cpp_params.append(f'auto {param}')
-        
+                # Validate parameter name
+                param_clean = param.strip()
+                if param_clean and re.match(r'^[a-zA-Z_]\w*$', param_clean):
+                    cpp_params.append(f'auto {param_clean}')
+
         return ', '.join(cpp_params)
+
+    def convert_default_value(self, value: str) -> str:
+        """Convert TypeScript default value to C++"""
+        value = value.strip()
+
+        # String literals: 'value' or "value"
+        if (value.startswith("'") and value.endswith("'")) or \
+           (value.startswith('"') and value.endswith('"')):
+            # Convert to C++ string literal
+            inner = value[1:-1]
+            return f'"{inner}"'
+
+        # Boolean
+        if value == 'true':
+            return 'true'
+        if value == 'false':
+            return 'false'
+
+        # Null/undefined
+        if value in ['null', 'undefined']:
+            return 'std::nullopt'
+
+        # Numbers (integers and floats)
+        if re.match(r'^-?\d+\.?\d*$', value):
+            return value
+
+        # Empty array
+        if value == '[]':
+            return '{}'
+
+        # Empty object
+        if value == '{}':
+            return '{}'
+
+        # Default: just return as-is (may need manual fix)
+        return value
     
     def generate_implementation(self, ts_content: str, namespace: str = 'elizaos') -> str:
         """Generate C++ implementation file from TypeScript content with converted function bodies"""
