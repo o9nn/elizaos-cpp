@@ -115,39 +115,69 @@ jobs:
     - name: Basic Syntax Validation (Sample)
       run: |
         OUTPUT_DIR="${{ github.event.inputs.output_directory || 'excpp' }}"
-        
+
         echo "🔍 Performing basic syntax validation on sample files..."
-        
+
         # Check a few .hpp files for common issues
-        SAMPLE_FILES=$(find "$OUTPUT_DIR" -name "*.hpp" -type f | head -10)
-        
+        SAMPLE_FILES=$(find "$OUTPUT_DIR" -name "*.hpp" -type f | head -20)
+
         ISSUES_FOUND=0
-        
+        CRITICAL_ISSUES=0
+
         for file in $SAMPLE_FILES; do
-          # Check for raw TypeScript code patterns
-          if grep -q "=> void\|=> string\|=> number\|await \|async function" "$file" 2>/dev/null; then
-            echo "⚠️ Possible TypeScript code leakage in: $file"
-            ISSUES_FOUND=$((ISSUES_FOUND + 1))
+          echo "Checking: $file"
+
+          # Check for raw TypeScript code patterns (critical)
+          if grep -qE "=> void|=> string|=> number|await |async function|\.then\(|\.catch\(" "$file" 2>/dev/null; then
+            echo "  ❌ CRITICAL: TypeScript code leakage detected"
+            CRITICAL_ISSUES=$((CRITICAL_ISSUES + 1))
           fi
-          
+
+          # Check for TypeScript string literal types (critical)
+          if grep -qE "'[a-z]+'\s+type;" "$file" 2>/dev/null; then
+            echo "  ❌ CRITICAL: TypeScript string literal type detected"
+            CRITICAL_ISSUES=$((CRITICAL_ISSUES + 1))
+          fi
+
+          # Check for TypeScript tuple syntax (critical)
+          if grep -qE "\[string,\s*string\]" "$file" 2>/dev/null; then
+            echo "  ❌ CRITICAL: TypeScript tuple syntax detected"
+            CRITICAL_ISSUES=$((CRITICAL_ISSUES + 1))
+          fi
+
           # Check for basic C++ structure
           if ! grep -q "#pragma once" "$file" 2>/dev/null; then
-            echo "⚠️ Missing #pragma once in: $file"
+            echo "  ⚠️ Missing #pragma once"
             ISSUES_FOUND=$((ISSUES_FOUND + 1))
           fi
-          
+
           # Check for namespace
           if ! grep -q "namespace elizaos" "$file" 2>/dev/null; then
-            echo "⚠️ Missing namespace in: $file"
+            echo "  ⚠️ Missing namespace elizaos"
+            ISSUES_FOUND=$((ISSUES_FOUND + 1))
+          fi
+
+          # Check for mismatched braces
+          OPEN_BRACES=$(grep -o '{' "$file" 2>/dev/null | wc -l)
+          CLOSE_BRACES=$(grep -o '}' "$file" 2>/dev/null | wc -l)
+          if [ "$OPEN_BRACES" != "$CLOSE_BRACES" ]; then
+            echo "  ⚠️ Brace mismatch: $OPEN_BRACES opening, $CLOSE_BRACES closing"
             ISSUES_FOUND=$((ISSUES_FOUND + 1))
           fi
         done
-        
-        if [ $ISSUES_FOUND -eq 0 ]; then
-          echo "✅ Sample validation passed - no obvious issues detected"
+
+        echo ""
+        echo "📊 Validation Summary:"
+        echo "   Critical issues: $CRITICAL_ISSUES"
+        echo "   Warnings: $ISSUES_FOUND"
+
+        if [ $CRITICAL_ISSUES -eq 0 ] && [ $ISSUES_FOUND -eq 0 ]; then
+          echo "✅ All sample files passed validation"
+        elif [ $CRITICAL_ISSUES -eq 0 ]; then
+          echo "⚠️ Found $ISSUES_FOUND warnings - review recommended"
         else
-          echo "⚠️ Found $ISSUES_FOUND potential issues in sample files"
-          echo "Note: This is an approximate transpiler - manual review recommended"
+          echo "❌ Found $CRITICAL_ISSUES critical issues - transpiler may need fixes"
+          echo "Note: This is an approximate transpiler - manual review required"
         fi
     
     - name: Generate Transpiler Report
