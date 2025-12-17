@@ -16,9 +16,3 @@ namespace elizaos {
 void CodeChangesDisplaySkeleton();
 
 } // namespace elizaos
-s;
-};
-
-void CodeChangesDisplay(CodeChangesDisplayProps { metrics });
-
-} // namespace elizaos

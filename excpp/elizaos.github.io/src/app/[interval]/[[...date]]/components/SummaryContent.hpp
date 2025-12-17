@@ -1,4 +1,5 @@
 #pragma once
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -13,14 +14,6 @@ namespace elizaos {
 
 
 
-// Custom remark plugin to remove the first H1
-
-// Custom H2 component to apply primary color
-
-struct SummaryContentProps {
-    std::optional<std::string> summaryContent;
-    std::optional<std::string> className;
-};
-
+void SummaryContentSkeleton(std::optional<std::any> { className });
 
 } // namespace elizaos

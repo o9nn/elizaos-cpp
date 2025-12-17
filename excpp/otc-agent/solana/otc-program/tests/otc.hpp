@@ -12,158 +12,98 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
+/**
+ * Security Audit Test Suite for OTC Program
+ * 
+ * These tests verify that security vulnerabilities have been properly fixed
+ * and cover all critical paths through the program.
+ */
 
-
-    // Initialize keypairs
-    // tokenRegistry = Keypair.generate(); // Removed
-
-    // Airdrop SOL to accounts
+  // Test keypairs
 
     // Create mints
 
-    // Create token accounts
+    // Setup victim desk with inventory
 
-    // Mint tokens
+    // Deposit tokens to victim desk
 
-      // This would require creating a mock USDC with wrong decimals
-      // Skipping for now as it requires additional setup
+    // Register token for victim desk
 
-      // Derive PDA for token registry
-      // Update the variable to use PDA instead of Keypair
-      // We need to cast it to any because typescript expects Keypair but we are replacing it with PDA PublicKey
-      // Actually we should just change how we use it.
-      // Let's store it in a new variable and update usages or just override the let.
-      // But tokenRegistry is defined as Keypair in `let tokenRegistry: Keypair;`
-      // We should change definition of tokenRegistry to PublicKey.
-      
-          // tokenRegistry: registryPda,
-          // systemProgram: SystemProgram.programId,
+    // Set prices
 
-      // Set manual price for testing (needed for createOffer)
-          // owner: owner.publicKey,
+    // Deposit inventory
 
-          // owner: owner.publicKey,
+    // Add victim as approver
 
-          // owner: owner.publicKey,
+    // Setup attacker desk
 
-          // owner: owner.publicKey,
+    // Attacker adds themselves as approver
 
-          // owner: owner.publicKey,
+    // Register token on attacker desk with different price
 
-          // owner: owner.publicKey,
+    // Set MUCH LOWER price on attacker registry
 
-          // owner: owner.publicKey,
+      // Create legitimate offer on victim desk
 
-          // owner: owner.publicKey,
+      // Create offer on victim desk
 
-          // tokenProgram: TOKEN_PROGRAM_ID,
-          // systemProgram: SystemProgram.programId,
+      // ATTACK: Try to approve using attacker's desk (where attacker is approver)
 
-          // tokenProgram: TOKEN_PROGRAM_ID,
-          // systemProgram: SystemProgram.programId,
+      // Create and approve offer on victim desk
 
-      // Create consignment
-          // tokenProgram: TOKEN_PROGRAM_ID,
-          // systemProgram: SystemProgram.programId,
+      // Get attacker USDC
 
-      // Withdraw consignment
-          // tokenProgram: TOKEN_PROGRAM_ID,
+      // ATTACK: Try to fulfill using wrong desk
 
-      // Update token registry price first
-      
-      // This is a simplified test - in practice would need to update registry price
-      // For now, setting desk prices
-          // owner: owner.publicKey,
+      // Approve using correct desk
 
-      // Also ensure registry price is set (redundant if registered above, but good for isolation)
-          // owner: owner.publicKey,
+      // ATTACK: Try to create offer on victim desk but using attacker's cheap price registry
 
-          // systemProgram: SystemProgram.programId,
+      // Create and complete an offer flow to test claim
 
-          // tokenProgram: TOKEN_PROGRAM_ID,
-          // systemProgram: SystemProgram.programId,
+      // Reset limits for longer expiry
 
-          // tokenProgram: TOKEN_PROGRAM_ID,
+      // Fund buyer with USDC
 
-      // Check buyer received tokens
+      // Fulfill offer
 
-      // Create and pay for an offer first
-      
-      // Ensure registry has price (it should from previous tests, but set again)
-      // Derive PDA for token registry
-          // owner: owner.publicKey,
+      // Create buyer token ATA
 
-      // Create offer
-          // systemProgram: SystemProgram.programId,
+      // Create attacker token ATA to try stealing tokens
 
-      // Approve
+      // ATTACK: Try to claim tokens to attacker's ATA
 
-      // Pay with USDC
-          // tokenProgram: TOKEN_PROGRAM_ID,
-          // systemProgram: SystemProgram.programId,
+      // Claim correctly - should work
 
-      // Fast forward time (simulated - in real test would need to wait or mock)
-      // For now, try emergency refund (will fail if too early)
-      
-      // In a real test environment, we would need to advance the blockchain time
-      // For comprehensive testing, this would need special test setup
+        // Attacker tries to set price on victim's registry
 
-      // Pause the desk
-          // owner: owner.publicKey,
-
-      // Ensure price
-
-            // systemProgram: SystemProgram.programId,
+      // Pause
 
       // Unpause
-          // owner: owner.publicKey,
 
-      // Set high minimum
-          // owner: owner.publicKey,
+      // Unpause for other tests
 
-      // Ensure price
+      // 1. Create offer with discount
 
-            // systemProgram: SystemProgram.programId,
+      // Verify offer state
 
-      // Ensure price
+      // 2. Approve offer
 
-        // Try to create offer exceeding max deal amount
-            // systemProgram: SystemProgram.programId,
+      // 3. Fund buyer and fulfill
 
-      // Available inventory should be treasury balance minus reserved
+      // 4. Claim tokens
 
-      // This would require Pyth oracle integration
-      // For comprehensive testing, would need to set up Pyth mock accounts
-      // Skipping for now as it requires additional infrastructure
+      // Verify final state
 
-      // Airdrop to new approver
-      
-      // Add second approver
-          // owner: owner.publicKey,
+      // Verify buyer received tokens
 
-          // owner: owner.publicKey,
+      // 1. Create offer for SOL payment
 
-      // Reset minimum to reasonable amount
-          // owner: owner.publicKey,
+      // 2. Approve
 
-      // Create offer for SOL payment
+      // 3. Fulfill with SOL
 
-          // systemProgram: SystemProgram.programId,
-
-      // Approve
-
-      // Fulfill with SOL
-          // systemProgram: SystemProgram.programId,
-
-      // assert.isTrue(deskAccount.tokenDeposited.gt(new anchor.BN(0)));
-
-      // Check withdrawal succeeded
-
-          // owner: owner.publicKey,
-          // tokenProgram: TOKEN_PROGRAM_ID,
-
-          // owner: owner.publicKey,
-          // systemProgram: SystemProgram.programId,
+      // 4. Claim
 
 
 } // namespace elizaos
