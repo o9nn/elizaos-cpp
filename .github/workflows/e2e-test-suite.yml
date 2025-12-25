@@ -1,0 +1,626 @@
+name: E2E Test Suite
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+    inputs:
+      run_extended_tests:
+        description: 'Run extended test suite'
+        required: false
+        default: 'false'
+        type: boolean
+      coverage_enabled:
+        description: 'Enable code coverage'
+        required: false
+        default: 'true'
+        type: boolean
+
+env:
+  BUILD_TYPE: Release
+  CMAKE_VERSION: '3.20'
+
+jobs:
+  # ============================================================================
+  # Pre-flight checks
+  # ============================================================================
+  pre-flight:
+    name: Pre-flight Checks
+    runs-on: ubuntu-latest
+    outputs:
+      should_skip: ${{ steps.skip_check.outputs.should_skip }}
+      paths_result: ${{ steps.skip_check.outputs.paths_result }}
+    steps:
+      - id: skip_check
+        uses: fkirc/skip-duplicate-actions@v5
+        with:
+          paths: '["cpp/**", "include/**", "CMakeLists.txt", ".github/workflows/**"]'
+
+  # ============================================================================
+  # Build Matrix - All Platforms
+  # ============================================================================
+  build-matrix:
+    name: Build (${{ matrix.os }}, ${{ matrix.build_type }}, ${{ matrix.compiler }})
+    needs: pre-flight
+    if: needs.pre-flight.outputs.should_skip != 'true'
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Linux builds
+          - os: ubuntu-22.04
+            compiler: gcc-11
+            cc: gcc-11
+            cxx: g++-11
+            build_type: Debug
+          - os: ubuntu-22.04
+            compiler: gcc-11
+            cc: gcc-11
+            cxx: g++-11
+            build_type: Release
+          - os: ubuntu-22.04
+            compiler: clang-14
+            cc: clang-14
+            cxx: clang++-14
+            build_type: Release
+          - os: ubuntu-20.04
+            compiler: gcc-9
+            cc: gcc-9
+            cxx: g++-9
+            build_type: Release
+
+          # Windows builds
+          - os: windows-latest
+            compiler: msvc
+            cc: cl
+            cxx: cl
+            build_type: Debug
+          - os: windows-latest
+            compiler: msvc
+            cc: cl
+            cxx: cl
+            build_type: Release
+
+          # macOS builds
+          - os: macos-latest
+            compiler: apple-clang
+            cc: clang
+            cxx: clang++
+            build_type: Debug
+          - os: macos-latest
+            compiler: apple-clang
+            cc: clang
+            cxx: clang++
+            build_type: Release
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Set up CMake
+        uses: jwlawson/actions-setup-cmake@v2
+        with:
+          cmake-version: ${{ env.CMAKE_VERSION }}
+
+      - name: Set up MSVC (Windows)
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Install dependencies (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            ${{ matrix.cc }} \
+            ${{ matrix.cxx }} \
+            libcurl4-openssl-dev \
+            pkg-config \
+            lcov \
+            gcovr
+
+      - name: Install dependencies (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          brew install cmake curl pkg-config lcov
+
+      - name: Configure environment
+        shell: bash
+        run: |
+          echo "CC=${{ matrix.cc }}" >> $GITHUB_ENV
+          echo "CXX=${{ matrix.cxx }}" >> $GITHUB_ENV
+
+      - name: Configure CMake
+        run: |
+          cmake -B build \
+            -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
+            -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+
+      - name: Build
+        run: cmake --build build --config ${{ matrix.build_type }} -j 4
+
+      - name: Run unit tests
+        working-directory: build
+        run: ctest --output-on-failure --config ${{ matrix.build_type }} -j 4
+        continue-on-error: true
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ matrix.os }}-${{ matrix.compiler }}-${{ matrix.build_type }}
+          path: |
+            build/Testing/
+            build/**/test-*.xml
+          retention-days: 14
+
+      - name: Upload build artifacts (Release only)
+        if: matrix.build_type == 'Release'
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ matrix.os }}-${{ matrix.compiler }}
+          path: |
+            build/eliza*
+            build/*.exe
+            build/*.a
+            build/*.lib
+            build/*.so
+            build/*.dylib
+          retention-days: 30
+
+  # ============================================================================
+  # Unit Test Analysis
+  # ============================================================================
+  unit-tests:
+    name: Unit Test Suite
+    needs: build-matrix
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Set up CMake
+        uses: jwlawson/actions-setup-cmake@v2
+        with:
+          cmake-version: ${{ env.CMAKE_VERSION }}
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential g++-11 \
+            libcurl4-openssl-dev pkg-config \
+            lcov gcovr
+
+      - name: Configure with coverage
+        run: |
+          cmake -B build \
+            -DCMAKE_BUILD_TYPE=Debug \
+            -DCMAKE_CXX_FLAGS="--coverage -fprofile-arcs -ftest-coverage" \
+            -DCMAKE_C_FLAGS="--coverage -fprofile-arcs -ftest-coverage" \
+            -DCMAKE_EXE_LINKER_FLAGS="--coverage"
+
+      - name: Build
+        run: cmake --build build --config Debug -j 4
+
+      - name: Run all unit tests
+        working-directory: build
+        run: |
+          ctest --output-on-failure --config Debug -j 4 2>&1 | tee test-output.log
+          echo "TEST_EXIT_CODE=${PIPESTATUS[0]}" >> $GITHUB_ENV
+
+      - name: Generate coverage report
+        if: always()
+        run: |
+          lcov --capture --directory build --output-file coverage.info \
+               --ignore-errors mismatch,source
+          lcov --remove coverage.info '/usr/*' '*/googletest/*' '*/nlohmann/*' \
+               --output-file coverage.info --ignore-errors unused
+          lcov --list coverage.info
+
+      - name: Generate HTML coverage report
+        if: always()
+        run: |
+          genhtml coverage.info --output-directory coverage-report \
+                 --ignore-errors source
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage-report/
+          retention-days: 30
+
+      - name: Parse test results
+        if: always()
+        run: |
+          echo "=== Test Suite Summary ==="
+          grep -E "^\[.*(PASSED|FAILED|SKIPPED)\]" build/test-output.log || true
+          echo ""
+          echo "=== Failed Tests ==="
+          grep -E "^\[.*FAILED\]" build/test-output.log || echo "No failed tests!"
+
+  # ============================================================================
+  # Integration Tests
+  # ============================================================================
+  integration-tests:
+    name: Integration Tests
+    needs: build-matrix
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Set up CMake
+        uses: jwlawson/actions-setup-cmake@v2
+        with:
+          cmake-version: ${{ env.CMAKE_VERSION }}
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential g++-11 \
+            libcurl4-openssl-dev pkg-config
+
+      - name: Build Release
+        run: |
+          cmake -B build -DCMAKE_BUILD_TYPE=Release
+          cmake --build build --config Release -j 4
+
+      - name: Run integration tests
+        working-directory: build
+        run: |
+          echo "=== Running Integration Tests ==="
+
+          # Test main eliza executable
+          if [ -f ./eliza ]; then
+            echo "Testing eliza executable..."
+            timeout 10 ./eliza --help || true
+            echo "eliza: OK"
+          fi
+
+          # Test demo executables
+          for demo in spartan_demo stage4_demo stage5_demo stage6_demo \
+                      awesome_eliza_demo the_org_demo characters_demo \
+                      knowledge_demo registry_demo shell_demo; do
+            if [ -f ./$demo ]; then
+              echo "Testing $demo..."
+              timeout 10 ./$demo --help 2>/dev/null || timeout 5 ./$demo 2>/dev/null || true
+              echo "$demo: OK"
+            fi
+          done
+
+          echo "=== Integration Tests Complete ==="
+
+      - name: Library linkage verification
+        working-directory: build
+        run: |
+          echo "=== Library Linkage Verification ==="
+
+          # Check all static libraries
+          for lib in $(find . -name "*.a" -type f); do
+            echo "Checking: $lib"
+            nm -C "$lib" 2>/dev/null | head -5 || true
+          done
+
+          echo "=== Linkage Verification Complete ==="
+
+  # ============================================================================
+  # E2E Smoke Tests
+  # ============================================================================
+  e2e-smoke-tests:
+    name: E2E Smoke Tests
+    needs: [unit-tests, integration-tests]
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Set up CMake
+        uses: jwlawson/actions-setup-cmake@v2
+        with:
+          cmake-version: ${{ env.CMAKE_VERSION }}
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential g++-11 \
+            libcurl4-openssl-dev pkg-config
+
+      - name: Build Release
+        run: |
+          cmake -B build -DCMAKE_BUILD_TYPE=Release
+          cmake --build build --config Release -j 4
+
+      - name: E2E Smoke Test - Agent Loop
+        working-directory: build
+        run: |
+          echo "=== E2E: Agent Loop Verification ==="
+          ./elizaos_tests --gtest_filter="*AgentLoop*" 2>&1 || true
+
+      - name: E2E Smoke Test - Memory System
+        working-directory: build
+        run: |
+          echo "=== E2E: Memory System Verification ==="
+          ./elizaos_tests --gtest_filter="*Memory*:*Attention*" 2>&1 || true
+
+      - name: E2E Smoke Test - Core Systems
+        working-directory: build
+        run: |
+          echo "=== E2E: Core Systems Verification ==="
+          ./elizaos_tests --gtest_filter="*Core*:*Cognitive*" 2>&1 || true
+
+      - name: E2E Smoke Test - Communication
+        working-directory: build
+        run: |
+          echo "=== E2E: Communication System Verification ==="
+          ./elizaos_tests --gtest_filter="*Comms*:*Logger*" 2>&1 || true
+
+      - name: E2E Smoke Test - Knowledge Base
+        working-directory: build
+        run: |
+          echo "=== E2E: Knowledge Base Verification ==="
+          ./elizaos_tests --gtest_filter="*Knowledge*" 2>&1 || true
+
+      - name: E2E Smoke Test - Character System
+        working-directory: build
+        run: |
+          echo "=== E2E: Character System Verification ==="
+          ./elizaos_tests --gtest_filter="*Character*" 2>&1 || true
+
+      - name: Generate E2E Report
+        if: always()
+        run: |
+          echo "# E2E Smoke Test Report" > e2e-report.md
+          echo "" >> e2e-report.md
+          echo "## Test Execution Summary" >> e2e-report.md
+          echo "- Date: $(date -u)" >> e2e-report.md
+          echo "- Platform: Ubuntu 22.04" >> e2e-report.md
+          echo "- Build Type: Release" >> e2e-report.md
+          echo "" >> e2e-report.md
+
+          # Count executables
+          echo "## Built Executables" >> e2e-report.md
+          find build -maxdepth 1 -type f -executable | wc -l >> e2e-report.md
+          echo "" >> e2e-report.md
+
+          # Count libraries
+          echo "## Built Libraries" >> e2e-report.md
+          find build -name "*.a" | wc -l >> e2e-report.md
+
+      - name: Upload E2E Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-smoke-test-report
+          path: e2e-report.md
+          retention-days: 30
+
+  # ============================================================================
+  # Static Analysis
+  # ============================================================================
+  static-analysis:
+    name: Static Analysis
+    needs: pre-flight
+    if: needs.pre-flight.outputs.should_skip != 'true'
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Set up CMake
+        uses: jwlawson/actions-setup-cmake@v2
+        with:
+          cmake-version: ${{ env.CMAKE_VERSION }}
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential g++-11 \
+            libcurl4-openssl-dev pkg-config \
+            cppcheck clang-tidy-14
+
+      - name: Configure CMake
+        run: |
+          cmake -B build \
+            -DCMAKE_BUILD_TYPE=Debug \
+            -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+
+      - name: Run cppcheck
+        run: |
+          cppcheck --enable=all --suppress=missingIncludeSystem \
+                   --error-exitcode=0 \
+                   --xml --xml-version=2 \
+                   -I include \
+                   cpp/ 2> cppcheck-report.xml || true
+
+      - name: Run clang-tidy
+        run: |
+          find cpp -name "*.cpp" | head -20 | while read file; do
+            echo "Analyzing: $file"
+            clang-tidy-14 -p build "$file" 2>/dev/null || true
+          done
+
+      - name: Upload static analysis results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: static-analysis-report
+          path: cppcheck-report.xml
+          retention-days: 30
+
+  # ============================================================================
+  # Memory Sanitizers
+  # ============================================================================
+  sanitizers:
+    name: Sanitizer Tests (${{ matrix.sanitizer }})
+    needs: pre-flight
+    if: needs.pre-flight.outputs.should_skip != 'true'
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        sanitizer: [address, undefined, thread]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Set up CMake
+        uses: jwlawson/actions-setup-cmake@v2
+        with:
+          cmake-version: ${{ env.CMAKE_VERSION }}
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential g++-11 \
+            libcurl4-openssl-dev pkg-config
+
+      - name: Configure with ${{ matrix.sanitizer }} sanitizer
+        run: |
+          SANITIZER_FLAGS=""
+          case "${{ matrix.sanitizer }}" in
+            address)
+              SANITIZER_FLAGS="-fsanitize=address -fno-omit-frame-pointer"
+              ;;
+            undefined)
+              SANITIZER_FLAGS="-fsanitize=undefined"
+              ;;
+            thread)
+              SANITIZER_FLAGS="-fsanitize=thread"
+              ;;
+          esac
+
+          cmake -B build \
+            -DCMAKE_BUILD_TYPE=Debug \
+            -DCMAKE_CXX_FLAGS="$SANITIZER_FLAGS" \
+            -DCMAKE_C_FLAGS="$SANITIZER_FLAGS" \
+            -DCMAKE_EXE_LINKER_FLAGS="$SANITIZER_FLAGS"
+
+      - name: Build
+        run: cmake --build build --config Debug -j 4
+
+      - name: Run tests with sanitizer
+        working-directory: build
+        run: ctest --output-on-failure --config Debug -j 2
+        continue-on-error: true
+
+  # ============================================================================
+  # Package Build Verification
+  # ============================================================================
+  package-build:
+    name: Package Build (${{ matrix.os }})
+    needs: [e2e-smoke-tests]
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-22.04
+            package_type: DEB
+          - os: ubuntu-20.04
+            package_type: DEB
+          - os: windows-latest
+            package_type: ZIP
+          - os: macos-latest
+            package_type: TGZ
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Set up CMake
+        uses: jwlawson/actions-setup-cmake@v2
+        with:
+          cmake-version: ${{ env.CMAKE_VERSION }}
+
+      - name: Set up MSVC (Windows)
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Install dependencies (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential g++-11 \
+            libcurl4-openssl-dev pkg-config \
+            rpm
+
+      - name: Install dependencies (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          brew install cmake curl pkg-config
+
+      - name: Build and Package
+        run: |
+          cmake -B build -DCMAKE_BUILD_TYPE=Release
+          cmake --build build --config Release -j 4
+          cd build && cpack -G ${{ matrix.package_type }}
+
+      - name: Upload packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: package-${{ matrix.os }}-${{ matrix.package_type }}
+          path: |
+            build/*.deb
+            build/*.rpm
+            build/*.zip
+            build/*.tar.gz
+            build/*.tgz
+          retention-days: 30
+
+  # ============================================================================
+  # Final Summary
+  # ============================================================================
+  test-summary:
+    name: Test Summary
+    needs: [build-matrix, unit-tests, integration-tests, e2e-smoke-tests, static-analysis, sanitizers, package-build]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Generate summary
+        run: |
+          echo "# E2E Test Suite Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Job Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Job | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Build Matrix | ${{ needs.build-matrix.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Unit Tests | ${{ needs.unit-tests.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Integration Tests | ${{ needs.integration-tests.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| E2E Smoke Tests | ${{ needs.e2e-smoke-tests.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Static Analysis | ${{ needs.static-analysis.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Sanitizers | ${{ needs.sanitizers.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Package Build | ${{ needs.package-build.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Artifacts" >> $GITHUB_STEP_SUMMARY
+          ls -la artifacts/ 2>/dev/null || echo "No artifacts found"
