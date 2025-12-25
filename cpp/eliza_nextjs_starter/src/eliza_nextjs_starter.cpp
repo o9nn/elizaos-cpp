@@ -652,6 +652,19 @@ a {
         return writeFile(projectPath + "/styles/globals.css", globalStyles);
     }
     
+public:
+    // Static writeFile for use by other classes
+    static bool writeFileStatic(const std::string& path, const std::string& content) {
+        std::ofstream file(path);
+        if (!file.is_open()) {
+            return false;
+        }
+        file << content;
+        file.close();
+        return true;
+    }
+
+private:
     static bool generateReadme(const std::string& projectPath, const std::string& projectName) {
         std::ostringstream content;
         content << "# " << projectName << "\n\n"
@@ -681,11 +694,277 @@ a {
 };
 
 // ==============================================================================
+// WEBSOCKET INTEGRATION
+// ==============================================================================
+
+class WebSocketIntegration {
+public:
+    static bool generateWebSocketSupport(const std::string& projectPath) {
+        // Generate WebSocket hook
+        std::string useWebSocketContent = R"(import { useState, useEffect, useRef, useCallback } from 'react'
+
+interface WebSocketMessage {
+  type: 'message' | 'status' | 'error' | 'typing'
+  content?: string
+  agentId?: string
+  timestamp: number
+  metadata?: Record<string, unknown>
+}
+
+interface UseWebSocketOptions {
+  url: string
+  sessionId: string
+  onMessage?: (message: WebSocketMessage) => void
+  onConnect?: () => void
+  onDisconnect?: () => void
+  onError?: (error: Event) => void
+  reconnectInterval?: number
+  maxReconnectAttempts?: number
+}
+
+export function useElizaWebSocket({
+  url,
+  sessionId,
+  onMessage,
+  onConnect,
+  onDisconnect,
+  onError,
+  reconnectInterval = 3000,
+  maxReconnectAttempts = 5
+}: UseWebSocketOptions) {
+  const [isConnected, setIsConnected] = useState(false)
+  const [isReconnecting, setIsReconnecting] = useState(false)
+  const wsRef = useRef<WebSocket | null>(null)
+  const reconnectAttemptsRef = useRef(0)
+  const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+
+  const connect = useCallback(() => {
+    if (wsRef.current?.readyState === WebSocket.OPEN) return
+
+    const wsUrl = `${url}?sessionId=${sessionId}`
+    const ws = new WebSocket(wsUrl)
+
+    ws.onopen = () => {
+      setIsConnected(true)
+      setIsReconnecting(false)
+      reconnectAttemptsRef.current = 0
+      onConnect?.()
+    }
+
+    ws.onmessage = (event) => {
+      try {
+        const message: WebSocketMessage = JSON.parse(event.data)
+        onMessage?.(message)
+      } catch (error) {
+        console.error('Failed to parse WebSocket message:', error)
+      }
+    }
+
+    ws.onclose = () => {
+      setIsConnected(false)
+      onDisconnect?.()
+
+      // Auto-reconnect logic
+      if (reconnectAttemptsRef.current < maxReconnectAttempts) {
+        setIsReconnecting(true)
+        reconnectTimeoutRef.current = setTimeout(() => {
+          reconnectAttemptsRef.current++
+          connect()
+        }, reconnectInterval)
+      }
+    }
+
+    ws.onerror = (error) => {
+      onError?.(error)
+    }
+
+    wsRef.current = ws
+  }, [url, sessionId, onMessage, onConnect, onDisconnect, onError, reconnectInterval, maxReconnectAttempts])
+
+  const disconnect = useCallback(() => {
+    if (reconnectTimeoutRef.current) {
+      clearTimeout(reconnectTimeoutRef.current)
+    }
+    reconnectAttemptsRef.current = maxReconnectAttempts // Prevent auto-reconnect
+    wsRef.current?.close()
+    wsRef.current = null
+    setIsConnected(false)
+    setIsReconnecting(false)
+  }, [maxReconnectAttempts])
+
+  const sendMessage = useCallback((content: string, metadata?: Record<string, unknown>) => {
+    if (wsRef.current?.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify({
+        type: 'message',
+        content,
+        sessionId,
+        timestamp: Date.now(),
+        metadata
+      }))
+      return true
+    }
+    return false
+  }, [sessionId])
+
+  useEffect(() => {
+    connect()
+    return () => disconnect()
+  }, [connect, disconnect])
+
+  return {
+    isConnected,
+    isReconnecting,
+    sendMessage,
+    connect,
+    disconnect
+  }
+}
+)";
+
+        if (!NextJSTemplateGenerator::writeFileStatic(projectPath + "/hooks/useElizaWebSocket.ts", useWebSocketContent)) {
+            return false;
+        }
+
+        // Generate WebSocket chat component
+        std::string wsChatContent = R"(import { useState, useEffect, useRef } from 'react'
+import { useElizaWebSocket } from '@/hooks/useElizaWebSocket'
+
+interface Message {
+  id: string
+  content: string
+  sender: 'user' | 'agent'
+  timestamp: number
+}
+
+interface ElizaWebSocketChatProps {
+  wsUrl?: string
+  agentId?: string
+}
+
+export function ElizaWebSocketChat({
+  wsUrl = process.env.NEXT_PUBLIC_ELIZA_WS_URL || 'ws://localhost:3001/ws',
+  agentId
+}: ElizaWebSocketChatProps) {
+  const [messages, setMessages] = useState<Message[]>([])
+  const [input, setInput] = useState('')
+  const [isTyping, setIsTyping] = useState(false)
+  const [sessionId] = useState(() => `ws_session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`)
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+
+  const { isConnected, isReconnecting, sendMessage } = useElizaWebSocket({
+    url: wsUrl,
+    sessionId,
+    onMessage: (message) => {
+      if (message.type === 'typing') {
+        setIsTyping(true)
+      } else if (message.type === 'message' && message.content) {
+        setIsTyping(false)
+        const agentMessage: Message = {
+          id: `msg_${Date.now()}_agent`,
+          content: message.content,
+          sender: 'agent',
+          timestamp: message.timestamp
+        }
+        setMessages(prev => [...prev, agentMessage])
+      }
+    },
+    onConnect: () => console.log('WebSocket connected'),
+    onDisconnect: () => console.log('WebSocket disconnected'),
+    onError: (error) => console.error('WebSocket error:', error)
+  })
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  useEffect(() => {
+    scrollToBottom()
+  }, [messages])
+
+  const handleSend = () => {
+    if (!input.trim() || !isConnected) return
+
+    const userMessage: Message = {
+      id: `msg_${Date.now()}`,
+      content: input,
+      sender: 'user',
+      timestamp: Date.now()
+    }
+
+    setMessages(prev => [...prev, userMessage])
+    sendMessage(input, { agentId })
+    setInput('')
+  }
+
+  return (
+    <div className="eliza-ws-chat">
+      <div className="chat-header">
+        <h2>ElizaOS Live Chat</h2>
+        <div className={`connection-status ${isConnected ? 'connected' : isReconnecting ? 'reconnecting' : 'disconnected'}`}>
+          {isConnected ? 'Connected' : isReconnecting ? 'Reconnecting...' : 'Disconnected'}
+        </div>
+      </div>
+      <div className="messages-container">
+        {messages.map((msg) => (
+          <div key={msg.id} className={`message ${msg.sender}`}>
+            <div className="message-content">{msg.content}</div>
+            <div className="message-time">
+              {new Date(msg.timestamp).toLocaleTimeString()}
+            </div>
+          </div>
+        ))}
+        {isTyping && (
+          <div className="message agent typing">
+            <div className="typing-indicator">
+              <span></span><span></span><span></span>
+            </div>
+          </div>
+        )}
+        <div ref={messagesEndRef} />
+      </div>
+      <div className="input-area">
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+          placeholder={isConnected ? "Type a message..." : "Connecting..."}
+          disabled={!isConnected}
+        />
+        <button onClick={handleSend} disabled={!isConnected || !input.trim()}>
+          Send
+        </button>
+      </div>
+    </div>
+  )
+}
+)";
+
+        return NextJSTemplateGenerator::writeFileStatic(projectPath + "/components/ElizaWebSocketChat.tsx", wsChatContent);
+    }
+
+private:
+    static bool createDirectory(const std::string& path) {
+        return mkdir(path.c_str(), 0755) == 0 || errno == EEXIST;
+    }
+};
+
+// ==============================================================================
 // EXPORTED API
 // ==============================================================================
 
 bool generateNextJSProject(const std::string& projectPath, const std::string& projectName) {
-    return NextJSTemplateGenerator::generateProject(projectPath, projectName);
+    if (!NextJSTemplateGenerator::generateProject(projectPath, projectName)) {
+        return false;
+    }
+
+    // Create hooks directory and add WebSocket support
+    mkdir((projectPath + "/hooks").c_str(), 0755);
+    return WebSocketIntegration::generateWebSocketSupport(projectPath);
+}
+
+bool generateNextJSProjectWithWebSocket(const std::string& projectPath, const std::string& projectName) {
+    return generateNextJSProject(projectPath, projectName);
 }
 
 } // namespace nextjs_starter

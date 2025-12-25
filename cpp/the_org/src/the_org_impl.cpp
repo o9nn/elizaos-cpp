@@ -637,4 +637,439 @@ namespace the_org_utils {
     }
 }
 
+// ============================================================================
+// CommunityLiaisonAgent Implementation
+// ============================================================================
+
+CommunityLiaisonAgent::CommunityLiaisonAgent(const AgentConfig& config)
+    : TheOrgAgent(config, AgentRole::COMMUNITY_LIAISON) {
+}
+
+void CommunityLiaisonAgent::initialize() {
+    AgentLogger logger;
+    logger.log("Initializing Community Liaison Agent: " + config_.agentName);
+}
+
+void CommunityLiaisonAgent::start() {
+    if (running_) return;
+    running_ = true;
+    paused_ = false;
+
+    AgentLogger logger;
+    logger.log("Community Liaison Agent started: " + config_.agentName);
+}
+
+void CommunityLiaisonAgent::stop() {
+    if (!running_) return;
+    running_ = false;
+
+    AgentLogger logger;
+    logger.log("Community Liaison Agent stopped: " + config_.agentName);
+}
+
+void CommunityLiaisonAgent::pause() { paused_ = true; }
+void CommunityLiaisonAgent::resume() { paused_ = false; }
+bool CommunityLiaisonAgent::isRunning() const { return running_; }
+void CommunityLiaisonAgent::processLoop() {}
+
+void CommunityLiaisonAgent::addOrganization(const OrganizationConfig& org) {
+    std::lock_guard<std::mutex> lock(orgMutex_);
+    organizations_[org.id] = org;
+}
+
+void CommunityLiaisonAgent::removeOrganization(const UUID& orgId) {
+    std::lock_guard<std::mutex> lock(orgMutex_);
+    organizations_.erase(orgId);
+}
+
+std::vector<OrganizationConfig> CommunityLiaisonAgent::getMonitoredOrganizations() const {
+    std::lock_guard<std::mutex> lock(orgMutex_);
+    std::vector<OrganizationConfig> result;
+    for (const auto& [id, org] : organizations_) {
+        result.push_back(org);
+    }
+    return result;
+}
+
+void CommunityLiaisonAgent::trackDiscussion(const UUID& /* orgId */, const std::string& /* topic */,
+                                            const std::string& /* summary */, const std::string& /* channelId */) {
+    // Mock implementation
+}
+
+std::vector<ParallelTopic> CommunityLiaisonAgent::identifyParallelTopics(std::chrono::hours /* timeWindow */) const {
+    return {}; // Mock
+}
+
+CrossOrgReport CommunityLiaisonAgent::generateDailyReport(const std::vector<UUID>& /* recipientOrgIds */) const {
+    CrossOrgReport report;
+    report.type = ReportType::DAILY;
+    report.generatedAt = std::chrono::system_clock::now();
+    return report;
+}
+
+CrossOrgReport CommunityLiaisonAgent::generateWeeklyReport(const std::vector<UUID>& /* recipientOrgIds */) const {
+    CrossOrgReport report;
+    report.type = ReportType::WEEKLY;
+    report.generatedAt = std::chrono::system_clock::now();
+    return report;
+}
+
+// ============================================================================
+// SocialMediaManagerAgent Implementation
+// ============================================================================
+
+SocialMediaManagerAgent::SocialMediaManagerAgent(const AgentConfig& config)
+    : TheOrgAgent(config, AgentRole::SOCIAL_MEDIA_MANAGER) {
+}
+
+void SocialMediaManagerAgent::initialize() {
+    AgentLogger logger;
+    logger.log("Initializing Social Media Manager Agent: " + config_.agentName);
+}
+
+void SocialMediaManagerAgent::start() {
+    if (running_) return;
+    running_ = true;
+    paused_ = false;
+
+    AgentLogger logger;
+    logger.log("Social Media Manager Agent started: " + config_.agentName);
+}
+
+void SocialMediaManagerAgent::stop() {
+    if (!running_) return;
+    running_ = false;
+
+    AgentLogger logger;
+    logger.log("Social Media Manager Agent stopped: " + config_.agentName);
+}
+
+void SocialMediaManagerAgent::pause() { paused_ = true; }
+void SocialMediaManagerAgent::resume() { paused_ = false; }
+bool SocialMediaManagerAgent::isRunning() const { return running_; }
+void SocialMediaManagerAgent::processLoop() {}
+
+UUID SocialMediaManagerAgent::createContent(ContentType type, const std::string& title, const std::string& contentText,
+                                            const std::vector<PlatformType>& targetPlatforms) {
+    std::lock_guard<std::mutex> lock(contentMutex_);
+
+    SocialMediaContent content;
+    content.id = config_.agentId + "-content-" + std::to_string(content_.size());
+    content.type = type;
+    content.title = title;
+    content.content = contentText;
+    content.targetPlatforms = targetPlatforms;
+    content.status = ContentStatus::DRAFT;
+    content.createdAt = std::chrono::system_clock::now();
+    content.updatedAt = content.createdAt;
+
+    content_[content.id] = content;
+    return content.id;
+}
+
+void SocialMediaManagerAgent::scheduleContent(const UUID& contentId, Timestamp publishTime) {
+    std::lock_guard<std::mutex> lock(contentMutex_);
+    auto it = content_.find(contentId);
+    if (it != content_.end()) {
+        it->second.scheduledTime = publishTime;
+        it->second.status = ContentStatus::SCHEDULED;
+        it->second.updatedAt = std::chrono::system_clock::now();
+    }
+}
+
+void SocialMediaManagerAgent::publishContent(const UUID& contentId) {
+    std::lock_guard<std::mutex> lock(contentMutex_);
+    auto it = content_.find(contentId);
+    if (it != content_.end()) {
+        it->second.status = ContentStatus::PUBLISHED;
+        it->second.updatedAt = std::chrono::system_clock::now();
+
+        AgentLogger logger;
+        logger.log("Published content: " + it->second.title);
+    }
+}
+
+std::string SocialMediaManagerAgent::generateContent(const std::string& topic, ContentType /* type */,
+                                                     PlatformType platform, const std::string& tone) const {
+    std::string platformName = the_org_utils::platformTypeToString(platform);
+    return "Generated " + tone + " content about " + topic + " for " + platformName;
+}
+
+std::vector<std::string> SocialMediaManagerAgent::suggestHashtags(const std::string& /* content */, PlatformType /* platform */) const {
+    return {"#ElizaOS", "#AI", "#Agents", "#OpenSource"};
+}
+
+SocialMediaManagerAgent::SocialMediaMetrics SocialMediaManagerAgent::getPlatformMetrics(PlatformType platform) const {
+    std::lock_guard<std::mutex> lock(metricsMutex_);
+    auto it = platformMetrics_.find(platform);
+    if (it != platformMetrics_.end()) {
+        return it->second;
+    }
+
+    // Return default metrics
+    SocialMediaMetrics metrics;
+    metrics.platform = platform;
+    metrics.followers = 0;
+    metrics.totalPosts = 0;
+    metrics.engagementRate = 0.0;
+    metrics.lastUpdated = std::chrono::system_clock::now();
+    return metrics;
+}
+
+std::string SocialMediaManagerAgent::generateAnalyticsReport(std::chrono::hours /* timeWindow */) const {
+    return "Social Media Analytics Report: Mock implementation";
+}
+
+// ============================================================================
+// Additional ProjectManagerAgent Methods
+// ============================================================================
+
+void ProjectManagerAgent::updateProject(const UUID& projectId, const Project& updatedProject) {
+    std::lock_guard<std::mutex> lock(projectMutex_);
+    projects_[projectId] = updatedProject;
+}
+
+void ProjectManagerAgent::addTeamMemberToProject(const UUID& projectId, const UUID& teamMemberId) {
+    std::lock_guard<std::mutex> lock(projectMutex_);
+    auto it = projects_.find(projectId);
+    if (it != projects_.end()) {
+        it->second.teamMemberIds.push_back(teamMemberId);
+    }
+}
+
+void ProjectManagerAgent::removeTeamMemberFromProject(const UUID& projectId, const UUID& teamMemberId) {
+    std::lock_guard<std::mutex> lock(projectMutex_);
+    auto it = projects_.find(projectId);
+    if (it != projects_.end()) {
+        auto& members = it->second.teamMemberIds;
+        members.erase(std::remove(members.begin(), members.end(), teamMemberId), members.end());
+    }
+}
+
+std::vector<Project> ProjectManagerAgent::getActiveProjects() const {
+    std::lock_guard<std::mutex> lock(projectMutex_);
+    std::vector<Project> result;
+    for (const auto& [id, project] : projects_) {
+        if (project.status == ProjectStatus::ACTIVE || project.status == ProjectStatus::PLANNING) {
+            result.push_back(project);
+        }
+    }
+    return result;
+}
+
+std::optional<Project> ProjectManagerAgent::getProject(const UUID& projectId) const {
+    std::lock_guard<std::mutex> lock(projectMutex_);
+    auto it = projects_.find(projectId);
+    if (it != projects_.end()) {
+        return it->second;
+    }
+    return std::nullopt;
+}
+
+void ProjectManagerAgent::updateTeamMember(const UUID& memberId, const TeamMember& updatedMember) {
+    std::lock_guard<std::mutex> lock(teamMutex_);
+    teamMembers_[memberId] = updatedMember;
+}
+
+void ProjectManagerAgent::removeTeamMember(const UUID& memberId) {
+    std::lock_guard<std::mutex> lock(teamMutex_);
+    teamMembers_.erase(memberId);
+}
+
+std::optional<TeamMember> ProjectManagerAgent::getTeamMember(const UUID& memberId) const {
+    std::lock_guard<std::mutex> lock(teamMutex_);
+    auto it = teamMembers_.find(memberId);
+    if (it != teamMembers_.end()) {
+        return it->second;
+    }
+    return std::nullopt;
+}
+
+std::vector<TeamMember> ProjectManagerAgent::getAllTeamMembers() const {
+    std::lock_guard<std::mutex> lock(teamMutex_);
+    std::vector<TeamMember> result;
+    for (const auto& [id, member] : teamMembers_) {
+        result.push_back(member);
+    }
+    return result;
+}
+
+void ProjectManagerAgent::scheduleDailyCheckins(const UUID& /* projectId */) {
+    // Mock implementation
+}
+
+std::vector<DailyUpdate> ProjectManagerAgent::getDailyUpdates(const UUID& /* projectId */, const std::string& /* date */) const {
+    return dailyUpdates_;
+}
+
+std::vector<DailyUpdate> ProjectManagerAgent::getMemberUpdates(const UUID& /* teamMemberId */, std::chrono::hours /* timeWindow */) const {
+    return {};
+}
+
+std::string ProjectManagerAgent::generateTeamProductivityReport(const std::vector<UUID>& /* teamMemberIds */,
+                                                                 std::chrono::hours /* timeWindow */) const {
+    return "Team Productivity Report: Mock implementation";
+}
+
+void ProjectManagerAgent::distributeReport(const std::string& report, const std::vector<std::string>& channelIds) {
+    for (const auto& channelId : channelIds) {
+        AgentLogger logger;
+        logger.log("Distributing report to channel: " + channelId);
+    }
+    (void)report; // Used for logging
+}
+
+void ProjectManagerAgent::linkTaskToProject(const UUID& projectId, const UUID& taskId) {
+    std::lock_guard<std::mutex> lock(projectMutex_);
+    auto it = projects_.find(projectId);
+    if (it != projects_.end()) {
+        it->second.taskIds.push_back(taskId);
+    }
+}
+
+void ProjectManagerAgent::reportBlocker(const UUID& /* projectId */, const UUID& /* teamMemberId */,
+                                         const std::string& description) {
+    AgentLogger logger;
+    logger.log("Blocker reported: " + description, "", "Project", LogLevel::WARNING);
+}
+
+void ProjectManagerAgent::resolveBlocker(const UUID& /* blockerId */, const std::string& resolution) {
+    AgentLogger logger;
+    logger.log("Blocker resolved: " + resolution);
+}
+
+std::vector<std::string> ProjectManagerAgent::getActiveBlockers(const UUID& /* projectId */) const {
+    return {};
+}
+
+// ============================================================================
+// Additional TheOrgManager Methods
+// ============================================================================
+
+void TheOrgManager::pauseAllAgents() {
+    for (auto& [id, agent] : agents_) {
+        agent->pause();
+    }
+}
+
+void TheOrgManager::resumeAllAgents() {
+    for (auto& [id, agent] : agents_) {
+        agent->resume();
+    }
+}
+
+void TheOrgManager::sendDirectMessage(const UUID& /* fromAgentId */, const UUID& toAgentId, const std::string& message) {
+    auto agent = getAgent(toAgentId);
+    if (agent) {
+        agent->processMessage(message, "manager");
+    }
+}
+
+void TheOrgManager::loadConfiguration(const std::string& /* configPath */) {
+    // Mock implementation
+}
+
+void TheOrgManager::saveConfiguration(const std::string& /* configPath */) const {
+    // Mock implementation
+}
+
+void TheOrgManager::updateGlobalSetting(const std::string& key, const std::string& value) {
+    std::lock_guard<std::mutex> lock(settingsMutex_);
+    globalSettings_[key] = value;
+}
+
+std::string TheOrgManager::getGlobalSetting(const std::string& key) const {
+    std::lock_guard<std::mutex> lock(settingsMutex_);
+    auto it = globalSettings_.find(key);
+    return (it != globalSettings_.end()) ? it->second : "";
+}
+
+std::string TheOrgManager::generateHealthReport() const {
+    std::ostringstream report;
+    report << "=== TheOrg Health Report ===\n";
+
+    auto metrics = getSystemMetrics();
+    report << "Total Agents: " << metrics.totalAgents << "\n";
+    report << "Active Agents: " << metrics.activeAgents << "\n";
+    report << "Total Tasks: " << metrics.totalTasks << "\n";
+    report << "Pending Tasks: " << metrics.pendingTasks << "\n";
+    report << "System Load: " << metrics.systemLoad << "\n";
+
+    return report.str();
+}
+
+void TheOrgManager::performHealthCheck() {
+    for (const auto& [id, agent] : agents_) {
+        if (!agent->isRunning()) {
+            AgentLogger logger;
+            logger.log("Agent " + id + " is not running", "", "Health", LogLevel::WARNING);
+        }
+    }
+}
+
+void TheOrgManager::enableEventLogging(const std::string& logPath) {
+    eventLoggingEnabled_ = true;
+    logPath_ = logPath;
+}
+
+void TheOrgManager::disableEventLogging() {
+    eventLoggingEnabled_ = false;
+}
+
+std::vector<std::string> TheOrgManager::getRecentEvents(std::chrono::hours /* timeWindow */) const {
+    std::lock_guard<std::mutex> lock(logMutex_);
+    return eventLog_;
+}
+
+void TheOrgManager::setLogLevel(const std::string& level) {
+    logLevel_ = level;
+}
+
+// ============================================================================
+// Additional DeveloperRelationsAgent Methods
+// ============================================================================
+
+std::string DeveloperRelationsAgent::provideAPIReference(const std::string& apiName) const {
+    return "API Reference for " + apiName + ": Mock implementation";
+}
+
+std::string DeveloperRelationsAgent::diagnoseIssue(const std::string& errorMessage, const std::string& /* context */) const {
+    return "Diagnosis for '" + errorMessage + "': Check logs, verify configuration";
+}
+
+std::vector<std::string> DeveloperRelationsAgent::suggestSolutions(const std::string& /* problemDescription */) const {
+    return {"Check documentation", "Restart the service", "Verify dependencies"};
+}
+
+std::string DeveloperRelationsAgent::generateTutorial(const std::string& topic, const std::string& difficulty) const {
+    return "# " + topic + " Tutorial (" + difficulty + ")\n\nMock tutorial content...";
+}
+
+std::string DeveloperRelationsAgent::reviewCode(const std::string& /* code */, const std::string& /* language */) const {
+    return "Code review: Looks good! Consider adding more comments.";
+}
+
+std::vector<std::string> DeveloperRelationsAgent::getRelatedTopics(const std::string& /* topic */) const {
+    return {"Agent Development", "Plugin System", "Memory Management"};
+}
+
+std::string DeveloperRelationsAgent::generateOnboardingGuide(const std::string& project, const std::string& role) const {
+    return "# Onboarding Guide for " + project + "\n\nRole: " + role + "\n\nMock content...";
+}
+
+void DeveloperRelationsAgent::updateKnowledgeBase(const std::string& topic, const std::string& /* updatedContent */) {
+    AgentLogger logger;
+    logger.log("Updated knowledge base: " + topic);
+}
+
+void DeveloperRelationsAgent::hostTechnicalSession(const std::string& topic, const std::string& /* channelId */, Timestamp /* scheduledTime */) {
+    AgentLogger logger;
+    logger.log("Technical session scheduled: " + topic);
+}
+
+void DeveloperRelationsAgent::answerTechnicalQuestion(const std::string& question, const std::string& channelId,
+                                                       const std::string& /* userId */) {
+    sendMessage(PlatformType::DISCORD, channelId, "Answering: " + question);
+}
+
 } // namespace elizaos

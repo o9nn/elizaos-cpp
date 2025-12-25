@@ -410,4 +410,401 @@ void MCPServer::stopListening() {
     // Placeholder: Would stop request handler
 }
 
+// =============================================================================
+// Transport Layer Implementations
+// =============================================================================
+
+/**
+ * Transport base class for MCP protocol communication
+ */
+class MCPTransport {
+public:
+    virtual ~MCPTransport() = default;
+    virtual bool connect(const std::string& endpoint) = 0;
+    virtual void disconnect() = 0;
+    virtual bool isConnected() const = 0;
+    virtual JsonValue sendRequest(const std::string& method, const JsonValue& params) = 0;
+    virtual void setMessageHandler(std::function<void(const JsonValue&)> handler) = 0;
+};
+
+/**
+ * STDIO Transport - communicates via stdin/stdout with child processes
+ */
+class StdioTransport : public MCPTransport {
+public:
+    StdioTransport() = default;
+    ~StdioTransport() override { disconnect(); }
+
+    bool connect(const std::string& command) override {
+        elizaos::logInfo("STDIO Transport connecting: " + command, "mcp_transport");
+        command_ = command;
+        connected_ = true;
+        // In production, would spawn child process and set up pipes
+        return true;
+    }
+
+    void disconnect() override {
+        if (connected_) {
+            elizaos::logInfo("STDIO Transport disconnecting", "mcp_transport");
+            connected_ = false;
+            // Would terminate child process
+        }
+    }
+
+    bool isConnected() const override { return connected_; }
+
+    JsonValue sendRequest(const std::string& method, const JsonValue& params) override {
+        elizaos::logInfo("STDIO sending: " + method, "mcp_transport");
+
+        JsonValue request;
+        request["jsonrpc"] = "2.0";
+        request["id"] = ++requestId_;
+        request["method"] = method;
+        request["params"] = params;
+
+        // In production: write to stdin, read from stdout
+        JsonValue response;
+        response["jsonrpc"] = "2.0";
+        response["id"] = requestId_;
+        response["result"] = JsonValue::object();
+        return response;
+    }
+
+    void setMessageHandler(std::function<void(const JsonValue&)> handler) override {
+        messageHandler_ = std::move(handler);
+    }
+
+private:
+    std::string command_;
+    bool connected_ = false;
+    int requestId_ = 0;
+    std::function<void(const JsonValue&)> messageHandler_;
+};
+
+/**
+ * HTTP Transport - REST API communication
+ */
+class HttpTransport : public MCPTransport {
+public:
+    HttpTransport() = default;
+    ~HttpTransport() override { disconnect(); }
+
+    bool connect(const std::string& endpoint) override {
+        elizaos::logInfo("HTTP Transport connecting: " + endpoint, "mcp_transport");
+        endpoint_ = endpoint;
+        connected_ = true;
+        return true;
+    }
+
+    void disconnect() override {
+        if (connected_) {
+            elizaos::logInfo("HTTP Transport disconnecting", "mcp_transport");
+            connected_ = false;
+        }
+    }
+
+    bool isConnected() const override { return connected_; }
+
+    JsonValue sendRequest(const std::string& method, const JsonValue& params) override {
+        elizaos::logInfo("HTTP POST to: " + endpoint_ + "/" + method, "mcp_transport");
+
+        JsonValue request;
+        request["method"] = method;
+        request["params"] = params;
+
+        // In production: send HTTP POST request using libcurl or similar
+        // Example headers: Content-Type: application/json, Authorization: Bearer {apiKey}
+
+        JsonValue response;
+        response["status"] = 200;
+        response["result"] = JsonValue::object();
+        return response;
+    }
+
+    void setMessageHandler(std::function<void(const JsonValue&)> handler) override {
+        messageHandler_ = std::move(handler);
+    }
+
+    void setHeaders(const std::unordered_map<std::string, std::string>& headers) {
+        headers_ = headers;
+    }
+
+    void setTimeout(int timeoutMs) {
+        timeoutMs_ = timeoutMs;
+    }
+
+private:
+    std::string endpoint_;
+    bool connected_ = false;
+    std::unordered_map<std::string, std::string> headers_;
+    int timeoutMs_ = 30000;
+    std::function<void(const JsonValue&)> messageHandler_;
+};
+
+/**
+ * WebSocket Transport - bidirectional real-time communication
+ */
+class WebSocketTransport : public MCPTransport {
+public:
+    WebSocketTransport() = default;
+    ~WebSocketTransport() override { disconnect(); }
+
+    bool connect(const std::string& endpoint) override {
+        elizaos::logInfo("WebSocket Transport connecting: " + endpoint, "mcp_transport");
+        endpoint_ = endpoint;
+
+        // In production: establish WebSocket connection
+        // Handle ws:// and wss:// protocols
+        connected_ = true;
+        return true;
+    }
+
+    void disconnect() override {
+        if (connected_) {
+            elizaos::logInfo("WebSocket Transport disconnecting", "mcp_transport");
+            connected_ = false;
+            // Would send close frame and terminate connection
+        }
+    }
+
+    bool isConnected() const override { return connected_; }
+
+    JsonValue sendRequest(const std::string& method, const JsonValue& params) override {
+        elizaos::logInfo("WebSocket sending: " + method, "mcp_transport");
+
+        JsonValue request;
+        request["jsonrpc"] = "2.0";
+        request["id"] = ++requestId_;
+        request["method"] = method;
+        request["params"] = params;
+
+        // In production: send JSON-RPC message over WebSocket
+        // Store pending request for response matching
+        pendingRequests_[requestId_] = method;
+
+        // Simulated response
+        JsonValue response;
+        response["jsonrpc"] = "2.0";
+        response["id"] = requestId_;
+        response["result"] = JsonValue::object();
+        return response;
+    }
+
+    void setMessageHandler(std::function<void(const JsonValue&)> handler) override {
+        messageHandler_ = std::move(handler);
+    }
+
+    void sendNotification(const std::string& method, const JsonValue& params) {
+        elizaos::logInfo("WebSocket notification: " + method, "mcp_transport");
+
+        JsonValue notification;
+        notification["jsonrpc"] = "2.0";
+        notification["method"] = method;
+        notification["params"] = params;
+
+        // In production: send notification (no id field)
+    }
+
+    void setReconnectInterval(int intervalMs) {
+        reconnectIntervalMs_ = intervalMs;
+    }
+
+    void enableAutoReconnect(bool enable) {
+        autoReconnect_ = enable;
+    }
+
+private:
+    std::string endpoint_;
+    bool connected_ = false;
+    int requestId_ = 0;
+    std::unordered_map<int, std::string> pendingRequests_;
+    std::function<void(const JsonValue&)> messageHandler_;
+    int reconnectIntervalMs_ = 5000;
+    bool autoReconnect_ = true;
+};
+
+/**
+ * SSE (Server-Sent Events) Transport - unidirectional streaming
+ */
+class SSETransport : public MCPTransport {
+public:
+    SSETransport() = default;
+    ~SSETransport() override { disconnect(); }
+
+    bool connect(const std::string& endpoint) override {
+        elizaos::logInfo("SSE Transport connecting: " + endpoint, "mcp_transport");
+        endpoint_ = endpoint;
+        connected_ = true;
+        // In production: establish SSE connection with EventSource
+        return true;
+    }
+
+    void disconnect() override {
+        if (connected_) {
+            elizaos::logInfo("SSE Transport disconnecting", "mcp_transport");
+            connected_ = false;
+        }
+    }
+
+    bool isConnected() const override { return connected_; }
+
+    JsonValue sendRequest(const std::string& method, const JsonValue& params) override {
+        // SSE is receive-only; send via HTTP POST
+        elizaos::logInfo("SSE command (via HTTP): " + method, "mcp_transport");
+
+        // In production: POST to command endpoint, receive response via SSE
+        JsonValue response;
+        response["status"] = "pending";
+        response["message"] = "Response will arrive via SSE stream";
+        (void)params;
+        return response;
+    }
+
+    void setMessageHandler(std::function<void(const JsonValue&)> handler) override {
+        messageHandler_ = std::move(handler);
+    }
+
+    void setEventTypes(const std::vector<std::string>& types) {
+        eventTypes_ = types;
+    }
+
+private:
+    std::string endpoint_;
+    bool connected_ = false;
+    std::function<void(const JsonValue&)> messageHandler_;
+    std::vector<std::string> eventTypes_;
+};
+
+/**
+ * TransportFactory - creates appropriate transport based on configuration
+ */
+class TransportFactory {
+public:
+    static std::unique_ptr<MCPTransport> create(const std::string& transportType) {
+        if (transportType == "stdio") {
+            return std::make_unique<StdioTransport>();
+        } else if (transportType == "http") {
+            return std::make_unique<HttpTransport>();
+        } else if (transportType == "websocket") {
+            return std::make_unique<WebSocketTransport>();
+        } else if (transportType == "sse") {
+            return std::make_unique<SSETransport>();
+        }
+
+        elizaos::logWarning("Unknown transport type: " + transportType + ", defaulting to HTTP", "mcp_transport");
+        return std::make_unique<HttpTransport>();
+    }
+};
+
+/**
+ * MCPConnection - manages connection to a single MCP server
+ */
+class MCPConnection {
+public:
+    MCPConnection(const MCPServerConfig& config)
+        : config_(config)
+        , transport_(TransportFactory::create(config.transport)) {
+    }
+
+    bool connect() {
+        if (!transport_->connect(config_.endpoint)) {
+            elizaos::logError("Failed to connect to: " + config_.name, "mcp_connection");
+            return false;
+        }
+
+        // Initialize the connection
+        JsonValue initParams;
+        initParams["protocolVersion"] = "2024-11-05";
+        initParams["capabilities"] = JsonValue::object();
+        initParams["clientInfo"]["name"] = "elizaos-mcp-client";
+        initParams["clientInfo"]["version"] = "1.0.0";
+
+        auto response = transport_->sendRequest("initialize", initParams);
+
+        if (response.contains("error")) {
+            elizaos::logError("Initialization failed: " + response["error"].dump(), "mcp_connection");
+            return false;
+        }
+
+        initialized_ = true;
+        elizaos::logInfo("Connected and initialized: " + config_.name, "mcp_connection");
+        return true;
+    }
+
+    void disconnect() {
+        if (initialized_) {
+            // Send shutdown notification
+            transport_->sendRequest("shutdown", JsonValue::object());
+        }
+        transport_->disconnect();
+        initialized_ = false;
+    }
+
+    bool isConnected() const {
+        return transport_->isConnected() && initialized_;
+    }
+
+    std::vector<MCPTool> discoverTools() {
+        std::vector<MCPTool> tools;
+
+        auto response = transport_->sendRequest("tools/list", JsonValue::object());
+
+        if (response.contains("result") && response["result"].contains("tools")) {
+            for (const auto& toolJson : response["result"]["tools"]) {
+                MCPTool tool;
+                tool.name = toolJson.value("name", "");
+                tool.namespace_ = config_.name;
+                tool.description = toolJson.value("description", "");
+                if (toolJson.contains("inputSchema")) {
+                    tool.inputSchema = toolJson["inputSchema"];
+                }
+                tools.push_back(tool);
+            }
+        }
+
+        return tools;
+    }
+
+    std::vector<MCPResource> discoverResources() {
+        std::vector<MCPResource> resources;
+
+        auto response = transport_->sendRequest("resources/list", JsonValue::object());
+
+        if (response.contains("result") && response["result"].contains("resources")) {
+            for (const auto& resJson : response["result"]["resources"]) {
+                MCPResource resource;
+                resource.uri = resJson.value("uri", "");
+                resource.namespace_ = config_.name;
+                resource.mimeType = resJson.value("mimeType", "application/octet-stream");
+                resource.description = resJson.value("description", "");
+                resources.push_back(resource);
+            }
+        }
+
+        return resources;
+    }
+
+    JsonValue callTool(const std::string& toolName, const JsonValue& arguments) {
+        JsonValue params;
+        params["name"] = toolName;
+        params["arguments"] = arguments;
+
+        return transport_->sendRequest("tools/call", params);
+    }
+
+    JsonValue readResource(const std::string& uri) {
+        JsonValue params;
+        params["uri"] = uri;
+
+        return transport_->sendRequest("resources/read", params);
+    }
+
+    const std::string& getName() const { return config_.name; }
+
+private:
+    MCPServerConfig config_;
+    std::unique_ptr<MCPTransport> transport_;
+    bool initialized_ = false;
+};
+
 } // namespace elizaos
