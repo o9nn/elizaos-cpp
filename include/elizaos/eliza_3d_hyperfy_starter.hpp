@@ -4,19 +4,142 @@
 #include <string>
 #include <memory>
 #include <map>
+#include <vector>
+#include <queue>
 #include <functional>
 #include <thread>
 #include <atomic>
 #include <mutex>
+#include <condition_variable>
+#include <chrono>
 
 namespace elizaos {
     namespace hyperfy {
-        
+
         // Forward declarations
         class HyperfyService;
         class HyperfyWorld;
         class HyperfyAction;
         class HyperfyManager;
+        class WebSocketClient;
+
+        /**
+         * @brief WebSocket message types for Hyperfy protocol
+         */
+        enum class MessageType {
+            CONNECT,
+            DISCONNECT,
+            POSITION_UPDATE,
+            CHAT_MESSAGE,
+            ACTION,
+            WORLD_STATE,
+            HEARTBEAT,
+            ERROR
+        };
+
+        /**
+         * @brief WebSocket message structure
+         */
+        struct WebSocketMessage {
+            MessageType type;
+            std::string payload;
+            std::string sender;
+            int64_t timestamp;
+
+            std::string toJson() const;
+            static WebSocketMessage fromJson(const std::string& json);
+        };
+
+        /**
+         * @brief Callback types for WebSocket events
+         */
+        using OnMessageCallback = std::function<void(const WebSocketMessage&)>;
+        using OnConnectCallback = std::function<void()>;
+        using OnDisconnectCallback = std::function<void(const std::string& reason)>;
+        using OnErrorCallback = std::function<void(const std::string& error)>;
+
+        /**
+         * @brief WebSocket client interface for Hyperfy world connection
+         * This is a simulation layer that can be replaced with real WebSocket
+         * implementation (e.g., using libwebsockets, Boost.Beast, etc.)
+         */
+        class WebSocketClient {
+        public:
+            WebSocketClient();
+            ~WebSocketClient();
+
+            // Connection management
+            bool connect(const std::string& url, const std::string& authToken = "");
+            void disconnect();
+            bool isConnected() const;
+
+            // Message sending
+            bool send(const WebSocketMessage& message);
+            bool sendText(const std::string& text);
+
+            // Event callbacks
+            void setOnMessage(OnMessageCallback callback);
+            void setOnConnect(OnConnectCallback callback);
+            void setOnDisconnect(OnDisconnectCallback callback);
+            void setOnError(OnErrorCallback callback);
+
+            // Pending messages (for simulation)
+            bool hasPendingMessages() const;
+            WebSocketMessage popMessage();
+
+        private:
+            void messageProcessingLoop();
+            void simulateIncomingMessage(const WebSocketMessage& msg);
+
+            std::string url_;
+            std::atomic<bool> connected_;
+            std::atomic<bool> running_;
+            std::thread processingThread_;
+            mutable std::mutex mutex_;
+            std::condition_variable cv_;
+
+            std::queue<WebSocketMessage> incomingMessages_;
+            std::queue<WebSocketMessage> outgoingMessages_;
+
+            OnMessageCallback onMessage_;
+            OnConnectCallback onConnect_;
+            OnDisconnectCallback onDisconnect_;
+            OnErrorCallback onError_;
+        };
+
+        /**
+         * @brief 3D position in Hyperfy world
+         */
+        struct Position3D {
+            double x = 0.0;
+            double y = 0.0;
+            double z = 0.0;
+
+            std::string toString() const;
+            static Position3D fromString(const std::string& str);
+        };
+
+        /**
+         * @brief Entity in the Hyperfy world (player, object, etc.)
+         */
+        struct WorldEntity {
+            std::string id;
+            std::string type;
+            std::string name;
+            Position3D position;
+            std::map<std::string, std::string> properties;
+        };
+
+        /**
+         * @brief Scene perception data from the 3D world
+         */
+        struct ScenePerception {
+            Position3D viewerPosition;
+            std::vector<WorldEntity> visibleEntities;
+            std::vector<std::string> nearbyPlayers;
+            std::string environmentDescription;
+            int64_t timestamp;
+        };
         
         /**
          * @brief Configuration for Hyperfy world connection
@@ -60,26 +183,51 @@ namespace elizaos {
             std::atomic<bool> connected_;
             mutable std::mutex worldMutex_;
             std::map<std::string, std::string> worldState_;
-            
+
+            // WebSocket client for real-time communication
+            std::unique_ptr<WebSocketClient> wsClient_;
+
+            // Current agent position
+            Position3D currentPosition_;
+
+            // Cached scene perception
+            ScenePerception lastPerception_;
+
+            // Message handlers
+            void handleIncomingMessage(const WebSocketMessage& msg);
+            void handleWorldStateUpdate(const std::string& payload);
+            void handlePositionUpdate(const std::string& payload);
+
         public:
             HyperfyWorld(const std::string& worldId, const std::string& wsUrl);
             ~HyperfyWorld();
-            
+
             bool connect(const std::string& authToken = "");
             void disconnect();
             bool isConnected() const;
-            
+
             std::string getWorldId() const { return worldId_; }
             std::string getWsUrl() const { return wsUrl_; }
-            
+
             // World state management
             void updateState(const std::string& key, const std::string& value);
             std::string getState(const std::string& key) const;
-            
+
+            // Position management
+            Position3D getCurrentPosition() const;
+            void setCurrentPosition(const Position3D& pos);
+
             // Basic world interaction methods
             bool sendMessage(const std::string& message);
             bool moveToPosition(double x, double y, double z);
             bool performAction(const std::string& action, const std::string& parameters = "");
+
+            // Scene perception
+            ScenePerception perceiveScene();
+            const ScenePerception& getLastPerception() const { return lastPerception_; }
+
+            // Send heartbeat to maintain connection
+            bool sendHeartbeat();
         };
         
         /**
