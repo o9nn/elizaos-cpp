@@ -1,0 +1,286 @@
+name: Code Coverage
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'cpp/**'
+      - 'include/**'
+      - 'CMakeLists.txt'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'cpp/**'
+      - 'include/**'
+      - 'CMakeLists.txt'
+  workflow_dispatch:
+
+env:
+  CMAKE_VERSION: '3.20'
+
+jobs:
+  # ============================================================================
+  # Coverage Collection
+  # ============================================================================
+  coverage:
+    name: Collect Coverage
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Set up CMake
+        uses: jwlawson/actions-setup-cmake@v2
+        with:
+          cmake-version: ${{ env.CMAKE_VERSION }}
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential g++-11 \
+            libcurl4-openssl-dev pkg-config \
+            lcov gcovr python3-pip
+
+      - name: Configure with coverage
+        run: |
+          cmake -B build \
+            -DCMAKE_BUILD_TYPE=Debug \
+            -DCMAKE_CXX_COMPILER=g++-11 \
+            -DCMAKE_C_COMPILER=gcc-11 \
+            -DCMAKE_CXX_FLAGS="--coverage -fprofile-arcs -ftest-coverage -O0 -g" \
+            -DCMAKE_C_FLAGS="--coverage -fprofile-arcs -ftest-coverage -O0 -g" \
+            -DCMAKE_EXE_LINKER_FLAGS="--coverage"
+
+      - name: Build
+        run: cmake --build build --config Debug -j 4
+
+      - name: Initialize coverage baseline
+        run: |
+          lcov --capture --initial --directory build --output-file coverage-base.info \
+               --ignore-errors mismatch,source
+
+      - name: Run all tests
+        working-directory: build
+        run: |
+          ctest --output-on-failure --config Debug -j 4 || true
+
+      - name: Capture coverage data
+        run: |
+          lcov --capture --directory build --output-file coverage-test.info \
+               --ignore-errors mismatch,source
+
+      - name: Combine coverage data
+        run: |
+          lcov --add-tracefile coverage-base.info \
+               --add-tracefile coverage-test.info \
+               --output-file coverage-combined.info \
+               --ignore-errors mismatch,source
+
+      - name: Filter coverage data
+        run: |
+          lcov --remove coverage-combined.info \
+               '/usr/*' \
+               '*/googletest/*' \
+               '*/nlohmann/*' \
+               '*/build/_deps/*' \
+               '*/_deps/*' \
+               '*/tests/*' \
+               '*/test_*' \
+               --output-file coverage-filtered.info \
+               --ignore-errors unused,source
+
+      - name: Generate coverage summary
+        run: |
+          echo "=== Coverage Summary ===" | tee coverage-summary.txt
+          lcov --list coverage-filtered.info | tee -a coverage-summary.txt
+
+          # Extract key metrics
+          TOTAL_LINES=$(lcov --summary coverage-filtered.info 2>&1 | grep "lines" | awk '{print $2}')
+          TOTAL_FUNCS=$(lcov --summary coverage-filtered.info 2>&1 | grep "functions" | awk '{print $2}')
+
+          echo "" | tee -a coverage-summary.txt
+          echo "Total Line Coverage: $TOTAL_LINES" | tee -a coverage-summary.txt
+          echo "Total Function Coverage: $TOTAL_FUNCS" | tee -a coverage-summary.txt
+
+      - name: Generate HTML report
+        run: |
+          genhtml coverage-filtered.info \
+            --output-directory coverage-html \
+            --title "ElizaOS C++ Coverage Report" \
+            --legend \
+            --show-details \
+            --ignore-errors source
+
+      - name: Generate Cobertura XML report
+        run: |
+          gcovr --root . \
+            --filter cpp/ \
+            --filter include/ \
+            --exclude '.*test.*' \
+            --exclude '.*_deps.*' \
+            --xml-pretty \
+            --output coverage.xml || true
+
+      - name: Upload HTML coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-html-report
+          path: coverage-html/
+          retention-days: 30
+
+      - name: Upload coverage data
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-data
+          path: |
+            coverage-filtered.info
+            coverage.xml
+            coverage-summary.txt
+          retention-days: 30
+
+      - name: Generate coverage badge data
+        run: |
+          # Extract line coverage percentage
+          COVERAGE_PCT=$(lcov --summary coverage-filtered.info 2>&1 | grep "lines" | awk -F'[(%]' '{print $2}' | tr -d ' ')
+          echo "Coverage: $COVERAGE_PCT%"
+
+          # Determine badge color
+          if (( $(echo "$COVERAGE_PCT >= 80" | bc -l) )); then
+            COLOR="brightgreen"
+          elif (( $(echo "$COVERAGE_PCT >= 60" | bc -l) )); then
+            COLOR="yellow"
+          elif (( $(echo "$COVERAGE_PCT >= 40" | bc -l) )); then
+            COLOR="orange"
+          else
+            COLOR="red"
+          fi
+
+          # Create badge JSON
+          echo "{\"schemaVersion\": 1, \"label\": \"coverage\", \"message\": \"${COVERAGE_PCT}%\", \"color\": \"$COLOR\"}" > coverage-badge.json
+          cat coverage-badge.json
+
+      - name: Upload coverage badge data
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-badge
+          path: coverage-badge.json
+          retention-days: 30
+
+  # ============================================================================
+  # Coverage Analysis by Module
+  # ============================================================================
+  coverage-analysis:
+    name: Coverage Analysis
+    needs: coverage
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download coverage data
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-data
+          path: coverage-data
+
+      - name: Analyze coverage by module
+        run: |
+          echo "# Coverage Analysis by Module" > coverage-analysis.md
+          echo "" >> coverage-analysis.md
+          echo "Generated: $(date -u)" >> coverage-analysis.md
+          echo "" >> coverage-analysis.md
+
+          # Parse coverage info for each module
+          echo "## Module Coverage Summary" >> coverage-analysis.md
+          echo "" >> coverage-analysis.md
+          echo "| Module | Lines | Functions |" >> coverage-analysis.md
+          echo "|--------|-------|-----------|" >> coverage-analysis.md
+
+          # List key modules and their coverage (from info file)
+          if [ -f coverage-data/coverage-filtered.info ]; then
+            for module in core agentloop agentmemory agentcomms agentlogger \
+                         eliza characters knowledge evolutionary embodiment; do
+              if grep -q "cpp/$module/" coverage-data/coverage-filtered.info; then
+                echo "| $module | - | - |" >> coverage-analysis.md
+              fi
+            done
+          fi
+
+          echo "" >> coverage-analysis.md
+          echo "## Detailed Summary" >> coverage-analysis.md
+          echo "\`\`\`" >> coverage-analysis.md
+          cat coverage-data/coverage-summary.txt >> coverage-analysis.md
+          echo "\`\`\`" >> coverage-analysis.md
+
+          cat coverage-analysis.md
+
+      - name: Upload coverage analysis
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-analysis
+          path: coverage-analysis.md
+          retention-days: 30
+
+      - name: Post coverage summary
+        run: |
+          echo "## Code Coverage Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          cat coverage-analysis.md >> $GITHUB_STEP_SUMMARY
+
+  # ============================================================================
+  # Coverage Diff for PRs
+  # ============================================================================
+  coverage-diff:
+    name: Coverage Diff
+    if: github.event_name == 'pull_request'
+    needs: coverage
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download PR coverage
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-data
+          path: pr-coverage
+
+      - name: Generate coverage diff report
+        run: |
+          echo "# Coverage Diff Report" > coverage-diff.md
+          echo "" >> coverage-diff.md
+          echo "## Pull Request Coverage" >> coverage-diff.md
+          echo "" >> coverage-diff.md
+
+          if [ -f pr-coverage/coverage-summary.txt ]; then
+            echo "### Current PR Coverage" >> coverage-diff.md
+            echo "\`\`\`" >> coverage-diff.md
+            cat pr-coverage/coverage-summary.txt >> coverage-diff.md
+            echo "\`\`\`" >> coverage-diff.md
+          fi
+
+          # Get changed files
+          echo "" >> coverage-diff.md
+          echo "### Files Changed in PR" >> coverage-diff.md
+          git diff --name-only origin/${{ github.base_ref }}...HEAD -- '*.cpp' '*.hpp' | head -50 >> coverage-diff.md
+
+          cat coverage-diff.md
+
+      - name: Comment on PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const report = fs.readFileSync('coverage-diff.md', 'utf8');
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: report
+            });
