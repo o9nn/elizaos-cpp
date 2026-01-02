@@ -18,21 +18,21 @@ add_executable(elizaos_tests
     src/test_attention_allocation.cpp
     src/test_agentaction.cpp
     src/test_agentagenda.cpp
-    # src/test_agentshell.cpp  # TEMPORARILY DISABLED - API mismatch
+    src/test_agentshell.cpp
     src/test_agentbrowser.cpp
 
     # Application Module Tests
     src/test_characters.cpp
-    # src/test_characterfile.cpp  # TEMPORARILY DISABLED - API mismatch
-    # src/test_eliza.cpp  # TEMPORARILY DISABLED - API mismatch
-    # src/test_elizas_list.cpp  # TEMPORARILY DISABLED - API mismatch
+    src/test_characterfile.cpp
+    src/test_eliza.cpp
+    src/test_elizas_list.cpp
     src/test_elizas_world.cpp
     src/test_knowledge.cpp
     src/test_easycompletion.cpp
     src/test_spartan.cpp
     src/test_registry.cpp
-    # src/test_the_org.cpp  # TEMPORARILY DISABLED - API mismatch
-    # src/test_trust_scoreboard.cpp  # TEMPORARILY DISABLED - API mismatch
+    src/test_the_org.cpp
+    src/test_trust_scoreboard.cpp
 
     # Multimedia Tests
     src/test_ljspeechtools.cpp
@@ -41,9 +41,9 @@ add_executable(elizaos_tests
     # Advanced Module Tests
     src/test_evolutionary.cpp
     src/test_ontogenesis.cpp
-    # src/test_mcp_gateway.cpp  # TEMPORARILY DISABLED - API mismatch
-    # src/test_sweagent.cpp  # TEMPORARILY DISABLED - API mismatch
-    # src/test_vercel_api.cpp  # TEMPORARILY DISABLED - API mismatch
+    src/test_mcp_gateway.cpp
+    src/test_sweagent.cpp
+    src/test_vercel_api.cpp
 
     # Automation Tests
     src/test_stage6_automation.cpp

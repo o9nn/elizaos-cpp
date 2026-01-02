@@ -7,7 +7,7 @@ target_include_directories(elizaos-characterfile PUBLIC
     ${CMAKE_SOURCE_DIR}/include
 )
 
-target_link_libraries(elizaos-characterfile 
+target_link_libraries(elizaos-characterfile
     elizaos-core
     elizaos-characters
     elizaos-agentlogger

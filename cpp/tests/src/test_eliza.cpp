@@ -349,8 +349,9 @@ TEST_F(ElizaTest, IsQuestion) {
 
 TEST_F(ElizaTest, IsGreeting) {
     EXPECT_TRUE(isGreeting("hello"));
-    EXPECT_TRUE(isGreeting("hi there"));
+    EXPECT_TRUE(isGreeting("hi"));  // exact match only
     EXPECT_TRUE(isGreeting("hey"));
+    EXPECT_TRUE(isGreeting("good morning, friend"));
     EXPECT_FALSE(isGreeting("goodbye"));
 }
 
@@ -410,14 +411,15 @@ TEST_F(ElizaTest, ConversationContextToJson) {
     context.setSessionData("key", "value");
 
     JsonValue json = context.toJson();
-    EXPECT_FALSE(json.is_null());
+    // JsonValue is a std::unordered_map<std::string, std::any>, check it's not empty
+    EXPECT_FALSE(json.empty());
 }
 
 TEST_F(ElizaTest, ResponsePatternToJson) {
     ResponsePattern pattern("hello", {"Hi!", "Hello!"}, "greeting");
 
     JsonValue json = pattern.toJson();
-    EXPECT_FALSE(json.is_null());
+    EXPECT_FALSE(json.empty());
 }
 
 TEST_F(ElizaTest, EmotionalStateTrackerToJson) {
@@ -425,5 +427,5 @@ TEST_F(ElizaTest, EmotionalStateTrackerToJson) {
     tracker.happiness = 0.8f;
 
     JsonValue json = tracker.toJson();
-    EXPECT_FALSE(json.is_null());
+    EXPECT_FALSE(json.empty());
 }

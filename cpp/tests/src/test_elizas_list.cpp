@@ -410,7 +410,7 @@ TEST_F(ElizasListTest, AddDuplicateProject) {
     list.addProject(project);
 
     project.name = "Duplicate";
-    bool addedAgain = list.addProject(project);
+    [[maybe_unused]] bool addedAgain = list.addProject(project);
 
     // Should fail or overwrite depending on implementation
     // Just verify we have exactly one project

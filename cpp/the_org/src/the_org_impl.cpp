@@ -1072,4 +1072,202 @@ void DeveloperRelationsAgent::answerTechnicalQuestion(const std::string& questio
     sendMessage(PlatformType::DISCORD, channelId, "Answering: " + question);
 }
 
+// ============================================================================
+// Additional the_org_utils Functions
+// ============================================================================
+
+namespace the_org_utils {
+
+PlatformType stringToPlatformType(const std::string& str) {
+    std::string lower = str;
+    std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
+
+    if (lower == "discord") return PlatformType::DISCORD;
+    if (lower == "telegram") return PlatformType::TELEGRAM;
+    if (lower == "twitter") return PlatformType::TWITTER;
+    if (lower == "slack") return PlatformType::SLACK;
+    if (lower == "facebook") return PlatformType::FACEBOOK;
+    if (lower == "linkedin") return PlatformType::LINKEDIN;
+    if (lower == "github") return PlatformType::GITHUB;
+    return PlatformType::DISCORD; // Default
+}
+
+AgentRole stringToAgentRole(const std::string& str) {
+    std::string lower = str;
+    std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
+
+    if (lower == "community_manager" || lower == "community manager") return AgentRole::COMMUNITY_MANAGER;
+    if (lower == "developer_relations" || lower == "developer relations") return AgentRole::DEVELOPER_RELATIONS;
+    if (lower == "community_liaison" || lower == "community liaison") return AgentRole::COMMUNITY_LIAISON;
+    if (lower == "project_manager" || lower == "project manager") return AgentRole::PROJECT_MANAGER;
+    if (lower == "social_media_manager" || lower == "social media manager") return AgentRole::SOCIAL_MEDIA_MANAGER;
+    return AgentRole::COMMUNITY_MANAGER; // Default
+}
+
+std::vector<std::string> parseHashtags(const std::string& content) {
+    std::vector<std::string> hashtags;
+    std::string current;
+    bool inHashtag = false;
+
+    for (size_t i = 0; i < content.length(); ++i) {
+        char c = content[i];
+        if (c == '#') {
+            if (!current.empty() && inHashtag) {
+                hashtags.push_back(current);
+            }
+            current.clear();
+            inHashtag = true;
+        } else if (inHashtag) {
+            if (std::isalnum(c) || c == '_') {
+                current += c;
+            } else {
+                if (!current.empty()) {
+                    hashtags.push_back(current);
+                }
+                current.clear();
+                inHashtag = false;
+            }
+        }
+    }
+
+    if (!current.empty() && inHashtag) {
+        hashtags.push_back(current);
+    }
+
+    return hashtags;
+}
+
+double calculateSimilarity(const std::vector<std::string>& list1, const std::vector<std::string>& list2) {
+    if (list1.empty() && list2.empty()) return 1.0;
+    if (list1.empty() || list2.empty()) return 0.0;
+
+    size_t matches = 0;
+    for (const auto& item1 : list1) {
+        for (const auto& item2 : list2) {
+            if (item1 == item2) {
+                matches++;
+                break;
+            }
+        }
+    }
+
+    size_t totalUnique = list1.size() + list2.size() - matches;
+    return static_cast<double>(matches) / static_cast<double>(totalUnique);
+}
+
+std::string sanitizeForPlatform(const std::string& content, PlatformType platform) {
+    std::string result = content;
+
+    switch (platform) {
+        case PlatformType::TWITTER:
+            // Twitter has 280 character limit
+            if (result.length() > 280) {
+                result = result.substr(0, 277) + "...";
+            }
+            break;
+        case PlatformType::DISCORD:
+            // Discord has 2000 character limit
+            if (result.length() > 2000) {
+                result = result.substr(0, 1997) + "...";
+            }
+            break;
+        default:
+            // No special sanitization needed
+            break;
+    }
+
+    return result;
+}
+
+bool validateUrl(const std::string& url) {
+    if (url.empty()) return false;
+
+    // Basic URL validation
+    if (url.find("http://") == 0 || url.find("https://") == 0) {
+        // Check for basic URL structure
+        size_t slashPos = url.find("://");
+        if (slashPos != std::string::npos && slashPos + 3 < url.length()) {
+            std::string rest = url.substr(slashPos + 3);
+            // Must have at least a domain
+            if (!rest.empty() && rest.find('.') != std::string::npos) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+std::string extractDomain(const std::string& url) {
+    std::string domain;
+
+    size_t protocolEnd = url.find("://");
+    size_t start = (protocolEnd != std::string::npos) ? protocolEnd + 3 : 0;
+
+    // Remove www. prefix if present
+    if (url.substr(start, 4) == "www.") {
+        start += 4;
+    }
+
+    // Find end of domain (path or query string)
+    size_t end = url.find('/', start);
+    if (end == std::string::npos) {
+        end = url.find('?', start);
+    }
+
+    if (end != std::string::npos) {
+        domain = url.substr(start, end - start);
+    } else {
+        domain = url.substr(start);
+    }
+
+    return domain;
+}
+
+std::vector<std::string> splitText(const std::string& text, size_t maxLength, const std::string& delimiter) {
+    std::vector<std::string> parts;
+
+    if (text.length() <= maxLength) {
+        parts.push_back(text);
+        return parts;
+    }
+
+    std::istringstream iss(text);
+    std::string word;
+    std::string current;
+
+    while (iss >> word) {
+        if (current.empty()) {
+            current = word;
+        } else if (current.length() + delimiter.length() + word.length() <= maxLength) {
+            current += delimiter + word;
+        } else {
+            parts.push_back(current);
+            current = word;
+        }
+    }
+
+    if (!current.empty()) {
+        parts.push_back(current);
+    }
+
+    return parts;
+}
+
+std::string joinText(const std::vector<std::string>& parts, const std::string& separator) {
+    if (parts.empty()) return "";
+
+    std::ostringstream oss;
+    for (size_t i = 0; i < parts.size(); ++i) {
+        if (i > 0) {
+            oss << separator;
+        }
+        oss << parts[i];
+    }
+
+    return oss.str();
+}
+
+} // namespace the_org_utils
+
 } // namespace elizaos
