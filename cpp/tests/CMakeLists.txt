@@ -123,7 +123,10 @@ target_link_libraries(elizaos_tests
 
 # Add tests to CTest
 include(GoogleTest)
-gtest_discover_tests(elizaos_tests)
+gtest_discover_tests(elizaos_tests
+    PROPERTIES LABELS "unit;all"
+    TIMEOUT 300
+)
 
 # ============================================================================
 # Separate Integration Test Executable (Optional)
@@ -150,21 +153,9 @@ target_link_libraries(elizaos_integration_tests
     Threads::Threads
 )
 
-gtest_discover_tests(elizaos_integration_tests)
-
-# ============================================================================
-# Test Categories (for selective testing)
-# ============================================================================
-
-# Define test labels for categorization
-set_tests_properties(
-    elizaos_tests PROPERTIES
-    LABELS "unit;all"
-)
-
-set_tests_properties(
-    elizaos_integration_tests PROPERTIES
-    LABELS "integration;all"
+gtest_discover_tests(elizaos_integration_tests
+    PROPERTIES LABELS "integration;all"
+    TIMEOUT 300
 )
 
 # ============================================================================

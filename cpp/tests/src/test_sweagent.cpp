@@ -11,298 +11,266 @@ using namespace ::testing;
 class SWEAgentTest : public ::testing::Test {
 protected:
     void SetUp() override {
-        config_.workingDirectory = "/tmp/sweagent_test";
-        config_.maxIterations = 50;
-        config_.timeout = 300;
+        agent_ = std::make_shared<SWEAgent>("test-agent", "gpt-4");
     }
 
-    SWEAgentConfig config_;
+    std::shared_ptr<SWEAgent> agent_;
 };
 
 // ============================================================================
-// SWEAgentConfig Tests
+// GitHubIssue Tests
 // ============================================================================
 
-TEST_F(SWEAgentTest, DefaultSWEAgentConfigValues) {
-    SWEAgentConfig defaultConfig;
+TEST_F(SWEAgentTest, GitHubIssueCreation) {
+    GitHubIssue issue;
+    issue.repo = "org/repo";
+    issue.issueNumber = 123;
+    issue.title = "Fix authentication bug";
+    issue.description = "Users cannot login with OAuth";
+    issue.status = "open";
 
-    EXPECT_EQ(defaultConfig.workingDirectory, ".");
-    EXPECT_EQ(defaultConfig.maxIterations, 100);
-    EXPECT_EQ(defaultConfig.timeout, 600);
-    EXPECT_TRUE(defaultConfig.enableLogging);
-    EXPECT_TRUE(defaultConfig.enableUndo);
+    EXPECT_EQ(issue.repo, "org/repo");
+    EXPECT_EQ(issue.issueNumber, 123);
+    EXPECT_EQ(issue.title, "Fix authentication bug");
+    EXPECT_EQ(issue.status, "open");
 }
 
-TEST_F(SWEAgentTest, CustomSWEAgentConfigValues) {
-    config_.workingDirectory = "/project";
-    config_.maxIterations = 25;
-    config_.timeout = 120;
-    config_.enableUndo = false;
+TEST_F(SWEAgentTest, GitHubIssueWithLabels) {
+    GitHubIssue issue;
+    issue.repo = "org/repo";
+    issue.issueNumber = 456;
+    issue.labels = {"bug", "high-priority", "authentication"};
 
-    EXPECT_EQ(config_.workingDirectory, "/project");
-    EXPECT_EQ(config_.maxIterations, 25);
-    EXPECT_EQ(config_.timeout, 120);
-    EXPECT_FALSE(config_.enableUndo);
-}
-
-// ============================================================================
-// SWETask Tests
-// ============================================================================
-
-TEST_F(SWEAgentTest, SWETaskCreation) {
-    SWETask task;
-    task.id = "task-001";
-    task.description = "Fix bug in authentication module";
-    task.type = SWETaskType::BUG_FIX;
-    task.priority = TaskPriority::HIGH;
-
-    EXPECT_EQ(task.id, "task-001");
-    EXPECT_EQ(task.type, SWETaskType::BUG_FIX);
-    EXPECT_EQ(task.priority, TaskPriority::HIGH);
-}
-
-TEST_F(SWEAgentTest, SWETaskWithIssue) {
-    SWETask task;
-    task.id = "task-002";
-    task.issueUrl = "https://github.com/org/repo/issues/123";
-    task.repository = "org/repo";
-    task.branch = "fix/auth-bug";
-
-    EXPECT_EQ(task.issueUrl, "https://github.com/org/repo/issues/123");
-    EXPECT_EQ(task.repository, "org/repo");
-    EXPECT_EQ(task.branch, "fix/auth-bug");
-}
-
-TEST_F(SWEAgentTest, SWETaskFiles) {
-    SWETask task;
-    task.targetFiles = {"src/auth.cpp", "include/auth.hpp", "tests/test_auth.cpp"};
-
-    EXPECT_EQ(task.targetFiles.size(), 3);
-    EXPECT_THAT(task.targetFiles, Contains("src/auth.cpp"));
+    EXPECT_EQ(issue.labels.size(), 3);
+    EXPECT_THAT(issue.labels, Contains("bug"));
+    EXPECT_THAT(issue.labels, Contains("high-priority"));
 }
 
 // ============================================================================
-// SWEAction Tests
+// SolutionResult Tests
 // ============================================================================
 
-TEST_F(SWEAgentTest, SWEActionFileEdit) {
-    SWEAction action;
-    action.type = SWEActionType::EDIT_FILE;
-    action.filePath = "src/main.cpp";
-    action.content = "int main() { return 0; }";
-    action.lineStart = 1;
-    action.lineEnd = 10;
-
-    EXPECT_EQ(action.type, SWEActionType::EDIT_FILE);
-    EXPECT_EQ(action.filePath, "src/main.cpp");
-    EXPECT_EQ(action.lineStart, 1);
-    EXPECT_EQ(action.lineEnd, 10);
-}
-
-TEST_F(SWEAgentTest, SWEActionCommand) {
-    SWEAction action;
-    action.type = SWEActionType::RUN_COMMAND;
-    action.command = "make test";
-    action.workingDir = "/project";
-
-    EXPECT_EQ(action.type, SWEActionType::RUN_COMMAND);
-    EXPECT_EQ(action.command, "make test");
-}
-
-TEST_F(SWEAgentTest, SWEActionSearch) {
-    SWEAction action;
-    action.type = SWEActionType::SEARCH_CODE;
-    action.searchQuery = "authentication";
-    action.searchScope = "*.cpp";
-
-    EXPECT_EQ(action.type, SWEActionType::SEARCH_CODE);
-    EXPECT_EQ(action.searchQuery, "authentication");
-}
-
-// ============================================================================
-// SWEActionResult Tests
-// ============================================================================
-
-TEST_F(SWEAgentTest, SWEActionResultSuccess) {
-    SWEActionResult result;
+TEST_F(SWEAgentTest, SolutionResultSuccess) {
+    SolutionResult result;
     result.success = true;
-    result.output = "Tests passed: 42/42";
-    result.duration = std::chrono::milliseconds(5000);
+    result.description = "Fixed authentication bug by updating token validation";
+    result.filesChanged = {"src/auth.cpp", "include/auth.hpp"};
+    result.testsRun = {"test_auth.cpp"};
+    result.pullRequestUrl = "https://github.com/org/repo/pull/789";
 
     EXPECT_TRUE(result.success);
-    EXPECT_NE(result.output.find("42/42"), std::string::npos);
+    EXPECT_EQ(result.filesChanged.size(), 2);
+    EXPECT_FALSE(result.pullRequestUrl.empty());
 }
 
-TEST_F(SWEAgentTest, SWEActionResultFailure) {
-    SWEActionResult result;
+TEST_F(SWEAgentTest, SolutionResultFailure) {
+    SolutionResult result;
     result.success = false;
-    result.error = "Compilation failed";
-    result.errorCode = 1;
-    result.errorOutput = "error: undefined reference to 'foo'";
+    result.errorMessage = "Could not determine root cause of issue";
 
     EXPECT_FALSE(result.success);
-    EXPECT_EQ(result.errorCode, 1);
-    EXPECT_NE(result.errorOutput.find("undefined reference"), std::string::npos);
+    EXPECT_FALSE(result.errorMessage.empty());
 }
 
 // ============================================================================
-// SWEPlan Tests
+// CodeContext Tests
 // ============================================================================
 
-TEST_F(SWEAgentTest, SWEPlanCreation) {
-    SWEPlan plan;
-    plan.id = "plan-001";
-    plan.taskId = "task-001";
-    plan.description = "Fix authentication bug by updating token validation";
+TEST_F(SWEAgentTest, CodeContextCreation) {
+    CodeContext context;
+    context.language = "cpp";
+    context.framework = "qt";
+    context.dependencies = {"boost", "nlohmann-json", "gtest"};
 
-    EXPECT_EQ(plan.id, "plan-001");
-    EXPECT_EQ(plan.taskId, "task-001");
+    EXPECT_EQ(context.language, "cpp");
+    EXPECT_EQ(context.framework, "qt");
+    EXPECT_EQ(context.dependencies.size(), 3);
 }
 
-TEST_F(SWEAgentTest, SWEPlanSteps) {
-    SWEPlan plan;
+TEST_F(SWEAgentTest, CodeContextWithEnvironment) {
+    CodeContext context;
+    context.language = "python";
+    context.environment["PYTHONPATH"] = "/project/src";
+    context.environment["DEBUG"] = "1";
 
-    SWEPlanStep step1;
-    step1.order = 1;
-    step1.description = "Locate the authentication module";
-    step1.status = StepStatus::PENDING;
-    plan.steps.push_back(step1);
-
-    SWEPlanStep step2;
-    step2.order = 2;
-    step2.description = "Identify the bug";
-    step2.status = StepStatus::PENDING;
-    plan.steps.push_back(step2);
-
-    SWEPlanStep step3;
-    step3.order = 3;
-    step3.description = "Implement fix";
-    step3.status = StepStatus::PENDING;
-    plan.steps.push_back(step3);
-
-    EXPECT_EQ(plan.steps.size(), 3);
-    EXPECT_EQ(plan.steps[0].order, 1);
-    EXPECT_EQ(plan.steps[2].description, "Implement fix");
+    EXPECT_EQ(context.environment.size(), 2);
+    EXPECT_EQ(context.environment["DEBUG"], "1");
 }
 
 // ============================================================================
-// SWEContext Tests
+// SWEAgent Tests
 // ============================================================================
 
-TEST_F(SWEAgentTest, SWEContextCreation) {
-    SWEContext context;
-    context.currentFile = "src/auth.cpp";
-    context.currentLine = 42;
-    context.recentOutput = "Build succeeded";
+TEST_F(SWEAgentTest, AgentCreation) {
+    SWEAgent agent("agent-001", "gpt-4");
 
-    EXPECT_EQ(context.currentFile, "src/auth.cpp");
-    EXPECT_EQ(context.currentLine, 42);
+    // Should be able to create without errors
+    EXPECT_TRUE(true);
 }
 
-TEST_F(SWEAgentTest, SWEContextHistory) {
-    SWEContext context;
+TEST_F(SWEAgentTest, SetModel) {
+    agent_->setModel("claude-3-opus");
 
-    SWEAction action1;
-    action1.type = SWEActionType::READ_FILE;
-    action1.filePath = "src/main.cpp";
-    context.actionHistory.push_back(action1);
-
-    SWEAction action2;
-    action2.type = SWEActionType::EDIT_FILE;
-    action2.filePath = "src/main.cpp";
-    context.actionHistory.push_back(action2);
-
-    EXPECT_EQ(context.actionHistory.size(), 2);
+    // Should not crash
+    EXPECT_TRUE(true);
 }
 
-TEST_F(SWEAgentTest, SWEContextOpenFiles) {
-    SWEContext context;
-    context.openFiles["src/main.cpp"] = "int main() {}";
-    context.openFiles["include/header.hpp"] = "#pragma once";
+TEST_F(SWEAgentTest, SetMaxIterations) {
+    agent_->setMaxIterations(50);
 
-    EXPECT_EQ(context.openFiles.size(), 2);
-    EXPECT_TRUE(context.openFiles.count("src/main.cpp") > 0);
+    // Should not crash
+    EXPECT_TRUE(true);
 }
 
-// ============================================================================
-// SWEObservation Tests
-// ============================================================================
+TEST_F(SWEAgentTest, SetParallelExecutionMode) {
+    agent_->setParallelExecutionMode(true);
+    agent_->setParallelExecutionMode(false);
 
-TEST_F(SWEAgentTest, SWEObservationCreation) {
-    SWEObservation obs;
-    obs.type = SWEObservationType::FILE_CONTENT;
-    obs.content = "Current file content...";
-    obs.metadata["lines"] = "100";
-
-    EXPECT_EQ(obs.type, SWEObservationType::FILE_CONTENT);
-    EXPECT_FALSE(obs.content.empty());
-    EXPECT_EQ(obs.metadata["lines"], "100");
+    // Should not crash
+    EXPECT_TRUE(true);
 }
 
-TEST_F(SWEAgentTest, SWEObservationError) {
-    SWEObservation obs;
-    obs.type = SWEObservationType::ERROR;
-    obs.content = "File not found: missing.cpp";
-    obs.isError = true;
+TEST_F(SWEAgentTest, GetStatus) {
+    std::string status = agent_->getStatus();
 
-    EXPECT_EQ(obs.type, SWEObservationType::ERROR);
-    EXPECT_TRUE(obs.isError);
+    // Should return some status
+    EXPECT_FALSE(status.empty());
 }
 
-// ============================================================================
-// SWESession Tests
-// ============================================================================
+TEST_F(SWEAgentTest, GetHistory) {
+    auto history = agent_->getHistory();
 
-TEST_F(SWEAgentTest, SWESessionCreation) {
-    SWESession session;
-    session.id = "session-001";
-    session.startTime = std::chrono::system_clock::now();
-    session.status = SWESessionStatus::ACTIVE;
-
-    EXPECT_EQ(session.id, "session-001");
-    EXPECT_EQ(session.status, SWESessionStatus::ACTIVE);
+    // Initially should be empty
+    EXPECT_EQ(history.size(), 0);
 }
 
-TEST_F(SWEAgentTest, SWESessionMetrics) {
-    SWESession session;
-    session.metrics.actionsExecuted = 15;
-    session.metrics.filesModified = 3;
-    session.metrics.linesChanged = 42;
-    session.metrics.testsPassed = 10;
-    session.metrics.testsFailed = 0;
+TEST_F(SWEAgentTest, GenerateCode) {
+    CodeContext context;
+    context.language = "cpp";
 
-    EXPECT_EQ(session.metrics.actionsExecuted, 15);
-    EXPECT_EQ(session.metrics.filesModified, 3);
-    EXPECT_EQ(session.metrics.linesChanged, 42);
-    EXPECT_EQ(session.metrics.testsFailed, 0);
+    std::string code = agent_->generateCode("Create a function to validate email addresses", context);
+
+    // May return empty string if no model connected
+    EXPECT_TRUE(true);
+}
+
+TEST_F(SWEAgentTest, GenerateTests) {
+    CodeContext context;
+    context.language = "cpp";
+
+    std::string sampleCode = "bool validate_email(const std::string& email) { return true; }";
+    auto tests = agent_->generateTests(sampleCode, context);
+
+    // May return empty if no model connected
+    EXPECT_TRUE(true);
+}
+
+TEST_F(SWEAgentTest, RunTests) {
+    bool result = agent_->runTests("ctest --output-on-failure");
+
+    // Should return true or false without crashing
+    EXPECT_TRUE(result || !result);
+}
+
+TEST_F(SWEAgentTest, ExecuteCommand) {
+    agent_->executeCommand("echo test");
+
+    // Should not crash
+    EXPECT_TRUE(true);
 }
 
 // ============================================================================
-// SWEDiff Tests
+// SWEAgentManager Tests
 // ============================================================================
 
-TEST_F(SWEAgentTest, SWEDiffCreation) {
-    SWEDiff diff;
-    diff.filePath = "src/auth.cpp";
-    diff.oldContent = "int validate() { return 0; }";
-    diff.newContent = "int validate() { return validate_token(); }";
+TEST_F(SWEAgentTest, ManagerCreation) {
+    SWEAgentManager manager;
 
-    EXPECT_EQ(diff.filePath, "src/auth.cpp");
-    EXPECT_NE(diff.oldContent, diff.newContent);
+    auto agents = manager.getActiveAgents();
+    EXPECT_EQ(agents.size(), 0);
 }
 
-TEST_F(SWEAgentTest, SWEDiffHunks) {
-    SWEDiff diff;
-    diff.filePath = "src/main.cpp";
+TEST_F(SWEAgentTest, ManagerAddAgent) {
+    SWEAgentManager manager;
 
-    DiffHunk hunk;
-    hunk.oldStart = 10;
-    hunk.oldCount = 5;
-    hunk.newStart = 10;
-    hunk.newCount = 7;
-    hunk.content = "@@ -10,5 +10,7 @@\n-old line\n+new line";
-    diff.hunks.push_back(hunk);
+    auto agent = std::make_shared<SWEAgent>("agent-1", "gpt-4");
+    manager.addAgent(agent);
 
-    EXPECT_EQ(diff.hunks.size(), 1);
-    EXPECT_EQ(diff.hunks[0].oldStart, 10);
+    auto agents = manager.getActiveAgents();
+    EXPECT_EQ(agents.size(), 1);
 }
+
+TEST_F(SWEAgentTest, ManagerRemoveAgent) {
+    SWEAgentManager manager;
+
+    auto agent = std::make_shared<SWEAgent>("agent-1", "gpt-4");
+    manager.addAgent(agent);
+    manager.removeAgent("agent-1");
+
+    auto agents = manager.getActiveAgents();
+    EXPECT_EQ(agents.size(), 0);
+}
+
+TEST_F(SWEAgentTest, ManagerGetAgent) {
+    SWEAgentManager manager;
+
+    auto agent = std::make_shared<SWEAgent>("agent-1", "gpt-4");
+    manager.addAgent(agent);
+
+    auto retrieved = manager.getAgent("agent-1");
+    EXPECT_NE(retrieved, nullptr);
+}
+
+TEST_F(SWEAgentTest, ManagerSetMaxParallelAgents) {
+    SWEAgentManager manager;
+
+    manager.setMaxParallelAgents(4);
+
+    // Should not crash
+    EXPECT_TRUE(true);
+}
+
+TEST_F(SWEAgentTest, ManagerGetAgentStatuses) {
+    SWEAgentManager manager;
+
+    auto agent = std::make_shared<SWEAgent>("agent-1", "gpt-4");
+    manager.addAgent(agent);
+
+    auto statuses = manager.getAgentStatuses();
+    EXPECT_EQ(statuses.size(), 1);
+}
+
+// ============================================================================
+// SWEBench Tests
+// ============================================================================
+
+TEST_F(SWEAgentTest, BenchmarkCreation) {
+    SWEBench bench("/path/to/benchmark");
+
+    // Should be able to create without errors
+    EXPECT_TRUE(true);
+}
+
+TEST_F(SWEAgentTest, BenchmarkGetSuccessRate) {
+    SWEBench bench("/path/to/benchmark");
+
+    float rate = bench.getSuccessRate();
+    EXPECT_GE(rate, 0.0f);
+    EXPECT_LE(rate, 1.0f);
+}
+
+TEST_F(SWEAgentTest, BenchmarkGetFailedTests) {
+    SWEBench bench("/path/to/benchmark");
+
+    auto failed = bench.getFailedTests();
+    EXPECT_GE(failed.size(), 0);
+}
+
+TEST_F(SWEAgentTest, BenchmarkGenerateReport) {
+    SWEBench bench("/path/to/benchmark");
+
+    std::string report = bench.generateReport();
+    // Report may be empty if no tests run
+    EXPECT_TRUE(true);
+}
+

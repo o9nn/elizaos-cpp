@@ -201,7 +201,7 @@ SWEAgentManager::SWEAgentManager()
 void SWEAgentManager::addAgent(std::shared_ptr<SWEAgent> agent) {
     std::lock_guard<std::mutex> lock(mutex_);
     if (agent) {
-        agents_[agent->getStatus()] = agent;
+        agents_[agent->getId()] = agent;
     }
 }
 

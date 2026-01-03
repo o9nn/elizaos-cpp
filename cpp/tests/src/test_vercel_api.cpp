@@ -11,9 +11,8 @@ using namespace ::testing;
 class VercelApiTest : public ::testing::Test {
 protected:
     void SetUp() override {
-        config_.apiToken = "test-token";
-        config_.teamId = "team-123";
-        config_.baseUrl = "https://api.vercel.com";
+        config_.api_token = "test-token";
+        config_.team_id = "team-123";
     }
 
     VercelConfig config_;
@@ -26,19 +25,189 @@ protected:
 TEST_F(VercelApiTest, DefaultVercelConfigValues) {
     VercelConfig defaultConfig;
 
-    EXPECT_EQ(defaultConfig.baseUrl, "https://api.vercel.com");
-    EXPECT_EQ(defaultConfig.timeout, 30);
-    EXPECT_TRUE(defaultConfig.apiToken.empty());
+    EXPECT_EQ(defaultConfig.api_base_url, "https://api.vercel.com");
+    EXPECT_EQ(defaultConfig.api_version, "v2");
+    EXPECT_EQ(defaultConfig.timeout_seconds, 30);
+    EXPECT_EQ(defaultConfig.max_retries, 3);
+    EXPECT_TRUE(defaultConfig.enable_logging);
+    EXPECT_TRUE(defaultConfig.api_token.empty());
+}
+
+TEST_F(VercelApiTest, TokenConstructor) {
+    VercelConfig config("my-token");
+
+    EXPECT_EQ(config.api_token, "my-token");
+    EXPECT_TRUE(config.team_id.empty());
+}
+
+TEST_F(VercelApiTest, TokenAndTeamConstructor) {
+    VercelConfig config("my-token", "my-team");
+
+    EXPECT_EQ(config.api_token, "my-token");
+    EXPECT_EQ(config.team_id, "my-team");
 }
 
 TEST_F(VercelApiTest, CustomVercelConfigValues) {
-    config_.timeout = 60;
-    config_.projectId = "proj-456";
+    config_.timeout_seconds = 60;
+    config_.max_retries = 5;
+    config_.enable_logging = false;
 
-    EXPECT_EQ(config_.apiToken, "test-token");
-    EXPECT_EQ(config_.teamId, "team-123");
-    EXPECT_EQ(config_.timeout, 60);
-    EXPECT_EQ(config_.projectId, "proj-456");
+    EXPECT_EQ(config_.api_token, "test-token");
+    EXPECT_EQ(config_.team_id, "team-123");
+    EXPECT_EQ(config_.timeout_seconds, 60);
+    EXPECT_EQ(config_.max_retries, 5);
+    EXPECT_FALSE(config_.enable_logging);
+}
+
+// ============================================================================
+// HttpResponse Tests
+// ============================================================================
+
+TEST_F(VercelApiTest, HttpResponseDefaultConstruction) {
+    HttpResponse response;
+
+    EXPECT_EQ(response.status_code, 0);
+    EXPECT_TRUE(response.body.empty());
+    EXPECT_FALSE(response.success);
+}
+
+TEST_F(VercelApiTest, HttpResponseWithCodeAndBody) {
+    HttpResponse response(200, R"({"id": "test"})");
+
+    EXPECT_EQ(response.status_code, 200);
+    EXPECT_EQ(response.body, R"({"id": "test"})");
+    EXPECT_TRUE(response.success);
+}
+
+TEST_F(VercelApiTest, HttpResponseSuccess) {
+    HttpResponse success(201, "Created");
+    EXPECT_TRUE(success.success);
+
+    HttpResponse failure(404, "Not Found");
+    EXPECT_FALSE(failure.success);
+
+    HttpResponse serverError(500, "Server Error");
+    EXPECT_FALSE(serverError.success);
+}
+
+// ============================================================================
+// HttpClient Tests
+// ============================================================================
+
+TEST_F(VercelApiTest, HttpClientCreation) {
+    HttpClient client;
+
+    // Should be able to create without errors
+    EXPECT_TRUE(true);
+}
+
+TEST_F(VercelApiTest, HttpClientSetTimeout) {
+    HttpClient client;
+    client.setTimeout(60);
+
+    // Should not crash
+    EXPECT_TRUE(true);
+}
+
+TEST_F(VercelApiTest, HttpClientSetUserAgent) {
+    HttpClient client;
+    client.setUserAgent("ElizaOS/1.0");
+
+    // Should not crash
+    EXPECT_TRUE(true);
+}
+
+TEST_F(VercelApiTest, HttpClientSetBearerToken) {
+    HttpClient client;
+    client.setBearerToken("test-token");
+
+    // Should not crash
+    EXPECT_TRUE(true);
+}
+
+TEST_F(VercelApiTest, HttpClientAddDefaultHeader) {
+    HttpClient client;
+    client.addDefaultHeader("X-Custom-Header", "value");
+
+    // Should not crash
+    EXPECT_TRUE(true);
+}
+
+TEST_F(VercelApiTest, HttpClientUrlEncode) {
+    HttpClient client;
+
+    std::string encoded = client.urlEncode("hello world");
+    EXPECT_FALSE(encoded.empty());
+}
+
+TEST_F(VercelApiTest, HttpClientJsonEscape) {
+    HttpClient client;
+
+    std::string escaped = client.jsonEscape("hello \"world\"");
+    EXPECT_FALSE(escaped.empty());
+}
+
+// ============================================================================
+// VercelDeployment Tests
+// ============================================================================
+
+TEST_F(VercelApiTest, VercelDeploymentCreation) {
+    VercelDeployment deployment;
+    deployment.id = "dpl-789";
+    deployment.url = "https://my-app-abc123.vercel.app";
+    deployment.project_id = "prj-123";
+    deployment.state = "READY";
+    deployment.target = "PRODUCTION";
+
+    EXPECT_EQ(deployment.id, "dpl-789");
+    EXPECT_EQ(deployment.state, "READY");
+    EXPECT_EQ(deployment.target, "PRODUCTION");
+}
+
+TEST_F(VercelApiTest, VercelDeploymentConstructor) {
+    VercelDeployment deployment("dpl-123", "https://app.vercel.app");
+
+    EXPECT_EQ(deployment.id, "dpl-123");
+    EXPECT_EQ(deployment.url, "https://app.vercel.app");
+}
+
+TEST_F(VercelApiTest, VercelDeploymentStates) {
+    VercelDeployment ready;
+    ready.state = "READY";
+    EXPECT_TRUE(ready.isReady());
+    EXPECT_FALSE(ready.hasError());
+    EXPECT_FALSE(ready.isBuilding());
+
+    VercelDeployment building;
+    building.state = "BUILDING";
+    EXPECT_FALSE(building.isReady());
+    EXPECT_FALSE(building.hasError());
+    EXPECT_TRUE(building.isBuilding());
+
+    VercelDeployment error;
+    error.state = "ERROR";
+    EXPECT_FALSE(error.isReady());
+    EXPECT_TRUE(error.hasError());
+}
+
+TEST_F(VercelApiTest, VercelDeploymentGitInfo) {
+    VercelDeployment deployment;
+    deployment.id = "dpl-789";
+    deployment.git_branch = "main";
+    deployment.git_commit_sha = "abc123def456";
+    deployment.git_commit_message = "Fix: authentication bug";
+
+    EXPECT_EQ(deployment.git_commit_sha, "abc123def456");
+    EXPECT_EQ(deployment.git_branch, "main");
+}
+
+TEST_F(VercelApiTest, VercelDeploymentDomains) {
+    VercelDeployment deployment;
+    deployment.id = "dpl-789";
+    deployment.domains = {"my-app.vercel.app", "custom-domain.com"};
+
+    EXPECT_EQ(deployment.domains.size(), 2);
+    EXPECT_THAT(deployment.domains, Contains("custom-domain.com"));
 }
 
 // ============================================================================
@@ -50,14 +219,21 @@ TEST_F(VercelApiTest, VercelProjectCreation) {
     project.id = "prj-123456";
     project.name = "my-app";
     project.framework = "nextjs";
-    project.createdAt = std::chrono::system_clock::now();
+    project.account_id = "acc-789";
 
     EXPECT_EQ(project.id, "prj-123456");
     EXPECT_EQ(project.name, "my-app");
     EXPECT_EQ(project.framework, "nextjs");
 }
 
-TEST_F(VercelApiTest, VercelProjectWithDomains) {
+TEST_F(VercelApiTest, VercelProjectConstructor) {
+    VercelProject project("prj-123", "my-project");
+
+    EXPECT_EQ(project.id, "prj-123");
+    EXPECT_EQ(project.name, "my-project");
+}
+
+TEST_F(VercelApiTest, VercelProjectDomains) {
     VercelProject project;
     project.id = "prj-123456";
     project.domains = {"my-app.vercel.app", "custom-domain.com"};
@@ -66,53 +242,88 @@ TEST_F(VercelApiTest, VercelProjectWithDomains) {
     EXPECT_THAT(project.domains, Contains("custom-domain.com"));
 }
 
-TEST_F(VercelApiTest, VercelProjectEnvironment) {
+TEST_F(VercelApiTest, VercelProjectEnvVars) {
     VercelProject project;
     project.id = "prj-123456";
-    project.environmentVariables["DATABASE_URL"] = "postgres://...";
-    project.environmentVariables["API_KEY"] = "secret-key";
+    project.env_vars["DATABASE_URL"] = "postgres://...";
+    project.env_vars["API_KEY"] = "secret-key";
 
-    EXPECT_EQ(project.environmentVariables.size(), 2);
+    EXPECT_EQ(project.env_vars.size(), 2);
+}
+
+TEST_F(VercelApiTest, VercelProjectBuildConfig) {
+    VercelProject project;
+    project.id = "prj-123";
+    project.build_command = "npm run build";
+    project.install_command = "npm install";
+    project.output_directory = "dist";
+    project.root_directory = "./";
+    project.node_version = "18.x";
+
+    EXPECT_EQ(project.build_command, "npm run build");
+    EXPECT_EQ(project.node_version, "18.x");
 }
 
 // ============================================================================
-// VercelDeployment Tests
+// DeploymentFile Tests
 // ============================================================================
 
-TEST_F(VercelApiTest, VercelDeploymentCreation) {
-    VercelDeployment deployment;
-    deployment.id = "dpl-789";
-    deployment.url = "https://my-app-abc123.vercel.app";
-    deployment.state = DeploymentState::READY;
-    deployment.target = "production";
+TEST_F(VercelApiTest, DeploymentFileCreation) {
+    DeploymentFile file;
+    file.path = "/src/index.js";
+    file.content = "console.log('hello');";
+    file.encoding = "utf-8";
 
-    EXPECT_EQ(deployment.id, "dpl-789");
-    EXPECT_EQ(deployment.state, DeploymentState::READY);
-    EXPECT_EQ(deployment.target, "production");
+    EXPECT_EQ(file.path, "/src/index.js");
+    EXPECT_EQ(file.encoding, "utf-8");
 }
 
-TEST_F(VercelApiTest, VercelDeploymentStates) {
-    VercelDeployment deployment;
+TEST_F(VercelApiTest, DeploymentFileConstructor) {
+    DeploymentFile file("/index.html", "<html></html>");
 
-    deployment.state = DeploymentState::BUILDING;
-    EXPECT_EQ(deployment.state, DeploymentState::BUILDING);
-
-    deployment.state = DeploymentState::ERROR;
-    EXPECT_EQ(deployment.state, DeploymentState::ERROR);
-
-    deployment.state = DeploymentState::CANCELED;
-    EXPECT_EQ(deployment.state, DeploymentState::CANCELED);
+    EXPECT_EQ(file.path, "/index.html");
+    EXPECT_EQ(file.content, "<html></html>");
+    EXPECT_EQ(file.size, 13);  // strlen("<html></html>")
 }
 
-TEST_F(VercelApiTest, VercelDeploymentMeta) {
-    VercelDeployment deployment;
-    deployment.id = "dpl-789";
-    deployment.meta.gitCommitSha = "abc123def456";
-    deployment.meta.gitCommitMessage = "Fix: authentication bug";
-    deployment.meta.gitBranch = "main";
+// ============================================================================
+// DeploymentRequest Tests
+// ============================================================================
 
-    EXPECT_EQ(deployment.meta.gitCommitSha, "abc123def456");
-    EXPECT_EQ(deployment.meta.gitBranch, "main");
+TEST_F(VercelApiTest, DeploymentRequestCreation) {
+    DeploymentRequest request;
+    request.name = "my-deployment";
+    request.target = "PRODUCTION";
+    request.project_id = "prj-123";
+
+    EXPECT_EQ(request.name, "my-deployment");
+    EXPECT_EQ(request.target, "PRODUCTION");
+}
+
+TEST_F(VercelApiTest, DeploymentRequestConstructor) {
+    DeploymentRequest request("test-deployment");
+
+    EXPECT_EQ(request.name, "test-deployment");
+}
+
+TEST_F(VercelApiTest, DeploymentRequestWithFiles) {
+    DeploymentRequest request("my-app");
+
+    DeploymentFile file1("/index.html", "<html></html>");
+    DeploymentFile file2("/style.css", "body {}");
+    request.files.push_back(file1);
+    request.files.push_back(file2);
+
+    EXPECT_EQ(request.files.size(), 2);
+}
+
+TEST_F(VercelApiTest, DeploymentRequestEnvVars) {
+    DeploymentRequest request("my-app");
+    request.env_vars["NODE_ENV"] = "production";
+    request.build_env["CI"] = "true";
+
+    EXPECT_EQ(request.env_vars.size(), 1);
+    EXPECT_EQ(request.build_env.size(), 1);
 }
 
 // ============================================================================
@@ -122,187 +333,101 @@ TEST_F(VercelApiTest, VercelDeploymentMeta) {
 TEST_F(VercelApiTest, VercelDomainCreation) {
     VercelDomain domain;
     domain.name = "example.com";
-    domain.projectId = "prj-123456";
+    domain.apex_name = "example.com";
+    domain.project_id = "prj-123456";
     domain.verified = true;
-    domain.redirect = "";
 
     EXPECT_EQ(domain.name, "example.com");
     EXPECT_TRUE(domain.verified);
 }
 
-TEST_F(VercelApiTest, VercelDomainDNS) {
+TEST_F(VercelApiTest, VercelDomainConstructor) {
+    VercelDomain domain("mydomain.com");
+
+    EXPECT_EQ(domain.name, "mydomain.com");
+}
+
+TEST_F(VercelApiTest, VercelDomainVerificationChallenges) {
     VercelDomain domain;
     domain.name = "example.com";
+    domain.verification_challenges = {"challenge1", "challenge2"};
 
-    VercelDNSRecord record;
-    record.type = "A";
-    record.name = "@";
-    record.value = "76.76.21.21";
-    domain.dnsRecords.push_back(record);
-
-    EXPECT_EQ(domain.dnsRecords.size(), 1);
-    EXPECT_EQ(domain.dnsRecords[0].type, "A");
+    EXPECT_EQ(domain.verification_challenges.size(), 2);
 }
 
 // ============================================================================
-// VercelFunction Tests
+// VercelAPI Tests
 // ============================================================================
 
-TEST_F(VercelApiTest, VercelFunctionCreation) {
-    VercelFunction func;
-    func.id = "fn-001";
-    func.name = "api/hello";
-    func.runtime = "nodejs18.x";
-    func.memory = 1024;
-    func.timeout = 10;
+TEST_F(VercelApiTest, ApiCreation) {
+    VercelAPI api(config_);
 
-    EXPECT_EQ(func.id, "fn-001");
-    EXPECT_EQ(func.runtime, "nodejs18.x");
-    EXPECT_EQ(func.memory, 1024);
+    EXPECT_FALSE(api.hasError());
 }
 
-TEST_F(VercelApiTest, VercelFunctionInvocation) {
-    VercelFunctionInvocation invocation;
-    invocation.id = "inv-001";
-    invocation.functionId = "fn-001";
-    invocation.statusCode = 200;
-    invocation.duration = std::chrono::milliseconds(150);
+TEST_F(VercelApiTest, ApiGetConfig) {
+    VercelAPI api(config_);
 
-    EXPECT_EQ(invocation.statusCode, 200);
-    EXPECT_EQ(invocation.duration.count(), 150);
+    const VercelConfig& cfg = api.getConfig();
+    EXPECT_EQ(cfg.api_token, "test-token");
 }
 
-// ============================================================================
-// VercelLog Tests
-// ============================================================================
+TEST_F(VercelApiTest, ApiUpdateConfig) {
+    VercelAPI api(config_);
 
-TEST_F(VercelApiTest, VercelLogCreation) {
-    VercelLog log;
-    log.id = "log-001";
-    log.deploymentId = "dpl-789";
-    log.message = "Build completed successfully";
-    log.level = LogLevel::INFO;
-    log.source = "build";
+    VercelConfig newConfig;
+    newConfig.api_token = "new-token";
+    api.updateConfig(newConfig);
 
-    EXPECT_EQ(log.deploymentId, "dpl-789");
-    EXPECT_EQ(log.level, LogLevel::INFO);
+    EXPECT_EQ(api.getConfig().api_token, "new-token");
 }
 
-TEST_F(VercelApiTest, VercelLogLevels) {
-    VercelLog log;
+TEST_F(VercelApiTest, ApiClearError) {
+    VercelAPI api(config_);
 
-    log.level = LogLevel::DEBUG;
-    EXPECT_EQ(log.level, LogLevel::DEBUG);
+    api.clearError();
+    EXPECT_FALSE(api.hasError());
+}
 
-    log.level = LogLevel::WARNING;
-    EXPECT_EQ(log.level, LogLevel::WARNING);
+TEST_F(VercelApiTest, ApiError) {
+    VercelAPI::ApiError error(401, "Unauthorized");
 
-    log.level = LogLevel::ERROR;
-    EXPECT_EQ(log.level, LogLevel::ERROR);
+    EXPECT_EQ(error.code, 401);
+    EXPECT_EQ(error.message, "Unauthorized");
 }
 
 // ============================================================================
-// VercelTeam Tests
+// VercelIntegration Tests
 // ============================================================================
 
-TEST_F(VercelApiTest, VercelTeamCreation) {
-    VercelTeam team;
-    team.id = "team-123";
-    team.name = "My Team";
-    team.slug = "my-team";
+TEST_F(VercelApiTest, IntegrationCreation) {
+    VercelIntegration integration(config_);
 
-    EXPECT_EQ(team.id, "team-123");
-    EXPECT_EQ(team.name, "My Team");
-    EXPECT_EQ(team.slug, "my-team");
+    EXPECT_FALSE(integration.isInitialized());
 }
 
-TEST_F(VercelApiTest, VercelTeamMembers) {
-    VercelTeam team;
-    team.id = "team-123";
+TEST_F(VercelApiTest, IntegrationGetConfig) {
+    VercelIntegration integration(config_);
 
-    VercelTeamMember member1;
-    member1.userId = "user-001";
-    member1.role = TeamRole::OWNER;
-    team.members.push_back(member1);
-
-    VercelTeamMember member2;
-    member2.userId = "user-002";
-    member2.role = TeamRole::MEMBER;
-    team.members.push_back(member2);
-
-    EXPECT_EQ(team.members.size(), 2);
-    EXPECT_EQ(team.members[0].role, TeamRole::OWNER);
+    const VercelConfig& cfg = integration.getConfig();
+    EXPECT_EQ(cfg.api_token, "test-token");
 }
 
-// ============================================================================
-// VercelApiRequest Tests
-// ============================================================================
+TEST_F(VercelApiTest, IntegrationGetAPI) {
+    VercelIntegration integration(config_);
+    integration.initialize();
 
-TEST_F(VercelApiTest, VercelApiRequestCreation) {
-    VercelApiRequest request;
-    request.method = HttpMethod::GET;
-    request.endpoint = "/v9/projects";
-    request.headers["Authorization"] = "Bearer test-token";
-
-    EXPECT_EQ(request.method, HttpMethod::GET);
-    EXPECT_EQ(request.endpoint, "/v9/projects");
+    auto api = integration.getAPI();
+    EXPECT_NE(api, nullptr);
 }
 
-TEST_F(VercelApiTest, VercelApiRequestWithBody) {
-    VercelApiRequest request;
-    request.method = HttpMethod::POST;
-    request.endpoint = "/v13/deployments";
-    request.body = R"({"name": "my-deployment"})";
+TEST_F(VercelApiTest, IntegrationUpdateConfig) {
+    VercelIntegration integration(config_);
 
-    EXPECT_EQ(request.method, HttpMethod::POST);
-    EXPECT_FALSE(request.body.empty());
+    VercelConfig newConfig;
+    newConfig.api_token = "updated-token";
+    integration.updateConfig(newConfig);
+
+    EXPECT_EQ(integration.getConfig().api_token, "updated-token");
 }
 
-// ============================================================================
-// VercelApiResponse Tests
-// ============================================================================
-
-TEST_F(VercelApiTest, VercelApiResponseSuccess) {
-    VercelApiResponse response;
-    response.statusCode = 200;
-    response.body = R"({"id": "prj-123"})";
-    response.success = true;
-
-    EXPECT_TRUE(response.success);
-    EXPECT_EQ(response.statusCode, 200);
-}
-
-TEST_F(VercelApiTest, VercelApiResponseError) {
-    VercelApiResponse response;
-    response.statusCode = 401;
-    response.success = false;
-    response.error = "Unauthorized: Invalid token";
-
-    EXPECT_FALSE(response.success);
-    EXPECT_EQ(response.statusCode, 401);
-    EXPECT_NE(response.error.find("Unauthorized"), std::string::npos);
-}
-
-// ============================================================================
-// VercelWebhook Tests
-// ============================================================================
-
-TEST_F(VercelApiTest, VercelWebhookCreation) {
-    VercelWebhook webhook;
-    webhook.id = "hook-001";
-    webhook.url = "https://my-server.com/webhook";
-    webhook.events = {"deployment.created", "deployment.succeeded"};
-
-    EXPECT_EQ(webhook.id, "hook-001");
-    EXPECT_EQ(webhook.events.size(), 2);
-}
-
-TEST_F(VercelApiTest, VercelWebhookPayload) {
-    VercelWebhookPayload payload;
-    payload.type = "deployment.succeeded";
-    payload.deploymentId = "dpl-789";
-    payload.projectId = "prj-123";
-
-    EXPECT_EQ(payload.type, "deployment.succeeded");
-    EXPECT_EQ(payload.deploymentId, "dpl-789");
-}

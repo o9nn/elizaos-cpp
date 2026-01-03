@@ -7,10 +7,6 @@ using namespace elizaos;
 class TheOrgTest : public ::testing::Test {
 protected:
     void SetUp() override {
-        // Initialize logger for testing
-        auto logger = Logger::getInstance();
-        logger->setLevel("INFO");
-        
         // Create test agent configurations
         eli5Config.agentId = the_org_utils::generateAgentId(AgentRole::COMMUNITY_MANAGER);
         eli5Config.agentName = "Eli5";
@@ -554,5 +550,3 @@ TEST_F(TheOrgTest, ErrorHandlingAndEdgeCases) {
     std::string knowledge = eddy.retrieveKnowledge("completely-unknown-topic");
     EXPECT_TRUE(knowledge.find("not found") != std::string::npos);
 }
-
-} // namespace elizaos

@@ -8,6 +8,32 @@
 
 namespace elizaos {
 
+// Local helper to parse version strings without depending on plugin_specification
+static PluginVersion parseVersionString(const std::string& versionStr) {
+    PluginVersion version;
+    std::istringstream iss(versionStr);
+    std::string part;
+
+    if (std::getline(iss, part, '.')) {
+        try { version.major = std::stoi(part); } catch (...) {}
+    }
+    if (std::getline(iss, part, '.')) {
+        try { version.minor = std::stoi(part); } catch (...) {}
+    }
+    if (std::getline(iss, part)) {
+        // Handle potential prerelease suffix
+        size_t dashPos = part.find('-');
+        if (dashPos != std::string::npos) {
+            try { version.patch = std::stoi(part.substr(0, dashPos)); } catch (...) {}
+            version.prerelease = part.substr(dashPos + 1);
+        } else {
+            try { version.patch = std::stoi(part); } catch (...) {}
+        }
+    }
+
+    return version;
+}
+
 // Global character file loader instance
 std::shared_ptr<CharacterFileLoader> globalCharacterFileLoader = std::make_shared<CharacterFileLoader>();
 
@@ -218,13 +244,13 @@ std::optional<PluginMetadata> CharacterFileLoader::getCharacterMetadata(const st
     try {
         std::string content = readFileContents(filename);
         JsonValue json = parseJsonString(content);
-        
+
         PluginMetadata metadata;
         metadata.name = getString(json, "name");
         metadata.description = getString(json, "description");
         metadata.author = getString(json, "creator");
-        metadata.version = PluginVersion::fromString(getString(json, "version", "1.0.0"));
-        
+        metadata.version = parseVersionString(getString(json, "version", "1.0.0"));
+
         return metadata;
     } catch (const std::exception&) {
         return std::nullopt;

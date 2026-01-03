@@ -16,338 +16,430 @@ protected:
 };
 
 // ============================================================================
-// ListItem Tests
+// Project Tests
 // ============================================================================
 
-TEST_F(ElizasListTest, ListItemCreation) {
-    ListItem item;
-    item.id = "item-001";
-    item.name = "Test Item";
-    item.description = "A test item for unit testing";
-    item.category = "testing";
+TEST_F(ElizasListTest, ProjectCreation) {
+    Project project;
+    project.id = "proj-001";
+    project.name = "Test Project";
+    project.description = "A test project for unit testing";
+    project.projectUrl = "https://example.com";
+    project.github = "https://github.com/test/project";
 
-    EXPECT_EQ(item.id, "item-001");
-    EXPECT_EQ(item.name, "Test Item");
-    EXPECT_EQ(item.description, "A test item for unit testing");
-    EXPECT_EQ(item.category, "testing");
+    EXPECT_EQ(project.id, "proj-001");
+    EXPECT_EQ(project.name, "Test Project");
+    EXPECT_EQ(project.description, "A test project for unit testing");
+    EXPECT_EQ(project.projectUrl, "https://example.com");
 }
 
-TEST_F(ElizasListTest, ListItemTags) {
-    ListItem item;
-    item.id = "item-001";
-    item.tags = {"urgent", "important", "review"};
+TEST_F(ElizasListTest, ProjectTags) {
+    Project project;
+    project.id = "proj-001";
+    project.tags = {"ai", "agents", "eliza"};
 
-    EXPECT_EQ(item.tags.size(), 3);
-    EXPECT_THAT(item.tags, Contains("urgent"));
-    EXPECT_THAT(item.tags, Contains("important"));
+    EXPECT_EQ(project.tags.size(), 3);
+    EXPECT_THAT(project.tags, Contains("ai"));
+    EXPECT_THAT(project.tags, Contains("agents"));
 }
 
-TEST_F(ElizasListTest, ListItemMetadata) {
-    ListItem item;
-    item.id = "item-001";
-    item.metadata["priority"] = "high";
-    item.metadata["source"] = "api";
-    item.metadata["version"] = "1.0";
+TEST_F(ElizasListTest, ProjectAuthor) {
+    Project project;
+    project.id = "proj-001";
+    project.author.name = "Test Author";
+    project.author.github = "testauthor";
+    project.author.twitter = "testauthor_twitter";
 
-    EXPECT_EQ(item.metadata.size(), 3);
-    EXPECT_EQ(item.metadata["priority"], "high");
+    EXPECT_EQ(project.author.name, "Test Author");
+    EXPECT_EQ(project.author.github, "testauthor");
+    EXPECT_TRUE(project.author.twitter.has_value());
+    EXPECT_EQ(project.author.twitter.value(), "testauthor_twitter");
 }
 
-TEST_F(ElizasListTest, ListItemTimestamps) {
-    ListItem item;
-    item.id = "item-001";
-    item.createdAt = std::chrono::system_clock::now();
-    item.updatedAt = item.createdAt;
+TEST_F(ElizasListTest, ProjectMetrics) {
+    Project project;
+    project.id = "proj-001";
+    project.metrics = Metrics{100, 25};
 
-    EXPECT_LE(item.createdAt, item.updatedAt);
-}
-
-// ============================================================================
-// ListCategory Tests
-// ============================================================================
-
-TEST_F(ElizasListTest, ListCategoryCreation) {
-    ListCategory category;
-    category.id = "cat-001";
-    category.name = "Tasks";
-    category.description = "Task items";
-    category.color = "#FF5733";
-
-    EXPECT_EQ(category.id, "cat-001");
-    EXPECT_EQ(category.name, "Tasks");
-    EXPECT_EQ(category.color, "#FF5733");
-}
-
-TEST_F(ElizasListTest, ListCategoryWithItems) {
-    ListCategory category;
-    category.id = "cat-001";
-    category.name = "Tasks";
-
-    ListItem item1;
-    item1.id = "item-001";
-    item1.name = "Task 1";
-    category.items.push_back(item1);
-
-    ListItem item2;
-    item2.id = "item-002";
-    item2.name = "Task 2";
-    category.items.push_back(item2);
-
-    EXPECT_EQ(category.items.size(), 2);
+    EXPECT_TRUE(project.metrics.has_value());
+    EXPECT_EQ(project.metrics.value().stars, 100);
+    EXPECT_EQ(project.metrics.value().forks, 25);
 }
 
 // ============================================================================
-// List Tests
+// Collection Tests
+// ============================================================================
+
+TEST_F(ElizasListTest, CollectionCreation) {
+    Collection collection;
+    collection.id = "coll-001";
+    collection.name = "AI Agents";
+    collection.description = "Collection of AI agent projects";
+    collection.featured = true;
+
+    EXPECT_EQ(collection.id, "coll-001");
+    EXPECT_EQ(collection.name, "AI Agents");
+    EXPECT_TRUE(collection.featured);
+}
+
+TEST_F(ElizasListTest, CollectionWithProjects) {
+    Collection collection;
+    collection.id = "coll-001";
+    collection.name = "AI Agents";
+    collection.projects = {"proj-001", "proj-002", "proj-003"};
+
+    EXPECT_EQ(collection.projects.size(), 3);
+    EXPECT_THAT(collection.projects, Contains("proj-001"));
+}
+
+TEST_F(ElizasListTest, CollectionCurator) {
+    Collection collection;
+    collection.id = "coll-001";
+    collection.curator.name = "Test Curator";
+    collection.curator.github = "testcurator";
+
+    EXPECT_EQ(collection.curator.name, "Test Curator");
+    EXPECT_EQ(collection.curator.github, "testcurator");
+}
+
+// ============================================================================
+// ElizasList Tests
 // ============================================================================
 
 TEST_F(ElizasListTest, ListCreation) {
-    ElizaList list;
-    list.id = "list-001";
-    list.name = "My List";
-    list.description = "A personal list";
+    ElizasList list;
 
-    EXPECT_EQ(list.id, "list-001");
-    EXPECT_EQ(list.name, "My List");
+    EXPECT_EQ(list.getProjectCount(), 0);
+    EXPECT_EQ(list.getCollectionCount(), 0);
 }
 
-TEST_F(ElizasListTest, ListAddItem) {
-    ElizaList list;
-    list.id = "list-001";
+TEST_F(ElizasListTest, AddProject) {
+    ElizasList list;
 
-    ListItem item;
-    item.id = "item-001";
-    item.name = "New Item";
+    Project project;
+    project.id = "proj-001";
+    project.name = "Test Project";
+    project.description = "A test project";
 
-    list.addItem(item);
-
-    EXPECT_EQ(list.itemCount(), 1);
-    EXPECT_TRUE(list.hasItem("item-001"));
+    bool added = list.addProject(project);
+    EXPECT_TRUE(added);
+    EXPECT_EQ(list.getProjectCount(), 1);
 }
 
-TEST_F(ElizasListTest, ListRemoveItem) {
-    ElizaList list;
-    list.id = "list-001";
+TEST_F(ElizasListTest, GetProject) {
+    ElizasList list;
 
-    ListItem item;
-    item.id = "item-001";
-    list.addItem(item);
+    Project project;
+    project.id = "proj-001";
+    project.name = "Test Project";
+    project.description = "A test project";
 
-    EXPECT_EQ(list.itemCount(), 1);
+    list.addProject(project);
 
-    list.removeItem("item-001");
-
-    EXPECT_EQ(list.itemCount(), 0);
-    EXPECT_FALSE(list.hasItem("item-001"));
+    auto retrieved = list.getProject("proj-001");
+    ASSERT_TRUE(retrieved.has_value());
+    EXPECT_EQ(retrieved.value().name, "Test Project");
 }
 
-TEST_F(ElizasListTest, ListGetItem) {
-    ElizaList list;
-    list.id = "list-001";
+TEST_F(ElizasListTest, RemoveProject) {
+    ElizasList list;
 
-    ListItem item;
-    item.id = "item-001";
-    item.name = "Test Item";
-    list.addItem(item);
+    Project project;
+    project.id = "proj-001";
+    project.name = "Test Project";
 
-    auto retrieved = list.getItem("item-001");
-    EXPECT_TRUE(retrieved.has_value());
-    EXPECT_EQ(retrieved->name, "Test Item");
+    list.addProject(project);
+    EXPECT_EQ(list.getProjectCount(), 1);
+
+    bool removed = list.removeProject("proj-001");
+    EXPECT_TRUE(removed);
+    EXPECT_EQ(list.getProjectCount(), 0);
 }
 
-TEST_F(ElizasListTest, ListUpdateItem) {
-    ElizaList list;
-    list.id = "list-001";
+TEST_F(ElizasListTest, UpdateProject) {
+    ElizasList list;
 
-    ListItem item;
-    item.id = "item-001";
-    item.name = "Original Name";
-    list.addItem(item);
+    Project project;
+    project.id = "proj-001";
+    project.name = "Original Name";
 
-    ListItem updated;
-    updated.id = "item-001";
-    updated.name = "Updated Name";
-    list.updateItem(updated);
+    list.addProject(project);
 
-    auto retrieved = list.getItem("item-001");
-    EXPECT_EQ(retrieved->name, "Updated Name");
+    project.name = "Updated Name";
+    bool updated = list.updateProject(project);
+    EXPECT_TRUE(updated);
+
+    auto retrieved = list.getProject("proj-001");
+    ASSERT_TRUE(retrieved.has_value());
+    EXPECT_EQ(retrieved.value().name, "Updated Name");
 }
 
-// ============================================================================
-// List Filtering Tests
-// ============================================================================
+TEST_F(ElizasListTest, GetAllProjects) {
+    ElizasList list;
 
-TEST_F(ElizasListTest, ListFilterByCategory) {
-    ElizaList list;
-
-    ListItem item1;
-    item1.id = "item-001";
-    item1.category = "work";
-    list.addItem(item1);
-
-    ListItem item2;
-    item2.id = "item-002";
-    item2.category = "personal";
-    list.addItem(item2);
-
-    ListItem item3;
-    item3.id = "item-003";
-    item3.category = "work";
-    list.addItem(item3);
-
-    auto filtered = list.filterByCategory("work");
-    EXPECT_EQ(filtered.size(), 2);
-}
-
-TEST_F(ElizasListTest, ListFilterByTag) {
-    ElizaList list;
-
-    ListItem item1;
-    item1.id = "item-001";
-    item1.tags = {"urgent"};
-    list.addItem(item1);
-
-    ListItem item2;
-    item2.id = "item-002";
-    item2.tags = {"important"};
-    list.addItem(item2);
-
-    ListItem item3;
-    item3.id = "item-003";
-    item3.tags = {"urgent", "important"};
-    list.addItem(item3);
-
-    auto filtered = list.filterByTag("urgent");
-    EXPECT_EQ(filtered.size(), 2);
-}
-
-TEST_F(ElizasListTest, ListSearch) {
-    ElizaList list;
-
-    ListItem item1;
-    item1.id = "item-001";
-    item1.name = "Buy groceries";
-    list.addItem(item1);
-
-    ListItem item2;
-    item2.id = "item-002";
-    item2.name = "Call dentist";
-    list.addItem(item2);
-
-    ListItem item3;
-    item3.id = "item-003";
-    item3.name = "Buy new laptop";
-    list.addItem(item3);
-
-    auto results = list.search("buy");
-    EXPECT_EQ(results.size(), 2);
-}
-
-// ============================================================================
-// List Sorting Tests
-// ============================================================================
-
-TEST_F(ElizasListTest, ListSortByName) {
-    ElizaList list;
-
-    ListItem item1;
-    item1.id = "item-001";
-    item1.name = "Zebra";
-    list.addItem(item1);
-
-    ListItem item2;
-    item2.id = "item-002";
-    item2.name = "Apple";
-    list.addItem(item2);
-
-    ListItem item3;
-    item3.id = "item-003";
-    item3.name = "Mango";
-    list.addItem(item3);
-
-    list.sortByName(SortOrder::ASCENDING);
-
-    auto items = list.getAllItems();
-    EXPECT_EQ(items[0].name, "Apple");
-    EXPECT_EQ(items[1].name, "Mango");
-    EXPECT_EQ(items[2].name, "Zebra");
-}
-
-TEST_F(ElizasListTest, ListSortByCreatedAt) {
-    ElizaList list;
-
-    auto now = std::chrono::system_clock::now();
-
-    ListItem item1;
-    item1.id = "item-001";
-    item1.createdAt = now - std::chrono::hours(24);
-    list.addItem(item1);
-
-    ListItem item2;
-    item2.id = "item-002";
-    item2.createdAt = now;
-    list.addItem(item2);
-
-    list.sortByCreatedAt(SortOrder::DESCENDING);
-
-    auto items = list.getAllItems();
-    EXPECT_EQ(items[0].id, "item-002"); // Most recent first
-}
-
-// ============================================================================
-// List Statistics Tests
-// ============================================================================
-
-TEST_F(ElizasListTest, ListStatistics) {
-    ElizaList list;
-
-    for (int i = 0; i < 5; ++i) {
-        ListItem item;
-        item.id = "item-" + std::to_string(i);
-        item.category = (i % 2 == 0) ? "even" : "odd";
-        list.addItem(item);
+    for (int i = 1; i <= 5; ++i) {
+        Project project;
+        project.id = "proj-" + std::to_string(i);
+        project.name = "Project " + std::to_string(i);
+        list.addProject(project);
     }
 
-    auto stats = list.getStatistics();
+    auto projects = list.getAllProjects();
+    EXPECT_EQ(projects.size(), 5);
+}
 
-    EXPECT_EQ(stats.totalItems, 5);
-    EXPECT_EQ(stats.categoryCounts["even"], 3);
-    EXPECT_EQ(stats.categoryCounts["odd"], 2);
+TEST_F(ElizasListTest, GetProjectsByTag) {
+    ElizasList list;
+
+    Project project1;
+    project1.id = "proj-001";
+    project1.name = "AI Project";
+    project1.tags = {"ai", "ml"};
+    list.addProject(project1);
+
+    Project project2;
+    project2.id = "proj-002";
+    project2.name = "Web Project";
+    project2.tags = {"web", "frontend"};
+    list.addProject(project2);
+
+    Project project3;
+    project3.id = "proj-003";
+    project3.name = "AI Web Project";
+    project3.tags = {"ai", "web"};
+    list.addProject(project3);
+
+    auto aiProjects = list.getProjectsByTag("ai");
+    EXPECT_EQ(aiProjects.size(), 2);
+}
+
+TEST_F(ElizasListTest, GetProjectsByAuthor) {
+    ElizasList list;
+
+    Project project1;
+    project1.id = "proj-001";
+    project1.author.github = "author1";
+    list.addProject(project1);
+
+    Project project2;
+    project2.id = "proj-002";
+    project2.author.github = "author2";
+    list.addProject(project2);
+
+    Project project3;
+    project3.id = "proj-003";
+    project3.author.github = "author1";
+    list.addProject(project3);
+
+    auto author1Projects = list.getProjectsByAuthor("author1");
+    EXPECT_EQ(author1Projects.size(), 2);
+}
+
+TEST_F(ElizasListTest, SearchProjects) {
+    ElizasList list;
+
+    Project project1;
+    project1.id = "proj-001";
+    project1.name = "AI Assistant";
+    project1.description = "An AI-powered assistant";
+    list.addProject(project1);
+
+    Project project2;
+    project2.id = "proj-002";
+    project2.name = "Web App";
+    project2.description = "A web application";
+    list.addProject(project2);
+
+    auto aiResults = list.searchProjects("AI");
+    EXPECT_GE(aiResults.size(), 1);
 }
 
 // ============================================================================
-// List Serialization Tests
+// Collection Management Tests
 // ============================================================================
 
-TEST_F(ElizasListTest, ListToJson) {
-    ElizaList list;
-    list.id = "list-001";
-    list.name = "Test List";
+TEST_F(ElizasListTest, AddCollection) {
+    ElizasList list;
 
-    ListItem item;
-    item.id = "item-001";
-    item.name = "Test Item";
-    list.addItem(item);
+    Collection collection;
+    collection.id = "coll-001";
+    collection.name = "Featured Projects";
 
-    std::string json = list.toJson();
-
-    EXPECT_FALSE(json.empty());
-    EXPECT_NE(json.find("list-001"), std::string::npos);
-    EXPECT_NE(json.find("Test List"), std::string::npos);
+    bool added = list.addCollection(collection);
+    EXPECT_TRUE(added);
+    EXPECT_EQ(list.getCollectionCount(), 1);
 }
 
-TEST_F(ElizasListTest, ListFromJson) {
-    std::string json = R"({
-        "id": "list-001",
-        "name": "Parsed List",
-        "items": [
-            {"id": "item-001", "name": "Item 1"}
-        ]
-    })";
+TEST_F(ElizasListTest, GetCollection) {
+    ElizasList list;
 
-    auto result = ElizaList::fromJson(json);
+    Collection collection;
+    collection.id = "coll-001";
+    collection.name = "Featured Projects";
 
-    EXPECT_TRUE(result.success);
-    EXPECT_EQ(result.list.id, "list-001");
-    EXPECT_EQ(result.list.name, "Parsed List");
-    EXPECT_EQ(result.list.itemCount(), 1);
+    list.addCollection(collection);
+
+    auto retrieved = list.getCollection("coll-001");
+    ASSERT_TRUE(retrieved.has_value());
+    EXPECT_EQ(retrieved.value().name, "Featured Projects");
+}
+
+TEST_F(ElizasListTest, GetFeaturedCollections) {
+    ElizasList list;
+
+    Collection collection1;
+    collection1.id = "coll-001";
+    collection1.name = "Featured";
+    collection1.featured = true;
+    list.addCollection(collection1);
+
+    Collection collection2;
+    collection2.id = "coll-002";
+    collection2.name = "Regular";
+    collection2.featured = false;
+    list.addCollection(collection2);
+
+    auto featured = list.getFeaturedCollections();
+    EXPECT_EQ(featured.size(), 1);
+    EXPECT_EQ(featured[0].name, "Featured");
+}
+
+// ============================================================================
+// Statistics Tests
+// ============================================================================
+
+TEST_F(ElizasListTest, GetProjectCount) {
+    ElizasList list;
+
+    for (int i = 1; i <= 10; ++i) {
+        Project project;
+        project.id = "proj-" + std::to_string(i);
+        list.addProject(project);
+    }
+
+    EXPECT_EQ(list.getProjectCount(), 10);
+}
+
+TEST_F(ElizasListTest, GetAllTags) {
+    ElizasList list;
+
+    Project project1;
+    project1.id = "proj-001";
+    project1.tags = {"ai", "ml"};
+    list.addProject(project1);
+
+    Project project2;
+    project2.id = "proj-002";
+    project2.tags = {"web", "ai"};
+    list.addProject(project2);
+
+    auto tags = list.getAllTags();
+    EXPECT_GE(tags.size(), 3);  // ai, ml, web (ai is deduplicated)
+}
+
+// ============================================================================
+// JSON Serialization Tests
+// ============================================================================
+
+TEST_F(ElizasListTest, AuthorToJson) {
+    Author author;
+    author.name = "Test Author";
+    author.github = "testauthor";
+    author.twitter = "testauthor_twitter";
+
+    nlohmann::json j = author;
+    EXPECT_EQ(j["name"], "Test Author");
+    EXPECT_EQ(j["github"], "testauthor");
+}
+
+TEST_F(ElizasListTest, AuthorFromJson) {
+    nlohmann::json j = {
+        {"name", "Test Author"},
+        {"github", "testauthor"},
+        {"twitter", "testauthor_twitter"}
+    };
+
+    Author author = j.get<Author>();
+    EXPECT_EQ(author.name, "Test Author");
+    EXPECT_EQ(author.github, "testauthor");
+}
+
+TEST_F(ElizasListTest, ProjectToJson) {
+    Project project;
+    project.id = "proj-001";
+    project.name = "Test Project";
+    project.description = "A test project";
+    project.tags = {"ai", "ml"};
+
+    nlohmann::json j = project;
+    EXPECT_EQ(j["id"], "proj-001");
+    EXPECT_EQ(j["name"], "Test Project");
+}
+
+TEST_F(ElizasListTest, ProjectFromJson) {
+    nlohmann::json j = {
+        {"id", "proj-001"},
+        {"name", "Test Project"},
+        {"description", "A test project"},
+        {"projectUrl", "https://example.com"},
+        {"github", "https://github.com/test/project"},
+        {"image", ""},
+        {"author", {{"name", "Author"}, {"github", "author"}}},
+        {"donation", {{"transactionHash", ""}, {"amount", ""}, {"date", ""}}},
+        {"tags", {"ai", "ml"}},
+        {"addedOn", "2024-01-01"}
+    };
+
+    Project project = j.get<Project>();
+    EXPECT_EQ(project.id, "proj-001");
+    EXPECT_EQ(project.name, "Test Project");
+    EXPECT_EQ(project.tags.size(), 2);
+}
+
+// ============================================================================
+// Edge Cases Tests
+// ============================================================================
+
+TEST_F(ElizasListTest, AddDuplicateProject) {
+    ElizasList list;
+
+    Project project;
+    project.id = "proj-001";
+    project.name = "Original";
+
+    list.addProject(project);
+
+    project.name = "Duplicate";
+    [[maybe_unused]] bool addedAgain = list.addProject(project);
+
+    // Should fail or overwrite depending on implementation
+    // Just verify we have exactly one project
+    EXPECT_EQ(list.getProjectCount(), 1);
+}
+
+TEST_F(ElizasListTest, RemoveNonExistentProject) {
+    ElizasList list;
+
+    bool removed = list.removeProject("nonexistent");
+    EXPECT_FALSE(removed);
+}
+
+TEST_F(ElizasListTest, GetNonExistentProject) {
+    ElizasList list;
+
+    auto project = list.getProject("nonexistent");
+    EXPECT_FALSE(project.has_value());
+}
+
+TEST_F(ElizasListTest, EmptySearchResults) {
+    ElizasList list;
+
+    Project project;
+    project.id = "proj-001";
+    project.name = "Test";
+    project.description = "Test project";
+    list.addProject(project);
+
+    auto results = list.searchProjects("nonexistent_query");
+    EXPECT_EQ(results.size(), 0);
 }

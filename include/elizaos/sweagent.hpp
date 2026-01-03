@@ -90,6 +90,7 @@ public:
     void setParallelExecutionMode(bool enabled);
     
     // Status and monitoring
+    std::string getId() const { return agentId_; }
     std::string getStatus() const;
     std::vector<SolutionResult> getHistory() const;
     
