@@ -134,16 +134,16 @@ add_subdirectory(cpp/classified)     # Game/Challenge system
 # Testing
 add_subdirectory(cpp/tests)
 
-# Spartan Test
-add_executable(spartan_test
+# Spartan Integration Test
+add_executable(spartan_integration_test
     spartan_test.cpp
 )
 
-target_include_directories(spartan_test PRIVATE
+target_include_directories(spartan_integration_test PRIVATE
     ${CMAKE_SOURCE_DIR}/include
 )
 
-target_link_libraries(spartan_test
+target_link_libraries(spartan_integration_test
     elizaos-core
     elizaos-spartan
     Threads::Threads
@@ -451,16 +451,16 @@ target_link_libraries(elizas_world_demo
 )
 
 # Eliza's World Standalone Test
-add_executable(elizas_world_test
+add_executable(elizas_world_standalone_test
     elizas_world_test.cpp
     cpp/tests/src/test_elizas_world.cpp
 )
 
-target_include_directories(elizas_world_test PRIVATE
+target_include_directories(elizas_world_standalone_test PRIVATE
     ${CMAKE_SOURCE_DIR}/include
 )
 
-target_link_libraries(elizas_world_test
+target_link_libraries(elizas_world_standalone_test
     elizaos-core
     elizaos-agentlogger
     elizaos-elizas_world
@@ -502,15 +502,15 @@ target_link_libraries(shell_demo
 )
 
 # AgentShell Integration Test
-add_executable(agentshell_test
+add_executable(agentshell_integration_test
     agentshell_test.cpp
 )
 
-target_include_directories(agentshell_test PRIVATE
+target_include_directories(agentshell_integration_test PRIVATE
     ${CMAKE_SOURCE_DIR}/include
 )
 
-target_link_libraries(agentshell_test
+target_link_libraries(agentshell_integration_test
     elizaos-core
     elizaos-agentlogger
     elizaos-agentcomms
