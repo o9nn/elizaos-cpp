@@ -14,27 +14,27 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-// Export everything from types
-* from './types';
+// Include everything from types
+#include "types/index.hpp"
 
-// Export utils first to avoid circular dependency issues
-* from './utils';
+// Include utils first to avoid circular dependency issues
+#include "utils.hpp"
 
-// Export schemas
-* from './schemas/character';
+// Include schemas
+#include "schemas/character.hpp"
 
-// Then all other exports
-* from './actions';
-* from './database';
-* from './entities';
-* from './logger';
-* from './prompts';
-* from './roles';
-* from './runtime';
-* from './settings';
-* from './services';
-* from './specs';
+// Then all other includes
+#include "actions.hpp"
+#include "database.hpp"
+#include "entities.hpp"
+#include "logger.hpp"
+#include "prompts.hpp"
+#include "roles.hpp"
+#include "runtime.hpp"
+#include "settings.hpp"
+#include "services.hpp"
+#include "specs/index.hpp"
 
-* from './sentry/instrument';
+#include "sentry/instrument.hpp"
 
 } // namespace elizaos
