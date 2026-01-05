@@ -4,73 +4,73 @@
 
 namespace elizaos {
 
-Content convertContentToV1(ContentV2 content) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    if (!content) {
-        return { text: '' } as Content
+Content convertContentToV1(const ContentV2& content) {
+    // NOTE: Auto-converted from TypeScript - manually refined for C++
+    
+    Content result;
+    
+    if (content.text.empty()) {
+        result.text = "";
+        return result;
     }
-
-    return {
-        text: content.text || "",
-        // V2 uses 'actions' array, V1 might use 'action' string
-        action:
-        Array.isArray(content.actions) && content.actions.size() > 0 ? content.actions[0] : std::nullopt,
-        // Copy all other properties
-        ...Object.entries(content);
-        .filter(([key]) => !["text", "actions", "action"].includes(key));
-        .reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {}),
-        }
-
+    
+    result.text = content.text;
+    
+    // V2 uses 'actions' array, V1 might use 'action' string
+    if (!content.actions.empty()) {
+        result.action = content.actions[0];
+    }
+    
+    // TODO: Copy other properties if needed
+    // This would require reflection or a more complex approach in C++
+    
+    return result;
 }
 
-ContentV2 convertContentToV2(Content content) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    if (!content) {
-        return { text: '' } as ContentV2
+ContentV2 convertContentToV2(const Content& content) {
+    // NOTE: Auto-converted from TypeScript - manually refined for C++
+    
+    ContentV2 result;
+    
+    if (content.text.empty()) {
+        result.text = "";
+        return result;
     }
-
-    return {
-        text: content.text || "",
-        // V1 uses 'action' string, V2 uses 'actions' array
-        actions: content.action ? [content.action] : [],
-        // Copy all other properties
-        ...Object.entries(content);
-        .filter(([key]) => !["text", "action"].includes(key));
-        .reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {}),
-        }
-
+    
+    result.text = content.text;
+    
+    // V1 uses 'action' string, V2 uses 'actions' array
+    if (content.action.has_value()) {
+        result.actions.push_back(content.action.value());
+    }
+    
+    // TODO: Copy other properties if needed
+    
+    return result;
 }
 
-ActionExample fromV2ActionExample(ActionExampleV2 exampleV2) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    if (!exampleV2) {
-        return { user: '', content: { text: '' } as Content }
-    }
-
+ActionExample fromV2ActionExample(const ActionExampleV2& exampleV2) {
+    // NOTE: Auto-converted from TypeScript - manually refined for C++
+    
+    ActionExample result;
+    
     // The main difference is that v2 uses 'name' instead of 'user'
-    return {
-        user: exampleV2.name || "",
-        content: convertContentToV1(exampleV2.content),
-        };
-
+    result.user = exampleV2.name;
+    result.content = convertContentToV1(exampleV2.content);
+    
+    return result;
 }
 
-ActionExampleV2 toV2ActionExample(ActionExample example) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    if (!example) {
-        return { name: '', content: { text: '' } as ContentV2 }
-    }
-
+ActionExampleV2 toV2ActionExample(const ActionExample& example) {
+    // NOTE: Auto-converted from TypeScript - manually refined for C++
+    
+    ActionExampleV2 result;
+    
     // Convert v1 format to v2 format
-    return {
-        name: example.user || "",
-        content: convertContentToV2(example.content),
-        };
-
+    result.name = example.user;
+    result.content = convertContentToV2(example.content);
+    
+    return result;
 }
 
 } // namespace elizaos

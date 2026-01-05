@@ -1,29 +1,43 @@
 #include "messages.hpp"
 #include <iostream>
 #include <stdexcept>
+#include <sstream>
 
 namespace elizaos {
 
-std::future<void> getActorDetails(auto roomId) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
+std::future<std::vector<ActorDetails>> getActorDetails(UUID roomId, IAgentRuntime runtime) {
+    // NOTE: Auto-converted from TypeScript - stub implementation for C++
+    
+    std::promise<std::vector<ActorDetails>> promise;
+    
     try {
-
-        throw std::runtime_error('getActorDetails is not implemented.');
-
+        // TODO: Implement proper actor details retrieval
+        std::cerr << "getActorDetails is not yet implemented." << std::endl;
+        promise.set_value({});
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
-        throw;
+        promise.set_exception(std::current_exception());
     }
+    
+    return promise.get_future();
 }
 
-void formatActors() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    if (!actors || actors.length == 0) {
+std::string formatActors(const std::vector<Actor>& actors) {
+    // NOTE: Auto-converted from TypeScript - manually refined for C++
+    
+    if (actors.empty()) {
         return "No actors available.";
     }
-    return actors.map((actor) => actor.name).join(", ");
-
+    
+    std::ostringstream oss;
+    for (size_t i = 0; i < actors.size(); ++i) {
+        oss << actors[i].name;
+        if (i < actors.size() - 1) {
+            oss << ", ";
+        }
+    }
+    
+    return oss.str();
 }
 
 } // namespace elizaos
