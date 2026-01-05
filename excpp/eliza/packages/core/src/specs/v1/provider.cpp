@@ -5,81 +5,50 @@
 namespace elizaos {
 
 Provider fromV2Provider(ProviderV2 providerV2) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-    try {
-
-        return {
-            name: providerV2.name,
-            description: providerV2.description,
-            dynamic: providerV2.dynamic,
-            position: providerV2.position,
-            private: providerV2.private,
-            get: async (runtime: IAgentRuntime, message: Memory, state?: State) => {
-                // Convert v1 state to v2 state if provided
-                const auto stateV2 = state ? toV2State(state) : std::nullopt;
-
-                try {
-                    // Call the v2 provider with transformed parameters
-                    const auto result = providerV2.get(runtime, message, stateV2);
-
-                    // Extract text or use an empty string if not present
-                    return result.text || "";
-                    } catch (error) {
-                        std::cerr << "Error in v2 provider " + providerV2.name + ":" << error << std::endl;
-                        throw;
-                    }
-                    },
-                    };
-
-    } catch (const std::exception& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
-        throw;
-    }
+    // NOTE: Auto-converted from TypeScript - manually refined to stub for C++
+    // TODO: Implement proper provider conversion with async handling
+    
+    Provider provider;
+    provider.name = providerV2.name;
+    provider.description = providerV2.description;
+    provider.dynamic = providerV2.dynamic;
+    provider.position = providerV2.position;
+    provider.isPrivate = providerV2.isPrivate;
+    
+    // Note: The 'get' function would need proper async implementation
+    // This is a simplified stub
+    provider.get = [providerV2](IAgentRuntime runtime, Memory message, std::optional<State> state) -> std::string {
+        // TODO: Implement proper async provider call
+        std::cerr << "WARNING: fromV2Provider using stub implementation" << std::endl;
+        return "";
+    };
+    
+    return provider;
 }
 
 ProviderV2 toV2Provider(Provider provider) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-    try {
-
-        return {
-            name: provider.name || "unnamed-provider",
-            description: provider.description,
-            dynamic: provider.dynamic,
-            position: provider.position,
-            private: provider.private,
-            get: async (runtime: any, message: any, state: any): Promise<ProviderResult> => {
-                try {
-                    // Call the v1 provider directly
-                    const auto result = provider.get(runtime, message, state);
-
-                    // Format according to V2 ProviderResult
-                    if (typeof result == 'object' && result != null) {
-                        // For objects, preserve all properties for full compatibility
-                        return {
-                            ...result,
-                            values: result.values || {},
-                            data: result.data || {},
-                            text: result.text || "",
-                            };
-                        }
-
-                        // For primitive results, return as text
-                        return {
-                            values: {},
-                            data: {},
-                            text: std::to_string(result || ""),
-                            };
-                            } catch (error) {
-                                std::cerr << "Error in v1 provider " + std::to_string(provider.name || "unnamed") + ":" << error << std::endl;
-                                throw;
-                            }
-                            },
-                            };
-
-    } catch (const std::exception& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
-        throw;
-    }
+    // NOTE: Auto-converted from TypeScript - manually refined to stub for C++
+    // TODO: Implement proper provider conversion with async handling
+    
+    ProviderV2 providerV2;
+    providerV2.name = provider.name.empty() ? "unnamed-provider" : provider.name;
+    providerV2.description = provider.description;
+    providerV2.dynamic = provider.dynamic;
+    providerV2.position = provider.position;
+    providerV2.isPrivate = provider.isPrivate;
+    
+    // Note: The 'get' function would need proper async implementation
+    // This is a simplified stub
+    providerV2.get = [provider](IAgentRuntime runtime, Memory message, std::optional<StateV2> state) -> ProviderResult {
+        // TODO: Implement proper async provider call with result transformation
+        std::cerr << "WARNING: toV2Provider using stub implementation" << std::endl;
+        
+        ProviderResult result;
+        result.text = "";
+        return result;
+    };
+    
+    return providerV2;
 }
 
 } // namespace elizaos

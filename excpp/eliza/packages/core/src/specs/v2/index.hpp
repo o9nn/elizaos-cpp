@@ -14,21 +14,21 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-// Export everything from types
-* from './types';
+// Include everything from types
+#include "types.hpp"
 
-// Then all other exports
-* from './actions';
-* from './database';
-* from './entities';
-* from './logger';
-* from './prompts';
-* from './roles';
-* from './runtime';
+// Then all other includes
+#include "actions.hpp"
+#include "database.hpp"
+#include "entities.hpp"
+#include "logger.hpp"
+#include "prompts.hpp"
+#include "roles.hpp"
+#include "runtime.hpp"
 // really shouldn't be exported
-//* from './search';
-* from './settings';
-* from './utils';
-* from './services';
+//#include "search.hpp"
+#include "settings.hpp"
+#include "utils.hpp"
+#include "services.hpp"
 
 } // namespace elizaos
