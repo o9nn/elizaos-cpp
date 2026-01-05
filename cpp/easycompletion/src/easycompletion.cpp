@@ -73,9 +73,72 @@ std::string EasyCompletionClient::make_http_request(const std::string& url, cons
     }
     
 #ifdef _WIN32
-    // Windows implementation using WinINet (simplified)
-    // For production, consider using a proper HTTP library
-    return "{\"error\": \"HTTP requests not implemented for Windows yet\"}";
+    // Windows implementation using WinINet
+    HINTERNET hInternet = InternetOpenA("EasyCompletion/1.0", INTERNET_OPEN_TYPE_DIRECT, NULL, NULL, 0);
+    if (!hInternet) {
+        return "{\"error\": \"Failed to initialize WinINet\"}";
+    }
+    
+    // Parse URL
+    std::string host, path;
+    size_t protocol_end = url.find("://");
+    if (protocol_end != std::string::npos) {
+        size_t host_start = protocol_end + 3;
+        size_t path_start = url.find("/", host_start);
+        if (path_start != std::string::npos) {
+            host = url.substr(host_start, path_start - host_start);
+            path = url.substr(path_start);
+        } else {
+            host = url.substr(host_start);
+            path = "/";
+        }
+    }
+    
+    HINTERNET hConnect = InternetConnectA(hInternet, host.c_str(), INTERNET_DEFAULT_HTTPS_PORT,
+                                           NULL, NULL, INTERNET_SERVICE_HTTP, 0, 0);
+    if (!hConnect) {
+        InternetCloseHandle(hInternet);
+        return "{\"error\": \"Failed to connect to server\"}";
+    }
+    
+    HINTERNET hRequest = HttpOpenRequestA(hConnect, "POST", path.c_str(), NULL, NULL, NULL,
+                                          INTERNET_FLAG_SECURE | INTERNET_FLAG_RELOAD, 0);
+    if (!hRequest) {
+        InternetCloseHandle(hConnect);
+        InternetCloseHandle(hInternet);
+        return "{\"error\": \"Failed to create HTTP request\"}";
+    }
+    
+    // Build headers string
+    std::string all_headers;
+    for (const auto& header : headers) {
+        all_headers += header + "\r\n";
+    }
+    
+    // Send request
+    BOOL result = HttpSendRequestA(hRequest, all_headers.c_str(), all_headers.length(),
+                                   (LPVOID)json_payload.c_str(), json_payload.length());
+    
+    std::string response_body;
+    if (result) {
+        char buffer[4096];
+        DWORD bytes_read = 0;
+        while (InternetReadFile(hRequest, buffer, sizeof(buffer), &bytes_read) && bytes_read > 0) {
+            response_body.append(buffer, bytes_read);
+        }
+    } else {
+        response_body = "{\"error\": \"HTTP request failed\"}";
+    }
+    
+    InternetCloseHandle(hRequest);
+    InternetCloseHandle(hConnect);
+    InternetCloseHandle(hInternet);
+    
+    if (config_.debug) {
+        std::cout << "HTTP Response: " << response_body << std::endl;
+    }
+    
+    return response_body;
 #elif defined(CURL_FOUND)
     // Use libcurl if available
     CURL* curl = curl_easy_init();
