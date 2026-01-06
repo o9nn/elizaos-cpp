@@ -131,19 +131,22 @@ add_subdirectory(cpp/otaku)          # DeFi-focused AI agent
 add_subdirectory(cpp/otc_agent)      # Multi-chain OTC trading desk
 add_subdirectory(cpp/classified)     # Game/Challenge system
 
+# Stage 8 - Enhanced Goal and Workflow Management (NEW)
+add_subdirectory(cpp/goal_manager)   # Enhanced goal management with dependencies
+
 # Testing
 add_subdirectory(cpp/tests)
 
-# Spartan Test
-add_executable(spartan_test
+# Spartan Integration Test
+add_executable(spartan_integration_test
     spartan_test.cpp
 )
 
-target_include_directories(spartan_test PRIVATE
+target_include_directories(spartan_integration_test PRIVATE
     ${CMAKE_SOURCE_DIR}/include
 )
 
-target_link_libraries(spartan_test
+target_link_libraries(spartan_integration_test
     elizaos-core
     elizaos-spartan
     Threads::Threads
@@ -450,17 +453,17 @@ target_link_libraries(elizas_world_demo
     Threads::Threads
 )
 
-# Eliza's World Standalone Test
-add_executable(elizas_world_test
+# Eliza's World Standalone Integration Test
+add_executable(elizas_world_integration_test
     elizas_world_test.cpp
     cpp/tests/src/test_elizas_world.cpp
 )
 
-target_include_directories(elizas_world_test PRIVATE
+target_include_directories(elizas_world_integration_test PRIVATE
     ${CMAKE_SOURCE_DIR}/include
 )
 
-target_link_libraries(elizas_world_test
+target_link_libraries(elizas_world_integration_test
     elizaos-core
     elizaos-agentlogger
     elizaos-elizas_world
@@ -502,15 +505,15 @@ target_link_libraries(shell_demo
 )
 
 # AgentShell Integration Test
-add_executable(agentshell_test
+add_executable(agentshell_integration_test
     agentshell_test.cpp
 )
 
-target_include_directories(agentshell_test PRIVATE
+target_include_directories(agentshell_integration_test PRIVATE
     ${CMAKE_SOURCE_DIR}/include
 )
 
-target_link_libraries(agentshell_test
+target_link_libraries(agentshell_integration_test
     elizaos-core
     elizaos-agentlogger
     elizaos-agentcomms
@@ -564,14 +567,14 @@ if(BUILD_EXAMPLES)
 endif()
 
 # Installation - install all libraries and executables
-install(TARGETS 
+install(TARGETS
     # Main executables
-    eliza shell_demo agentshell_test
-    spartan_test spartan_demo stage4_demo stage5_demo stage6_demo
+    eliza shell_demo agentshell_integration_test
+    spartan_integration_test spartan_demo stage4_demo stage5_demo stage6_demo
     awesome_eliza_demo the_org_demo easycompletion_demo
     characters_demo knowledge_demo knowledge_quick_demo
     elizas_list_demo elizas_list_real_test elizas_list_unit_test
-    eliza_3d_hyperfy_starter_demo elizas_world_demo elizas_world_test
+    eliza_3d_hyperfy_starter_demo elizas_world_demo elizas_world_integration_test
     registry_demo
     
     # Stage 1-2 - Core and Infrastructure
@@ -608,7 +611,10 @@ install(TARGETS
     
     # Stage 7 - New Advanced Modules
     elizaos-sweagent elizaos-mcp_gateway elizaos-otaku elizaos-otc_agent elizaos-classified
-    
+
+    # Stage 8 - Goal and Workflow Management
+    elizaos-goal_manager
+
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib
     RUNTIME DESTINATION bin
