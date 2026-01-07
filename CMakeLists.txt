@@ -131,6 +131,9 @@ add_subdirectory(cpp/otaku)          # DeFi-focused AI agent
 add_subdirectory(cpp/otc_agent)      # Multi-chain OTC trading desk
 add_subdirectory(cpp/classified)     # Game/Challenge system
 
+# Stage 8 - Enhanced Goal and Workflow Management (NEW)
+add_subdirectory(cpp/goal_manager)   # Enhanced goal management with dependencies
+
 # Testing
 add_subdirectory(cpp/tests)
 
@@ -450,12 +453,19 @@ target_link_libraries(elizas_world_demo
     Threads::Threads
 )
 
+# Eliza's World Standalone Integration Test
+add_executable(elizas_world_integration_test
 # Eliza's World Standalone Test
 add_executable(elizas_world_standalone_test
     elizas_world_test.cpp
     cpp/tests/src/test_elizas_world.cpp
 )
 
+target_include_directories(elizas_world_integration_test PRIVATE
+    ${CMAKE_SOURCE_DIR}/include
+)
+
+target_link_libraries(elizas_world_integration_test
 target_include_directories(elizas_world_standalone_test PRIVATE
     ${CMAKE_SOURCE_DIR}/include
 )
@@ -564,14 +574,14 @@ if(BUILD_EXAMPLES)
 endif()
 
 # Installation - install all libraries and executables
-install(TARGETS 
+install(TARGETS
     # Main executables
-    eliza shell_demo agentshell_test
-    spartan_test spartan_demo stage4_demo stage5_demo stage6_demo
+    eliza shell_demo agentshell_integration_test
+    spartan_integration_test spartan_demo stage4_demo stage5_demo stage6_demo
     awesome_eliza_demo the_org_demo easycompletion_demo
     characters_demo knowledge_demo knowledge_quick_demo
     elizas_list_demo elizas_list_real_test elizas_list_unit_test
-    eliza_3d_hyperfy_starter_demo elizas_world_demo elizas_world_test
+    eliza_3d_hyperfy_starter_demo elizas_world_demo elizas_world_integration_test
     registry_demo
     
     # Stage 1-2 - Core and Infrastructure
@@ -608,7 +618,10 @@ install(TARGETS
     
     # Stage 7 - New Advanced Modules
     elizaos-sweagent elizaos-mcp_gateway elizaos-otaku elizaos-otc_agent elizaos-classified
-    
+
+    # Stage 8 - Goal and Workflow Management
+    elizaos-goal_manager
+
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib
     RUNTIME DESTINATION bin

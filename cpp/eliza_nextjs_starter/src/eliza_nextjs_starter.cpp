@@ -1,5 +1,7 @@
 // eliza_nextjs_starter.cpp - Next.js starter template generator for ElizaOS
 // Provides utilities to generate Next.js project templates with ElizaOS integration
+// Note: This file is self-contained; the header elizaos/eliza_nextjs_starter.hpp
+// provides forward declarations for external use.
 
 #include "elizaos/core.hpp"
 #include <string>

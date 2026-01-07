@@ -1,25 +1,15 @@
 // brandkit.cpp - Brand kit resources and management for ElizaOS
 // Provides brand assets, colors, fonts, and styling guidelines
 
+#include "elizaos/brandkit.hpp"
 #include "elizaos/core.hpp"
-#include <string>
-#include <unordered_map>
-#include <vector>
-#include <mutex>
 
 namespace elizaos {
 namespace brandkit {
 
 // ==============================================================================
-// BRAND COLORS
+// STATIC DATA
 // ==============================================================================
-
-struct BrandColor {
-    std::string name;
-    std::string hex;
-    std::string rgb;
-    std::string description;
-};
 
 static const std::unordered_map<std::string, BrandColor> BRAND_COLORS = {
     {"primary", {"Primary", "#6366F1", "rgb(99, 102, 241)", "Main brand color - Indigo"}},
@@ -35,33 +25,11 @@ static const std::unordered_map<std::string, BrandColor> BRAND_COLORS = {
     {"textSecondary", {"Text Secondary", "#94A3B8", "rgb(148, 163, 184)", "Secondary text color"}},
 };
 
-// ==============================================================================
-// BRAND FONTS
-// ==============================================================================
-
-struct BrandFont {
-    std::string name;
-    std::string family;
-    std::string weight;
-    std::string usage;
-};
-
 static const std::vector<BrandFont> BRAND_FONTS = {
     {"heading", "Inter", "700", "Headings and titles"},
     {"body", "Inter", "400", "Body text and paragraphs"},
     {"mono", "Fira Code", "400", "Code and technical content"},
     {"display", "Inter", "900", "Large display text"},
-};
-
-// ==============================================================================
-// BRAND ASSETS
-// ==============================================================================
-
-struct BrandAsset {
-    std::string name;
-    std::string type;
-    std::string url;
-    std::string description;
 };
 
 static const std::vector<BrandAsset> BRAND_ASSETS = {
@@ -74,110 +42,96 @@ static const std::vector<BrandAsset> BRAND_ASSETS = {
 };
 
 // ==============================================================================
-// BRANDKIT API
+// BRANDKIT IMPLEMENTATION
 // ==============================================================================
-
-class BrandKit {
-private:
-    static std::mutex mutex_;
-    
-public:
-    // Get brand color by name
-    static std::string getColor(const std::string& colorName) {
-        std::lock_guard<std::mutex> lock(mutex_);
-        auto it = BRAND_COLORS.find(colorName);
-        return (it != BRAND_COLORS.end()) ? it->second.hex : "#000000";
-    }
-    
-    // Get all brand colors
-    static std::unordered_map<std::string, BrandColor> getAllColors() {
-        std::lock_guard<std::mutex> lock(mutex_);
-        return BRAND_COLORS;
-    }
-    
-    // Get brand font by name
-    static BrandFont getFont(const std::string& fontName) {
-        std::lock_guard<std::mutex> lock(mutex_);
-        for (const auto& font : BRAND_FONTS) {
-            if (font.name == fontName) {
-                return font;
-            }
-        }
-        return {"", "", "", ""};
-    }
-    
-    // Get all brand fonts
-    static std::vector<BrandFont> getAllFonts() {
-        std::lock_guard<std::mutex> lock(mutex_);
-        return BRAND_FONTS;
-    }
-    
-    // Get brand asset by name
-    static BrandAsset getAsset(const std::string& assetName) {
-        std::lock_guard<std::mutex> lock(mutex_);
-        for (const auto& asset : BRAND_ASSETS) {
-            if (asset.name == assetName) {
-                return asset;
-            }
-        }
-        return {"", "", "", ""};
-    }
-    
-    // Get all brand assets
-    static std::vector<BrandAsset> getAllAssets() {
-        std::lock_guard<std::mutex> lock(mutex_);
-        return BRAND_ASSETS;
-    }
-    
-    // Generate CSS variables
-    static std::string generateCSSVariables() {
-        std::lock_guard<std::mutex> lock(mutex_);
-        std::string css = ":root {\n";
-        
-        for (const auto& pair : BRAND_COLORS) {
-            css += "  --color-" + pair.first + ": " + pair.second.hex + ";\n";
-        }
-        
-        for (const auto& font : BRAND_FONTS) {
-            css += "  --font-" + font.name + ": " + font.family + ";\n";
-            css += "  --font-" + font.name + "-weight: " + font.weight + ";\n";
-        }
-        
-        css += "}\n";
-        return css;
-    }
-    
-    // Generate JSON config
-    static std::string generateJSONConfig() {
-        std::lock_guard<std::mutex> lock(mutex_);
-        std::string json = "{\n  \"colors\": {\n";
-        
-        bool first = true;
-        for (const auto& pair : BRAND_COLORS) {
-            if (!first) json += ",\n";
-            json += "    \"" + pair.first + "\": \"" + pair.second.hex + "\"";
-            first = false;
-        }
-        
-        json += "\n  },\n  \"fonts\": {\n";
-        
-        first = true;
-        for (const auto& font : BRAND_FONTS) {
-            if (!first) json += ",\n";
-            json += "    \"" + font.name + "\": {\"family\": \"" + font.family + 
-                   "\", \"weight\": \"" + font.weight + "\"}";
-            first = false;
-        }
-        
-        json += "\n  }\n}\n";
-        return json;
-    }
-};
 
 std::mutex BrandKit::mutex_;
 
+std::string BrandKit::getColor(const std::string& colorName) {
+    std::lock_guard<std::mutex> lock(mutex_);
+    auto it = BRAND_COLORS.find(colorName);
+    return (it != BRAND_COLORS.end()) ? it->second.hex : "#000000";
+}
+
+std::unordered_map<std::string, BrandColor> BrandKit::getAllColors() {
+    std::lock_guard<std::mutex> lock(mutex_);
+    return BRAND_COLORS;
+}
+
+BrandFont BrandKit::getFont(const std::string& fontName) {
+    std::lock_guard<std::mutex> lock(mutex_);
+    for (const auto& font : BRAND_FONTS) {
+        if (font.name == fontName) {
+            return font;
+        }
+    }
+    return {"", "", "", ""};
+}
+
+std::vector<BrandFont> BrandKit::getAllFonts() {
+    std::lock_guard<std::mutex> lock(mutex_);
+    return BRAND_FONTS;
+}
+
+BrandAsset BrandKit::getAsset(const std::string& assetName) {
+    std::lock_guard<std::mutex> lock(mutex_);
+    for (const auto& asset : BRAND_ASSETS) {
+        if (asset.name == assetName) {
+            return asset;
+        }
+    }
+    return {"", "", "", ""};
+}
+
+std::vector<BrandAsset> BrandKit::getAllAssets() {
+    std::lock_guard<std::mutex> lock(mutex_);
+    return BRAND_ASSETS;
+}
+
+std::string BrandKit::generateCSSVariables() {
+    std::lock_guard<std::mutex> lock(mutex_);
+    std::string css = ":root {\n";
+
+    for (const auto& pair : BRAND_COLORS) {
+        css += "  --color-" + pair.first + ": " + pair.second.hex + ";\n";
+    }
+
+    for (const auto& font : BRAND_FONTS) {
+        css += "  --font-" + font.name + ": " + font.family + ";\n";
+        css += "  --font-" + font.name + "-weight: " + font.weight + ";\n";
+    }
+
+    css += "}\n";
+    return css;
+}
+
+std::string BrandKit::generateJSONConfig() {
+    std::lock_guard<std::mutex> lock(mutex_);
+    std::string json = "{\n  \"colors\": {\n";
+
+    bool first = true;
+    for (const auto& pair : BRAND_COLORS) {
+        if (!first) json += ",\n";
+        json += "    \"" + pair.first + "\": \"" + pair.second.hex + "\"";
+        first = false;
+    }
+
+    json += "\n  },\n  \"fonts\": {\n";
+
+    first = true;
+    for (const auto& font : BRAND_FONTS) {
+        if (!first) json += ",\n";
+        json += "    \"" + font.name + "\": {\"family\": \"" + font.family +
+               "\", \"weight\": \"" + font.weight + "\"}";
+        first = false;
+    }
+
+    json += "\n  }\n}\n";
+    return json;
+}
+
 // ==============================================================================
-// EXPORTED FUNCTIONS
+// FREE FUNCTIONS
 // ==============================================================================
 
 std::string getBrandColor(const std::string& colorName) {
