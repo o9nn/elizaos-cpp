@@ -455,6 +455,8 @@ target_link_libraries(elizas_world_demo
 
 # Eliza's World Standalone Integration Test
 add_executable(elizas_world_integration_test
+# Eliza's World Standalone Test
+add_executable(elizas_world_standalone_test
     elizas_world_test.cpp
     cpp/tests/src/test_elizas_world.cpp
 )
@@ -464,6 +466,11 @@ target_include_directories(elizas_world_integration_test PRIVATE
 )
 
 target_link_libraries(elizas_world_integration_test
+target_include_directories(elizas_world_standalone_test PRIVATE
+    ${CMAKE_SOURCE_DIR}/include
+)
+
+target_link_libraries(elizas_world_standalone_test
     elizaos-core
     elizaos-agentlogger
     elizaos-elizas_world

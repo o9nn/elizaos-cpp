@@ -202,7 +202,7 @@ HealthStatus AgentLoop::checkHealth() const {
         // Check error rate
         if (stats_.errorCount >= errorThreshold_) {
             double errorRate = static_cast<double>(stats_.errorCount) /
-                std::max(1UL, stats_.totalStepsExecuted);
+                std::max(static_cast<uint64_t>(1), stats_.totalStepsExecuted);
             if (errorRate > 0.5) {
                 return HealthStatus::UNHEALTHY;
             } else if (errorRate > 0.1) {
@@ -308,7 +308,7 @@ double AgentLoop::calculateDynamicInterval() const {
 
     // Calculate error rate
     double errorRate = static_cast<double>(stats_.errorCount) /
-        std::max(1UL, stats_.totalStepsExecuted);
+        std::max(static_cast<uint64_t>(1), stats_.totalStepsExecuted);
 
     // Calculate load factor based on step duration vs interval
     double loadFactor = 1.0;
