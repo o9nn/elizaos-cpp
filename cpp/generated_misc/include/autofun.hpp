@@ -1,0 +1,7 @@
+#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_AUTOFUN_PROVIDERS_AUTOFUN_H
+#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_AUTOFUN_PROVIDERS_AUTOFUN_H
+#include "core.h"
+#include "@elizaos/core.h"
+
+extern std::shared_ptr<Provider> autofunProvider;
+#endif
