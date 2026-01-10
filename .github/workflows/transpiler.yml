@@ -80,7 +80,8 @@ jobs:
           cd /tmp
           git clone https://github.com/ASDAlexander77/TypeScript2Cxx.git typescript2cxx
           cd typescript2cxx
-          npm install
+          # Skip prepublish script (Windows .cmd file not compatible with Linux)
+          npm install --ignore-scripts
           npm run build
           echo "TYPESCRIPT2CXX_PATH=/tmp/typescript2cxx" >> $GITHUB_ENV
       
