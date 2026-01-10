@@ -1,0 +1,15 @@
+
+# Generated modules from multi-transpiler
+add_subdirectory(generated_services)
+add_subdirectory(generated_testing)
+add_subdirectory(generated_utils)
+add_subdirectory(generated_auth)
+add_subdirectory(generated_plugins)
+add_subdirectory(generated_ui)
+add_subdirectory(generated_database)
+add_subdirectory(generated_cli)
+add_subdirectory(generated_docs)
+add_subdirectory(generated_api)
+add_subdirectory(generated_websocket)
+add_subdirectory(generated_trade)
+add_subdirectory(generated_misc)
