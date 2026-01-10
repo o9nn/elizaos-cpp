@@ -1,0 +1,10 @@
+#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_PLUGIN-COINMARKETCAP_SRC_ACTIONS_GETPRICE_VALIDATION_H
+#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_PLUGIN-COINMARKETCAP_SRC_ACTIONS_GETPRICE_VALIDATION_H
+#include "core.h"
+#include "zod.h"
+#include "./types.h"
+
+extern any GetPriceSchema;
+any isGetPriceContent(std::shared_ptr<GetPriceContent> content);
+
+#endif

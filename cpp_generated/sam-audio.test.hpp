@@ -1,0 +1,8 @@
+#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-SAM_SRC___TESTS___SAM-AUDIO_TEST_H
+#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-SAM_SRC___TESTS___SAM-AUDIO_TEST_H
+#include "core.h"
+#include "bun:test.h"
+#include "../services/SamTTSService.h"
+#include "./test-utils.h"
+
+#endif

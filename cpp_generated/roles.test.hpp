@@ -1,0 +1,8 @@
+#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_PLUGIN-SPECIFICATION_CORE-PLUGIN-V2___TESTS___ROLES_TEST_H
+#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_PLUGIN-SPECIFICATION_CORE-PLUGIN-V2___TESTS___ROLES_TEST_H
+#include "core.h"
+#include "vitest.h"
+#include "../src/roles.h"
+#include "../src/types.h"
+
+#endif
