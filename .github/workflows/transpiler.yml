@@ -91,6 +91,7 @@ jobs:
           git clone https://github.com/leaningtech/ts2cpp.git ts2cpp-master
           cd ts2cpp-master
           npm install
+          npm run build
           echo "TS2CPP_PATH=/tmp/ts2cpp-master" >> $GITHUB_ENV
       
       - name: Configure multi-transpiler paths
