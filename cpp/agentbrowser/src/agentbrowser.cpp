@@ -244,6 +244,30 @@ std::vector<std::string> AgentBrowser::getLinks() {
     }
     
     std::lock_guard<std::mutex> lock(sessionMutex_);
+    std::vector<std::string> links;
+    
+    auto html = getPageHTML();
+    if (!html) return links;
+    
+    // Simple regex-based link extraction
+    std::regex linkRegex(R"(<a[^>]+href=[\"']([^\"']+)[\"'])");
+    std::smatch match;
+    std::string htmlStr = *html;
+    
+    auto begin = std::sregex_iterator(htmlStr.begin(), htmlStr.end(), linkRegex);
+    auto end = std::sregex_iterator();
+    
+    for (std::sregex_iterator i = begin; i != end; ++i) {
+        std::smatch m = *i;
+        if (m.size() > 1) {
+            links.push_back(m[1].str());
+        }
+    }
+    
+    return links;
+}
+    
+    std::lock_guard<std::mutex> lock(sessionMutex_);
     return {"https://example.com/link1", "https://example.com/link2"};
 }
 
@@ -251,6 +275,29 @@ std::vector<std::string> AgentBrowser::getImages() {
     if (!initialized_.load()) {
         return {};
     }
+    
+    std::lock_guard<std::mutex> lock(sessionMutex_);
+    std::vector<std::string> images;
+    
+    auto html = getPageHTML();
+    if (!html) return images;
+    
+    // Extract image sources
+    std::regex imgRegex(R"(<img[^>]+src=[\"']([^\"']+)[\"'])");
+    std::string htmlStr = *html;
+    
+    auto begin = std::sregex_iterator(htmlStr.begin(), htmlStr.end(), imgRegex);
+    auto end = std::sregex_iterator();
+    
+    for (std::sregex_iterator i = begin; i != end; ++i) {
+        std::smatch m = *i;
+        if (m.size() > 1) {
+            images.push_back(m[1].str());
+        }
+    }
+    
+    return images;
+}
     
     std::lock_guard<std::mutex> lock(sessionMutex_);
     return {"https://example.com/image1.jpg"};

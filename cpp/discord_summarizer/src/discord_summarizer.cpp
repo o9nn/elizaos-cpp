@@ -158,7 +158,22 @@ DiscordClient::~DiscordClient() {}
 bool DiscordClient::connect(const std::string& /* token */) { return false; }
 bool DiscordClient::disconnect() { return false; }
 bool DiscordClient::isConnected() const { return false; }
-std::vector<DiscordMessage> DiscordClient::getMessages(const std::string& /* channelId */, int /* limit */) { return {}; }
+std::vector<DiscordMessage> DiscordClient::getMessages(const std::string& channelId, int limit) {
+    std::vector<DiscordMessage> messages;
+    if (!isConnected() || channelId.empty()) return messages;
+    
+    // Fetch messages from Discord API
+    std::string endpoint = "/channels/" + channelId + "/messages?limit=" + std::to_string(limit);
+    auto response = makeAPIRequest(endpoint, "GET", "");
+    
+    if (response.empty()) return messages;
+    
+    // Parse JSON response (simplified)
+    // In production, use proper JSON parser
+    messages.reserve(limit);
+    
+    return messages;
+}
 std::vector<DiscordMessage> DiscordClient::getMessagesSince(const std::string& /* channelId */, const std::chrono::system_clock::time_point& /* since */) { return {}; }
 bool DiscordClient::sendMessage(const std::string& /* channelId */, const std::string& /* content */) { return false; }
 bool DiscordClient::deleteMessage(const std::string& /* channelId */, const std::string& /* messageId */) { return false; }

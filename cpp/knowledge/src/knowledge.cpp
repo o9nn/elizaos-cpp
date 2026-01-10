@@ -18,7 +18,7 @@ std::string generateKnowledgeUUID() {
     static std::mt19937 gen(rd());
     static std::uniform_int_distribution<> dis(0, 15);
     
-    std::string uuid = "knowledge-xxxx-xxxx-xxxx-xxxxxxxxxxxx";
+    std::string uuid = generateKnowledgeUUID();
     for (auto& c : uuid) {
         if (c == 'x') {
             c = "0123456789abcdef"[dis(gen)];

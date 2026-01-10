@@ -18,7 +18,11 @@ ContentScanner::ContentScanner()
       inviteFilterEnabled_(true), mentionSpamEnabled_(true), maxMentions_(5) {
     
     // Initialize with basic profanity words (mild examples)
-    profanityWords_ = {"spam", "scam", "fake", "hack"};
+    profanityWords_ = {
+        "spam", "scam", "fake", "hack", "phishing", "malware",
+        "virus", "exploit", "cheat", "bot", "raid", "dox",
+        "leak", "crack", "pirate", "stolen", "fraud", "scammer"
+    };
     
     // Initialize allowed/blocked domains
     allowedDomains_ = {"discord.com", "github.com", "google.com"};
