@@ -1,0 +1,43 @@
+# Multi-Transpiler Configuration for ElizaOS
+
+default_strategy: enhanced_hybrid
+
+modules:
+  # Type definitions - best type quality
+  - pattern: "**/*.d.ts"
+    primary: ts2cpp_only
+    reason: "Type definitions only, ts2cpp excels here"
+  
+  # Core modules - highest quality
+  - pattern: "src/core/**/*.ts"
+    primary: typescript2cxx_only
+    reason: "Core modules need complete implementations"
+  
+  # Performance-critical - native compilation (future)
+  - pattern: "src/performance/**/*.ts"
+    primary: enhanced_hybrid
+    fallback: typescript2cxx_only
+    reason: "Performance-critical modules"
+  
+  # Everything else - enhanced hybrid
+  - pattern: "**/*.ts"
+    primary: enhanced_hybrid
+    reason: "Default strategy"
+
+strategies:
+  enhanced_hybrid:
+    stage1: ts2cpp          # Type definitions
+    stage2: typescript2cxx  # Implementations
+    stage3: type_conversion # Convert to native STL
+  
+  fast_approximate:
+    stage1: ts2cpp          # Type definitions
+    stage2: python          # Fast implementations
+    stage3: type_conversion # Convert to native STL
+  
+  typescript2cxx_only:
+    stage1: typescript2cxx  # Complete solution
+    stage2: type_conversion # Convert js:: to std::
+  
+  ts2cpp_only:
+    stage1: ts2cpp          # Type definitions only
