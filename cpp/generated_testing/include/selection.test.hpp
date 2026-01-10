@@ -1,0 +1,7 @@
+#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_CLI_TESTS_UNIT_UTILS_SELECTION_TEST_H
+#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_CLI_TESTS_UNIT_UTILS_SELECTION_TEST_H
+#include "core.h"
+#include "bun:test.h"
+#include "../../../src/commands/create/utils/selection.h"
+
+#endif
