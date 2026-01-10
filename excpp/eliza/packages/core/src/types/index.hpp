@@ -14,26 +14,26 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-#include "primitives.hpp"
-#include "state.hpp"
-#include "memory.hpp"
-#include "knowledge.hpp"
-#include "environment.hpp"
-#include "agent.hpp"
-#include "components.hpp"
-#include "plugin.hpp"
-#include "service.hpp"
-#include "model.hpp"
-#include "database.hpp"
-#include "events.hpp"
-#include "task.hpp"
-#include "tee.hpp"
-#include "runtime.hpp"
-#include "token.hpp"
-#include "messaging.hpp"
-// #include "testing.hpp"  // Commented out - testing may not have a header file
-#include "settings.hpp"
-#include "wallet.hpp"
-#include "lp.hpp"
+* from './primitives';
+* from './state';
+* from './memory';
+* from './knowledge';
+* from './environment';
+* from './agent';
+* from './components';
+* from './plugin';
+* from './service';
+* from './model';
+* from './database';
+* from './events';
+* from './task';
+* from './tee';
+* from './runtime';
+* from './token';
+* from './messaging';
+* from './testing';
+* from './settings';
+* from './wallet';
+* from './lp';
 
 } // namespace elizaos

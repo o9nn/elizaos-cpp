@@ -8,19 +8,14 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
+#include "badge.hpp"
 
 namespace elizaos {
 
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-
-
-void Badge(auto variant);
-
-
-} // namespace elizaos
->
+/// <reference types="cypress" />
 /// <reference path="../../../cypress/support/types.d.ts" />
 
     // Test the badgeVariants function directly

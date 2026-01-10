@@ -20,8 +20,3 @@ void Skeleton();
 
 
 } // namespace elizaos
-="cypress" />
-/// <reference path="../../../cypress/support/types.d.ts" />
-
-
-} // namespace elizaos

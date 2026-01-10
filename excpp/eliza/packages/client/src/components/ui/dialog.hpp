@@ -18,21 +18,3 @@ namespace elizaos {
 
 
 } // namespace elizaos
-r production use
-
-/// <reference types="cypress" />
-/// <reference path="../../../cypress/support/types.d.ts" />
-
-    // Open dialog
-
-    // Test escape key instead of clicking outside
-
-    // ESC key should close
-
-    // Wait for dialog to open and verify scroll container exists
-
-    // Verify the container has the correct CSS classes for scrolling
-
-    // Check that content exists inside the scroll container
-
-} // namespace elizaos

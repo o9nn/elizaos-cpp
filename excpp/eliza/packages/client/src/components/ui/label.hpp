@@ -18,10 +18,3 @@ namespace elizaos {
 
 
 } // namespace elizaos
-reference types="cypress" />
-/// <reference path="../../../cypress/support/types.d.ts" />
-
-    // Clicking the label should focus the input
-
-
-} // namespace elizaos

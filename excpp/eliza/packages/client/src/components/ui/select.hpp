@@ -8,13 +8,23 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
+#include "select.hpp"
 
 namespace elizaos {
 
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
+/// <reference types="cypress" />
+/// <reference path="../../../cypress/support/types.d.ts" />
 
+    // Initially closed
+
+    // Click to open
+
+    // Open with Enter key
+
+    // Navigate with arrow keys
 
 
 } // namespace elizaos

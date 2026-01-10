@@ -16,21 +16,26 @@ namespace elizaos {
 
 // this just imported dotenv, settings will handle wrapping this
 
-#include "messages.hpp"
-//#include "models.hpp"
-#include "posts.hpp"
-//#include "providers.hpp"
-//#include "relationships.hpp"
-#include "runtime.hpp"
+* from './messages';
+//* from "./models";
+* from './posts';
+//* from "./providers";
+//* from "./relationships";
+* from './runtime';
 
 /*
 */
 
 // Core types
-#include "types.hpp"
+* from './types';
 
 // Adapters created for v1 -> v2 compatibility
 // Export only the adapter functions and V1 types to avoid conflicts
+
+// Existing exports
+* from './messages';
+* from './posts';
+* from './runtime';
 
 // TODO: Implement the remaining adapters:
 // - action/handler

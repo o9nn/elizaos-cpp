@@ -4,11 +4,10 @@
 
 namespace elizaos {
 
-// No function implementations found to convert
-// Original TypeScript may contain only interfaces/types
+std::future<void> build() {
+    // NOTE: Auto-converted from TypeScript - may need refinement
 
-} // namespace elizaos
-g package..." << std::endl;
+    std::cout << "🏗️  Building package..." << std::endl;
 
     // Clean dist directory
     "$" + "rm -rf dist";

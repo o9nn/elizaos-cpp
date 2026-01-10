@@ -4,46 +4,34 @@
 
 namespace elizaos {
 
-void CodeChangesDisplay() {
+void CodeChangesDisplaySkeleton() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
-    <SectionCard title="Code Changes">;
-    <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-    <MetricItem;
-    icon={GitCommitVertical}
-    value={metrics.codeChanges.commitCount}
-    label="Commits";
-    />;
-    <MetricItem;
-    icon={FileCode}
-    value={metrics.codeChanges.files}
-    label="Files Changed";
-    />;
-    <MetricItem;
-    icon={ArrowUp}
-    "value={" + "+" + std::to_string(metrics.codeChanges.additions.toLocaleString());
-    label="Lines Added";
-    valueClassName="text-green-500";
-    iconClassName="text-green-500";
-    iconBgClassName="bg-green-500/10";
-    />;
-    <MetricItem;
-    icon={ArrowDown}
-    "value={" + "-" + std::to_string(metrics.codeChanges.deletions.toLocaleString());
-    label="Lines Deleted";
-    valueClassName="text-red-500";
-    iconClassName="text-red-500";
-    iconBgClassName="bg-red-500/10";
-    />;
+    <div className="rounded-lg border bg-card p-6">;
+    <Skeleton className="mb-6 h-6 w-36" /> {/* Code Changes title */}
+    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+    {/* Commits skeleton */}
+    <div className="flex flex-col space-y-2">;
+    <Skeleton className="h-10 w-14" /> {/* Value */}
+    <Skeleton className="h-5 w-20" /> {/* Label: Commits */}
     </div>;
-    </SectionCard>;
-    );
 
-}
+    {/* Files Changed skeleton */}
+    <div className="flex flex-col space-y-2">;
+    <Skeleton className="h-10 w-14" /> {/* Value */}
+    <Skeleton className="h-5 w-32" /> {/* Label: Files Changed */}
+    </div>;
 
-} // namespace elizaos
-ton className="h-10 w-20" /> {/* Value */}
+    {/* Lines Added skeleton */}
+    <div className="flex flex-col space-y-2">;
+    <Skeleton className="h-10 w-20" /> {/* Value */}
+    <Skeleton className="h-5 w-24" /> {/* Label: Lines Added */}
+    </div>;
+
+    {/* Lines Deleted skeleton */}
+    <div className="flex flex-col space-y-2">;
+    <Skeleton className="h-10 w-20" /> {/* Value */}
     <Skeleton className="h-5 w-28" /> {/* Label: Lines Deleted */}
     </div>;
     </div>;

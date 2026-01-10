@@ -18,12 +18,3 @@ namespace elizaos {
 
 
 } // namespace elizaos
-eference types="cypress" />
-/// <reference path="../../../cypress/support/types.d.ts" />
-
-    // Check all sections are rendered
-
-    // Check nested content renders correctly
-
-
-} // namespace elizaos

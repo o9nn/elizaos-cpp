@@ -16,10 +16,6 @@ namespace elizaos {
 
 
 
-struct CodeChangesDisplayProps {
-    IntervalMetrics metrics;
-};
-
-void CodeChangesDisplay();
+void CodeChangesDisplaySkeleton();
 
 } // namespace elizaos

@@ -34,17 +34,3 @@ struct SplitButtonProps {
 
 
 } // namespace elizaos
-ction works
-
-    // Click enabled item
-
-    // Open dropdown
-
-    // Select item
-
-    // Dropdown should close
-
-    // Both parts should have consistent styling
-
-
-} // namespace elizaos
