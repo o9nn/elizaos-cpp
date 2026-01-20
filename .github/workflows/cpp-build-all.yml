@@ -41,7 +41,11 @@ jobs:
         echo "===================="
 
     - name: Build all C++ files (fail-never mode)
+      shell: bash
       run: |
+        # Disable exit on error - this is the key for fail-never mode
+        set +e
+        
         echo "=== FAIL-NEVER BUILD TEST ==="
         echo "Building all .cpp files individually to collect all errors"
         echo ""
@@ -54,9 +58,6 @@ jobs:
         FAILED=0
         TOTAL=0
         
-        # Error categories
-        declare -A ERROR_TYPES
-        
         # Include paths
         INCLUDES="-I include -I cpp -I cpp/core/include -I cpp/agentloop/include -I cpp/agentmemory/include -I cpp/agentcomms/include -I cpp/agentlogger/include"
         
@@ -66,15 +67,20 @@ jobs:
         echo "Starting build at $(date)"
         echo ""
         
+        # Initialize error log
+        echo "# Build Errors Log" > build_results/errors.log
+        echo "Generated: $(date)" >> build_results/errors.log
+        echo "" >> build_results/errors.log
+        
         # Process each module
         for dir in cpp/*/; do
           MODULE=$(basename "$dir")
           echo "=== Module: $MODULE ==="
           
           # Find all cpp files in this module
-          FILES=$(find "$dir" -name "*.cpp" -type f 2>/dev/null)
+          mapfile -t FILES < <(find "$dir" -name "*.cpp" -type f 2>/dev/null)
           
-          if [ -z "$FILES" ]; then
+          if [ ${#FILES[@]} -eq 0 ]; then
             echo "  (no .cpp files)"
             continue
           fi
@@ -82,27 +88,29 @@ jobs:
           MODULE_SUCCESS=0
           MODULE_FAILED=0
           
-          for file in $FILES; do
+          for file in "${FILES[@]}"; do
             TOTAL=$((TOTAL + 1))
             REL_PATH="${file#cpp/}"
             
-            # Compile with syntax check only
-            if g++ $FLAGS $INCLUDES "$file" 2>/dev/null; then
+            # Compile with syntax check only - capture output
+            ERROR_OUTPUT=$(g++ $FLAGS $INCLUDES "$file" 2>&1)
+            COMPILE_RESULT=$?
+            
+            if [ $COMPILE_RESULT -eq 0 ]; then
               MODULE_SUCCESS=$((MODULE_SUCCESS + 1))
               SUCCESS=$((SUCCESS + 1))
             else
               MODULE_FAILED=$((MODULE_FAILED + 1))
               FAILED=$((FAILED + 1))
               
-              # Capture error type
-              ERROR=$(g++ $FLAGS $INCLUDES "$file" 2>&1 | head -1)
+              # Extract first error line
+              FIRST_ERROR=$(echo "$ERROR_OUTPUT" | head -1 | cut -c1-100)
               echo "  FAIL: $REL_PATH"
-              echo "        $ERROR" | head -c 100
-              echo ""
+              echo "        $FIRST_ERROR"
               
               # Log to file
               echo "=== $REL_PATH ===" >> build_results/errors.log
-              g++ $FLAGS $INCLUDES "$file" 2>&1 >> build_results/errors.log
+              echo "$ERROR_OUTPUT" >> build_results/errors.log
               echo "" >> build_results/errors.log
             fi
           done
@@ -116,6 +124,7 @@ jobs:
         echo "Total files: $TOTAL"
         echo "Success: $SUCCESS"
         echo "Failed: $FAILED"
+        PCT=0
         if [ $TOTAL -gt 0 ]; then
           PCT=$((SUCCESS * 100 / TOTAL))
           echo "Success rate: $PCT%"
@@ -135,8 +144,12 @@ jobs:
         
         echo ""
         echo "Build completed at $(date)"
+        
+        # Always exit successfully - this is fail-never mode
+        exit 0
 
     - name: Analyze error categories
+      if: always()
       run: |
         echo "=== ERROR CATEGORY ANALYSIS ==="
         
@@ -169,6 +182,7 @@ jobs:
         fi
 
     - name: Upload build results
+      if: always()
       uses: actions/upload-artifact@v4
       with:
         name: build-results-${{ github.sha }}
@@ -176,11 +190,13 @@ jobs:
         retention-days: 30
 
     - name: Create build badge data
+      if: always()
       run: |
         if [ -f build_results/summary.json ]; then
-          SUCCESS=$(cat build_results/summary.json | grep -o '"success": [0-9]*' | grep -o '[0-9]*')
-          TOTAL=$(cat build_results/summary.json | grep -o '"total_files": [0-9]*' | grep -o '[0-9]*')
-          if [ $TOTAL -gt 0 ]; then
+          cat build_results/summary.json
+          SUCCESS=$(grep -o '"success": [0-9]*' build_results/summary.json | grep -o '[0-9]*' || echo "0")
+          TOTAL=$(grep -o '"total_files": [0-9]*' build_results/summary.json | grep -o '[0-9]*' || echo "0")
+          if [ "$TOTAL" -gt 0 ]; then
             PCT=$((SUCCESS * 100 / TOTAL))
             echo "Build success rate: $PCT%"
             
@@ -203,12 +219,15 @@ jobs:
   module-status:
     runs-on: ubuntu-latest
     needs: build-all-fail-never
+    if: always()
     
     steps:
     - uses: actions/checkout@v4
 
     - name: Generate module status report
       run: |
+        set +e
+        
         echo "# Module Build Status Report" > MODULE_STATUS.md
         echo "" >> MODULE_STATUS.md
         echo "Generated: $(date)" >> MODULE_STATUS.md
@@ -223,7 +242,8 @@ jobs:
           # Quick syntax check on first file
           FIRST_FILE=$(find "$dir" -name "*.cpp" -type f 2>/dev/null | head -1)
           if [ -n "$FIRST_FILE" ]; then
-            if g++ -std=c++17 -fsyntax-only -w -I include -I cpp "$FIRST_FILE" 2>/dev/null; then
+            g++ -std=c++17 -fsyntax-only -w -I include -I cpp "$FIRST_FILE" 2>/dev/null
+            if [ $? -eq 0 ]; then
               STATUS="✅ OK"
             else
               STATUS="❌ Errors"
