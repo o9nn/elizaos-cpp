@@ -1,0 +1,35 @@
+#pragma once
+#include <algorithm>
+#include <cstdint>
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <unordered_set>
+#include <vector>
+
+namespace elizaos {
+
+// NOTE: This is auto-generated approximate C++ code
+// Manual refinement required for production use
+
+
+
+struct CausalGraphProps {
+    DAG dag;
+    double width;
+    double height;
+    std::optional<std::vector<std::string>> highlightPaths;
+};
+
+    // Create arrow markers
+
+    // Draw edges
+
+    // Draw nodes
+
+    // Update positions
+
+
+} // namespace elizaos
