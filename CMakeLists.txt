@@ -453,19 +453,12 @@ target_link_libraries(elizas_world_demo
     Threads::Threads
 )
 
-# Eliza's World Standalone Integration Test
-add_executable(elizas_world_integration_test
 # Eliza's World Standalone Test
 add_executable(elizas_world_standalone_test
     elizas_world_test.cpp
     cpp/tests/src/test_elizas_world.cpp
 )
 
-target_include_directories(elizas_world_integration_test PRIVATE
-    ${CMAKE_SOURCE_DIR}/include
-)
-
-target_link_libraries(elizas_world_integration_test
 target_include_directories(elizas_world_standalone_test PRIVATE
     ${CMAKE_SOURCE_DIR}/include
 )
@@ -581,7 +574,7 @@ install(TARGETS
     awesome_eliza_demo the_org_demo easycompletion_demo
     characters_demo knowledge_demo knowledge_quick_demo
     elizas_list_demo elizas_list_real_test elizas_list_unit_test
-    eliza_3d_hyperfy_starter_demo elizas_world_demo elizas_world_integration_test
+    eliza_3d_hyperfy_starter_demo elizas_world_demo
     registry_demo
     
     # Stage 1-2 - Core and Infrastructure
