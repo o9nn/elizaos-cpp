@@ -1,36 +1,13 @@
-               << "```bash\n"
-               << "mkdir build && cd build\n"
-               << "cmake ..\n"
-               << "make\n"
-               << "```\n\n"
-               << "## Usage\n\n"
-               << "Load this plugin in your ElizaOS application.\n";
-        
-        std::ofstream readmeFile(pluginPath + "/README.md");
-        readmeFile << readme.str();
-        readmeFile.close();
-        
-        return true;
-    }
-};
-
-bool generatePluginTemplate(const std::string& pluginPath, const std::string& pluginName) {
-    return PluginTemplateGenerator::generatePlugin(pluginPath, pluginName);
-}
-
-} // namespace plugin_starter
-} // namespace elizaos
-
 // ==============================================================================
 // HAT PROTOCOL
 // ==============================================================================
-// File: cpp/hat/src/hat_COMPLETE.cpp
 
 #include "elizaos/core.hpp"
 #include <string>
 #include <vector>
 #include <unordered_map>
 #include <mutex>
+#include <chrono>
 
 namespace elizaos {
 namespace hat {
@@ -147,3 +124,6 @@ bool checkHATPermission(const std::string& tokenId, const std::string& permissio
 void revokeHATToken(const std::string& tokenId) {
     globalHATProtocol.revokeToken(tokenId);
 }
+
+} // namespace hat
+} // namespace elizaos
