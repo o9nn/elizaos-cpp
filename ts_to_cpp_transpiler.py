@@ -33,13 +33,15 @@ import time
 
 class TypeScriptToCppTranspiler:
     """Main transpiler class for converting TypeScript to C++"""
-    
-    def __init__(self, input_dir: str, output_dir: str, verbose: bool = False, parallel: bool = False, max_workers: int = 4):
+
+    def __init__(self, input_dir: str, output_dir: str, verbose: bool = False, parallel: bool = False, max_workers: int = 4, directory_mappings: dict = None, separate_headers: bool = False):
         self.input_dir = Path(input_dir)
         self.output_dir = Path(output_dir)
         self.verbose = verbose
         self.parallel = parallel
         self.max_workers = max_workers
+        self.directory_mappings = directory_mappings or {}
+        self.separate_headers = separate_headers  # If True, put .hpp in include/ and .cpp in src/
         self.stats = {
             'files_processed': 0,
             'files_skipped': 0,
@@ -1952,23 +1954,85 @@ class TypeScriptToCppTranspiler:
         
         return issues
     
+    def apply_directory_mapping(self, rel_path: Path) -> Path:
+        """Apply directory mappings to convert source path to target path.
+
+        Directory mappings allow transforming the source directory structure
+        to a different target structure. This is useful when the C++ project
+        layout differs from the TypeScript source layout.
+
+        Args:
+            rel_path: Relative path from input directory
+
+        Returns:
+            Mapped path according to directory_mappings, or original path if no mapping matches
+        """
+        if not self.directory_mappings:
+            return rel_path
+
+        rel_path_str = str(rel_path)
+
+        # Try to find a matching mapping (longest match first for specificity)
+        sorted_mappings = sorted(
+            self.directory_mappings.items(),
+            key=lambda x: len(x[0]),
+            reverse=True
+        )
+
+        for source_pattern, target_pattern in sorted_mappings:
+            # Normalize patterns (remove trailing slashes)
+            source_pattern = source_pattern.rstrip('/')
+            target_pattern = target_pattern.rstrip('/')
+
+            # Check if the relative path starts with the source pattern
+            if rel_path_str.startswith(source_pattern + '/') or rel_path_str == source_pattern:
+                # Replace the source pattern with target pattern
+                if rel_path_str == source_pattern:
+                    mapped_path = target_pattern
+                else:
+                    remaining = rel_path_str[len(source_pattern) + 1:]
+                    mapped_path = f"{target_pattern}/{remaining}"
+
+                self.log(f"Mapped: {rel_path_str} -> {mapped_path}")
+                return Path(mapped_path)
+
+        return rel_path
+
     def process_file(self, ts_file: Path) -> bool:
         """Process a single TypeScript file"""
         try:
             # Read TypeScript content
             with open(ts_file, 'r', encoding='utf-8') as f:
                 ts_content = f.read()
-            
+
             # Calculate relative path
             rel_path = ts_file.relative_to(self.input_dir)
-            
-            # Determine output paths
-            output_rel_path = rel_path.with_suffix('')
-            header_path = self.output_dir / output_rel_path.with_suffix('.hpp')
-            impl_path = self.output_dir / output_rel_path.with_suffix('.cpp')
-            
-            # Create output directory
+
+            # Apply directory mapping if configured
+            mapped_path = self.apply_directory_mapping(rel_path)
+
+            # Determine output paths based on separate_headers setting
+            output_rel_path = mapped_path.with_suffix('')
+
+            if self.separate_headers:
+                # Separate headers into include/ and sources into src/
+                # Replace /src/ with /include/ for headers, keep /src/ for impl
+                path_str = str(output_rel_path)
+                if '/src/' in path_str:
+                    header_rel = path_str.replace('/src/', '/include/', 1)
+                else:
+                    # If no src/ in path, add include/ prefix
+                    header_rel = f"include/{path_str}"
+                header_path = self.output_dir / Path(header_rel).with_suffix('.hpp')
+                impl_path = self.output_dir / output_rel_path.with_suffix('.cpp')
+            else:
+                # Keep headers and sources together (default)
+                header_path = self.output_dir / output_rel_path.with_suffix('.hpp')
+                impl_path = self.output_dir / output_rel_path.with_suffix('.cpp')
+
+            # Create output directories
             header_path.parent.mkdir(parents=True, exist_ok=True)
+            impl_path.parent.mkdir(parents=True, exist_ok=True)
             
             # Generate header file
             self.log(f"Processing {rel_path} -> {header_path.relative_to(self.output_dir)}")
@@ -2086,26 +2150,77 @@ class TypeScriptToCppTranspiler:
             print("Review the generated files for TypeScript code leakage or conversion issues.")
         print("="*60)
 
+def load_directory_mappings(config_path: str) -> dict:
+    """Load directory mappings from a YAML or JSON config file"""
+    if not config_path or not os.path.exists(config_path):
+        return {}
+
+    try:
+        with open(config_path, 'r') as f:
+            if config_path.endswith('.yaml') or config_path.endswith('.yml'):
+                import yaml
+                config = yaml.safe_load(f) or {}
+            else:
+                config = json.load(f)
+
+        return config.get('directory_mappings', {})
+    except Exception as e:
+        print(f"[WARN] Failed to load directory mappings from {config_path}: {e}")
+        return {}
+
+
+def parse_directory_mappings(mapping_str: str) -> dict:
+    """Parse directory mappings from command-line string format.
+
+    Format: 'source1:target1,source2:target2,...'
+    Example: 'eliza/packages/core/src:cpp/packages/core/core/src'
+    """
+    if not mapping_str:
+        return {}
+
+    mappings = {}
+    pairs = mapping_str.split(',')
+    for pair in pairs:
+        pair = pair.strip()
+        if ':' in pair:
+            source, target = pair.split(':', 1)
+            mappings[source.strip()] = target.strip()
+
+    return mappings
+
+
 def main():
     """Main entry point"""
     parser = argparse.ArgumentParser(
-        description='Experimental TypeScript to C++ Transpiler (v3.0)',
+        description='Experimental TypeScript to C++ Transpiler (v3.1)',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
   # Convert all TypeScript files in current repo to excpp/
   python3 ts_to_cpp_transpiler.py
-  
+
   # Convert specific directory
   python3 ts_to_cpp_transpiler.py --input-dir ./otaku/src --output-dir ./excpp/otaku
-  
+
   # Verbose output
   python3 ts_to_cpp_transpiler.py --verbose
-  
+
   # Use parallel processing for faster conversion
   python3 ts_to_cpp_transpiler.py --parallel --max-workers 8
 
-Version 3.0 Features:
+  # Use directory mapping to map source directories to target directories
+  python3 ts_to_cpp_transpiler.py --input-dir . --output-dir ./cpp \\
+    --mapping "eliza/packages/core/src:packages/core/core/src"
+
+  # Load mappings from a config file
+  python3 ts_to_cpp_transpiler.py --config transpiler_mappings.yaml
+
+  # Separate headers into include/ directories
+  python3 ts_to_cpp_transpiler.py --separate-headers --output-dir ./cpp
+
+Version 3.1 Features:
+  - Directory mapping support for custom output structure
+  - Separate headers option (--separate-headers) for include/src layout
   - Function body conversion (not just declarations)
   - Statement-by-statement translation
   - Expression conversion (null→nullptr, etc.)
@@ -2146,18 +2261,52 @@ Version 3.0 Features:
         default=4,
         help='Maximum number of parallel workers (default: 4, only used with --parallel)'
     )
-    
+
+    parser.add_argument(
+        '--mapping',
+        type=str,
+        default='',
+        help='Directory mappings in format "source1:target1,source2:target2"'
+    )
+
+    parser.add_argument(
+        '--config',
+        type=str,
+        default='',
+        help='Path to YAML/JSON config file with directory_mappings'
+    )
+
+    parser.add_argument(
+        '--separate-headers',
+        action='store_true',
+        help='Put headers in include/ and sources in src/ (default: keep together)'
+    )
+
     args = parser.parse_args()
-    
+
+    # Load directory mappings
+    directory_mappings = {}
+
+    # First, try to load from config file
+    if args.config:
+        directory_mappings = load_directory_mappings(args.config)
+
+    # Command-line mappings override config file mappings
+    if args.mapping:
+        cli_mappings = parse_directory_mappings(args.mapping)
+        directory_mappings.update(cli_mappings)
+
     # Create transpiler and run
     transpiler = TypeScriptToCppTranspiler(
         input_dir=args.input_dir,
         output_dir=args.output_dir,
         verbose=args.verbose,
         parallel=args.parallel,
-        max_workers=args.max_workers
+        max_workers=args.max_workers,
+        directory_mappings=directory_mappings,
+        separate_headers=args.separate_headers
     )
-    
+
     transpiler.transpile()
 
 if __name__ == '__main__':
